@@ -1,0 +1,159 @@
+// src/pages/Settings.tsx
+import React, { useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import {
+    UserCircleIcon,
+    KeyIcon,
+    BellIcon,
+    CreditCardIcon,
+    ShieldCheckIcon,
+} from '@heroicons/react/24/outline';
+import { userService } from '../services/user.service';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { ProfileSettings } from '../components/settings/ProfileSettings';
+import { ApiKeySettings } from '../components/settings/ApiKeySettings';
+import { NotificationSettings } from '../components/settings/NotificationSettings';
+import { BillingSettings } from '../components/settings/BillingSettings';
+import { SecuritySettings } from '../components/settings/SecuritySettings';
+import { useNotifications } from '../contexts/NotificationContext';
+
+type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'billing' | 'security';
+
+export const Settings: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+    const { showNotification } = useNotifications();
+
+    const { data: profile, isLoading } = useQuery(
+        ['user-profile'],
+        userService.getProfile
+    );
+
+    const updateProfileMutation = useMutation(
+        (data: any) => userService.updateProfile(data),
+        {
+            onSuccess: () => {
+                showNotification('Profile updated successfully', 'success');
+            },
+            onError: () => {
+                showNotification('Failed to update profile', 'error');
+            },
+        }
+    );
+
+    if (isLoading) return <LoadingSpinner />;
+
+    const tabs = [
+        {
+            id: 'profile' as const,
+            name: 'Profile',
+            icon: UserCircleIcon,
+            component: ProfileSettings,
+        },
+        {
+            id: 'api-keys' as const,
+            name: 'API Keys',
+            icon: KeyIcon,
+            component: ApiKeySettings,
+        },
+        {
+            id: 'notifications' as const,
+            name: 'Notifications',
+            icon: BellIcon,
+            component: NotificationSettings,
+        },
+        {
+            id: 'billing' as const,
+            name: 'Billing',
+            icon: CreditCardIcon,
+            component: BillingSettings,
+        },
+        {
+            id: 'security' as const,
+            name: 'Security',
+            icon: ShieldCheckIcon,
+            component: SecuritySettings,
+        },
+    ];
+
+    // Mock security settings (replace with real data as needed)
+    const security = {
+        twoFactorEnabled: false,
+        activeSessions: [
+            {
+                id: '1',
+                device: 'Chrome on MacOS',
+                location: 'San Francisco, CA',
+                lastActive: '2 minutes ago',
+                current: true,
+            },
+            {
+                id: '2',
+                device: 'Safari on iPhone',
+                location: 'San Francisco, CA',
+                lastActive: '1 hour ago',
+                current: false,
+            },
+        ],
+    };
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+                <p className="mt-2 text-gray-600">
+                    Manage your account settings and preferences
+                </p>
+            </div>
+
+            <div className="bg-white shadow rounded-lg">
+                <div className="flex border-b border-gray-200">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
+                                ? 'border-indigo-500 text-indigo-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            <tab.icon className="h-5 w-5 mx-auto mb-1" />
+                            {tab.name}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="p-6">
+                    {activeTab === 'profile' && (
+                        <ProfileSettings
+                            profile={profile}
+                            onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                    {activeTab === 'api-keys' && (
+                        <ApiKeySettings
+                            profile={profile}
+                            onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                    {activeTab === 'billing' && (
+                        <BillingSettings
+                            profile={profile}
+                            onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                    {activeTab === 'notifications' && (
+                        <NotificationSettings
+                            onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                    {activeTab === 'security' && (
+                        <SecuritySettings
+                            security={security}
+                            onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
