@@ -4,13 +4,13 @@ import { Usage, UsageStats, PaginatedResponse, UsageFilters } from '../types';
 
 class UsageService {
     async trackUsage(data: {
-        service: string;
+        provider: string;
         model: string;
         prompt: string;
         promptTokens: number;
         completionTokens: number;
         totalTokens: number;
-        cost: number;
+        estimatedCost: number;
         responseTime: number;
         metadata?: any;
     }): Promise<{ success: boolean; data: Usage }> {
