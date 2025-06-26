@@ -8,6 +8,7 @@ interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
+    accessToken: string | null;
     login: (credentials: LoginCredentials) => Promise<void>;
     register: (data: RegisterData) => Promise<void>;
     logout: () => Promise<void>;
@@ -30,6 +31,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -38,10 +40,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const initAuth = () => {
             try {
                 const currentUser = authService.getUser();
-                const isAuthenticated = authService.isAuthenticated();
-
-                if (currentUser && isAuthenticated) {
+                const token = authService.getToken();
+                if (currentUser && token) {
                     setUser(currentUser);
+                    setAccessToken(token);
                 }
             } catch (error) {
                 console.error('Auth initialization error:', error);
@@ -57,15 +59,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             setIsLoading(true);
             const response = await authService.login(credentials);
-            if (!response || !response.data || !response.data.user) {
+            if (!response || !response.data || !response.data.user || !response.data.accessToken) {
                 throw new Error('Invalid login response');
             }
             setUser(response.data.user);
+            setAccessToken(response.data.accessToken);
+            sessionStorage.setItem('showTokenOnLoad', 'true');
             toast.success('Welcome back!');
             navigate('/dashboard');
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Login failed');
-            throw error;
+            setUser(null);
+            setAccessToken(null);
+            navigate('/login');
         } finally {
             setIsLoading(false);
         }
@@ -93,12 +99,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             await authService.logout();
             setUser(null);
+            setAccessToken(null);
             toast.success('Logged out successfully');
             navigate('/login');
         } catch (error) {
             console.error('Logout error:', error);
             // Even if logout fails, clear local state
             setUser(null);
+            setAccessToken(null);
             navigate('/login');
         }
     }, [navigate]);
@@ -112,6 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user,
         isAuthenticated: !!user,
         isLoading,
+        accessToken,
         login,
         register,
         logout,

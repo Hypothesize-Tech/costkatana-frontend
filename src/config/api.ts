@@ -2,7 +2,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { authService } from '../services/auth.service';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL
 
 // Create axios instance
 const api: AxiosInstance = axios.create({
@@ -103,16 +103,10 @@ api.interceptors.response.use(
     }
 );
 
-// WebSocket configuration for real-time updates
-export const createWebSocket = (path: string): WebSocket => {
-    const wsUrl = API_URL.replace(/^http/, 'ws');
-    const token = authService.getToken();
-    return new WebSocket(`${wsUrl}${path}?token=${token}`);
-};
-
 // Server-Sent Events configuration
 export const createEventSource = (path: string): EventSource => {
     const token = authService.getToken();
+    // EventSource doesn't support custom headers, so we pass the token as a query parameter
     return new EventSource(`${API_URL}/api${path}?token=${token}`);
 };
 

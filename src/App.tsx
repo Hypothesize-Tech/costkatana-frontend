@@ -23,58 +23,41 @@ import { Optimization } from './pages/Optimization';
 import { Settings } from './pages/Settings';
 import { NotFound } from './pages/NotFound';
 
-// Create a client
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 60 * 1000, // 1 minute
-            cacheTime: 5 * 60 * 1000, // 5 minutes
-            refetchOnWindowFocus: false,
-            retry: 1,
-        },
-    },
-});
-
 function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <Router>
-                <AuthProvider>
-                    <ThemeProvider>
-                        <NotificationProvider>
-                            <ErrorBoundary>
-                                <Routes>
-                                    {/* Public routes */}
-                                    <Route path="/login" element={<Login />} />
-                                    <Route path="/register" element={<Register />} />
+        <AuthProvider>
+            <ThemeProvider>
+                <NotificationProvider>
+                    <ErrorBoundary>
+                        <Routes>
+                            {/* Public routes */}
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
 
-                                    {/* Protected routes */}
-                                    <Route
-                                        path="/"
-                                        element={
-                                            <ProtectedRoute>
-                                                <Layout />
-                                            </ProtectedRoute>
-                                        }
-                                    >
-                                        <Route index element={<Navigate to="/dashboard" replace />} />
-                                        <Route path="dashboard" element={<Dashboard />} />
-                                        <Route path="usage" element={<Usage />} />
-                                        <Route path="analytics" element={<Analytics />} />
-                                        <Route path="optimization" element={<Optimization />} />
-                                        <Route path="settings" element={<Settings />} />
-                                    </Route>
+                            {/* Protected routes */}
+                            <Route
+                                path="/"
+                                element={
+                                    <ProtectedRoute>
+                                        <Layout />
+                                    </ProtectedRoute>
+                                }
+                            >
+                                <Route index element={<Navigate to="/dashboard" replace />} />
+                                <Route path="dashboard" element={<Dashboard />} />
+                                <Route path="usage" element={<Usage />} />
+                                <Route path="analytics" element={<Analytics />} />
+                                <Route path="optimization" element={<Optimization />} />
+                                <Route path="settings" element={<Settings />} />
+                            </Route>
 
-                                    {/* 404 page */}
-                                    <Route path="*" element={<NotFound />} />
-                                </Routes>
-                            </ErrorBoundary>
-                        </NotificationProvider>
-                    </ThemeProvider>
-                </AuthProvider>
-            </Router>
-            {import.meta.env.MODE === 'development' && <ReactQueryDevtools />}
-        </QueryClientProvider>
+                            {/* 404 page */}
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                    </ErrorBoundary>
+                </NotificationProvider>
+            </ThemeProvider>
+        </AuthProvider>
     );
 }
 

@@ -12,9 +12,20 @@ import { ServiceBreakdown } from '@/components/dashboard/ServiceBreakdown';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/hooks';
+import { useEffect, useState } from 'react';
+import { TokenDisplayCard } from '@/components/dashboard/TokenDisplayCard';
 
 export default function Dashboard() {
-    const { user } = useAuth();
+    const { user, accessToken } = useAuth();
+    const [showToken, setShowToken] = useState(false);
+
+    useEffect(() => {
+        const shouldShow = sessionStorage.getItem('showTokenOnLoad') === 'true';
+        if (shouldShow) {
+            setShowToken(true);
+            sessionStorage.removeItem('showTokenOnLoad');
+        }
+    }, []);
 
     const { data: dashboardData, isLoading } = useQuery({
         queryKey: ['dashboard'],
@@ -40,6 +51,13 @@ export default function Dashboard() {
                     Here's an overview of your AI API usage and costs
                 </p>
             </div>
+
+            {showToken && accessToken && (
+                <TokenDisplayCard
+                    token={accessToken}
+                    onDismiss={() => setShowToken(false)}
+                />
+            )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -79,17 +97,17 @@ export default function Dashboard() {
 
             {/* Insights */}
             {insights.length > 0 && (
-                <div className="rounded-lg bg-primary-50 dark:bg-primary-900/20 p-4">
+                <div className="p-4 rounded-lg bg-primary-50 dark:bg-primary-900/20">
                     <div className="flex">
                         <div className="flex-shrink-0">
-                            <LightBulbIcon className="h-5 w-5 text-primary-400" aria-hidden="true" />
+                            <LightBulbIcon className="w-5 h-5 text-primary-400" aria-hidden="true" />
                         </div>
                         <div className="ml-3">
                             <h3 className="text-sm font-medium text-primary-800 dark:text-primary-200">
                                 AI Insights
                             </h3>
                             <div className="mt-2 text-sm text-primary-700 dark:text-primary-300">
-                                <ul className="list-disc space-y-1 pl-5">
+                                <ul className="pl-5 space-y-1 list-disc">
                                     {insights.map((insight, index) => (
                                         <li key={index}>{insight}</li>
                                     ))}

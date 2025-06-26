@@ -65,7 +65,7 @@ The app will be available at <http://localhost:3001>
 
 ```env
 # API Configuration
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:8000/api
 
 # App Configuration
 VITE_APP_NAME=AI Cost Optimizer
