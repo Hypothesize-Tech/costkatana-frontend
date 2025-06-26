@@ -1,5 +1,5 @@
 export const APP_NAME = import.meta.env.VITE_APP_NAME || 'AI Cost Optimizer';
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.0';
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.10';
 
 export const AI_SERVICES = {
     openai: {

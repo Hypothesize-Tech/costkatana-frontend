@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Contexts
 import { AuthProvider } from './contexts/AuthContext';
@@ -22,6 +20,7 @@ import { Analytics } from './pages/Analytics';
 import { Optimization } from './pages/Optimization';
 import { Settings } from './pages/Settings';
 import { NotFound } from './pages/NotFound';
+import { TrackerAnalytics } from './pages/TrackerAnalytics';
 
 function App() {
     return (
@@ -47,6 +46,7 @@ function App() {
                                 <Route path="dashboard" element={<Dashboard />} />
                                 <Route path="usage" element={<Usage />} />
                                 <Route path="analytics" element={<Analytics />} />
+                                <Route path="tracker-analytics" element={<TrackerAnalytics />} />
                                 <Route path="optimization" element={<Optimization />} />
                                 <Route path="settings" element={<Settings />} />
                             </Route>
