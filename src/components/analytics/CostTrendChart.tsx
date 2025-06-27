@@ -23,13 +23,13 @@ interface CostTrendChartProps {
 export const CostTrendChart: React.FC<CostTrendChartProps> = ({ data }) => {
     const formattedData = data.map(item => ({
         ...item,
-        displayDate: formatDate(item.date, 'short'),
+        displayDate: formatDate(item.date, 'MMM dd'),
     }));
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border border-gray-200 rounded shadow-lg">
+                <div className="p-3 bg-white rounded border border-gray-200 shadow-lg">
                     <p className="text-sm font-medium">{label}</p>
                     <p className="text-sm text-indigo-600">
                         Cost: {formatCurrency(payload[0].value)}
