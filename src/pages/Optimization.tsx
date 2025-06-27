@@ -74,16 +74,16 @@ export const Optimization: React.FC = () => {
     if (isLoading) return <LoadingSpinner />;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
             {/* Header */}
             <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                    <h1 className="text-3xl font-bold text-gray-900">Prompt Optimization</h1>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Prompt Optimization</h1>
                     <button
                         onClick={() => setShowForm(!showForm)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        <SparklesIcon className="h-5 w-5 mr-2" />
+                        <SparklesIcon className="mr-2 w-5 h-5" />
                         Optimize Prompt
                     </button>
                 </div>
@@ -94,48 +94,48 @@ export const Optimization: React.FC = () => {
 
             {/* Stats Cards */}
             {stats && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex items-center justify-between">
+                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+                    <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Total Saved</p>
                                 <p className="text-2xl font-bold text-green-600">
                                     {formatCurrency(stats.data.totalSaved)}
                                 </p>
                             </div>
-                            <ChartBarIcon className="h-12 w-12 text-green-600 opacity-20" />
+                            <ChartBarIcon className="w-12 h-12 text-green-600 opacity-20" />
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Optimizations</p>
                                 <p className="text-2xl font-bold text-gray-900">{stats.data.total}</p>
                             </div>
-                            <SparklesIcon className="h-12 w-12 text-indigo-600 opacity-20" />
+                            <SparklesIcon className="w-12 h-12 text-indigo-600 opacity-20" />
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Applied</p>
                                 <p className="text-2xl font-bold text-gray-900">{stats.data.applied}</p>
                             </div>
-                            <RocketLaunchIcon className="h-12 w-12 text-blue-600 opacity-20" />
+                            <RocketLaunchIcon className="w-12 h-12 text-blue-600 opacity-20" />
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Avg Improvement</p>
                                 <p className="text-2xl font-bold text-gray-900">
                                     {stats.data.avgImprovement.toFixed(1)}%
                                 </p>
                             </div>
-                            <ClockIcon className="h-12 w-12 text-purple-600 opacity-20" />
+                            <ClockIcon className="w-12 h-12 text-purple-600 opacity-20" />
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@ export const Optimization: React.FC = () => {
             {/* Filter Tabs */}
             <div className="mb-6">
                 <div className="border-b border-gray-200">
-                    <nav className="-mb-px flex space-x-8">
+                    <nav className="flex -mb-px space-x-8">
                         {(['all', 'pending', 'applied'] as const).map((tab) => (
                             <button
                                 key={tab}
@@ -201,8 +201,8 @@ export const Optimization: React.FC = () => {
             </div>
 
             {optimizations?.data.length === 0 && (
-                <div className="text-center py-12">
-                    <SparklesIcon className="mx-auto h-12 w-12 text-gray-400" />
+                <div className="py-12 text-center">
+                    <SparklesIcon className="mx-auto w-12 h-12 text-gray-400" />
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No optimizations</h3>
                     <p className="mt-1 text-sm text-gray-500">
                         Get started by optimizing your first prompt.
