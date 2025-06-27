@@ -1,6 +1,6 @@
 // src/pages/Profile.tsx
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/user.service';
 import { ProfileHeader } from '../components/profile/ProfileHeader';
@@ -9,35 +9,34 @@ import { ProfileActivity } from '../components/profile/ProfileActivity';
 import { ProfilePreferences } from '../components/profile/ProfilePreferences';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotifications } from '../contexts/NotificationContext';
-import { usageService } from '@/services/usage.service';
+import { User } from '../types';
 
 export const Profile: React.FC = () => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { showNotification } = useNotifications();
     const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'preferences'>('overview');
 
     const { data: profile, isLoading: profileLoading } = useQuery(
-        'user-profile',
-        userService.getProfile
-    );
-
-    const { data: stats, isLoading: statsLoading } = useQuery(
-        'user-stats',
-        () => usageService.getUsageStats()
+        ['user-profile', user?.id],
+        () => userService.getProfile(),
+        {
+            enabled: !!user?.id,
+        }
     );
 
     const { data: activity, isLoading: activityLoading } = useQuery(
-        'user-activity',
-        () => usageService.getActivity({ limit: 20 }),
+        ['user-activity', user?.id, activeTab],
+        () => (userService as any).getActivity({ limit: 20 }),
         {
-            enabled: activeTab === 'activity',
+            enabled: !!user?.id && activeTab === 'activity',
         }
     );
 
     const updateProfileMutation = useMutation(
         (data: any) => userService.updateProfile(data),
         {
-            onSuccess: () => {
+            onSuccess: (data: User) => {
+                updateUser(data);
                 showNotification('Profile updated successfully', 'success');
             },
             onError: () => {
@@ -50,7 +49,7 @@ export const Profile: React.FC = () => {
         try {
             const formData = new FormData();
             formData.append('avatar', file);
-            await userService.updateProfile({ name: file.name });
+            await userService.updateProfile({ name: file.name } as any);
             showNotification('Avatar updated successfully', 'success');
         } catch (error) {
             showNotification('Failed to update avatar', 'error');
@@ -65,74 +64,47 @@ export const Profile: React.FC = () => {
         { id: 'preferences' as const, label: 'Preferences' },
     ];
 
-    // Mock stats data - in real app, this would come from the API
+    const profileData = (profile as any)?.data;
+    const usageData = profileData?.usage?.currentMonth;
+
     const mockStats = {
-        totalSpent: stats?.data?.totalSpent || 1250.50,
-        totalSaved: stats?.data?.totalSaved || 325.25,
-        apiCalls: stats?.data?.apiCalls || 15420,
-        optimizations: stats?.data?.optimizations || 142,
-        currentMonthSpent: stats?.data?.currentMonthSpent || 125.50,
-        currentMonthSaved: stats?.data?.currentMonthSaved || 45.75,
-        avgDailyCost: stats?.data?.avgDailyCost || 4.18,
-        mostUsedService: stats?.data?.mostUsedService || 'openai',
-        mostUsedModel: stats?.data?.mostUsedModel || 'gpt-4',
-        accountAge: stats?.data?.accountAge || 45,
+        totalSpent: usageData?.totalCost || 0,
+        totalSaved: usageData?.optimizationsSaved || 0,
+        apiCalls: usageData?.apiCalls || 0,
+        optimizations: 0,
+        currentMonthSpent: usageData?.totalCost || 0,
+        currentMonthSaved: usageData?.optimizationsSaved || 0,
+        avgDailyCost: 0,
+        mostUsedService: 'N/A',
+        mostUsedModel: 'N/A',
+        accountAge: 0,
     };
 
-    // Mock activity data
-    const mockActivity = activity?.data || [
-        {
-            id: '1',
-            type: 'usage' as const,
-            action: 'API Call',
-            description: 'Used GPT-4 for code generation',
-            timestamp: new Date().toISOString(),
-        },
-        {
-            id: '2',
-            type: 'optimization' as const,
-            action: 'Prompt Optimized',
-            description: 'Saved 45% on frequently used prompt',
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-        },
-        {
-            id: '3',
-            type: 'settings' as const,
-            action: 'Settings Updated',
-            description: 'Updated notification preferences',
-            timestamp: new Date(Date.now() - 7200000).toISOString(),
-        },
-    ];
+    const mockActivity = (activity as any)?.data || [];
 
-    // Mock preferences
-    const defaultPreferences = {
-        language: 'en',
+    const preferences = {
+        ...(profileData?.preferences),
+        language: 'English',
         timezone: 'UTC',
         dateFormat: 'MM/DD/YYYY',
         currency: 'USD',
-        theme: 'light' as 'light' | 'dark' | 'system',
-        emailDigest: 'weekly' as 'daily' | 'weekly' | 'monthly' | 'never',
+        theme: 'system',
+        emailDigest: 'weekly',
         autoOptimize: true,
         showCostInHeader: true,
         enableBetaFeatures: false,
     };
-    const preferences = {
-        ...defaultPreferences,
-        ...(profile?.preferences || {}),
-    };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Profile Header */}
+        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <ProfileHeader
-                user={profile || user!}
+                user={profileData || user!}
                 onAvatarChange={handleAvatarChange}
                 editable={true}
             />
 
-            {/* Tabs */}
             <div className="mt-8 border-b border-gray-200">
-                <nav className="-mb-px flex space-x-8">
+                <nav className="flex -mb-px space-x-8">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
@@ -148,15 +120,10 @@ export const Profile: React.FC = () => {
                 </nav>
             </div>
 
-            {/* Tab Content */}
             <div className="mt-8">
                 {activeTab === 'overview' && (
                     <div className="space-y-8">
-                        {statsLoading ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <ProfileStats stats={mockStats} />
-                        )}
+                        <ProfileStats stats={mockStats as any} />
                     </div>
                 )}
 

@@ -8,7 +8,6 @@ import {
     CircleStackIcon,
     LightBulbIcon,
     UserIcon,
-    SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '@/utils/helpers';
 
@@ -21,7 +20,6 @@ const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Usage', href: '/usage', icon: CircleStackIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-    { name: 'Tracker Analytics', href: '/tracker-analytics', icon: SparklesIcon },
     { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
     { name: 'Profile', href: '/profile', icon: UserIcon },
 ];

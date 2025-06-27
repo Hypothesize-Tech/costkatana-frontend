@@ -125,7 +125,8 @@ class AnalyticsService {
         includeCharts?: boolean;
         sections?: string[];
     }): Promise<Blob> {
-        const response = await api.post('/analytics/export', params, {
+        const response = await api.get('/analytics/export', {
+            params,
             responseType: 'blob',
         });
         return response.data;

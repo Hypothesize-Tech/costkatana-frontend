@@ -37,7 +37,7 @@ class UsageService {
         endDate?: string;
         groupBy?: 'day' | 'week' | 'month';
     }): Promise<{ success: boolean; data: UsageStats }> {
-        const response = await api.get('/usage/stats', { params });
+        const response = await api.get('/usage/stats', { params: params });
         return response.data;
     }
 

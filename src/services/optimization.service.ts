@@ -60,6 +60,17 @@ class OptimizationService {
         return response.data;
     }
 
+    async getPromptsForBulkOptimization(params: {
+        service?: string;
+        minCalls?: number;
+        timeframe?: string;
+    }): Promise<{
+        success: boolean; data: { prompt: string; count: number; promptId: string }[]
+    }> {
+        const response = await api.get('/optimizations/bulk-prompts', { params });
+        return response.data;
+    }
+
     async analyzeOptimizationOpportunities(params?: {
         minUsage?: number;
         lookbackDays?: number;
@@ -90,6 +101,7 @@ class OptimizationService {
         minCalls?: number;
         timeframe?: string;
         limit?: number;
+        promptIds?: string[];
     }): Promise<{
         success: boolean;
         data: {

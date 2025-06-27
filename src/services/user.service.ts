@@ -11,7 +11,7 @@ import api from '@/config/api';
 // src/services/user.service.ts
 export class UserService {
     static async getProfile(): Promise<User> {
-        const response = await api.get<User>('/users/profile');
+        const response = await api.get<User>('/user/profile');
         return response.data!;
     }
 
@@ -19,7 +19,7 @@ export class UserService {
         name?: string;
         preferences?: Partial<UserPreferences>;
     }): Promise<User> {
-        const response = await api.put<User>('/users/profile', data);
+        const response = await api.put<User>('/user/profile', data);
         return response.data!;
     }
 

@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // Contexts
 import { AuthProvider } from './contexts/AuthContext';
@@ -20,44 +22,69 @@ import { Analytics } from './pages/Analytics';
 import { Optimization } from './pages/Optimization';
 import { Settings } from './pages/Settings';
 import { NotFound } from './pages/NotFound';
-import { TrackerAnalytics } from './pages/TrackerAnalytics';
+import { Profile } from './pages/Profile';
+
+const queryClient = new QueryClient();
 
 function App() {
     return (
-        <AuthProvider>
-            <ThemeProvider>
-                <NotificationProvider>
-                    <ErrorBoundary>
-                        <Routes>
-                            {/* Public routes */}
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <ThemeProvider>
+                    <NotificationProvider>
+                        <ErrorBoundary>
+                            <Routes>
+                                {/* Public routes */}
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/register" element={<Register />} />
 
-                            {/* Protected routes */}
-                            <Route
-                                path="/"
-                                element={
-                                    <ProtectedRoute>
-                                        <Layout />
-                                    </ProtectedRoute>
-                                }
-                            >
-                                <Route index element={<Navigate to="/dashboard" replace />} />
-                                <Route path="dashboard" element={<Dashboard />} />
-                                <Route path="usage" element={<Usage />} />
-                                <Route path="analytics" element={<Analytics />} />
-                                <Route path="tracker-analytics" element={<TrackerAnalytics />} />
-                                <Route path="optimization" element={<Optimization />} />
-                                <Route path="settings" element={<Settings />} />
-                            </Route>
+                                {/* Protected routes */}
+                                <Route
+                                    path="/"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Layout />
+                                        </ProtectedRoute>
+                                    }
+                                >
+                                    <Route
+                                        index
+                                        element={
+                                            <Navigate
+                                                to="/dashboard"
+                                                replace
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="dashboard"
+                                        element={<Dashboard />}
+                                    />
+                                    <Route path="usage" element={<Usage />} />
+                                    <Route
+                                        path="analytics"
+                                        element={<Analytics />}
+                                    />
+                                    <Route
+                                        path="optimizations"
+                                        element={<Optimization />}
+                                    />
+                                    <Route
+                                        path="settings"
+                                        element={<Settings />}
+                                    />
+                                    <Route path="profile" element={<Profile />} />
+                                </Route>
 
-                            {/* 404 page */}
-                            <Route path="*" element={<NotFound />} />
-                        </Routes>
-                    </ErrorBoundary>
-                </NotificationProvider>
-            </ThemeProvider>
-        </AuthProvider>
+                                {/* 404 page */}
+                                <Route path="*" element={<NotFound />} />
+                            </Routes>
+                        </ErrorBoundary>
+                    </NotificationProvider>
+                </ThemeProvider>
+            </AuthProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
     );
 }
 

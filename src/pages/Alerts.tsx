@@ -1,115 +1,106 @@
 // src/pages/Alerts.tsx
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { BellIcon, CogIcon } from '@heroicons/react/24/outline';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+    BellIcon,
+    XMarkIcon,
+    CheckCircleIcon,
+    ExclamationTriangleIcon,
+    InformationCircleIcon,
+    CogIcon,
+} from '@heroicons/react/24/outline';
 import { alertService } from '../services/alert.service';
-import { AlertList } from '../components/alerts/AlertList';
-import { AlertFilter } from '../components/alerts/AlertFilter';
-import { AlertSummary } from '../components/alerts/AlertSummary';
+import { Alert } from '../types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { AlertFilter } from '../components/alerts/AlertFilter';
+import { AlertList } from '../components/alerts/AlertList';
+import { AlertSummary } from '../components/alerts/AlertSummary';
 import { Pagination } from '../components/common/Pagination';
-import { useNotifications } from '../contexts/NotificationContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 export const Alerts: React.FC = () => {
-    const [page, setPage] = useState(1);
-    const [filters, setFilters] = useState({
-        type: '',
-        severity: '',
-        read: '',
-    });
-    const { showNotification } = useNotifications();
     const queryClient = useQueryClient();
+    const { showNotification } = useNotification();
+    const [page, setPage] = useState(1);
+    const [filters, setFilters] = useState({ type: '', severity: '', read: 'all' });
 
-    const { data: alerts, isLoading } = useQuery(
-        ['alerts', page, filters],
-        () => alertService.getAlerts({
+    const {
+        data: alerts,
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ['alerts', page, filters],
+        queryFn: () => alertService.getAlerts({
             page,
-            limit: 10,
-            type: filters.type || undefined,
+            ...filters,
             severity: filters.severity as any || undefined,
-            read: filters.read === 'read' ? true : filters.read === 'unread' ? false : undefined,
+            read: filters.read === 'all' ? undefined : filters.read === 'unread' ? false : true
         }),
-        {
-            keepPreviousData: true,
-        }
-    );
+        keepPreviousData: true,
+    });
 
-    const { data: unreadCount } = useQuery(
-        'unread-alerts-count',
-        alertService.getUnreadCount,
-        {
-            refetchInterval: 30000, // Refresh every 30 seconds
-        }
-    );
+    const { data: unreadCount } = useQuery({
+        queryKey: ['unread-alerts-count'],
+        queryFn: () => alertService.getUnreadCount(),
+        refetchInterval: 60000, // Refetch every minute
+    });
 
-    const markAsReadMutation = useMutation(
-        (id: string) => alertService.markAsRead(id),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('alerts');
-                queryClient.invalidateQueries('unread-alerts-count');
-            },
-        }
-    );
+    const markAsReadMutation = useMutation({
+        mutationFn: alertService.markAsRead,
+        onSuccess: () => {
+            showNotification('Alert marked as read.', 'success');
+            queryClient.invalidateQueries({ queryKey: ['alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['unread-alerts-count'] });
+        },
+    });
 
-    const markAllAsReadMutation = useMutation(
-        () => alertService.markAllAsRead(),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('alerts');
-                queryClient.invalidateQueries('unread-alerts-count');
-                showNotification('All alerts marked as read', 'success');
-            },
-        }
-    );
+    const deleteMutation = useMutation({
+        mutationFn: alertService.deleteAlert,
+        onSuccess: () => {
+            showNotification('Alert deleted.', 'success');
+            queryClient.invalidateQueries({ queryKey: ['alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['unread-alerts-count'] });
+        },
+    });
 
-    const deleteMutation = useMutation(
-        (id: string) => alertService.deleteAlert(id),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('alerts');
-                queryClient.invalidateQueries('unread-alerts-count');
-                showNotification('Alert deleted', 'success');
-            },
-        }
-    );
+    const snoozeMutation = useMutation({
+        mutationFn: ({ id, until }: { id: string; until: string }) => alertService.snoozeAlert(id, until),
+        onSuccess: () => {
+            showNotification('Alert snoozed.', 'success');
+            queryClient.invalidateQueries({ queryKey: ['alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['unread-alerts-count'] });
+        },
+    });
 
-    const snoozeMutation = useMutation(
-        ({ id, until }: { id: string; until: string }) =>
-            alertService.snoozeAlert(id, until),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('alerts');
-                showNotification('Alert snoozed', 'success');
-            },
-        }
-    );
+    const markAllAsReadMutation = useMutation({
+        mutationFn: alertService.markAllAsRead,
+        onSuccess: () => {
+            showNotification('All alerts marked as read.', 'success');
+            queryClient.invalidateQueries({ queryKey: ['alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['unread-alerts-count'] });
+        },
+    });
 
     const handleFilterChange = (key: string, value: string) => {
-        setFilters({ ...filters, [key]: value });
+        setFilters((prev) => ({ ...prev, [key]: value }));
         setPage(1);
     };
 
     const handleResetFilters = () => {
-        setFilters({ type: '', severity: '', read: '' });
+        setFilters({ type: '', severity: '', read: 'all' });
         setPage(1);
     };
 
     const handleMarkAsRead = (id: string) => {
         markAsReadMutation.mutate(id);
     };
-
     const handleDelete = (id: string) => {
-        if (window.confirm('Are you sure you want to delete this alert?')) {
-            deleteMutation.mutate(id);
-        }
+        deleteMutation.mutate(id);
     };
 
     const handleSnooze = (id: string, until: string) => {
         snoozeMutation.mutate({ id, until });
     };
-
-    if (isLoading) return <LoadingSpinner />;
 
     const summary = {
         total: alerts?.pagination.total || 0,
@@ -118,79 +109,66 @@ export const Alerts: React.FC = () => {
         high: unreadCount?.data.high || 0,
         medium: unreadCount?.data.medium || 0,
         low: unreadCount?.data.low || 0,
-        byType: alerts?.data.reduce((acc, alert) => {
+        byType: alerts?.data.reduce((acc: Record<string, number>, alert: Alert) => {
             acc[alert.type] = (acc[alert.type] || 0) + 1;
             return acc;
-        }, {} as Record<string, number>) || {},
+        }, {}) || {},
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Header */}
-            <div className="mb-8">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                        <BellIcon className="h-8 w-8 text-gray-400 mr-3" />
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Alerts</h1>
-                            <p className="mt-1 text-gray-600">
-                                Stay informed about important events and optimizations
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                        {unreadCount && unreadCount.data.count > 0 && (
-                            <button
-                                onClick={() => markAllAsReadMutation.mutate()}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                            >
-                                Mark all as read
-                            </button>
-                        )}
-                        <button
-                            onClick={() => window.location.href = '/settings?tab=notifications'}
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                        >
-                            <CogIcon className="h-4 w-4 mr-2" />
-                            Settings
-                        </button>
-                    </div>
+        <div className="p-4 sm:p-6 lg:p-8">
+            <div className="sm:flex sm:items-center">
+                <div className="sm:flex-auto">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alerts</h1>
+                    <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                        Manage and review system alerts and notifications.
+                    </p>
+                </div>
+                <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <button
+                        type="button"
+                        onClick={() => markAllAsReadMutation.mutate()}
+                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Mark all as read
+                    </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column - Summary and Filters */}
-                <div className="lg:col-span-1 space-y-6">
-                    <AlertSummary summary={summary} />
-                    <AlertFilter
-                        filters={filters}
-                        onFilterChange={handleFilterChange}
-                        onReset={handleResetFilters}
-                    />
-                </div>
+            <AlertSummary summary={summary} />
 
-                {/* Right Column - Alert List */}
-                <div className="lg:col-span-2">
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="mt-8 card">
+                <AlertFilter
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    onReset={handleResetFilters}
+                />
+
+                {isLoading ? (
+                    <div className="flex justify-center p-8">
+                        <LoadingSpinner />
+                    </div>
+                ) : isError || !alerts ? (
+                    <div className="p-8 text-center text-red-500">
+                        Failed to load alerts. Please try again.
+                    </div>
+                ) : alerts.data.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">No alerts found.</div>
+                ) : (
+                    <>
                         <AlertList
-                            alerts={alerts?.data || []}
-                            loading={isLoading}
+                            alerts={alerts.data}
                             onMarkAsRead={handleMarkAsRead}
                             onDelete={handleDelete}
                             onSnooze={handleSnooze}
                         />
-
-                        {alerts && alerts.pagination.pages > 1 && (
-                            <div className="mt-6">
-                                <Pagination
-                                    currentPage={page}
-                                    totalPages={alerts.pagination.pages}
-                                    onPageChange={setPage}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </div>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={alerts.pagination.pages}
+                            onPageChange={setPage}
+                        />
+                    </>
+                )}
             </div>
         </div>
     );

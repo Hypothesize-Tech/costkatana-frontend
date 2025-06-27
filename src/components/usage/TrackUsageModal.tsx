@@ -1,38 +1,12 @@
-// src/components/usage/TrackUsageModal.tsx
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { useNotifications } from '@/contexts/NotificationContext';
-// import { calculateCost } from '@/utils/cost-calculator';
+import { calculateCost } from '@/utils/cost';
+import { AxiosError } from 'axios';
 
-// This is a placeholder for the cost calculation logic.
-// In production, import the real calculateCost from '@/utils/cost-calculator' and remove this stub.
-interface CostCalculationResult {
-    inputTokens: number;
-    outputTokens: number;
-    totalTokens: number;
-    totalCost: number;
-}
-
-export const calculateCost = (
-    service: string,
-    model: string,
-    input: string,  
-    output: string
-): CostCalculationResult => {
-    console.log(service, model, input, output);
-    // TODO: Replace with actual cost calculation logic.
-    // This stub returns zeroed values for now.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return {
-        inputTokens: 0,
-        outputTokens: 0,
-        totalTokens: 0,
-        totalCost: 0,
-    };
-};
 interface TrackUsageModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -81,159 +55,129 @@ const MODELS: Record<string, Array<{ value: string; label: string }>> = {
     ],
 };
 
+const initialFormData = {
+    provider: 'openai',
+    model: 'gpt-3.5-turbo',
+    prompt: '',
+    response: '',
+    promptTokens: 0,
+    completionTokens: 0,
+    totalTokens: 0,
+    estimatedCost: 0,
+    responseTime: 0,
+    metadata: {
+        project: '',
+        tags: '',
+    },
+};
+
 export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
     isOpen,
     onClose,
 }) => {
-    const [formData, setFormData] = useState({
-        service: 'openai',
-        model: 'gpt-4',
-        prompt: '',
-        response: '',
-        promptTokens: 0,
-        completionTokens: 0,
-        totalTokens: 0,
-        cost: 0,
-        responseTime: 0,
-        metadata: {
-            project: '',
-            tags: '',
+    const queryClient = useQueryClient();
+    const { showNotification } = useNotifications();
+    const [formData, setFormData] = useState(initialFormData);
+    const [autoCalculate, setAutoCalculate] = useState(true);
+
+    const trackUsageMutation = useMutation({
+        mutationFn: usageService.trackUsage,
+        onSuccess: () => {
+            showNotification('Usage tracked successfully', 'success');
+            queryClient.invalidateQueries({ queryKey: ['usage'] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+            onClose();
+        },
+        onError: (error: AxiosError<{ message: string }>) => {
+            showNotification(
+                error.response?.data?.message || 'Failed to track usage',
+                'error'
+            );
         },
     });
 
-    const [autoCalculate, setAutoCalculate] = useState(true);
-    const { showNotification } = useNotifications();
-    const queryClient = useQueryClient();
+    const handleChange = (field: string, value: string | number) => {
+        let newFormData = { ...formData, [field]: value };
 
-    const trackMutation = useMutation(
-        (data: typeof formData) => usageService.trackUsage(data),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('usage');
-                queryClient.invalidateQueries('dashboard');
-                showNotification('Usage tracked successfully!', 'success');
-                onClose();
-                resetForm();
-            },
-            onError: (error: any) => {
-                showNotification(
-                    error.response?.data?.message || 'Failed to track usage',
-                    'error'
-                );
-            },
-        }
-    );
-
-    const resetForm = () => {
-        setFormData({
-            service: 'openai',
-            model: 'gpt-4',
-            prompt: '',
-            response: '',
-            promptTokens: 0,
-            completionTokens: 0,
-            totalTokens: 0,
-            cost: 0,
-            responseTime: 0,
-            metadata: {
-                project: '',
-                tags: '',
-            },
-        });
-    };
-
-    const handleChange = (field: string, value: any) => {
-        if (field === 'service') {
-            // Reset model when service changes
-            const newService = value;
-            const firstModel = MODELS[newService]?.[0]?.value || '';
-            setFormData({
-                ...formData,
-                service: newService,
-                model: firstModel,
-            });
-        } else {
-            setFormData({ ...formData, [field]: value });
+        if (field === 'provider') {
+            const newProvider = value;
+            const firstModel = MODELS[newProvider]?.[0]?.value || '';
+            newFormData = { ...newFormData, model: firstModel };
         }
 
-        // Auto-calculate tokens and cost if enabled
-        if (autoCalculate && (field === 'prompt' || field === 'response')) {
-            const updatedData = { ...formData, [field]: value };
-            if (updatedData.prompt || updatedData.response) {
+        if (autoCalculate && (field === 'prompt' || field === 'response' || field === 'provider' || field === 'model')) {
+            const { provider, model, prompt, response } = newFormData;
+            if (prompt || response) {
                 try {
-                    const usage = calculateCost(updatedData.service, updatedData.model, updatedData.prompt, updatedData.response);
-
-                    setFormData({
-                        ...updatedData,
+                    const usage = calculateCost(provider, model, prompt, response);
+                    newFormData = {
+                        ...newFormData,
                         promptTokens: usage.inputTokens,
                         completionTokens: usage.outputTokens,
                         totalTokens: usage.totalTokens,
-                        cost: usage.totalCost,
-                    });
+                        estimatedCost: usage.totalCost,
+                    };
                 } catch (error) {
                     console.error('Failed to calculate cost:', error);
                 }
             }
         }
+        setFormData(newFormData);
     };
 
     const handleMetadataChange = (field: string, value: string) => {
-        setFormData({
-            ...formData,
-            metadata: {
-                ...formData.metadata,
-                [field]: value,
-            },
-        });
+        setFormData((prev) => ({
+            ...prev,
+            metadata: { ...prev.metadata, [field]: value },
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!formData.prompt) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { response, ...dataToSubmit } = formData;
+        if (!dataToSubmit.prompt) {
             showNotification('Please enter a prompt', 'error');
             return;
         }
-
-        if (formData.totalTokens === 0) {
+        if (dataToSubmit.totalTokens === 0) {
             showNotification('Please enter token counts or enable auto-calculation', 'error');
             return;
         }
-
-        trackMutation.mutate(formData);
+        trackUsageMutation.mutate(dataToSubmit);
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="overflow-y-auto fixed inset-0 z-50">
+            <div className="flex justify-center items-center p-4 min-h-screen">
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75" onClick={onClose} />
 
                 <div className="relative bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-                    <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-                        <div className="flex items-center justify-between">
+                    <div className="sticky top-0 px-6 py-4 bg-white border-b border-gray-200">
+                        <div className="flex justify-between items-center">
                             <h2 className="text-xl font-semibold text-gray-900">Track API Usage</h2>
                             <button
                                 onClick={onClose}
                                 className="text-gray-400 hover:text-gray-600"
                             >
-                                <XMarkIcon className="h-6 w-6" />
+                                <XMarkIcon className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="p-6 space-y-6">
                         {/* Service and Model Selection */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     AI Service
                                 </label>
                                 <select
-                                    value={formData.service}
-                                    onChange={(e) => handleChange('service', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    value={formData.provider}
+                                    onChange={(e) => handleChange('provider', e.target.value)}
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     required
                                 >
                                     {AI_SERVICES.map((service) => (
@@ -251,10 +195,10 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 <select
                                     value={formData.model}
                                     onChange={(e) => handleChange('model', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     required
                                 >
-                                    {MODELS[formData.service]?.map((model) => (
+                                    {MODELS[formData.provider]?.map((model) => (
                                         <option key={model.value} value={model.value}>
                                             {model.label}
                                         </option>
@@ -272,7 +216,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 value={formData.prompt}
                                 onChange={(e) => handleChange('prompt', e.target.value)}
                                 rows={3}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Enter the prompt you sent to the AI..."
                                 required
                             />
@@ -286,7 +230,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 value={formData.response}
                                 onChange={(e) => handleChange('response', e.target.value)}
                                 rows={3}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Enter the AI's response..."
                             />
                         </div>
@@ -298,7 +242,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 id="autoCalculate"
                                 checked={autoCalculate}
                                 onChange={(e) => setAutoCalculate(e.target.checked)}
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                             />
                             <label htmlFor="autoCalculate" className="ml-2 text-sm text-gray-700">
                                 Auto-calculate tokens and cost
@@ -306,7 +250,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                         </div>
 
                         {/* Token Counts */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     Prompt Tokens
@@ -314,8 +258,10 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 <input
                                     type="number"
                                     value={formData.promptTokens}
-                                    onChange={(e) => handleChange('promptTokens', parseInt(e.target.value))}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    onChange={(e) =>
+                                        handleChange('promptTokens', parseInt(e.target.value) || 0)
+                                    }
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     disabled={autoCalculate}
                                     required
                                 />
@@ -328,8 +274,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 <input
                                     type="number"
                                     value={formData.completionTokens}
-                                    onChange={(e) => handleChange('completionTokens', parseInt(e.target.value))}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    onChange={(e) =>
+                                        handleChange(
+                                            'completionTokens',
+                                            parseInt(e.target.value) || 0
+                                        )
+                                    }
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     disabled={autoCalculate}
                                     required
                                 />
@@ -342,7 +293,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 <input
                                     type="number"
                                     value={formData.totalTokens}
-                                    className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm"
+                                    className="block mt-1 w-full bg-gray-50 rounded-md border-gray-300 shadow-sm sm:text-sm"
                                     disabled
                                 />
                             </div>
@@ -353,10 +304,15 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 </label>
                                 <input
                                     type="number"
-                                    value={formData.cost}
-                                    onChange={(e) => handleChange('cost', parseFloat(e.target.value))}
+                                    value={formData.estimatedCost}
+                                    onChange={(e) =>
+                                        handleChange(
+                                            'estimatedCost',
+                                            parseFloat(e.target.value) || 0
+                                        )
+                                    }
                                     step="0.0001"
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     disabled={autoCalculate}
                                     required
                                 />
@@ -371,14 +327,16 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                             <input
                                 type="number"
                                 value={formData.responseTime}
-                                onChange={(e) => handleChange('responseTime', parseInt(e.target.value))}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                onChange={(e) =>
+                                    handleChange('responseTime', parseInt(e.target.value) || 0)
+                                }
+                                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 placeholder="Optional: Time taken for the API call"
                             />
                         </div>
 
                         {/* Metadata */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     Project (Optional)
@@ -387,7 +345,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                     type="text"
                                     value={formData.metadata.project}
                                     onChange={(e) => handleMetadataChange('project', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     placeholder="e.g., Customer Support Bot"
                                 />
                             </div>
@@ -400,27 +358,27 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                     type="text"
                                     value={formData.metadata.tags}
                                     onChange={(e) => handleMetadataChange('tags', e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     placeholder="e.g., support, production"
                                 />
                             </div>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <div className="flex justify-end pt-4 space-x-3 border-t border-gray-200">
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                disabled={trackMutation.isLoading}
-                                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={trackUsageMutation.isLoading}
+                                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {trackMutation.isLoading ? (
+                                {trackUsageMutation.isLoading ? (
                                     <>
                                         <LoadingSpinner size="small" className="mr-2" />
                                         Tracking...
