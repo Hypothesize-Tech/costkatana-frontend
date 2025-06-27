@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, XMarkIcon, ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Usage } from '@/types';
 import { Pagination } from '@/components/common/Pagination';
@@ -22,7 +22,18 @@ interface UsageListProps {
 
 export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageListProps) => {
     const [selectedUsage, setSelectedUsage] = useState<Usage | null>(null);
+    const [copiedPrompt, setCopiedPrompt] = useState(false);
     console.log("selectedUsage", selectedUsage)
+
+    const copyPromptToClipboard = async (prompt: string) => {
+        try {
+            await navigator.clipboard.writeText(prompt);
+            setCopiedPrompt(true);
+            setTimeout(() => setCopiedPrompt(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy prompt:', err);
+        }
+    };
 
     if (usage.length === 0) {
         return (
@@ -219,9 +230,28 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
                                 {/* Prompt */}
                                 <div>
-                                    <h5 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Prompt
-                                    </h5>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h5 className="text-sm font-medium text-gray-900 dark:text-white">
+                                            Prompt
+                                        </h5>
+                                        <button
+                                            onClick={() => copyPromptToClipboard(selectedUsage.prompt)}
+                                            className="flex items-center space-x-1 px-2 py-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                                            title="Copy prompt to clipboard"
+                                        >
+                                            {copiedPrompt ? (
+                                                <>
+                                                    <CheckIcon className="w-4 h-4 text-green-500" />
+                                                    <span className="text-green-500">Copied!</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ClipboardIcon className="w-4 h-4" />
+                                                    <span>Copy</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
                                     <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
                                         <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
                                             {selectedUsage.prompt}
