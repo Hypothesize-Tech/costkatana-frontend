@@ -15,18 +15,19 @@ export class UserService {
         return response.data!;
     }
 
-    static async updateProfile(data: {
+    static async updateProfile(updateData: {
         name?: string;
         preferences?: Partial<UserPreferences>;
+        avatar?: string;
     }): Promise<User> {
-        const response = await api.put<User>('/user/profile', data);
-        return response.data!;
+        const { data } = await api.put('/user/profile', updateData);
+        return data.data;
     }
 
     // API Key Management
     static async getApiKeys(): Promise<ApiKey[]> {
-        const response = await api.get<ApiKey[]>('/users/api-keys');
-        return response.data!;
+        const { data } = await api.get('/user/api-keys');
+        return data.data;
     }
 
     static async addApiKey(service: string, key: string): Promise<ApiKey> {
@@ -104,6 +105,11 @@ export class UserService {
     static formatApiKey(key: string): string {
         if (key.includes('...')) return key; // Already masked
         return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
+    }
+
+    static async getAvatarUploadUrl(fileName: string, fileType: string): Promise<{ uploadUrl: string; key: string; finalUrl: string }> {
+        const { data } = await api.post('/user/profile/avatar-upload-url', { fileName, fileType });
+        return data.data;
     }
 }
 

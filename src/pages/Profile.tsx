@@ -1,8 +1,9 @@
 // src/pages/Profile.tsx
 import React, { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/user.service';
+import { usageService } from '../services/usage.service';
 import { ProfileHeader } from '../components/profile/ProfileHeader';
 import { ProfileStats } from '../components/profile/ProfileStats';
 import { ProfileActivity } from '../components/profile/ProfileActivity';
@@ -14,6 +15,7 @@ import { User } from '../types';
 export const Profile: React.FC = () => {
     const { user, updateUser } = useAuth();
     const { showNotification } = useNotifications();
+    const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'preferences'>('overview');
 
     const { data: profile, isLoading: profileLoading } = useQuery(
@@ -26,7 +28,7 @@ export const Profile: React.FC = () => {
 
     const { data: activity, isLoading: activityLoading } = useQuery(
         ['user-activity', user?.id, activeTab],
-        () => (userService as any).getActivity({ limit: 20 }),
+        () => usageService.getActivity({ limit: 20 }),
         {
             enabled: !!user?.id && activeTab === 'activity',
         }
@@ -37,6 +39,15 @@ export const Profile: React.FC = () => {
         {
             onSuccess: (data: User) => {
                 updateUser(data);
+                queryClient.setQueryData(['user-profile', user?.id], (oldData: any) => {
+                    return {
+                        ...oldData,
+                        data: {
+                            ...oldData.data,
+                            ...data
+                        }
+                    }
+                });
                 showNotification('Profile updated successfully', 'success');
             },
             onError: () => {
@@ -47,10 +58,20 @@ export const Profile: React.FC = () => {
 
     const handleAvatarChange = async (file: File) => {
         try {
-            const formData = new FormData();
-            formData.append('avatar', file);
-            await userService.updateProfile({ name: file.name } as any);
-            showNotification('Avatar updated successfully', 'success');
+            // 1. Get pre-signed URL from backend
+            const { uploadUrl, finalUrl } = await userService.getAvatarUploadUrl(file.name, file.type);
+
+            // 2. Upload file to S3
+            await fetch(uploadUrl, {
+                method: 'PUT',
+                body: file,
+                headers: {
+                    'Content-Type': file.type,
+                },
+            });
+
+            // 3. Update profile with new avatar URL
+            updateProfileMutation.mutate({ avatar: finalUrl });
         } catch (error) {
             showNotification('Failed to update avatar', 'error');
         }
