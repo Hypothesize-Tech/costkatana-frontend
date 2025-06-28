@@ -12,11 +12,11 @@ interface ServiceBreakdownProps {
 export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
     if (loading) {
         return (
-            <div className="card p-6">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <div className="p-6 card">
+                <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
                     Service Breakdown
                 </h3>
-                <div className="skeleton h-64" />
+                <div className="h-64 skeleton" />
             </div>
         );
     }
@@ -29,9 +29,10 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
 
     const options = getDoughnutChartOptions({
         plugins: {
-            ...getDoughnutChartOptions().plugins,
+            legend: {
+                display: false,
+            },
             tooltip: {
-                ...getDoughnutChartOptions().plugins?.tooltip,
                 callbacks: {
                     label: (context: any) => {
                         const label = context.label || '';
@@ -47,13 +48,13 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
     const totalCost = data.reduce((sum, d) => sum + d.totalCost, 0);
 
     return (
-        <div className="card p-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+        <div className="p-6 card">
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
                 Service Breakdown
             </h3>
-            <div className="h-64 relative">
+            <div className="relative h-64">
                 <Doughnut data={chartData} options={options} />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="flex absolute inset-0 justify-center items-center pointer-events-none">
                     <div className="text-center">
                         <p className="text-2xl font-bold text-gray-900 dark:text-white">
                             {formatCurrency(totalCost)}
@@ -64,8 +65,8 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
             </div>
             <div className="mt-4 space-y-2">
                 {data.map((service) => (
-                    <div key={service.service} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                    <div key={service.service} className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center">
                             <div
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: AI_SERVICES[service.service as keyof typeof AI_SERVICES]?.color || '#999' }}

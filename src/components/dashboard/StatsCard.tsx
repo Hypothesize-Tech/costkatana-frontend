@@ -48,23 +48,23 @@ export const StatsCard = ({
                         {loading ? (
                             <div className="w-24 h-8 skeleton" />
                         ) : (
-                            <div className="flex flex-col gap-1">
+                            <div className="flex gap-2 items-baseline">
                                 <span className="text-2xl font-semibold text-gray-900 dark:text-white">
                                     {formatValue()}
                                 </span>
                                 {change && change.trend !== 'stable' && (
                                     <span
                                         className={cn(
-                                            'inline-flex items-center text-sm font-semibold',
+                                            'inline-flex items-baseline text-sm font-semibold',
                                             isPositive && format === 'currency' ? 'text-danger-600' : 'text-success-600',
                                             isNegative && format === 'currency' ? 'text-success-600' : 'text-danger-600',
                                             !format || format === 'number' ? (isPositive ? 'text-success-600' : 'text-danger-600') : ''
                                         )}
                                     >
                                         {isPositive ? (
-                                            <ArrowUpIcon className="flex-shrink-0 mr-1 w-4 h-4" />
+                                            <ArrowUpIcon className="flex-shrink-0 self-center w-4 h-4" />
                                         ) : (
-                                            <ArrowDownIcon className="flex-shrink-0 mr-1 w-4 h-4" />
+                                            <ArrowDownIcon className="flex-shrink-0 self-center w-4 h-4" />
                                         )}
                                         <span className="sr-only">
                                             {isPositive ? 'Increased' : 'Decreased'} by
