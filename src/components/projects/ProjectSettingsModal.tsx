@@ -1,0 +1,651 @@
+import React, { useState, useEffect } from 'react';
+import {
+    FiSettings,
+    FiDollarSign,
+    FiShield,
+    FiUsers,
+    FiAlertTriangle,
+    FiSave,
+    FiX,
+    FiInfo,
+    FiToggleLeft,
+    FiToggleRight,
+    FiPlus,
+    FiTrash2
+} from 'react-icons/fi';
+import { Modal } from '../common/Modal';
+import { Project } from '../../types/project.types';
+
+interface ProjectSettingsModalProps {
+    project: Project;
+    onClose: () => void;
+    onSave: (settings: ProjectSettings) => void;
+}
+
+interface ProjectSettings {
+    budget: {
+        amount: number;
+        period: 'monthly' | 'quarterly' | 'yearly' | 'one-time';
+        currency: string;
+        alerts: Array<{
+            threshold: number;
+            type: 'email' | 'in-app' | 'both';
+            recipients: string[];
+        }>;
+    };
+    security: {
+        requireApprovalAbove: number;
+        allowedModels: string[];
+        maxTokensPerRequest: number;
+        restrictedUsers: string[];
+    };
+    features: {
+        enablePromptLibrary: boolean;
+        enableCostAllocation: boolean;
+        enableAutoOptimization: boolean;
+        enableAuditLog: boolean;
+    };
+    notifications: {
+        budgetAlerts: boolean;
+        usageReports: boolean;
+        memberActivity: boolean;
+        optimizationSuggestions: boolean;
+    };
+    advanced: {
+        dataRetentionDays: number;
+        exportFormat: 'csv' | 'json' | 'excel';
+        timezone: string;
+        customFields: Array<{
+            name: string;
+            type: 'text' | 'number' | 'boolean';
+            required: boolean;
+        }>;
+    };
+}
+
+export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
+    project,
+    onClose,
+    onSave
+}) => {
+    const [activeTab, setActiveTab] = useState<'budget' | 'security' | 'features' | 'notifications' | 'advanced'>('budget');
+    const [settings, setSettings] = useState<ProjectSettings>({
+        budget: {
+            amount: project.budget?.amount || 1000,
+            period: project.budget?.period || 'monthly',
+            currency: project.budget?.currency || 'USD',
+            alerts: project.budget?.alerts || [
+                { threshold: 50, type: 'in-app', recipients: [] },
+                { threshold: 80, type: 'both', recipients: [] },
+                { threshold: 90, type: 'both', recipients: [] }
+            ]
+        },
+        security: {
+            requireApprovalAbove: project.settings?.requireApprovalAbove || 100,
+            allowedModels: project.settings?.allowedModels || ['gpt-3.5-turbo', 'gpt-4'],
+            maxTokensPerRequest: project.settings?.maxTokensPerRequest || 4000,
+            restrictedUsers: []
+        },
+        features: {
+            enablePromptLibrary: project.settings?.enablePromptLibrary !== false,
+            enableCostAllocation: project.settings?.enableCostAllocation !== false,
+            enableAutoOptimization: false,
+            enableAuditLog: true
+        },
+        notifications: {
+            budgetAlerts: true,
+            usageReports: true,
+            memberActivity: false,
+            optimizationSuggestions: true
+        },
+        advanced: {
+            dataRetentionDays: 90,
+            exportFormat: 'csv',
+            timezone: 'UTC',
+            customFields: []
+        }
+    });
+
+    const [hasChanges, setHasChanges] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const availableModels = [
+        'gpt-3.5-turbo',
+        'gpt-4',
+        'gpt-4-turbo',
+        'claude-3-haiku',
+        'claude-3-sonnet',
+        'claude-3-opus',
+        'gemini-pro',
+        'llama-2-70b'
+    ];
+
+    const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD'];
+    const timezones = ['UTC', 'America/New_York', 'America/Los_Angeles', 'Europe/London', 'Asia/Tokyo'];
+
+    useEffect(() => {
+        // Check if settings have changed from original
+        setHasChanges(true); // Simplified for demo
+    }, [settings]);
+
+    const handleInputChange = (path: string[], value: any) => {
+        setSettings(prev => {
+            const newSettings = { ...prev };
+            let current: any = newSettings;
+
+            for (let i = 0; i < path.length - 1; i++) {
+                current = current[path[i]];
+            }
+
+            current[path[path.length - 1]] = value;
+            return newSettings;
+        });
+    };
+
+    const handleArrayChange = (path: string[], index: number, field: string, value: any) => {
+        setSettings(prev => {
+            const newSettings = { ...prev };
+            let current: any = newSettings;
+
+            for (const segment of path) {
+                current = current[segment];
+            }
+
+            current[index][field] = value;
+            return newSettings;
+        });
+    };
+
+    const addAlert = () => {
+        setSettings(prev => ({
+            ...prev,
+            budget: {
+                ...prev.budget,
+                alerts: [
+                    ...prev.budget.alerts,
+                    { threshold: 95, type: 'both', recipients: [] }
+                ]
+            }
+        }));
+    };
+
+    const removeAlert = (index: number) => {
+        setSettings(prev => ({
+            ...prev,
+            budget: {
+                ...prev.budget,
+                alerts: prev.budget.alerts.filter((_, i) => i !== index)
+            }
+        }));
+    };
+
+    const addCustomField = () => {
+        setSettings(prev => ({
+            ...prev,
+            advanced: {
+                ...prev.advanced,
+                customFields: [
+                    ...prev.advanced.customFields,
+                    { name: '', type: 'text', required: false }
+                ]
+            }
+        }));
+    };
+
+    const removeCustomField = (index: number) => {
+        setSettings(prev => ({
+            ...prev,
+            advanced: {
+                ...prev.advanced,
+                customFields: prev.advanced.customFields.filter((_, i) => i !== index)
+            }
+        }));
+    };
+
+    const handleSave = async () => {
+        setLoading(true);
+        try {
+            await onSave(settings);
+            onClose();
+        } catch (error) {
+            console.error('Failed to save settings:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const tabs = [
+        { id: 'budget', label: 'Budget & Alerts', icon: FiDollarSign },
+        { id: 'security', label: 'Security', icon: FiShield },
+        { id: 'features', label: 'Features', icon: FiSettings },
+        { id: 'notifications', label: 'Notifications', icon: FiAlertTriangle },
+        { id: 'advanced', label: 'Advanced', icon: FiUsers }
+    ];
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'budget':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Budget Amount
+                                </label>
+                                <input
+                                    type="number"
+                                    value={settings.budget.amount}
+                                    onChange={(e) => handleInputChange(['budget', 'amount'], Number(e.target.value))}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Currency
+                                </label>
+                                <select
+                                    value={settings.budget.currency}
+                                    onChange={(e) => handleInputChange(['budget', 'currency'], e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                                    {currencies.map(currency => (
+                                        <option key={currency} value={currency}>{currency}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Budget Period
+                            </label>
+                            <select
+                                value={settings.budget.period}
+                                onChange={(e) => handleInputChange(['budget', 'period'], e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                                <option value="one-time">One-time</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                                    Budget Alerts
+                                </h3>
+                                <button
+                                    onClick={addAlert}
+                                    className="flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg dark:hover:bg-blue-900/20"
+                                >
+                                    <FiPlus className="w-4 h-4" />
+                                    Add Alert
+                                </button>
+                            </div>
+                            <div className="space-y-3">
+                                {settings.budget.alerts.map((alert, index) => (
+                                    <div key={index} className="p-4 border border-gray-200 rounded-lg dark:border-gray-600">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Threshold (%)
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    value={alert.threshold}
+                                                    onChange={(e) => handleArrayChange(['budget', 'alerts'], index, 'threshold', Number(e.target.value))}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Alert Type
+                                                </label>
+                                                <select
+                                                    value={alert.type}
+                                                    onChange={(e) => handleArrayChange(['budget', 'alerts'], index, 'type', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                >
+                                                    <option value="in-app">In-App Only</option>
+                                                    <option value="email">Email Only</option>
+                                                    <option value="both">Both</option>
+                                                </select>
+                                            </div>
+                                            <div className="flex items-end">
+                                                <button
+                                                    onClick={() => removeAlert(index)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/20"
+                                                >
+                                                    <FiTrash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            case 'security':
+                return (
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Require Approval Above ($)
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.security.requireApprovalAbove}
+                                onChange={(e) => handleInputChange(['security', 'requireApprovalAbove'], Number(e.target.value))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            />
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                API calls exceeding this amount will require approval
+                            </p>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Max Tokens Per Request
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.security.maxTokensPerRequest}
+                                onChange={(e) => handleInputChange(['security', 'maxTokensPerRequest'], Number(e.target.value))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Allowed Models
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                                {availableModels.map(model => (
+                                    <label key={model} className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={settings.security.allowedModels.includes(model)}
+                                            onChange={(e) => {
+                                                const newModels = e.target.checked
+                                                    ? [...settings.security.allowedModels, model]
+                                                    : settings.security.allowedModels.filter(m => m !== model);
+                                                handleInputChange(['security', 'allowedModels'], newModels);
+                                            }}
+                                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">{model}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            case 'features':
+                return (
+                    <div className="space-y-6">
+                        {Object.entries(settings.features).map(([key, value]) => (
+                            <div key={key} className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                                    </h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {getFeatureDescription(key)}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => handleInputChange(['features', key], !value)}
+                                    className={`p-1 rounded-full transition-colors ${value ? 'text-blue-600' : 'text-gray-400'
+                                        }`}
+                                >
+                                    {value ? <FiToggleRight className="w-6 h-6" /> : <FiToggleLeft className="w-6 h-6" />}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                );
+
+            case 'notifications':
+                return (
+                    <div className="space-y-6">
+                        {Object.entries(settings.notifications).map(([key, value]) => (
+                            <div key={key} className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                                    </h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {getNotificationDescription(key)}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => handleInputChange(['notifications', key], !value)}
+                                    className={`p-1 rounded-full transition-colors ${value ? 'text-blue-600' : 'text-gray-400'
+                                        }`}
+                                >
+                                    {value ? <FiToggleRight className="w-6 h-6" /> : <FiToggleLeft className="w-6 h-6" />}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                );
+
+            case 'advanced':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Data Retention (Days)
+                                </label>
+                                <input
+                                    type="number"
+                                    value={settings.advanced.dataRetentionDays}
+                                    onChange={(e) => handleInputChange(['advanced', 'dataRetentionDays'], Number(e.target.value))}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Default Export Format
+                                </label>
+                                <select
+                                    value={settings.advanced.exportFormat}
+                                    onChange={(e) => handleInputChange(['advanced', 'exportFormat'], e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                >
+                                    <option value="csv">CSV</option>
+                                    <option value="json">JSON</option>
+                                    <option value="excel">Excel</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Timezone
+                            </label>
+                            <select
+                                value={settings.advanced.timezone}
+                                onChange={(e) => handleInputChange(['advanced', 'timezone'], e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                                {timezones.map(tz => (
+                                    <option key={tz} value={tz}>{tz}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                                    Custom Fields
+                                </h3>
+                                <button
+                                    onClick={addCustomField}
+                                    className="flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg dark:hover:bg-blue-900/20"
+                                >
+                                    <FiPlus className="w-4 h-4" />
+                                    Add Field
+                                </button>
+                            </div>
+                            <div className="space-y-3">
+                                {settings.advanced.customFields.map((field, index) => (
+                                    <div key={index} className="p-4 border border-gray-200 rounded-lg dark:border-gray-600">
+                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Field Name
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={field.name}
+                                                    onChange={(e) => handleArrayChange(['advanced', 'customFields'], index, 'name', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                    Type
+                                                </label>
+                                                <select
+                                                    value={field.type}
+                                                    onChange={(e) => handleArrayChange(['advanced', 'customFields'], index, 'type', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                >
+                                                    <option value="text">Text</option>
+                                                    <option value="number">Number</option>
+                                                    <option value="boolean">Boolean</option>
+                                                </select>
+                                            </div>
+                                            <div className="flex items-center">
+                                                <label className="flex items-center gap-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={field.required}
+                                                        onChange={(e) => handleArrayChange(['advanced', 'customFields'], index, 'required', e.target.checked)}
+                                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                    />
+                                                    <span className="text-sm text-gray-700 dark:text-gray-300">Required</span>
+                                                </label>
+                                            </div>
+                                            <div className="flex items-end">
+                                                <button
+                                                    onClick={() => removeCustomField(index)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/20"
+                                                >
+                                                    <FiTrash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            default:
+                return null;
+        }
+    };
+
+    const getFeatureDescription = (key: string): string => {
+        const descriptions = {
+            enablePromptLibrary: 'Allow team members to create and share prompt templates',
+            enableCostAllocation: 'Track costs by department, team, or custom categories',
+            enableAutoOptimization: 'Automatically optimize prompts to reduce costs',
+            enableAuditLog: 'Keep detailed logs of all project activities'
+        };
+        return descriptions[key as keyof typeof descriptions] || '';
+    };
+
+    const getNotificationDescription = (key: string): string => {
+        const descriptions = {
+            budgetAlerts: 'Receive alerts when budget thresholds are reached',
+            usageReports: 'Get periodic reports on project usage and costs',
+            memberActivity: 'Be notified when team members join or leave',
+            optimizationSuggestions: 'Receive suggestions for cost optimization'
+        };
+        return descriptions[key as keyof typeof descriptions] || '';
+    };
+
+    return (
+        <Modal isOpen={true} onClose={onClose} title="Project Settings" size="xl">
+            <div className="flex flex-col h-full max-h-[90vh]">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                {project.name} Settings
+                            </h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Configure advanced settings for your project
+                            </p>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                            <FiX className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex border-b border-gray-200 dark:border-gray-700">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id as any)}
+                            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
+                                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400'
+                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                }`}
+                        >
+                            <tab.icon className="w-4 h-4" />
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6">
+                    {renderTabContent()}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <FiInfo className="w-4 h-4" />
+                            <span>Changes will be applied immediately</span>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                disabled={!hasChanges || loading}
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <FiSave className="w-4 h-4" />
+                                {loading ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Modal>
+    );
+}; 

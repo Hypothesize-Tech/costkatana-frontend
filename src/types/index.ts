@@ -2,6 +2,8 @@ export * from './analytics.types';
 export * from './auth.types';
 export * from './optimization.types';
 export * from './usage.types';
+export * from './intelligence.types';
+export * from './project.types';
 
 // Common types
 export interface PaginatedResponse<T> {

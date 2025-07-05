@@ -5,19 +5,15 @@ import {
     UserCircleIcon,
     KeyIcon,
     BellIcon,
-    CreditCardIcon,
-    ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { userService } from '../services/user.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ApiKeySettings } from '../components/settings/ApiKeySettings';
 import { NotificationSettings } from '../components/settings/NotificationSettings';
-import { BillingSettings } from '../components/settings/BillingSettings';
-import { SecuritySettings } from '../components/settings/SecuritySettings';
 import { useNotifications } from '../contexts/NotificationContext';
-
-type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'billing' | 'security';
+        
+type SettingsTab = 'profile' | 'api-keys' | 'notifications';
 
 export const Settings: React.FC = () => {
     const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
@@ -61,43 +57,10 @@ export const Settings: React.FC = () => {
             icon: BellIcon,
             component: NotificationSettings,
         },
-        {
-            id: 'billing' as const,
-            name: 'Billing',
-            icon: CreditCardIcon,
-            component: BillingSettings,
-        },
-        {
-            id: 'security' as const,
-            name: 'Security',
-            icon: ShieldCheckIcon,
-            component: SecuritySettings,
-        },
     ];
 
-    // Mock security settings (replace with real data as needed)
-    const security = {
-        twoFactorEnabled: false,
-        activeSessions: [
-            {
-                id: '1',
-                device: 'Chrome on MacOS',
-                location: 'San Francisco, CA',
-                lastActive: '2 minutes ago',
-                current: true,
-            },
-            {
-                id: '2',
-                device: 'Safari on iPhone',
-                location: 'San Francisco, CA',
-                lastActive: '1 hour ago',
-                current: false,
-            },
-        ],
-    };
-
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
                 <p className="mt-2 text-gray-600">
@@ -105,7 +68,7 @@ export const Settings: React.FC = () => {
                 </p>
             </div>
 
-            <div className="bg-white shadow rounded-lg">
+            <div className="bg-white rounded-lg shadow">
                 <div className="flex border-b border-gray-200">
                     {tabs.map((tab) => (
                         <button
@@ -116,7 +79,7 @@ export const Settings: React.FC = () => {
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
-                            <tab.icon className="h-5 w-5 mx-auto mb-1" />
+                            <tab.icon className="mx-auto mb-1 w-5 h-5" />
                             {tab.name}
                         </button>
                     ))}
@@ -135,20 +98,8 @@ export const Settings: React.FC = () => {
                             onUpdate={updateProfileMutation.mutate}
                         />
                     )}
-                    {activeTab === 'billing' && (
-                        <BillingSettings
-                            profile={profile}
-                            onUpdate={updateProfileMutation.mutate}
-                        />
-                    )}
                     {activeTab === 'notifications' && (
                         <NotificationSettings
-                            onUpdate={updateProfileMutation.mutate}
-                        />
-                    )}
-                    {activeTab === 'security' && (
-                        <SecuritySettings
-                            security={security}
                             onUpdate={updateProfileMutation.mutate}
                         />
                     )}

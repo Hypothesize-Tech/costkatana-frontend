@@ -9,3 +9,7 @@ export { eventService } from './event.service';
 // Re-export types from services if needed
 export type { default as api } from '../config/api';
 export { createEventSource } from '../config/api';
+
+export * from './intelligence.service';
+export * from './project.service';
+export * from './promptTemplate.service';

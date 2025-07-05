@@ -5,13 +5,14 @@ import { formatCurrency, formatNumber, formatPercentageChange } from '@/utils/fo
 interface StatsCardProps {
     title: string;
     value: number;
+    icon: React.ComponentType<{ className?: string }>;
     change?: {
         value: number;
         percentage: number;
         trend: 'up' | 'down' | 'stable';
     };
+    className?: string;
     format?: 'currency' | 'number' | 'percentage';
-    icon?: React.ComponentType<{ className?: string }>;
     loading?: boolean;
 }
 
@@ -22,6 +23,7 @@ export const StatsCard = ({
     format = 'number',
     icon: Icon,
     loading = false,
+    className,
 }: StatsCardProps) => {
     const formatValue = () => {
         switch (format) {
@@ -38,7 +40,7 @@ export const StatsCard = ({
     const isNegative = change?.trend === 'down';
 
     return (
-        <div className="p-6 card">
+        <div className={`p-6 card ${className || ''}`}>
             <div className="flex justify-between items-center">
                 <div className="flex-1">
                     <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">

@@ -1,14 +1,7 @@
 // src/pages/Alerts.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-    BellIcon,
-    XMarkIcon,
-    CheckCircleIcon,
-    ExclamationTriangleIcon,
-    InformationCircleIcon,
-    CogIcon,
-} from '@heroicons/react/24/outline';
+
 import { alertService } from '../services/alert.service';
 import { Alert } from '../types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';

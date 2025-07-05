@@ -1,6 +1,6 @@
 // src/services/analytics.service.ts
-import api from '@/config/api';
-import { Analytics, DashboardData, TimeSeriesData, ServiceBreakdown } from '../types';
+import { apiClient } from '../config/api';
+import { Analytics, TimeSeriesData, ServiceAnalytics } from '../types';
 
 class AnalyticsService {
     async getAnalytics(params?: {
@@ -8,197 +8,331 @@ class AnalyticsService {
         endDate?: string;
         service?: string;
         model?: string;
-        groupBy?: 'hour' | 'day' | 'week' | 'month';
-    }): Promise<{ success: boolean; data: Analytics }> {
-        const response = await api.get('/analytics', { params });
-        return response.data;
+        groupBy?: 'hour' | 'date' | 'service' | 'model';
+    }): Promise<Analytics> {
+        try {
+            const response = await apiClient.get('/analytics', { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching analytics:', error);
+            throw error;
+        }
     }
 
-    async getDashboardData(): Promise<{ success: boolean; data: DashboardData }> {
-        const response = await api.get('/analytics/dashboard');
-        return response.data;
+    async getDashboardData(): Promise<any> {
+        try {
+            const response = await apiClient.get('/analytics/dashboard');
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching dashboard data:', error);
+            // Return fallback data
+            return {
+                summary: {
+                    totalCost: 0,
+                    totalTokens: 0,
+                    totalRequests: 0,
+                    averageCostPerRequest: 0
+                },
+                timeline: [],
+                breakdown: {
+                    services: [],
+                    models: []
+                },
+                recentActivity: []
+            };
+        }
     }
 
-    async getInsights(params?: {
+    async getTimeSeriesData(params: {
+        metric: 'cost' | 'calls' | 'tokens';
+        startDate: string;
+        endDate: string;
+        groupBy: 'hour' | 'date' | 'service' | 'model';
+        service?: string;
+        model?: string;
+    }): Promise<TimeSeriesData[]> {
+        try {
+            const response = await apiClient.get('/analytics', {
+                params: {
+                    ...params,
+                    format: 'timeseries'
+                }
+            });
+            return response.data.data.timeline || [];
+        } catch (error) {
+            console.error('Error fetching time series data:', error);
+            return [];
+        }
+    }
+
+    async getCostAnalysis(params?: {
         startDate?: string;
         endDate?: string;
-        focus?: 'cost' | 'usage' | 'optimization';
+        groupBy?: 'service' | 'model' | 'user';
     }): Promise<{
-        success: boolean;
-        data: Array<{
-            type: 'cost_spike' | 'usage_pattern' | 'optimization' | 'anomaly' | 'trend';
-            title: string;
-            description: string;
-            impact?: string;
-            recommendation?: string;
-            severity?: 'low' | 'medium' | 'high';
-            metadata?: any;
+        totalCost: number;
+        breakdown: Array<{
+            name: string;
+            cost: number;
+            percentage: number;
+            trend: number;
+        }>;
+        trends: TimeSeriesData[];
+        predictions: Array<{
+            date: string;
+            predicted: number;
+            confidence: number;
         }>;
     }> {
-        const response = await api.get('/analytics/insights', { params });
-        return response.data;
-    }
+        try {
+            const response = await apiClient.get('/analytics', { params });
+            const data = response.data.data;
 
-    async comparePeriods(params: {
-        period1Start: string;
-        period1End: string;
-        period2Start: string;
-        period2End: string;
-        metrics?: string[];
-    }): Promise<{
-        success: boolean;
-        data: {
-            period1: Analytics;
-            period2: Analytics;
-            comparison: {
-                costChange: number;
-                usageChange: number;
-                efficiencyChange: number;
-                highlights: string[];
+            return {
+                totalCost: data.summary?.totalCost || 0,
+                breakdown: data.breakdown?.services?.map((service: any) => ({
+                    name: service.service,
+                    cost: service.cost,
+                    percentage: service.percentage,
+                    trend: service.trend || 0
+                })) || [],
+                trends: data.timeline || [],
+                predictions: data.predictions || []
             };
-        };
-    }> {
-        const response = await api.post('/analytics/compare', params);
-        return response.data;
+        } catch (error) {
+            console.error('Error fetching cost analysis:', error);
+            return {
+                totalCost: 0,
+                breakdown: [],
+                trends: [],
+                predictions: []
+            };
+        }
     }
 
-    async getCostTrends(params?: {
+    async getUsagePatterns(params?: {
         startDate?: string;
         endDate?: string;
-        interval?: 'hour' | 'day' | 'week' | 'month';
         service?: string;
     }): Promise<{
-        success: boolean;
-        data: {
-            trends: TimeSeriesData[];
-            forecast?: TimeSeriesData[];
-            seasonality?: {
-                daily?: number[];
-                weekly?: number[];
-                monthly?: number[];
-            };
-        };
+        patterns: Array<{
+            pattern: string;
+            frequency: number;
+            impact: 'high' | 'medium' | 'low';
+            description: string;
+        }>;
+        anomalies: Array<{
+            date: string;
+            type: string;
+            severity: 'high' | 'medium' | 'low';
+            description: string;
+        }>;
+        recommendations: string[];
     }> {
-        const response = await api.get('/analytics/cost-trends', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/analytics/insights', { params });
+            const data = response.data.data;
+
+            return {
+                patterns: data.patterns || [],
+                anomalies: data.anomalies || [],
+                recommendations: data.recommendations || []
+            };
+        } catch (error) {
+            console.error('Error fetching usage patterns:', error);
+            return {
+                patterns: [],
+                anomalies: [],
+                recommendations: []
+            };
+        }
     }
 
     async getServiceBreakdown(params?: {
         startDate?: string;
         endDate?: string;
         limit?: number;
-    }): Promise<{
-        success: boolean;
-        data: ServiceBreakdown[];
-    }> {
-        const response = await api.get('/analytics/service-breakdown', { params });
-        return response.data;
+    }): Promise<ServiceAnalytics[]> {
+        try {
+            const response = await apiClient.get('/analytics', { params });
+            return response.data.data.breakdown?.services || [];
+        } catch (error) {
+            console.error('Error fetching service breakdown:', error);
+            return [];
+        }
     }
 
-    async getModelPerformance(params?: {
+    async getModelComparison(params?: {
+        models?: string[];
+        metric?: 'cost' | 'performance' | 'efficiency';
         startDate?: string;
         endDate?: string;
-        service?: string;
-        sortBy?: 'cost' | 'calls' | 'efficiency';
     }): Promise<{
-        success: boolean;
-        data: Array<{
+        comparison: Array<{
             model: string;
             service: string;
-            totalCost: number;
-            totalCalls: number;
-            avgCostPerCall: number;
-            avgTokensPerCall: number;
+            cost: number;
+            calls: number;
             avgResponseTime: number;
-            costEfficiency: number; // cost per 1k tokens
-            trend: 'up' | 'down' | 'stable';
+            successRate: number;
+            costPerToken: number;
+            efficiency: number;
+        }>;
+        recommendations: Array<{
+            currentModel: string;
+            suggestedModel: string;
+            potentialSavings: number;
+            reason: string;
         }>;
     }> {
-        const response = await api.get('/analytics/model-performance', { params });
-        return response.data;
+        try {
+            const response = await apiClient.get('/analytics', { params });
+            const data = response.data.data;
+
+            return {
+                comparison: data.breakdown?.models?.map((model: any) => ({
+                    model: model.model,
+                    service: model.service,
+                    cost: model.cost,
+                    calls: model.calls,
+                    avgResponseTime: model.avgResponseTime || 0,
+                    successRate: model.successRate || 100,
+                    costPerToken: model.costPerToken || 0,
+                    efficiency: model.efficiency || 0
+                })) || [],
+                recommendations: data.recommendations || []
+            };
+        } catch (error) {
+            console.error('Error fetching model comparison:', error);
+            return {
+                comparison: [],
+                recommendations: []
+            };
+        }
+    }
+
+    async getOptimizationOpportunities(): Promise<{
+        opportunities: Array<{
+            type: 'model_switch' | 'prompt_optimization' | 'caching' | 'batching';
+            title: string;
+            description: string;
+            potentialSavings: number;
+            difficulty: 'easy' | 'medium' | 'hard';
+            impact: 'high' | 'medium' | 'low';
+        }>;
+        totalPotentialSavings: number;
+    }> {
+        try {
+            const response = await apiClient.get('/analytics/insights');
+            const data = response.data.data;
+
+            return {
+                opportunities: data.optimizationOpportunities || [],
+                totalPotentialSavings: data.totalPotentialSavings || 0
+            };
+        } catch (error) {
+            console.error('Error fetching optimization opportunities:', error);
+            return {
+                opportunities: [],
+                totalPotentialSavings: 0
+            };
+        }
     }
 
     async exportAnalytics(params: {
-        format: 'csv' | 'json' | 'pdf' | 'xlsx';
-        startDate?: string;
-        endDate?: string;
-        includeCharts?: boolean;
-        sections?: string[];
+        format: 'csv' | 'excel' | 'pdf';
+        startDate: string;
+        endDate: string;
+        includeGraphs?: boolean;
     }): Promise<Blob> {
-        const response = await api.get('/analytics/export', {
-            params,
-            responseType: 'blob',
-        });
-        return response.data;
+        try {
+            const response = await apiClient.get('/analytics/export', {
+                params,
+                responseType: 'blob'
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error exporting analytics:', error);
+            throw error;
+        }
     }
 
-    async getROIAnalysis(): Promise<{
-        success: boolean;
-        data: {
-            totalSaved: number;
-            optimizationRate: number;
-            avgSavingsPerOptimization: number;
-            projectedMonthlySavings: number;
-            topOptimizationOpportunities: Array<{
-                prompt: string;
-                currentCost: number;
-                potentialSavings: number;
-                usage: number;
-            }>;
-            savingsByService: Record<string, number>;
+    async getCustomReport(reportConfig: {
+        name: string;
+        metrics: string[];
+        filters: Record<string, any>;
+        groupBy: string[];
+        timeRange: {
+            start: string;
+            end: string;
         };
-    }> {
-        const response = await api.get('/analytics/roi');
-        return response.data;
-    }
-
-    async getUsageHeatmap(params?: {
-        startDate?: string;
-        endDate?: string;
-        timezone?: string;
     }): Promise<{
-        success: boolean;
-        data: {
-            heatmap: Array<{
-                hour: number;
-                dayOfWeek: number;
-                value: number;
-                cost: number;
-            }>;
-            peakHours: number[];
-            quietHours: number[];
+        data: any[];
+        summary: Record<string, number>;
+        metadata: {
+            generatedAt: string;
+            totalRecords: number;
+            executionTime: number;
         };
     }> {
-        const response = await api.get('/analytics/usage-heatmap', { params });
-        return response.data;
+        try {
+            const response = await apiClient.post('/analytics/custom-report', reportConfig);
+            return response.data.data;
+        } catch (error) {
+            console.error('Error generating custom report:', error);
+            throw error;
+        }
     }
 
-    async getTeamAnalytics(params?: {
-        startDate?: string;
-        endDate?: string;
-        groupBy?: 'user' | 'department' | 'project';
-    }): Promise<{
-        success: boolean;
-        data: {
-            breakdown: Array<{
-                name: string;
-                cost: number;
-                calls: number;
-                users: number;
-                topModels: string[];
-                trend: number;
-            }>;
-            topSpenders: Array<{
-                userId: string;
-                name: string;
-                cost: number;
-                calls: number;
-            }>;
-        };
-    }> {
-        const response = await api.get('/analytics/team', { params });
-        return response.data;
+    static async getProjectAnalytics(projectId: string, filters: any = {}) {
+        try {
+            const response = await apiClient.get(`/analytics/projects/${projectId}`, {
+                params: filters
+            });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching project analytics:', error);
+            throw error;
+        }
+    }
+
+    static async compareProjects(filters: any = {}) {
+        try {
+            const response = await apiClient.get('/analytics/projects/compare', {
+                params: filters
+            });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error comparing projects:', error);
+            throw error;
+        }
+    }
+
+    // Additional methods for comprehensive analytics
+    async getInsights(): Promise<any> {
+        try {
+            const response = await apiClient.get('/analytics/insights');
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching insights:', error);
+            return {
+                optimizationOpportunities: [],
+                costSavings: 0,
+                recommendations: []
+            };
+        }
+    }
+
+    async getComparativeAnalytics(compareData: any): Promise<any> {
+        try {
+            const response = await apiClient.post('/analytics/compare', compareData);
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching comparative analytics:', error);
+            throw error;
+        }
     }
 }
 
 export const analyticsService = new AnalyticsService();
+export { AnalyticsService };

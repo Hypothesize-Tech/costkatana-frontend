@@ -15,19 +15,21 @@ export default function Usage() {
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState<IUsageFilters>({});
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const debouncedSearch = useDebounce(searchQuery, 500);
-    const { page, limit, setPage, getPaginationProps } = usePagination();
+    const { limit } = usePagination();
 
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['usage', filters, page, limit, debouncedSearch],
-        queryFn: () => {
-            if (debouncedSearch) {
-                return usageService.searchUsage(debouncedSearch, { ...filters, page, limit } as any);
-            }
-            return usageService.getUsageHistory({ ...filters, page, limit });
-        },
+        queryKey: ['usage', filters, currentPage, limit, debouncedSearch],
+        queryFn: () => usageService.getUsage({
+            ...filters,
+            page: currentPage,
+            limit
+        }),
+        keepPreviousData: true,
     });
+    console.log("data", data)
 
     const handleExport = async (format: 'json' | 'csv') => {
         try {
@@ -46,7 +48,13 @@ export default function Usage() {
         }
     };
 
-    const paginationProps = getPaginationProps(data?.pagination);
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleRefresh = () => {
+        refetch();
+    };
 
     return (
         <div className="space-y-6">
@@ -60,20 +68,20 @@ export default function Usage() {
                         Track and manage your AI API usage across all providers
                     </p>
                 </div>
-                <div className="mt-4 sm:mt-0 flex gap-3">
+                <div className="flex gap-3 mt-4 sm:mt-0">
                     <button
                         onClick={() => setShowTrackModal(true)}
-                        className="btn-primary inline-flex items-center"
+                        className="inline-flex items-center btn-primary"
                     >
-                        <PlusIcon className="h-5 w-5 mr-2" />
+                        <PlusIcon className="mr-2 w-5 h-5" />
                         Track Usage
                     </button>
-                    <div className="relative inline-block text-left">
+                    <div className="inline-block relative text-left">
                         <button
                             onClick={() => handleExport('csv')}
-                            className="btn-outline inline-flex items-center"
+                            className="inline-flex items-center btn-outline"
                         >
-                            <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
+                            <ArrowDownTrayIcon className="mr-2 w-5 h-5" />
                             Export
                         </button>
                     </div>
@@ -81,8 +89,8 @@ export default function Usage() {
             </div>
 
             {/* Search and Filters */}
-            <div className="card p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
+            <div className="p-4 card">
+                <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex-1">
                         <input
                             type="text"
@@ -94,12 +102,12 @@ export default function Usage() {
                     </div>
                     <button
                         onClick={() => setShowFilters(!showFilters)}
-                        className="btn-outline inline-flex items-center"
+                        className="inline-flex items-center btn-outline"
                     >
-                        <FunnelIcon className="h-5 w-5 mr-2" />
+                        <FunnelIcon className="mr-2 w-5 h-5" />
                         Filters
                         {Object.keys(filters).length > 0 && (
-                            <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-medium text-white bg-primary-600 rounded-full">
+                            <span className="inline-flex justify-center items-center ml-2 w-5 h-5 text-xs font-medium text-white rounded-full bg-primary-600">
                                 {Object.keys(filters).length}
                             </span>
                         )}
@@ -107,7 +115,7 @@ export default function Usage() {
                 </div>
 
                 {showFilters && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
                         <UsageFilter
                             onFilterChange={(filters) => setFilters(filters)}
                             services={[]}
@@ -122,10 +130,10 @@ export default function Usage() {
                 <LoadingSpinner />
             ) : (
                 <UsageList
-                    usage={data?.data || []}
-                    pagination={paginationProps}
-                    onPageChange={setPage}
-                    onRefresh={refetch}
+                    pagination={data?.pagination}
+                    usage={data?.usage || []}
+                    onRefresh={handleRefresh}
+                    onPageChange={handlePageChange}
                 />
             )}
 

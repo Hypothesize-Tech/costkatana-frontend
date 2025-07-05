@@ -16,13 +16,18 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import { Dashboard } from './pages/Dashboard';
 import Usage from './pages/Usage';
 import { Analytics } from './pages/Analytics';
 import { Optimization } from './pages/Optimization';
 import { Settings } from './pages/Settings';
 import { NotFound } from './pages/NotFound';
 import { Profile } from './pages/Profile';
+import { Alerts } from './pages/Alerts';
+import CostAuditWizard from './pages/CostAuditWizard';
+import Projects from './pages/Projects';
+import PromptTemplates from './pages/PromptTemplates';
+import { Integration } from './pages/Integration';
 
 const queryClient = new QueryClient();
 
@@ -70,10 +75,24 @@ function App() {
                                         element={<Optimization />}
                                     />
                                     <Route
+                                        path="optimizations/wizard"
+                                        element={<CostAuditWizard />}
+                                    />
+                                    <Route
+                                        path="projects"
+                                        element={<Projects />}
+                                    />
+                                    <Route
+                                        path="templates"
+                                        element={<PromptTemplates />}
+                                    />
+                                    <Route
                                         path="settings"
                                         element={<Settings />}
                                     />
                                     <Route path="profile" element={<Profile />} />
+                                    <Route path="alerts" element={<Alerts />} />
+                                    <Route path="integration" element={<Integration />} />
                                 </Route>
 
                                 {/* 404 page */}

@@ -5,6 +5,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { optimizationService } from '@/services/optimization.service';
+import OptimizationWidget from './OptimizationWidget';
 
 interface OptimizationFormProps {
     onClose: () => void;
@@ -373,6 +374,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({ onClose }) =
         suggestAlternatives: true,
         targetReduction: 3,
     });
+    const [showOptimizationWidget, setShowOptimizationWidget] = useState(false);
 
     const { showNotification } = useNotifications();
     const queryClient = useQueryClient();
@@ -407,11 +409,23 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({ onClose }) =
             showNotification('Please enter a prompt to optimize', 'error');
             return;
         }
+        // Show the optimization widget for preview
+        setShowOptimizationWidget(true);
+    };
+
+    const handleApplyOptimization = (optimizedPrompt: string, _optimization: any) => {
+        // Update the form data with the optimized prompt
+        setFormData({ ...formData, prompt: optimizedPrompt });
+        // Submit the optimization
         optimizeMutation.mutate();
     };
 
     const handleChange = (field: string, value: any) => {
         setFormData({ ...formData, [field]: value });
+        // Hide the widget when user changes form values
+        if (showOptimizationWidget) {
+            setShowOptimizationWidget(false);
+        }
     };
 
     return (
@@ -540,29 +554,44 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({ onClose }) =
                     </div>
                 )}
 
-                <div className="flex justify-end pt-4 space-x-3">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={optimizeMutation.isLoading}
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {optimizeMutation.isLoading ? (
-                            <>
-                                <LoadingSpinner size="small" className="mr-2" />
-                                Optimizing...
-                            </>
-                        ) : (
-                            'Optimize'
-                        )}
-                    </button>
-                </div>
+                {/* Show optimization widget when user clicks optimize */}
+                {showOptimizationWidget && formData.prompt && (
+                    <div className="pt-6 mt-6 border-t border-gray-200">
+                        <OptimizationWidget
+                            prompt={formData.prompt}
+                            model={formData.model}
+                            service={formData.service}
+                            onApplyOptimization={handleApplyOptimization}
+                        />
+                    </div>
+                )}
+
+                {/* Only show form buttons if widget is not shown */}
+                {!showOptimizationWidget && (
+                    <div className="flex justify-end pt-4 space-x-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={optimizeMutation.isLoading}
+                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {optimizeMutation.isLoading ? (
+                                <>
+                                    <LoadingSpinner size="small" className="mr-2" />
+                                    Optimizing...
+                                </>
+                            ) : (
+                                'Preview Optimization'
+                            )}
+                        </button>
+                    </div>
+                )}
             </form>
         </div>
     );

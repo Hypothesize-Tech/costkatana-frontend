@@ -5,18 +5,34 @@ export interface Analytics {
     };
     summary: AnalyticsSummary;
     timeSeries: TimeSeriesData[];
+    timeline?: TimeSeriesData[];
     serviceBreakdown: ServiceAnalytics[];
     modelBreakdown: ModelAnalytics[];
     topPrompts: TopPrompt[];
     optimizationStats: OptimizationStats;
     trends: TrendAnalysis;
     predictions?: Predictions;
+    breakdown?: {
+        services: Array<{
+            service: string;
+            cost: number;
+            percentage: number;
+            requests: number;
+        }>;
+        models: Array<{
+            model: string;
+            cost: number;
+            percentage: number;
+            requests: number;
+        }>;
+    };
 }
 
 export interface AnalyticsSummary {
     totalCost: number;
     totalTokens: number;
     totalCalls: number;
+    totalRequests?: number;
     avgCost: number;
     avgTokens: number;
     avgResponseTime: number;
@@ -28,7 +44,8 @@ export interface TimeSeriesData {
     date: string;
     cost: number;
     tokens: number;
-    calls: number;
+    calls?: number;
+    requests?: number;
 }
 
 export interface ServiceAnalytics {
@@ -36,6 +53,8 @@ export interface ServiceAnalytics {
     totalCost: number;
     totalTokens: number;
     totalCalls: number;
+    calls?: number;
+    percentage?: number;
     avgCost: number;
     avgTokens: number;
     trend: 'up' | 'down' | 'stable';
@@ -48,8 +67,11 @@ export interface ModelAnalytics {
     totalCost: number;
     totalTokens: number;
     totalCalls: number;
+    calls?: number;
     avgCost: number;
     avgTokens: number;
+    cost?: number;
+    percentage?: number;
 }
 
 export interface TopPrompt {
@@ -97,22 +119,53 @@ export interface Predictions {
 }
 
 export interface DashboardData {
-    overview: {
-        totalCost: MetricWithChange;
-        totalCalls: MetricWithChange;
-        avgCostPerCall: MetricWithChange;
-        totalOptimizationSavings: MetricWithChange;
-    };
-    charts: {
-        costOverTime: TimeSeriesData[];
-        serviceBreakdown: ServiceAnalytics[];
-        modelUsage: ModelAnalytics[];
-    };
-    recentActivity: {
-        topPrompts: TopPrompt[];
-        optimizationOpportunities: number;
-    };
-    insights: string[];
+    stats: DashboardStats;
+    chartData: Array<{
+        date: string;
+        cost: number;
+        tokens: number;
+        requests: number;
+        calls?: number; // For backward compatibility
+    }>;
+    serviceBreakdown: Array<{
+        service: string;
+        cost: number;
+        requests: number;
+        percentage: number;
+        totalCost?: number; // For backward compatibility
+        totalTokens?: number;
+        totalCalls?: number;
+        calls?: number;
+        avgCost?: number;
+        avgTokens?: number;
+        trend?: 'up' | 'down' | 'stable';
+        percentageChange?: number;
+    }>;
+    recentActivity: Array<{
+        id: string;
+        type: string;
+        description: string;
+        timestamp: string;
+        cost: number;
+    }>;
+    projectBreakdown?: Array<{
+        projectId: string;
+        projectName: string;
+        cost: number;
+        requests: number;
+        percentage: number;
+        budgetUtilization?: number;
+    }>;
+}
+
+export interface DashboardStats {
+    totalCost: number;
+    totalTokens: number;
+    totalRequests: number;
+    averageCostPerRequest: number;
+    costChange?: number;
+    tokensChange?: number;
+    requestsChange?: number;
 }
 
 export interface MetricWithChange {
@@ -140,4 +193,41 @@ export interface ComparisonMetric {
     period2: number;
     change: number;
     percentageChange: number;
+}
+
+export interface AnalyticsData {
+    summary: {
+        totalCost: number;
+        totalTokens: number;
+        totalRequests: number;
+        averageCostPerRequest: number;
+        budgetUtilization?: number;
+    };
+    timeline: Array<{
+        date: string;
+        cost: number;
+        tokens: number;
+        requests: number;
+        calls?: number;
+    }>;
+    breakdown: {
+        services: Array<{
+            service: string;
+            cost: number;
+            percentage: number;
+            requests: number;
+            calls?: number;
+        }>;
+        models: Array<{
+            model: string;
+            cost: number;
+            percentage: number;
+            requests: number;
+            calls?: number;
+            avgTokens?: number;
+            avgCost?: number;
+        }>;
+    };
+    trends: TrendAnalysis;
+    insights: string[];
 }

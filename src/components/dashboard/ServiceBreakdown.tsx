@@ -45,7 +45,7 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
         },
     });
 
-    const totalCost = data.reduce((sum, d) => sum + d.totalCost, 0);
+    const totalCost = data.reduce((sum, d) => sum + (d.totalCost || 0), 0);
 
     return (
         <div className="p-6 card">
@@ -77,7 +77,7 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
                         </div>
                         <div className="text-right">
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                {formatCurrency(service.totalCost)}
+                                {formatCurrency(service.totalCost || 0)}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {service.totalCalls} calls

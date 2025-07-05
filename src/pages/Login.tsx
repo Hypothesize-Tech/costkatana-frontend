@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { useAuth } from '@/hooks';
-import { APP_NAME } from '@/utils/constant';
+import { LoginForm } from '../components/auth/LoginForm';
+import { useAuth } from '../hooks';
+import { APP_NAME } from '../utils/constant';
 
 export default function Login() {
     const { isAuthenticated } = useAuth();
@@ -18,19 +18,19 @@ export default function Login() {
     }, [isAuthenticated, navigate, from]);
 
     return (
-        <div className="flex min-h-screen flex-1">
-            <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        <div className="flex flex-1 min-h-screen">
+            <div className="flex flex-col flex-1 justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     <div>
-                        <div className="flex items-center gap-x-3">
-                            <div className="h-10 w-10 rounded-lg bg-primary-600 flex items-center justify-center">
-                                <span className="text-white font-bold text-xl">AI</span>
+                        <div className="flex gap-x-3 items-center">
+                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-primary-600">
+                                <span className="text-xl font-bold text-white">AI</span>
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {APP_NAME}
                             </h2>
                         </div>
-                        <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
+                        <h2 className="mt-8 text-2xl font-bold tracking-tight leading-9 text-gray-900 dark:text-white">
                             Sign in to your account
                         </h2>
                     </div>
@@ -41,20 +41,20 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="relative hidden w-0 flex-1 lg:block">
+            <div className="hidden relative flex-1 w-0 lg:block">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800">
                     <div className="absolute inset-0 bg-black/20" />
-                    <div className="absolute inset-0 flex items-center justify-center p-12">
+                    <div className="flex absolute inset-0 justify-center items-center p-12">
                         <div className="max-w-xl text-white">
-                            <h1 className="text-4xl font-bold mb-6">
+                            <h1 className="mb-6 text-4xl font-bold">
                                 Optimize Your AI Costs
                             </h1>
-                            <p className="text-lg mb-8 text-primary-100">
+                            <p className="mb-8 text-lg text-primary-100">
                                 Track, analyze, and reduce your AI API costs across multiple providers.
                                 Get intelligent insights and optimization suggestions powered by AI.
                             </p>
                             <div className="space-y-4">
-                                <div className="flex items-start gap-3">
+                                <div className="flex gap-3 items-start">
                                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
                                         <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -65,7 +65,7 @@ export default function Login() {
                                         <p className="text-primary-100">Monitor API usage and costs across all major AI providers</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3">
+                                <div className="flex gap-3 items-start">
                                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
                                         <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -76,7 +76,7 @@ export default function Login() {
                                         <p className="text-primary-100">Get intelligent suggestions to reduce token usage by up to 40%</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3">
+                                <div className="flex gap-3 items-start">
                                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
                                         <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

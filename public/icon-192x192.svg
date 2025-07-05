@@ -1,0 +1,30 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="96" fill="#3b82f6"/>
+  
+  <!-- Inner circle for depth -->
+  <circle cx="96" cy="96" r="80" fill="#2563eb"/>
+  
+  <!-- AI text -->
+  <text x="96" y="110" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">AI</text>
+  
+  <!-- Cost optimization symbol -->
+  <g transform="translate(96, 40)">
+    <!-- Dollar sign -->
+    <path d="M0 -10 L0 -5 M0 35 L0 40 M-20 5 C-20 -5 -10 -10 0 -10 C10 -10 20 -5 20 5 C20 15 10 20 0 20 C-10 20 -20 25 -20 35 C-20 45 -10 50 0 50 C10 50 20 45 20 35" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Optimization arrows -->
+  <g transform="translate(140, 50)">
+    <path d="M0 0 L10 5 L0 10" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M-5 15 L5 20 L-5 25" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Chart/graph elements for analytics -->
+  <g transform="translate(50, 140)">
+    <rect x="0" y="10" width="8" height="20" fill="#10b981" rx="2"/>
+    <rect x="15" y="5" width="8" height="25" fill="#10b981" rx="2"/>
+    <rect x="30" y="0" width="8" height="30" fill="#10b981" rx="2"/>
+    <rect x="45" y="8" width="8" height="22" fill="#10b981" rx="2"/>
+  </g>
+</svg> 

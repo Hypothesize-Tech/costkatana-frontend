@@ -65,6 +65,7 @@ export interface AuthState {
 
 export interface ApiKey {
     service: string;
-    maskedKey: string;
+    key?: string;
+    maskedKey?: string;
     addedAt: string;
 }

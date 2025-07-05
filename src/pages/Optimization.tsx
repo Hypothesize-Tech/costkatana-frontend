@@ -1,11 +1,13 @@
 // src/pages/Optimization.tsx
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import {
     SparklesIcon,
     RocketLaunchIcon,
     ChartBarIcon,
     ClockIcon,
+    AcademicCapIcon,
 } from '@heroicons/react/24/outline';
 import { optimizationService } from '../services/optimization.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
@@ -20,6 +22,7 @@ export const Optimization: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'applied' | 'pending'>('all');
     const { showNotification } = useNotifications();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const { data: optimizations, isLoading } = useQuery(
         ['optimizations', filter],
@@ -79,13 +82,22 @@ export const Optimization: React.FC = () => {
             <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Prompt Optimization</h1>
-                    <button
-                        onClick={() => setShowForm(!showForm)}
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <SparklesIcon className="mr-2 w-5 h-5" />
-                        Optimize Prompt
-                    </button>
+                    <div className="flex space-x-4">
+                        <button
+                            onClick={() => navigate('/optimizations/wizard')}
+                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            <AcademicCapIcon className="mr-2 w-5 h-5" />
+                            Cost Audit Wizard
+                        </button>
+                        <button
+                            onClick={() => setShowForm(!showForm)}
+                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            <SparklesIcon className="mr-2 w-5 h-5" />
+                            Optimize Prompt
+                        </button>
+                    </div>
                 </div>
                 <p className="text-gray-600">
                     AI-powered prompt optimization to reduce costs while maintaining quality
@@ -100,7 +112,7 @@ export const Optimization: React.FC = () => {
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Total Saved</p>
                                 <p className="text-2xl font-bold text-green-600">
-                                    {formatCurrency(stats.data.totalSaved)}
+                                    {formatCurrency(stats.totalSaved)}
                                 </p>
                             </div>
                             <ChartBarIcon className="w-12 h-12 text-green-600 opacity-20" />
@@ -111,7 +123,7 @@ export const Optimization: React.FC = () => {
                         <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Optimizations</p>
-                                <p className="text-2xl font-bold text-gray-900">{stats.data.total}</p>
+                                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                             </div>
                             <SparklesIcon className="w-12 h-12 text-indigo-600 opacity-20" />
                         </div>
@@ -121,7 +133,7 @@ export const Optimization: React.FC = () => {
                         <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Applied</p>
-                                <p className="text-2xl font-bold text-gray-900">{stats.data.applied}</p>
+                                <p className="text-2xl font-bold text-gray-900">{stats.applied}</p>
                             </div>
                             <RocketLaunchIcon className="w-12 h-12 text-blue-600 opacity-20" />
                         </div>
@@ -132,7 +144,7 @@ export const Optimization: React.FC = () => {
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Avg Improvement</p>
                                 <p className="text-2xl font-bold text-gray-900">
-                                    {stats.data.avgImprovement.toFixed(1)}%
+                                    {stats.avgImprovement.toFixed(1)}%
                                 </p>
                             </div>
                             <ClockIcon className="w-12 h-12 text-purple-600 opacity-20" />

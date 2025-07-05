@@ -28,11 +28,11 @@ export const BulkOptimizer: React.FC = () => {
     const fetchPromptsMutation = useMutation({
         mutationFn: () => optimizationService.getPromptsForBulkOptimization(filters),
         onSuccess: (result) => {
-            if (result.data.length === 0) {
+            if (result.length === 0) {
                 showNotification('No prompts found matching the criteria.', 'info');
             }
-            setPrompts(result.data);
-            setSelectedPrompts(result.data.map(p => p.promptId)); // auto-select all
+            setPrompts(result);
+            setSelectedPrompts(result.map((p: any) => p.promptId)); // auto-select all
         },
         onError: () => {
             showNotification('Failed to fetch prompts for optimization.', 'error');
@@ -43,7 +43,7 @@ export const BulkOptimizer: React.FC = () => {
         mutationFn: (promptIds: string[]) => optimizationService.bulkOptimize({ promptIds }),
         onSuccess: (result) => {
             showNotification(
-                `Successfully optimized ${result.data.successful} out of ${result.data.total} prompts.`,
+                `Successfully optimized ${result.successful} out of ${result.total} prompts.`,
                 'success'
             );
             setIsOpen(false);
@@ -85,11 +85,11 @@ export const BulkOptimizer: React.FC = () => {
     };
 
     return (
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-6 text-white">
-            <div className="flex items-center justify-between">
+        <div className="p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg">
+            <div className="flex justify-between items-center">
                 <div>
-                    <h3 className="text-xl font-semibold flex items-center">
-                        <RocketLaunchIcon className="h-6 w-6 mr-2" />
+                    <h3 className="flex items-center text-xl font-semibold">
+                        <RocketLaunchIcon className="mr-2 w-6 h-6" />
                         Bulk Optimization
                     </h3>
                     <p className="mt-1 text-indigo-100">
@@ -98,15 +98,15 @@ export const BulkOptimizer: React.FC = () => {
                 </div>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="px-4 py-2 bg-white text-indigo-600 rounded-md hover:bg-indigo-50 font-medium"
+                    className="px-4 py-2 font-medium text-indigo-600 bg-white rounded-md hover:bg-indigo-50"
                 >
                     {isOpen ? 'Cancel' : 'Start Analysis'}
                 </button>
             </div>
 
             {isOpen && (
-                <div className="mt-6 bg-white/10 rounded-lg p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 mt-6 rounded-lg bg-white/10">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
                             <label className="block text-sm font-medium text-indigo-100">
                                 Service (Optional)
@@ -114,7 +114,7 @@ export const BulkOptimizer: React.FC = () => {
                             <select
                                 value={filters.service}
                                 onChange={(e) => setFilters({ ...filters, service: e.target.value })}
-                                className="mt-1 block w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white"
+                                className="block px-3 py-2 mt-1 w-full placeholder-indigo-200 text-white rounded-md border bg-white/20 border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
                             >
                                 <option value="">All Services</option>
                                 <option value="openai">OpenAI</option>
@@ -133,7 +133,7 @@ export const BulkOptimizer: React.FC = () => {
                                 min="1"
                                 value={filters.minCalls}
                                 onChange={(e) => setFilters({ ...filters, minCalls: parseInt(e.target.value) || 1 })}
-                                className="mt-1 block w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white"
+                                className="block px-3 py-2 mt-1 w-full placeholder-indigo-200 text-white rounded-md border bg-white/20 border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
                             />
                         </div>
 
@@ -144,7 +144,7 @@ export const BulkOptimizer: React.FC = () => {
                             <select
                                 value={filters.timeframe}
                                 onChange={(e) => setFilters({ ...filters, timeframe: e.target.value })}
-                                className="mt-1 block w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white"
+                                className="block px-3 py-2 mt-1 w-full placeholder-indigo-200 text-white rounded-md border bg-white/20 border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
                             >
                                 <option value="1d">Last 24 hours</option>
                                 <option value="7d">Last 7 days</option>
@@ -154,11 +154,11 @@ export const BulkOptimizer: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="mt-4 flex justify-end">
+                    <div className="flex justify-end mt-4">
                         <button
                             onClick={handleFetchPrompts}
                             disabled={fetchPromptsMutation.isLoading}
-                            className="inline-flex items-center px-4 py-2 bg-white text-indigo-600 rounded-md hover:bg-indigo-50 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center px-4 py-2 font-medium text-indigo-600 bg-white rounded-md hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {fetchPromptsMutation.isLoading ? (
                                 <>
@@ -174,40 +174,40 @@ export const BulkOptimizer: React.FC = () => {
                     {prompts.length > 0 && (
                         <div className="mt-6">
                             <h4 className="text-lg font-medium text-white">Select prompts to optimize</h4>
-                            <div className="mt-4 max-h-60 overflow-y-auto pr-2">
-                                <div className="flex items-center mb-2 p-2 rounded-md bg-white/20">
+                            <div className="overflow-y-auto pr-2 mt-4 max-h-60">
+                                <div className="flex items-center p-2 mb-2 rounded-md bg-white/20">
                                     <input
                                         type="checkbox"
                                         id="select-all"
                                         checked={selectedPrompts.length === prompts.length}
                                         onChange={handleSelectAll}
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                                     />
                                     <label htmlFor="select-all" className="ml-3 text-sm font-medium text-white">Select All ({selectedPrompts.length} / {prompts.length})</label>
                                 </div>
                                 {prompts.map(p => (
-                                    <div key={p.promptId} className="flex items-start justify-between p-2 rounded-md hover:bg-white/20">
+                                    <div key={p.promptId} className="flex justify-between items-start p-2 rounded-md hover:bg-white/20">
                                         <div className="flex items-start">
                                             <input
                                                 type="checkbox"
                                                 id={p.promptId}
                                                 checked={selectedPrompts.includes(p.promptId)}
                                                 onChange={() => handleSelectPrompt(p.promptId)}
-                                                className="h-4 w-4 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                className="mt-1 w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                                             />
                                             <label htmlFor={p.promptId} className="ml-3 text-sm text-white">
                                                 <span className="font-medium">Count: {p.count}</span>
-                                                <p className="text-indigo-100 truncate w-full max-w-lg">{p.prompt}</p>
+                                                <p className="w-full max-w-lg text-indigo-100 truncate">{p.prompt}</p>
                                             </label>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <div className="mt-4 flex justify-end">
+                            <div className="flex justify-end mt-4">
                                 <button
                                     onClick={handleOptimize}
                                     disabled={bulkOptimizeMutation.isLoading || selectedPrompts.length === 0}
-                                    className="inline-flex items-center px-4 py-2 bg-white text-indigo-600 rounded-md hover:bg-indigo-50 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="inline-flex items-center px-4 py-2 font-medium text-indigo-600 bg-white rounded-md hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {bulkOptimizeMutation.isLoading ? (
                                         <>

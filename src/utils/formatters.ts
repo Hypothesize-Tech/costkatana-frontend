@@ -40,23 +40,78 @@ export const formatPercentageChange = (value: number): string => {
 
 // Date formatting
 export const formatDate = (date: string | Date, formatStr: string = 'MMM d, yyyy'): string => {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    return format(dateObj, formatStr);
+    if (!date) {
+        return 'N/A';
+    }
+
+    try {
+        const dateObj = typeof date === 'string' ? parseISO(date) : date;
+
+        if (isNaN(dateObj.getTime())) {
+            return 'N/A';
+        }
+
+        return format(dateObj, formatStr);
+    } catch (error) {
+        return 'N/A';
+    }
 };
 
 export const formatDateTime = (date: string | Date): string => {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    return format(dateObj, 'MMM d, yyyy h:mm a');
+    if (!date) {
+        return 'N/A';
+    }
+
+    try {
+        const dateObj = typeof date === 'string' ? parseISO(date) : date;
+
+        if (isNaN(dateObj.getTime())) {
+            return 'N/A';
+        }
+
+        return format(dateObj, 'MMM d, yyyy h:mm a');
+    } catch (error) {
+        return 'N/A';
+    }
 };
 
 export const formatRelativeTime = (date: string | Date): string => {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    return formatDistance(dateObj, new Date(), { addSuffix: true });
+    // Handle empty, null, or undefined dates
+    if (!date) {
+        return 'Never';
+    }
+
+    try {
+        const dateObj = typeof date === 'string' ? parseISO(date) : date;
+
+        // Check if the parsed date is valid
+        if (isNaN(dateObj.getTime())) {
+            return 'Never';
+        }
+
+        return formatDistance(dateObj, new Date(), { addSuffix: true });
+    } catch (error) {
+        // If parsing fails, return a fallback
+        return 'Never';
+    }
 };
 
 export const formatRelativeDate = (date: string | Date): string => {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    return formatRelative(dateObj, new Date());
+    if (!date) {
+        return 'Never';
+    }
+
+    try {
+        const dateObj = typeof date === 'string' ? parseISO(date) : date;
+
+        if (isNaN(dateObj.getTime())) {
+            return 'Never';
+        }
+
+        return formatRelative(dateObj, new Date());
+    } catch (error) {
+        return 'Never';
+    }
 };
 
 // Token formatting

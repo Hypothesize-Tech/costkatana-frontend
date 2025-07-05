@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/user.service';
-import { usageService } from '../services/usage.service';
 import { ProfileHeader } from '../components/profile/ProfileHeader';
 import { ProfileStats } from '../components/profile/ProfileStats';
 import { ProfileActivity } from '../components/profile/ProfileActivity';
@@ -26,9 +25,17 @@ export const Profile: React.FC = () => {
         }
     );
 
-    const { data: activity, isLoading: activityLoading } = useQuery(
+    const { data: stats, isLoading: statsLoading } = useQuery(
+        ['user-stats', user?.id],
+        () => userService.getUserStats(),
+        {
+            enabled: !!user?.id && activeTab === 'overview',
+        }
+    );
+
+    const { data: activityData, isLoading: activityLoading } = useQuery(
         ['user-activity', user?.id, activeTab],
-        () => usageService.getActivity({ limit: 20 }),
+        () => userService.getUserActivities({ limit: 50 }),
         {
             enabled: !!user?.id && activeTab === 'activity',
         }
@@ -86,22 +93,44 @@ export const Profile: React.FC = () => {
     ];
 
     const profileData = (profile as any)?.data;
-    const usageData = profileData?.usage?.currentMonth;
 
-    const mockStats = {
-        totalSpent: usageData?.totalCost || 0,
-        totalSaved: usageData?.optimizationsSaved || 0,
-        apiCalls: usageData?.apiCalls || 0,
-        optimizations: 0,
-        currentMonthSpent: usageData?.totalCost || 0,
-        currentMonthSaved: usageData?.optimizationsSaved || 0,
-        avgDailyCost: 0,
-        mostUsedService: 'N/A',
-        mostUsedModel: 'N/A',
-        accountAge: 0,
+    // Map activity types to friendly names and icons
+    const formatActivity = (activity: any) => {
+        const typeConfig: Record<string, { icon: string; color: string }> = {
+            login: { icon: '🔐', color: 'text-blue-600' },
+            api_call: { icon: '📡', color: 'text-green-600' },
+            optimization_created: { icon: '✨', color: 'text-purple-600' },
+            optimization_applied: { icon: '✅', color: 'text-green-600' },
+            alert_created: { icon: '🔔', color: 'text-yellow-600' },
+            alert_resolved: { icon: '✓', color: 'text-green-600' },
+            tip_viewed: { icon: '👁️', color: 'text-blue-600' },
+            tip_applied: { icon: '💡', color: 'text-yellow-600' },
+            quality_scored: { icon: '⭐', color: 'text-yellow-600' },
+            settings_updated: { icon: '⚙️', color: 'text-gray-600' },
+            profile_updated: { icon: '👤', color: 'text-blue-600' },
+            api_key_added: { icon: '🔑', color: 'text-green-600' },
+            api_key_removed: { icon: '🗑️', color: 'text-red-600' },
+            file_uploaded: { icon: '📁', color: 'text-blue-600' },
+            export_generated: { icon: '📊', color: 'text-purple-600' },
+            bulk_optimization: { icon: '🚀', color: 'text-purple-600' },
+            cost_audit_completed: { icon: '📋', color: 'text-green-600' },
+            subscription_changed: { icon: '💳', color: 'text-blue-600' },
+        };
+
+        const config = typeConfig[activity.type] || { icon: '📌', color: 'text-gray-600' };
+
+        return {
+            id: activity._id,
+            icon: config.icon,
+            title: activity.title,
+            description: activity.description || '',
+            timestamp: new Date(activity.createdAt).toLocaleString(),
+            color: config.color,
+            metadata: activity.metadata
+        };
     };
 
-    const mockActivity = (activity as any)?.data || [];
+    const activities = activityData?.data?.map(formatActivity) || [];
 
     const preferences = {
         ...(profileData?.preferences),
@@ -144,13 +173,29 @@ export const Profile: React.FC = () => {
             <div className="mt-8">
                 {activeTab === 'overview' && (
                     <div className="space-y-8">
-                        <ProfileStats stats={mockStats as any} />
+                        {statsLoading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            <ProfileStats stats={stats || {
+                                totalSpent: 0,
+                                totalSaved: 0,
+                                apiCalls: 0,
+                                optimizations: 0,
+                                currentMonthSpent: 0,
+                                currentMonthSaved: 0,
+                                avgDailyCost: 0,
+                                mostUsedService: 'N/A',
+                                mostUsedModel: 'N/A',
+                                accountAge: 0,
+                                savingsRate: 0
+                            }} />
+                        )}
                     </div>
                 )}
 
                 {activeTab === 'activity' && (
                     <ProfileActivity
-                        activities={mockActivity}
+                        activities={activities}
                         loading={activityLoading}
                     />
                 )}

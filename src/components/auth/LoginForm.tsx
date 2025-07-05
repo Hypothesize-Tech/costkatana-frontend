@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { loginSchema, LoginFormData } from '@/utils/validators';
-import { useAuth } from '@/hooks';
-import { cn } from '@/utils/helpers';
+import { loginSchema, LoginFormData } from '../../utils/validators';
+import { useAuth } from '../../hooks';
+import { cn } from '../../utils/helpers';
 
 export const LoginForm = () => {
     const { login } = useAuth();
@@ -43,7 +43,7 @@ export const LoginForm = () => {
     return (
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {errors.root && (
-                <div className="rounded-md bg-danger-50 dark:bg-danger-900/50 p-4">
+                <div className="p-4 rounded-md bg-danger-50 dark:bg-danger-900/50">
                     <p className="text-sm text-danger-800 dark:text-danger-200">
                         {errors.root.message}
                     </p>
@@ -74,7 +74,7 @@ export const LoginForm = () => {
                 <label htmlFor="password" className="label">
                     Password
                 </label>
-                <div className="mt-2 relative">
+                <div className="relative mt-2">
                     <input
                         {...register('password')}
                         id="password"
@@ -84,13 +84,13 @@ export const LoginForm = () => {
                     />
                     <button
                         type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                        className="flex absolute inset-y-0 right-0 items-center pr-3"
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? (
-                            <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                            <EyeSlashIcon className="w-5 h-5 text-gray-400" />
                         ) : (
-                            <EyeIcon className="h-5 w-5 text-gray-400" />
+                            <EyeIcon className="w-5 h-5 text-gray-400" />
                         )}
                     </button>
                     {errors.password && (
@@ -101,15 +101,15 @@ export const LoginForm = () => {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
                 <div className="flex items-center">
                     <input
                         id="remember-me"
                         name="remember-me"
                         type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                        className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
                     />
-                    <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-300">
+                    <label htmlFor="remember-me" className="block ml-3 text-sm leading-6 text-gray-900 dark:text-gray-300">
                         Remember me
                     </label>
                 </div>
@@ -128,13 +128,13 @@ export const LoginForm = () => {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="btn-primary w-full"
+                    className="w-full btn-primary"
                 >
                     {isLoading ? 'Signing in...' : 'Sign in'}
                 </button>
             </div>
 
-            <p className="text-center text-sm leading-6 text-gray-500 dark:text-gray-400">
+            <p className="text-sm leading-6 text-center text-gray-500 dark:text-gray-400">
                 Not a member?{' '}
                 <Link
                     to="/register"

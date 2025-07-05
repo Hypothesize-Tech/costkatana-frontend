@@ -23,7 +23,6 @@ interface UsageListProps {
 export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageListProps) => {
     const [selectedUsage, setSelectedUsage] = useState<Usage | null>(null);
     const [copiedPrompt, setCopiedPrompt] = useState(false);
-    console.log("selectedUsage", selectedUsage)
 
     const copyPromptToClipboard = async (prompt: string) => {
         try {
@@ -236,7 +235,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                                         </h5>
                                         <button
                                             onClick={() => copyPromptToClipboard(selectedUsage.prompt)}
-                                            className="flex items-center space-x-1 px-2 py-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                                            className="flex items-center px-2 py-1 space-x-1 text-xs text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                             title="Copy prompt to clipboard"
                                         >
                                             {copiedPrompt ? (

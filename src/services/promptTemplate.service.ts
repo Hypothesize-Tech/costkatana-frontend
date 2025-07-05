@@ -1,0 +1,270 @@
+import { apiClient } from '../config/api';
+import {
+    PromptTemplate,
+    CreateTemplateRequest,
+    UpdateTemplateRequest,
+    TemplateUsage,
+    TemplateStats,
+    TemplateSearchFilters,
+    TemplateVersion,
+    TemplateCollection
+} from '../types/promptTemplate.types';
+
+export class PromptTemplateService {
+    private static baseUrl = '/prompt-templates';
+
+    // Get all templates for the current user
+    static async getTemplates(filters?: TemplateSearchFilters): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(this.baseUrl, { params: filters });
+        return response.data.data;
+    }
+
+    // Get a specific template by ID
+    static async getTemplate(templateId: string): Promise<PromptTemplate> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}`);
+        return response.data.data;
+    }
+
+    // Create a new template
+    static async createTemplate(templateData: CreateTemplateRequest): Promise<PromptTemplate> {
+        const response = await apiClient.post(this.baseUrl, templateData);
+        return response.data.data;
+    }
+
+    // Update an existing template
+    static async updateTemplate(templateId: string, updates: UpdateTemplateRequest): Promise<PromptTemplate> {
+        const response = await apiClient.put(`${this.baseUrl}/${templateId}`, updates);
+        return response.data.data;
+    }
+
+    // Delete a template
+    static async deleteTemplate(templateId: string): Promise<void> {
+        await apiClient.delete(`${this.baseUrl}/${templateId}`);
+    }
+
+    // Clone a template
+    static async cloneTemplate(templateId: string, name?: string): Promise<PromptTemplate> {
+        const response = await apiClient.post(`${this.baseUrl}/${templateId}/clone`, { name });
+        return response.data.data;
+    }
+
+    // Toggle favorite status
+    static async toggleFavorite(templateId: string): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/${templateId}/favorite`);
+    }
+
+    // Get template usage history
+    static async getTemplateUsage(
+        templateId: string,
+        page: number = 1,
+        limit: number = 20
+    ): Promise<{ usage: TemplateUsage[]; total: number; page: number; totalPages: number }> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}/usage`, {
+            params: { page, limit }
+        });
+        return response.data.data;
+    }
+
+    // Record template usage
+    static async recordUsage(
+        templateId: string,
+        usageData: {
+            variables: Record<string, any>;
+            generatedPrompt: string;
+            model: string;
+            tokens: number;
+            cost: number;
+            projectId?: string;
+        }
+    ): Promise<TemplateUsage> {
+        const response = await apiClient.post(`${this.baseUrl}/${templateId}/usage`, usageData);
+        return response.data.data;
+    }
+
+    // Rate a template
+    static async rateTemplate(
+        templateId: string,
+        rating: number,
+        comment?: string
+    ): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/${templateId}/rating`, { rating, comment });
+    }
+
+    // Get template versions
+    static async getTemplateVersions(templateId: string): Promise<TemplateVersion[]> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}/versions`);
+        return response.data.data;
+    }
+
+    // Get specific template version
+    static async getTemplateVersion(templateId: string, version: number): Promise<TemplateVersion> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}/versions/${version}`);
+        return response.data.data;
+    }
+
+    // Restore template to specific version
+    static async restoreVersion(templateId: string, version: number): Promise<PromptTemplate> {
+        const response = await apiClient.post(`${this.baseUrl}/${templateId}/versions/${version}/restore`);
+        return response.data.data;
+    }
+
+    // Share template with users
+    static async shareTemplate(
+        templateId: string,
+        shareData: {
+            userIds: string[];
+            permissions: ('view' | 'use' | 'edit' | 'share')[];
+            expiresAt?: string;
+        }
+    ): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/${templateId}/share`, shareData);
+    }
+
+    // Get shared templates
+    static async getSharedTemplates(): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(`${this.baseUrl}/shared`);
+        return response.data.data;
+    }
+
+    // Get public templates
+    static async getPublicTemplates(filters?: TemplateSearchFilters): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(`${this.baseUrl}/public`, { params: filters });
+        return response.data.data;
+    }
+
+    // Get template statistics
+    static async getTemplateStats(): Promise<TemplateStats> {
+        const response = await apiClient.get(`${this.baseUrl}/stats`);
+        return response.data.data;
+    }
+
+    // Search templates
+    static async searchTemplates(query: string, filters?: TemplateSearchFilters): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(`${this.baseUrl}/search`, {
+            params: { query, ...filters }
+        });
+        return response.data.data;
+    }
+
+    // Get template suggestions based on context
+    static async getTemplateSuggestions(context: {
+        task?: string;
+        model?: string;
+        projectId?: string;
+        tags?: string[];
+    }): Promise<PromptTemplate[]> {
+        const response = await apiClient.post(`${this.baseUrl}/suggestions`, context);
+        return response.data.data;
+    }
+
+    // Export template data
+    static async exportTemplate(
+        templateId: string,
+        format: 'json' | 'yaml' | 'txt' = 'json'
+    ): Promise<Blob> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}/export`, {
+            params: { format },
+            responseType: 'blob'
+        });
+        return response.data.data;
+    }
+
+    // Import template from file
+    static async importTemplate(file: File): Promise<PromptTemplate> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await apiClient.post(`${this.baseUrl}/import`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data.data;
+    }
+
+    // Get template collections
+    static async getCollections(): Promise<TemplateCollection[]> {
+        const response = await apiClient.get(`${this.baseUrl}/collections`);
+        return response.data;
+    }
+
+    // Create template collection
+    static async createCollection(collectionData: {
+        name: string;
+        description?: string;
+        templates: string[];
+        isPublic?: boolean;
+        tags?: string[];
+    }): Promise<TemplateCollection> {
+        const response = await apiClient.post(`${this.baseUrl}/collections`, collectionData);
+        return response.data.data;
+    }
+
+    // Add template to collection
+    static async addToCollection(collectionId: string, templateId: string): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/collections/${collectionId}/templates`, { templateId });
+    }
+
+    // Remove template from collection
+    static async removeFromCollection(collectionId: string, templateId: string): Promise<void> {
+        await apiClient.delete(`${this.baseUrl}/collections/${collectionId}/templates/${templateId}`);
+    }
+
+    // Generate prompt from template
+    static async generatePrompt(
+        templateId: string,
+        variables: Record<string, any>
+    ): Promise<{
+        generatedPrompt: string;
+        estimatedTokens: number;
+        estimatedCost: number;
+    }> {
+        const response = await apiClient.post(`${this.baseUrl}/${templateId}/generate`, { variables });
+        return response.data.data;
+    }
+
+    // Validate template variables
+    static async validateTemplate(templateData: {
+        content: string;
+        variables: any[];
+    }): Promise<{
+        isValid: boolean;
+        errors: string[];
+        warnings: string[];
+    }> {
+        const response = await apiClient.post(`${this.baseUrl}/validate`, templateData);
+        return response.data.data;
+    }
+
+    // Get template analytics
+    static async getTemplateAnalytics(
+        templateId: string,
+        period: 'week' | 'month' | 'quarter' | 'year' = 'month'
+    ): Promise<{
+        usage: { date: string; count: number; tokens: number; cost: number }[];
+        topUsers: { userId: string; name: string; usage: number }[];
+        averageRating: number;
+        totalSavings: number;
+    }> {
+        const response = await apiClient.get(`${this.baseUrl}/${templateId}/analytics`, {
+            params: { period }
+        });
+        return response.data.data;
+    }
+
+    // Get recommended templates for user
+    static async getRecommendedTemplates(limit: number = 10): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(`${this.baseUrl}/recommendations`, {
+            params: { limit }
+        });
+        return response.data.data;
+    }
+
+    // Get trending templates
+    static async getTrendingTemplates(period: 'day' | 'week' | 'month' = 'week'): Promise<PromptTemplate[]> {
+        const response = await apiClient.get(`${this.baseUrl}/trending`, {
+            params: { period }
+        });
+        return response.data.data;
+    }
+} 

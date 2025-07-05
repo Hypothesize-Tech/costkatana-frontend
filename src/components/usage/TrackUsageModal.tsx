@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { usageService } from '@/services/usage.service';
+import { UsageService } from '@/services/usage.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { calculateCost } from '@/utils/cost';
 import { AxiosError } from 'axios';
+import { OptimizationWidget } from '../optimization';
 
 interface TrackUsageModalProps {
     isOpen: boolean;
@@ -347,9 +348,10 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
     const { showNotification } = useNotifications();
     const [formData, setFormData] = useState(initialFormData);
     const [autoCalculate, setAutoCalculate] = useState(true);
+    const [showOptimizationWidget, setShowOptimizationWidget] = useState(false);
 
     const trackUsageMutation = useMutation({
-        mutationFn: usageService.trackUsage,
+        mutationFn: (data: any) => UsageService.trackUsage(data),
         onSuccess: () => {
             showNotification('Usage tracked successfully', 'success');
             queryClient.invalidateQueries({ queryKey: ['usage'] });
@@ -391,6 +393,12 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             }
         }
         setFormData(newFormData);
+    };
+
+    const handleOptimizationApply = (optimizedPrompt: string, _optimization: any) => {
+        setFormData({ ...formData, prompt: optimizedPrompt });
+        setShowOptimizationWidget(false);
+        showNotification('Prompt optimized successfully', 'success');
     };
 
     const handleMetadataChange = (field: string, value: string) => {
@@ -477,9 +485,20 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
                         {/* Prompt and Response */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                                Prompt
-                            </label>
+                            <div className="flex justify-between items-center mb-1">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Prompt
+                                </label>
+                                {formData.prompt && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowOptimizationWidget(!showOptimizationWidget)}
+                                        className="text-sm text-indigo-600 hover:text-indigo-500"
+                                    >
+                                        {showOptimizationWidget ? 'Hide' : 'Optimize'} Prompt
+                                    </button>
+                                )}
+                            </div>
                             <textarea
                                 value={formData.prompt}
                                 onChange={(e) => handleChange('prompt', e.target.value)}
@@ -489,6 +508,18 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                                 required
                             />
                         </div>
+
+                        {/* Optimization Widget */}
+                        {showOptimizationWidget && formData.prompt && (
+                            <div className="p-4 mt-4 bg-gray-50 rounded-lg">
+                                <OptimizationWidget
+                                    prompt={formData.prompt}
+                                    model={formData.model}
+                                    service={formData.provider}
+                                    onApplyOptimization={handleOptimizationApply}
+                                />
+                            </div>
+                        )}
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700">

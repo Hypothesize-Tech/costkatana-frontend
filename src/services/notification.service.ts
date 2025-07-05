@@ -210,7 +210,7 @@ class NotificationService {
             {
                 action: {
                     label: 'Optimize Now',
-                    handler: () => window.location.href = `/optimization?prompt=${promptId}`,
+                    handler: () => window.location.href = `/optimizations?prompt=${promptId}`,
                 },
             }
         );

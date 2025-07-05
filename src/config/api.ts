@@ -2,7 +2,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { authService } from '../services/auth.service';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 // Create axios instance
 const api: AxiosInstance = axios.create({
@@ -110,4 +110,6 @@ export const createEventSource = (path: string): EventSource => {
     return new EventSource(`${API_URL}/api${path}?token=${token}`);
 };
 
+// Export both default and named exports for compatibility
+export const apiClient = api;
 export default api;
