@@ -298,12 +298,29 @@ class AnalyticsService {
 
     static async compareProjects(filters: any = {}) {
         try {
-            const response = await apiClient.get('/analytics/projects/compare', {
-                params: filters
-            });
+            // Manually construct query parameters to ensure proper array handling
+            const params = new URLSearchParams();
+
+            // Add individual projectIds as separate parameters
+            if (filters.projectIds && Array.isArray(filters.projectIds)) {
+                filters.projectIds.forEach((id: string) => {
+                    params.append('projectIds', id);
+                });
+            }
+
+            // Add other parameters
+            if (filters.startDate) params.append('startDate', filters.startDate);
+            if (filters.endDate) params.append('endDate', filters.endDate);
+            if (filters.metric) params.append('metric', filters.metric);
+
+            const response = await apiClient.get(`/analytics/projects/compare?${params.toString()}`);
             return response.data.data;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error comparing projects:', error);
+            console.error('Request URL:', error.config?.url);
+            console.error('Request params:', error.config?.params);
+            console.error('Response status:', error.response?.status);
+            console.error('Response data:', error.response?.data);
             throw error;
         }
     }

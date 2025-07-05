@@ -91,7 +91,7 @@ interface ProjectComparison {
         budget: any;
         budgetUtilization: number;
     }>;
-    summary: {
+    summary?: {
         totalProjects: number;
         totalCost: number;
         totalTokens: number;
@@ -266,7 +266,20 @@ export const Analytics: React.FC = () => {
             filters.metric = 'cost';
 
             const comparisonData = await AnalyticsService.compareProjects(filters);
-            setComparison(comparisonData);
+
+            // Defensive: ensure summary exists and is valid
+            let summary = comparisonData.summary;
+            if (!summary) {
+                // Compute summary from projects array if missing
+                const projectsArr = Array.isArray(comparisonData.projects) ? comparisonData.projects : [];
+                summary = {
+                    totalProjects: projectsArr.length,
+                    totalCost: projectsArr.reduce((acc, p) => acc + (p.metrics?.cost || 0), 0),
+                    totalTokens: projectsArr.reduce((acc, p) => acc + (p.metrics?.tokens || 0), 0),
+                    totalRequests: projectsArr.reduce((acc, p) => acc + (p.metrics?.requests || 0), 0),
+                };
+            }
+            setComparison({ ...comparisonData, summary });
         } catch (error) {
             console.error('Error fetching project comparison:', error);
             showNotification('Failed to load project comparison', 'error');
@@ -519,7 +532,7 @@ export const Analytics: React.FC = () => {
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Total Projects</p>
                                         <p className="text-2xl font-bold text-gray-900">
-                                            {comparison.summary.totalProjects}
+                                            {comparison.summary?.totalProjects ?? 0}
                                         </p>
                                     </div>
                                 </div>
@@ -527,7 +540,7 @@ export const Analytics: React.FC = () => {
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Combined Cost</p>
                                         <p className="text-2xl font-bold text-gray-900">
-                                            {formatCurrency(comparison.summary.totalCost)}
+                                            {formatCurrency(comparison.summary?.totalCost ?? 0)}
                                         </p>
                                     </div>
                                 </div>
@@ -535,7 +548,7 @@ export const Analytics: React.FC = () => {
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Combined Tokens</p>
                                         <p className="text-2xl font-bold text-gray-900">
-                                            {comparison.summary.totalTokens.toLocaleString()}
+                                            {(comparison.summary?.totalTokens ?? 0).toLocaleString()}
                                         </p>
                                     </div>
                                 </div>
@@ -543,7 +556,7 @@ export const Analytics: React.FC = () => {
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Combined Requests</p>
                                         <p className="text-2xl font-bold text-gray-900">
-                                            {comparison.summary.totalRequests.toLocaleString()}
+                                            {(comparison.summary?.totalRequests ?? 0).toLocaleString()}
                                         </p>
                                     </div>
                                 </div>
@@ -581,7 +594,7 @@ export const Analytics: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                            {comparison.projects.map((project) => (
+                                            {(comparison.projects || []).map((project) => (
                                                 <tr key={project.projectId}>
                                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {project.projectName}
