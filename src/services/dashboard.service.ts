@@ -33,15 +33,24 @@ export interface DashboardData {
         timestamp: string;
         cost: number;
     }>;
+    projectBreakdown?: Array<{
+        projectId: string;
+        projectName: string;
+        cost: number;
+        requests: number;
+        percentage: number;
+        budgetUtilization?: number;
+    }>;
 }
 
 export class DashboardService {
     /**
      * Get dashboard data from analytics endpoint
      */
-    static async getDashboardData(): Promise<DashboardData> {
+    static async getDashboardData(projectId?: string): Promise<DashboardData> {
         try {
-            const response = await apiClient.get('/analytics/dashboard');
+            const endpoint = projectId ? `/analytics/projects/${projectId}` : '/analytics/dashboard';
+            const response = await apiClient.get(endpoint);
             const data = response.data?.data || response.data; // Support both .data.data and .data
 
             // Defensive helpers
@@ -91,11 +100,24 @@ export class DashboardService {
                 }))
                 : [];
 
+            // 5. Map projectBreakdown if available
+            const projectBreakdown = Array.isArray(data.projectBreakdown)
+                ? data.projectBreakdown.map((project: any) => ({
+                    projectId: project.projectId,
+                    projectName: project.projectName,
+                    cost: safeNumber(project.totalCost),
+                    requests: safeNumber(project.totalRequests),
+                    percentage: 0, // Will be calculated in frontend
+                    budgetUtilization: 0 // Will be calculated if budget data is available
+                }))
+                : [];
+
             return {
                 stats,
                 chartData,
                 serviceBreakdown,
-                recentActivity
+                recentActivity,
+                projectBreakdown
             };
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
@@ -120,9 +142,10 @@ export class DashboardService {
     /**
      * Get dashboard data with date range
      */
-    static async getDashboardDataByRange(startDate: string, endDate: string): Promise<DashboardData> {
+    static async getDashboardDataByRange(startDate: string, endDate: string, projectId?: string): Promise<DashboardData> {
         try {
-            const response = await apiClient.get('/analytics', {
+            const endpoint = projectId ? `/analytics/projects/${projectId}` : '/analytics';
+            const response = await apiClient.get(endpoint, {
                 params: { startDate, endDate }
             });
             const data = response.data.data || response.data;

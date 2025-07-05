@@ -40,7 +40,7 @@ export const IntegrationDashboard: React.FC = () => {
 
     const integrationStatus = {
         apiKeysConfigured: apiKeys?.length || 0,
-        projectsWithUsage: projects?.filter(p => p.usage?.totalCost && p.usage.totalCost > 0).length || 0,
+        projectsWithUsage: projects?.filter(p => p.spending?.current && p.spending.current > 0).length || 0,
         totalProjects: projects?.length || 0,
         recentActivity: analytics?.timeline?.slice(-7) || []
     };

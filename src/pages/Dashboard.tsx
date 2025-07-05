@@ -92,8 +92,8 @@ export const Dashboard: React.FC = () => {
 
             // Use date range method if filters are provided
             const dashboardData = filters.startDate && filters.endDate
-                ? await DashboardService.getDashboardDataByRange(filters.startDate, filters.endDate)
-                : await DashboardService.getDashboardData();
+                ? await DashboardService.getDashboardDataByRange(filters.startDate, filters.endDate, projectId)
+                : await DashboardService.getDashboardData(projectId);
 
             // Get recent activity separately
             const recentActivityData = await DashboardService.getRecentActivity(5);
@@ -154,6 +154,16 @@ export const Dashboard: React.FC = () => {
                 percentageChange: 0
             }));
 
+            // Calculate percentages for project breakdown
+            let processedProjectBreakdown = dashboardData.projectBreakdown;
+            if (processedProjectBreakdown && processedProjectBreakdown.length > 0) {
+                const totalCost = processedProjectBreakdown.reduce((sum, project) => sum + project.cost, 0);
+                processedProjectBreakdown = processedProjectBreakdown.map(project => ({
+                    ...project,
+                    percentage: totalCost > 0 ? (project.cost / totalCost) * 100 : 0
+                }));
+            }
+
             // Transform the data to match component expectations
             const transformedData: ExtendedDashboardData = {
                 ...dashboardData,
@@ -163,8 +173,7 @@ export const Dashboard: React.FC = () => {
                 })),
                 serviceBreakdown: dashboardData.serviceBreakdown, // Keep original for dashboard service
                 recentActivity: recentActivityData.length > 0 ? recentActivityData : dashboardData.recentActivity,
-                // Add empty projectBreakdown if viewing all projects
-                projectBreakdown: selectedProject === 'all' ? [] : undefined
+                projectBreakdown: processedProjectBreakdown
             };
 
             // Store the transformed service breakdown separately for the ServiceBreakdown component
