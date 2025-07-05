@@ -14,7 +14,7 @@ class AlertService {
         sort?: string;
         order?: 'asc' | 'desc';
     }): Promise<PaginatedResponse<Alert>> {
-        const response = await api.get('/users/alerts', { params });
+        const response = await api.get('/user/alerts', { params });
         return response.data;
     }
 
@@ -22,7 +22,7 @@ class AlertService {
         success: boolean;
         data: Alert;
     }> {
-        const response = await api.get(`/users/alerts/${id}`);
+        const response = await api.get(`/user/alerts/${id}`);
         return response.data;
     }
 
@@ -30,7 +30,7 @@ class AlertService {
         success: boolean;
         message: string;
     }> {
-        const response = await api.put(`/users/alerts/${id}/read`);
+        const response = await api.put(`/user/alerts/${id}/read`);
         return response.data;
     }
 
@@ -39,7 +39,7 @@ class AlertService {
         message: string;
         updated: number;
     }> {
-        const response = await api.put('/users/alerts/read-all');
+        const response = await api.put('/user/alerts/read-all');
         return response.data;
     }
 
@@ -47,7 +47,7 @@ class AlertService {
         success: boolean;
         message: string;
     }> {
-        const response = await api.delete(`/users/alerts/${id}`);
+        const response = await api.delete(`/user/alerts/${id}`);
         return response.data;
     }
 
@@ -74,7 +74,7 @@ class AlertService {
             };
         };
     }> {
-        const response = await api.get('/users/alerts/settings');
+        const response = await api.get('/user/alerts/settings');
         return response.data;
     }
 
@@ -82,7 +82,7 @@ class AlertService {
         success: boolean;
         message: string;
     }> {
-        const response = await api.put('/users/alerts/settings', settings);
+        const response = await api.put('/user/alerts/settings', settings);
         return response.data;
     }
 
@@ -90,7 +90,7 @@ class AlertService {
         success: boolean;
         message: string;
     }> {
-        const response = await api.post('/users/alerts/test', { type });
+        const response = await api.post('/user/alerts/test', { type });
         return response.data;
     }
 
@@ -104,7 +104,7 @@ class AlertService {
             low: number;
         };
     }> {
-        const response = await api.get('/users/alerts/unread-count');
+        const response = await api.get('/user/alerts/unread-count');
         return response.data;
     }
 
@@ -112,7 +112,7 @@ class AlertService {
         success: boolean;
         message: string;
     }> {
-        const response = await api.put(`/users/alerts/${id}/snooze`, { until });
+        const response = await api.put(`/user/alerts/${id}/snooze`, { until });
         return response.data;
     }
 
@@ -142,7 +142,7 @@ class AlertService {
             };
         };
     }> {
-        const response = await api.get('/users/alerts/history', { params });
+        const response = await api.get('/user/alerts/history', { params });
         return response.data;
     }
 }
