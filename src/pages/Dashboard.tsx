@@ -4,28 +4,20 @@ import {
     CurrencyDollarIcon,
     ClockIcon,
     CpuChipIcon,
-    FunnelIcon,
-    ArrowPathIcon
+    ArrowPathIcon,
+    ChevronDownIcon
 } from '@heroicons/react/24/outline';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { CostChart } from '../components/dashboard/CostChart';
 import { ServiceBreakdown } from '../components/dashboard/ServiceBreakdown';
 import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { DashboardService, DashboardData } from '../services/dashboard.service';
-import { ProjectService } from '../services/project.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
 import { ServiceAnalytics } from '../types/analytics.types';
-
-interface Project {
-    _id: string;
-    name: string;
-    description?: string;
-    budget?: {
-        amount: number;
-        currency: string;
-    };
-}
+import { useProject } from '@/contexts/ProjectContext';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 
 // Extended DashboardData interface to include projectBreakdown
 interface ExtendedDashboardData extends DashboardData {
@@ -41,24 +33,11 @@ interface ExtendedDashboardData extends DashboardData {
 
 export const Dashboard: React.FC = () => {
     const [data, setData] = useState<ExtendedDashboardData | null>(null);
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [selectedProject, setSelectedProject] = useState<string>('all');
     const [timeRange, setTimeRange] = useState<string>('7d');
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [userToken, setUserToken] = useState<string>('');
     const { showNotification } = useNotification();
-
-    useEffect(() => {
-        let token = localStorage.getItem('userToken') || '';
-        if (!token) {
-            token = window.prompt('Please enter your API token:', '') || '';
-            if (token) {
-                localStorage.setItem('userToken', token);
-            }
-        }
-        setUserToken(token);
-    }, []);
+    const { selectedProject, setSelectedProject, projects, getSelectedProjectName } = useProject();
 
     const fetchDashboardData = async (projectId?: string) => {
         try {
@@ -189,18 +168,7 @@ export const Dashboard: React.FC = () => {
         }
     };
 
-    const fetchProjects = async () => {
-        try {
-            const userProjects = await ProjectService.getProjects();
-            setProjects(userProjects);
-        } catch (error) {
-            console.error('Error fetching projects:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchProjects();
-    }, []);
+    // Projects are now managed by the global ProjectContext
 
     useEffect(() => {
         const projectId = selectedProject === 'all' ? undefined : selectedProject;
@@ -210,12 +178,6 @@ export const Dashboard: React.FC = () => {
     const handleRefresh = () => {
         const projectId = selectedProject === 'all' ? undefined : selectedProject;
         fetchDashboardData(projectId);
-    };
-
-    const getSelectedProjectName = () => {
-        if (selectedProject === 'all') return 'All Projects';
-        const project = projects.find(p => p._id === selectedProject);
-        return project?.name || 'Unknown Project';
     };
 
     if (loading) {
@@ -250,19 +212,44 @@ export const Dashboard: React.FC = () => {
                 <div className="flex flex-col gap-3 sm:flex-row">
                     {/* Project Filter */}
                     <div className="relative">
-                        <select
-                            value={selectedProject}
-                            onChange={(e) => setSelectedProject(e.target.value)}
-                            className="px-4 py-2 pr-8 text-sm bg-white rounded-lg border border-gray-300 appearance-none dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="all">All Projects</option>
-                            {projects.map((project) => (
-                                <option key={project._id} value={project._id}>
-                                    {project.name}
-                                </option>
-                            ))}
-                        </select>
-                        <FunnelIcon className="absolute right-2 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+                        <Menu as="div" className="inline-block relative text-left">
+                            <div>
+                                <Menu.Button className="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-gray-900 bg-white rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+                                    {selectedProject === 'all' ? 'All Projects' : getSelectedProjectName()}
+                                    <ChevronDownIcon className="-mr-1 ml-2 w-5 h-5" aria-hidden="true" />
+                                </Menu.Button>
+                            </div>
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-100"
+                                enterFrom="transform opacity-0 scale-95"
+                                enterTo="transform opacity-100 scale-100"
+                                leave="transition ease-in duration-75"
+                                leaveFrom="transform opacity-100 scale-100"
+                                leaveTo="transform opacity-0 scale-95"
+                            >
+                                <Menu.Items className="absolute right-0 z-10 mt-2 w-56 bg-white rounded-md ring-1 ring-black ring-opacity-5 shadow-2xl origin-top-right focus:outline-none">
+                                    <div className="py-1">
+                                        {projects.map((project) => (
+                                            <Menu.Item key={project._id}>
+                                                {({ active }) => (
+                                                    <a
+                                                        href={`#${project._id}`}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setSelectedProject(project._id);
+                                                        }}
+                                                        className={`${active ? 'text-gray-900 bg-gray-100' : 'text-gray-500'} group flex items-center px-4 py-2 text-sm`}
+                                                    >
+                                                        {project.name}
+                                                    </a>
+                                                )}
+                                            </Menu.Item>
+                                        ))}
+                                    </div>
+                                </Menu.Items>
+                            </Transition>
+                        </Menu>
                     </div>
 
                     {/* Time Range Filter */}

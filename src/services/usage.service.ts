@@ -12,6 +12,7 @@ class UsageService {
         model?: string;
         sortBy?: string;
         sortOrder?: 'asc' | 'desc';
+        projectId?: string;
     }): Promise<{
         usage: Usage[];
         total: number;
@@ -32,13 +33,19 @@ class UsageService {
         };
     }> {
         try {
-            const response = await apiClient.get('/usage', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+
+            const response = await apiClient.get('/usage', { params: requestParams });
             const data = response.data.data || response.data;
 
             // Transform backend data to match frontend expectations
             const transformedUsage = (data || []).map((item: any) => ({
                 _id: item._id,
                 userId: typeof item.userId === 'object' ? item.userId._id : item.userId,
+                projectId: item.projectId,
                 service: item.service,
                 model: item.model,
                 prompt: item.prompt,
@@ -117,7 +124,7 @@ class UsageService {
         }
     }
 
-    async createUsage(usageData: Partial<Usage>): Promise<Usage> {
+    async createUsage(usageData: Partial<Usage> & { projectId?: string }): Promise<Usage> {
         try {
             const response = await apiClient.post('/usage', usageData);
             return response.data.data;
@@ -159,6 +166,7 @@ class UsageService {
         format?: 'csv' | 'json';
         skipValidation?: boolean;
         dryRun?: boolean;
+        projectId?: string;
     }): Promise<{
         success: boolean;
         imported: number;
@@ -171,7 +179,11 @@ class UsageService {
             formData.append('file', file);
             if (options) {
                 Object.entries(options).forEach(([key, value]) => {
-                    formData.append(key, value.toString());
+                    if (key === 'projectId' && value && value !== 'all') {
+                        formData.append(key, value.toString());
+                    } else if (key !== 'projectId') {
+                        formData.append(key, value.toString());
+                    }
                 });
             }
 
@@ -187,7 +199,7 @@ class UsageService {
         }
     }
 
-    async getUsageStats(timeframe: '24h' | '7d' | '30d' | '90d' = '7d'): Promise<{
+    async getUsageStats(timeframe: '24h' | '7d' | '30d' | '90d' = '7d', projectId?: string): Promise<{
         totalCost: number;
         totalCalls: number;
         avgCostPerCall: number;
@@ -203,9 +215,11 @@ class UsageService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/usage/stats', {
-                params: { timeframe }
-            });
+            const params: any = { timeframe };
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+            const response = await apiClient.get('/usage/stats', { params });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching usage stats:', error);
@@ -222,7 +236,7 @@ class UsageService {
         }
     }
 
-    async getUsageSummary(timeframe: '24h' | '7d' | '30d' | '90d' = '7d'): Promise<{
+    async getUsageSummary(timeframe: '24h' | '7d' | '30d' | '90d' = '7d', projectId?: string): Promise<{
         totalCost: number;
         totalCalls: number;
         avgCostPerCall: number;
@@ -238,9 +252,11 @@ class UsageService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/usage/stats', {
-                params: { timeframe }
-            });
+            const params: any = { timeframe };
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+            const response = await apiClient.get('/usage/stats', { params });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching usage summary:', error);
@@ -263,6 +279,7 @@ class UsageService {
         groupBy: 'hour' | 'day' | 'week';
         service?: string;
         model?: string;
+        projectId?: string;
     }): Promise<{
         trends: Array<{
             date: string;
@@ -277,15 +294,19 @@ class UsageService {
     }> {
         try {
             // Use analytics endpoint for trends
-            const response = await apiClient.get('/analytics', {
-                params: {
-                    startDate: this.getStartDate(params.timeframe),
-                    endDate: new Date().toISOString(),
-                    groupBy: params.groupBy,
-                    service: params.service,
-                    model: params.model
-                }
-            });
+            const analyticsParams: any = {
+                startDate: this.getStartDate(params.timeframe),
+                endDate: new Date().toISOString(),
+                groupBy: params.groupBy,
+                service: params.service,
+                model: params.model
+            };
+
+            if (params.projectId && params.projectId !== 'all') {
+                analyticsParams.projectId = params.projectId;
+            }
+
+            const response = await apiClient.get('/analytics', { params: analyticsParams });
 
             const timeline = response.data.data.timeline || [];
             return {
@@ -311,7 +332,7 @@ class UsageService {
         }
     }
 
-    async getServiceBreakdown(timeframe: '24h' | '7d' | '30d' | '90d' = '7d'): Promise<{
+    async getServiceBreakdown(timeframe: '24h' | '7d' | '30d' | '90d' = '7d', projectId?: string): Promise<{
         services: Array<{
             service: string;
             cost: number;
@@ -326,12 +347,16 @@ class UsageService {
     }> {
         try {
             // Use analytics endpoint for service breakdown
-            const response = await apiClient.get('/analytics', {
-                params: {
-                    startDate: this.getStartDate(timeframe),
-                    endDate: new Date().toISOString()
-                }
-            });
+            const params: any = {
+                startDate: this.getStartDate(timeframe),
+                endDate: new Date().toISOString()
+            };
+
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/analytics', { params });
 
             const services = response.data.data.breakdown?.services || [];
             return {
@@ -355,6 +380,7 @@ class UsageService {
         timeframe?: '24h' | '7d' | '30d' | '90d';
         limit?: number;
         metric?: 'cost' | 'calls';
+        projectId?: string;
     }): Promise<{
         users: Array<{
             userId: string;
@@ -367,7 +393,11 @@ class UsageService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/usage/top-users', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/usage/top-users', { params: requestParams });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching top users:', error);
@@ -384,10 +414,15 @@ class UsageService {
         service?: string;
         model?: string;
         includeDetails?: boolean;
+        projectId?: string;
     }): Promise<Blob> {
         try {
+            const requestParams: any = { ...params };
+            if (params.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
             const response = await apiClient.get('/usage/export', {
-                params,
+                params: requestParams,
                 responseType: 'blob',
             });
             return response.data;
@@ -397,7 +432,7 @@ class UsageService {
         }
     }
 
-    async getUsageInsights(timeframe: '7d' | '30d' | '90d' = '30d'): Promise<{
+    async getUsageInsights(timeframe: '7d' | '30d' | '90d' = '30d', projectId?: string): Promise<{
         insights: Array<{
             type: 'cost_spike' | 'unusual_pattern' | 'optimization_opportunity' | 'efficiency_gain';
             title: string;
@@ -414,12 +449,16 @@ class UsageService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/analytics/insights', {
-                params: {
-                    startDate: this.getStartDate(timeframe),
-                    endDate: new Date().toISOString()
-                }
-            });
+            const params: any = {
+                startDate: this.getStartDate(timeframe),
+                endDate: new Date().toISOString()
+            };
+
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/analytics/insights', { params });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching usage insights:', error);
@@ -503,9 +542,19 @@ class UsageService {
         suggestions?: string[];
     }> {
         try {
-            const response = await apiClient.get('/usage/search', {
-                params: { q: query, ...filters }
-            });
+            const requestParams: any = { q: query };
+            if (filters) {
+                Object.entries(filters).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null) {
+                        if (key === 'projectId' && value === 'all') {
+                            // Don't include projectId if it's 'all'
+                            return;
+                        }
+                        requestParams[key] = value;
+                    }
+                });
+            }
+            const response = await apiClient.get('/usage/search', { params: requestParams });
             return response.data.data;
         } catch (error) {
             console.error('Error searching usage:', error);
@@ -528,6 +577,7 @@ class UsageService {
         estimatedCost: number;
         responseTime: number;
         metadata: Record<string, any>;
+        projectId?: string;
     }): Promise<Usage> {
         try {
             const response = await apiClient.post('/usage', usageData);
@@ -544,9 +594,14 @@ class UsageService {
         provider?: string;
         model?: string;
         limit?: number;
+        projectId?: string;
     }): Promise<Usage[]> {
         try {
-            const response = await apiClient.get('/usage', { params });
+            const requestParams: any = { ...params };
+            if (params.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/usage', { params: requestParams });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching usage history:', error);

@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { ProjectProvider } from './contexts/ProjectContext';
 
 // Components
 import { Layout } from './components/common/Layout';
@@ -37,68 +38,70 @@ function App() {
             <AuthProvider>
                 <ThemeProvider>
                     <NotificationProvider>
-                        <ErrorBoundary>
-                            <Routes>
-                                {/* Public routes */}
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/register" element={<Register />} />
+                        <ProjectProvider>
+                            <ErrorBoundary>
+                                <Routes>
+                                    {/* Public routes */}
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/register" element={<Register />} />
 
-                                {/* Protected routes */}
-                                <Route
-                                    path="/"
-                                    element={
-                                        <ProtectedRoute>
-                                            <Layout />
-                                        </ProtectedRoute>
-                                    }
-                                >
+                                    {/* Protected routes */}
                                     <Route
-                                        index
+                                        path="/"
                                         element={
-                                            <Navigate
-                                                to="/dashboard"
-                                                replace
-                                            />
+                                            <ProtectedRoute>
+                                                <Layout />
+                                            </ProtectedRoute>
                                         }
-                                    />
-                                    <Route
-                                        path="dashboard"
-                                        element={<Dashboard />}
-                                    />
-                                    <Route path="usage" element={<Usage />} />
-                                    <Route
-                                        path="analytics"
-                                        element={<Analytics />}
-                                    />
-                                    <Route
-                                        path="optimizations"
-                                        element={<Optimization />}
-                                    />
-                                    <Route
-                                        path="optimizations/wizard"
-                                        element={<CostAuditWizard />}
-                                    />
-                                    <Route
-                                        path="projects"
-                                        element={<Projects />}
-                                    />
-                                    <Route
-                                        path="templates"
-                                        element={<PromptTemplates />}
-                                    />
-                                    <Route
-                                        path="settings"
-                                        element={<Settings />}
-                                    />
-                                    <Route path="profile" element={<Profile />} />
-                                    <Route path="alerts" element={<Alerts />} />
-                                    <Route path="integration" element={<Integration />} />
-                                </Route>
+                                    >
+                                        <Route
+                                            index
+                                            element={
+                                                <Navigate
+                                                    to="/dashboard"
+                                                    replace
+                                                />
+                                            }
+                                        />
+                                        <Route
+                                            path="dashboard"
+                                            element={<Dashboard />}
+                                        />
+                                        <Route path="usage" element={<Usage />} />
+                                        <Route
+                                            path="analytics"
+                                            element={<Analytics />}
+                                        />
+                                        <Route
+                                            path="optimizations"
+                                            element={<Optimization />}
+                                        />
+                                        <Route
+                                            path="optimizations/wizard"
+                                            element={<CostAuditWizard />}
+                                        />
+                                        <Route
+                                            path="projects"
+                                            element={<Projects />}
+                                        />
+                                        <Route
+                                            path="templates"
+                                            element={<PromptTemplates />}
+                                        />
+                                        <Route
+                                            path="settings"
+                                            element={<Settings />}
+                                        />
+                                        <Route path="profile" element={<Profile />} />
+                                        <Route path="alerts" element={<Alerts />} />
+                                        <Route path="integration" element={<Integration />} />
+                                    </Route>
 
-                                {/* 404 page */}
-                                <Route path="*" element={<NotFound />} />
-                            </Routes>
-                        </ErrorBoundary>
+                                    {/* 404 page */}
+                                    <Route path="*" element={<NotFound />} />
+                                </Routes>
+                            </ErrorBoundary>
+                        </ProjectProvider>
                     </NotificationProvider>
                 </ThemeProvider>
             </AuthProvider>

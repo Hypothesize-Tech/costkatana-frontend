@@ -3,6 +3,7 @@ export type AIService = 'openai' | 'aws-bedrock' | 'google-ai' | 'anthropic' | '
 export interface Usage {
     _id: string;
     userId: string;
+    projectId?: string;
     service: AIService;
     model: string;
     prompt: string;
@@ -64,6 +65,7 @@ export interface ModelBreakdown {
 }
 
 export interface UsageFilters {
+    projectId?: string;
     service?: AIService;
     model?: string;
     startDate?: string;
@@ -74,6 +76,7 @@ export interface UsageFilters {
 }
 
 export interface TrackUsageData {
+    projectId?: string;
     service: AIService;
     model: string;
     prompt: string;

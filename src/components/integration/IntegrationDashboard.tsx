@@ -17,7 +17,11 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ApiKeyIntegration } from './ApiKeyIntegration';
 import { formatCurrency } from '../../utils/formatters';
 
-export const IntegrationDashboard: React.FC = () => {
+interface IntegrationDashboardProps {
+    projectId?: string;
+}
+
+export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({ projectId }) => {
     const [showIntegrationModal, setShowIntegrationModal] = useState(false);
 
     const { data: apiKeys, isLoading: loadingKeys } = useQuery(
@@ -31,10 +35,11 @@ export const IntegrationDashboard: React.FC = () => {
     );
 
     const { data: analytics, isLoading: loadingAnalytics } = useQuery(
-        ['analytics-overview'],
+        ['analytics-overview', projectId],
         () => analyticsService.getAnalytics({
             startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            endDate: new Date().toISOString()
+            endDate: new Date().toISOString(),
+            projectId: projectId && projectId !== 'all' ? projectId : undefined
         })
     );
 

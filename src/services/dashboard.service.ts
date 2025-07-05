@@ -1,6 +1,7 @@
 // src/services/dashboard.service.ts
 import api from '../config/api';
 import { apiClient } from '../config/api';
+import { analyticsService } from './analytics.service';
 
 export interface DashboardStats {
     totalCost: number;
@@ -44,84 +45,68 @@ export interface DashboardData {
 }
 
 export class DashboardService {
+    private static cache = new Map<string, { data: any; timestamp: number }>();
+    private static CACHE_TTL = 60000; // 1 minute
+
     /**
      * Get dashboard data from analytics endpoint
      */
     static async getDashboardData(projectId?: string): Promise<DashboardData> {
         try {
-            const endpoint = projectId ? `/analytics/projects/${projectId}` : '/analytics/dashboard';
-            const response = await apiClient.get(endpoint);
-            const data = response.data?.data || response.data; // Support both .data.data and .data
+            const cacheKey = `dashboard_${projectId || 'all'}`;
+            const cached = this.cache.get(cacheKey);
 
-            // Defensive helpers
+            if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+                return cached.data;
+            }
+
             const safeNumber = (val: any) => typeof val === 'number' && !isNaN(val) ? val : 0;
 
-            // 1. Map stats from new API structure
-            const overview = data.overview || {};
-            const stats = {
-                totalCost: safeNumber(overview.totalCost?.value),
-                totalTokens: safeNumber(data.charts?.costOverTime?.reduce((sum: number, item: any) => sum + (item.tokens || 0), 0)),
-                totalRequests: safeNumber(overview.totalCalls?.value),
-                averageCostPerRequest: safeNumber(overview.avgCostPerCall?.value),
-                costChange: safeNumber(overview.totalCost?.change?.percentage),
-                tokensChange: 0, // Not provided directly
-                requestsChange: safeNumber(overview.totalCalls?.change?.percentage)
-            };
+            const response = await analyticsService.getDashboardData(projectId);
 
-            // 2. Map chartData from costOverTime
-            const chartData = Array.isArray(data.charts?.costOverTime)
-                ? data.charts.costOverTime.map((item: any) => ({
+            // Ensure the response has the expected structure
+            const overview = response.overview || {};
+            const charts = response.charts || {};
+
+            const dashboardData: DashboardData = {
+                stats: {
+                    totalCost: safeNumber(overview.totalCost?.value),
+                    totalTokens: safeNumber(overview.totalTokens?.value || charts.costOverTime?.reduce((sum: number, item: any) => sum + (safeNumber(item.tokens)), 0)),
+                    totalRequests: safeNumber(overview.totalCalls?.value),
+                    averageCostPerRequest: safeNumber(overview.avgCostPerCall?.value),
+                    costChange: safeNumber(overview.totalCost?.change?.percentage),
+                    tokensChange: safeNumber(overview.totalTokens?.change?.percentage),
+                    requestsChange: safeNumber(overview.totalCalls?.change?.percentage),
+                },
+                chartData: (charts.costOverTime || []).map((item: any) => ({
                     date: item.date,
                     cost: safeNumber(item.cost),
                     tokens: safeNumber(item.tokens),
-                    requests: safeNumber(item.calls)
+                    requests: safeNumber(item.requests || item.calls),
+                })),
+                serviceBreakdown: (charts.serviceBreakdown || []).map((item: any) => ({
+                    service: item.service || 'Unknown',
+                    cost: safeNumber(item.totalCost || item.cost),
+                    requests: safeNumber(item.totalRequests || item.requests || item.calls),
+                    percentage: safeNumber(item.percentage),
+                })),
+                recentActivity: [],
+                projectBreakdown: (response.projectBreakdown || []).map((item: any) => ({
+                    projectId: item.projectId,
+                    projectName: item.projectName || 'Unknown Project',
+                    cost: safeNumber(item.totalCost || item.cost),
+                    requests: safeNumber(item.totalRequests || item.requests),
+                    percentage: safeNumber(item.percentage),
+                    budgetUtilization: safeNumber(item.budgetUtilization),
                 }))
-                : [];
-
-            // 3. Map serviceBreakdown from serviceBreakdown
-            const serviceBreakdown = Array.isArray(data.charts?.serviceBreakdown)
-                ? data.charts.serviceBreakdown.map((service: any) => ({
-                    service: service.service,
-                    cost: safeNumber(service.totalCost),
-                    requests: safeNumber(service.totalRequests),
-                    percentage: 0 // Not provided, can be calculated if needed
-                }))
-                : [];
-
-            // 4. Map recentActivity (topPrompts/optimizationOpportunities not mapped here)
-            // For backward compatibility, we keep the array structure
-            const recentActivity = Array.isArray(data.recentActivity?.topPrompts)
-                ? data.recentActivity.topPrompts.map((prompt: any, idx: number) => ({
-                    id: prompt._id || `prompt-${idx}`,
-                    type: 'prompt',
-                    description: prompt.text || '',
-                    timestamp: prompt.timestamp || '',
-                    cost: safeNumber(prompt.cost)
-                }))
-                : [];
-
-            // 5. Map projectBreakdown if available
-            const projectBreakdown = Array.isArray(data.projectBreakdown)
-                ? data.projectBreakdown.map((project: any) => ({
-                    projectId: project.projectId,
-                    projectName: project.projectName,
-                    cost: safeNumber(project.totalCost),
-                    requests: safeNumber(project.totalRequests),
-                    percentage: 0, // Will be calculated in frontend
-                    budgetUtilization: 0 // Will be calculated if budget data is available
-                }))
-                : [];
-
-            return {
-                stats,
-                chartData,
-                serviceBreakdown,
-                recentActivity,
-                projectBreakdown
             };
+
+            this.cache.set(cacheKey, { data: dashboardData, timestamp: Date.now() });
+            return dashboardData;
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-            // Return default data structure to prevent crashes
+
+            // Return fallback data structure
             return {
                 stats: {
                     totalCost: 0,
@@ -130,11 +115,12 @@ export class DashboardService {
                     averageCostPerRequest: 0,
                     costChange: 0,
                     tokensChange: 0,
-                    requestsChange: 0
+                    requestsChange: 0,
                 },
                 chartData: [],
                 serviceBreakdown: [],
-                recentActivity: []
+                recentActivity: [],
+                projectBreakdown: []
             };
         }
     }
@@ -208,15 +194,19 @@ export class DashboardService {
     /**
      * Get recent activity
      */
-    static async getRecentActivity(limit: number = 10): Promise<any[]> {
+    static async getRecentActivity(limit: number = 10, projectId?: string): Promise<any[]> {
         try {
-            const response = await apiClient.get('/usage', {
-                params: {
-                    limit,
-                    sort: 'createdAt',
-                    order: 'desc'
-                }
-            });
+            const params: any = {
+                limit,
+                sort: 'createdAt',
+                order: 'desc'
+            };
+
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/usage', { params });
 
             return response.data.data || response.data.map((usage: any) => ({
                 id: usage._id,
@@ -240,7 +230,7 @@ export class DashboardService {
     /**
      * Get cost trends
      */
-    static async getCostTrends(period: 'week' | 'month' | 'quarter' | 'year' = 'month'): Promise<any[]> {
+    static async getCostTrends(period: 'week' | 'month' | 'quarter' | 'year' = 'month', projectId?: string): Promise<any[]> {
         try {
             const endDate = new Date();
             const startDate = new Date();
@@ -260,12 +250,16 @@ export class DashboardService {
                     break;
             }
 
-            const response = await apiClient.get('/analytics', {
-                params: {
-                    startDate: startDate.toISOString(),
-                    endDate: endDate.toISOString()
-                }
-            });
+            const params: any = {
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString()
+            };
+
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/analytics', { params });
 
             return response.data.data || response.data.timeline || [];
         } catch (error) {
@@ -277,9 +271,15 @@ export class DashboardService {
     /**
      * Get service performance
      */
-    static async getServicePerformance(): Promise<any[]> {
+    static async getServicePerformance(projectId?: string): Promise<any[]> {
         try {
-            const response = await apiClient.get('/analytics');
+            const params: any = {};
+
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/analytics', { params });
             return response.data.data || response.data.breakdown?.services || [];
         } catch (error) {
             console.error('Error fetching service performance:', error);

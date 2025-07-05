@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { UsageService } from '@/services/usage.service';
@@ -11,6 +11,7 @@ import { OptimizationWidget } from '../optimization';
 interface TrackUsageModalProps {
     isOpen: boolean;
     onClose: () => void;
+    projectId?: string;
 }
 
 const AI_SERVICES = [
@@ -324,31 +325,41 @@ const MODELS = {
     ]
 };
 
-const initialFormData = {
-    provider: 'openai',
-    model: 'gpt-3.5-turbo',
-    prompt: '',
-    response: '',
-    promptTokens: 0,
-    completionTokens: 0,
-    totalTokens: 0,
-    estimatedCost: 0,
-    responseTime: 0,
-    metadata: {
-        project: '',
-        tags: '',
-    },
-};
+
 
 export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
     isOpen,
     onClose,
+    projectId
 }) => {
     const queryClient = useQueryClient();
     const { showNotification } = useNotifications();
-    const [formData, setFormData] = useState(initialFormData);
+    const [formData, setFormData] = useState({
+        provider: 'openai',
+        model: 'gpt-3.5-turbo',
+        prompt: '',
+        response: '',
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0,
+        estimatedCost: 0,
+        responseTime: 0,
+        metadata: {
+            project: '',
+            tags: '',
+        },
+        projectId: projectId && projectId !== 'all' ? projectId : undefined
+    });
     const [autoCalculate, setAutoCalculate] = useState(true);
     const [showOptimizationWidget, setShowOptimizationWidget] = useState(false);
+
+    // Update form data when projectId changes
+    useEffect(() => {
+        setFormData(prev => ({
+            ...prev,
+            projectId: projectId && projectId !== 'all' ? projectId : undefined
+        }));
+    }, [projectId]);
 
     const trackUsageMutation = useMutation({
         mutationFn: (data: any) => UsageService.trackUsage(data),
@@ -412,6 +423,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
         e.preventDefault();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { response, ...dataToSubmit } = formData;
+
+        // Ensure projectId is included in the submission
+        const submissionData = {
+            ...dataToSubmit,
+            projectId: projectId && projectId !== 'all' ? projectId : undefined
+        };
+
         if (!dataToSubmit.prompt) {
             showNotification('Please enter a prompt', 'error');
             return;
@@ -420,7 +438,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             showNotification('Please enter token counts or enable auto-calculation', 'error');
             return;
         }
-        trackUsageMutation.mutate(dataToSubmit);
+        trackUsageMutation.mutate(submissionData);
     };
 
     if (!isOpen) return null;

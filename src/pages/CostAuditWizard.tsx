@@ -2,9 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { CostAuditWizard as WizardComponent } from '../components/intelligence';
+import { useProject } from '../contexts/ProjectContext';
 
 const CostAuditWizard: React.FC = () => {
     const navigate = useNavigate();
+    const { selectedProject } = useProject();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -36,7 +38,7 @@ const CostAuditWizard: React.FC = () => {
                             </p>
                         </div>
 
-                        <WizardComponent />
+                        <WizardComponent projectId={selectedProject} />
                     </div>
                 </div>
             </div>

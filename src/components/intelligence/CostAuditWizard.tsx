@@ -21,6 +21,10 @@ interface WizardStep {
     icon: React.ReactNode;
 }
 
+interface CostAuditWizardProps {
+    projectId?: string;
+}
+
 const wizardSteps: WizardStep[] = [
     {
         id: 'analyze',
@@ -48,7 +52,7 @@ const wizardSteps: WizardStep[] = [
     }
 ];
 
-export const CostAuditWizard: React.FC = () => {
+export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({ projectId }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [analysisResults, setAnalysisResults] = useState<any>(null);
@@ -60,7 +64,7 @@ export const CostAuditWizard: React.FC = () => {
         if (currentStep === 0) {
             analyzeUsage();
         }
-    }, [currentStep]);
+    }, [currentStep, projectId]);
 
     const analyzeUsage = async () => {
         setLoading(true);
@@ -70,7 +74,8 @@ export const CostAuditWizard: React.FC = () => {
             const usageResponse = await usageService.getUsage({
                 limit: 100,
                 startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
-                endDate: new Date().toISOString()
+                endDate: new Date().toISOString(),
+                projectId: projectId && projectId !== 'all' ? projectId : undefined
             });
 
             const usageData = usageResponse.usage || [];

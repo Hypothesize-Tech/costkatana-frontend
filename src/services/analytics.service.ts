@@ -9,9 +9,14 @@ class AnalyticsService {
         service?: string;
         model?: string;
         groupBy?: 'hour' | 'date' | 'service' | 'model';
+        projectId?: string;
     }): Promise<Analytics> {
         try {
-            const response = await apiClient.get('/analytics', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics', { params: requestParams });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching analytics:', error);
@@ -19,26 +24,35 @@ class AnalyticsService {
         }
     }
 
-    async getDashboardData(): Promise<any> {
+    async getDashboardData(projectId?: string): Promise<any> {
         try {
-            const response = await apiClient.get('/analytics/dashboard');
+            const params: any = {};
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/analytics/dashboard', { params });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-            // Return fallback data
+            // Return fallback structure on error
             return {
-                summary: {
-                    totalCost: 0,
-                    totalTokens: 0,
-                    totalRequests: 0,
-                    averageCostPerRequest: 0
+                overview: {
+                    totalCost: { value: 0, change: { value: 0, percentage: 0, trend: 'stable' } },
+                    totalCalls: { value: 0, change: { value: 0, percentage: 0, trend: 'stable' } },
+                    avgCostPerCall: { value: 0, change: { value: 0, percentage: 0, trend: 'stable' } },
+                    totalOptimizationSavings: { value: 0, change: 0 }
                 },
-                timeline: [],
-                breakdown: {
-                    services: [],
-                    models: []
+                charts: {
+                    costOverTime: [],
+                    serviceBreakdown: [],
+                    modelUsage: []
                 },
-                recentActivity: []
+                recentActivity: {
+                    topPrompts: [],
+                    optimizationOpportunities: 0
+                },
+                insights: []
             };
         }
     }
@@ -50,14 +64,17 @@ class AnalyticsService {
         groupBy: 'hour' | 'date' | 'service' | 'model';
         service?: string;
         model?: string;
+        projectId?: string;
     }): Promise<TimeSeriesData[]> {
         try {
-            const response = await apiClient.get('/analytics', {
-                params: {
-                    ...params,
-                    format: 'timeseries'
-                }
-            });
+            const requestParams: any = {
+                ...params,
+                format: 'timeseries'
+            };
+            if (params.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics', { params: requestParams });
             return response.data.data.timeline || [];
         } catch (error) {
             console.error('Error fetching time series data:', error);
@@ -69,6 +86,7 @@ class AnalyticsService {
         startDate?: string;
         endDate?: string;
         groupBy?: 'service' | 'model' | 'user';
+        projectId?: string;
     }): Promise<{
         totalCost: number;
         breakdown: Array<{
@@ -85,7 +103,11 @@ class AnalyticsService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/analytics', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics', { params: requestParams });
             const data = response.data.data;
 
             return {
@@ -114,6 +136,7 @@ class AnalyticsService {
         startDate?: string;
         endDate?: string;
         service?: string;
+        projectId?: string;
     }): Promise<{
         patterns: Array<{
             pattern: string;
@@ -130,7 +153,11 @@ class AnalyticsService {
         recommendations: string[];
     }> {
         try {
-            const response = await apiClient.get('/analytics/insights', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics/insights', { params: requestParams });
             const data = response.data.data;
 
             return {
@@ -152,9 +179,14 @@ class AnalyticsService {
         startDate?: string;
         endDate?: string;
         limit?: number;
+        projectId?: string;
     }): Promise<ServiceAnalytics[]> {
         try {
-            const response = await apiClient.get('/analytics', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics', { params: requestParams });
             return response.data.data.breakdown?.services || [];
         } catch (error) {
             console.error('Error fetching service breakdown:', error);
@@ -167,6 +199,7 @@ class AnalyticsService {
         metric?: 'cost' | 'performance' | 'efficiency';
         startDate?: string;
         endDate?: string;
+        projectId?: string;
     }): Promise<{
         comparison: Array<{
             model: string;
@@ -186,7 +219,11 @@ class AnalyticsService {
         }>;
     }> {
         try {
-            const response = await apiClient.get('/analytics', { params });
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics', { params: requestParams });
             const data = response.data.data;
 
             return {
@@ -211,7 +248,7 @@ class AnalyticsService {
         }
     }
 
-    async getOptimizationOpportunities(): Promise<{
+    async getOptimizationOpportunities(projectId?: string): Promise<{
         opportunities: Array<{
             type: 'model_switch' | 'prompt_optimization' | 'caching' | 'batching';
             title: string;
@@ -223,7 +260,11 @@ class AnalyticsService {
         totalPotentialSavings: number;
     }> {
         try {
-            const response = await apiClient.get('/analytics/insights');
+            const params: any = {};
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+            const response = await apiClient.get('/analytics/insights', { params });
             const data = response.data.data;
 
             return {
@@ -244,10 +285,15 @@ class AnalyticsService {
         startDate: string;
         endDate: string;
         includeGraphs?: boolean;
+        projectId?: string;
     }): Promise<Blob> {
         try {
+            const requestParams: any = { ...params };
+            if (params.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
             const response = await apiClient.get('/analytics/export', {
-                params,
+                params: requestParams,
                 responseType: 'blob'
             });
             return response.data;
@@ -326,9 +372,13 @@ class AnalyticsService {
     }
 
     // Additional methods for comprehensive analytics
-    async getInsights(): Promise<any> {
+    async getInsights(projectId?: string): Promise<any> {
         try {
-            const response = await apiClient.get('/analytics/insights');
+            const params: any = {};
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+            const response = await apiClient.get('/analytics/insights', { params });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching insights:', error);
