@@ -33,7 +33,6 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
         ['dashboard-api-keys'],
         userService.getDashboardApiKeys
     );
-
     const createKeyMutation = useMutation(
         (data: { name: string; permissions: string[]; expiresAt?: string }) =>
             userService.createDashboardApiKey(data.name, data.permissions, data.expiresAt),
@@ -184,16 +183,6 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                                                     <code className="px-2 py-1 font-mono text-sm bg-gray-100 rounded">
                                                         {apiKey.maskedKey}
                                                     </code>
-                                                    <button
-                                                        onClick={() => {
-                                                            copyToClipboard(apiKey.maskedKey);
-                                                            showNotification('Masked key ID copied to clipboard', 'info');
-                                                        }}
-                                                        className="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded border hover:bg-gray-200"
-                                                        title="Copy masked key ID (for reference only)"
-                                                    >
-                                                        Copy ID
-                                                    </button>
                                                 </div>
                                             </div>
                                             <div className="p-2 bg-amber-50 rounded border border-amber-200">
