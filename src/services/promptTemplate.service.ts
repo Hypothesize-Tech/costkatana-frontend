@@ -81,6 +81,18 @@ export class PromptTemplateService {
         return response.data.data;
     }
 
+    // Simple template usage tracking (for UI components)
+    static async useTemplate(
+        templateId: string,
+        variables: Record<string, string>
+    ): Promise<void> {
+        // Track usage with minimal data
+        await apiClient.post(`${this.baseUrl}/${templateId}/use`, {
+            variables,
+            timestamp: new Date().toISOString()
+        });
+    }
+
     // Rate a template
     static async rateTemplate(
         templateId: string,

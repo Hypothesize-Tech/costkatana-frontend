@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     FiPlus,
     FiSearch,
     FiFilter,
     FiStar,
     FiTag,
-    FiUsers
+    FiUsers,
+    FiArrowLeft
 } from 'react-icons/fi';
 import { PromptTemplateService } from '../services/promptTemplate.service';
 import { PromptTemplate } from '../types/promptTemplate.types';
@@ -16,17 +18,28 @@ import {
     CreateTemplateModal,
     ViewTemplateModal,
     EditTemplateModal,
-    DuplicateTemplateModal
+    DuplicateTemplateModal,
+    TemplateDiscoveryHub,
+    TemplateCreationWizard,
+    TemplateMarketplace,
+    TemplateTutorial,
+    TemplateAnalyticsDashboard
 } from '../components/templates';
 import { useNotification } from '../contexts/NotificationContext';
 
 const PromptTemplates: React.FC = () => {
+    const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [templates, setTemplates] = useState<PromptTemplate[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // View states
+    const [currentView, setCurrentView] = useState<'discovery' | 'list' | 'marketplace' | 'analytics' | 'tutorial'>('discovery');
+
     // Modal states
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showCreateWizard, setShowCreateWizard] = useState(false);
+    const [showTutorial, setShowTutorial] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
@@ -149,14 +162,10 @@ const PromptTemplates: React.FC = () => {
 
     const handleFavoriteTemplate = async (template: PromptTemplate) => {
         try {
-            // Toggle favorite status
             const updatedTemplate = { ...template, isFavorite: !template.isFavorite };
             setTemplates(templates.map(t =>
                 t._id === template._id ? updatedTemplate : t
             ));
-
-            // Here you would call the API to update the favorite status
-            // await PromptTemplateService.toggleFavorite(template._id);
 
             showNotification(
                 template.isFavorite ? 'Removed from favorites' : 'Added to favorites',
@@ -169,6 +178,45 @@ const PromptTemplates: React.FC = () => {
                 'error'
             );
         }
+    };
+
+    // New handlers for discovery hub and wizard
+    const handleCreateTemplateFromHub = () => {
+        setShowCreateWizard(true);
+    };
+
+    const handleViewTemplates = () => {
+        setCurrentView('list');
+    };
+
+    const handleStartTutorial = () => {
+        setShowTutorial(true);
+    };
+
+    const handleBackToDiscovery = () => {
+        setCurrentView('discovery');
+    };
+
+    const handleUseTemplates = () => {
+        navigate('/templates/use');
+    };
+
+    const handleImportMarketplaceTemplate = async (templateData: any) => {
+        try {
+            await handleCreateTemplate(templateData);
+            showNotification('Template imported successfully!', 'success');
+        } catch (error: any) {
+            console.error('Error importing template:', error);
+            showNotification(
+                error.message || 'Failed to import template',
+                'error'
+            );
+        }
+    };
+
+    const handlePreviewMarketplaceTemplate = (template: PromptTemplate) => {
+        setSelectedTemplate(template);
+        setShowViewModal(true);
     };
 
     // Filter and sort templates
@@ -206,8 +254,136 @@ const PromptTemplates: React.FC = () => {
         );
     }
 
+    // Render Discovery Hub by default
+    if (currentView === 'discovery') {
+        return (
+            <div>
+                <TemplateDiscoveryHub
+                    onCreateTemplate={handleCreateTemplateFromHub}
+                    onStartTutorial={handleStartTutorial}
+                    onViewTemplates={handleViewTemplates}
+                    onUseTemplates={handleUseTemplates}
+                />
+
+                {/* Modals */}
+                {showCreateWizard && (
+                    <TemplateCreationWizard
+                        onClose={() => setShowCreateWizard(false)}
+                        onSubmit={handleCreateTemplate}
+                    />
+                )}
+
+                {showTutorial && (
+                    <TemplateTutorial
+                        onClose={() => setShowTutorial(false)}
+                        onCreateTemplate={() => {
+                            setShowTutorial(false);
+                            setShowCreateWizard(true);
+                        }}
+                        onViewMarketplace={() => {
+                            setShowTutorial(false);
+                            setCurrentView('marketplace');
+                        }}
+                    />
+                )}
+            </div>
+        );
+    }
+
+    // Render Marketplace view
+    if (currentView === 'marketplace') {
+        return (
+            <div>
+                {/* Back to Discovery Button */}
+                <div className="p-6 pb-0">
+                    <button
+                        onClick={handleBackToDiscovery}
+                        className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
+                    >
+                        <FiArrowLeft />
+                        Back to Template Hub
+                    </button>
+                </div>
+
+                <TemplateMarketplace
+                    onImportTemplate={handleImportMarketplaceTemplate}
+                    onPreviewTemplate={handlePreviewMarketplaceTemplate}
+                />
+
+                {/* Modals */}
+                {showViewModal && selectedTemplate && (
+                    <ViewTemplateModal
+                        template={selectedTemplate}
+                        onClose={() => {
+                            setShowViewModal(false);
+                            setSelectedTemplate(null);
+                        }}
+                        onEdit={(template) => {
+                            setShowViewModal(false);
+                            setSelectedTemplate(template);
+                            setShowEditModal(true);
+                        }}
+                        onDuplicate={(template) => {
+                            setShowViewModal(false);
+                            setSelectedTemplate(template);
+                            setShowDuplicateModal(true);
+                        }}
+                        onFavorite={handleFavoriteTemplate}
+                    />
+                )}
+
+                {showTutorial && (
+                    <TemplateTutorial
+                        onClose={() => setShowTutorial(false)}
+                        onCreateTemplate={() => {
+                            setShowTutorial(false);
+                            setShowCreateWizard(true);
+                        }}
+                        onViewMarketplace={() => {
+                            setShowTutorial(false);
+                            setCurrentView('marketplace');
+                        }}
+                    />
+                )}
+            </div>
+        );
+    }
+
+    // Render Analytics view
+    if (currentView === 'analytics') {
+        return (
+            <div>
+                {/* Back to Discovery Button */}
+                <div className="p-6 pb-0">
+                    <button
+                        onClick={handleBackToDiscovery}
+                        className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
+                    >
+                        <FiArrowLeft />
+                        Back to Template Hub
+                    </button>
+                </div>
+
+                <TemplateAnalyticsDashboard
+                    onViewTemplate={handleViewTemplate}
+                />
+            </div>
+        );
+    }
+
+    // Render traditional list view
     return (
         <div className="p-6">
+            {/* Back to Discovery Button */}
+            <div className="mb-4">
+                <button
+                    onClick={handleBackToDiscovery}
+                    className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
+                >
+                    <FiArrowLeft />
+                    Back to Template Hub
+                </button>
+            </div>
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -218,7 +394,7 @@ const PromptTemplates: React.FC = () => {
                     </p>
                 </div>
                 <button
-                    onClick={() => setShowCreateModal(true)}
+                    onClick={() => setShowCreateWizard(true)}
                     className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
                 >
                     <FiPlus />
@@ -326,7 +502,7 @@ const PromptTemplates: React.FC = () => {
                     </p>
                     {!searchQuery && selectedCategory === 'all' && (
                         <button
-                            onClick={() => setShowCreateModal(true)}
+                            onClick={() => setShowCreateWizard(true)}
                             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                         >
                             <FiPlus className="mr-2" />
@@ -357,6 +533,13 @@ const PromptTemplates: React.FC = () => {
             {showCreateModal && (
                 <CreateTemplateModal
                     onClose={() => setShowCreateModal(false)}
+                    onSubmit={handleCreateTemplate}
+                />
+            )}
+
+            {showCreateWizard && (
+                <TemplateCreationWizard
+                    onClose={() => setShowCreateWizard(false)}
                     onSubmit={handleCreateTemplate}
                 />
             )}
@@ -437,6 +620,20 @@ const PromptTemplates: React.FC = () => {
                         </div>
                     </div>
                 </Modal>
+            )}
+
+            {showTutorial && (
+                <TemplateTutorial
+                    onClose={() => setShowTutorial(false)}
+                    onCreateTemplate={() => {
+                        setShowTutorial(false);
+                        setShowCreateWizard(true);
+                    }}
+                    onViewMarketplace={() => {
+                        setShowTutorial(false);
+                        setCurrentView('marketplace');
+                    }}
+                />
             )}
         </div>
     );

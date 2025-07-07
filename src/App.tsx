@@ -28,6 +28,7 @@ import { Alerts } from './pages/Alerts';
 import CostAuditWizard from './pages/CostAuditWizard';
 import Projects from './pages/Projects';
 import PromptTemplates from './pages/PromptTemplates';
+import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
 
 const queryClient = new QueryClient();
@@ -87,6 +88,10 @@ function App() {
                                         <Route
                                             path="templates"
                                             element={<PromptTemplates />}
+                                        />
+                                        <Route
+                                            path="templates/use"
+                                            element={<TemplateUsage />}
                                         />
                                         <Route
                                             path="settings"

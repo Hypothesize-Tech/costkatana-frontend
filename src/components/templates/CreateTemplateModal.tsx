@@ -186,7 +186,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     };
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="Create New Template">
+        <Modal isOpen={true} onClose={onClose} title="Create New Template" size='lg'>
             <form onSubmit={handleSubmit} className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
                 {/* Basic Information */}
                 <div className="space-y-4">
@@ -195,40 +195,40 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                     </h3>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Template Name *
                         </label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => handleInputChange('name', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                             placeholder="Enter template name"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Description
                         </label>
                         <textarea
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                             placeholder="Describe your template"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Category
                         </label>
                         <select
                             value={formData.category}
                             onChange={(e) => handleInputChange('category', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                         >
                             {categories.map(category => (
                                 <option key={category.value} value={category.value}>
@@ -255,18 +255,18 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Prompt Content *
                         </label>
                         <textarea
                             value={formData.content}
                             onChange={(e) => handleInputChange('content', e.target.value)}
                             rows={8}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white font-mono text-sm"
+                            className="px-3 py-2 w-full font-mono text-sm rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                             placeholder="Enter your prompt template. Use {{variable_name}} for variables."
                             required
                         />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                             Use double curly braces for variables: {`{{variable_name}}`}
                         </p>
                     </div>
@@ -281,14 +281,14 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                         <button
                             type="button"
                             onClick={addVariable}
-                            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm"
+                            className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
                         >
                             <FiPlus /> Add Variable
                         </button>
                     </div>
 
                     {formData.variables.map((variable, index) => (
-                        <div key={index} className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg space-y-3">
+                        <div key={index} className="p-4 space-y-3 rounded-lg border border-gray-200 dark:border-gray-600">
                             <div className="flex justify-between items-start">
                                 <h4 className="font-medium text-gray-900 dark:text-white">
                                     Variable {index + 1}
@@ -304,25 +304,25 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Name
                                     </label>
                                     <input
                                         type="text"
                                         value={variable.name}
                                         onChange={(e) => handleVariableChange(index, 'name', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                        className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                         placeholder="variable_name"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Type
                                     </label>
                                     <select
                                         value={variable.type || 'text'}
                                         onChange={(e) => handleVariableChange(index, 'type', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                        className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="text">Text</option>
                                         <option value="number">Number</option>
@@ -333,38 +333,38 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Description
                                 </label>
                                 <input
                                     type="text"
                                     value={variable.description || ''}
                                     onChange={(e) => handleVariableChange(index, 'description', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                    className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                     placeholder="Describe this variable"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Default Value
                                 </label>
                                 <input
                                     type="text"
                                     value={variable.defaultValue || ''}
                                     onChange={(e) => handleVariableChange(index, 'defaultValue', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                    className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                     placeholder="Default value (optional)"
                                 />
                             </div>
 
                             <div>
-                                <label className="flex items-center gap-2">
+                                <label className="flex gap-2 items-center">
                                     <input
                                         type="checkbox"
                                         checked={variable.required}
                                         onChange={(e) => handleVariableChange(index, 'required', e.target.checked)}
-                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                                     />
                                     <span className="text-sm text-gray-700 dark:text-gray-300">
                                         Required
@@ -387,14 +387,14 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                                 type="text"
                                 value={tag}
                                 onChange={(e) => handleTagChange(index, e.target.value)}
-                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                 placeholder="Enter tag"
                             />
                             {formData.metadata.tags.length > 1 && (
                                 <button
                                     type="button"
                                     onClick={() => removeTag(index)}
-                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="p-2 text-red-600 rounded-lg transition-colors hover:bg-red-50"
                                 >
                                     <FiMinus />
                                 </button>
@@ -405,7 +405,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                     <button
                         type="button"
                         onClick={addTag}
-                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm"
+                        className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
                     >
                         <FiPlus /> Add Tag
                     </button>
@@ -418,13 +418,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                     </h3>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Visibility
                         </label>
                         <select
                             value={formData.sharing.visibility}
                             onChange={(e) => handleNestedInputChange(['sharing', 'visibility'], e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                         >
                             <option value="private">Private</option>
                             <option value="project">Project</option>
@@ -434,12 +434,12 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2">
+                        <label className="flex gap-2 items-center">
                             <input
                                 type="checkbox"
                                 checked={formData.sharing.allowFork}
                                 onChange={(e) => handleNestedInputChange(['sharing', 'allowFork'], e.target.checked)}
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                             />
                             <span className="text-sm text-gray-700 dark:text-gray-300">
                                 Allow others to fork this template
@@ -449,18 +449,18 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 </div>
 
                 {/* Actions */}
-                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="px-4 py-2 text-gray-700 rounded-lg transition-colors dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         disabled={loading || !formData.name.trim() || !formData.content.trim()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Creating...' : 'Create Template'}
                     </button>

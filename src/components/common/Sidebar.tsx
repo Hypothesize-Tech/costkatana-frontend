@@ -10,6 +10,7 @@ import {
     UserIcon,
     FolderIcon,
     DocumentTextIcon,
+    PlayIcon,
     BellIcon,
     CogIcon,
 } from '@heroicons/react/24/outline';
@@ -27,6 +28,7 @@ const navigation = [
     { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
     { name: 'Projects', href: '/projects', icon: FolderIcon },
     { name: 'Templates', href: '/templates', icon: DocumentTextIcon },
+    { name: 'Use Templates', href: '/templates/use', icon: PlayIcon },
     { name: 'Integration', href: '/integration', icon: CogIcon },
     { name: 'Alerts', href: '/alerts', icon: BellIcon },
     { name: 'Profile', href: '/profile', icon: UserIcon },
