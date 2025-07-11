@@ -31,7 +31,8 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             costOptimization: {
                 enabled: project.settings?.costOptimization?.enabled || false,
                 autoApply: project.settings?.costOptimization?.autoApply || false,
-                strategies: project.settings?.costOptimization?.strategies || []
+                strategies: project.settings?.costOptimization?.strategies || [],
+                level: project.settings?.costOptimization?.level || 'low'
             },
             notifications: {
                 budgetAlerts: project.settings?.notifications?.budgetAlerts || true,

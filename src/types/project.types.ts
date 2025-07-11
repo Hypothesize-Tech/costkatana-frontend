@@ -25,9 +25,11 @@ export interface Project {
 export interface ProjectMember {
     userId: string;
     email: string;
-    role: 'owner' | 'admin' | 'member';
+    role: 'owner' | 'admin' | 'member' | 'viewer';
     joinedAt: string;
     permissions: string[];
+    status: 'pending' | 'active' | 'inactive';
+    invitedAt: string;
 }
 
 export interface ProjectBudget {
@@ -125,6 +127,8 @@ export interface UpdateProjectRequest {
     budget?: Partial<ProjectBudget>;
     settings?: Partial<ProjectSettings>;
     tags?: string[];
+    isActive?: boolean;
+    status?: 'active' | 'inactive' | 'archived';
 }
 
 export interface ProjectDashboard {

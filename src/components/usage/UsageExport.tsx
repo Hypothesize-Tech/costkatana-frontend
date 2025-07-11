@@ -18,7 +18,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
     const [isExporting, setIsExporting] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [exportConfig, setExportConfig] = useState({
-        format: 'csv' as 'csv' | 'json' | 'pdf',
+        format: 'csv' as 'csv' | 'json' | 'excel',
         includeMetadata: true,
         includePrompts: false,
         groupBy: 'none' as 'none' | 'day' | 'service' | 'model',
@@ -30,7 +30,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
         setIsExporting(true);
         try {
             const blob: Blob = await usageService.exportUsage({
-                format: exportConfig.format as 'csv' | 'json' | 'pdf',
+                format: exportConfig.format as 'csv' | 'json' | 'excel',
                 startDate: filters.startDate,
                 endDate: filters.endDate,
                 service: filters.service,
@@ -60,30 +60,30 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
         <>
             <button
                 onClick={() => setShowModal(true)}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-                <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
+                <ArrowDownTrayIcon className="mr-2 w-5 h-5" />
                 Export
             </button>
 
             {showModal && (
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <div className="flex min-h-screen items-center justify-center p-4">
+                <div className="overflow-y-auto fixed inset-0 z-50">
+                    <div className="flex justify-center items-center p-4 min-h-screen">
                         <div className="fixed inset-0 bg-gray-500 bg-opacity-75" onClick={() => setShowModal(false)} />
 
-                        <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Export Usage Data</h3>
+                        <div className="relative p-6 w-full max-w-md bg-white rounded-lg shadow-xl">
+                            <h3 className="mb-4 text-lg font-medium text-gray-900">Export Usage Data</h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Export Format
                                     </label>
                                     <div className="grid grid-cols-2 gap-2">
                                         {(['csv', 'json', 'pdf'] as const).map((format) => (
                                             <button
                                                 key={format}
-                                                onClick={() => setExportConfig({ ...exportConfig, format })}
+                                                onClick={() => setExportConfig({ ...exportConfig, format: format as 'csv' | 'json' | 'excel' })}
                                                 className={`px-3 py-2 text-sm font-medium rounded-md ${exportConfig.format === format
                                                     ? 'bg-indigo-600 text-white'
                                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -96,7 +96,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Options
                                     </label>
                                     <div className="space-y-2">
@@ -105,7 +105,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                                                 type="checkbox"
                                                 checked={exportConfig.includeMetadata}
                                                 onChange={(e) => setExportConfig({ ...exportConfig, includeMetadata: e.target.checked })}
-                                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                                             />
                                             <span className="ml-2 text-sm text-gray-700">Include metadata</span>
                                         </label>
@@ -114,7 +114,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                                                 type="checkbox"
                                                 checked={exportConfig.includePrompts}
                                                 onChange={(e) => setExportConfig({ ...exportConfig, includePrompts: e.target.checked })}
-                                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                                             />
                                             <span className="ml-2 text-sm text-gray-700">Include prompts & responses</span>
                                         </label>
@@ -123,13 +123,13 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
 
                                 {exportConfig.format === 'csv' && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block mb-2 text-sm font-medium text-gray-700">
                                             Group By
                                         </label>
                                         <select
                                             value={exportConfig.groupBy}
                                             onChange={(e) => setExportConfig({ ...exportConfig, groupBy: e.target.value as any })}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            className="block py-2 pr-10 pl-3 mt-1 w-full text-base rounded-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         >
                                             <option value="none">No grouping</option>
                                             <option value="day">By day</option>
@@ -141,7 +141,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
 
                                 <div className="text-sm text-gray-600">
                                     <p>Export includes:</p>
-                                    <ul className="mt-1 list-disc list-inside text-xs">
+                                    <ul className="mt-1 text-xs list-disc list-inside">
                                         <li>Date range: {filters.startDate || 'All time'} to {filters.endDate || 'Present'}</li>
                                         {filters.service && <li>Service: {filters.service}</li>}
                                         {filters.model && <li>Model: {filters.model}</li>}
@@ -149,17 +149,17 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 flex justify-end space-x-3">
+                            <div className="flex justify-end mt-6 space-x-3">
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleExport}
                                     disabled={isExporting}
-                                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent hover:bg-indigo-700 disabled:opacity-50"
                                 >
                                     {isExporting ? (
                                         <>
@@ -168,7 +168,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                                         </>
                                     ) : (
                                         <>
-                                            <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+                                            <ArrowDownTrayIcon className="mr-2 w-4 h-4" />
                                             Export
                                         </>
                                     )}

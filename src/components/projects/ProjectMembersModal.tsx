@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { FiPlus, FiUsers, FiTrash2 } from 'react-icons/fi';
 import { Modal } from '../common/Modal';
-import { Project } from '../../types/project.types';
+import { Project, ProjectMember } from '../../types/project.types';
 import { ProjectService } from '../../services/project.service';
 
 interface ProjectMembersModalProps {
     project: Project;
     onClose: () => void;
-    onUpdateMembers: (projectId: string, members: any[]) => void;
+    onUpdateMembers: (projectId: string, members: ProjectMember[]) => void;
 }
 
 export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
@@ -15,7 +15,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
     onClose,
     onUpdateMembers
 }) => {
-    const [members, setMembers] = useState(project.members || []);
+    const [members, setMembers] = useState<ProjectMember[]>(project.members || []);
     const [newMemberEmail, setNewMemberEmail] = useState('');
     const [newMemberRole, setNewMemberRole] = useState<'admin' | 'member' | 'viewer'>('member');
     const [inviteLoading, setInviteLoading] = useState(false);
@@ -46,6 +46,11 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
         return roleConfig?.color || 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-200';
     };
 
+    const updateMembersAndNotifyParent = (updatedMembers: ProjectMember[]) => {
+        setMembers(updatedMembers);
+        onUpdateMembers(project._id, updatedMembers);
+    };
+
     const handleAddMember = async () => {
         if (!newMemberEmail.trim()) return;
 
@@ -55,14 +60,18 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
             await ProjectService.addMember(project._id, newMemberEmail.trim(), newMemberRole);
 
             // Add to local state for immediate UI update
-            const newMember = {
+            const newMember: ProjectMember = {
+                userId: '', // Will be populated when user accepts invitation
                 email: newMemberEmail.trim(),
                 role: newMemberRole,
+                joinedAt: new Date().toISOString(),
+                permissions: [],
                 status: 'pending',
                 invitedAt: new Date().toISOString()
             };
 
-            setMembers([...members, newMember]);
+            const updatedMembers = [...members, newMember];
+            updateMembersAndNotifyParent(updatedMembers);
             setNewMemberEmail('');
             setNewMemberRole('member');
         } catch (error) {
@@ -76,7 +85,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
 
     const handleRemoveMember = async (index: number) => {
         const member = members[index];
-        const userId = typeof member === 'string' ? member : member.userId;
+        const userId = member.userId || member.email;
 
         try {
             // Use the individual remove member endpoint
@@ -84,7 +93,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
 
             // Update local state
             const updatedMembers = members.filter((_, i) => i !== index);
-            setMembers(updatedMembers);
+            updateMembersAndNotifyParent(updatedMembers);
         } catch (error) {
             console.error('Error removing member:', error);
             alert('Failed to remove member. Please try again.');
@@ -93,7 +102,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
 
     const handleUpdateMemberRole = async (index: number, newRole: string) => {
         const member = members[index];
-        const userId = typeof member === 'string' ? member : member.userId;
+        const userId = member.userId || member.email;
 
         try {
             // Use the individual update member role endpoint
@@ -102,28 +111,26 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
             // Update local state
             const updatedMembers = members.map((member, i) =>
                 i === index
-                    ? typeof member === 'string'
-                        ? { userId: member, role: newRole }
-                        : { ...member, role: newRole }
+                    ? { ...member, role: newRole as 'admin' | 'member' | 'viewer' }
                     : member
             );
-            setMembers(updatedMembers);
+            updateMembersAndNotifyParent(updatedMembers);
         } catch (error) {
             console.error('Error updating member role:', error);
             alert('Failed to update member role. Please try again.');
         }
     };
 
-    const getMemberEmail = (member: any) => {
-        return typeof member === 'string' ? member : member.userId || member.email || 'Unknown';
+    const getMemberEmail = (member: ProjectMember) => {
+        return member.email || member.userId || 'Unknown';
     };
 
-    const getMemberRole = (member: any) => {
-        return typeof member === 'string' ? 'member' : member.role || 'member';
+    const getMemberRole = (member: ProjectMember) => {
+        return member.role || 'member';
     };
 
-    const getMemberStatus = (member: any) => {
-        return typeof member === 'string' ? 'active' : member.status || 'active';
+    const getMemberStatus = (member: ProjectMember) => {
+        return member.status || 'active';
     };
 
     return (

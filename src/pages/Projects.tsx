@@ -107,12 +107,7 @@ const Projects: React.FC = () => {
         setSelectedProject(project);
         setShowEditModal(true);
     };
-
-    const handleManageMembers = (project: Project) => {
-        setSelectedProject(project);
-        setShowMembersModal(true);
-    };
-
+    
     const handleDeleteProject = async () => {
         if (!selectedProject) return;
 

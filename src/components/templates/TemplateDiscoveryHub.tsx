@@ -13,8 +13,6 @@ import {
     FiList,
     FiBook,
 } from 'react-icons/fi';
-import { PromptTemplateService } from '../../services/promptTemplate.service';
-import { PromptTemplate } from '../../types/promptTemplate.types';
 
 interface TemplateDiscoveryHubProps {
     onCreateTemplate: () => void;

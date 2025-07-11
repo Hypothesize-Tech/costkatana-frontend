@@ -9,7 +9,8 @@ import {
     FiRefreshCw,
     FiArrowUp,
     FiArrowDown,
-    FiEye
+    FiEye,
+    FiBarChart2
 } from 'react-icons/fi';
 import { PromptTemplate } from '../../types/promptTemplate.types';
 
@@ -67,7 +68,6 @@ export const TemplateAnalyticsDashboard: React.FC<TemplateAnalyticsDashboardProp
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
-    const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
     // Mock analytics data
     const mockAnalyticsData: AnalyticsData = {
@@ -154,7 +154,7 @@ export const TemplateAnalyticsDashboard: React.FC<TemplateAnalyticsDashboardProp
 
     useEffect(() => {
         loadAnalytics();
-    }, [timeRange, selectedCategory]);
+    }, [timeRange]);
 
     const loadAnalytics = async () => {
         setLoading(true);
@@ -811,7 +811,7 @@ export const TemplateAnalyticsDashboard: React.FC<TemplateAnalyticsDashboardProp
                         <div className="chart-header">
                             <h3 className="chart-title">Usage & Savings Trend</h3>
                             <div className="chart-controls">
-                                <FiBarChart3 />
+                                <FiBarChart2 />
                             </div>
                         </div>
                         <div className="chart-placeholder">

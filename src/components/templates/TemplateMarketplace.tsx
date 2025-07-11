@@ -11,7 +11,8 @@ import {
     FiEye,
     FiHeart,
     FiZap,
-    FiCheckCircle
+    FiCheckCircle,
+    FiArrowRight
 } from 'react-icons/fi';
 import { PromptTemplate } from '../../types/promptTemplate.types';
 
@@ -340,7 +341,7 @@ Focus on {{business_context}} implications and provide specific, measurable reco
     const filteredTemplates = templates.filter(template => {
         const matchesSearch = !searchQuery ||
             template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             template.metadata.tags.some(tag =>
                 tag.toLowerCase().includes(searchQuery.toLowerCase())
             );

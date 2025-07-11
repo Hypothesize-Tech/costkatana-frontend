@@ -288,10 +288,7 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                                             <div className="flex gap-3 items-center">
                                                 <div className="flex justify-center items-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/20">
                                                     <span className="font-medium text-blue-600 dark:text-blue-400">
-                                                        {typeof member === 'string'
-                                                            ? member.charAt(0).toUpperCase()
-                                                            : member.userId?.charAt(0).toUpperCase() || 'U'
-                                                        }
+                                                        {member.email?.charAt(0).toUpperCase() || 'U'}
                                                     </span>
                                                 </div>
                                                 <div>

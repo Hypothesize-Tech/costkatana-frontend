@@ -457,7 +457,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
 
     return (
         <div className="template-tutorial">
-            <style jsx>{`
+            <style>{`
                 .template-tutorial {
                     position: fixed;
                     top: 0;
@@ -597,6 +597,31 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
 
                 .nav-btn.secondary:hover:not(:disabled) {
                     background: #4b5563;
+                }
+
+                .step-indicator {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                .step-dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.3);
+                    transition: all 0.2s ease;
+                }
+
+                .step-dot.completed {
+                    background: #10b981;
+                    transform: scale(1.2);
+                }
+
+                .step-dot.current {
+                    background: white;
+                    transform: scale(1.4);
                 }
 
                 /* Welcome Content */
@@ -1308,6 +1333,21 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                     <div className="progress-info">
                         <span>Step {currentStep + 1} of {tutorialSteps.length}</span>
                         <span>{completedTime} / {totalTime} min</span>
+                    </div>
+
+                    <div className="step-indicator">
+                        {tutorialSteps.map((_, index) => (
+                            <div
+                                key={index}
+                                className={`step-dot ${
+                                    completedSteps.has(index) 
+                                        ? 'completed' 
+                                        : index === currentStep 
+                                        ? 'current' 
+                                        : ''
+                                }`}
+                            />
+                        ))}
                     </div>
 
                     <div className="progress-bar">

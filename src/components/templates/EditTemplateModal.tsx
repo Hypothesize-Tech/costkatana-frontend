@@ -128,7 +128,7 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             ...prev,
             variables: [...prev.variables, {
                 name: '',
-                type: 'string',
+                type: 'text',
                 description: '',
                 required: false,
                 defaultValue: ''

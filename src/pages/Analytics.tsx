@@ -192,9 +192,8 @@ export const Analytics: React.FC = () => {
                         totalCost: analyticsData.summary?.totalCost || 0,
                         totalTokens: analyticsData.summary?.totalTokens || 0,
                         totalRequests: analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 0,
-                        averageCostPerRequest: analyticsData.summary?.averageCostPerRequest ||
-                            (analyticsData.summary?.totalCost || 0) / (analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 1),
-                        budgetUtilization: analyticsData.summary?.budgetUtilization
+                        averageCostPerRequest: (analyticsData.summary?.totalCost || 0) / (analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 1),
+                        budgetUtilization: 0
                     },
                     timeline: (analyticsData.timeline || analyticsData.timeSeries || []).map((item: any) => ({
                         date: item.date,
@@ -274,9 +273,9 @@ export const Analytics: React.FC = () => {
                 const projectsArr = Array.isArray(comparisonData.projects) ? comparisonData.projects : [];
                 summary = {
                     totalProjects: projectsArr.length,
-                    totalCost: projectsArr.reduce((acc, p) => acc + (p.metrics?.cost || 0), 0),
-                    totalTokens: projectsArr.reduce((acc, p) => acc + (p.metrics?.tokens || 0), 0),
-                    totalRequests: projectsArr.reduce((acc, p) => acc + (p.metrics?.requests || 0), 0),
+                    totalCost: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.cost || 0), 0),
+                    totalTokens: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.tokens || 0), 0),
+                    totalRequests: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.requests || 0), 0),
                 };
             }
             setComparison({ ...comparisonData, summary });

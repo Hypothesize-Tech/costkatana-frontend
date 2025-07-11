@@ -326,7 +326,19 @@ export class ProjectService {
             };
         }
     ): Promise<Project> {
-        return await this.updateProject(projectId, { budget });
+        // Transform the budget structure to match the expected ProjectBudget type
+        const transformedBudget = {
+            amount: budget.amount,
+            period: budget.period,
+            alerts: budget.alerts.enabled ? budget.alerts.thresholds.map(threshold => ({
+                threshold,
+                type: 'email' as const,
+                recipients: [],
+                enabled: true
+            })) : []
+        };
+
+        return await this.updateProject(projectId, { budget: transformedBudget });
     }
 
     static async getProjectTemplates(projectId: string): Promise<any[]> {
@@ -344,21 +356,52 @@ export class ProjectService {
 
     static async cloneProject(projectId: string, name: string): Promise<Project> {
         const originalProject = await this.getProject(projectId);
-        const cloneData = {
-            ...originalProject,
+
+        // Transform the project data to match CreateProjectRequest structure
+        const cloneData: CreateProjectRequest = {
             name,
-            _id: undefined,
-            createdAt: undefined,
-            updatedAt: undefined
+            description: originalProject.description,
+            budget: {
+                amount: originalProject.budget.amount,
+                // Convert unsupported periods to supported ones
+                period: originalProject.budget.period === 'quarterly' || originalProject.budget.period === 'one-time'
+                    ? 'monthly'
+                    : originalProject.budget.period,
+                alerts: {
+                    enabled: originalProject.budget.alerts.length > 0,
+                    thresholds: originalProject.budget.alerts.map(alert => alert.threshold)
+                }
+            },
+            members: originalProject.members.map(member => member.email),
+            tags: originalProject.tags,
+            settings: {
+                costOptimization: {
+                    enabled: originalProject.settings.costOptimization.enabled,
+                    autoApply: originalProject.settings.costOptimization.autoApply,
+                    strategies: originalProject.settings.costOptimization.strategies
+                },
+                notifications: {
+                    budgetAlerts: originalProject.settings.notifications.budgetAlerts,
+                    weeklyReports: originalProject.settings.notifications.weeklyReports,
+                    monthlyReports: originalProject.settings.notifications.monthlyReports
+                }
+            }
         };
+
         return await this.createProject(cloneData);
     }
 
     static async archiveProject(projectId: string): Promise<void> {
-        await this.updateProject(projectId, { isActive: false });
+        await this.updateProject(projectId, {
+            isActive: false,
+            status: 'archived'
+        });
     }
 
     static async restoreProject(projectId: string): Promise<void> {
-        await this.updateProject(projectId, { isActive: true });
+        await this.updateProject(projectId, {
+            isActive: true,
+            status: 'active'
+        });
     }
 } 

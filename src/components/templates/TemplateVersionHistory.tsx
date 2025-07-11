@@ -4,7 +4,6 @@ import {
     FiUser,
     FiFileText,
     FiCopy,
-    FiDownload,
     FiRotateCcw,
     FiEye,
     FiX
@@ -159,7 +158,7 @@ export const TemplateVersionHistory: React.FC<TemplateVersionHistoryProps> = ({
                 </div>
 
                 {/* Version List */}
-                <div className="flex-1 overflow-y-auto">
+                <div className="overflow-y-auto flex-1">
                     <div className="p-6 space-y-4">
                         {versions.map((version) => (
                             <div
@@ -173,15 +172,15 @@ export const TemplateVersionHistory: React.FC<TemplateVersionHistoryProps> = ({
                                     }`}
                             >
                                 <div className="p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex gap-3 items-center">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedVersions.has(version.id)}
                                                 onChange={() => toggleVersionSelection(version.id)}
-                                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                                             />
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex gap-2 items-center">
                                                 <FiFileText className="w-5 h-5 text-gray-400" />
                                                 <span className="font-medium text-gray-900 dark:text-white">
                                                     Version {version.version}
@@ -194,13 +193,13 @@ export const TemplateVersionHistory: React.FC<TemplateVersionHistoryProps> = ({
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex gap-2 items-center">
                                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                <div className="flex items-center gap-1">
+                                                <div className="flex gap-1 items-center">
                                                     <FiUser className="w-4 h-4" />
                                                     <span>{version.author.name}</span>
                                                 </div>
-                                                <div className="flex items-center gap-1 mt-1">
+                                                <div className="flex gap-1 items-center mt-1">
                                                     <FiClock className="w-4 h-4" />
                                                     <span>{formatDate(version.createdAt)}</span>
                                                 </div>
@@ -251,8 +250,8 @@ export const TemplateVersionHistory: React.FC<TemplateVersionHistoryProps> = ({
                                     </div>
 
                                     {expandedVersions.has(version.id) && (
-                                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                                            <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-600">
+                                            <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                                 Changes in this version:
                                             </h4>
                                             <ul className="space-y-1">
@@ -285,13 +284,13 @@ export const TemplateVersionHistory: React.FC<TemplateVersionHistoryProps> = ({
                                 </h3>
                                 <button
                                     onClick={() => handleCopyContent(viewingContent)}
-                                    className="flex items-center gap-2 px-3 py-1 text-sm text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    className="flex gap-2 items-center px-3 py-1 text-sm text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     <FiCopy className="w-4 h-4" />
                                     Copy
                                 </button>
                             </div>
-                            <pre className="p-4 text-sm text-gray-900 whitespace-pre-wrap bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-100 max-h-96 overflow-y-auto">
+                            <pre className="overflow-y-auto p-4 max-h-96 text-sm text-gray-900 whitespace-pre-wrap bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-100">
                                 {viewingContent}
                             </pre>
                         </div>
