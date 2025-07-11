@@ -18,12 +18,12 @@ export default function Login() {
     }, [isAuthenticated, navigate, from]);
 
     return (
-        <div className="flex flex-1 min-h-screen">
+        <div className="flex flex-1 min-h-screen bg-white dark:bg-gray-900">
             <div className="flex flex-col flex-1 justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     <div>
                         <div className="flex gap-x-3 items-center">
-                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-primary-600">
+                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-primary-600 dark:bg-primary-500">
                                 <span className="text-xl font-bold text-white">AI</span>
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -42,49 +42,49 @@ export default function Login() {
             </div>
 
             <div className="hidden relative flex-1 w-0 lg:block">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800">
-                    <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900">
+                    <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />
                     <div className="flex absolute inset-0 justify-center items-center p-12">
                         <div className="max-w-xl text-white">
                             <h1 className="mb-6 text-4xl font-bold">
                                 Optimize Your AI Costs
                             </h1>
-                            <p className="mb-8 text-lg text-primary-100">
+                            <p className="mb-8 text-lg text-primary-100 dark:text-primary-200">
                                 Track, analyze, and reduce your AI API costs across multiple providers.
                                 Get intelligent insights and optimization suggestions powered by AI.
                             </p>
                             <div className="space-y-4">
                                 <div className="flex gap-3 items-start">
-                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
-                                        <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
+                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
+                                        <svg className="w-4 h-4 text-primary-200 dark:text-primary-100" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold">Real-time Tracking</h3>
-                                        <p className="text-primary-100">Monitor API usage and costs across all major AI providers</p>
+                                        <h3 className="font-semibold text-white">Real-time Tracking</h3>
+                                        <p className="text-primary-100 dark:text-primary-200">Monitor API usage and costs across all major AI providers</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 items-start">
-                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
-                                        <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
+                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
+                                        <svg className="w-4 h-4 text-primary-200 dark:text-primary-100" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold">AI-Powered Optimization</h3>
-                                        <p className="text-primary-100">Get intelligent suggestions to reduce token usage by up to 40%</p>
+                                        <h3 className="font-semibold text-white">AI-Powered Optimization</h3>
+                                        <p className="text-primary-100 dark:text-primary-200">Get intelligent suggestions to reduce token usage by up to 40%</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 items-start">
-                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 flex items-center justify-center mt-0.5">
-                                        <svg className="w-4 h-4 text-primary-200" fill="currentColor" viewBox="0 0 20 20">
+                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
+                                        <svg className="w-4 h-4 text-primary-200 dark:text-primary-100" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold">Advanced Analytics</h3>
-                                        <p className="text-primary-100">Detailed insights and predictions to control your AI spending</p>
+                                        <h3 className="font-semibold text-white">Advanced Analytics</h3>
+                                        <p className="text-primary-100 dark:text-primary-200">Detailed insights and predictions to control your AI spending</p>
                                     </div>
                                 </div>
                             </div>
