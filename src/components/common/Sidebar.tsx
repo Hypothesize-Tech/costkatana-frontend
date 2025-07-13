@@ -13,6 +13,8 @@ import {
     PlayIcon,
     BellIcon,
     CogIcon,
+    CurrencyDollarIcon,
+    BoltIcon as TraceIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -25,6 +27,8 @@ const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Usage', href: '/usage', icon: CircleStackIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+    { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon },
+    { name: 'Traces', href: '/traces', icon: TraceIcon },
     { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
     { name: 'Projects', href: '/projects', icon: FolderIcon },
     { name: 'Templates', href: '/templates', icon: DocumentTextIcon },

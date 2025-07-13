@@ -103,13 +103,6 @@ api.interceptors.response.use(
     }
 );
 
-// Server-Sent Events configuration
-export const createEventSource = (path: string): EventSource => {
-    const token = authService.getToken();
-    // EventSource doesn't support custom headers, so we pass the token as a query parameter
-    return new EventSource(`${API_URL}/api${path}?token=${token}`);
-};
-
 // Export both default and named exports for compatibility
 export const apiClient = api;
 export default api;
