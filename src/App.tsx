@@ -31,9 +31,6 @@ import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
 import Pricing from './pages/Pricing';
-import { TracesDashboard } from './pages/TracesDashboard';
-import { TraceDetailView } from './components/traces/TraceDetailView';
-import { TracePerformanceAnalysis } from './components/traces/TracePerformanceAnalysis';
 
 const queryClient = new QueryClient();
 
@@ -110,18 +107,6 @@ function App() {
                                         <Route
                                             path="integration"
                                             element={<Integration />}
-                                        />
-                                        <Route
-                                            path="traces"
-                                            element={<TracesDashboard />}
-                                        />
-                                        <Route
-                                            path="traces/:traceId"
-                                            element={<TraceDetailView />}
-                                        />
-                                        <Route
-                                            path="traces/:traceId/analysis"
-                                            element={<TracePerformanceAnalysis />}
                                         />
                                     </Route>
 

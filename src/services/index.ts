@@ -4,7 +4,6 @@ export { userService } from './user.service';
 export { usageService } from './usage.service';
 export { analyticsService } from './analytics.service';
 export { optimizationService } from './optimization.service';
-export { TraceService } from './trace.service';
 
 // Re-export types from services if needed
 export type { default as api } from '../config/api';
