@@ -5,12 +5,15 @@ import {
     ClockIcon,
     CpuChipIcon,
     ArrowPathIcon,
-    ChevronDownIcon
+    ChevronDownIcon,
+    ChevronUpIcon,
+    SparklesIcon
 } from '@heroicons/react/24/outline';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { CostChart } from '../components/dashboard/CostChart';
 import { ServiceBreakdown } from '../components/dashboard/ServiceBreakdown';
 import { RecentActivity } from '../components/dashboard/RecentActivity';
+import AdvancedCostMonitoring from '../components/dashboard/AdvancedCostMonitoring';
 import { DashboardService, DashboardData } from '../services/dashboard.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
@@ -36,6 +39,7 @@ export const Dashboard: React.FC = () => {
     const [timeRange, setTimeRange] = useState<string>('7d');
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [showAdvancedMonitoring, setShowAdvancedMonitoring] = useState(false);
     const { showNotification } = useNotification();
     const { selectedProject, setSelectedProject, projects, getSelectedProjectName } = useProject();
 
@@ -378,6 +382,37 @@ export const Dashboard: React.FC = () => {
                 })) || []}
                 optimizationOpportunities={0}
             />
+
+            {/* Advanced Cost Monitoring Section */}
+            <div className="bg-white rounded-lg shadow dark:bg-gray-800">
+                <button
+                    onClick={() => setShowAdvancedMonitoring(!showAdvancedMonitoring)}
+                    className="flex justify-between items-center p-6 w-full text-left border-b border-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                    <div className="flex gap-3 items-center">
+                        <SparklesIcon className="w-6 h-6 text-blue-600" />
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                Advanced Cost Monitoring & Analytics
+                            </h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Real-time monitoring, forecasting, and performance analysis
+                            </p>
+                        </div>
+                    </div>
+                    {showAdvancedMonitoring ? (
+                        <ChevronUpIcon className="w-5 h-5 text-gray-500" />
+                    ) : (
+                        <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                    )}
+                </button>
+
+                {showAdvancedMonitoring && (
+                    <div className="p-6">
+                        <AdvancedCostMonitoring />
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

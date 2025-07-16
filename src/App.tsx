@@ -31,6 +31,9 @@ import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
 import Pricing from './pages/Pricing';
+import AdvancedMonitoring from './pages/AdvancedMonitoring';
+import Experimentation from './pages/Experimentation';
+import InferenceScaling from './pages/InferenceScaling';
 
 const queryClient = new QueryClient();
 
@@ -97,6 +100,18 @@ function App() {
                                         <Route
                                             path="templates/use"
                                             element={<TemplateUsage />}
+                                        />
+                                        <Route
+                                            path="advanced-monitoring"
+                                            element={<AdvancedMonitoring />}
+                                        />
+                                        <Route
+                                            path="experimentation"
+                                            element={<Experimentation />}
+                                        />
+                                        <Route
+                                            path="inference-scaling"
+                                            element={<InferenceScaling />}
                                         />
                                         <Route
                                             path="settings"

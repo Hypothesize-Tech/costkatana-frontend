@@ -105,4 +105,5 @@ api.interceptors.response.use(
 
 // Export both default and named exports for compatibility
 export const apiClient = api;
+export const API_BASE_URL = API_URL;
 export default api;

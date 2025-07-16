@@ -14,6 +14,8 @@ import {
     BellIcon,
     CogIcon,
     CurrencyDollarIcon,
+    SparklesIcon,
+    BeakerIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -26,6 +28,9 @@ const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Usage', href: '/usage', icon: CircleStackIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+    { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon },
+    { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon },
+    { name: 'Inference Scaling', href: '/inference-scaling', icon: SparklesIcon },
     { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon },
     { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
     { name: 'Projects', href: '/projects', icon: FolderIcon },
