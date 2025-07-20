@@ -79,7 +79,9 @@ const FineTuningAnalysis: React.FC = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const projectsData = await ExperimentationService.getFineTuningProjects();
+            const response = await ExperimentationService.getFineTuningProjects();
+            // Handle the real API response structure
+            const projectsData = response.projects || [];
             setProjects(projectsData);
         } catch (err) {
             setError('Failed to load projects');

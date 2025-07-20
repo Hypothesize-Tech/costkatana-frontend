@@ -70,8 +70,8 @@ const ModelComparison: React.FC = () => {
 
     const loadAvailableModels = async () => {
         try {
-            const models = await ExperimentationService.getAvailableModels();
-            setAvailableModels(models);
+            const response = await ExperimentationService.getAvailableModels();
+            setAvailableModels(response.models || []);
         } catch (error) {
             console.error('Error loading available models:', error);
             setError('Failed to load available models');
@@ -243,8 +243,8 @@ const ModelComparison: React.FC = () => {
 
         if (currentValue === bestValue) {
             return (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <StarIcon className="h-3 w-3 mr-1" />
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                    <StarIcon className="mr-1 w-3 h-3" />
                     Best
                 </span>
             );
@@ -253,7 +253,7 @@ const ModelComparison: React.FC = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Model Comparison</h2>
                 <div className="flex space-x-2">
@@ -262,7 +262,7 @@ const ModelComparison: React.FC = () => {
                             onClick={exportResults}
                             className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                            <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
+                            <DocumentArrowDownIcon className="mr-2 w-4 h-4" />
                             Export Results
                         </button>
                     )}
@@ -273,12 +273,12 @@ const ModelComparison: React.FC = () => {
                     >
                         {isRunning ? (
                             <>
-                                <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                                <ArrowPathIcon className="mr-2 w-4 h-4 animate-spin" />
                                 Running...
                             </>
                         ) : (
                             <>
-                                <PlayIcon className="h-4 w-4 mr-2" />
+                                <PlayIcon className="mr-2 w-4 h-4" />
                                 Run Comparison
                             </>
                         )}
@@ -287,26 +287,26 @@ const ModelComparison: React.FC = () => {
             </div>
 
             {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="p-4 mb-4 bg-red-50 rounded-lg border border-red-200">
                     <div className="flex items-center">
-                        <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
+                        <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-red-400" />
                         <span className="text-sm text-red-800">{error}</span>
                     </div>
                 </div>
             )}
 
             {/* Configuration Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
                 {/* Prompt Input */}
                 <div className="lg:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                         Test Prompt
                     </label>
                     <textarea
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         placeholder="Enter the prompt you want to test across different models..."
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="p-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         rows={3}
                     />
                 </div>
@@ -321,15 +321,15 @@ const ModelComparison: React.FC = () => {
                             onClick={addModel}
                             className="flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
                         >
-                            <PlusIcon className="h-4 w-4 mr-1" />
+                            <PlusIcon className="mr-1 w-4 h-4" />
                             Add Model
                         </button>
                     </div>
-                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                    <div className="overflow-y-auto space-y-3 max-h-64">
                         {selectedModels.map((model, index) => (
-                            <div key={index} className="border border-gray-200 rounded-lg p-3">
+                            <div key={index} className="p-3 rounded-lg border border-gray-200">
                                 <div className="flex justify-between items-start mb-2">
-                                    <div className="flex-1 grid grid-cols-2 gap-2">
+                                    <div className="grid flex-1 grid-cols-2 gap-2">
                                         <select
                                             value={`${model.provider}:${model.model}`}
                                             onChange={(e) => {
@@ -337,7 +337,7 @@ const ModelComparison: React.FC = () => {
                                                 updateModel(index, 'provider', provider);
                                                 updateModel(index, 'model', modelName);
                                             }}
-                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="px-2 py-1 text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                             {availableModels.map(m => (
                                                 <option key={`${m.provider}:${m.model}`} value={`${m.provider}:${m.model}`}>
@@ -349,13 +349,13 @@ const ModelComparison: React.FC = () => {
                                             onClick={() => removeModel(index)}
                                             className="text-red-500 hover:text-red-700"
                                         >
-                                            <TrashIcon className="h-4 w-4" />
+                                            <TrashIcon className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
-                                        <label className="block text-xs text-gray-600 mb-1">Temperature</label>
+                                        <label className="block mb-1 text-xs text-gray-600">Temperature</label>
                                         <input
                                             type="number"
                                             min="0"
@@ -363,18 +363,18 @@ const ModelComparison: React.FC = () => {
                                             step="0.1"
                                             value={model.temperature}
                                             onChange={(e) => updateModel(index, 'temperature', parseFloat(e.target.value))}
-                                            className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="px-2 py-1 w-full text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-600 mb-1">Max Tokens</label>
+                                        <label className="block mb-1 text-xs text-gray-600">Max Tokens</label>
                                         <input
                                             type="number"
                                             min="1"
                                             max="4000"
                                             value={model.maxTokens}
                                             onChange={(e) => updateModel(index, 'maxTokens', parseInt(e.target.value))}
-                                            className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="px-2 py-1 w-full text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
                                     </div>
                                 </div>
@@ -385,10 +385,10 @@ const ModelComparison: React.FC = () => {
 
                 {/* Evaluation Criteria */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                         Evaluation Criteria
                     </label>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                    <div className="overflow-y-auto space-y-2 max-h-64">
                         {criteriaOptions.map(criterion => (
                             <label key={criterion} className="flex items-center">
                                 <input
@@ -401,7 +401,7 @@ const ModelComparison: React.FC = () => {
                                             setEvaluationCriteria(evaluationCriteria.filter(c => c !== criterion));
                                         }
                                     }}
-                                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    className="mr-2 w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                                 />
                                 <span className="text-sm text-gray-700 capitalize">
                                     {criterion.replace('_', ' ')}
@@ -412,9 +412,9 @@ const ModelComparison: React.FC = () => {
                 </div>
 
                 {/* Additional Settings */}
-                <div className="lg:col-span-2 flex items-center space-x-6">
+                <div className="flex items-center space-x-6 lg:col-span-2">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block mb-1 text-sm font-medium text-gray-700">
                             Iterations
                         </label>
                         <input
@@ -423,12 +423,12 @@ const ModelComparison: React.FC = () => {
                             max="10"
                             value={iterations}
                             onChange={(e) => setIterations(parseInt(e.target.value))}
-                            className="w-20 text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="px-2 py-1 w-20 text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                     {estimatedCost && (
                         <div className="flex items-center text-sm text-gray-600">
-                            <CurrencyDollarIcon className="h-4 w-4 mr-1" />
+                            <CurrencyDollarIcon className="mr-1 w-4 h-4" />
                             Estimated Cost: ${estimatedCost.toFixed(4)}
                         </div>
                     )}
@@ -437,7 +437,7 @@ const ModelComparison: React.FC = () => {
 
             {/* Results Section */}
             {(isRunning || results.length > 0) && (
-                <div className="border-t pt-6">
+                <div className="pt-6 border-t">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">Results</h3>
                         {results.length > 0 && (
@@ -446,7 +446,7 @@ const ModelComparison: React.FC = () => {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="px-2 py-1 text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 >
                                     {comparisonMetrics.map(metric => (
                                         <option key={metric.key} value={metric.key}>
@@ -465,7 +465,7 @@ const ModelComparison: React.FC = () => {
                     </div>
 
                     {isRunning && (
-                        <div className="flex items-center justify-center py-8">
+                        <div className="flex justify-center items-center py-8">
                             <LoadingSpinner />
                             <span className="ml-2 text-gray-600">Running comparison...</span>
                         </div>
@@ -476,15 +476,15 @@ const ModelComparison: React.FC = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                             Model
                                         </th>
                                         {comparisonMetrics.map(metric => (
-                                            <th key={metric.key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th key={metric.key} className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                                 {metric.label}
                                             </th>
                                         ))}
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                             Actions
                                         </th>
                                     </tr>
@@ -514,7 +514,7 @@ const ModelComparison: React.FC = () => {
                                                     </div>
                                                 </td>
                                             ))}
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                                                 <button
                                                     onClick={() => {
                                                         setSelectedResult(result);
@@ -544,8 +544,8 @@ const ModelComparison: React.FC = () => {
                     <div className="space-y-6">
                         {/* Response */}
                         <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Response</h4>
-                            <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
+                            <h4 className="mb-2 text-sm font-medium text-gray-900">Response</h4>
+                            <div className="overflow-y-auto p-4 max-h-64 bg-gray-50 rounded-lg">
                                 <pre className="text-sm text-gray-800 whitespace-pre-wrap">
                                     {selectedResult.response}
                                 </pre>
@@ -554,10 +554,10 @@ const ModelComparison: React.FC = () => {
 
                         {/* Metrics */}
                         <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Detailed Metrics</h4>
+                            <h4 className="mb-2 text-sm font-medium text-gray-900">Detailed Metrics</h4>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-blue-50 rounded-lg p-4">
-                                    <h5 className="text-sm font-medium text-blue-900 mb-2">Cost Breakdown</h5>
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <h5 className="mb-2 text-sm font-medium text-blue-900">Cost Breakdown</h5>
                                     <div className="space-y-1 text-sm text-blue-800">
                                         <div>Input Tokens: {selectedResult.costBreakdown.inputTokens.toLocaleString()}</div>
                                         <div>Output Tokens: {selectedResult.costBreakdown.outputTokens.toLocaleString()}</div>
@@ -566,8 +566,8 @@ const ModelComparison: React.FC = () => {
                                         <div className="font-medium">Total: ${selectedResult.costBreakdown.totalCost.toFixed(4)}</div>
                                     </div>
                                 </div>
-                                <div className="bg-green-50 rounded-lg p-4">
-                                    <h5 className="text-sm font-medium text-green-900 mb-2">Quality Metrics</h5>
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <h5 className="mb-2 text-sm font-medium text-green-900">Quality Metrics</h5>
                                     <div className="space-y-1 text-sm text-green-800">
                                         <div>Accuracy: {(selectedResult.qualityMetrics.accuracy * 100).toFixed(1)}%</div>
                                         <div>Relevance: {(selectedResult.qualityMetrics.relevance * 100).toFixed(1)}%</div>
@@ -580,8 +580,8 @@ const ModelComparison: React.FC = () => {
 
                         {/* Performance */}
                         <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Performance</h4>
-                            <div className="bg-yellow-50 rounded-lg p-4">
+                            <h4 className="mb-2 text-sm font-medium text-gray-900">Performance</h4>
+                            <div className="p-4 bg-yellow-50 rounded-lg">
                                 <div className="grid grid-cols-3 gap-4 text-sm text-yellow-800">
                                     <div>
                                         <div className="font-medium">Response Time</div>

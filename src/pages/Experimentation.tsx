@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    BeakerIcon, 
-    ChartBarIcon, 
-    CogIcon, 
-    LightBulbIcon, 
+import {
+    BeakerIcon,
+    ChartBarIcon,
+    CogIcon,
+    LightBulbIcon,
     InformationCircleIcon,
     SparklesIcon,
     ArrowTrendingUpIcon,
@@ -42,21 +42,21 @@ const Experimentation: React.FC = () => {
         {
             id: 'model-comparison' as Tab,
             name: 'Model Comparison',
-            icon: <ChartBarIcon className="h-5 w-5" />,
+            icon: <ChartBarIcon className="w-5 h-5" />,
             description: 'Compare different AI models side-by-side',
             color: 'text-blue-600'
         },
         {
             id: 'what-if-scenarios' as Tab,
             name: 'What-If Scenarios',
-            icon: <LightBulbIcon className="h-5 w-5" />,
+            icon: <LightBulbIcon className="w-5 h-5" />,
             description: 'Simulate financial impact of changes',
             color: 'text-green-600'
         },
         {
             id: 'fine-tuning-analysis' as Tab,
             name: 'Fine-Tuning Analysis',
-            icon: <CogIcon className="h-5 w-5" />,
+            icon: <CogIcon className="w-5 h-5" />,
             description: 'Analyze custom model development costs',
             color: 'text-purple-600'
         }
@@ -66,7 +66,7 @@ const Experimentation: React.FC = () => {
         {
             title: 'Total Experiments',
             value: stats.totalExperiments,
-            icon: <BeakerIcon className="h-8 w-8 text-blue-600" />,
+            icon: <BeakerIcon className="w-8 h-8 text-blue-600" />,
             color: 'bg-blue-50',
             change: '+12%',
             changeType: 'increase' as const
@@ -74,7 +74,7 @@ const Experimentation: React.FC = () => {
         {
             title: 'Average Cost Savings',
             value: `$${stats.avgCostSavings.toFixed(2)}`,
-            icon: <CurrencyDollarIcon className="h-8 w-8 text-green-600" />,
+            icon: <CurrencyDollarIcon className="w-8 h-8 text-green-600" />,
             color: 'bg-green-50',
             change: '+8%',
             changeType: 'increase' as const
@@ -82,7 +82,7 @@ const Experimentation: React.FC = () => {
         {
             title: 'Success Rate',
             value: `${(stats.successRate * 100).toFixed(1)}%`,
-            icon: <ArrowTrendingUpIcon className="h-8 w-8 text-purple-600" />,
+            icon: <ArrowTrendingUpIcon className="w-8 h-8 text-purple-600" />,
             color: 'bg-purple-50',
             change: '+5%',
             changeType: 'increase' as const
@@ -90,7 +90,7 @@ const Experimentation: React.FC = () => {
         {
             title: 'Models Compared',
             value: stats.totalModelsCompared,
-            icon: <ChartBarIcon className="h-8 w-8 text-yellow-600" />,
+            icon: <ChartBarIcon className="w-8 h-8 text-yellow-600" />,
             color: 'bg-yellow-50',
             change: '+25%',
             changeType: 'increase' as const
@@ -103,21 +103,38 @@ const Experimentation: React.FC = () => {
 
     const loadExperimentationData = async () => {
         setIsLoading(true);
+        setError(null);
         try {
-            // Load experimentation statistics
-            const experiments = await ExperimentationService.getExperimentHistory();
-            const projects = await ExperimentationService.getFineTuningProjects();
-            
-            // Calculate stats
+            // Load real experimentation data
+            const [experimentsData, fineTuningData, availableModels] = await Promise.all([
+                ExperimentationService.getExperiments(),
+                ExperimentationService.getFineTuningProjects(),
+                ExperimentationService.getAvailableModels()
+            ]);
+
+            // Calculate real stats from actual data
+            const experiments = experimentsData.experiments || [];
+            const fineTuningProjects = fineTuningData.projects || [];
+
             const totalExperiments = experiments.length;
-            const completedExperiments = experiments.filter(exp => exp.status === 'completed');
+            const completedExperiments = experiments.filter((exp: any) => exp.status === 'completed');
             const successRate = totalExperiments > 0 ? completedExperiments.length / totalExperiments : 0;
-            
-            // Mock calculations for demo - in real app, these would come from actual data
-            const avgCostSavings = 142.50;
-            const totalModelsCompared = experiments.filter(exp => exp.type === 'model_comparison').length * 3;
-            const activeProjects = projects.filter(p => p.status === 'training' || p.status === 'planning').length;
-            const totalSavings = avgCostSavings * totalExperiments;
+
+            // Calculate real cost savings from completed experiments
+            const totalSavingsFromExperiments = completedExperiments.reduce((sum: number, exp: any) => {
+                return sum + (exp.results?.savings || 0);
+            }, 0);
+
+            const avgCostSavings = completedExperiments.length > 0 ?
+                totalSavingsFromExperiments / completedExperiments.length : 0;
+
+            // Count actual models compared
+            const totalModelsCompared = availableModels.totalModels || 0;
+
+            // Count active fine-tuning projects
+            const activeProjects = fineTuningProjects.filter((p: any) =>
+                p.status === 'training' || p.status === 'pending'
+            ).length;
 
             setStats({
                 totalExperiments,
@@ -125,12 +142,19 @@ const Experimentation: React.FC = () => {
                 successRate,
                 totalModelsCompared,
                 activeProjects,
-                totalSavings
+                totalSavings: totalSavingsFromExperiments
             });
 
-            // Load recommendations
-            const recs = await ExperimentationService.getExperimentRecommendations('current-user');
-            setRecommendations(recs);
+            // Set real recommendations from fine-tuning data
+            const recommendations = fineTuningData.recommendations?.topCandidates || [];
+            setRecommendations(recommendations.map((rec: any) => ({
+                title: rec.name,
+                description: `Fine-tune ${rec.provider} model for ${rec.projectName}`,
+                priority: rec.roi > 200 ? 'high' : rec.roi > 100 ? 'medium' : 'low',
+                potentialSavings: rec.estimatedSavings,
+                effort: rec.trainingExamples > 1000 ? 'high' : rec.trainingExamples > 500 ? 'medium' : 'low'
+            })));
+
         } catch (error) {
             console.error('Error loading experimentation data:', error);
             setError('Failed to load experimentation data');
@@ -155,12 +179,12 @@ const Experimentation: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white border-b border-gray-200 shadow-sm">
+                <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                                <BeakerIcon className="h-8 w-8 text-blue-600 mr-3" />
+                            <h1 className="flex items-center text-3xl font-bold text-gray-900">
+                                <BeakerIcon className="mr-3 w-8 h-8 text-blue-600" />
                                 Experimentation & A/B Testing
                             </h1>
                             <p className="mt-2 text-sm text-gray-600">
@@ -168,7 +192,7 @@ const Experimentation: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <SparklesIcon className="h-5 w-5 text-yellow-600" />
+                            <SparklesIcon className="w-5 h-5 text-yellow-600" />
                             <span className="text-sm font-medium text-gray-700">
                                 {recommendations.length} recommendations available
                             </span>
@@ -178,21 +202,20 @@ const Experimentation: React.FC = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
                     {statCards.map((card, index) => (
-                        <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                            <div className="flex items-center justify-between">
+                        <div key={index} className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                            <div className="flex justify-between items-center">
                                 <div className="flex-1">
                                     <p className="text-sm font-medium text-gray-600">{card.title}</p>
-                                    <p className="text-2xl font-bold text-gray-900 mt-1">{card.value}</p>
+                                    <p className="mt-1 text-2xl font-bold text-gray-900">{card.value}</p>
                                     <div className="flex items-center mt-2">
-                                        <span className={`text-xs font-medium ${
-                                            card.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
-                                        }`}>
+                                        <span className={`text-xs font-medium ${card.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                                            }`}>
                                             {card.change}
                                         </span>
-                                        <span className="text-xs text-gray-500 ml-1">from last month</span>
+                                        <span className="ml-1 text-xs text-gray-500">from last month</span>
                                     </div>
                                 </div>
                                 <div className={`flex-shrink-0 ${card.color} rounded-lg p-3`}>
@@ -205,33 +228,32 @@ const Experimentation: React.FC = () => {
 
                 {/* Quick Recommendations */}
                 {recommendations.length > 0 && (
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                                <SparklesIcon className="h-5 w-5 text-yellow-600 mr-2" />
+                    <div className="p-6 mb-8 bg-white rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="flex items-center text-lg font-semibold text-gray-900">
+                                <SparklesIcon className="mr-2 w-5 h-5 text-yellow-600" />
                                 Quick Recommendations
                             </h2>
                             <span className="text-sm text-gray-500">
                                 Based on your usage patterns
                             </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {recommendations.slice(0, 3).map((rec, index) => (
-                                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-2">
+                                <div key={index} className="p-4 rounded-lg border border-gray-200">
+                                    <div className="flex justify-between items-center mb-2">
                                         <h3 className="text-sm font-medium text-gray-900">{rec.title}</h3>
-                                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                            rec.priority === 'high' ? 'bg-red-100 text-red-800' :
-                                            rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                            'bg-green-100 text-green-800'
-                                        }`}>
+                                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                                rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                                    'bg-green-100 text-green-800'
+                                            }`}>
                                             {rec.priority}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-gray-600 mb-2">{rec.description}</p>
-                                    <div className="flex items-center justify-between">
+                                    <p className="mb-2 text-xs text-gray-600">{rec.description}</p>
+                                    <div className="flex justify-between items-center">
                                         <div className="flex items-center space-x-2">
-                                            <CurrencyDollarIcon className="h-4 w-4 text-green-600" />
+                                            <CurrencyDollarIcon className="w-4 h-4 text-green-600" />
                                             <span className="text-sm font-medium text-green-600">
                                                 ${rec.potentialSavings.toFixed(2)}
                                             </span>
@@ -247,19 +269,18 @@ const Experimentation: React.FC = () => {
                 )}
 
                 {/* Main Content */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
                     {/* Tab Navigation */}
                     <div className="border-b border-gray-200">
-                        <nav className="flex space-x-8 px-6">
+                        <nav className="flex px-6 space-x-8">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                                        activeTab === tab.id
+                                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
                                             ? 'border-blue-500 text-blue-600'
                                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                    }`}
+                                        }`}
                                 >
                                     <span className={activeTab === tab.id ? tab.color : 'text-gray-400'}>
                                         {tab.icon}
@@ -278,7 +299,7 @@ const Experimentation: React.FC = () => {
                                 <h3 className="text-sm font-medium text-gray-900">
                                     {tabs.find(tab => tab.id === activeTab)?.name}
                                 </h3>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="mt-1 text-sm text-gray-600">
                                     {tabs.find(tab => tab.id === activeTab)?.description}
                                 </p>
                             </div>
@@ -288,17 +309,17 @@ const Experimentation: React.FC = () => {
                     {/* Tab Content */}
                     <div className="p-6">
                         {error && (
-                            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <div className="p-4 mb-4 bg-red-50 rounded-lg border border-red-200">
                                 <div className="flex items-center">
-                                    <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
+                                    <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-red-400" />
                                     <span className="text-sm text-red-800">{error}</span>
                                 </div>
                             </div>
                         )}
 
                         {isLoading ? (
-                            <div className="flex items-center justify-center py-8">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <div className="flex justify-center items-center py-8">
+                                <div className="w-8 h-8 rounded-full border-b-2 border-blue-600 animate-spin"></div>
                                 <span className="ml-2 text-gray-600">Loading...</span>
                             </div>
                         ) : (

@@ -231,14 +231,26 @@ export class ExperimentationService {
     /**
      * Fine-Tuning Analysis Methods
      */
-    static async createFineTuningProject(project: Omit<FineTuningProject, 'id'>): Promise<string> {
-        const response = await apiClient.post('/experimentation/fine-tuning-project', project);
-        return response.data.id;
+    static async createFineTuningProject(project: Omit<FineTuningProject, 'id'>): Promise<FineTuningProject> {
+        const response = await apiClient.post('/experimentation/fine-tuning-projects', project);
+        return response.data.data.project;
     }
 
-    static async getFineTuningProjects(): Promise<FineTuningProject[]> {
+    static async getFineTuningProjects(): Promise<{
+        projects: FineTuningProject[];
+        recommendations?: {
+            topCandidates: Array<{
+                name: string;
+                provider: string;
+                projectName: string;
+                roi: number;
+                estimatedSavings: number;
+                trainingExamples: number;
+            }>;
+        };
+    }> {
         const response = await apiClient.get('/experimentation/fine-tuning-projects');
-        return response.data;
+        return response.data.data;
     }
 
     static async getFineTuningAnalysis(projectId: string): Promise<FineTuningAnalysis> {
@@ -251,7 +263,7 @@ export class ExperimentationService {
     }
 
     static async deleteFineTuningProject(projectId: string): Promise<void> {
-        await apiClient.delete(`/experimentation/fine-tuning-project/${projectId}`);
+        await apiClient.delete(`/experimentation/fine-tuning-projects/${projectId}`);
     }
 
     /**
@@ -290,19 +302,22 @@ export class ExperimentationService {
     /**
      * Utility Methods
      */
-    static async getAvailableModels(): Promise<Array<{
-        provider: string;
-        model: string;
-        pricing: {
-            input: number;
-            output: number;
-            unit: string;
-        };
-        capabilities: string[];
-        contextWindow: number;
-    }>> {
+    static async getAvailableModels(): Promise<{
+        models: Array<{
+            provider: string;
+            model: string;
+            pricing: {
+                input: number;
+                output: number;
+                unit: string;
+            };
+            capabilities: string[];
+            contextWindow: number;
+        }>;
+        totalModels: number;
+    }> {
         const response = await apiClient.get('/experimentation/available-models');
-        return response.data;
+        return response.data.data;
     }
 
     static async estimateExperimentCost(request: {
@@ -329,6 +344,45 @@ export class ExperimentationService {
         const response = await apiClient.get(`/experimentation/recommendations/${userId}`);
         return response.data;
     }
+
+    /**
+     * New methods for real data integration
+     */
+    static async getExperiments(): Promise<{
+        experiments: Array<{
+            id: string;
+            name: string;
+            description: string;
+            type: string;
+            status: 'active' | 'completed' | 'pending';
+            createdAt: string;
+            results: {
+                accuracy: number | null;
+                cost: number;
+                latency: number | null;
+                savings: number;
+                efficiency: number;
+                roi: number;
+            };
+            projectId?: string;
+            projectName?: string;
+            budgetUsage?: number;
+            modelInfo?: {
+                model: string;
+                provider: string;
+                totalTokens: number;
+                requestCount: number;
+            };
+        }>;
+        totalExperiments: number;
+        activeExperiments: number;
+        completedExperiments: number;
+    }> {
+        const response = await apiClient.get('/experimentation/experiments');
+        return response.data.data;
+    }
+
+
 }
 
 export default ExperimentationService; 
