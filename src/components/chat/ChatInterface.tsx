@@ -213,7 +213,7 @@ export const ChatInterface: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full bg-gray-50 min-h-[600px]">
+        <div className="flex h-full bg-gray-50 min-h-[600px] w-full">
             {/* Sidebar */}
             <div className={`${showConversations ? 'w-80' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}>
                 {/* Sidebar Header */}
@@ -242,7 +242,7 @@ export const ChatInterface: React.FC = () => {
 
                 {/* Conversations List */}
                 {showConversations && (
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide">
                         {conversations.map((conversation) => (
                             <div
                                 key={conversation.id}
@@ -307,7 +307,7 @@ export const ChatInterface: React.FC = () => {
                                 {/* Model Dropdown */}
                                 {showModelDropdown && (
                                     <div
-                                        className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
+                                        className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-10 scrollbar-hide"
                                         style={{ maxHeight: '400px', overflowY: 'auto' }}
                                     >
                                         <div className="p-2">
@@ -351,7 +351,7 @@ export const ChatInterface: React.FC = () => {
                 </div>
 
                             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 max-w-4xl mx-auto">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 w-full mx-auto scrollbar-hide">
                     {messages.length === 0 && !isLoading && (
                         <div className="text-center py-16">
                             <div className="mb-8">
@@ -360,7 +360,7 @@ export const ChatInterface: React.FC = () => {
                                     Welcome to AI Cost Optimizer
                                 </h1>
                                 <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                                    Chat with 23+ AWS Bedrock AI models while tracking costs, optimizing performance, and managing your AI infrastructure—all in one place.
+                                    Chat with 23+ AWS Bedrock AI models while tracking costs, optimizing performance, and managing your AI infrastructure all in one place.
                                 </p>
                             </div>
                             
@@ -475,7 +475,7 @@ export const ChatInterface: React.FC = () => {
                                     onKeyDown={handleKeyPress}
                                     placeholder={selectedModel ? `Message ${selectedModel.name}...` : "Select a model to start chatting"}
                                     disabled={!selectedModel || isLoading}
-                                    className="w-full resize-none border border-gray-300 rounded-lg px-6 py-4 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed shadow-sm"
+                                    className="w-full resize-none border border-gray-300 rounded-lg px-6 py-4 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed shadow-sm scrollbar-hide"
                                     rows={1}
                                     style={{ minHeight: '56px', maxHeight: '160px' }}
                                 />

@@ -8,14 +8,17 @@ export const Layout = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Header takes full width */}
             <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
+            {/* Main content area with sidebar */}
             <div className="flex h-[calc(100vh-4rem)]">
                 <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="flex-1 overflow-y-auto">
+                {/* Main content area - add left margin on desktop to account for fixed sidebar */}
+                <main className="flex-1 overflow-y-auto lg:ml-72">
                     <div className="py-6">
-                        <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+                        <div className="w-full px-4 sm:px-6 md:px-8">
                             <Outlet />
                         </div>
                     </div>
