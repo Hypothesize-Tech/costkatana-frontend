@@ -181,12 +181,24 @@ export class ExperimentationService {
      */
     static async runModelComparison(request: ModelComparisonRequest): Promise<ExperimentResult> {
         const response = await apiClient.post('/experimentation/model-comparison', request);
+        return response.data.data || response.data; // Handle wrapped response
+    }
+
+    /**
+     * Start real-time model comparison with Bedrock
+     */
+    static async startRealTimeComparison(request: ModelComparisonRequest & {
+        executeOnBedrock?: boolean;
+        comparisonMode?: 'quality' | 'cost' | 'speed' | 'comprehensive';
+        evaluationPrompt?: string;
+    }): Promise<{ data: { sessionId: string; message: string; estimatedDuration: number } }> {
+        const response = await apiClient.post('/experimentation/real-time-comparison', request);
         return response.data;
     }
 
     static async getModelComparisonResults(experimentId: string): Promise<ModelComparisonResult[]> {
         const response = await apiClient.get(`/experimentation/model-comparison/${experimentId}/results`);
-        return response.data;
+        return response.data.data || response.data;
     }
 
     static async getModelComparisonHistory(filters?: {
@@ -198,60 +210,56 @@ export class ExperimentationService {
         const response = await apiClient.get('/experimentation/model-comparison/history', {
             params: filters
         });
-        return response.data;
+        return response.data.data || response.data;
     }
 
     /**
-     * What-If Scenario Methods
+     * What-If Scenarios
      */
-    static async createWhatIfScenario(scenario: WhatIfScenario): Promise<string> {
-        const response = await apiClient.post('/experimentation/what-if-scenario', scenario);
-        return response.data.id;
-    }
-
-    static async runWhatIfAnalysis(scenarioId: string): Promise<WhatIfResult> {
-        const response = await apiClient.post(`/experimentation/what-if-scenario/${scenarioId}/analyze`);
-        return response.data;
+    static async createWhatIfScenario(scenario: Omit<WhatIfScenario, 'id'>): Promise<WhatIfScenario> {
+        const response = await apiClient.post('/experimentation/what-if-scenarios', scenario);
+        return response.data.data || response.data;
     }
 
     static async getWhatIfScenarios(): Promise<WhatIfScenario[]> {
         const response = await apiClient.get('/experimentation/what-if-scenarios');
-        return response.data;
+        return response.data.data || response.data;
     }
 
     static async getWhatIfResults(scenarioId: string): Promise<WhatIfResult> {
         const response = await apiClient.get(`/experimentation/what-if-scenario/${scenarioId}/results`);
-        return response.data;
+        return response.data.data || response.data;
     }
 
-    static async deleteWhatIfScenario(scenarioId: string): Promise<void> {
-        await apiClient.delete(`/experimentation/what-if-scenario/${scenarioId}`);
+    static async runWhatIfAnalysis(scenarioName: string): Promise<WhatIfResult> {
+        const response = await apiClient.post(`/experimentation/what-if-scenarios/${scenarioName}/analyze`);
+        return response.data.data || response.data;
+    }
+
+    static async deleteWhatIfScenario(scenarioName: string): Promise<void> {
+        await apiClient.delete(`/experimentation/what-if-scenarios/${scenarioName}`);
     }
 
     /**
-     * Fine-Tuning Analysis Methods
+     * Fine-Tuning Projects
      */
-    static async createFineTuningProject(project: Omit<FineTuningProject, 'id'>): Promise<string> {
-        const response = await apiClient.post('/experimentation/fine-tuning-project', project);
-        return response.data.id;
+    static async createFineTuningProject(project: Omit<FineTuningProject, 'id'>): Promise<FineTuningProject> {
+        const response = await apiClient.post('/experimentation/fine-tuning-projects', project);
+        return response.data.data || response.data;
     }
 
     static async getFineTuningProjects(): Promise<FineTuningProject[]> {
         const response = await apiClient.get('/experimentation/fine-tuning-projects');
-        return response.data;
+        return response.data.data || response.data;
     }
 
     static async getFineTuningAnalysis(projectId: string): Promise<FineTuningAnalysis> {
-        const response = await apiClient.get(`/experimentation/fine-tuning-project/${projectId}/analysis`);
-        return response.data;
-    }
-
-    static async updateFineTuningProject(projectId: string, updates: Partial<FineTuningProject>): Promise<void> {
-        await apiClient.put(`/experimentation/fine-tuning-project/${projectId}`, updates);
+        const response = await apiClient.get(`/experimentation/fine-tuning-projects/${projectId}/analysis`);
+        return response.data.data || response.data;
     }
 
     static async deleteFineTuningProject(projectId: string): Promise<void> {
-        await apiClient.delete(`/experimentation/fine-tuning-project/${projectId}`);
+        await apiClient.delete(`/experimentation/fine-tuning-projects/${projectId}`);
     }
 
     /**
@@ -267,19 +275,20 @@ export class ExperimentationService {
         const response = await apiClient.get('/experimentation/history', {
             params: filters
         });
-        return response.data;
+        // Handle the wrapped response format from backend
+        return response.data.data || response.data;
     }
 
     static async getExperimentById(experimentId: string): Promise<ExperimentResult> {
         const response = await apiClient.get(`/experimentation/${experimentId}`);
-        return response.data;
+        return response.data.data || response.data;
     }
 
     static async deleteExperiment(experimentId: string): Promise<void> {
         await apiClient.delete(`/experimentation/${experimentId}`);
     }
 
-    static async exportExperimentResults(experimentId: string, format: 'csv' | 'json' | 'pdf' = 'json'): Promise<Blob> {
+    static async exportExperimentResults(experimentId: string, format: 'json' | 'csv'): Promise<Blob> {
         const response = await apiClient.get(`/experimentation/${experimentId}/export`, {
             params: { format },
             responseType: 'blob'
@@ -300,9 +309,13 @@ export class ExperimentationService {
         };
         capabilities: string[];
         contextWindow: number;
+        category?: string;
+        isLatest?: boolean;
+        notes?: string;
     }>> {
         const response = await apiClient.get('/experimentation/available-models');
-        return response.data;
+        // Handle the wrapped response format from backend  
+        return response.data.data || response.data;
     }
 
     static async estimateExperimentCost(request: {
@@ -314,10 +327,10 @@ export class ExperimentationService {
         duration: number;
     }> {
         const response = await apiClient.post('/experimentation/estimate-cost', request);
-        return response.data;
+        return response.data.data || response.data;
     }
 
-    static async getExperimentRecommendations(userId: string): Promise<Array<{
+    static async getExperimentRecommendations(_userId?: string): Promise<Array<{
         type: 'model_comparison' | 'what_if' | 'fine_tuning';
         title: string;
         description: string;
@@ -326,8 +339,9 @@ export class ExperimentationService {
         effort: 'low' | 'medium' | 'high';
         actions: string[];
     }>> {
-        const response = await apiClient.get(`/experimentation/recommendations/${userId}`);
-        return response.data;
+        // Note: userId parameter ignored since backend gets it from req.user
+        const response = await apiClient.get('/experimentation/recommendations');
+        return response.data.data || response.data;
     }
 }
 

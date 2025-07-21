@@ -4,12 +4,11 @@ import {
     PlusIcon,
     TrashIcon,
     CurrencyDollarIcon,
-    StarIcon,
     ArrowPathIcon,
     DocumentArrowDownIcon,
     ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
-import { ExperimentationService, ModelComparisonRequest, ModelComparisonResult, ExperimentResult } from '../../services/experimentation.service';
+import { ExperimentationService } from '../../services/experimentation.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { Modal } from '../common/Modal';
 
@@ -20,38 +19,65 @@ interface ModelConfig {
     maxTokens: number;
 }
 
-interface ComparisonMetric {
-    key: string;
-    label: string;
-    format: 'currency' | 'percentage' | 'number' | 'ms' | 'tokens';
-    higherIsBetter: boolean;
+interface AvailableModel {
+    provider: string;
+    model: string;
+    modelName?: string;
+    modelId?: string;
+    pricing: {
+        input: number;
+        output: number;
+        unit: string;
+    };
+    capabilities: string[];
+    contextWindow: number;
+    category?: string;
+    isLatest?: boolean;
+    notes?: string;
+}
+
+interface ComparisonResult {
+    model: string;
+    provider: string;
+    actualUsage?: {
+        totalCalls: number;
+        avgCost: number;
+        avgTokens: number;
+        avgResponseTime: number;
+        errorRate: number;
+        totalCost: number;
+    };
+    noUsageData?: boolean;
+    estimatedCostPer1K?: number;
+    recommendation: string;
+    analysis?: {
+        strengths: string[];
+        considerations: string[];
+    };
+    pricing?: {
+        inputCost: number;
+        outputCost: number;
+        contextWindow: number;
+    };
 }
 
 const ModelComparison: React.FC = () => {
     const [prompt, setPrompt] = useState('');
     const [selectedModels, setSelectedModels] = useState<ModelConfig[]>([]);
-    const [availableModels, setAvailableModels] = useState<any[]>([]);
+    const [availableModels, setAvailableModels] = useState<AvailableModel[]>([]);
     const [evaluationCriteria, setEvaluationCriteria] = useState<string[]>(['accuracy', 'relevance', 'completeness']);
     const [iterations, setIterations] = useState(1);
-    const [results, setResults] = useState<ModelComparisonResult[]>([]);
-    const [currentExperiment, setCurrentExperiment] = useState<ExperimentResult | null>(null);
+    const [results, setResults] = useState<ComparisonResult[]>([]);
+    const [currentExperiment, setCurrentExperiment] = useState<any>(null);
     const [isRunning, setIsRunning] = useState(false);
     const [showResultsModal, setShowResultsModal] = useState(false);
-    const [selectedResult, setSelectedResult] = useState<ModelComparisonResult | null>(null);
-    const [sortBy, setSortBy] = useState<string>('cost');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [selectedResult, setSelectedResult] = useState<ComparisonResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
-
-    const comparisonMetrics: ComparisonMetric[] = [
-        { key: 'cost', label: 'Cost', format: 'currency', higherIsBetter: false },
-        { key: 'latency', label: 'Latency', format: 'ms', higherIsBetter: false },
-        { key: 'tokenCount', label: 'Tokens', format: 'tokens', higherIsBetter: false },
-        { key: 'qualityScore', label: 'Quality', format: 'percentage', higherIsBetter: true },
-        { key: 'responseTime', label: 'Response Time', format: 'ms', higherIsBetter: false },
-        { key: 'throughput', label: 'Throughput', format: 'number', higherIsBetter: true },
-        { key: 'reliability', label: 'Reliability', format: 'percentage', higherIsBetter: true },
-    ];
+    const [realTimeMode, setRealTimeMode] = useState(false);
+    const [progressData, setProgressData] = useState<any>(null);
+    const [comparisonMode, setComparisonMode] = useState<'quality' | 'cost' | 'speed' | 'comprehensive'>('comprehensive');
+    const [executeOnBedrock, setExecuteOnBedrock] = useState(true);
 
     const criteriaOptions = [
         'accuracy', 'relevance', 'completeness', 'coherence', 'creativity',
@@ -62,6 +88,14 @@ const ModelComparison: React.FC = () => {
         loadAvailableModels();
     }, []);
 
+    // Trigger cost estimation when models or prompt change
+    useEffect(() => {
+        if (selectedModels.length > 0 && prompt.trim()) {
+            console.log('Triggering cost estimation due to changes...');
+            estimateComparisonCost();
+        }
+    }, [selectedModels, prompt, iterations]);
+
     useEffect(() => {
         if (selectedModels.length > 0 && prompt.trim()) {
             estimateComparisonCost();
@@ -70,43 +104,141 @@ const ModelComparison: React.FC = () => {
 
     const loadAvailableModels = async () => {
         try {
-            const models = await ExperimentationService.getAvailableModels();
-            setAvailableModels(models);
-        } catch (error) {
+            const response = await ExperimentationService.getAvailableModels();
+            console.log('Available models response:', response); // Debug log
+            
+            // Normalize the response data structure
+            const normalizedModels = (Array.isArray(response) ? response : []).map((model: any) => ({
+                provider: model.provider || 'Unknown',
+                model: model.model || model.modelId || model.modelName || '',
+                modelName: model.modelName || model.model || '',
+                pricing: {
+                    input: model.pricing?.input || 0,
+                    output: model.pricing?.output || 0,
+                    unit: model.pricing?.unit || 'Per 1M tokens'
+                },
+                capabilities: model.capabilities || ['text'],
+                contextWindow: model.contextWindow || 8192,
+                category: model.category || 'general',
+                isLatest: model.isLatest !== false,
+                notes: model.notes || ''
+            }));
+            
+            console.log('Normalized models:', normalizedModels);
+            console.log('Sample model pricing:', normalizedModels[0]?.pricing);
+            setAvailableModels(normalizedModels);
+            
+            if (normalizedModels.length === 0) {
+                setError('No models available. Please check if the backend pricing data is configured.');
+            } else {
+                setError(null); // Clear any previous errors
+                // Trigger initial cost estimation if we have selected models
+                if (selectedModels.length > 0) {
+                    setTimeout(estimateComparisonCost, 200);
+                }
+            }
+        } catch (error: any) {
             console.error('Error loading available models:', error);
-            setError('Failed to load available models');
+            setError('Failed to load available models: ' + (error.message || 'Unknown error'));
+            
+            // Fallback to some default models for testing
+            setAvailableModels([
+                {
+                    provider: 'Amazon',
+                    model: 'amazon.nova-micro-v1:0',
+                    modelName: 'Nova Micro',
+                    pricing: { input: 0.035, output: 0.14, unit: 'Per 1M tokens' },
+                    capabilities: ['text'],
+                    contextWindow: 128000,
+                    category: 'general',
+                    isLatest: true,
+                    notes: 'Fallback model'
+                }
+            ]);
         }
     };
 
     const estimateComparisonCost = async () => {
         try {
-            const request: ModelComparisonRequest = {
-                prompt,
-                models: selectedModels,
-                evaluationCriteria,
-                iterations
-            };
+            // Calculate cost estimate based on prompt length and selected models
+            if (!prompt.trim() || selectedModels.length === 0) {
+                setEstimatedCost(0);
+                return;
+            }
 
-            const estimate = await ExperimentationService.estimateExperimentCost({
-                type: 'model_comparison',
-                parameters: request
+            const promptTokens = Math.ceil(prompt.length / 4); // Rough token estimate
+            const outputTokens = 500; // Estimated response length
+            let totalCost = 0;
+
+            selectedModels.forEach(selectedModel => {
+                const modelPricing = getModelPricing(selectedModel.provider, selectedModel.model);
+                if (modelPricing) {
+                    const inputCost = (promptTokens / 1000000) * modelPricing.input;
+                    const outputCost = (outputTokens / 1000000) * modelPricing.output;
+                    totalCost += (inputCost + outputCost) * iterations;
+                }
             });
 
-            setEstimatedCost(estimate.estimatedCost);
+            setEstimatedCost(totalCost);
+
+            // Also try backend estimation as fallback
+            try {
+                const estimate = await ExperimentationService.estimateExperimentCost({
+                    type: 'model_comparison',
+                    parameters: {
+                        prompt,
+                        models: selectedModels,
+                        iterations
+                    }
+                });
+
+                if (estimate.estimatedCost > 0) {
+                    setEstimatedCost(estimate.estimatedCost);
+                }
+            } catch (backendError) {
+                console.log('Backend cost estimation unavailable, using frontend calculation:', totalCost);
+            }
+
         } catch (error) {
             console.error('Error estimating cost:', error);
+            setEstimatedCost(0);
         }
     };
 
     const addModel = () => {
-        if (availableModels.length > 0) {
-            const firstModel = availableModels[0];
-            setSelectedModels([...selectedModels, {
-                provider: firstModel.provider,
-                model: firstModel.model,
+        console.log('addModel called. Available models:', availableModels.length, 'Selected models:', selectedModels.length);
+        
+        if (availableModels.length === 0) {
+            setError('No models available to add. Please wait for models to load.');
+            return;
+        }
+
+        // Find a model that hasn't been selected yet
+        const usedModels = new Set(selectedModels.map(m => `${m.provider}:${m.model}`));
+        console.log('Used models:', Array.from(usedModels));
+        
+        const availableModel = availableModels.find(m => !usedModels.has(`${m.provider}:${m.model}`));
+        console.log('Found available model:', availableModel);
+        
+        if (availableModel) {
+            const newModel = {
+                provider: availableModel.provider,
+                model: availableModel.model,
                 temperature: 0.7,
                 maxTokens: 1000
-            }]);
+            };
+            console.log('Adding new model:', newModel);
+            
+            setSelectedModels([...selectedModels, newModel]);
+            setError(null); // Clear any previous errors
+            
+            // Trigger cost recalculation with new model
+            setTimeout(estimateComparisonCost, 100);
+        } else {
+            const message = availableModels.length === selectedModels.length 
+                ? 'All available models have been selected.' 
+                : 'No more models available to add.';
+            setError(message);
         }
     };
 
@@ -115,9 +247,17 @@ const ModelComparison: React.FC = () => {
     };
 
     const updateModel = (index: number, field: keyof ModelConfig, value: any) => {
+        console.log('updateModel called:', { index, field, value });
         const updated = [...selectedModels];
         updated[index] = { ...updated[index], [field]: value };
+        console.log('Updated model:', updated[index]);
         setSelectedModels(updated);
+        
+        // Trigger cost recalculation when models change
+        setTimeout(() => {
+            console.log('Recalculating cost after model update...');
+            estimateComparisonCost();
+        }, 100);
     };
 
     const runComparison = async () => {
@@ -126,101 +266,155 @@ const ModelComparison: React.FC = () => {
             return;
         }
 
+        // Check for duplicate models
+        const modelKeys = selectedModels.map(m => `${m.provider}:${m.model}`);
+        const uniqueModelKeys = new Set(modelKeys);
+        if (modelKeys.length !== uniqueModelKeys.size) {
+            setError('You have selected duplicate models. Please remove duplicates before running the comparison.');
+            return;
+        }
+
         setIsRunning(true);
         setError(null);
         setResults([]);
+        setProgressData(null);
 
         try {
-            const request: ModelComparisonRequest = {
-                prompt,
-                models: selectedModels,
-                evaluationCriteria,
-                iterations
-            };
-
-            const experiment = await ExperimentationService.runModelComparison(request);
-            setCurrentExperiment(experiment);
-
-            // Poll for results
-            const pollResults = async () => {
-                try {
-                    const results = await ExperimentationService.getModelComparisonResults(experiment.id);
-                    setResults(results);
-
-                    if (results.length === selectedModels.length) {
-                        setIsRunning(false);
-                    } else {
-                        setTimeout(pollResults, 2000);
-                    }
-                } catch (error) {
-                    console.error('Error polling results:', error);
-                    setIsRunning(false);
-                    setError('Failed to fetch results');
-                }
-            };
-
-            pollResults();
-        } catch (error) {
+            if (realTimeMode) {
+                await runRealTimeComparison();
+            } else {
+                await runStaticComparison();
+            }
+        } catch (error: any) {
             console.error('Error running comparison:', error);
             setIsRunning(false);
-            setError('Failed to run comparison');
+            setError('Failed to run comparison: ' + (error.message || 'Unknown error'));
         }
     };
 
-    const formatValue = (value: number, format: string): string => {
-        switch (format) {
-            case 'currency':
-                return `$${value.toFixed(4)}`;
-            case 'percentage':
-                return `${(value * 100).toFixed(1)}%`;
-            case 'ms':
-                return `${value.toFixed(0)}ms`;
-            case 'tokens':
-                return `${value.toLocaleString()} tokens`;
-            default:
-                return value.toFixed(2);
+    const runStaticComparison = async () => {
+        const request = {
+            prompt,
+            models: selectedModels,
+            evaluationCriteria,
+            iterations
+        };
+
+        console.log('Sending comparison request:', request);
+
+        const experiment = await ExperimentationService.runModelComparison(request);
+        console.log('Received experiment result:', experiment);
+        
+        setCurrentExperiment(experiment);
+
+        // Extract results from the experiment
+        if (experiment.results && experiment.results.modelComparisons) {
+            setResults(experiment.results.modelComparisons);
+            console.log('Model comparison results:', experiment.results.modelComparisons);
+        } else {
+            setError('No comparison results returned from the experiment');
         }
+
+        setIsRunning(false);
     };
 
-    const sortResults = (results: ModelComparisonResult[]) => {
-        return [...results].sort((a, b) => {
-            const aValue = getMetricValue(a, sortBy);
-            const bValue = getMetricValue(b, sortBy);
-
-            if (sortOrder === 'asc') {
-                return aValue - bValue;
-            } else {
-                return bValue - aValue;
-            }
-        });
-    };
-
-    const getMetricValue = (result: ModelComparisonResult, metric: string): number => {
-        switch (metric) {
-            case 'cost':
-                return result.metrics.cost;
-            case 'latency':
-                return result.metrics.latency;
-            case 'tokenCount':
-                return result.metrics.tokenCount;
-            case 'qualityScore':
-                return result.metrics.qualityScore;
-            case 'responseTime':
-                return result.performance.responseTime;
-            case 'throughput':
-                return result.performance.throughput;
-            case 'reliability':
-                return result.performance.reliability;
-            default:
-                return 0;
-        }
-    };
-
-    const exportResults = async () => {
-        if (!currentExperiment) return;
+    const runRealTimeComparison = async () => {
+        const request = {
+            prompt,
+            models: selectedModels,
+            evaluationCriteria,
+            iterations,
+            executeOnBedrock,
+            comparisonMode
+        };
 
         try {
-            const blob = await ExperimentationService.exportExperimentResults(currentExperiment.id, 'json');
+            // Start the real-time comparison
+            const response = await ExperimentationService.startRealTimeComparison(request);
+            const { sessionId } = response.data;
+
+            // Connect to SSE for progress updates
+            connectToProgressStream(sessionId);
+
+        } catch (error: any) {
+            console.error('Error starting real-time comparison:', error);
+            setError('Failed to start real-time comparison: ' + (error.message || 'Unknown error'));
+            setIsRunning(false);
+        }
+    };
+
+    const connectToProgressStream = (sessionId: string) => {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const eventSource = new EventSource(`${API_URL}/api/experimentation/comparison-progress/${sessionId}`);
+
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('SSE Progress:', data);
+
+                switch (data.type) {
+                    case 'connection':
+                        setProgressData({ 
+                            stage: 'connected', 
+                            progress: 0, 
+                            message: 'Connected to comparison stream' 
+                        });
+                        break;
+                    
+                    case 'progress':
+                        setProgressData(data);
+                        
+                        if (data.stage === 'completed' && data.results) {
+                            setResults(data.results);
+                            setIsRunning(false);
+                        } else if (data.stage === 'failed') {
+                            setError(data.error || 'Comparison failed');
+                            setIsRunning(false);
+                        }
+                        break;
+                    
+                    case 'close':
+                        eventSource.close();
+                        if (!progressData || progressData.stage !== 'completed') {
+                            setIsRunning(false);
+                        }
+                        break;
+                    
+                    case 'heartbeat':
+                        // Keep connection alive
+                        break;
+                }
+            } catch (error) {
+                console.error('Error parsing SSE data:', error);
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('SSE connection error:', error);
+            setError('Lost connection to comparison stream');
+            setIsRunning(false);
+            eventSource.close();
+        };
+
+        // Clean up on unmount
+        return () => {
+            eventSource.close();
+        };
+    };
+
+
+
+    const exportResults = async () => {
+        if (!currentExperiment || !results.length) return;
+
+        try {
+            const dataToExport = {
+                experiment: currentExperiment,
+                results: results,
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -233,23 +427,35 @@ const ModelComparison: React.FC = () => {
         }
     };
 
-    const getWinnerBadge = (result: ModelComparisonResult, metric: string) => {
-        const metricConfig = comparisonMetrics.find(m => m.key === metric);
-        if (!metricConfig) return null;
-
-        const values = results.map(r => getMetricValue(r, metric));
-        const bestValue = metricConfig.higherIsBetter ? Math.max(...values) : Math.min(...values);
-        const currentValue = getMetricValue(result, metric);
-
-        if (currentValue === bestValue) {
-            return (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <StarIcon className="h-3 w-3 mr-1" />
-                    Best
-                </span>
-            );
+    const getModelPricing = (provider: string, model: string) => {
+        const modelData = availableModels.find(m => m.provider === provider && m.model === model);
+        if (modelData?.pricing && modelData.pricing.input && modelData.pricing.output) {
+            return modelData.pricing;
         }
-        return null;
+        
+        // Fallback pricing data for common AWS Bedrock models
+        const fallbackPricing: Record<string, { input: number; output: number; unit: string }> = {
+            'amazon.nova-micro-v1:0': { input: 0.035, output: 0.14, unit: 'Per 1M tokens' },
+            'amazon.nova-lite-v1:0': { input: 0.06, output: 0.24, unit: 'Per 1M tokens' },
+            'amazon.nova-pro-v1:0': { input: 0.80, output: 3.20, unit: 'Per 1M tokens' },
+            'amazon.titan-text-lite-v1': { input: 0.30, output: 0.40, unit: 'Per 1M tokens' },
+            'amazon.titan-text-express-v1': { input: 0.80, output: 1.60, unit: 'Per 1M tokens' },
+            'anthropic.claude-3-5-sonnet-20240620-v1:0': { input: 3.00, output: 15.00, unit: 'Per 1M tokens' },
+            'anthropic.claude-3-5-haiku-20241022-v1:0': { input: 1.00, output: 5.00, unit: 'Per 1M tokens' },
+            'anthropic.claude-3-haiku-20240307-v1:0': { input: 0.25, output: 1.25, unit: 'Per 1M tokens' },
+            'anthropic.claude-3-sonnet-20240229-v1:0': { input: 3.00, output: 15.00, unit: 'Per 1M tokens' },
+            'meta.llama3-2-1b-instruct-v1:0': { input: 0.10, output: 0.10, unit: 'Per 1M tokens' },
+            'meta.llama3-2-3b-instruct-v1:0': { input: 0.15, output: 0.15, unit: 'Per 1M tokens' },
+            'meta.llama3-1-8b-instruct-v1:0': { input: 0.22, output: 0.22, unit: 'Per 1M tokens' },
+            'meta.llama3-1-70b-instruct-v1:0': { input: 0.99, output: 0.99, unit: 'Per 1M tokens' },
+            'cohere.command-r-v1:0': { input: 0.50, output: 1.50, unit: 'Per 1M tokens' },
+            'cohere.command-r-plus-v1:0': { input: 3.00, output: 15.00, unit: 'Per 1M tokens' }
+        };
+        
+        const modelKey = `${provider.toLowerCase()}:${model}` in fallbackPricing ? 
+            `${provider.toLowerCase()}:${model}` : model;
+            
+        return fallbackPricing[modelKey] || fallbackPricing[model] || null;
     };
 
     return (
@@ -271,17 +477,17 @@ const ModelComparison: React.FC = () => {
                         disabled={isRunning || !prompt.trim() || selectedModels.length === 0}
                         className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isRunning ? (
-                            <>
-                                <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                                Running...
-                            </>
-                        ) : (
-                            <>
-                                <PlayIcon className="h-4 w-4 mr-2" />
-                                Run Comparison
-                            </>
-                        )}
+                                            {isRunning ? (
+                        <>
+                            <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                            {realTimeMode ? 'Executing Models...' : 'Running...'}
+                        </>
+                    ) : (
+                        <>
+                            <PlayIcon className="h-4 w-4 mr-2" />
+                            {realTimeMode ? 'Run Real-time Comparison' : 'Run Comparison'}
+                        </>
+                    )}
                     </button>
                 </div>
             </div>
@@ -311,6 +517,75 @@ const ModelComparison: React.FC = () => {
                     />
                 </div>
 
+                {/* Real-time Comparison Settings */}
+                <div className="lg:col-span-2">
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+                        <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={realTimeMode}
+                                    onChange={(e) => setRealTimeMode(e.target.checked)}
+                                    className="rounded border-gray-300"
+                                />
+                                <span className="text-sm font-medium">🚀 Real-time Bedrock Execution</span>
+                                <span className="text-xs text-gray-500">(Actually runs models for authentic comparison)</span>
+                            </label>
+                        </div>
+
+                        {realTimeMode && (
+                            <div className="space-y-3 pl-6 border-l-2 border-blue-200">
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={executeOnBedrock}
+                                            onChange={(e) => setExecuteOnBedrock(e.target.checked)}
+                                            className="rounded border-gray-300"
+                                        />
+                                        <span className="text-sm">Execute on AWS Bedrock</span>
+                                    </label>
+                                    
+                                    <select
+                                        value={comparisonMode}
+                                        onChange={(e) => setComparisonMode(e.target.value as any)}
+                                        className="text-sm border border-gray-300 rounded px-2 py-1"
+                                    >
+                                        <option value="comprehensive">🎯 Comprehensive Analysis</option>
+                                        <option value="quality">🏆 Quality Focus</option>
+                                        <option value="cost">💰 Cost Focus</option>
+                                        <option value="speed">⚡ Speed Focus</option>
+                                    </select>
+                                </div>
+                                
+                                <div className="text-xs text-orange-600">
+                                    ⚠️ Real-time mode will take longer but provides authentic model responses and AI-driven evaluation
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Progress indicator for real-time mode */}
+                    {isRunning && realTimeMode && progressData && (
+                        <div className="bg-blue-50 p-4 rounded-lg mt-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                <span className="text-sm font-medium text-blue-800">{progressData.message}</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div 
+                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${progressData.progress || 0}%` }}
+                                ></div>
+                            </div>
+                            <div className="text-xs text-blue-600 mt-1">
+                                {progressData.stage} - {progressData.progress || 0}%
+                                {progressData.currentModel && ` (${progressData.currentModel})`}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
                 {/* Model Selection */}
                 <div>
                     <div className="flex justify-between items-center mb-2">
@@ -319,7 +594,8 @@ const ModelComparison: React.FC = () => {
                         </label>
                         <button
                             onClick={addModel}
-                            className="flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
+                            disabled={selectedModels.length >= availableModels.length}
+                            className="flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed"
                         >
                             <PlusIcon className="h-4 w-4 mr-1" />
                             Add Model
@@ -329,29 +605,52 @@ const ModelComparison: React.FC = () => {
                         {selectedModels.map((model, index) => (
                             <div key={index} className="border border-gray-200 rounded-lg p-3">
                                 <div className="flex justify-between items-start mb-2">
-                                    <div className="flex-1 grid grid-cols-2 gap-2">
+                                    <div className="flex-1">
                                         <select
                                             value={`${model.provider}:${model.model}`}
                                             onChange={(e) => {
-                                                const [provider, modelName] = e.target.value.split(':');
-                                                updateModel(index, 'provider', provider);
-                                                updateModel(index, 'model', modelName);
+                                                const parts = e.target.value.split(':');
+                                                if (parts.length >= 2) {
+                                                    const provider = parts[0];
+                                                    const modelName = parts.slice(1).join(':'); // Handle model names with colons
+                                                    console.log('Dropdown changed:', { provider, modelName, fullValue: e.target.value });
+                                                    updateModel(index, 'provider', provider);
+                                                    updateModel(index, 'model', modelName);
+                                                } else {
+                                                    console.error('Invalid dropdown value format:', e.target.value);
+                                                }
                                             }}
-                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                             {availableModels.map(m => (
                                                 <option key={`${m.provider}:${m.model}`} value={`${m.provider}:${m.model}`}>
-                                                    {m.provider} - {m.model}
+                                                    {m.provider} - {m.modelName || m.model}
                                                 </option>
                                             ))}
                                         </select>
-                                        <button
-                                            onClick={() => removeModel(index)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            <TrashIcon className="h-4 w-4" />
-                                        </button>
+                                        {/* Show duplicate warning */}
+                                        {selectedModels.filter(m => m.provider === model.provider && m.model === model.model).length > 1 && (
+                                            <div className="text-xs text-amber-600 mt-1 flex items-center">
+                                                <ExclamationTriangleIcon className="h-3 w-3 mr-1" />
+                                                Duplicate model selected
+                                            </div>
+                                        )}
+                                        {(() => {
+                                            const pricing = getModelPricing(model.provider, model.model);
+                                            return pricing && (
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    Input: ${pricing.input.toFixed(2)}/1M • Output: ${pricing.output.toFixed(2)}/1M
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
+                                    <button
+                                        onClick={() => removeModel(index)}
+                                        className="ml-2 text-red-500 hover:text-red-700"
+                                        title="Remove this model"
+                                    >
+                                        <TrashIcon className="h-4 w-4" />
+                                    </button>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
@@ -380,6 +679,11 @@ const ModelComparison: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+                        {selectedModels.length === 0 && (
+                            <div className="text-center py-4 text-gray-500 text-sm">
+                                No models selected. Click "Add Model" to get started.
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -426,10 +730,10 @@ const ModelComparison: React.FC = () => {
                             className="w-20 text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
-                    {estimatedCost && (
+                    {estimatedCost !== null && (
                         <div className="flex items-center text-sm text-gray-600">
                             <CurrencyDollarIcon className="h-4 w-4 mr-1" />
-                            Estimated Cost: ${estimatedCost.toFixed(4)}
+                            Estimated Cost: ${estimatedCost < 0.001 ? estimatedCost.toFixed(6) : estimatedCost.toFixed(4)}
                         </div>
                     )}
                 </div>
@@ -440,26 +744,9 @@ const ModelComparison: React.FC = () => {
                 <div className="border-t pt-6">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">Results</h3>
-                        {results.length > 0 && (
-                            <div className="flex items-center space-x-2">
-                                <label className="text-sm text-gray-600">Sort by:</label>
-                                <select
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                    className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                    {comparisonMetrics.map(metric => (
-                                        <option key={metric.key} value={metric.key}>
-                                            {metric.label}
-                                        </option>
-                                    ))}
-                                </select>
-                                <button
-                                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                                    className="text-sm text-blue-600 hover:text-blue-800"
-                                >
-                                    {sortOrder === 'asc' ? '↑' : '↓'}
-                                </button>
+                        {currentExperiment && (
+                            <div className="text-sm text-gray-500">
+                                Experiment ID: {currentExperiment.id}
                             </div>
                         )}
                     </div>
@@ -472,63 +759,147 @@ const ModelComparison: React.FC = () => {
                     )}
 
                     {results.length > 0 && (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Model
-                                        </th>
-                                        {comparisonMetrics.map(metric => (
-                                            <th key={metric.key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                {metric.label}
-                                            </th>
-                                        ))}
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {sortResults(results).map((result, _index) => (
-                                        <tr key={result.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div>
-                                                        <div className="text-sm font-medium text-gray-900">
-                                                            {result.provider}
-                                                        </div>
-                                                        <div className="text-sm text-gray-500">
-                                                            {result.model}
-                                                        </div>
+                        <div className="space-y-4">
+                            {results.map((result, index) => (
+                                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h4 className="text-lg font-medium text-gray-900">
+                                                {result.provider} - {result.model}
+                                            </h4>
+                                            <p className="text-sm text-gray-600 mt-1">{result.recommendation}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                setSelectedResult(result);
+                                                setShowResultsModal(true);
+                                            }}
+                                            className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                                        >
+                                            View Details
+                                        </button>
+                                    </div>
+
+                                    {result.actualUsage ? (
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div className="bg-blue-50 rounded-lg p-3">
+                                                <div className="text-sm font-medium text-blue-900">Total Calls</div>
+                                                <div className="text-lg font-bold text-blue-700">
+                                                    {result.actualUsage.totalCalls.toLocaleString()}
+                                                </div>
+                                            </div>
+                                            <div className="bg-green-50 rounded-lg p-3">
+                                                <div className="text-sm font-medium text-green-900">Avg Cost</div>
+                                                <div className="text-lg font-bold text-green-700">
+                                                    ${result.actualUsage.avgCost.toFixed(4)}
+                                                </div>
+                                            </div>
+                                            <div className="bg-yellow-50 rounded-lg p-3">
+                                                <div className="text-sm font-medium text-yellow-900">Avg Response Time</div>
+                                                <div className="text-lg font-bold text-yellow-700">
+                                                    {result.actualUsage.avgResponseTime.toFixed(0)}ms
+                                                </div>
+                                            </div>
+                                            <div className="bg-red-50 rounded-lg p-3">
+                                                <div className="text-sm font-medium text-red-900">Error Rate</div>
+                                                <div className="text-lg font-bold text-red-700">
+                                                    {result.actualUsage.errorRate.toFixed(2)}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {/* Pricing Information */}
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                <div className="bg-blue-50 rounded-lg p-3">
+                                                    <div className="text-sm font-medium text-blue-900">Input Cost</div>
+                                                    <div className="text-sm font-bold text-blue-700">
+                                                        ${(() => {
+                                                            const pricing = result.pricing?.inputCost ? 
+                                                                { input: result.pricing.inputCost * 1000000, output: result.pricing.outputCost || 0 } :
+                                                                getModelPricing(result.provider, result.model);
+                                                            return pricing?.input ? pricing.input.toFixed(2) : 'N/A';
+                                                        })()}/1M tokens
                                                     </div>
                                                 </div>
-                                            </td>
-                                            {comparisonMetrics.map(metric => (
-                                                <td key={metric.key} className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center space-x-2">
-                                                        <span className="text-sm text-gray-900">
-                                                            {formatValue(getMetricValue(result, metric.key), metric.format)}
-                                                        </span>
-                                                        {getWinnerBadge(result, metric.key)}
+                                                <div className="bg-green-50 rounded-lg p-3">
+                                                    <div className="text-sm font-medium text-green-900">Output Cost</div>
+                                                    <div className="text-sm font-bold text-green-700">
+                                                        ${(() => {
+                                                            const pricing = result.pricing?.outputCost ? 
+                                                                { input: result.pricing.inputCost || 0, output: result.pricing.outputCost * 1000000 } :
+                                                                getModelPricing(result.provider, result.model);
+                                                            return pricing?.output ? pricing.output.toFixed(2) : 'N/A';
+                                                        })()}/1M tokens
                                                     </div>
-                                                </td>
-                                            ))}
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedResult(result);
-                                                        setShowResultsModal(true);
-                                                    }}
-                                                    className="text-blue-600 hover:text-blue-900"
-                                                >
-                                                    View Details
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                </div>
+                                                <div className="bg-yellow-50 rounded-lg p-3">
+                                                    <div className="text-sm font-medium text-yellow-900">Est. Cost/1K</div>
+                                                    <div className="text-sm font-bold text-yellow-700">
+                                                        ${result.estimatedCostPer1K?.toFixed(4) || 'N/A'}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-purple-50 rounded-lg p-3">
+                                                    <div className="text-sm font-medium text-purple-900">Context Window</div>
+                                                    <div className="text-sm font-bold text-purple-700">
+                                                        {result.pricing?.contextWindow?.toLocaleString() || 'N/A'} tokens
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Analysis Strengths and Considerations */}
+                                            {result.analysis && (result.analysis.strengths?.length > 0 || result.analysis.considerations?.length > 0) && (
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {result.analysis.strengths?.length > 0 && (
+                                                        <div className="bg-green-50 rounded-lg p-3">
+                                                            <div className="text-sm font-medium text-green-900 mb-2">Strengths</div>
+                                                            <ul className="text-xs text-green-800 space-y-1">
+                                                                {result.analysis.strengths.map((strength: string, i: number) => (
+                                                                    <li key={i}>• {strength}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                    {result.analysis.considerations?.length > 0 && (
+                                                        <div className="bg-amber-50 rounded-lg p-3">
+                                                            <div className="text-sm font-medium text-amber-900 mb-2">Considerations</div>
+                                                            <ul className="text-xs text-amber-800 space-y-1">
+                                                                {result.analysis.considerations.map((consideration: string, i: number) => (
+                                                                    <li key={i}>• {consideration}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+
+                            {currentExperiment && currentExperiment.results && (
+                                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                                    <h4 className="font-medium text-blue-900 mb-2">Overall Analysis</h4>
+                                    <p className="text-sm text-blue-800 mb-2">{currentExperiment.results.recommendation}</p>
+                                    
+                                    {currentExperiment.results.costComparison && (
+                                        <div className="text-sm text-blue-800 mb-2">
+                                            <strong>Cost Comparison:</strong> {currentExperiment.results.costComparison}
+                                        </div>
+                                    )}
+                                    
+                                    {currentExperiment.results.useCaseAnalysis && (
+                                        <div className="text-sm text-blue-800 mb-2">
+                                            <strong>Use Case Analysis:</strong> {currentExperiment.results.useCaseAnalysis}
+                                        </div>
+                                    )}
+                                    
+                                    <div className="mt-2 text-xs text-blue-600">
+                                        Confidence: {((currentExperiment.metadata.confidence || 0) * 100).toFixed(1)}% • 
+                                        Based on {currentExperiment.results.basedOnActualUsage || 0} models with usage data
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -542,62 +913,124 @@ const ModelComparison: React.FC = () => {
                     title={`${selectedResult.provider} - ${selectedResult.model}`}
                 >
                     <div className="space-y-6">
-                        {/* Response */}
                         <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Response</h4>
-                            <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
-                                <pre className="text-sm text-gray-800 whitespace-pre-wrap">
-                                    {selectedResult.response}
-                                </pre>
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Recommendation</h4>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                                <p className="text-sm text-gray-800">{selectedResult.recommendation}</p>
                             </div>
                         </div>
 
-                        {/* Metrics */}
-                        <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Detailed Metrics</h4>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-blue-50 rounded-lg p-4">
-                                    <h5 className="text-sm font-medium text-blue-900 mb-2">Cost Breakdown</h5>
-                                    <div className="space-y-1 text-sm text-blue-800">
-                                        <div>Input Tokens: {selectedResult.costBreakdown.inputTokens.toLocaleString()}</div>
-                                        <div>Output Tokens: {selectedResult.costBreakdown.outputTokens.toLocaleString()}</div>
-                                        <div>Input Cost: ${selectedResult.costBreakdown.inputCost.toFixed(4)}</div>
-                                        <div>Output Cost: ${selectedResult.costBreakdown.outputCost.toFixed(4)}</div>
-                                        <div className="font-medium">Total: ${selectedResult.costBreakdown.totalCost.toFixed(4)}</div>
+                        {selectedResult.actualUsage ? (
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-900 mb-2">Usage Statistics</h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <div className="text-sm font-medium text-blue-900 mb-2">Call Statistics</div>
+                                        <div className="space-y-1 text-sm text-blue-800">
+                                            <div>Total Calls: {selectedResult.actualUsage.totalCalls.toLocaleString()}</div>
+                                            <div>Total Cost: ${selectedResult.actualUsage.totalCost.toFixed(2)}</div>
+                                            <div>Avg Cost: ${selectedResult.actualUsage.avgCost.toFixed(4)}</div>
+                                            <div>Avg Tokens: {selectedResult.actualUsage.avgTokens.toLocaleString()}</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="bg-green-50 rounded-lg p-4">
-                                    <h5 className="text-sm font-medium text-green-900 mb-2">Quality Metrics</h5>
-                                    <div className="space-y-1 text-sm text-green-800">
-                                        <div>Accuracy: {(selectedResult.qualityMetrics.accuracy * 100).toFixed(1)}%</div>
-                                        <div>Relevance: {(selectedResult.qualityMetrics.relevance * 100).toFixed(1)}%</div>
-                                        <div>Completeness: {(selectedResult.qualityMetrics.completeness * 100).toFixed(1)}%</div>
-                                        <div>Coherence: {(selectedResult.qualityMetrics.coherence * 100).toFixed(1)}%</div>
+                                    <div className="bg-green-50 rounded-lg p-4">
+                                        <div className="text-sm font-medium text-green-900 mb-2">Performance</div>
+                                        <div className="space-y-1 text-sm text-green-800">
+                                            <div>Avg Response Time: {selectedResult.actualUsage.avgResponseTime.toFixed(0)}ms</div>
+                                            <div>Error Rate: {selectedResult.actualUsage.errorRate.toFixed(2)}%</div>
+                                            <div>Success Rate: {(100 - selectedResult.actualUsage.errorRate).toFixed(2)}%</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="text-sm font-medium text-gray-900 mb-2">Pricing Details</h4>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-blue-50 rounded-lg p-4">
+                                            <div className="text-sm font-medium text-blue-900 mb-2">Token Costs</div>
+                                            <div className="space-y-1 text-sm text-blue-800">
+                                                <div>Input: ${(() => {
+                                                    const pricing = selectedResult.pricing?.inputCost ? 
+                                                        { input: selectedResult.pricing.inputCost * 1000000, output: selectedResult.pricing.outputCost || 0 } :
+                                                        getModelPricing(selectedResult.provider, selectedResult.model);
+                                                    return pricing?.input ? pricing.input.toFixed(2) : 'N/A';
+                                                })()}/1M tokens</div>
+                                                <div>Output: ${(() => {
+                                                    const pricing = selectedResult.pricing?.outputCost ? 
+                                                        { input: selectedResult.pricing.inputCost || 0, output: selectedResult.pricing.outputCost * 1000000 } :
+                                                        getModelPricing(selectedResult.provider, selectedResult.model);
+                                                    return pricing?.output ? pricing.output.toFixed(2) : 'N/A';
+                                                })()}/1M tokens</div>
+                                                <div className="font-medium">Est. Cost per 1K: ${(() => {
+                                                    if (selectedResult.estimatedCostPer1K) return selectedResult.estimatedCostPer1K.toFixed(4);
+                                                    const pricing = getModelPricing(selectedResult.provider, selectedResult.model);
+                                                    if (pricing) {
+                                                        // Calculate estimated cost per 1K tokens (assume 50% input, 50% output)
+                                                        const cost1K = (pricing.input * 0.5 + pricing.output * 0.5) / 1000;
+                                                        return cost1K.toFixed(4);
+                                                    }
+                                                    return 'N/A';
+                                                })()}</div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-purple-50 rounded-lg p-4">
+                                            <div className="text-sm font-medium text-purple-900 mb-2">Model Specs</div>
+                                            <div className="space-y-1 text-sm text-purple-800">
+                                                <div>Context Window: {selectedResult.pricing?.contextWindow?.toLocaleString() || 'N/A'} tokens</div>
+                                                <div>Provider: {selectedResult.provider}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        {/* Performance */}
-                        <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Performance</h4>
-                            <div className="bg-yellow-50 rounded-lg p-4">
-                                <div className="grid grid-cols-3 gap-4 text-sm text-yellow-800">
-                                    <div>
-                                        <div className="font-medium">Response Time</div>
-                                        <div>{selectedResult.performance.responseTime}ms</div>
+                                {selectedResult.analysis && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {selectedResult.analysis.strengths?.length > 0 && (
+                                            <div>
+                                                <h4 className="text-sm font-medium text-gray-900 mb-2">Strengths</h4>
+                                                <div className="bg-green-50 rounded-lg p-4">
+                                                    <ul className="text-sm text-green-800 space-y-2">
+                                                        {selectedResult.analysis.strengths.map((strength: string, i: number) => (
+                                                            <li key={i} className="flex items-start">
+                                                                <span className="text-green-600 mr-2">✓</span>
+                                                                <span>{strength}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {selectedResult.analysis.considerations?.length > 0 && (
+                                            <div>
+                                                <h4 className="text-sm font-medium text-gray-900 mb-2">Considerations</h4>
+                                                <div className="bg-amber-50 rounded-lg p-4">
+                                                    <ul className="text-sm text-amber-800 space-y-2">
+                                                        {selectedResult.analysis.considerations.map((consideration: string, i: number) => (
+                                                            <li key={i} className="flex items-start">
+                                                                <span className="text-amber-600 mr-2">⚠</span>
+                                                                <span>{consideration}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div>
-                                        <div className="font-medium">Throughput</div>
-                                        <div>{selectedResult.performance.throughput} req/s</div>
+                                )}
+
+                                {selectedResult.estimatedCostPer1K === 0 && (
+                                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                        <p className="text-sm text-yellow-800">
+                                            <strong>No pricing data available</strong> - This model may not be included in our pricing database. 
+                                            Please check with the provider for current pricing information.
+                                        </p>
                                     </div>
-                                    <div>
-                                        <div className="font-medium">Reliability</div>
-                                        <div>{(selectedResult.performance.reliability * 100).toFixed(1)}%</div>
-                                    </div>
-                                </div>
+                                )}
                             </div>
-                        </div>
+                        )}
                     </div>
                 </Modal>
             )}

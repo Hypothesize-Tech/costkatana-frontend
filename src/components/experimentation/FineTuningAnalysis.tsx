@@ -12,8 +12,7 @@ import {
     CheckCircleIcon,
     XCircleIcon,
 } from '@heroicons/react/24/outline';
-import { ExperimentationService, FineTuningProject } from '../../services/experimentation.service';
-import type { FineTuningAnalysis as FineTuningAnalysisType } from '../../services/experimentation.service';
+import { ExperimentationService } from '../../services/experimentation.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { Modal } from '../common/Modal';
 
@@ -34,10 +33,10 @@ interface ROIProjection {
 }
 
 const FineTuningAnalysis: React.FC = () => {
-    const [projects, setProjects] = useState<FineTuningProject[]>([]);
+    const [projects, setProjects] = useState<any[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showAnalysisModal, setShowAnalysisModal] = useState(false);
-    const [selectedAnalysis, setSelectedAnalysis] = useState<FineTuningAnalysisType | null>(null);
+    const [selectedAnalysis, setSelectedAnalysis] = useState<any | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -92,7 +91,7 @@ const FineTuningAnalysis: React.FC = () => {
     const createProject = async () => {
         setIsCreating(true);
         try {
-            await ExperimentationService.createFineTuningProject(newProject as Omit<FineTuningProject, 'id'>);
+            await ExperimentationService.createFineTuningProject(newProject as Omit<any, 'id'>);
             await loadProjects();
             setShowCreateModal(false);
             resetNewProject();
@@ -104,7 +103,7 @@ const FineTuningAnalysis: React.FC = () => {
         }
     };
 
-    const analyzeProject = async (project: FineTuningProject) => {
+    const analyzeProject = async (project: any) => {
         setIsLoading(true);
         try {
             const analysis = await ExperimentationService.getFineTuningAnalysis(project.id);
@@ -170,7 +169,7 @@ const FineTuningAnalysis: React.FC = () => {
         return `${(value * 100).toFixed(1)}%`;
     };
 
-    const getCostBreakdown = (analysis: FineTuningAnalysisType): CostBreakdownItem[] => {
+    const getCostBreakdown = (analysis: any): CostBreakdownItem[] => {
         const breakdown: CostBreakdownItem[] = [];
 
         // Development costs
@@ -178,8 +177,8 @@ const FineTuningAnalysis: React.FC = () => {
             breakdown.push({
                 category: 'Development',
                 subcategory: key.charAt(0).toUpperCase() + key.slice(1),
-                cost: value,
-                percentage: (value / analysis.roi.initialInvestment) * 100,
+                cost: value as number,
+                percentage: ((value as number) / analysis.roi.initialInvestment) * 100,
                 description: `${key.charAt(0).toUpperCase() + key.slice(1)} related costs`
             });
         });
@@ -189,8 +188,8 @@ const FineTuningAnalysis: React.FC = () => {
             breakdown.push({
                 category: 'Deployment',
                 subcategory: key.charAt(0).toUpperCase() + key.slice(1),
-                cost: value,
-                percentage: (value / analysis.roi.initialInvestment) * 100,
+                cost: value as number,
+                percentage: ((value as number) / analysis.roi.initialInvestment) * 100,
                 description: `${key.charAt(0).toUpperCase() + key.slice(1)} related costs`
             });
         });
@@ -200,8 +199,8 @@ const FineTuningAnalysis: React.FC = () => {
             breakdown.push({
                 category: 'Operations',
                 subcategory: key.charAt(0).toUpperCase() + key.slice(1),
-                cost: value,
-                percentage: (value / analysis.roi.operationalCosts) * 100,
+                cost: value as number,
+                percentage: ((value as number) / analysis.roi.operationalCosts) * 100,
                 description: `${key.charAt(0).toUpperCase() + key.slice(1)} related costs`
             });
         });
@@ -209,7 +208,7 @@ const FineTuningAnalysis: React.FC = () => {
         return breakdown.sort((a, b) => b.cost - a.cost);
     };
 
-    const getROIProjections = (analysis: FineTuningAnalysisType): ROIProjection[] => {
+            const getROIProjections = (analysis: any): ROIProjection[] => {
         const baseInvestment = analysis.roi.initialInvestment;
         const monthlySavings = analysis.roi.expectedSavings / 12;
         const monthlyOperational = analysis.roi.operationalCosts / 12;
@@ -649,7 +648,7 @@ const FineTuningAnalysis: React.FC = () => {
                                 <div className="p-4 bg-white rounded-lg border border-gray-200">
                                     <h4 className="mb-3 font-medium text-gray-900">Alternative Solutions</h4>
                                     <div className="space-y-3">
-                                        {selectedAnalysis.comparison.vsAlternatives.map((alt, index) => (
+                                        {selectedAnalysis.comparison.vsAlternatives.map((alt: any, index: number) => (
                                             <div key={index} className="p-3 rounded-lg border border-gray-100">
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="text-sm font-medium text-gray-900">{alt.alternative}</span>

@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config/api";
+import { authService } from "./auth.service";
 
 export interface DemandPrediction {
     modelId: string;
@@ -151,13 +152,15 @@ export interface CostPerformanceAnalysis {
 }
 
 export class InferenceScalingService {
-    private static baseUrl = `${API_BASE_URL}/inference-scaling`;
+    private static baseUrl = `${API_BASE_URL}/api/inference-scaling`;
 
     private static async makeRequest<T>(
         endpoint: string,
         options: RequestInit = {}
     ): Promise<T> {
-        const token = localStorage.getItem('token');
+        const token = authService.getToken();
+        console.log('[InferenceScaling] Token available:', !!token); // Debug log
+        
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             ...options,
             headers: {
