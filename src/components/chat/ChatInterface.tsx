@@ -213,7 +213,7 @@ export const ChatInterface: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full bg-gray-50">
+        <div className="flex h-full bg-gray-50 min-h-[600px]">
             {/* Sidebar */}
             <div className={`${showConversations ? 'w-80' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}>
                 {/* Sidebar Header */}
@@ -350,17 +350,52 @@ export const ChatInterface: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 max-w-4xl mx-auto">
                     {messages.length === 0 && !isLoading && (
-                        <div className="text-center py-12">
-                            <SparklesIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Start a conversation
-                            </h3>
-                            <p className="text-gray-500">
-                                Choose a model and start chatting with AWS Bedrock AI models
-                            </p>
+                        <div className="text-center py-16">
+                            <div className="mb-8">
+                                <SparklesIcon className="h-16 w-16 mx-auto text-blue-500 mb-6" />
+                                <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                                    Welcome to AI Cost Optimizer
+                                </h1>
+                                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                                    Chat with 23+ AWS Bedrock AI models while tracking costs, optimizing performance, and managing your AI infrastructure—all in one place.
+                                </p>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+                                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                                    <CurrencyDollarIcon className="h-8 w-8 text-green-600 mx-auto mb-3" />
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Cost Tracking</h3>
+                                    <p className="text-gray-600 text-sm">Monitor real-time costs across all AI models and providers</p>
+                                </div>
+                                
+                                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                                    <SparklesIcon className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Optimization</h3>
+                                    <p className="text-gray-600 text-sm">Get AI-powered suggestions to reduce costs and improve performance</p>
+                                </div>
+                                
+                                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                                    <ClockIcon className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Analytics</h3>
+                                    <p className="text-gray-600 text-sm">Track usage patterns, performance metrics, and cost trends</p>
+                                </div>
+                            </div>
+                            
+                            {selectedModel ? (
+                                <p className="text-lg text-gray-700 font-medium">
+                                    Ready to chat with <span className="text-blue-600">{selectedModel.name}</span> • 
+                                    <span className="text-green-600 ml-1">
+                                        ${selectedModel.pricing?.input}/${selectedModel.pricing?.output} per 1M tokens
+                                    </span>
+                                </p>
+                            ) : (
+                                <p className="text-gray-500 text-lg">
+                                    👆 Select a model above to start chatting
+                                </p>
+                            )}
                         </div>
                     )}
 
@@ -370,7 +405,7 @@ export const ChatInterface: React.FC = () => {
                             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                             <div
-                                className={`max-w-3xl px-4 py-3 rounded-lg ${
+                                className={`max-w-4xl px-6 py-4 rounded-xl text-base leading-relaxed ${
                                     message.role === 'user'
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-white border border-gray-200'
@@ -429,28 +464,30 @@ export const ChatInterface: React.FC = () => {
                 )}
 
                 {/* Input Area */}
-                <div className="bg-white border-t border-gray-200 p-4">
-                    <div className="flex items-end space-x-4">
-                        <div className="flex-1">
-                            <textarea
-                                ref={textareaRef}
-                                value={currentMessage}
-                                onChange={(e) => setCurrentMessage(e.target.value)}
-                                onKeyDown={handleKeyPress}
-                                placeholder={selectedModel ? `Message ${selectedModel.name}...` : "Select a model to start chatting"}
-                                disabled={!selectedModel || isLoading}
-                                className="w-full resize-none border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                rows={1}
-                                style={{ minHeight: '44px', maxHeight: '120px' }}
-                            />
+                <div className="bg-white border-t border-gray-200 p-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="flex items-end space-x-4">
+                            <div className="flex-1">
+                                <textarea
+                                    ref={textareaRef}
+                                    value={currentMessage}
+                                    onChange={(e) => setCurrentMessage(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                    placeholder={selectedModel ? `Message ${selectedModel.name}...` : "Select a model to start chatting"}
+                                    disabled={!selectedModel || isLoading}
+                                    className="w-full resize-none border border-gray-300 rounded-lg px-6 py-4 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed shadow-sm"
+                                    rows={1}
+                                    style={{ minHeight: '56px', maxHeight: '160px' }}
+                                />
+                            </div>
+                            <button
+                                onClick={sendMessage}
+                                disabled={!currentMessage.trim() || !selectedModel || isLoading}
+                                className="px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                            >
+                                <PaperAirplaneIcon className="h-5 w-5" />
+                            </button>
                         </div>
-                        <button
-                            onClick={sendMessage}
-                            disabled={!currentMessage.trim() || !selectedModel || isLoading}
-                            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            <PaperAirplaneIcon className="h-4 w-4" />
-                        </button>
                     </div>
                 </div>
             </div>

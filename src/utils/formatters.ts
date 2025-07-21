@@ -96,6 +96,80 @@ export const formatRelativeTime = (date: string | Date): string => {
     }
 };
 
+// Safe timestamp formatting for times (HH:MM:SS format)
+export const formatTimestamp = (timestamp: string | Date | number): string => {
+    // Handle null/undefined/empty values
+    if (!timestamp || timestamp === 'null' || timestamp === 'undefined') {
+        return 'Just now';
+    }
+
+    try {
+        let dateObj: Date;
+        
+        if (typeof timestamp === 'string') {
+            // Handle empty strings
+            if (timestamp.trim() === '') {
+                return 'Just now';
+            }
+            
+            // Try parsing ISO string first (MongoDB format: "2024-12-15T14:30:45.000Z")
+            dateObj = parseISO(timestamp);
+            
+            // If parseISO fails, try standard Date constructor
+            if (isNaN(dateObj.getTime())) {
+                dateObj = new Date(timestamp);
+            }
+        } else if (typeof timestamp === 'number') {
+            // Handle Unix timestamps (both seconds and milliseconds)
+            dateObj = new Date(timestamp < 10000000000 ? timestamp * 1000 : timestamp);
+        } else if (timestamp instanceof Date) {
+            dateObj = timestamp;
+        } else {
+            // Fallback for any other type
+            return 'Just now';
+        }
+
+        // Final validation
+        if (isNaN(dateObj.getTime())) {
+            return 'Just now';
+        }
+
+        return dateObj.toLocaleTimeString();
+    } catch (error) {
+        return 'Just now';
+    }
+};
+
+// Safe date formatting with better fallbacks
+export const formatSafeDate = (date: string | Date | number): string => {
+    if (!date) {
+        return 'Unknown date';
+    }
+
+    try {
+        let dateObj: Date;
+        
+        if (typeof date === 'string') {
+            dateObj = parseISO(date);
+            if (isNaN(dateObj.getTime())) {
+                dateObj = new Date(date);
+            }
+        } else if (typeof date === 'number') {
+            dateObj = new Date(date < 10000000000 ? date * 1000 : date);
+        } else {
+            dateObj = date;
+        }
+
+        if (isNaN(dateObj.getTime())) {
+            return 'Unknown date';
+        }
+
+        return format(dateObj, 'MMM dd, yyyy HH:mm');
+    } catch (error) {
+        return 'Unknown date';
+    }
+};
+
 export const formatRelativeDate = (date: string | Date): string => {
     if (!date) {
         return 'Never';
@@ -160,23 +234,41 @@ export const truncateText = (text: string, length: number = 50): string => {
 };
 
 export const capitalizeFirst = (text: string): string => {
+    if (!text || typeof text !== 'string') {
+        return '';
+    }
     return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 export const formatServiceName = (service: string): string => {
+    if (!service || typeof service !== 'string') {
+        return 'Unknown Service';
+    }
+    
     const serviceMap: Record<string, string> = {
         'openai': 'OpenAI',
         'aws-bedrock': 'AWS Bedrock',
+        'aws bedrock': 'AWS Bedrock',
+        'bedrock': 'AWS Bedrock',
         'google-ai': 'Google AI',
         'anthropic': 'Anthropic',
         'huggingface': 'Hugging Face',
         'cohere': 'Cohere',
+        'meta': 'Meta',
+        'mistral': 'Mistral AI',
+        'ai21': 'AI21 Labs',
     };
-    return serviceMap[service] || capitalizeFirst(service);
+    
+    // Normalize the service name to lowercase for lookup
+    const normalizedService = service.toLowerCase().trim();
+    return serviceMap[normalizedService] || capitalizeFirst(service);
 };
 
 // Model name formatting
 export const formatModelName = (model: string): string => {
+    if (!model || typeof model !== 'string') {
+        return 'Unknown Model';
+    }
     return model
         .split('-')
         .map(part => capitalizeFirst(part))

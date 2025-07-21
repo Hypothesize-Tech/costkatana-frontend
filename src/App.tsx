@@ -34,7 +34,7 @@ import Pricing from './pages/Pricing';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
 import InferenceScaling from './pages/InferenceScaling';
-import Chat from './pages/Chat';
+
 
 const queryClient = new QueryClient();
 
@@ -114,10 +114,7 @@ function App() {
                                             path="inference-scaling"
                                             element={<InferenceScaling />}
                                         />
-                                        <Route
-                                            path="chat"
-                                            element={<Chat />}
-                                        />
+
                                         <Route
                                             path="settings"
                                             element={<Settings />}

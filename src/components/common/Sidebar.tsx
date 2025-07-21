@@ -16,7 +16,7 @@ import {
     CurrencyDollarIcon,
     SparklesIcon,
     BeakerIcon,
-    ChatBubbleLeftEllipsisIcon,
+
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -26,13 +26,12 @@ interface SidebarProps {
 }
 
 const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
     { name: 'Usage', href: '/usage', icon: CircleStackIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
     { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon },
     { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon },
     { name: 'Inference Scaling', href: '/inference-scaling', icon: SparklesIcon },
-    { name: 'Chat with AI', href: '/chat', icon: ChatBubbleLeftEllipsisIcon },
     { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon },
     { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
     { name: 'Projects', href: '/projects', icon: FolderIcon },
