@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    BeakerIcon, 
-    ChartBarIcon, 
-    CogIcon, 
-    LightBulbIcon, 
+import {
+    BeakerIcon,
+    ChartBarIcon,
+    CogIcon,
+    LightBulbIcon,
     InformationCircleIcon,
     SparklesIcon,
     ArrowTrendingUpIcon,
@@ -241,12 +241,12 @@ const Experimentation: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white border-b border-gray-200 shadow-sm">
+                <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                                <BeakerIcon className="h-8 w-8 text-blue-600 mr-3" />
+                            <h1 className="flex items-center text-3xl font-bold text-gray-900">
+                                <BeakerIcon className="mr-3 w-8 h-8 text-blue-600" />
                                 Experimentation & A/B Testing
                             </h1>
                             <p className="mt-2 text-sm text-gray-600">
@@ -254,7 +254,7 @@ const Experimentation: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <SparklesIcon className="h-5 w-5 text-yellow-600" />
+                            <SparklesIcon className="w-5 h-5 text-yellow-600" />
                             <span className="text-sm font-medium text-gray-700">
                                 {recommendations.length} {recommendations.length === 1 ? 'recommendation' : 'recommendations'} available
                             </span>
@@ -389,19 +389,18 @@ const Experimentation: React.FC = () => {
                 )}
 
                 {/* Main Content */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
                     {/* Tab Navigation */}
                     <div className="border-b border-gray-200">
-                        <nav className="flex space-x-8 px-6">
+                        <nav className="flex px-6 space-x-8">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                                        activeTab === tab.id
+                                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
                                             ? 'border-blue-500 text-blue-600'
                                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                    }`}
+                                        }`}
                                 >
                                     <span className={activeTab === tab.id ? tab.color : 'text-gray-400'}>
                                         {tab.icon}
@@ -420,7 +419,7 @@ const Experimentation: React.FC = () => {
                                 <h3 className="text-sm font-medium text-gray-900">
                                     {tabs.find(tab => tab.id === activeTab)?.name}
                                 </h3>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="mt-1 text-sm text-gray-600">
                                     {tabs.find(tab => tab.id === activeTab)?.description}
                                 </p>
                             </div>
@@ -430,9 +429,9 @@ const Experimentation: React.FC = () => {
                     {/* Tab Content */}
                     <div className="p-6">
                         {error && (
-                            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <div className="p-4 mb-4 bg-red-50 rounded-lg border border-red-200">
                                 <div className="flex items-center">
-                                    <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
+                                    <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-red-400" />
                                     <span className="text-sm text-red-800">{error}</span>
                                 </div>
                             </div>

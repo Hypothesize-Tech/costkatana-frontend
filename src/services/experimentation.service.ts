@@ -248,7 +248,19 @@ export class ExperimentationService {
         return response.data.data || response.data;
     }
 
-    static async getFineTuningProjects(): Promise<FineTuningProject[]> {
+    static async getFineTuningProjects(): Promise<{
+        projects: FineTuningProject[];
+        recommendations?: {
+            topCandidates: Array<{
+                name: string;
+                provider: string;
+                projectName: string;
+                roi: number;
+                estimatedSavings: number;
+                trainingExamples: number;
+            }>;
+        };
+    }> {
         const response = await apiClient.get('/experimentation/fine-tuning-projects');
         return response.data.data || response.data;
     }
@@ -343,6 +355,45 @@ export class ExperimentationService {
         const response = await apiClient.get('/experimentation/recommendations');
         return response.data.data || response.data;
     }
+
+    /**
+     * New methods for real data integration
+     */
+    static async getExperiments(): Promise<{
+        experiments: Array<{
+            id: string;
+            name: string;
+            description: string;
+            type: string;
+            status: 'active' | 'completed' | 'pending';
+            createdAt: string;
+            results: {
+                accuracy: number | null;
+                cost: number;
+                latency: number | null;
+                savings: number;
+                efficiency: number;
+                roi: number;
+            };
+            projectId?: string;
+            projectName?: string;
+            budgetUsage?: number;
+            modelInfo?: {
+                model: string;
+                provider: string;
+                totalTokens: number;
+                requestCount: number;
+            };
+        }>;
+        totalExperiments: number;
+        activeExperiments: number;
+        completedExperiments: number;
+    }> {
+        const response = await apiClient.get('/experimentation/experiments');
+        return response.data.data;
+    }
+
+
 }
 
 export default ExperimentationService; 
