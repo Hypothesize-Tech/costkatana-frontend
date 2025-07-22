@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RegisterForm } from '../components/auth/RegisterForm';
 import { useAuth } from '../hooks';
 import { APP_NAME } from '../utils/constant';
+import logo from '../assets/logo.png';
 
 export default function Register() {
     const { isAuthenticated } = useAuth();
@@ -20,8 +21,8 @@ export default function Register() {
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     <div>
                         <div className="flex gap-x-3 items-center">
-                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-primary-600 dark:bg-primary-500">
-                                <span className="text-xl font-bold text-white">AI</span>
+                            <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg">
+                                <img src={logo} alt="logo" className="w-10 h-10" />
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {APP_NAME}

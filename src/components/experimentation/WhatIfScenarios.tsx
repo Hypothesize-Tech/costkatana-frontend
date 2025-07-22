@@ -10,7 +10,8 @@ import {
     BeakerIcon,
     LightBulbIcon,
     ShieldExclamationIcon,
-    ArrowPathIcon
+    ArrowPathIcon,
+    SparklesIcon
 } from '@heroicons/react/24/outline';
 import { ExperimentationService, WhatIfScenario, WhatIfResult } from '../../services/experimentation.service';
 import { Modal } from '../common/Modal';
@@ -35,6 +36,8 @@ const WhatIfScenarios: React.FC = () => {
     const [scenarioResults, setScenarioResults] = useState<{ [key: string]: WhatIfResult }>({});
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedScenario, setSelectedScenario] = useState<WhatIfScenario | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState<{ [key: string]: boolean }>({});
@@ -137,20 +140,51 @@ const WhatIfScenarios: React.FC = () => {
     };
 
     const createScenario = async () => {
-        if (!newScenario.name || !newScenario.description || !newScenario.changes?.length) {
-            setError('Please fill in all required fields');
+        // Enhanced validation
+        if (!newScenario.name?.trim()) {
+            setError('Please enter a scenario name');
+            return;
+        }
+
+        if (!newScenario.description?.trim()) {
+            setError('Please enter a scenario description');
+            return;
+        }
+
+        if (!newScenario.changes?.length) {
+            setError('Please add at least one change to the scenario');
+            return;
+        }
+
+        // Validate that all changes have required fields
+        const invalidChanges = newScenario.changes.filter(change =>
+            !change.description?.trim() ||
+            !change.type
+        );
+
+        if (invalidChanges.length > 0) {
+            setError('Please fill in all change descriptions and types');
             return;
         }
 
         setIsCreating(true);
+        setError(null); // Clear any previous errors
+
         try {
-            await ExperimentationService.createWhatIfScenario(newScenario as WhatIfScenario);
+            console.log('Creating scenario with data:', newScenario);
+            const result = await ExperimentationService.createWhatIfScenario(newScenario as WhatIfScenario);
+            console.log('Scenario created successfully:', result);
+
             await loadScenarios();
             setShowCreateModal(false);
             resetNewScenario();
-        } catch (error) {
+
+            // Show success message briefly
+            setError(null);
+        } catch (error: any) {
             console.error('Error creating scenario:', error);
-            setError('Failed to create scenario');
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to create scenario';
+            setError(`Failed to create scenario: ${errorMessage}`);
         } finally {
             setIsCreating(false);
         }
@@ -200,9 +234,9 @@ const WhatIfScenarios: React.FC = () => {
 
         const newChange: ScenarioChange = {
             type: 'model_switch',
-            currentValue: '',
-            proposedValue: '',
-            affectedMetrics: [],
+            currentValue: {},
+            proposedValue: {},
+            affectedMetrics: ['cost'],
             description: ''
         };
 
@@ -371,8 +405,8 @@ const WhatIfScenarios: React.FC = () => {
                                         <h4 className="text-sm font-medium text-gray-700">Results:</h4>
                                         <button
                                             onClick={() => {
-                                                // Modal functionality can be implemented later
-                                                console.log('View details for scenario:', scenario.name);
+                                                setSelectedScenario(scenario);
+                                                setShowDetailsModal(true);
                                             }}
                                             className="text-blue-600 hover:text-blue-800 text-sm"
                                         >
@@ -415,6 +449,72 @@ const WhatIfScenarios: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* AI Insights */}
+                                    {(() => {
+                                        const aiInsights = scenarioResults[scenario.name]?.aiInsights;
+                                        return aiInsights && aiInsights.length > 0 ? (
+                                            <div className="mt-4">
+                                                <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <SparklesIcon className="h-4 w-4 mr-1 text-purple-600" />
+                                                    AI Insights
+                                                </h5>
+                                                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                                    <div className="space-y-2">
+                                                        {aiInsights.map((insight: string, index: number) => (
+                                                            <div key={index} className="flex items-start space-x-2">
+                                                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                                <span className="text-sm text-purple-800">{insight}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : null;
+                                    })()}
+
+                                    {/* Recommendations and Warnings */}
+                                    {(scenarioResults[scenario.name].recommendations?.length > 0 || scenarioResults[scenario.name].warnings?.length > 0) && (
+                                        <div className="mt-4 space-y-3">
+                                            {scenarioResults[scenario.name].recommendations?.length > 0 && (
+                                                <div>
+                                                    <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                        <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
+                                                        Recommendations
+                                                    </h5>
+                                                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                                        <div className="space-y-2">
+                                                            {scenarioResults[scenario.name].recommendations.map((rec: string, index: number) => (
+                                                                <div key={index} className="flex items-start space-x-2">
+                                                                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                                    <span className="text-sm text-green-800">{rec}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {scenarioResults[scenario.name].warnings?.length > 0 && (
+                                                <div>
+                                                    <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                        <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
+                                                        Warnings
+                                                    </h5>
+                                                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                                        <div className="space-y-2">
+                                                            {scenarioResults[scenario.name].warnings.map((warning: string, index: number) => (
+                                                                <div key={index} className="flex items-start space-x-2">
+                                                                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                                    <span className="text-sm text-orange-800">{warning}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -572,95 +672,187 @@ const WhatIfScenarios: React.FC = () => {
                 </Modal>
             )}
 
-            {/* Results Detail Modal */}
-            {/* This modal is not defined in the original file, so it will not be rendered */}
-            {/* {showResultsModal && selectedResult && (
+            {/* Scenario Details Modal */}
+            {showDetailsModal && selectedScenario && (
                 <Modal
-                    isOpen={showResultsModal}
-                    onClose={() => setShowResultsModal(false)}
-                    title="Scenario Analysis Results"
+                    isOpen={showDetailsModal}
+                    onClose={() => setShowDetailsModal(false)}
+                    title={`Scenario Details: ${selectedScenario.name}`}
+                    size='lg'
                 >
                     <div className="space-y-6">
-                        {/* Impact Summary */}
-            {/* <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">Impact Summary</h4>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-blue-50 rounded-lg p-4">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                        <CurrencyDollarIcon className="h-5 w-5 text-blue-600" />
-                                        <span className="text-sm font-medium text-blue-900">Cost Impact</span>
+                        {/* Scenario Information */}
+                        <div>
+                            <h4 className="text-sm font-medium text-gray-900 mb-3">Scenario Information</h4>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="space-y-2">
+                                    <div>
+                                        <span className="text-sm font-medium text-gray-700">Description:</span>
+                                        <p className="text-sm text-gray-600 mt-1">{selectedScenario.description}</p>
                                     </div>
-                                    <div className={`text-2xl font-bold ${selectedResult.projectedImpact.costChange >= 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                        {formatCurrency(selectedResult.projectedImpact.costChange)}
+                                    <div>
+                                        <span className="text-sm font-medium text-gray-700">Timeframe:</span>
+                                        <span className="text-sm text-gray-600 ml-2 capitalize">{selectedScenario.timeframe}</span>
                                     </div>
-                                    <div className="text-sm text-blue-700">
-                                        {formatPercentage(selectedResult.projectedImpact.costChangePercentage)} change
-                                    </div>
-                                </div>
-                                <div className="bg-green-50 rounded-lg p-4">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                        <LightBulbIcon className="h-5 w-5 text-green-600" />
-                                        <span className="text-sm font-medium text-green-900">Performance Impact</span>
-                                    </div>
-                                    <div className={`text-2xl font-bold ${selectedResult.projectedImpact.performanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        {formatPercentage(selectedResult.projectedImpact.performanceChange)}
-                                    </div>
-                                    <div className="text-sm text-green-700">
-                                        Risk Level: {selectedResult.projectedImpact.riskLevel}
+                                    <div>
+                                        <span className="text-sm font-medium text-gray-700">Created:</span>
+                                        <span className="text-sm text-gray-600 ml-2">
+                                            {new Date(selectedScenario.createdAt || Date.now()).toLocaleDateString()}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Cost Breakdown */}
-            {/* <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">Cost Breakdown</h4>
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-600">Current Costs</span>
-                                    <span className="text-sm font-medium">
-                                        {formatCurrency(Object.values(selectedResult.breakdown.currentCosts).reduce((a, b) => a + b, 0))}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-600">Projected Costs</span>
-                                    <span className="text-sm font-medium">
-                                        {formatCurrency(Object.values(selectedResult.breakdown.projectedCosts).reduce((a, b) => a + b, 0))}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Recommendations */}
-            {/* <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">Recommendations</h4>
-                            <ul className="space-y-2">
-                                {selectedResult.recommendations.map((rec, index) => (
-                                    <li key={index} className="flex items-start space-x-2">
-                                        <LightBulbIcon className="h-4 w-4 text-yellow-600 mt-0.5" />
-                                        <span className="text-sm text-gray-700">{rec}</span>
-                                    </li>
+                        {/* Changes */}
+                        <div>
+                            <h4 className="text-sm font-medium text-gray-900 mb-3">Proposed Changes</h4>
+                            <div className="space-y-3">
+                                {selectedScenario.changes.map((change, index) => (
+                                    <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                {changeTypeLabels[change.type]}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-3">{change.description}</p>
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <span className="font-medium text-gray-700">Current:</span>
+                                                <div className="text-gray-600 mt-1">
+                                                    {typeof change.currentValue === 'object'
+                                                        ? Object.entries(change.currentValue).map(([key, value]) => (
+                                                            <div key={key}>{key}: {String(value)}</div>
+                                                        ))
+                                                        : String(change.currentValue)
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span className="font-medium text-gray-700">Proposed:</span>
+                                                <div className="text-gray-600 mt-1">
+                                                    {typeof change.proposedValue === 'object'
+                                                        ? Object.entries(change.proposedValue).map(([key, value]) => (
+                                                            <div key={key}>{key}: {String(value)}</div>
+                                                        ))
+                                                        : String(change.proposedValue)
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-3">
+                                            <span className="text-xs font-medium text-gray-700">Affected Metrics:</span>
+                                            <div className="flex flex-wrap gap-1 mt-1">
+                                                {change.affectedMetrics.map((metric, idx) => (
+                                                    <span key={idx} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700">
+                                                        {metric}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
 
-                        {/* Warnings */}
-            {/* {selectedResult.warnings.length > 0 && (
+                        {/* Analysis Results */}
+                        {scenarioResults[selectedScenario.name] && (
                             <div>
-                                <h4 className="text-sm font-medium text-gray-900 mb-3">Warnings</h4>
-                                <ul className="space-y-2">
-                                    {selectedResult.warnings.map((warning, index) => (
-                                        <li key={index} className="flex items-start space-x-2">
-                                            <ExclamationTriangleIcon className="h-4 w-4 text-red-600 mt-0.5" />
-                                            <span className="text-sm text-red-700">{warning}</span>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <h4 className="text-sm font-medium text-gray-900 mb-3">Analysis Results</h4>
+                                <div className="space-y-4">
+                                    {/* Impact Summary */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-blue-50 rounded-lg p-4">
+                                            <div className="flex items-center space-x-2 mb-2">
+                                                <ArrowTrendingUpIcon className="h-5 w-5 text-blue-600" />
+                                                <span className="text-sm font-medium text-blue-900">Cost Impact</span>
+                                            </div>
+                                            <div className={`text-2xl font-bold ${scenarioResults[selectedScenario.name]?.projectedImpact.costChange >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                {formatCurrency(scenarioResults[selectedScenario.name]?.projectedImpact.costChange || 0)}
+                                            </div>
+                                            <div className="text-sm text-blue-700">
+                                                {formatPercentage(scenarioResults[selectedScenario.name]?.projectedImpact.costChangePercentage || 0)} change
+                                            </div>
+                                        </div>
+                                        <div className="bg-green-50 rounded-lg p-4">
+                                            <div className="flex items-center space-x-2 mb-2">
+                                                <LightBulbIcon className="h-5 w-5 text-green-600" />
+                                                <span className="text-sm font-medium text-green-900">Performance Impact</span>
+                                            </div>
+                                            <div className={`text-2xl font-bold ${scenarioResults[selectedScenario.name]?.projectedImpact.performanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {formatPercentage(scenarioResults[selectedScenario.name]?.projectedImpact.performanceChange || 0)}
+                                            </div>
+                                            <div className="text-sm text-green-700">
+                                                Risk Level: {scenarioResults[selectedScenario.name]?.projectedImpact.riskLevel || 'unknown'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* AI Insights */}
+                                    {scenarioResults[selectedScenario.name]?.aiInsights && scenarioResults[selectedScenario.name]?.aiInsights!.length > 0 && (
+                                        <div>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <SparklesIcon className="h-4 w-4 mr-1 text-purple-600" />
+                                                AI Insights
+                                            </h5>
+                                            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                                <div className="space-y-2">
+                                                    {scenarioResults[selectedScenario.name]?.aiInsights?.map((insight: string, index: number) => (
+                                                        <div key={index} className="flex items-start space-x-2">
+                                                            <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                            <span className="text-sm text-purple-800">{insight}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Recommendations */}
+                                    {scenarioResults[selectedScenario.name]?.recommendations && scenarioResults[selectedScenario.name]?.recommendations.length > 0 && (
+                                        <div>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
+                                                Recommendations
+                                            </h5>
+                                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                                <div className="space-y-2">
+                                                    {scenarioResults[selectedScenario.name]?.recommendations?.map((rec: string, index: number) => (
+                                                        <div key={index} className="flex items-start space-x-2">
+                                                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                            <span className="text-sm text-green-800">{rec}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Warnings */}
+                                    {scenarioResults[selectedScenario.name]?.warnings && scenarioResults[selectedScenario.name]?.warnings.length > 0 && (
+                                        <div>
+                                            <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
+                                                Warnings
+                                            </h5>
+                                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                                <div className="space-y-2">
+                                                    {scenarioResults[selectedScenario.name]?.warnings?.map((warning: string, index: number) => (
+                                                        <div key={index} className="flex items-start space-x-2">
+                                                            <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                            <span className="text-sm text-orange-800">{warning}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
                 </Modal>
-            )} */}
+            )}
         </div>
     );
 };

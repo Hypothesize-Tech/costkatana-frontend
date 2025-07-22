@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useTheme, useNotifications } from '../../hooks';
 import { cn } from '../../utils/helpers';
 import { APP_NAME } from '../../utils/constant';
-
+import logo from '../../assets/logo.png';
 interface HeaderProps {
   onMenuClick: () => void;
 }
@@ -45,8 +45,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       {/* Logo */}
       <div className="flex flex-1 gap-x-4 items-center lg:gap-x-6">
         <Link to="/dashboard" className="flex gap-x-2 items-center">
-          <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-primary-600">
-            <span className="text-lg font-bold text-white">AI</span>
+          <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg">
+            <img src={logo} alt="logo" className="w-10 h-10" />
           </div>
           <span className="hidden font-semibold text-gray-900 dark:text-white sm:block">{APP_NAME}</span>
         </Link>

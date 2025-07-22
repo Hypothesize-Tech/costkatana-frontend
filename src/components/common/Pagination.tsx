@@ -18,7 +18,7 @@ export const Pagination = ({
 
   return (
     <nav
-      className={cn('flex items-center justify-between', className)}
+      className={cn('flex items-center justify-between py-4', className)}
       aria-label="Pagination"
     >
       <div className="flex flex-1 justify-between sm:hidden">

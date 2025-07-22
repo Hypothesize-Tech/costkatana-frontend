@@ -22,7 +22,7 @@ import { DashboardService, DashboardData } from '../services/dashboard.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
 import { formatTimestamp, formatSafeDate } from '../utils/formatters';
-
+import logo from '../assets/logo.png';
 import { useProject } from '@/contexts/ProjectContext';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
@@ -173,8 +173,8 @@ export const Dashboard: React.FC = () => {
                         {/* Brand & Project Info */}
                         <div className="flex items-center space-x-6">
                             <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <ChatBubbleLeftRightIcon className="w-6 h-6 text-white" />
+                                <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
+                                    <img src={logo} alt="logo" className="w-14 h-14" />
                                 </div>
                                 <div>
                                     <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">

@@ -149,48 +149,42 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     const sidebarContent = (collapsed: boolean = false) => (
         <>
             <nav className="flex flex-col flex-1 relative">
-                {/* Toggle button - positioned absolutely */}
-                <div className={cn(
-                    "absolute z-10 transition-all duration-200",
-                    collapsed
-                        ? "top-2 left-1/2 transform -translate-x-1/2"
-                        : "top-2 right-2"
-                )}>
-                    <Tooltip
-                        content={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                        show={true}
-                        placement={collapsed ? "right" : "left"}
-                    >
-                        <button
-                            onClick={onToggleCollapse}
-                            className={cn(
-                                "p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
-                                "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
-                                "transition-all duration-200 flex-shrink-0",
-                                "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50",
-                                "shadow-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
-                            )}
-                            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                {/* Toggle button - positioned absolutely when collapsed */}
+                {collapsed && (
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-200">
+                        <Tooltip
+                            content="Expand sidebar"
+                            show={true}
+                            placement="right"
                         >
-                            {collapsed ? (
+                            <button
+                                onClick={onToggleCollapse}
+                                className={cn(
+                                    "p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
+                                    "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
+                                    "transition-all duration-200 flex-shrink-0",
+                                    "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50",
+                                    "shadow-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
+                                )}
+                                aria-label="Expand sidebar"
+                            >
                                 <ChevronDoubleRightIcon className="w-4 h-4" />
-                            ) : (
-                                <ChevronDoubleLeftIcon className="w-4 h-4" />
-                            )}
-                        </button>
-                    </Tooltip>
-                </div>
+                            </button>
+                        </Tooltip>
+                    </div>
+                )}
 
                 {/* Navigation items */}
                 <ul role="list" className={cn(
                     "flex flex-col flex-1 gap-y-7",
-                    collapsed ? "pt-14" : "pt-14"
+                    collapsed ? "pt-14" : "pt-4"
                 )}>
                     <li>
                         <ul role="list" className="-mx-2 space-y-1">
                             {navigation.map((item) => {
                                 const isActive = location.pathname === item.href;
                                 const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
+                                const isDashboard = item.name === 'Dashboard';
 
                                 return (
                                     <li key={item.name}>
@@ -199,30 +193,56 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                                             show={collapsed}
                                             placement="right"
                                         >
-                                            <NavLink
-                                                to={item.href}
-                                                onClick={() => onClose()}
-                                                className={cn(
-                                                    isActive
-                                                        ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                                                        : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
-                                                    'flex gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
-                                                    collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
-                                                )}
-                                            >
-                                                <item.icon
+                                            <div className="relative">
+                                                <NavLink
+                                                    to={item.href}
+                                                    onClick={() => onClose()}
                                                     className={cn(
                                                         isActive
-                                                            ? 'text-primary-600 dark:text-primary-400'
-                                                            : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
-                                                        'w-6 h-6 shrink-0'
+                                                            ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
+                                                            : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
+                                                        'flex gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
+                                                        collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
                                                     )}
-                                                    aria-hidden="true"
-                                                />
-                                                {!collapsed && (
-                                                    <span className="truncate">{item.name}</span>
+                                                >
+                                                    <item.icon
+                                                        className={cn(
+                                                            isActive
+                                                                ? 'text-primary-600 dark:text-primary-400'
+                                                                : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
+                                                            'w-6 h-6 shrink-0'
+                                                        )}
+                                                        aria-hidden="true"
+                                                    />
+                                                    {!collapsed && (
+                                                        <span className="truncate">{item.name}</span>
+                                                    )}
+                                                </NavLink>
+                                                
+                                                {/* Collapse button positioned absolutely on the right side of Dashboard */}
+                                                {isDashboard && !collapsed && (
+                                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                                        <Tooltip
+                                                            content="Collapse sidebar"
+                                                            show={true}
+                                                            placement="left"
+                                                        >
+                                                            <button
+                                                                onClick={onToggleCollapse}
+                                                                className={cn(
+                                                                    "p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
+                                                                    "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
+                                                                    "transition-all duration-200 flex-shrink-0",
+                                                                    "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
+                                                                )}
+                                                                aria-label="Collapse sidebar"
+                                                            >
+                                                                <ChevronDoubleLeftIcon className="w-4 h-4" />
+                                                            </button>
+                                                        </Tooltip>
+                                                    </div>
                                                 )}
-                                            </NavLink>
+                                            </div>
                                         </Tooltip>
                                     </li>
                                 );

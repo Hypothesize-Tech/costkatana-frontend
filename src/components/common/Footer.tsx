@@ -9,7 +9,7 @@ export const Footer = () => {
                 <div className="md:flex md:items-center md:justify-between">
                     <div className="flex justify-center space-x-6 md:order-2">
                         <a
-                            href="https://github.com/your-org/ai-cost-optimizer"
+                            href="https://github.com/Hypothesize-Tech/ai-cost-optimizer-core"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"

@@ -11,6 +11,7 @@ import {
 import { ExperimentationService } from '../../services/experimentation.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { Modal } from '../common/Modal';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface ModelConfig {
     provider: string;
@@ -79,6 +80,9 @@ const ModelComparison: React.FC = () => {
     const [comparisonMode, setComparisonMode] = useState<'quality' | 'cost' | 'speed' | 'comprehensive'>('comprehensive');
     const [executeOnBedrock, setExecuteOnBedrock] = useState(true);
 
+    // Add debouncing for prompt to prevent API calls on every keystroke
+    const debouncedPrompt = useDebounce(prompt, 800); // Wait 800ms after user stops typing
+
     const criteriaOptions = [
         'accuracy', 'relevance', 'completeness', 'coherence', 'creativity',
         'factual_accuracy', 'safety', 'bias_detection', 'language_quality'
@@ -88,13 +92,15 @@ const ModelComparison: React.FC = () => {
         loadAvailableModels();
     }, []);
 
-    // Trigger cost estimation when models or prompt change
+    // Only trigger cost estimation with debounced prompt to avoid API spam
     useEffect(() => {
-        if (selectedModels.length > 0 && prompt.trim()) {
-            console.log('Triggering cost estimation due to changes...');
+        if (selectedModels.length > 0 && debouncedPrompt.trim()) {
+            console.log('Triggering cost estimation with debounced prompt...');
             estimateComparisonCost();
+        } else if (!debouncedPrompt.trim()) {
+            setEstimatedCost(0);
         }
-    }, [selectedModels, prompt, iterations]);
+    }, [selectedModels, debouncedPrompt, iterations]);
 
     useEffect(() => {
         if (selectedModels.length > 0 && prompt.trim()) {
@@ -106,7 +112,7 @@ const ModelComparison: React.FC = () => {
         try {
             const response = await ExperimentationService.getAvailableModels();
             console.log('Available models response:', response); // Debug log
-            
+
             // Normalize the response data structure
             const normalizedModels = (Array.isArray(response) ? response : []).map((model: any) => ({
                 provider: model.provider || 'Unknown',
@@ -123,11 +129,11 @@ const ModelComparison: React.FC = () => {
                 isLatest: model.isLatest !== false,
                 notes: model.notes || ''
             }));
-            
+
             console.log('Normalized models:', normalizedModels);
             console.log('Sample model pricing:', normalizedModels[0]?.pricing);
             setAvailableModels(normalizedModels);
-            
+
             if (normalizedModels.length === 0) {
                 setError('No models available. Please check if the backend pricing data is configured.');
             } else {
@@ -140,7 +146,7 @@ const ModelComparison: React.FC = () => {
         } catch (error: any) {
             console.error('Error loading available models:', error);
             setError('Failed to load available models: ' + (error.message || 'Unknown error'));
-            
+
             // Fallback to some default models for testing
             setAvailableModels([
                 {
@@ -161,12 +167,12 @@ const ModelComparison: React.FC = () => {
     const estimateComparisonCost = async () => {
         try {
             // Calculate cost estimate based on prompt length and selected models
-            if (!prompt.trim() || selectedModels.length === 0) {
+            if (!debouncedPrompt.trim() || selectedModels.length === 0) {
                 setEstimatedCost(0);
                 return;
             }
 
-            const promptTokens = Math.ceil(prompt.length / 4); // Rough token estimate
+            const promptTokens = Math.ceil(debouncedPrompt.length / 4); // Rough token estimate
             const outputTokens = 500; // Estimated response length
             let totalCost = 0;
 
@@ -186,7 +192,7 @@ const ModelComparison: React.FC = () => {
                 const estimate = await ExperimentationService.estimateExperimentCost({
                     type: 'model_comparison',
                     parameters: {
-                        prompt,
+                        prompt: debouncedPrompt,
                         models: selectedModels,
                         iterations
                     }
@@ -207,7 +213,7 @@ const ModelComparison: React.FC = () => {
 
     const addModel = () => {
         console.log('addModel called. Available models:', availableModels.length, 'Selected models:', selectedModels.length);
-        
+
         if (availableModels.length === 0) {
             setError('No models available to add. Please wait for models to load.');
             return;
@@ -216,10 +222,10 @@ const ModelComparison: React.FC = () => {
         // Find a model that hasn't been selected yet
         const usedModels = new Set(selectedModels.map(m => `${m.provider}:${m.model}`));
         console.log('Used models:', Array.from(usedModels));
-        
+
         const availableModel = availableModels.find(m => !usedModels.has(`${m.provider}:${m.model}`));
         console.log('Found available model:', availableModel);
-        
+
         if (availableModel) {
             const newModel = {
                 provider: availableModel.provider,
@@ -228,15 +234,15 @@ const ModelComparison: React.FC = () => {
                 maxTokens: 1000
             };
             console.log('Adding new model:', newModel);
-            
+
             setSelectedModels([...selectedModels, newModel]);
             setError(null); // Clear any previous errors
-            
+
             // Trigger cost recalculation with new model
             setTimeout(estimateComparisonCost, 100);
         } else {
-            const message = availableModels.length === selectedModels.length 
-                ? 'All available models have been selected.' 
+            const message = availableModels.length === selectedModels.length
+                ? 'All available models have been selected.'
                 : 'No more models available to add.';
             setError(message);
         }
@@ -249,15 +255,25 @@ const ModelComparison: React.FC = () => {
     const updateModel = (index: number, field: keyof ModelConfig, value: any) => {
         console.log('updateModel called:', { index, field, value });
         const updated = [...selectedModels];
-        updated[index] = { ...updated[index], [field]: value };
+
+        if (field === 'provider' || field === 'model') {
+            // When changing provider or model, find the corresponding model data
+            if (field === 'provider') {
+                updated[index] = { ...updated[index], [field]: value };
+                // Find first available model for this provider
+                const availableForProvider = availableModels.find(m => m.provider === value);
+                if (availableForProvider) {
+                    updated[index].model = availableForProvider.model;
+                }
+            } else if (field === 'model') {
+                updated[index] = { ...updated[index], [field]: value };
+            }
+        } else {
+            updated[index] = { ...updated[index], [field]: value };
+        }
+
         console.log('Updated model:', updated[index]);
         setSelectedModels(updated);
-        
-        // Trigger cost recalculation when models change
-        setTimeout(() => {
-            console.log('Recalculating cost after model update...');
-            estimateComparisonCost();
-        }, 100);
     };
 
     const runComparison = async () => {
@@ -304,7 +320,7 @@ const ModelComparison: React.FC = () => {
 
         const experiment = await ExperimentationService.runModelComparison(request);
         console.log('Received experiment result:', experiment);
-        
+
         setCurrentExperiment(experiment);
 
         // Extract results from the experiment
@@ -354,16 +370,16 @@ const ModelComparison: React.FC = () => {
 
                 switch (data.type) {
                     case 'connection':
-                        setProgressData({ 
-                            stage: 'connected', 
-                            progress: 0, 
-                            message: 'Connected to comparison stream' 
+                        setProgressData({
+                            stage: 'connected',
+                            progress: 0,
+                            message: 'Connected to comparison stream'
                         });
                         break;
-                    
+
                     case 'progress':
                         setProgressData(data);
-                        
+
                         if (data.stage === 'completed' && data.results) {
                             setResults(data.results);
                             setIsRunning(false);
@@ -372,14 +388,14 @@ const ModelComparison: React.FC = () => {
                             setIsRunning(false);
                         }
                         break;
-                    
+
                     case 'close':
                         eventSource.close();
                         if (!progressData || progressData.stage !== 'completed') {
                             setIsRunning(false);
                         }
                         break;
-                    
+
                     case 'heartbeat':
                         // Keep connection alive
                         break;
@@ -432,7 +448,7 @@ const ModelComparison: React.FC = () => {
         if (modelData?.pricing && modelData.pricing.input && modelData.pricing.output) {
             return modelData.pricing;
         }
-        
+
         // Fallback pricing data for common AWS Bedrock models
         const fallbackPricing: Record<string, { input: number; output: number; unit: string }> = {
             'amazon.nova-micro-v1:0': { input: 0.035, output: 0.14, unit: 'Per 1M tokens' },
@@ -451,10 +467,10 @@ const ModelComparison: React.FC = () => {
             'cohere.command-r-v1:0': { input: 0.50, output: 1.50, unit: 'Per 1M tokens' },
             'cohere.command-r-plus-v1:0': { input: 3.00, output: 15.00, unit: 'Per 1M tokens' }
         };
-        
-        const modelKey = `${provider.toLowerCase()}:${model}` in fallbackPricing ? 
+
+        const modelKey = `${provider.toLowerCase()}:${model}` in fallbackPricing ?
             `${provider.toLowerCase()}:${model}` : model;
-            
+
         return fallbackPricing[modelKey] || fallbackPricing[model] || null;
     };
 
@@ -477,17 +493,17 @@ const ModelComparison: React.FC = () => {
                         disabled={isRunning || !prompt.trim() || selectedModels.length === 0}
                         className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                                            {isRunning ? (
-                        <>
-                            <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                            {realTimeMode ? 'Executing Models...' : 'Running...'}
-                        </>
-                    ) : (
-                        <>
-                            <PlayIcon className="h-4 w-4 mr-2" />
-                            {realTimeMode ? 'Run Real-time Comparison' : 'Run Comparison'}
-                        </>
-                    )}
+                        {isRunning ? (
+                            <>
+                                <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                                {realTimeMode ? 'Executing Models...' : 'Running...'}
+                            </>
+                        ) : (
+                            <>
+                                <PlayIcon className="h-4 w-4 mr-2" />
+                                {realTimeMode ? 'Run Real-time Comparison' : 'Run Comparison'}
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
@@ -545,7 +561,7 @@ const ModelComparison: React.FC = () => {
                                         />
                                         <span className="text-sm">Execute on AWS Bedrock</span>
                                     </label>
-                                    
+
                                     <select
                                         value={comparisonMode}
                                         onChange={(e) => setComparisonMode(e.target.value as any)}
@@ -557,7 +573,7 @@ const ModelComparison: React.FC = () => {
                                         <option value="speed">⚡ Speed Focus</option>
                                     </select>
                                 </div>
-                                
+
                                 <div className="text-xs text-orange-600">
                                     ⚠️ Real-time mode will take longer but provides authentic model responses and AI-driven evaluation
                                 </div>
@@ -573,7 +589,7 @@ const ModelComparison: React.FC = () => {
                                 <span className="text-sm font-medium text-blue-800">{progressData.message}</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
+                                <div
                                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                                     style={{ width: `${progressData.progress || 0}%` }}
                                 ></div>
@@ -609,21 +625,28 @@ const ModelComparison: React.FC = () => {
                                         <select
                                             value={`${model.provider}:${model.model}`}
                                             onChange={(e) => {
-                                                const parts = e.target.value.split(':');
-                                                if (parts.length >= 2) {
-                                                    const provider = parts[0];
-                                                    const modelName = parts.slice(1).join(':'); // Handle model names with colons
-                                                    console.log('Dropdown changed:', { provider, modelName, fullValue: e.target.value });
-                                                    updateModel(index, 'provider', provider);
-                                                    updateModel(index, 'model', modelName);
-                                                } else {
-                                                    console.error('Invalid dropdown value format:', e.target.value);
-                                                }
+                                                console.log('Dropdown selection changed to:', e.target.value);
+                                                const [provider, ...modelParts] = e.target.value.split(':');
+                                                const selectedModel = modelParts.join(':'); // Handle model names with colons
+
+                                                console.log('Parsed selection:', { provider, model: selectedModel });
+
+                                                // Update both provider and model at once to avoid conflicts
+                                                const updated = [...selectedModels];
+                                                updated[index] = {
+                                                    ...updated[index],
+                                                    provider: provider,
+                                                    model: selectedModel
+                                                };
+                                                setSelectedModels(updated);
                                             }}
                                             className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                             {availableModels.map(m => (
-                                                <option key={`${m.provider}:${m.model}`} value={`${m.provider}:${m.model}`}>
+                                                <option
+                                                    key={`${m.provider}:${m.model}`}
+                                                    value={`${m.provider}:${m.model}`}
+                                                >
                                                     {m.provider} - {m.modelName || m.model}
                                                 </option>
                                             ))}
@@ -815,7 +838,7 @@ const ModelComparison: React.FC = () => {
                                                     <div className="text-sm font-medium text-blue-900">Input Cost</div>
                                                     <div className="text-sm font-bold text-blue-700">
                                                         ${(() => {
-                                                            const pricing = result.pricing?.inputCost ? 
+                                                            const pricing = result.pricing?.inputCost ?
                                                                 { input: result.pricing.inputCost * 1000000, output: result.pricing.outputCost || 0 } :
                                                                 getModelPricing(result.provider, result.model);
                                                             return pricing?.input ? pricing.input.toFixed(2) : 'N/A';
@@ -826,7 +849,7 @@ const ModelComparison: React.FC = () => {
                                                     <div className="text-sm font-medium text-green-900">Output Cost</div>
                                                     <div className="text-sm font-bold text-green-700">
                                                         ${(() => {
-                                                            const pricing = result.pricing?.outputCost ? 
+                                                            const pricing = result.pricing?.outputCost ?
                                                                 { input: result.pricing.inputCost || 0, output: result.pricing.outputCost * 1000000 } :
                                                                 getModelPricing(result.provider, result.model);
                                                             return pricing?.output ? pricing.output.toFixed(2) : 'N/A';
@@ -881,21 +904,21 @@ const ModelComparison: React.FC = () => {
                                 <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                                     <h4 className="font-medium text-blue-900 mb-2">Overall Analysis</h4>
                                     <p className="text-sm text-blue-800 mb-2">{currentExperiment.results.recommendation}</p>
-                                    
+
                                     {currentExperiment.results.costComparison && (
                                         <div className="text-sm text-blue-800 mb-2">
                                             <strong>Cost Comparison:</strong> {currentExperiment.results.costComparison}
                                         </div>
                                     )}
-                                    
+
                                     {currentExperiment.results.useCaseAnalysis && (
                                         <div className="text-sm text-blue-800 mb-2">
                                             <strong>Use Case Analysis:</strong> {currentExperiment.results.useCaseAnalysis}
                                         </div>
                                     )}
-                                    
+
                                     <div className="mt-2 text-xs text-blue-600">
-                                        Confidence: {((currentExperiment.metadata.confidence || 0) * 100).toFixed(1)}% • 
+                                        Confidence: {((currentExperiment.metadata.confidence || 0) * 100).toFixed(1)}% •
                                         Based on {currentExperiment.results.basedOnActualUsage || 0} models with usage data
                                     </div>
                                 </div>
@@ -952,13 +975,13 @@ const ModelComparison: React.FC = () => {
                                             <div className="text-sm font-medium text-blue-900 mb-2">Token Costs</div>
                                             <div className="space-y-1 text-sm text-blue-800">
                                                 <div>Input: ${(() => {
-                                                    const pricing = selectedResult.pricing?.inputCost ? 
+                                                    const pricing = selectedResult.pricing?.inputCost ?
                                                         { input: selectedResult.pricing.inputCost * 1000000, output: selectedResult.pricing.outputCost || 0 } :
                                                         getModelPricing(selectedResult.provider, selectedResult.model);
                                                     return pricing?.input ? pricing.input.toFixed(2) : 'N/A';
                                                 })()}/1M tokens</div>
                                                 <div>Output: ${(() => {
-                                                    const pricing = selectedResult.pricing?.outputCost ? 
+                                                    const pricing = selectedResult.pricing?.outputCost ?
                                                         { input: selectedResult.pricing.inputCost || 0, output: selectedResult.pricing.outputCost * 1000000 } :
                                                         getModelPricing(selectedResult.provider, selectedResult.model);
                                                     return pricing?.output ? pricing.output.toFixed(2) : 'N/A';
@@ -1024,7 +1047,7 @@ const ModelComparison: React.FC = () => {
                                 {selectedResult.estimatedCostPer1K === 0 && (
                                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                                         <p className="text-sm text-yellow-800">
-                                            <strong>No pricing data available</strong> - This model may not be included in our pricing database. 
+                                            <strong>No pricing data available</strong> - This model may not be included in our pricing database.
                                             Please check with the provider for current pricing information.
                                         </p>
                                     </div>

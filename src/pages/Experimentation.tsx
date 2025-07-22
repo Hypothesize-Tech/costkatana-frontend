@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
     BeakerIcon,
     ChartBarIcon,
-    CogIcon,
     LightBulbIcon,
     InformationCircleIcon,
     SparklesIcon,
@@ -10,10 +9,10 @@ import {
     CurrencyDollarIcon,
     ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
-import { ModelComparison, WhatIfScenarios, FineTuningAnalysis } from '../components/experimentation';
+import { ModelComparison, WhatIfScenarios } from '../components/experimentation';
 import { ExperimentationService } from '../services/experimentation.service';
 
-type Tab = 'model-comparison' | 'what-if-scenarios' | 'fine-tuning-analysis';
+type Tab = 'model-comparison' | 'what-if-scenarios';
 
 interface ExperimentationStats {
     totalExperiments: number;
@@ -63,13 +62,6 @@ const Experimentation: React.FC = () => {
             description: 'Analyze potential cost impacts of optimization strategies',
             color: 'text-green-600'
         },
-        {
-            id: 'fine-tuning-analysis' as Tab,
-            name: 'Fine-Tuning Analysis',
-            icon: <CogIcon className="h-5 w-5" />,
-            description: 'Evaluate ROI of custom model development',
-            color: 'text-purple-600'
-        }
     ];
 
     useEffect(() => {
@@ -79,7 +71,7 @@ const Experimentation: React.FC = () => {
     const loadExperimentationData = async () => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             // Load current period data (last 30 days)
             const currentExperiments = await ExperimentationService.getExperimentHistory({
@@ -94,22 +86,22 @@ const Experimentation: React.FC = () => {
                 startDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
                 endDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
             });
-            
+
             // Calculate current period stats
             const totalExperiments = currentExperiments.length;
             const completedExperiments = currentExperiments.filter(exp => exp.status === 'completed');
             const successRate = totalExperiments > 0 ? completedExperiments.length / totalExperiments : 0;
-            
+
             let totalSavings = 0;
             let savingsCount = 0;
-            
+
             completedExperiments.forEach(exp => {
                 if (exp.results && exp.results.costSaved) {
                     totalSavings += exp.results.costSaved;
                     savingsCount++;
                 }
             });
-            
+
             const avgCostSavings = savingsCount > 0 ? totalSavings / savingsCount : 0;
             const totalModelsCompared = currentExperiments.filter(exp => exp.type === 'model_comparison').length;
 
@@ -117,17 +109,17 @@ const Experimentation: React.FC = () => {
             const prevTotalExperiments = previousExperiments.length;
             const prevCompletedExperiments = previousExperiments.filter(exp => exp.status === 'completed');
             const prevSuccessRate = prevTotalExperiments > 0 ? prevCompletedExperiments.length / prevTotalExperiments : 0;
-            
+
             let prevTotalSavings = 0;
             let prevSavingsCount = 0;
-            
+
             prevCompletedExperiments.forEach(exp => {
                 if (exp.results && exp.results.costSaved) {
                     prevTotalSavings += exp.results.costSaved;
                     prevSavingsCount++;
                 }
             });
-            
+
             const prevAvgCostSavings = prevSavingsCount > 0 ? prevTotalSavings / prevSavingsCount : 0;
 
             // Calculate percentage changes
@@ -155,11 +147,11 @@ const Experimentation: React.FC = () => {
             // Load actual recommendations from backend
             const recs = await ExperimentationService.getExperimentRecommendations();
             setRecommendations(recs);
-            
+
         } catch (error: any) {
             console.error('Error loading experimentation data:', error);
             setError('Failed to load experimentation data: ' + (error.message || 'Unknown error'));
-            
+
             // Set empty stats on error
             setStats({
                 totalExperiments: 0,
@@ -185,8 +177,6 @@ const Experimentation: React.FC = () => {
                 return <ModelComparison />;
             case 'what-if-scenarios':
                 return <WhatIfScenarios />;
-            case 'fine-tuning-analysis':
-                return <FineTuningAnalysis />;
             default:
                 return null;
         }
@@ -194,10 +184,10 @@ const Experimentation: React.FC = () => {
 
     const formatChange = (change: number): { text: string; color: string } => {
         if (change === 0) return { text: 'No change', color: 'text-gray-600' };
-        
+
         const isPositive = change > 0;
         const formattedChange = Math.abs(change).toFixed(1);
-        
+
         return {
             text: `${isPositive ? '+' : '-'}${formattedChange}%`,
             color: isPositive ? 'text-green-600' : 'text-red-600'
@@ -311,11 +301,10 @@ const Experimentation: React.FC = () => {
                                         <div key={index} className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex items-center justify-between mb-2">
                                                 <h3 className="text-sm font-medium text-gray-900">{rec.title}</h3>
-                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                                    rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-red-100 text-red-800' :
                                                     rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-green-100 text-green-800'
-                                                }`}>
+                                                        'bg-green-100 text-green-800'
+                                                    }`}>
                                                     {rec.priority}
                                                 </span>
                                             </div>
@@ -332,11 +321,10 @@ const Experimentation: React.FC = () => {
                                                 </span>
                                             </div>
                                             <div className="mt-2">
-                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                                    rec.type === 'model_comparison' ? 'bg-blue-100 text-blue-800' :
+                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${rec.type === 'model_comparison' ? 'bg-blue-100 text-blue-800' :
                                                     rec.type === 'what_if' ? 'bg-green-100 text-green-800' :
-                                                    'bg-purple-100 text-purple-800'
-                                                }`}>
+                                                        'bg-purple-100 text-purple-800'
+                                                    }`}>
                                                     {rec.type.replace('_', ' ')}
                                                 </span>
                                             </div>
@@ -364,7 +352,7 @@ const Experimentation: React.FC = () => {
                                     <div>
                                         <h3 className="text-sm font-medium text-blue-900">Get Started with Experimentation</h3>
                                         <p className="text-sm text-blue-800 mt-1">
-                                            Start by comparing models in the Model Comparison tab. 
+                                            Start by comparing models in the Model Comparison tab.
                                             Our system will analyze your actual usage data to provide meaningful insights.
                                             {recommendations.length > 0 && ` We've already identified ${recommendations.length} optimization opportunities based on your usage patterns.`}
                                         </p>
@@ -398,8 +386,8 @@ const Experimentation: React.FC = () => {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
-                                            ? 'border-blue-500 text-blue-600'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                         }`}
                                 >
                                     <span className={activeTab === tab.id ? tab.color : 'text-gray-400'}>

@@ -113,7 +113,7 @@ export const Alerts: React.FC = () => {
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alerts</h1>
-                    <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                    <p className="my-2 text-sm text-gray-700 dark:text-gray-300">
                         Manage and review system alerts and notifications.
                     </p>
                 </div>
@@ -130,7 +130,7 @@ export const Alerts: React.FC = () => {
 
             <AlertSummary summary={summary} />
 
-            <div className="mt-8 card">
+            <div className="mt-8 card p-4">
                 <AlertFilter
                     filters={filters}
                     onFilterChange={handleFilterChange}

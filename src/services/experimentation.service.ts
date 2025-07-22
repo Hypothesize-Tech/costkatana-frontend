@@ -61,6 +61,9 @@ export interface WhatIfScenario {
         volume: number;
         performance: number;
     };
+    createdAt?: string;
+    status?: string;
+    isUserCreated?: boolean;
 }
 
 export interface WhatIfResult {
@@ -84,80 +87,10 @@ export interface WhatIfResult {
     };
     recommendations: string[];
     warnings: string[];
+    aiInsights?: string[];
 }
 
-export interface FineTuningProject {
-    id: string;
-    name: string;
-    baseModel: string;
-    status: 'planning' | 'training' | 'completed' | 'failed';
-    trainingData: {
-        size: number;
-        quality: 'low' | 'medium' | 'high';
-        preprocessingCost: number;
-    };
-    infrastructure: {
-        computeType: string;
-        estimatedTrainingTime: number;
-        parallelization: boolean;
-    };
-    costs: {
-        training: number;
-        hosting: number;
-        inference: number;
-        storage: number;
-        total: number;
-    };
-    performance: {
-        accuracy: number;
-        f1Score: number;
-        latency: number;
-        throughput: number;
-    };
-}
-
-export interface FineTuningAnalysis {
-    project: FineTuningProject;
-    costBreakdown: {
-        development: {
-            dataPreparation: number;
-            modelTraining: number;
-            validation: number;
-            testing: number;
-        };
-        deployment: {
-            infrastructure: number;
-            monitoring: number;
-            maintenance: number;
-        };
-        operations: {
-            inference: number;
-            storage: number;
-            bandwidth: number;
-        };
-    };
-    roi: {
-        initialInvestment: number;
-        operationalCosts: number;
-        expectedSavings: number;
-        paybackPeriod: number;
-        netPresentValue: number;
-    };
-    comparison: {
-        vsGenericModel: {
-            costDifference: number;
-            performanceDifference: number;
-            recommendation: string;
-        };
-        vsAlternatives: Array<{
-            alternative: string;
-            costComparison: number;
-            performanceComparison: number;
-            pros: string[];
-            cons: string[];
-        }>;
-    };
-}
+// Fine-tuning functionality removed - not core to business focus
 
 export interface ExperimentResult {
     id: string;
@@ -238,40 +171,6 @@ export class ExperimentationService {
 
     static async deleteWhatIfScenario(scenarioName: string): Promise<void> {
         await apiClient.delete(`/experimentation/what-if-scenarios/${scenarioName}`);
-    }
-
-    /**
-     * Fine-Tuning Projects
-     */
-    static async createFineTuningProject(project: Omit<FineTuningProject, 'id'>): Promise<FineTuningProject> {
-        const response = await apiClient.post('/experimentation/fine-tuning-projects', project);
-        return response.data.data || response.data;
-    }
-
-    static async getFineTuningProjects(): Promise<{
-        projects: FineTuningProject[];
-        recommendations?: {
-            topCandidates: Array<{
-                name: string;
-                provider: string;
-                projectName: string;
-                roi: number;
-                estimatedSavings: number;
-                trainingExamples: number;
-            }>;
-        };
-    }> {
-        const response = await apiClient.get('/experimentation/fine-tuning-projects');
-        return response.data.data || response.data;
-    }
-
-    static async getFineTuningAnalysis(projectId: string): Promise<FineTuningAnalysis> {
-        const response = await apiClient.get(`/experimentation/fine-tuning-projects/${projectId}/analysis`);
-        return response.data.data || response.data;
-    }
-
-    static async deleteFineTuningProject(projectId: string): Promise<void> {
-        await apiClient.delete(`/experimentation/fine-tuning-projects/${projectId}`);
     }
 
     /**
