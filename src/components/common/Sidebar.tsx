@@ -1,6 +1,7 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useRef, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { usePopper } from 'react-popper';
 import {
     XMarkIcon,
     HomeIcon,
@@ -16,67 +17,213 @@ import {
     CurrencyDollarIcon,
     SparklesIcon,
     BeakerIcon,
-
+    ChevronDoubleLeftIcon,
+    ChevronDoubleRightIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
 interface SidebarProps {
     isOpen: boolean;
     onClose: () => void;
+    isCollapsed: boolean;
+    onToggleCollapse: () => void;
 }
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
-    { name: 'Usage', href: '/usage', icon: CircleStackIcon },
-    { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-    { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon },
-    { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon },
-    { name: 'Inference Scaling', href: '/inference-scaling', icon: SparklesIcon },
-    { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon },
-    { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon },
-    { name: 'Projects', href: '/projects', icon: FolderIcon },
-    { name: 'Templates', href: '/templates', icon: DocumentTextIcon },
-    { name: 'Use Templates', href: '/templates/use', icon: PlayIcon },
-    { name: 'Integration', href: '/integration', icon: CogIcon },
-    { name: 'Alerts', href: '/alerts', icon: BellIcon },
-    { name: 'Profile', href: '/profile', icon: UserIcon },
+    { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
+    { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
+    { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
+    { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
+    { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
+    { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
+    { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
+    { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
+    { name: 'Use Templates', href: '/templates/use', icon: PlayIcon, description: 'Apply templates' },
+    { name: 'Integration', href: '/integration', icon: CogIcon, description: 'Integration settings' },
+    { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
+    { name: 'Profile', href: '/profile', icon: UserIcon, description: 'User profile settings' },
 ];
 
-export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+// Tooltip Component using React Popper
+interface TooltipProps {
+    children: React.ReactNode;
+    content: string;
+    show: boolean;
+    placement?: 'right' | 'left' | 'top' | 'bottom';
+    delay?: number;
+}
+
+const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: TooltipProps) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
+    const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+    const { styles, attributes } = usePopper(referenceElement, popperElement, {
+        placement,
+        modifiers: [
+            {
+                name: 'offset',
+                options: {
+                    offset: [0, 8],
+                },
+            },
+            {
+                name: 'preventOverflow',
+                options: {
+                    padding: 8,
+                },
+            },
+            {
+                name: 'flip',
+                options: {
+                    fallbackPlacements: ['left', 'top', 'bottom'],
+                },
+            },
+        ],
+    });
+
+    const handleMouseEnter = () => {
+        if (!show) return;
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            setShowTooltip(true);
+        }, delay);
+    };
+
+    const handleMouseLeave = () => {
+        clearTimeout(timeoutRef.current);
+        setShowTooltip(false);
+    };
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
+    if (!show) return <>{children}</>;
+
+    return (
+        <>
+            <div
+                ref={setReferenceElement}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="inline-block w-full"
+            >
+                {children}
+            </div>
+            {showTooltip && (
+                <div
+                    ref={setPopperElement}
+                    style={styles.popper}
+                    {...attributes.popper}
+                    className="z-[99999] px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md shadow-lg pointer-events-none min-w-[200px] max-w-[300px]"
+                >
+                    {content}
+                    <div
+                        data-popper-arrow
+                        className="absolute w-2 h-2 bg-gray-900 transform rotate-45"
+                        style={{
+                            ...styles.arrow,
+                            ...(placement === 'right' && { left: '-4px' }),
+                            ...(placement === 'left' && { right: '-4px' }),
+                            ...(placement === 'top' && { bottom: '-4px' }),
+                            ...(placement === 'bottom' && { top: '-4px' }),
+                        }}
+                    />
+                </div>
+            )}
+        </>
+    );
+};
+
+export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) => {
     const location = useLocation();
 
-    const sidebarContent = (
+    const sidebarContent = (collapsed: boolean = false) => (
         <>
-            <nav className="flex flex-col flex-1">
-                <ul role="list" className="flex flex-col flex-1 gap-y-7">
+            <nav className="flex flex-col flex-1 relative">
+                {/* Toggle button - positioned absolutely */}
+                <div className={cn(
+                    "absolute z-10 transition-all duration-200",
+                    collapsed
+                        ? "top-2 left-1/2 transform -translate-x-1/2"
+                        : "top-2 right-2"
+                )}>
+                    <Tooltip
+                        content={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                        show={true}
+                        placement={collapsed ? "right" : "left"}
+                    >
+                        <button
+                            onClick={onToggleCollapse}
+                            className={cn(
+                                "p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
+                                "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
+                                "transition-all duration-200 flex-shrink-0",
+                                "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50",
+                                "shadow-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
+                            )}
+                            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                        >
+                            {collapsed ? (
+                                <ChevronDoubleRightIcon className="w-4 h-4" />
+                            ) : (
+                                <ChevronDoubleLeftIcon className="w-4 h-4" />
+                            )}
+                        </button>
+                    </Tooltip>
+                </div>
+
+                {/* Navigation items */}
+                <ul role="list" className={cn(
+                    "flex flex-col flex-1 gap-y-7",
+                    collapsed ? "pt-14" : "pt-14"
+                )}>
                     <li>
                         <ul role="list" className="-mx-2 space-y-1">
                             {navigation.map((item) => {
                                 const isActive = location.pathname === item.href;
+                                const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
 
                                 return (
                                     <li key={item.name}>
-                                        <NavLink
-                                            to={item.href}
-                                            onClick={() => onClose()}
-                                            className={cn(
-                                                isActive
-                                                    ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                                                    : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
-                                                'flex gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group'
-                                            )}
+                                        <Tooltip
+                                            content={tooltipContent}
+                                            show={collapsed}
+                                            placement="right"
                                         >
-                                            <item.icon
+                                            <NavLink
+                                                to={item.href}
+                                                onClick={() => onClose()}
                                                 className={cn(
                                                     isActive
-                                                        ? 'text-primary-600 dark:text-primary-400'
-                                                        : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
-                                                    'w-6 h-6 shrink-0'
+                                                        ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
+                                                        : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
+                                                    'flex gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
+                                                    collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
                                                 )}
-                                                aria-hidden="true"
-                                            />
-                                            {item.name}
-                                        </NavLink>
+                                            >
+                                                <item.icon
+                                                    className={cn(
+                                                        isActive
+                                                            ? 'text-primary-600 dark:text-primary-400'
+                                                            : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
+                                                        'w-6 h-6 shrink-0'
+                                                    )}
+                                                    aria-hidden="true"
+                                                />
+                                                {!collapsed && (
+                                                    <span className="truncate">{item.name}</span>
+                                                )}
+                                            </NavLink>
+                                        </Tooltip>
                                     </li>
                                 );
                             })}
@@ -138,7 +285,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                             <span className="text-lg font-bold text-white">AI</span>
                                         </div>
                                     </div>
-                                    {sidebarContent}
+                                    {sidebarContent(false)}
                                 </div>
                             </Dialog.Panel>
                         </Transition.Child>
@@ -147,10 +294,16 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             </Transition.Root>
 
             {/* Desktop sidebar */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 bg-white border-r border-gray-200 grow dark:border-gray-700 dark:bg-gray-800">
-                    <div className="pt-4">
-                        {sidebarContent}
+            <div className={cn(
+                "hidden lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:flex-col transition-all duration-300",
+                isCollapsed ? "lg:w-16" : "lg:w-72"
+            )}>
+                <div className={cn(
+                    "flex flex-col gap-y-5 bg-white border-r border-gray-200 grow dark:border-gray-700 dark:bg-gray-800 transition-all duration-300 relative",
+                    isCollapsed ? "px-2 overflow-visible" : "px-6 overflow-y-auto"
+                )}>
+                    <div className="pt-4 flex-1">
+                        {sidebarContent(isCollapsed)}
                     </div>
                 </div>
             </div>

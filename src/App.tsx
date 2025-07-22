@@ -33,7 +33,6 @@ import { Integration } from './pages/Integration';
 import Pricing from './pages/Pricing';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
-import InferenceScaling from './pages/InferenceScaling';
 
 
 const queryClient = new QueryClient();
@@ -109,10 +108,6 @@ function App() {
                                         <Route
                                             path="experimentation"
                                             element={<Experimentation />}
-                                        />
-                                        <Route
-                                            path="inference-scaling"
-                                            element={<InferenceScaling />}
                                         />
 
                                         <Route

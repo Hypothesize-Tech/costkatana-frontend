@@ -50,6 +50,16 @@ export interface SendMessageResponse {
     latency: number;
     tokenCount: number;
     model: string;
+    thinking?: {
+        title: string;
+        steps: Array<{
+            step: number;
+            description: string;
+            reasoning: string;
+            outcome?: string;
+        }>;
+        summary?: string;
+    };
 }
 
 export interface ConversationHistoryResponse {

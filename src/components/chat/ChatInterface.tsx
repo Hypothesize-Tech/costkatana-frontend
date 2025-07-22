@@ -357,7 +357,7 @@ export const ChatInterface: React.FC = () => {
                             <div className="mb-8">
                                 <SparklesIcon className="h-16 w-16 mx-auto text-blue-500 mb-6" />
                                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                                    Welcome to AI Cost Optimizer
+                                    Welcome to Cost Katana
                                 </h1>
                                 <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                                     Chat with 23+ AWS Bedrock AI models while tracking costs, optimizing performance, and managing your AI infrastructure all in one place.

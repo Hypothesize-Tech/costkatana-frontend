@@ -1,4 +1,4 @@
-# AI Cost Optimizer Frontend
+# Cost Katana Frontend
 
 A modern React-based dashboard for tracking, analyzing, and optimizing AI API costs across multiple providers.
 
@@ -68,7 +68,7 @@ The app will be available at <http://localhost:3001>
 VITE_API_URL=http://localhost:8000/api
 
 # App Configuration
-VITE_APP_NAME=AI Cost Optimizer
+VITE_APP_NAME=Cost Katana
 VITE_APP_VERSION=1.0.0
 
 # Feature Flags
