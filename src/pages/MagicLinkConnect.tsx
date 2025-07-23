@@ -37,6 +37,7 @@ const MagicLinkConnect: React.FC = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    
                 });
 
                 if (response.ok) {
