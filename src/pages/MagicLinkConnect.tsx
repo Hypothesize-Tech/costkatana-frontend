@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 
 const MagicLinkConnect: React.FC = () => {
     const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'expired'>('loading');
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [apiKey, setApiKey] = useState<string>('');
-    const [projectInfo, setProjectInfo] = useState<any>(null);
+    const [status, setStatus] = useState<'loading' | 'error' | 'expired'>('loading');
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     useEffect(() => {
         const handleMagicLink = async () => {
@@ -17,95 +14,125 @@ const MagicLinkConnect: React.FC = () => {
 
             if (!token || !data) {
                 setStatus('error');
+                setErrorMessage('Invalid magic link - missing token or data');
                 return;
             }
 
             try {
-                // Decode the magic link data
-                const decodedData = JSON.parse(atob(decodeURIComponent(data)));
+                // Decode the magic link data with comprehensive error handling
+                let decodedData;
 
-                // Check if expired
-                if (new Date() > new Date(decodedData.expiresAt)) {
+                console.log('Processing magic link data:', {
+                    token: token.substring(0, 10) + '...',
+                    dataLength: data.length,
+                    dataStart: data.substring(0, 50) + '...',
+                    dataEnd: '...' + data.substring(data.length - 20)
+                });
+
+                try {
+                    // Method 1: Direct base64 decode (most common)
+                    let base64Data = data;
+
+                    // Add padding if needed
+                    while (base64Data.length % 4) {
+                        base64Data += '=';
+                    }
+
+                    const directDecoded = atob(base64Data);
+                    decodedData = JSON.parse(directDecoded);
+                    console.log('Successfully decoded with direct method:', decodedData);
+                } catch (directError) {
+                    console.log('Direct decode failed, trying URL decode method...');
+
+                    try {
+                        // Method 2: URL decode first, then base64
+                        const urlDecoded = decodeURIComponent(data);
+                        let base64Data = urlDecoded;
+
+                        // Add padding if needed
+                        while (base64Data.length % 4) {
+                            base64Data += '=';
+                        }
+
+                        const base64Decoded = atob(base64Data);
+                        decodedData = JSON.parse(base64Decoded);
+                        console.log('Successfully decoded with URL decode method:', decodedData);
+                    } catch (urlDecodeError) {
+                        console.log('URL decode method failed, trying manual fixes...');
+
+                        try {
+                            // Method 3: Try to fix common URL encoding issues
+                            let fixedData = data
+                                .replace(/%3D/g, '=')
+                                .replace(/%2B/g, '+')
+                                .replace(/%2F/g, '/');
+
+                            // Add padding if needed
+                            while (fixedData.length % 4) {
+                                fixedData += '=';
+                            }
+
+                            const fixedDecoded = atob(fixedData);
+                            decodedData = JSON.parse(fixedDecoded);
+                            console.log('Successfully decoded with manual fixes:', decodedData);
+                        } catch (manualError) {
+                            console.error('All decoding methods failed:', {
+                                directError,
+                                urlDecodeError,
+                                manualError
+                            });
+                            console.error('Raw data for debugging:', data);
+
+                            setStatus('error');
+                            setErrorMessage(`Invalid magic link format - could not decode data. Data length: ${data.length}`);
+                            return;
+                        }
+                    }
+                }
+
+                // Check if expired (handle both old and new format)
+                const expiresAt = decodedData.x ? decodedData.x * 1000 : new Date(decodedData.expiresAt).getTime();
+                if (Date.now() > expiresAt) {
                     setStatus('expired');
                     return;
                 }
 
-                // Call the backend to complete onboarding
+                // Redirect directly to backend for onboarding completion
                 const apiBaseUrl = import.meta.env.VITE_API_URL || 'https://cost-katana-backend.store';
-                const response = await fetch(`${apiBaseUrl}/api/onboarding/complete?token=${token}&data=${encodeURIComponent(data)}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    
+                const backendUrl = `${apiBaseUrl}/api/onboarding/complete?token=${token}&data=${encodeURIComponent(data)}`;
+
+                console.log('Redirecting to backend:', backendUrl);
+                console.log('User data:', {
+                    email: decodedData.e || decodedData.email,
+                    name: decodedData.n || decodedData.name,
+                    source: decodedData.s || decodedData.source
                 });
 
-                if (response.ok) {
-                    const result = await response.text();
+                // Direct redirect to backend - let it handle the HTML response
+                window.location.href = backendUrl;
+                return;
 
-                    // Parse the HTML response to extract the success data
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(result, 'text/html');
-
-                    // Extract API key and project info from the HTML
-                    const apiKeyElement = doc.getElementById('apiKey');
-                    if (apiKeyElement) {
-                        setApiKey(apiKeyElement.textContent || '');
-                    }
-
-                    setUserInfo({
-                        email: decodedData.email,
-                        name: decodedData.name || decodedData.email.split('@')[0]
-                    });
-
-                    setProjectInfo({
-                        name: 'My ChatGPT Project',
-                        budget: '$100 monthly'
-                    });
-
-                    setStatus('success');
-                } else {
-                    setStatus('error');
-                }
             } catch (error) {
                 console.error('Magic link processing error:', error);
                 setStatus('error');
+                setErrorMessage('Failed to process magic link');
             }
         };
 
         handleMagicLink();
     }, [searchParams]);
 
-    const copyApiKey = () => {
-        navigator.clipboard.writeText(apiKey);
-        alert('API key copied to clipboard!');
-    };
-
-    const returnToChatGPT = () => {
-        // Post message to parent window (ChatGPT) if opened in popup
-        if (window.opener) {
-            window.opener.postMessage({
-                type: 'COST_KATANA_CONNECTED',
-                data: {
-                    apiKey,
-                    userEmail: userInfo?.email,
-                    projectName: projectInfo?.name,
-                    status: 'success'
-                }
-            }, '*');
-            window.close();
-        } else {
-            // Redirect to dashboard if not in popup
-            navigate('/dashboard');
-        }
-    };
-
     if (status === 'loading') {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <LoadingSpinner size="large" />
-                    <p className="mt-4 text-gray-600">Setting up your Cost Katana account...</p>
+                    <LoadingSpinner />
+                    <h2 className="mt-4 text-xl font-semibold text-gray-900">
+                        Connecting to Cost Katana...
+                    </h2>
+                    <p className="mt-2 text-gray-600">
+                        Please wait while we set up your account
+                    </p>
                 </div>
             </div>
         );
@@ -113,20 +140,20 @@ const MagicLinkConnect: React.FC = () => {
 
     if (status === 'expired') {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="max-w-md mx-auto text-center">
-                    <div className="bg-white rounded-lg shadow-lg p-8">
-                        <div className="text-6xl mb-4">⏰</div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-4">Link Expired</h1>
-                        <p className="text-gray-600 mb-6">
-                            This magic link has expired. Please generate a new one from ChatGPT.
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <div className="text-6xl mb-4">⏰</div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        Magic Link Expired
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                        This magic link has expired. Please generate a new one from ChatGPT.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm text-blue-800">
+                            <strong>How to get a new link:</strong><br />
+                            Go back to ChatGPT and ask to "connect to Cost Katana" again.
                         </p>
-                        <button
-                            onClick={() => window.close()}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-                        >
-                            Close Window
-                        </button>
                     </div>
                 </div>
             </div>
@@ -135,96 +162,32 @@ const MagicLinkConnect: React.FC = () => {
 
     if (status === 'error') {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="max-w-md mx-auto text-center">
-                    <div className="bg-white rounded-lg shadow-lg p-8">
-                        <div className="text-6xl mb-4">❌</div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-4">Connection Failed</h1>
-                        <p className="text-gray-600 mb-6">
-                            There was an error setting up your account. Please try generating a new magic link from ChatGPT.
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <div className="text-6xl mb-4">❌</div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        Connection Failed
+                    </h2>
+                    <p className="text-gray-600 mb-2">
+                        We couldn't process your magic link.
+                    </p>
+                    {errorMessage && (
+                        <p className="text-sm text-red-600 mb-6">
+                            Error: {errorMessage}
                         </p>
-                        <button
-                            onClick={() => window.close()}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-                        >
-                            Close Window
-                        </button>
+                    )}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm text-blue-800">
+                            <strong>Try again:</strong><br />
+                            Go back to ChatGPT and generate a new magic link.
+                        </p>
                     </div>
                 </div>
             </div>
         );
     }
 
-    return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="max-w-2xl mx-auto px-4">
-                <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-                    <div className="text-6xl mb-6">🎉</div>
-                    <h1 className="text-3xl font-bold text-green-600 mb-4">
-                        Successfully Connected to Cost Katana!
-                    </h1>
-                    <p className="text-gray-600 mb-8">
-                        Welcome {userInfo?.name}! Your ChatGPT integration is ready.
-                    </p>
-
-                    <div className="space-y-6">
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                            <h3 className="font-semibold text-green-800 mb-2">✅ What's been set up:</h3>
-                            <ul className="text-left text-green-700 space-y-2">
-                                <li>🔑 API Key generated for ChatGPT integration</li>
-                                <li>📁 Default project created: "{projectInfo?.name}"</li>
-                                <li>👤 Account ready for {userInfo?.email}</li>
-                                <li>🤖 AI-powered cost tracking enabled</li>
-                            </ul>
-                        </div>
-
-                        {apiKey && (
-                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                <h3 className="font-semibold text-gray-800 mb-2">🔑 Your API Key:</h3>
-                                <div className="bg-white border rounded p-3 font-mono text-sm break-all">
-                                    {apiKey}
-                                </div>
-                                <button
-                                    onClick={copyApiKey}
-                                    className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                                >
-                                    Copy API Key
-                                </button>
-                            </div>
-                        )}
-
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                            <h3 className="font-semibold text-blue-800 mb-2">🔄 Next Steps:</h3>
-                            <p className="text-blue-700 mb-4">
-                                You can now return to ChatGPT and start tracking your AI costs!
-                            </p>
-                            <button
-                                onClick={returnToChatGPT}
-                                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold"
-                            >
-                                🚀 Return to ChatGPT & Start Tracking
-                            </button>
-                        </div>
-
-                        <div className="text-sm text-gray-500">
-                            <p>This window will close automatically in a few seconds.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <script dangerouslySetInnerHTML={{
-                __html: `
-                    // Auto-close after 10 seconds if opened in popup
-                    setTimeout(() => {
-                        if (window.opener) {
-                            window.close();
-                        }
-                    }, 10000);
-                `
-            }} />
-        </div>
-    );
+    return null;
 };
 
 export default MagicLinkConnect; 
