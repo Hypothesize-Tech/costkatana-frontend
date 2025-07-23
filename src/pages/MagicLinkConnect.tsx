@@ -31,7 +31,8 @@ const MagicLinkConnect: React.FC = () => {
                 }
 
                 // Call the backend to complete onboarding
-                const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://cost-katana-backend.store/api'}/onboarding/verify/${token}?data=${encodeURIComponent(data)}`, {
+                const apiBaseUrl = import.meta.env.VITE_API_URL || 'https://cost-katana-backend.store';
+                const response = await fetch(`${apiBaseUrl}/api/onboarding/complete?token=${token}&data=${encodeURIComponent(data)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
