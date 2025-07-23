@@ -17,6 +17,7 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Dashboard } from './pages/Dashboard';
 import Usage from './pages/Usage';
 import { Analytics } from './pages/Analytics';
@@ -49,6 +50,7 @@ function App() {
                                     {/* Public routes */}
                                     <Route path="/login" element={<Login />} />
                                     <Route path="/register" element={<Register />} />
+                                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                                     {/* Protected routes */}
                                     <Route
