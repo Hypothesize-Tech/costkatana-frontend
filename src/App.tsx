@@ -18,6 +18,7 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import MagicLinkConnect from './pages/MagicLinkConnect';
 import { Dashboard } from './pages/Dashboard';
 import Usage from './pages/Usage';
 import { Analytics } from './pages/Analytics';
@@ -51,6 +52,7 @@ function App() {
                                     <Route path="/login" element={<Login />} />
                                     <Route path="/register" element={<Register />} />
                                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                                    <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
 
                                     {/* Protected routes */}
                                     <Route
