@@ -19,6 +19,7 @@ import {
     BeakerIcon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
+    ClockIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -32,6 +33,7 @@ interface SidebarProps {
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
     { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
+    { name: 'Requests', href: '/requests', icon: ClockIcon, description: 'Real-time LLM API requests' },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
     { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
     { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
@@ -218,7 +220,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                                                         <span className="truncate">{item.name}</span>
                                                     )}
                                                 </NavLink>
-                                                
+
                                                 {/* Collapse button positioned absolutely on the right side of Dashboard */}
                                                 {isDashboard && !collapsed && (
                                                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2">

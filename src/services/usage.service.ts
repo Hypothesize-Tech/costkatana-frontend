@@ -612,26 +612,164 @@ class UsageService {
     // Helper method to get start date based on timeframe
     private getStartDate(timeframe: string): string {
         const now = new Date();
-        const startDate = new Date(now);
-
         switch (timeframe) {
             case '24h':
-                startDate.setDate(now.getDate() - 1);
-                break;
+                return new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
             case '7d':
-                startDate.setDate(now.getDate() - 7);
-                break;
+                return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
             case '30d':
-                startDate.setDate(now.getDate() - 30);
-                break;
+                return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
             case '90d':
-                startDate.setDate(now.getDate() - 90);
-                break;
+                return new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString();
             default:
-                startDate.setDate(now.getDate() - 7);
+                return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
         }
+    }
 
-        return startDate.toISOString();
+    // New methods for real-time usage tracking dashboard
+    async getRealTimeUsageSummary(projectId?: string): Promise<{
+        currentPeriod: {
+            totalCost: number;
+            totalTokens: number;
+            totalRequests: number;
+            avgResponseTime: number;
+            errorCount: number;
+            successCount: number;
+        };
+        previousPeriod: {
+            totalCost: number;
+            totalTokens: number;
+            totalRequests: number;
+            avgResponseTime: number;
+        };
+        changes: {
+            cost: number;
+            requests: number;
+            tokens: number;
+        };
+        modelBreakdown: Array<{
+            _id: string;
+            totalCost: number;
+            totalTokens: number;
+            requestCount: number;
+            avgResponseTime: number;
+            errorCount: number;
+        }>;
+        serviceBreakdown: Array<{
+            _id: string;
+            totalCost: number;
+            totalTokens: number;
+            requestCount: number;
+            avgResponseTime: number;
+            errorCount: number;
+        }>;
+        recentRequests: Array<{
+            timestamp: Date;
+            model: string;
+            service: string;
+            status: 'success' | 'error';
+            statusCode: number;
+        }>;
+    }> {
+        try {
+            const params: any = {};
+            if (projectId && projectId !== 'all') {
+                params.projectId = projectId;
+            }
+
+            const response = await apiClient.get('/usage/realtime/summary', { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching real-time usage summary:', error);
+            throw error;
+        }
+    }
+
+    async getRealTimeRequests(params?: {
+        projectId?: string;
+        limit?: number;
+    }): Promise<{
+        data: Array<{
+            id: string;
+            timestamp: Date;
+            model: string;
+            service: string;
+            status: 'success' | 'error';
+            statusCode: number;
+            latency: number;
+            totalTokens: number;
+            cost: number;
+            user: string;
+            errorMessage?: string;
+            ipAddress?: string;
+            userAgent?: string;
+            metadata?: Record<string, any>;
+        }>;
+    }> {
+        try {
+            const requestParams: any = {};
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            if (params?.limit) {
+                requestParams.limit = params.limit;
+            }
+
+            const response = await apiClient.get('/usage/realtime/requests', { params: requestParams });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching real-time requests:', error);
+            throw error;
+        }
+    }
+
+    async getUsageAnalytics(params: {
+        timeRange?: '1h' | '24h' | '7d' | '30d';
+        status?: 'all' | 'success' | 'error';
+        model?: string;
+        service?: string;
+        projectId?: string;
+    }): Promise<{
+        data: {
+            requests: Array<{
+                id: string;
+                timestamp: Date;
+                model: string;
+                service: string;
+                status: 'success' | 'error';
+                statusCode: number;
+                latency: number;
+                totalTokens: number;
+                cost: number;
+                user: string;
+            }>;
+            stats: {
+                totalCost: number;
+                totalTokens: number;
+                totalRequests: number;
+                avgResponseTime: number;
+                errorCount: number;
+                successCount: number;
+                successRate: string;
+            };
+        };
+    }> {
+        try {
+            const requestParams: any = {};
+            if (params.timeRange) requestParams.timeRange = params.timeRange;
+            if (params.status) requestParams.status = params.status;
+            if (params.model) requestParams.model = params.model;
+            if (params.service) requestParams.service = params.service;
+            if (params.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+
+            const response = await apiClient.get('/usage/analytics', { params: requestParams });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching usage analytics:', error);
+            throw error;
+        }
     }
 }
 

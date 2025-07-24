@@ -21,6 +21,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import MagicLinkConnect from './pages/MagicLinkConnect';
 import { Dashboard } from './pages/Dashboard';
 import Usage from './pages/Usage';
+import Requests from './pages/Requests';
 import { Analytics } from './pages/Analytics';
 import { Optimization } from './pages/Optimization';
 import { Settings } from './pages/Settings';
@@ -77,6 +78,7 @@ function App() {
                                             element={<Dashboard />}
                                         />
                                         <Route path="usage" element={<Usage />} />
+                                        <Route path="requests" element={<Requests />} />
                                         <Route
                                             path="analytics"
                                             element={<Analytics />}
