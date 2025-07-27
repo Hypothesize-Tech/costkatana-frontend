@@ -45,6 +45,10 @@ export const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
+    // Real-time updates
+    const [realtimeUpdates, setRealtimeUpdates] = useState<any[]>([]);
+    const [_sseConnection, setSseConnection] = useState<EventSource | null>(null);
+
     // View mode states
     const [viewMode, setViewMode] = useState<'split' | 'chat' | 'dashboard'>('chat');
     const [dashboardPanelCollapsed, setDashboardPanelCollapsed] = useState(false);
@@ -129,6 +133,40 @@ export const Dashboard: React.FC = () => {
 
         loadInitialData();
     }, []);
+
+    // Set up real-time updates
+    useEffect(() => {
+        const connection = DashboardService.connectToUsageUpdates((update) => {
+            console.log('📡 Real-time update received:', update);
+
+            switch (update.type) {
+                case 'usage_tracked':
+                    setRealtimeUpdates(prev => [update.data, ...prev.slice(0, 9)]);
+                    console.log('📊 Real-time updates:', realtimeUpdates.length + 1);
+                    // Optionally refresh dashboard data
+                    if (data) {
+                        fetchDashboardData(selectedProject !== 'all' ? selectedProject : undefined);
+                    }
+                    break;
+                case 'budget_warning':
+                    showNotification(update.message, 'warning', { title: 'Budget Warning' });
+                    break;
+                case 'approval_request':
+                    showNotification(update.message, 'info', { title: 'Approval Required' });
+                    break;
+            }
+        });
+
+        setSseConnection(connection);
+        console.log('📡 SSE connection status:', _sseConnection ? 'active' : 'initializing');
+
+        // Cleanup on unmount
+        return () => {
+            if (connection) {
+                connection.close();
+            }
+        };
+    }, [selectedProject]);
 
     // Loading state
     if (loading) {

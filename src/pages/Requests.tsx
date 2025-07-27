@@ -26,6 +26,15 @@ interface Request {
     cost: number;
     user: string;
     errorMessage?: string;
+    budgetInfo?: {
+        isOverBudget: boolean;
+        isApproachingLimit: boolean;
+        budgetPercentage: number;
+    };
+    approvalStatus?: {
+        requiredApproval: boolean;
+    };
+    projectName?: string;
 }
 
 interface AnalyticsStats {
@@ -124,6 +133,46 @@ export default function Requests() {
         refetchAnalytics();
         refetchRequests();
         toast.success('Data refreshed');
+    };
+
+    // Add budget status badge component
+    const BudgetStatusBadge: React.FC<{ budgetInfo: any }> = ({ budgetInfo }) => {
+        if (!budgetInfo) return null;
+
+        const { isOverBudget, isApproachingLimit, budgetPercentage } = budgetInfo;
+
+        if (isOverBudget) {
+            return (
+                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                    Over Budget ({budgetPercentage.toFixed(1)}%)
+                </span>
+            );
+        }
+
+        if (isApproachingLimit) {
+            return (
+                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
+                    Near Limit ({budgetPercentage.toFixed(1)}%)
+                </span>
+            );
+        }
+
+        return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                Within Budget ({budgetPercentage.toFixed(1)}%)
+            </span>
+        );
+    };
+
+    // Add approval status badge component
+    const ApprovalStatusBadge: React.FC<{ approvalStatus: any }> = ({ approvalStatus }) => {
+        if (!approvalStatus.requiredApproval) return null;
+
+        return (
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                Approval Required
+            </span>
+        );
     };
 
     return (
@@ -315,6 +364,15 @@ export default function Requests() {
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                                             USER
                                         </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                            BUDGET STATUS
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                            PROJECT
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                            APPROVAL
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
@@ -345,6 +403,15 @@ export default function Requests() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {request.user}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <BudgetStatusBadge budgetInfo={request.budgetInfo} />
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                {request.projectName || 'No Project'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <ApprovalStatusBadge approvalStatus={request.approvalStatus} />
                                             </td>
                                         </tr>
                                     ))}

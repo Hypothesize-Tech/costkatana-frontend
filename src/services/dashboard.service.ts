@@ -287,6 +287,45 @@ export class DashboardService {
         }
     }
 
+    /**
+     * Connect to real-time usage updates via SSE
+     */
+    static connectToUsageUpdates(onUpdate: (data: any) => void): EventSource | null {
+        try {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                console.error('No auth token available for SSE connection');
+                return null;
+            }
+
+            const eventSource = new EventSource(`${API_URL}/api/usage/stream?token=${token}`);
+
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    onUpdate(data);
+                } catch (error) {
+                    console.error('Error parsing SSE data:', error);
+                }
+            };
+
+            eventSource.onopen = () => {
+                console.log('✅ Connected to real-time usage updates');
+            };
+
+            eventSource.onerror = (error) => {
+                console.error('❌ SSE connection error:', error);
+            };
+
+            return eventSource;
+        } catch (error) {
+            console.error('Failed to connect to usage updates:', error);
+            return null;
+        }
+    }
+
     async getQuickStats(): Promise<{
         currentMonthCost: number;
         lastMonthCost: number;
