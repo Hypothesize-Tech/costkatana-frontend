@@ -166,7 +166,7 @@ export default function Requests() {
 
     // Add approval status badge component
     const ApprovalStatusBadge: React.FC<{ approvalStatus: any }> = ({ approvalStatus }) => {
-        if (!approvalStatus.requiredApproval) return null;
+        if (!approvalStatus || !approvalStatus.requiredApproval) return null;
 
         return (
             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
