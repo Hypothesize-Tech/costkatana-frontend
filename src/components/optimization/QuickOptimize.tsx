@@ -63,11 +63,6 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({ className = '' }) 
         setShowResult(false);
     };
 
-    // Format the optimized prompt for display
-    const formattedOptimizedPrompt = optimizationResult?.optimizedPrompt
-        ? renderFormattedContent(optimizationResult.optimizedPrompt)
-        : 'No optimized version available';
-
     return (
         <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
             <div className="p-6">

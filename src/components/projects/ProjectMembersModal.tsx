@@ -85,7 +85,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
 
     const handleRemoveMember = async (index: number) => {
         const member = members[index];
-        const userId = member.userId || member.email;
+        const userId = typeof member.userId === 'string' ? member.userId : member.userId?._id || member.email;
 
         try {
             // Use the individual remove member endpoint
@@ -102,7 +102,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
 
     const handleUpdateMemberRole = async (index: number, newRole: string) => {
         const member = members[index];
-        const userId = member.userId || member.email;
+        const userId = typeof member.userId === 'string' ? member.userId : member.userId?._id || member.email;
 
         try {
             // Use the individual update member role endpoint
@@ -122,7 +122,11 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
     };
 
     const getMemberEmail = (member: ProjectMember) => {
-        return member.email || member.userId || 'Unknown';
+        if (typeof member.userId === 'string') {
+            return member.email || member.userId || 'Unknown';
+        } else {
+            return member.email || member.userId?.email || 'Unknown';
+        }
     };
 
     const getMemberRole = (member: ProjectMember) => {
