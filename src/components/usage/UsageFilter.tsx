@@ -25,7 +25,11 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
     const handleFilterChange = (key: string, value: string) => {
         const newFilters = { ...filters, [key]: value };
         setFilters(newFilters);
-        onFilterChange(newFilters);
+    };
+
+    const applyFilters = () => {
+        onFilterChange(filters);
+        setIsOpen(false);
     };
 
     const resetFilters = () => {
@@ -38,6 +42,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
         };
         setFilters(defaultFilters);
         onFilterChange(defaultFilters);
+        setIsOpen(false);
     };
 
     return (
@@ -153,7 +158,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                                 Reset
                             </button>
                             <button
-                                onClick={() => setIsOpen(false)}
+                                onClick={applyFilters}
                                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Apply

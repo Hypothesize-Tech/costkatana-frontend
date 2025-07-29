@@ -246,7 +246,10 @@ const Experimentation: React.FC = () => {
                         <div className="flex items-center space-x-2">
                             <SparklesIcon className="w-5 h-5 text-yellow-600" />
                             <span className="text-sm font-medium text-gray-700">
-                                {recommendations.length} {recommendations.length === 1 ? 'recommendation' : 'recommendations'} available
+                                {recommendations.length > 0
+                                    ? `${recommendations.length} ${recommendations.length === 1 ? 'recommendation' : 'recommendations'} available`
+                                    : 'Start experimenting to get recommendations'
+                                }
                             </span>
                         </div>
                     </div>
@@ -285,7 +288,7 @@ const Experimentation: React.FC = () => {
                         </div>
 
                         {/* Dynamic Recommendations from Backend */}
-                        {recommendations.length > 0 && (
+                        {recommendations.length > 0 ? (
                             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                                 <div className="flex items-center justify-between mb-4">
                                     <h2 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -342,10 +345,22 @@ const Experimentation: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
+                        ) : (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                                <div className="flex items-center">
+                                    <SparklesIcon className="h-5 w-5 text-blue-400 mr-2" />
+                                    <div>
+                                        <h3 className="text-sm font-medium text-blue-900">Getting Started with Experimentation</h3>
+                                        <p className="text-sm text-blue-800 mt-1">
+                                            Start by comparing models in the Model Comparison tab. Our system will analyze your usage patterns to provide personalized recommendations.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         {/* Dynamic Getting Started State */}
-                        {stats.totalExperiments === 0 && !isLoading && (
+                        {stats.totalExperiments === 0 && !isLoading && recommendations.length === 0 && (
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
                                 <div className="flex items-center">
                                     <InformationCircleIcon className="h-5 w-5 text-blue-400 mr-2" />
@@ -354,7 +369,6 @@ const Experimentation: React.FC = () => {
                                         <p className="text-sm text-blue-800 mt-1">
                                             Start by comparing models in the Model Comparison tab.
                                             Our system will analyze your actual usage data to provide meaningful insights.
-                                            {recommendations.length > 0 && ` We've already identified ${recommendations.length} optimization opportunities based on your usage patterns.`}
                                         </p>
                                     </div>
                                 </div>

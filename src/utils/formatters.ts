@@ -294,3 +294,71 @@ export const pluralize = (count: number, singular: string, plural?: string): str
     if (count === 1) return `${count} ${singular}`;
     return `${count} ${plural || singular + 's'}`;
 };
+
+/**
+ * Safely render markdown/HTML content with proper formatting
+ */
+export const renderFormattedContent = (content: string): string => {
+    if (!content) return '';
+
+    return content
+        // Remove HTML tags but preserve line breaks
+        .replace(/<[^>]*>/g, '')
+        // Remove markdown headers more aggressively
+        .replace(/^#{1,6}\s+/gm, '')
+        // Remove bold formatting
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        // Remove italic formatting
+        .replace(/\*(.*?)\*/g, '$1')
+        // Remove inline code formatting
+        .replace(/`([^`]+)`/g, '$1')
+        // Remove code blocks but preserve content
+        .replace(/```[\s\S]*?```/g, (match) => {
+            const code = match.slice(3, -3);
+            const lines = code.split('\n');
+            const language = lines[0].trim();
+            const codeContent = lines.slice(1).join('\n');
+            return `\n[${language.toUpperCase()} CODE]\n${codeContent}\n[/CODE]\n`;
+        })
+        // Remove list markers
+        .replace(/^[-*+]\s+/gm, '• ')
+        // Remove numbered list markers
+        .replace(/^\d+\.\s+/gm, '')
+        // Clean up extra whitespace
+        .replace(/\n\s*\n/g, '\n\n')
+        .trim();
+};
+
+/**
+ * Format optimization suggestions for display
+ */
+export function formatOptimizationSuggestions(suggestions: any[]): any[] {
+    return suggestions.map(suggestion => ({
+        ...suggestion,
+        description: renderFormattedContent(suggestion.description || suggestion.explanation || ''),
+        type: suggestion.type?.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Optimization'
+    }));
+}
+
+/**
+ * Format comparison data for display
+ */
+export function formatComparisonData(data: any): any {
+    if (!data) return data;
+    
+    return {
+        ...data,
+        comparison: {
+            ...data.comparison,
+            summary: renderFormattedContent(data.comparison?.summary || ''),
+            recommendations: data.comparison?.recommendations?.map((rec: any) => ({
+                ...rec,
+                recommendation: renderFormattedContent(rec.recommendation || ''),
+                targetGroup: rec.targetGroup || 'General'
+            })) || [],
+            collaborationOpportunities: data.comparison?.collaborationOpportunities?.map((opp: string) => 
+                renderFormattedContent(opp)
+            ) || []
+        }
+    };
+}

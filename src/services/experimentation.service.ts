@@ -46,6 +46,7 @@ export interface ModelComparisonResult {
 }
 
 export interface WhatIfScenario {
+    id?: string;
     name: string;
     description: string;
     changes: Array<{
@@ -64,6 +65,28 @@ export interface WhatIfScenario {
     createdAt?: string;
     status?: string;
     isUserCreated?: boolean;
+    analysis?: {
+        projectedImpact: {
+            costChange: number;
+            costChangePercentage: number;
+            performanceChange: number;
+            performanceChangePercentage: number;
+            riskLevel: 'low' | 'medium' | 'high';
+            confidence: number;
+        };
+        breakdown: {
+            currentCosts: Record<string, number>;
+            projectedCosts: Record<string, number>;
+            savingsOpportunities: Array<{
+                category: string;
+                savings: number;
+                effort: 'low' | 'medium' | 'high';
+            }>;
+        };
+        recommendations: string[];
+        warnings: string[];
+        aiInsights?: string[];
+    };
 }
 
 export interface WhatIfResult {
@@ -250,9 +273,23 @@ export class ExperimentationService {
         effort: 'low' | 'medium' | 'high';
         actions: string[];
     }>> {
-        // Note: userId parameter ignored since backend gets it from req.user
-        const response = await apiClient.get('/experimentation/recommendations');
-        return response.data.data || response.data;
+        try {
+            // Note: userId parameter ignored since backend gets it from req.user
+            const response = await apiClient.get('/experimentation/recommendations');
+            const data = response.data.data || response.data;
+            
+            // Ensure we return an array even if backend returns empty
+            if (Array.isArray(data)) {
+                return data;
+            } else {
+                console.warn('Backend returned non-array recommendations:', data);
+                return [];
+            }
+        } catch (error: any) {
+            console.error('Error fetching recommendations:', error);
+            // Return empty array instead of throwing
+            return [];
+        }
     }
 
     /**

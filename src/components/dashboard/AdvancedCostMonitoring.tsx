@@ -35,7 +35,7 @@ ChartJS.register(
 const AdvancedCostMonitoring: React.FC = () => {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [activeTab, setActiveTab] = useState<'realtime' | 'forecast' | 'performance' | 'tags'>('realtime');
-    const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
+    const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('30d');
     const [realTimeData, setRealTimeData] = useState<RealTimeMetrics[]>([]);
     const [costForecast, setCostForecast] = useState<CostForecast | null>(null);
     const [performanceData, setPerformanceData] = useState<PerformanceCorrelation[]>([]);
@@ -150,32 +150,15 @@ const AdvancedCostMonitoring: React.FC = () => {
                 tags: selectedTags.length > 0 ? selectedTags : undefined
             });
 
-            // If no data returned, generate sample data for demonstration
-            if (!data || data.length === 0) {
-                const sampleTagAnalytics = availableTags.slice(0, 8).map((tag, index) => ({
-                    tag,
-                    totalCost: Math.random() * 100 + 10,
-                    totalCalls: Math.floor(Math.random() * 1000) + 50,
-                    averageCost: Math.random() * 0.1 + 0.01,
-                    trend: ['up', 'down', 'stable'][index % 3] as 'up' | 'down' | 'stable',
-                    trendPercentage: Math.random() * 20 - 10
-                }));
-                setTagAnalytics(sampleTagAnalytics);
-            } else {
+            // Only set data if we have real data
+            if (data && data.length > 0) {
                 setTagAnalytics(data);
+            } else {
+                setTagAnalytics([]);
             }
         } catch (error) {
             console.error('Error fetching tag analytics:', error);
-            // Generate sample data on error
-            const sampleTagAnalytics = availableTags.slice(0, 8).map((tag, index) => ({
-                tag,
-                totalCost: Math.random() * 100 + 10,
-                totalCalls: Math.floor(Math.random() * 1000) + 50,
-                averageCost: Math.random() * 0.1 + 0.01,
-                trend: ['up', 'down', 'stable'][index % 3] as 'up' | 'down' | 'stable',
-                trendPercentage: Math.random() * 20 - 10
-            }));
-            setTagAnalytics(sampleTagAnalytics);
+            setTagAnalytics([]);
         }
     };
 
@@ -185,30 +168,15 @@ const AdvancedCostMonitoring: React.FC = () => {
                 tags: selectedTags.length > 0 ? selectedTags : undefined
             });
 
-            // If no data returned, generate sample data
-            if (!data || data.length === 0) {
-                const sampleRealTimeData = (selectedTags.length > 0 ? selectedTags : availableTags.slice(0, 6)).map(tag => ({
-                    tag,
-                    currentCost: Math.random() * 50 + 5,
-                    hourlyRate: Math.random() * 10 + 2,
-                    projectedDailyCost: Math.random() * 200 + 50,
-                    projectedMonthlyCost: Math.random() * 5000 + 1000
-                }));
-                setRealTimeData(sampleRealTimeData);
-            } else {
+            // Only set data if we have real data
+            if (data && data.length > 0) {
                 setRealTimeData(data);
+            } else {
+                setRealTimeData([]);
             }
         } catch (error) {
             console.error('Error fetching real-time data:', error);
-            // Generate sample data on error
-            const sampleRealTimeData = (selectedTags.length > 0 ? selectedTags : availableTags.slice(0, 6)).map(tag => ({
-                tag,
-                currentCost: Math.random() * 50 + 5,
-                hourlyRate: Math.random() * 10 + 2,
-                projectedDailyCost: Math.random() * 200 + 50,
-                projectedMonthlyCost: Math.random() * 5000 + 1000
-            }));
-            setRealTimeData(sampleRealTimeData);
+            setRealTimeData([]);
         }
     };
 
@@ -222,6 +190,7 @@ const AdvancedCostMonitoring: React.FC = () => {
             setCostForecast(data);
         } catch (error) {
             console.error('Error fetching cost forecast:', error);
+            setCostForecast(null);
         }
     };
 
@@ -234,6 +203,7 @@ const AdvancedCostMonitoring: React.FC = () => {
             setPerformanceData(data);
         } catch (error) {
             console.error('Error fetching performance correlations:', error);
+            setPerformanceData([]);
         }
     };
 
@@ -276,63 +246,7 @@ const AdvancedCostMonitoring: React.FC = () => {
 
     const generateForecastChartData = () => {
         if (!costForecast || !costForecast.forecasts || costForecast.forecasts.length === 0) {
-            // Generate sample data for demonstration when no real data is available
-            const sampleData = [];
-            const startDate = new Date();
-
-            for (let i = 0; i < 30; i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-
-                sampleData.push({
-                    period: date.toISOString().split('T')[0],
-                    predictedCost: 10 + Math.sin(i * 0.2) * 3 + Math.random() * 2,
-                    confidence: 0.7 + Math.random() * 0.25,
-                });
-            }
-
-            const labels = sampleData.map((f: any) => {
-                const date = new Date(f.period);
-                return date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric'
-                });
-            });
-
-            return {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Predicted Cost ($)',
-                        data: sampleData.map((f: any) => f.predictedCost),
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: 'rgb(59, 130, 246)',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        yAxisID: 'y',
-                    },
-                    {
-                        label: 'Confidence Level (%)',
-                        data: sampleData.map((f: any) => (f.confidence * 100).toFixed(1)),
-                        borderColor: 'rgb(16, 185, 129)',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: false,
-                        tension: 0.4,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        pointBackgroundColor: 'rgb(16, 185, 129)',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        yAxisID: 'y1',
-                        borderDash: [5, 5],
-                    },
-                ],
-            };
+            return null;
         }
 
         // Better date parsing and formatting for real data
@@ -398,6 +312,17 @@ const AdvancedCostMonitoring: React.FC = () => {
     };
 
     const generateTagDistributionData = () => {
+        if (!tagAnalytics || tagAnalytics.length === 0) {
+            return {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [],
+                    hoverBackgroundColor: [],
+                }]
+            };
+        }
+
         return {
             labels: tagAnalytics.map(tag => tag.tag),
             datasets: [
@@ -429,6 +354,16 @@ const AdvancedCostMonitoring: React.FC = () => {
     };
 
     const generatePerformanceScatterData = () => {
+        if (!performanceData || performanceData.length === 0) {
+            return {
+                datasets: [{
+                    label: 'Cost vs Performance',
+                    data: [],
+                    backgroundColor: [],
+                }]
+            };
+        }
+
         return {
             datasets: [
                 {
@@ -454,52 +389,69 @@ const AdvancedCostMonitoring: React.FC = () => {
 
     const renderRealTimeTab = () => (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {realTimeData.map((metric) => (
-                    <div key={metric.tag} className="p-4 bg-white rounded-lg shadow">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-gray-900">{metric.tag}</span>
-                            <span className="text-xs text-gray-500">Live</span>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Current Cost</span>
-                                <span className="text-sm font-semibold">${metric.currentCost.toFixed(2)}</span>
+            {realTimeData.length > 0 ? (
+                <>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {realTimeData.map((metric) => (
+                            <div key={metric.tag} className="p-4 bg-white rounded-lg shadow">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm font-medium text-gray-900">{metric.tag}</span>
+                                    <span className="text-xs text-gray-500">Live</span>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Current Cost</span>
+                                        <span className="text-sm font-semibold">${metric.currentCost.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Hourly Rate</span>
+                                        <span className="text-sm">${metric.hourlyRate.toFixed(2)}/hr</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Daily Projection</span>
+                                        <span className="text-sm">${metric.projectedDailyCost.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Monthly Projection</span>
+                                        <span className="text-sm">${metric.projectedMonthlyCost.toFixed(2)}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Hourly Rate</span>
-                                <span className="text-sm">${metric.hourlyRate.toFixed(2)}/hr</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Daily Projection</span>
-                                <span className="text-sm">${metric.projectedDailyCost.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Monthly Projection</span>
-                                <span className="text-sm">${metric.projectedMonthlyCost.toFixed(2)}</span>
-                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-6 bg-white rounded-lg shadow">
+                        <h3 className="mb-4 text-lg font-semibold">Tag Cost Distribution</h3>
+                        <div className="h-64">
+                            {generateTagDistributionData().labels.length > 0 ? (
+                                <Doughnut
+                                    data={generateTagDistributionData()}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            legend: {
+                                                position: 'right',
+                                            },
+                                        },
+                                    }}
+                                />
+                            ) : (
+                                <div className="flex justify-center items-center h-full">
+                                    <p className="text-gray-500">No tag distribution data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
-                ))}
-            </div>
-
-            <div className="p-6 bg-white rounded-lg shadow">
-                <h3 className="mb-4 text-lg font-semibold">Tag Cost Distribution</h3>
-                <div className="h-64">
-                    <Doughnut
-                        data={generateTagDistributionData()}
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'right',
-                                },
-                            },
-                        }}
-                    />
+                </>
+            ) : (
+                <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
+                    <div className="text-center">
+                        <p className="text-gray-500 text-lg">No real-time data available</p>
+                        <p className="text-gray-400 text-sm mt-2">Start using AI services to see real-time metrics</p>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 
@@ -689,83 +641,100 @@ const AdvancedCostMonitoring: React.FC = () => {
 
     const renderPerformanceTab = () => (
         <div className="space-y-6">
-            <div className="p-6 bg-white rounded-lg shadow">
-                <h3 className="mb-4 text-lg font-semibold">Cost vs Performance Correlation</h3>
-                <div className="h-64">
-                    <Scatter
-                        data={generatePerformanceScatterData()}
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Cost per Request ($)',
-                                    },
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Latency (ms)',
-                                    },
-                                },
-                            },
-                            plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label: (context: any) => {
-                                            const point = context.raw;
-                                            return [
-                                                `${point.service} - ${point.model}`,
-                                                `Cost: $${point.x.toFixed(4)}`,
-                                                `Latency: ${point.y.toFixed(0)}ms`,
-                                                `Efficiency: ${(point.efficiency * 100).toFixed(1)}%`,
-                                            ];
+            {performanceData.length > 0 ? (
+                <>
+                    <div className="p-6 bg-white rounded-lg shadow">
+                        <h3 className="mb-4 text-lg font-semibold">Cost vs Performance Correlation</h3>
+                        <div className="h-64">
+                            {generatePerformanceScatterData().datasets[0].data.length > 0 ? (
+                                <Scatter
+                                    data={generatePerformanceScatterData()}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            x: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Cost per Request ($)',
+                                                },
+                                            },
+                                            y: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Latency (ms)',
+                                                },
+                                            },
                                         },
-                                    },
-                                },
-                            },
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {performanceData.map((corr, index) => (
-                    <div key={index} className="p-4 bg-white rounded-lg shadow">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-gray-900">
-                                {corr.service} - {corr.model}
-                            </span>
-                            <span
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPerformanceRatingColor(corr.efficiency.performanceRating)
-                                    }`}
-                            >
-                                {corr.efficiency.performanceRating}
-                            </span>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Cost/Request</span>
-                                <span className="text-sm">${corr.costPerRequest.toFixed(4)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Latency</span>
-                                <span className="text-sm">{corr.performance.latency.toFixed(0)}ms</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Quality</span>
-                                <span className="text-sm">{(corr.performance.qualityScore * 100).toFixed(1)}%</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Efficiency</span>
-                                <span className="text-sm">{(corr.efficiency.costEfficiencyScore * 100).toFixed(1)}%</span>
-                            </div>
+                                        plugins: {
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: (context: any) => {
+                                                        const point = context.raw;
+                                                        return [
+                                                            `${point.service} - ${point.model}`,
+                                                            `Cost: $${point.x.toFixed(4)}`,
+                                                            `Latency: ${point.y.toFixed(0)}ms`,
+                                                            `Efficiency: ${(point.efficiency * 100).toFixed(1)}%`,
+                                                        ];
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    }}
+                                />
+                            ) : (
+                                <div className="flex justify-center items-center h-full">
+                                    <p className="text-gray-500">No performance correlation data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
-                ))}
-            </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {performanceData.map((corr, index) => (
+                            <div key={index} className="p-4 bg-white rounded-lg shadow">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        {corr.service} - {corr.model}
+                                    </span>
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPerformanceRatingColor(corr.efficiency.performanceRating)
+                                            }`}
+                                    >
+                                        {corr.efficiency.performanceRating}
+                                    </span>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Cost/Request</span>
+                                        <span className="text-sm">${corr.costPerRequest.toFixed(4)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Latency</span>
+                                        <span className="text-sm">{corr.performance.latency.toFixed(0)}ms</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Quality</span>
+                                        <span className="text-sm">{(corr.performance.qualityScore * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-xs text-gray-500">Efficiency</span>
+                                        <span className="text-sm">{(corr.efficiency.costEfficiencyScore * 100).toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
+                    <div className="text-center">
+                        <p className="text-gray-500 text-lg">No performance data available</p>
+                        <p className="text-gray-400 text-sm mt-2">Performance correlation data will appear here when available</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 
@@ -858,8 +827,8 @@ const AdvancedCostMonitoring: React.FC = () => {
                                     handleTagFilter(newTags);
                                 }}
                                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${selectedTags.includes(tag)
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ? 'bg-blue-500 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 {tag}
@@ -884,32 +853,41 @@ const AdvancedCostMonitoring: React.FC = () => {
             </div>
 
             {/* Tag Analytics */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {tagAnalytics.map((tag) => (
-                    <div key={tag.tag} className="p-4 bg-white rounded-lg shadow">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-gray-900">{tag.tag}</span>
-                            <span className={`text-sm ${getTrendColor(tag.trend)}`}>
-                                {getTrendIcon(tag.trend)} {tag.trendPercentage.toFixed(1)}%
-                            </span>
+            {tagAnalytics.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {tagAnalytics.map((tag) => (
+                        <div key={tag.tag} className="p-4 bg-white rounded-lg shadow">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-medium text-gray-900">{tag.tag}</span>
+                                <span className={`text-sm ${getTrendColor(tag.trend)}`}>
+                                    {getTrendIcon(tag.trend)} {tag.trendPercentage.toFixed(1)}%
+                                </span>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex justify-between">
+                                    <span className="text-xs text-gray-500">Total Cost</span>
+                                    <span className="text-sm font-semibold">${tag.totalCost.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-xs text-gray-500">Total Calls</span>
+                                    <span className="text-sm">{tag.totalCalls.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-xs text-gray-500">Avg Cost/Call</span>
+                                    <span className="text-sm">${tag.averageCost.toFixed(4)}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Total Cost</span>
-                                <span className="text-sm font-semibold">${tag.totalCost.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Total Calls</span>
-                                <span className="text-sm">{tag.totalCalls.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">Avg Cost/Call</span>
-                                <span className="text-sm">${tag.averageCost.toFixed(4)}</span>
-                            </div>
-                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
+                    <div className="text-center">
+                        <p className="text-gray-500 text-lg">No tag analytics data available</p>
+                        <p className="text-gray-400 text-sm mt-2">Tag analytics will appear here when you have tagged usage data</p>
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
         </div>
     );
 

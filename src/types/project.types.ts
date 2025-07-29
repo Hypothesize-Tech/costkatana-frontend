@@ -23,7 +23,7 @@ export interface Project {
 }
 
 export interface ProjectMember {
-    userId: string;
+    userId: string | { _id: string; name: string; email: string };
     email: string;
     role: 'owner' | 'admin' | 'member' | 'viewer';
     joinedAt: string;

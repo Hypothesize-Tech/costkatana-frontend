@@ -52,6 +52,20 @@ export class ProjectService {
     }
 
     /**
+     * Recalculate all user project spending
+     */
+    static async recalculateAllUserProjectSpending(): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/recalculate-all-spending`);
+    }
+
+    /**
+     * Recalculate project spending from Usage data
+     */
+    static async recalculateProjectSpending(projectId: string): Promise<void> {
+        await apiClient.post(`${this.baseUrl}/${projectId}/recalculate-spending`);
+    }
+
+    /**
      * Get project analytics
      */
     static async getProjectAnalytics(projectId: string, period?: string): Promise<any> {

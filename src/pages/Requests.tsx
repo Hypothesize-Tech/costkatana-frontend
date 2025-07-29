@@ -50,7 +50,7 @@ interface AnalyticsStats {
 export default function Requests() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFilter, setSelectedFilter] = useState<'all' | 'success' | 'error'>('all');
-    const [timeRange, setTimeRange] = useState<'1h' | '24h' | '7d' | '30d'>('24h');
+    const [timeRange, setTimeRange] = useState<'1h' | '24h' | '7d' | '30d'>('30d');
     const { selectedProject } = useProject();
 
     // Real-time analytics query
@@ -137,7 +137,13 @@ export default function Requests() {
 
     // Add budget status badge component
     const BudgetStatusBadge: React.FC<{ budgetInfo: any }> = ({ budgetInfo }) => {
-        if (!budgetInfo) return null;
+        if (!budgetInfo) {
+            return (
+                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    No Budget Set
+                </span>
+            );
+        }
 
         const { isOverBudget, isApproachingLimit, budgetPercentage } = budgetInfo;
 
@@ -166,13 +172,35 @@ export default function Requests() {
 
     // Add approval status badge component
     const ApprovalStatusBadge: React.FC<{ approvalStatus: any }> = ({ approvalStatus }) => {
-        if (!approvalStatus || !approvalStatus.requiredApproval) return null;
+        if (!approvalStatus) {
+            return (
+                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    No Approval Required
+                </span>
+            );
+        }
+
+        if (approvalStatus.requiredApproval) {
+            return (
+                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                    Approval Required
+                </span>
+            );
+        }
 
         return (
-            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
-                Approval Required
+            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                Auto Approved
             </span>
         );
+    };
+
+    // Helper function to get project display name
+    const getProjectDisplayName = (projectName?: string) => {
+        if (!projectName || projectName.trim() === '') {
+            return 'All Projects';
+        }
+        return projectName;
     };
 
     return (
@@ -408,7 +436,7 @@ export default function Requests() {
                                                 <BudgetStatusBadge budgetInfo={request.budgetInfo} />
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                                {request.projectName || 'No Project'}
+                                                {getProjectDisplayName(request.projectName)}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <ApprovalStatusBadge approvalStatus={request.approvalStatus} />

@@ -70,6 +70,7 @@ export interface UsageFilters {
     model?: string;
     startDate?: string;
     endDate?: string;
+    dateRange?: string;
     tags?: string[];
     minCost?: number;
     maxCost?: number;

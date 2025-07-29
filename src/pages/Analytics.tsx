@@ -5,9 +5,8 @@ import {
     ChartBarIcon,
     CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
+import { LoadingSpinner, ErrorBoundary } from '../components/common';
 import { analyticsService, AnalyticsService } from '../services/analytics.service';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { ErrorBoundary } from '../components/common/ErrorBoundary';
 import { CostTrendChart } from '../components/analytics/CostTrendChart';
 import { ServiceAnalytics } from '../components/analytics/ServiceAnalytics';
 import { ModelComparison } from '../components/analytics/ModelComparison';
@@ -147,39 +146,39 @@ export const Analytics: React.FC = () => {
                 // Transform the data to match AnalyticsData interface
                 const transformedData = {
                     summary: {
-                        totalCost: analyticsData.summary?.totalCost || 0,
-                        totalTokens: analyticsData.summary?.totalTokens || 0,
-                        totalRequests: analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 0,
-                        averageCostPerRequest: analyticsData.summary?.averageCostPerRequest ||
-                            (analyticsData.summary?.totalCost || 0) / (analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 1),
-                        budgetUtilization: analyticsData.summary?.budgetUtilization
+                        totalCost: analyticsData?.summary?.totalCost || 0,
+                        totalTokens: analyticsData?.summary?.totalTokens || 0,
+                        totalRequests: analyticsData?.summary?.totalRequests || analyticsData?.summary?.totalCalls || 0,
+                        averageCostPerRequest: analyticsData?.summary?.averageCostPerRequest ||
+                            (analyticsData?.summary?.totalCost || 0) / (analyticsData?.summary?.totalRequests || analyticsData?.summary?.totalCalls || 1),
+                        budgetUtilization: analyticsData?.summary?.budgetUtilization
                     },
-                    timeline: (analyticsData.timeline || analyticsData.timeSeries || []).map((item: any) => ({
-                        date: item.date,
-                        cost: item.cost || 0,
-                        tokens: item.tokens || 0,
-                        requests: item.calls || item.requests || 0,
-                        calls: item.calls || item.requests || 0
+                    timeline: (analyticsData?.timeline || analyticsData?.timeSeries || []).map((item: any) => ({
+                        date: item?.date || '',
+                        cost: item?.cost || 0,
+                        tokens: item?.tokens || 0,
+                        requests: item?.calls || item?.requests || 0,
+                        calls: item?.calls || item?.requests || 0
                     })),
                     breakdown: {
-                        services: (analyticsData.breakdown?.services || analyticsData.serviceBreakdown || []).map((service: any) => ({
-                            service: service.service,
-                            cost: service.cost || service.totalCost || 0,
-                            percentage: service.percentage || 0,
-                            requests: service.requests || service.totalRequests || service.calls || service.totalCalls || 0,
-                            calls: service.calls || service.totalCalls || service.requests || service.totalRequests || 0
+                        services: (analyticsData?.breakdown?.services || analyticsData?.serviceBreakdown || []).map((service: any) => ({
+                            service: service?.service || 'Unknown',
+                            cost: service?.cost || service?.totalCost || 0,
+                            percentage: service?.percentage || 0,
+                            requests: service?.requests || service?.totalRequests || service?.calls || service?.totalCalls || 0,
+                            calls: service?.calls || service?.totalCalls || service?.requests || service?.totalRequests || 0
                         })),
-                        models: (analyticsData.breakdown?.models || analyticsData.modelBreakdown || []).map((model: any) => ({
-                            model: model.model,
-                            cost: model.cost || model.totalCost || 0,
-                            percentage: model.percentage || 0,
-                            requests: model.requests || model.totalRequests || model.calls || model.totalCalls || 0,
-                            calls: model.calls || model.totalCalls || model.requests || model.totalRequests || 0,
-                            avgTokens: model.avgTokens || (model.totalTokens || 0) / (model.totalRequests || model.calls || 1),
-                            avgCost: model.avgCost || (model.cost || model.totalCost || 0) / (model.totalRequests || model.calls || 1)
+                        models: (analyticsData?.breakdown?.models || analyticsData?.modelBreakdown || []).map((model: any) => ({
+                            model: model?.model || 'Unknown',
+                            cost: model?.cost || model?.totalCost || 0,
+                            percentage: model?.percentage || 0,
+                            requests: model?.requests || model?.totalRequests || model?.calls || model?.totalCalls || 0,
+                            calls: model?.calls || model?.totalCalls || model?.requests || model?.totalRequests || 0,
+                            avgTokens: model?.avgTokens || (model?.totalTokens || 0) / (model?.totalRequests || model?.calls || 1),
+                            avgCost: model?.avgCost || (model?.cost || model?.totalCost || 0) / (model?.totalRequests || model?.calls || 1)
                         }))
                     },
-                    trends: analyticsData.trends || { costTrend: 'stable', tokenTrend: 'stable', insights: [] }
+                    trends: analyticsData?.trends || { costTrend: 'stable', tokenTrend: 'stable', insights: [] }
                 };
 
                 setData(transformedData);
@@ -189,38 +188,38 @@ export const Analytics: React.FC = () => {
                 // Transform the data to match AnalyticsData interface
                 const transformedData = {
                     summary: {
-                        totalCost: analyticsData.summary?.totalCost || 0,
-                        totalTokens: analyticsData.summary?.totalTokens || 0,
-                        totalRequests: analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 0,
-                        averageCostPerRequest: (analyticsData.summary?.totalCost || 0) / (analyticsData.summary?.totalRequests || analyticsData.summary?.totalCalls || 1),
+                        totalCost: analyticsData?.summary?.totalCost || 0,
+                        totalTokens: analyticsData?.summary?.totalTokens || 0,
+                        totalRequests: analyticsData?.summary?.totalRequests || analyticsData?.summary?.totalCalls || 0,
+                        averageCostPerRequest: (analyticsData?.summary?.totalCost || 0) / (analyticsData?.summary?.totalRequests || analyticsData?.summary?.totalCalls || 1),
                         budgetUtilization: 0
                     },
-                    timeline: (analyticsData.timeline || analyticsData.timeSeries || []).map((item: any) => ({
-                        date: item.date,
-                        cost: item.cost || 0,
-                        tokens: item.tokens || 0,
-                        requests: item.calls || item.requests || 0,
-                        calls: item.calls || item.requests || 0
+                    timeline: (analyticsData?.timeline || analyticsData?.timeSeries || []).map((item: any) => ({
+                        date: item?.date || '',
+                        cost: item?.cost || 0,
+                        tokens: item?.tokens || 0,
+                        requests: item?.calls || item?.requests || 0,
+                        calls: item?.calls || item?.requests || 0
                     })),
                     breakdown: {
-                        services: (analyticsData.breakdown?.services || analyticsData.serviceBreakdown || []).map((service: any) => ({
-                            service: service.service,
-                            cost: service.cost || service.totalCost || 0,
-                            percentage: service.percentage || 0,
-                            requests: service.requests || service.totalRequests || service.calls || service.totalCalls || 0,
-                            calls: service.calls || service.totalCalls || service.requests || service.totalRequests || 0
+                        services: (analyticsData?.breakdown?.services || analyticsData?.serviceBreakdown || []).map((service: any) => ({
+                            service: service?.service || 'Unknown',
+                            cost: service?.cost || service?.totalCost || 0,
+                            percentage: service?.percentage || 0,
+                            requests: service?.requests || service?.totalRequests || service?.calls || service?.totalCalls || 0,
+                            calls: service?.calls || service?.totalCalls || service?.requests || service?.totalRequests || 0
                         })),
-                        models: (analyticsData.breakdown?.models || analyticsData.modelBreakdown || []).map((model: any) => ({
-                            model: model.model,
-                            cost: model.cost || model.totalCost || 0,
-                            percentage: model.percentage || 0,
-                            requests: model.requests || model.totalRequests || model.calls || model.totalCalls || 0,
-                            calls: model.calls || model.totalCalls || model.requests || model.totalRequests || 0,
-                            avgTokens: model.avgTokens || (model.totalTokens || 0) / (model.totalRequests || model.calls || 1),
-                            avgCost: model.avgCost || (model.cost || model.totalCost || 0) / (model.totalRequests || model.calls || 1)
+                        models: (analyticsData?.breakdown?.models || analyticsData?.modelBreakdown || []).map((model: any) => ({
+                            model: model?.model || 'Unknown',
+                            cost: model?.cost || model?.totalCost || 0,
+                            percentage: model?.percentage || 0,
+                            requests: model?.requests || model?.totalRequests || model?.calls || model?.totalCalls || 0,
+                            calls: model?.calls || model?.totalCalls || model?.requests || model?.totalRequests || 0,
+                            avgTokens: model?.avgTokens || (model?.totalTokens || 0) / (model?.totalRequests || model?.calls || 1),
+                            avgCost: model?.avgCost || (model?.cost || model?.totalCost || 0) / (model?.totalRequests || model?.calls || 1)
                         }))
                     },
-                    trends: analyticsData.trends || { costTrend: 'stable', tokenTrend: 'stable', insights: [] }
+                    trends: analyticsData?.trends || { costTrend: 'stable', tokenTrend: 'stable', insights: [] }
                 };
 
                 setData(transformedData);
@@ -266,19 +265,53 @@ export const Analytics: React.FC = () => {
 
             const comparisonData = await AnalyticsService.compareProjects(filters);
 
+            console.log('Raw comparison data:', comparisonData);
+
+            // Extract data from the response structure
+            const actualData = comparisonData?.data || comparisonData;
+
+            // Transform the backend response to match frontend expectations
+            const transformedProjects = (actualData?.projects || []).map((project: any) => ({
+                projectId: project?.projectId || project?._id || '',
+                projectName: project?.projectName || 'Unknown Project',
+                metrics: {
+                    cost: project?.totalCost || project?.avgCost || 0,
+                    tokens: project?.totalTokens || 0,
+                    requests: project?.totalRequests || 0,
+                    averageCostPerRequest: project?.avgCost || 0
+                },
+                budget: project?.budget || null,
+                budgetUtilization: project?.budgetUtilization || 0
+            }));
+
+            console.log('Transformed projects:', transformedProjects);
+
             // Defensive: ensure summary exists and is valid
-            let summary = comparisonData.summary;
+            let summary = actualData?.summary;
             if (!summary) {
                 // Compute summary from projects array if missing
-                const projectsArr = Array.isArray(comparisonData.projects) ? comparisonData.projects : [];
+                const projectsArr = transformedProjects;
                 summary = {
                     totalProjects: projectsArr.length,
-                    totalCost: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.cost || 0), 0),
-                    totalTokens: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.tokens || 0), 0),
-                    totalRequests: projectsArr.reduce((acc: number, p: any) => acc + (p.metrics?.requests || 0), 0),
+                    totalCost: projectsArr.reduce((acc: number, p: any) => acc + (p?.metrics?.cost || 0), 0),
+                    totalTokens: projectsArr.reduce((acc: number, p: any) => acc + (p?.metrics?.tokens || 0), 0),
+                    totalRequests: projectsArr.reduce((acc: number, p: any) => acc + (p?.metrics?.requests || 0), 0),
+                };
+            } else {
+                // If summary exists, ensure it uses the correct values
+                summary = {
+                    ...summary,
+                    totalCost: transformedProjects.reduce((acc: number, p: any) => acc + (p?.metrics?.cost || 0), 0),
+                    totalTokens: transformedProjects.reduce((acc: number, p: any) => acc + (p?.metrics?.tokens || 0), 0),
+                    totalRequests: transformedProjects.reduce((acc: number, p: any) => acc + (p?.metrics?.requests || 0), 0),
                 };
             }
-            setComparison({ ...comparisonData, summary });
+
+            setComparison({
+                ...comparisonData,
+                projects: transformedProjects,
+                summary
+            });
         } catch (error) {
             console.error('Error fetching project comparison:', error);
             showNotification('Failed to load project comparison', 'error');
@@ -374,27 +407,39 @@ export const Analytics: React.FC = () => {
                 {/* Project Selection (Comparison Mode) */}
                 {showComparison && (
                     <div className="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
-                        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                            Select Projects to Compare
-                        </h3>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                Project Comparison
+                            </h3>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                Select 2+ projects to compare
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {projects.map((project) => (
-                                <label key={project._id} className="flex items-center space-x-3 cursor-pointer">
+                                <label key={project._id} className="relative flex items-start p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                                     <input
                                         type="checkbox"
                                         checked={selectedProjects.includes(project._id)}
                                         onChange={() => handleProjectSelectionToggle(project._id)}
-                                        className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                        className="mt-1 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                                     />
-                                    <span className="text-sm text-gray-900 dark:text-white">
-                                        {project.name}
-                                    </span>
+                                    <div className="ml-3 flex-1 min-w-0">
+                                        <span className="text-sm font-medium text-gray-900 dark:text-white truncate block">
+                                            {project.name}
+                                        </span>
+                                        {project.description && (
+                                            <span className="text-xs text-gray-500 dark:text-gray-400 truncate block">
+                                                {project.description}
+                                            </span>
+                                        )}
+                                    </div>
                                 </label>
                             ))}
                         </div>
                         {selectedProjects.length < 2 && (
-                            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                Select at least 2 projects to compare
+                            <p className="mt-3 text-sm text-amber-600 dark:text-amber-400">
+                                ⚠️ Select at least 2 projects to compare
                             </p>
                         )}
                     </div>
@@ -504,7 +549,7 @@ export const Analytics: React.FC = () => {
                             <ModelComparison data={data.breakdown.models} />
 
                             {/* Insights */}
-                            {data.trends.insights.length > 0 && (
+                            {data?.trends?.insights && data.trends.insights.length > 0 && (
                                 <div className="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
                                     <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                                         Insights & Recommendations
@@ -526,102 +571,160 @@ export const Analytics: React.FC = () => {
                     comparison && selectedProjects.length >= 2 && (
                         <>
                             {/* Comparison Summary */}
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-                                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-600">Total Projects</p>
-                                        <p className="text-2xl font-bold text-gray-900">
-                                            {comparison.summary?.totalProjects ?? 0}
-                                        </p>
+                            <div className="mb-6">
+                                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                                    Comparison Summary
+                                </h3>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projects</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                    {comparison.summary?.totalProjects ?? 0}
+                                                </p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center dark:bg-blue-900">
+                                                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-600">Combined Cost</p>
-                                        <p className="text-2xl font-bold text-gray-900">
-                                            {formatCurrency(comparison.summary?.totalCost ?? 0)}
-                                        </p>
+
+                                    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Cost</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                    {formatCurrency(comparison.summary?.totalCost ?? 0)}
+                                                </p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center dark:bg-green-900">
+                                                <CurrencyDollarIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-600">Combined Tokens</p>
-                                        <p className="text-2xl font-bold text-gray-900">
-                                            {(comparison.summary?.totalTokens ?? 0).toLocaleString()}
-                                        </p>
+
+                                    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Tokens</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                    {(comparison.summary?.totalTokens ?? 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center dark:bg-purple-900">
+                                                <ChartBarIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-600">Combined Requests</p>
-                                        <p className="text-2xl font-bold text-gray-900">
-                                            {(comparison.summary?.totalRequests ?? 0).toLocaleString()}
-                                        </p>
+
+                                    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Requests</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                    {(comparison.summary?.totalRequests ?? 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center dark:bg-orange-900">
+                                                <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Project Comparison Table */}
-                            <div className="overflow-hidden bg-white rounded-lg shadow dark:bg-gray-800">
+                            <div className="bg-white rounded-lg shadow dark:bg-gray-800">
                                 <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                        Project Comparison
+                                        Project Details
                                     </h3>
+                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                        Detailed comparison of selected projects
+                                    </p>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                         <thead className="bg-gray-50 dark:bg-gray-700">
                                             <tr>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Project
                                                 </th>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Cost
                                                 </th>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Tokens
                                                 </th>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Requests
                                                 </th>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Avg Cost/Request
                                                 </th>
-                                                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                                                <th className="px-6 py-4 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300">
                                                     Budget Usage
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                            {(comparison.projects || []).map((project) => (
-                                                <tr key={project.projectId}>
-                                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {project.projectName}
+                                            {(comparison?.projects || []).map((project, index) => (
+                                                <tr key={project?.projectId} className={`hover:bg-gray-50 dark:hover:bg-gray-700 ${index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'}`}>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="flex-shrink-0 w-8 h-8">
+                                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                                                                    <span className="text-sm font-medium text-white">
+                                                                        {project?.projectName?.charAt(0)?.toUpperCase() || '?'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="ml-4">
+                                                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                                    {project?.projectName || 'Unknown Project'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {formatCurrency(project.metrics.cost)}
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                            {formatCurrency(project?.metrics?.cost || 0)}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {project.metrics.tokens.toLocaleString()}
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-900 dark:text-white">
+                                                            {(project?.metrics?.tokens || 0).toLocaleString()}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {project.metrics.requests.toLocaleString()}
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-900 dark:text-white">
+                                                            {(project?.metrics?.requests || 0).toLocaleString()}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {formatCurrency(project.metrics.averageCostPerRequest)}
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-900 dark:text-white">
+                                                            {formatCurrency(project?.metrics?.averageCostPerRequest || 0)}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm whitespace-nowrap">
-                                                        {project.budgetUtilization > 0 ? (
-                                                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${project.budgetUtilization > 90
-                                                                ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                                                : project.budgetUtilization > 75
-                                                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                                                    : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                                                }`}>
-                                                                {project.budgetUtilization.toFixed(1)}%
-                                                            </span>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {(project?.budgetUtilization || 0) > 0 ? (
+                                                            <div className="flex items-center">
+                                                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${(project?.budgetUtilization || 0) > 90
+                                                                    ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                                    : (project?.budgetUtilization || 0) > 75
+                                                                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                                        : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                                    }`}>
+                                                                    {(project?.budgetUtilization || 0).toFixed(1)}%
+                                                                </span>
+                                                            </div>
                                                         ) : (
-                                                            <span className="text-gray-400 dark:text-gray-500">No budget</span>
+                                                            <span className="text-sm text-gray-400 dark:text-gray-500">No budget set</span>
                                                         )}
                                                     </td>
                                                 </tr>

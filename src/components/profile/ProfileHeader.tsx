@@ -21,7 +21,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         .toUpperCase() || user.email?.[0].toUpperCase();
 
 
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && onAvatarChange) {
@@ -83,7 +82,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                             <svg className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            Joined {new Date(user.createdAt).toLocaleDateString()}
+                            Joined {user.createdAt ?
+                                new Date(user.createdAt).toLocaleDateString() :
+                                'Recently'
+                            }
                         </span>
                     </div>
                 </div>

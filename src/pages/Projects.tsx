@@ -3,7 +3,8 @@ import {
     FiPlus,
     FiUsers,
     FiDollarSign,
-    FiTrendingUp
+    FiTrendingUp,
+    FiRefreshCw
 } from 'react-icons/fi';
 import { ProjectService } from '../services/project.service';
 import { Project } from '../types/project.types';
@@ -22,6 +23,7 @@ const Projects: React.FC = () => {
     const { showNotification } = useNotification();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     // Modal states
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -50,6 +52,24 @@ const Projects: React.FC = () => {
             );
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleRefreshSpending = async () => {
+        try {
+            setRefreshing(true);
+            // Recalculate spending for all user projects
+            await ProjectService.recalculateAllUserProjectSpending();
+            showNotification('Project spending recalculated successfully!', 'success');
+            loadProjects(); // Reload projects to show updated data
+        } catch (error: any) {
+            console.error('Error refreshing spending:', error);
+            showNotification(
+                error.message || 'Failed to refresh spending',
+                'error'
+            );
+        } finally {
+            setRefreshing(false);
         }
     };
 
@@ -107,7 +127,7 @@ const Projects: React.FC = () => {
         setSelectedProject(project);
         setShowEditModal(true);
     };
-    
+
     const handleDeleteProject = async () => {
         if (!selectedProject) return;
 
@@ -148,13 +168,23 @@ const Projects: React.FC = () => {
                         Manage your AI cost tracking projects
                     </p>
                 </div>
-                <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
-                >
-                    <FiPlus />
-                    New Project
-                </button>
+                <div className="flex gap-3 items-center">
+                    <button
+                        onClick={handleRefreshSpending}
+                        disabled={refreshing}
+                        className="flex gap-2 items-center px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg transition-all hover:bg-gray-50 hover:border-gray-400 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50"
+                    >
+                        <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        {refreshing ? 'Refreshing...' : 'Refresh Spending'}
+                    </button>
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+                    >
+                        <FiPlus />
+                        New Project
+                    </button>
+                </div>
             </div>
 
             {/* Summary Stats */}

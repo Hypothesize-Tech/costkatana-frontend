@@ -24,27 +24,62 @@ export default function Usage() {
     const debouncedSearch = useDebounce(searchQuery, 500);
     const { limit } = usePagination();
 
+    // Convert date range filter to startDate/endDate
+    const getDateRange = (dateRange: string) => {
+        const now = new Date();
+        const startDate = new Date();
+
+        switch (dateRange) {
+            case '1d':
+                startDate.setDate(now.getDate() - 1);
+                break;
+            case '7d':
+                startDate.setDate(now.getDate() - 7);
+                break;
+            case '30d':
+                startDate.setDate(now.getDate() - 30);
+                break;
+            case '90d':
+                startDate.setDate(now.getDate() - 90);
+                break;
+            default:
+                return { startDate: undefined, endDate: undefined };
+        }
+
+        return {
+            startDate: startDate.toISOString(),
+            endDate: now.toISOString()
+        };
+    };
+
+    // Prepare query parameters
+    const queryParams = {
+        page: currentPage,
+        limit,
+        projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined,
+        service: filters.service || undefined,
+        model: filters.model || undefined,
+        minCost: filters.minCost ? filters.minCost.toString() : undefined,
+        maxCost: filters.maxCost ? filters.maxCost.toString() : undefined,
+        q: debouncedSearch || undefined,
+        ...getDateRange(filters.dateRange || '7d')
+    };
+
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ['usage', filters, currentPage, limit, debouncedSearch, selectedProject],
-        queryFn: () => usageService.getUsage({
-            ...filters,
-            page: currentPage,
-            limit,
-            projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined
-        }),
+        queryKey: ['usage', queryParams],
+        queryFn: () => usageService.getUsage(queryParams),
         keepPreviousData: true,
     });
-    console.log("data", data)
 
     const handleExport = async (format: 'json' | 'csv') => {
         try {
             const blob = await usageService.exportUsage({
                 format,
-                startDate: filters.startDate,
-                endDate: filters.endDate,
-                service: filters.service,
-                model: filters.model,
-                projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined
+                startDate: queryParams.startDate,
+                endDate: queryParams.endDate,
+                service: queryParams.service,
+                model: queryParams.model,
+                projectId: queryParams.projectId
             });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -66,6 +101,11 @@ export default function Usage() {
 
     const handleRefresh = () => {
         refetch();
+    };
+
+    const handleFilterChange = (newFilters: any) => {
+        setFilters(newFilters);
+        setCurrentPage(1); // Reset to first page when filters change
     };
 
     return (
@@ -161,7 +201,7 @@ export default function Usage() {
                     <div className="flex-1">
                         <input
                             type="text"
-                            placeholder="Search prompts..."
+                            placeholder="Search prompts, models, services..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="input"
@@ -184,7 +224,7 @@ export default function Usage() {
                 {showFilters && (
                     <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
                         <UsageFilter
-                            onFilterChange={(filters) => setFilters(filters)}
+                            onFilterChange={handleFilterChange}
                             services={[]}
                             models={[]}
                         />

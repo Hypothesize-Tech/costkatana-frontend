@@ -1,4 +1,3 @@
-// src/services/analytics.service.ts
 import { apiClient } from '../config/api';
 import { Analytics, TimeSeriesData, ServiceAnalytics } from '../types';
 
@@ -397,6 +396,25 @@ class AnalyticsService {
         } catch (error) {
             console.error('Error fetching comparative analytics:', error);
             throw error;
+        }
+    }
+
+    async getRecentUsage(params?: {
+        limit?: number;
+        projectId?: string;
+        startDate?: string;
+        endDate?: string;
+    }): Promise<any[]> {
+        try {
+            const requestParams: any = { ...params };
+            if (params?.projectId && params.projectId !== 'all') {
+                requestParams.projectId = params.projectId;
+            }
+            const response = await apiClient.get('/analytics/recent-usage', { params: requestParams });
+            return response.data.data || [];
+        } catch (error) {
+            console.error('Error fetching recent usage:', error);
+            return [];
         }
     }
 }

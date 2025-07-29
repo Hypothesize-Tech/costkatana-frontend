@@ -135,7 +135,7 @@ const ModelComparison: React.FC = () => {
             setAvailableModels(normalizedModels);
 
             if (normalizedModels.length === 0) {
-                setError('No models available. Please check if the backend pricing data is configured.');
+                setError('No models available from the backend. Please check your AWS Bedrock configuration.');
             } else {
                 setError(null); // Clear any previous errors
                 // Trigger initial cost estimation if we have selected models
@@ -146,21 +146,7 @@ const ModelComparison: React.FC = () => {
         } catch (error: any) {
             console.error('Error loading available models:', error);
             setError('Failed to load available models: ' + (error.message || 'Unknown error'));
-
-            // Fallback to some default models for testing
-            setAvailableModels([
-                {
-                    provider: 'Amazon',
-                    model: 'amazon.nova-micro-v1:0',
-                    modelName: 'Nova Micro',
-                    pricing: { input: 0.035, output: 0.14, unit: 'Per 1M tokens' },
-                    capabilities: ['text'],
-                    contextWindow: 128000,
-                    category: 'general',
-                    isLatest: true,
-                    notes: 'Fallback model'
-                }
-            ]);
+            setAvailableModels([]); // Set empty array instead of fallback models
         }
     };
 

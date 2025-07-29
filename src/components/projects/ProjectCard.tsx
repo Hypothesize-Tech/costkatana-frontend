@@ -24,7 +24,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     onDelete
 }) => {
     const budgetAmount = project.budget?.amount || 0;
-    const budgetSpent = project.budget?.spent || 0;
+    const budgetSpent = project.spending?.current || 0;
     const budgetUsagePercentage = budgetAmount > 0 ? (budgetSpent / budgetAmount) * 100 : 0;
     const isOverBudget = budgetUsagePercentage > 100;
     const isNearLimit = budgetUsagePercentage > 80 && !isOverBudget;
@@ -53,8 +53,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                                 {project.name}
                             </h3>
                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${project.isActive
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                                : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                                 }`}>
                                 {project.isActive ? 'Active' : 'Inactive'}
                             </span>
@@ -104,10 +104,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                     <div className="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700">
                         <div
                             className={`h-2 rounded-full transition-all ${isOverBudget
-                                    ? 'bg-red-600'
-                                    : isNearLimit
-                                        ? 'bg-yellow-500'
-                                        : 'bg-green-500'
+                                ? 'bg-red-600'
+                                : isNearLimit
+                                    ? 'bg-yellow-500'
+                                    : 'bg-green-500'
                                 }`}
                             style={{ width: `${Math.min(budgetUsagePercentage, 100)}%` }}
                         />

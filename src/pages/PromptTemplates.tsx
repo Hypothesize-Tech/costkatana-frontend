@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
     FiPlus,
     FiSearch,
-    FiFilter,
     FiStar,
     FiTag,
-    FiUsers,
-    FiArrowLeft
+    FiTrendingUp,
+    FiBookOpen
 } from 'react-icons/fi';
 import { PromptTemplateService } from '../services/promptTemplate.service';
 import { PromptTemplate } from '../types/promptTemplate.types';
@@ -18,28 +16,17 @@ import {
     CreateTemplateModal,
     ViewTemplateModal,
     EditTemplateModal,
-    DuplicateTemplateModal,
-    TemplateDiscoveryHub,
-    TemplateCreationWizard,
-    TemplateMarketplace,
-    TemplateTutorial,
-    TemplateAnalyticsDashboard
+    DuplicateTemplateModal
 } from '../components/templates';
 import { useNotification } from '../contexts/NotificationContext';
 
 const PromptTemplates: React.FC = () => {
-    const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [templates, setTemplates] = useState<PromptTemplate[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // View states
-    const [currentView, setCurrentView] = useState<'discovery' | 'list' | 'marketplace' | 'analytics' | 'tutorial'>('discovery');
-
-    // Modal states
+    // Modal states - simplified to just essential ones
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [showCreateWizard, setShowCreateWizard] = useState(false);
-    const [showTutorial, setShowTutorial] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
@@ -48,17 +35,16 @@ const PromptTemplates: React.FC = () => {
     const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
-    const [sortBy, setSortBy] = useState<'name' | 'created' | 'usage'>('created');
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
     const categories = [
-        { value: 'all', label: 'All Categories' },
+        { value: 'all', label: 'All Templates' },
         { value: 'general', label: 'General' },
         { value: 'coding', label: 'Coding' },
         { value: 'writing', label: 'Writing' },
         { value: 'analysis', label: 'Analysis' },
         { value: 'creative', label: 'Creative' },
-        { value: 'business', label: 'Business' },
-        { value: 'custom', label: 'Custom' }
+        { value: 'business', label: 'Business' }
     ];
 
     useEffect(() => {
@@ -86,14 +72,14 @@ const PromptTemplates: React.FC = () => {
         try {
             await PromptTemplateService.createTemplate(templateData);
             showNotification('Template created successfully!', 'success');
-            loadTemplates(); // Refresh the list
+            loadTemplates();
         } catch (error: any) {
             console.error('Error creating template:', error);
             showNotification(
                 error.message || 'Failed to create template',
                 'error'
             );
-            throw error; // Re-throw to let modal handle loading state
+            throw error;
         }
     };
 
@@ -101,14 +87,14 @@ const PromptTemplates: React.FC = () => {
         try {
             await PromptTemplateService.updateTemplate(templateId, templateData);
             showNotification('Template updated successfully!', 'success');
-            loadTemplates(); // Refresh the list
+            loadTemplates();
         } catch (error: any) {
             console.error('Error updating template:', error);
             showNotification(
                 error.message || 'Failed to update template',
                 'error'
             );
-            throw error; // Re-throw to let modal handle loading state
+            throw error;
         }
     };
 
@@ -116,14 +102,14 @@ const PromptTemplates: React.FC = () => {
         try {
             await PromptTemplateService.createTemplate(templateData);
             showNotification('Template duplicated successfully!', 'success');
-            loadTemplates(); // Refresh the list
+            loadTemplates();
         } catch (error: any) {
             console.error('Error duplicating template:', error);
             showNotification(
                 error.message || 'Failed to duplicate template',
                 'error'
             );
-            throw error; // Re-throw to let modal handle loading state
+            throw error;
         }
     };
 
@@ -148,7 +134,7 @@ const PromptTemplates: React.FC = () => {
         try {
             await PromptTemplateService.deleteTemplate(selectedTemplate._id);
             showNotification('Template deleted successfully!', 'success');
-            loadTemplates(); // Refresh the list
+            loadTemplates();
             setDeleteConfirmOpen(false);
             setSelectedTemplate(null);
         } catch (error: any) {
@@ -180,46 +166,7 @@ const PromptTemplates: React.FC = () => {
         }
     };
 
-    // New handlers for discovery hub and wizard
-    const handleCreateTemplateFromHub = () => {
-        setShowCreateWizard(true);
-    };
-
-    const handleViewTemplates = () => {
-        setCurrentView('list');
-    };
-
-    const handleStartTutorial = () => {
-        setShowTutorial(true);
-    };
-
-    const handleBackToDiscovery = () => {
-        setCurrentView('discovery');
-    };
-
-    const handleUseTemplates = () => {
-        navigate('/templates/use');
-    };
-
-    const handleImportMarketplaceTemplate = async (templateData: any) => {
-        try {
-            await handleCreateTemplate(templateData);
-            showNotification('Template imported successfully!', 'success');
-        } catch (error: any) {
-            console.error('Error importing template:', error);
-            showNotification(
-                error.message || 'Failed to import template',
-                'error'
-            );
-        }
-    };
-
-    const handlePreviewMarketplaceTemplate = (template: PromptTemplate) => {
-        setSelectedTemplate(template);
-        setShowViewModal(true);
-    };
-
-    // Filter and sort templates
+    // Filter templates - simplified logic
     const filteredTemplates = templates.filter(template => {
         const matchesSearch = !searchQuery ||
             template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -231,20 +178,15 @@ const PromptTemplates: React.FC = () => {
         const matchesCategory = selectedCategory === 'all' ||
             template.category === selectedCategory;
 
-        return matchesSearch && matchesCategory;
+        const matchesFavorites = !showFavoritesOnly || template.isFavorite;
+
+        return matchesSearch && matchesCategory && matchesFavorites;
     });
 
-    const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-        switch (sortBy) {
-            case 'name':
-                return a.name.localeCompare(b.name);
-            case 'usage':
-                return (b.usage?.count || 0) - (a.usage?.count || 0);
-            case 'created':
-            default:
-                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        }
-    });
+    // Sort by most recent
+    const sortedTemplates = [...filteredTemplates].sort((a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
     if (loading) {
         return (
@@ -254,147 +196,20 @@ const PromptTemplates: React.FC = () => {
         );
     }
 
-    // Render Discovery Hub by default
-    if (currentView === 'discovery') {
-        return (
-            <div>
-                <TemplateDiscoveryHub
-                    onCreateTemplate={handleCreateTemplateFromHub}
-                    onStartTutorial={handleStartTutorial}
-                    onViewTemplates={handleViewTemplates}
-                    onUseTemplates={handleUseTemplates}
-                />
-
-                {/* Modals */}
-                {showCreateWizard && (
-                    <TemplateCreationWizard
-                        onClose={() => setShowCreateWizard(false)}
-                        onSubmit={handleCreateTemplate}
-                    />
-                )}
-
-                {showTutorial && (
-                    <TemplateTutorial
-                        onClose={() => setShowTutorial(false)}
-                        onCreateTemplate={() => {
-                            setShowTutorial(false);
-                            setShowCreateWizard(true);
-                        }}
-                        onViewMarketplace={() => {
-                            setShowTutorial(false);
-                            setCurrentView('marketplace');
-                        }}
-                    />
-                )}
-            </div>
-        );
-    }
-
-    // Render Marketplace view
-    if (currentView === 'marketplace') {
-        return (
-            <div>
-                {/* Back to Discovery Button */}
-                <div className="p-6 pb-0">
-                    <button
-                        onClick={handleBackToDiscovery}
-                        className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
-                    >
-                        <FiArrowLeft />
-                        Back to Template Hub
-                    </button>
-                </div>
-
-                <TemplateMarketplace
-                    onImportTemplate={handleImportMarketplaceTemplate}
-                    onPreviewTemplate={handlePreviewMarketplaceTemplate}
-                />
-
-                {/* Modals */}
-                {showViewModal && selectedTemplate && (
-                    <ViewTemplateModal
-                        template={selectedTemplate}
-                        onClose={() => {
-                            setShowViewModal(false);
-                            setSelectedTemplate(null);
-                        }}
-                        onEdit={(template) => {
-                            setShowViewModal(false);
-                            setSelectedTemplate(template);
-                            setShowEditModal(true);
-                        }}
-                        onDuplicate={(template) => {
-                            setShowViewModal(false);
-                            setSelectedTemplate(template);
-                            setShowDuplicateModal(true);
-                        }}
-                        onFavorite={handleFavoriteTemplate}
-                    />
-                )}
-
-                {showTutorial && (
-                    <TemplateTutorial
-                        onClose={() => setShowTutorial(false)}
-                        onCreateTemplate={() => {
-                            setShowTutorial(false);
-                            setShowCreateWizard(true);
-                        }}
-                        onViewMarketplace={() => {
-                            setShowTutorial(false);
-                            setCurrentView('marketplace');
-                        }}
-                    />
-                )}
-            </div>
-        );
-    }
-
-    // Render Analytics view
-    if (currentView === 'analytics') {
-        return (
-            <div>
-                {/* Back to Discovery Button */}
-                <div className="p-6 pb-0">
-                    <button
-                        onClick={handleBackToDiscovery}
-                        className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
-                    >
-                        <FiArrowLeft />
-                        Back to Template Hub
-                    </button>
-                </div>
-
-                <TemplateAnalyticsDashboard
-                    onViewTemplate={handleViewTemplate}
-                />
-            </div>
-        );
-    }
-
-    // Render traditional list view
     return (
         <div className="p-6">
-            {/* Back to Discovery Button */}
-            <div className="mb-4">
-                <button
-                    onClick={handleBackToDiscovery}
-                    className="flex gap-2 items-center px-4 py-2 text-blue-600 rounded-lg transition-colors hover:text-blue-700 hover:bg-blue-50"
-                >
-                    <FiArrowLeft />
-                    Back to Template Hub
-                </button>
-            </div>
+            {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                         Prompt Templates
                     </h1>
                     <p className="mt-1 text-gray-600 dark:text-gray-400">
-                        Create and manage reusable prompt templates
+                        Create, manage, and use reusable prompt templates
                     </p>
                 </div>
                 <button
-                    onClick={() => setShowCreateWizard(true)}
+                    onClick={() => setShowCreateModal(true)}
                     className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
                 >
                     <FiPlus />
@@ -402,45 +217,11 @@ const PromptTemplates: React.FC = () => {
                 </button>
             </div>
 
-            {/* Filters and Search */}
-            <div className="flex flex-col gap-4 mb-6 sm:flex-row">
-                <div className="relative flex-1">
-                    <FiSearch className="absolute left-3 top-1/2 text-gray-400 transform -translate-y-1/2" />
-                    <input
-                        type="text"
-                        placeholder="Search templates..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="py-2 pr-4 pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    />
-                </div>
-                <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                    {categories.map(category => (
-                        <option key={category.value} value={category.value}>
-                            {category.label}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
-                    className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                    <option value="created">Recently Created</option>
-                    <option value="name">Name</option>
-                    <option value="usage">Most Used</option>
-                </select>
-            </div>
-
-            {/* Summary Stats */}
+            {/* Quick Stats */}
             <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
                 <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
                     <div className="flex items-center">
-                        <FiTag className="mr-2 text-blue-600" />
+                        <FiBookOpen className="mr-2 text-blue-600" />
                         <div>
                             <p className="text-sm text-gray-600 dark:text-gray-400">Total Templates</p>
                             <p className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -464,11 +245,11 @@ const PromptTemplates: React.FC = () => {
 
                 <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
                     <div className="flex items-center">
-                        <FiUsers className="mr-2 text-green-600" />
+                        <FiTrendingUp className="mr-2 text-green-600" />
                         <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Shared</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Most Used</p>
                             <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                                {templates.filter(t => t.sharing.visibility !== 'private').length}
+                                {templates.reduce((max, t) => Math.max(max, t.usage?.count || 0), 0)}
                             </p>
                         </div>
                     </div>
@@ -476,7 +257,7 @@ const PromptTemplates: React.FC = () => {
 
                 <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
                     <div className="flex items-center">
-                        <FiFilter className="mr-2 text-purple-600" />
+                        <FiTag className="mr-2 text-purple-600" />
                         <div>
                             <p className="text-sm text-gray-600 dark:text-gray-400">Categories</p>
                             <p className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -487,22 +268,61 @@ const PromptTemplates: React.FC = () => {
                 </div>
             </div>
 
+            {/* Simplified Filters */}
+            <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center">
+                <div className="relative flex-1">
+                    <FiSearch className="absolute left-3 top-1/2 text-gray-400 transform -translate-y-1/2" />
+                    <input
+                        type="text"
+                        placeholder="Search templates..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="py-2 pr-4 pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                </div>
+
+                <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                >
+                    {categories.map(category => (
+                        <option key={category.value} value={category.value}>
+                            {category.label}
+                        </option>
+                    ))}
+                </select>
+
+                <button
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                    className={`flex gap-2 items-center px-4 py-2 rounded-lg transition-colors ${showFavoritesOnly
+                        ? 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20'
+                        : 'text-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-300'
+                        }`}
+                >
+                    <FiStar className={showFavoritesOnly ? 'fill-current' : ''} />
+                    Favorites Only
+                </button>
+            </div>
+
             {/* Templates Grid */}
             {sortedTemplates.length === 0 ? (
-                <div className="py-12 text-center">
-                    <FiTag className="mx-auto mb-4 w-12 h-12 text-gray-400" />
+                <div className="py-12 text-center bg-white rounded-lg shadow dark:bg-gray-800">
+                    <FiBookOpen className="mx-auto mb-4 w-12 h-12 text-gray-400" />
                     <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
-                        {searchQuery || selectedCategory !== 'all' ? 'No templates found' : 'No templates yet'}
+                        {searchQuery || selectedCategory !== 'all' || showFavoritesOnly
+                            ? 'No templates found'
+                            : 'No templates yet'}
                     </h3>
                     <p className="mb-4 text-gray-600 dark:text-gray-400">
-                        {searchQuery || selectedCategory !== 'all'
+                        {searchQuery || selectedCategory !== 'all' || showFavoritesOnly
                             ? 'Try adjusting your search or filter criteria'
                             : 'Get started by creating your first template'
                         }
                     </p>
-                    {!searchQuery && selectedCategory === 'all' && (
+                    {!searchQuery && selectedCategory === 'all' && !showFavoritesOnly && (
                         <button
-                            onClick={() => setShowCreateWizard(true)}
+                            onClick={() => setShowCreateModal(true)}
                             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                         >
                             <FiPlus className="mr-2" />
@@ -529,17 +349,10 @@ const PromptTemplates: React.FC = () => {
                 </div>
             )}
 
-            {/* Modals */}
+            {/* Modals - Simplified */}
             {showCreateModal && (
                 <CreateTemplateModal
                     onClose={() => setShowCreateModal(false)}
-                    onSubmit={handleCreateTemplate}
-                />
-            )}
-
-            {showCreateWizard && (
-                <TemplateCreationWizard
-                    onClose={() => setShowCreateWizard(false)}
                     onSubmit={handleCreateTemplate}
                 />
             )}
@@ -620,20 +433,6 @@ const PromptTemplates: React.FC = () => {
                         </div>
                     </div>
                 </Modal>
-            )}
-
-            {showTutorial && (
-                <TemplateTutorial
-                    onClose={() => setShowTutorial(false)}
-                    onCreateTemplate={() => {
-                        setShowTutorial(false);
-                        setShowCreateWizard(true);
-                    }}
-                    onViewMarketplace={() => {
-                        setShowTutorial(false);
-                        setCurrentView('marketplace');
-                    }}
-                />
             )}
         </div>
     );

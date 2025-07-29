@@ -7,16 +7,16 @@ import {
     FiSettings,
     FiTrendingUp,
     FiCalendar,
-    FiTag,
     FiAlertCircle,
-    FiCheckCircle,
-    FiClock,
     FiTarget,
     FiActivity,
-    FiBarChart
+    FiBarChart,
+    FiRefreshCw
 } from 'react-icons/fi';
 import { Modal } from '../common/Modal';
 import { Project } from '../../types/project.types';
+import { ProjectService } from '../../services/project.service';
+import { useNotification } from '../../contexts/NotificationContext';
 
 interface ViewProjectModalProps {
     project: Project;
@@ -31,7 +31,9 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
     onEdit,
     onManageMembers
 }) => {
+    const { showNotification } = useNotification();
     const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'budget' | 'settings'>('overview');
+    const [recalculating, setRecalculating] = useState(false);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -48,17 +50,27 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
         });
     };
 
-    const getBudgetStatus = () => {
-        const spent = project.budget?.spent || 0;
-        const amount = project.budget?.amount || 0;
-        const percentage = amount > 0 ? (spent / amount) * 100 : 0;
-
-        if (percentage >= 90) return { status: 'danger', color: 'text-red-600', bgColor: 'bg-red-100' };
-        if (percentage >= 75) return { status: 'warning', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
-        return { status: 'good', color: 'text-green-600', bgColor: 'bg-green-100' };
+    const handleRecalculateSpending = async () => {
+        try {
+            setRecalculating(true);
+            await ProjectService.recalculateProjectSpending(project._id);
+            showNotification('Project spending recalculated successfully!', 'success');
+            // Refresh the page or reload project data
+            window.location.reload();
+        } catch (error: any) {
+            console.error('Error recalculating spending:', error);
+            showNotification(
+                error.message || 'Failed to recalculate spending',
+                'error'
+            );
+        } finally {
+            setRecalculating(false);
+        }
     };
 
-    const budgetStatus = getBudgetStatus();
+    const spent = project.spending?.current || 0;
+    const amount = project.budget?.amount || 0;
+    const percentage = amount > 0 ? (spent / amount) * 100 : 0;
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: FiBarChart },
@@ -68,63 +80,72 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
     ];
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="" size="lg">
-            <div className="flex flex-col h-full max-h-[90vh]">
+        <Modal isOpen={true} onClose={onClose} title="" size="xl">
+            <div className="flex flex-col h-full max-h-[90vh] bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
                 {/* Header */}
-                <div className="flex justify-between items-start p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-start p-8 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-t-lg">
                     <div className="flex-1 min-w-0">
-                        <div className="flex gap-3 items-center mb-2">
-                            <h2 className="text-2xl font-bold text-gray-900 truncate dark:text-white">
-                                {project.name}
-                            </h2>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${project.status === 'active'
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
-                                : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                                }`}>
-                                {project.isActive ? 'Active' : 'Inactive'}
-                            </span>
+                        <div className="flex gap-3 items-center mb-3">
+                            <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
+                                <span className="text-white font-bold text-lg">
+                                    {project.name.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                                    {project.name}
+                                </h2>
+                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${project.isActive
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                                    }`}>
+                                    {project.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
                         </div>
 
                         {project.description && (
-                            <p className="mb-4 text-gray-600 dark:text-gray-400">
+                            <p className="mb-4 text-gray-600 dark:text-gray-400 text-lg">
                                 {project.description}
                             </p>
                         )}
 
                         <div className="flex gap-6 items-center text-sm text-gray-500 dark:text-gray-400">
-                            <div className="flex gap-1 items-center">
+                            <div className="flex gap-2 items-center">
                                 <FiUsers className="w-4 h-4" />
                                 <span>{project.members?.length || 0} members</span>
                             </div>
-                            <div className="flex gap-1 items-center">
+                            <div className="flex gap-2 items-center">
                                 <FiCalendar className="w-4 h-4" />
                                 <span>Created {formatDate(project.createdAt)}</span>
                             </div>
-                            <div className="flex gap-1 items-center">
+                            <div className="flex gap-2 items-center">
                                 <FiActivity className="w-4 h-4" />
                                 <span>Updated {formatDate(project.updatedAt)}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-2 items-center ml-4">
+                    <div className="flex gap-3 items-center ml-4">
                         <button
                             onClick={() => onManageMembers(project)}
-                            className="p-2 text-gray-400 rounded-lg transition-colors hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                            className="flex gap-2 items-center px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg transition-all hover:bg-gray-50 hover:border-gray-400 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
                             title="Manage members"
                         >
-                            <FiUsers className="w-5 h-5" />
+                            <FiUsers className="w-4 h-4" />
+                            Members
                         </button>
                         <button
                             onClick={() => onEdit(project)}
-                            className="p-2 text-gray-400 rounded-lg transition-colors hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                            className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-all hover:bg-blue-700"
                             title="Edit project"
                         >
-                            <FiEdit3 className="w-5 h-5" />
+                            <FiEdit3 className="w-4 h-4" />
+                            Edit
                         </button>
                         <button
                             onClick={onClose}
-                            className="p-2 text-gray-400 rounded-lg transition-colors hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                            className="p-2 text-gray-400 rounded-lg transition-colors hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                         >
                             <FiX className="w-5 h-5" />
                         </button>
@@ -132,14 +153,14 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-gray-200 dark:border-gray-700">
+                <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
-                            className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
+                            className={`flex items-center gap-2 px-8 py-4 text-sm font-medium transition-all ${activeTab === tab.id
                                 ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400'
-                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
                                 }`}
                         >
                             <tab.icon className="w-4 h-4" />
@@ -149,115 +170,88 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                 </div>
 
                 {/* Content */}
-                <div className="overflow-y-auto flex-1">
+                <div className="overflow-y-auto flex-1 p-8">
                     {activeTab === 'overview' && (
-                        <div className="p-6 space-y-6">
+                        <div className="space-y-8">
                             {/* Key Metrics */}
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                                <div className="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                                    <div className="flex gap-2 items-center text-blue-800 dark:text-blue-200">
-                                        <FiDollarSign className="w-5 h-5" />
+                                <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 dark:from-blue-900/20 dark:to-blue-800/20 dark:border-blue-700">
+                                    <div className="flex gap-3 items-center text-blue-800 dark:text-blue-200">
+                                        <div className="p-2 bg-blue-200 rounded-lg dark:bg-blue-800">
+                                            <FiDollarSign className="w-5 h-5" />
+                                        </div>
                                         <span className="text-sm font-medium">Total Budget</span>
                                     </div>
-                                    <p className="mt-1 text-2xl font-bold text-blue-900 dark:text-blue-100">
+                                    <p className="mt-3 text-3xl font-bold text-blue-900 dark:text-blue-100">
                                         {formatCurrency(project.budget?.amount || 0)}
                                     </p>
-                                    <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
+                                    <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
                                         {project.budget?.period || 'monthly'}
                                     </p>
                                 </div>
 
-                                <div className="p-4 bg-green-50 rounded-lg dark:bg-green-900/20">
-                                    <div className="flex gap-2 items-center text-green-800 dark:text-green-200">
-                                        <FiTrendingUp className="w-5 h-5" />
+                                <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 dark:from-green-900/20 dark:to-green-800/20 dark:border-green-700">
+                                    <div className="flex gap-3 items-center text-green-800 dark:text-green-200">
+                                        <div className="p-2 bg-green-200 rounded-lg dark:bg-green-800">
+                                            <FiTrendingUp className="w-5 h-5" />
+                                        </div>
                                         <span className="text-sm font-medium">Spent</span>
                                     </div>
-                                    <p className="mt-1 text-2xl font-bold text-green-900 dark:text-green-100">
-                                        {formatCurrency(project.budget?.spent || 0)}
+                                    <p className="mt-3 text-3xl font-bold text-green-900 dark:text-green-100">
+                                        {formatCurrency(project.spending?.current || 0)}
                                     </p>
-                                    <p className="mt-1 text-sm text-green-700 dark:text-green-300">
+                                    <p className="mt-2 text-sm text-green-700 dark:text-green-300">
                                         {project.budget?.amount > 0
-                                            ? `${Math.round(((project.budget?.spent || 0) / project.budget.amount) * 100)}% used`
+                                            ? `${Math.round(percentage)}% used`
                                             : '0% used'
                                         }
                                     </p>
                                 </div>
 
-                                <div className="p-4 bg-purple-50 rounded-lg dark:bg-purple-900/20">
-                                    <div className="flex gap-2 items-center text-purple-800 dark:text-purple-200">
-                                        <FiTarget className="w-5 h-5" />
+                                <div className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200 dark:from-purple-900/20 dark:to-purple-800/20 dark:border-purple-700">
+                                    <div className="flex gap-3 items-center text-purple-800 dark:text-purple-200">
+                                        <div className="p-2 bg-purple-200 rounded-lg dark:bg-purple-800">
+                                            <FiTarget className="w-5 h-5" />
+                                        </div>
                                         <span className="text-sm font-medium">Remaining</span>
                                     </div>
-                                    <p className="mt-1 text-2xl font-bold text-purple-900 dark:text-purple-100">
-                                        {formatCurrency((project.budget?.amount || 0) - (project.budget?.spent || 0))}
+                                    <p className="mt-3 text-3xl font-bold text-purple-900 dark:text-purple-100">
+                                        {formatCurrency((project.budget?.amount || 0) - (project.spending?.current || 0))}
                                     </p>
-                                    <p className="mt-1 text-sm text-purple-700 dark:text-purple-300">
+                                    <p className="mt-2 text-sm text-purple-700 dark:text-purple-300">
                                         Available budget
                                     </p>
                                 </div>
                             </div>
 
                             {/* Budget Status */}
-                            <div className={`p-4 rounded-lg ${budgetStatus.bgColor} dark:bg-opacity-20`}>
-                                <div className={`flex items-center gap-2 ${budgetStatus.color}`}>
-                                    {budgetStatus.status === 'danger' && <FiAlertCircle className="w-5 h-5" />}
-                                    {budgetStatus.status === 'warning' && <FiClock className="w-5 h-5" />}
-                                    {budgetStatus.status === 'good' && <FiCheckCircle className="w-5 h-5" />}
-                                    <span className="font-medium">
-                                        {budgetStatus.status === 'danger' && 'Budget Alert'}
-                                        {budgetStatus.status === 'warning' && 'Budget Warning'}
-                                        {budgetStatus.status === 'good' && 'Budget Healthy'}
-                                    </span>
-                                </div>
-                                <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
-                                    {budgetStatus.status === 'danger' && 'You have exceeded 90% of your budget. Consider reviewing your spending.'}
-                                    {budgetStatus.status === 'warning' && 'You have used 75% of your budget. Monitor your spending carefully.'}
-                                    {budgetStatus.status === 'good' && 'Your budget is on track. Keep monitoring your AI costs.'}
-                                </p>
-                            </div>
-
-                            {/* Project Details */}
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Project Details
+                            <div className="p-6 bg-white rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                                    Budget Progress
                                 </h3>
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                        <div className="flex gap-2 items-center mb-2">
-                                            <FiTag className="w-4 h-4 text-gray-500" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Tags
-                                            </span>
-                                        </div>
-                                        {project.tags && project.tags.length > 0 ? (
-                                            <div className="flex flex-wrap gap-1">
-                                                {project.tags.map((tag, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300"
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">No tags</p>
-                                        )}
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Budget Utilization
+                                        </span>
+                                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                            {Math.round(percentage)}%
+                                        </span>
                                     </div>
-
-                                    <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                        <div className="flex gap-2 items-center mb-2">
-                                            <FiUsers className="w-4 h-4 text-gray-500" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Team Size
-                                            </span>
-                                        </div>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            {project.members?.length || 0}
-                                        </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Active members
-                                        </p>
+                                    <div className="w-full h-4 bg-gray-200 rounded-full dark:bg-gray-700 overflow-hidden">
+                                        <div
+                                            className={`h-full rounded-full transition-all duration-500 ${percentage >= 90 ? 'bg-red-500' :
+                                                percentage >= 75 ? 'bg-yellow-500' :
+                                                    'bg-green-500'
+                                                }`}
+                                            style={{
+                                                width: `${Math.min(percentage, 100)}%`
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                                        <span>$0</span>
+                                        <span>{formatCurrency(project.budget?.amount || 0)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -288,23 +282,27 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                                             <div className="flex gap-3 items-center">
                                                 <div className="flex justify-center items-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/20">
                                                     <span className="font-medium text-blue-600 dark:text-blue-400">
-                                                        {member.email?.charAt(0).toUpperCase() || 'U'}
+                                                        {member.email?.charAt(0).toUpperCase() ||
+                                                            (typeof member.userId === 'object' && member.userId.name?.charAt(0).toUpperCase()) ||
+                                                            'U'}
                                                     </span>
                                                 </div>
                                                 <div>
                                                     <p className="font-medium text-gray-900 dark:text-white">
-                                                        {typeof member === 'string' ? member : member.userId}
+                                                        {member.email ||
+                                                            (typeof member.userId === 'object' && member.userId.name) ||
+                                                            (typeof member.userId === 'string' ? member.userId : 'Unknown User')}
                                                     </p>
                                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                        {typeof member === 'string' ? 'Member' : member.role}
+                                                        {member.role}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${(typeof member === 'string' ? 'member' : member.role) === 'admin'
+                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${member.role === 'admin'
                                                 ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200'
                                                 : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                                                 }`}>
-                                                {typeof member === 'string' ? 'Member' : member.role}
+                                                {member.role}
                                             </span>
                                         </div>
                                     ))}
@@ -342,13 +340,13 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                                         <div>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">Amount Spent</p>
                                             <p className="text-xl font-bold text-gray-900 dark:text-white">
-                                                {formatCurrency(project.budget?.spent || 0)}
+                                                {formatCurrency(project.spending?.current || 0)}
                                             </p>
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">Remaining</p>
                                             <p className="text-xl font-bold text-gray-900 dark:text-white">
-                                                {formatCurrency((project.budget?.amount || 0) - (project.budget?.spent || 0))}
+                                                {formatCurrency((project.budget?.amount || 0) - (project.spending?.current || 0))}
                                             </p>
                                         </div>
                                     </div>
@@ -380,21 +378,32 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
 
                                 {/* Budget Progress */}
                                 <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <h4 className="mb-4 font-medium text-gray-900 dark:text-white">
-                                        Budget Progress
-                                    </h4>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h4 className="font-medium text-gray-900 dark:text-white">
+                                            Budget Progress
+                                        </h4>
+                                        <button
+                                            onClick={handleRecalculateSpending}
+                                            disabled={recalculating}
+                                            className="flex gap-2 items-center px-3 py-1 text-xs text-blue-600 bg-blue-50 rounded-lg transition-all hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-800/30 disabled:opacity-50"
+                                        >
+                                            <FiRefreshCw className={`w-3 h-3 ${recalculating ? 'animate-spin' : ''}`} />
+                                            {recalculating ? 'Recalculating...' : 'Recalculate'}
+                                        </button>
+                                    </div>
                                     <div className="w-full h-3 bg-gray-200 rounded-full dark:bg-gray-700">
                                         <div
-                                            className={`h-3 rounded-full ${budgetStatus.status === 'danger' ? 'bg-red-500' :
-                                                budgetStatus.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
+                                            className={`h-2 rounded-full transition-all duration-300 ${percentage >= 90 ? 'bg-red-500' :
+                                                percentage >= 75 ? 'bg-yellow-500' :
+                                                    'bg-green-500'
                                                 }`}
                                             style={{
-                                                width: `${Math.min(((project.budget?.spent || 0) / (project.budget?.amount || 1)) * 100, 100)}%`
+                                                width: `${Math.min(percentage, 100)}%`
                                             }}
                                         ></div>
                                     </div>
                                     <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                        {Math.round(((project.budget?.spent || 0) / (project.budget?.amount || 1)) * 100)}% of budget used
+                                        {Math.round(percentage)}% of budget used
                                     </p>
                                 </div>
                             </div>

@@ -13,6 +13,9 @@ class UsageService {
         sortBy?: string;
         sortOrder?: 'asc' | 'desc';
         projectId?: string;
+        q?: string;
+        minCost?: string;
+        maxCost?: string;
     }): Promise<{
         usage: Usage[];
         total: number;
@@ -39,7 +42,11 @@ class UsageService {
             }
 
             const response = await apiClient.get('/usage', { params: requestParams });
-            const data = response.data.data || response.data;
+            const responseData = response.data;
+            
+            // Handle both success and direct data structures
+            const data = responseData.success ? responseData.data : responseData;
+            const pagination = responseData.success ? responseData.pagination : null;
 
             // Transform backend data to match frontend expectations
             const transformedUsage = (data || []).map((item: any) => ({
@@ -65,11 +72,11 @@ class UsageService {
                 updatedAt: item.updatedAt
             }));
 
-            // Calculate pagination info
-            const currentPage = params?.page || 1;
-            const itemsPerPage = params?.limit || 20;
-            const totalItems = transformedUsage.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            // Use backend pagination if available, otherwise calculate client-side
+            const currentPage = pagination?.page || params?.page || 1;
+            const itemsPerPage = pagination?.limit || params?.limit || 20;
+            const totalItems = pagination?.total || transformedUsage.length;
+            const totalPages = pagination?.pages || Math.ceil(totalItems / itemsPerPage);
 
             return {
                 usage: transformedUsage,
@@ -81,8 +88,8 @@ class UsageService {
                     totalPages,
                     totalItems,
                     itemsPerPage,
-                    hasNext: currentPage < totalPages,
-                    hasPrev: currentPage > 1
+                    hasNext: pagination?.hasNext || currentPage < totalPages,
+                    hasPrev: pagination?.hasPrev || currentPage > 1
                 },
                 summary: {
                     totalCost: transformedUsage.reduce((sum: number, item: Usage) => sum + item.cost, 0),
