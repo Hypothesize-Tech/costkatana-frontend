@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PlusIcon, FunnelIcon, ArrowDownTrayIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
@@ -52,23 +52,39 @@ export default function Usage() {
         };
     };
 
-    // Prepare query parameters
-    const queryParams = {
-        page: currentPage,
-        limit,
-        projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined,
-        service: filters.service || undefined,
-        model: filters.model || undefined,
-        minCost: filters.minCost ? filters.minCost.toString() : undefined,
-        maxCost: filters.maxCost ? filters.maxCost.toString() : undefined,
-        q: debouncedSearch || undefined,
-        ...getDateRange(filters.dateRange || '7d')
-    };
+    // Prepare query parameters with memoization to prevent infinite re-renders
+    const queryParams = useMemo(() => {
+        const dateRange = getDateRange(filters.dateRange || '7d');
+        const params: any = {
+            page: currentPage,
+            limit,
+            projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined,
+            service: filters.service || undefined,
+            model: filters.model || undefined,
+            minCost: filters.minCost ? filters.minCost.toString() : undefined,
+            maxCost: filters.maxCost ? filters.maxCost.toString() : undefined,
+            q: debouncedSearch || undefined,
+            ...dateRange
+        };
 
-    const { data, isLoading, refetch } = useQuery({
+        // Add custom properties as property.* query parameters
+        if (filters.customProperties && typeof filters.customProperties === 'object') {
+            Object.entries(filters.customProperties).forEach(([key, value]) => {
+                params[`property.${key}`] = value;
+            });
+        }
+
+        return params;
+    }, [currentPage, limit, selectedProject, filters.service, filters.model, filters.minCost, filters.maxCost, debouncedSearch, filters.dateRange, filters.customProperties]);
+
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['usage', queryParams],
         queryFn: () => usageService.getUsage(queryParams),
         keepPreviousData: true,
+        staleTime: 30000, // 30 seconds
+        refetchOnWindowFocus: false,
+        retry: 1,
+        retryDelay: 1000, // 1 second delay between retries
     });
 
     const handleExport = async (format: 'json' | 'csv') => {
@@ -105,7 +121,7 @@ export default function Usage() {
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters);
-        setCurrentPage(1); // Reset to first page when filters change
+        setCurrentPage(1);
     };
 
     return (
@@ -235,6 +251,21 @@ export default function Usage() {
             {/* Usage List */}
             {isLoading ? (
                 <LoadingSpinner />
+            ) : error ? (
+                <div className="p-6 text-center">
+                    <div className="text-red-600 mb-4">
+                        <p className="text-lg font-semibold">Failed to load usage data</p>
+                        <p className="text-sm text-gray-600 mt-2">
+                            {error instanceof Error ? error.message : 'An error occurred while loading usage data'}
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => refetch()}
+                        className="btn-primary"
+                    >
+                        Try Again
+                    </button>
+                </div>
             ) : (
                 <UsageList
                     pagination={data?.pagination}

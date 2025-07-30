@@ -277,6 +277,7 @@ export const formatModelName = (model: string): string => {
 
 // Prompt formatting
 export const formatPrompt = (prompt: string, maxLength: number = 100): string => {
+    if (!prompt || prompt.trim() === '') return 'No prompt';
     const cleaned = prompt.replace(/\n+/g, ' ').trim();
     return truncateText(cleaned, maxLength);
 };

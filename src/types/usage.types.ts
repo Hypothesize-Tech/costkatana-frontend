@@ -3,7 +3,7 @@ export type AIService = 'openai' | 'aws-bedrock' | 'google-ai' | 'anthropic' | '
 export interface Usage {
     _id: string;
     userId: string;
-    projectId?: string;
+    projectId?: string | { _id: string; name: string };
     service: AIService;
     model: string;
     prompt: string;
@@ -19,6 +19,11 @@ export interface Usage {
     optimizationId?: string;
     errorOccurred: boolean;
     errorMessage?: string;
+    // Workflow tracking fields
+    workflowId?: string;
+    workflowName?: string;
+    workflowStep?: string;
+    workflowSequence?: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -74,6 +79,7 @@ export interface UsageFilters {
     tags?: string[];
     minCost?: number;
     maxCost?: number;
+    customProperties?: Record<string, string>;
 }
 
 export interface TrackUsageData {

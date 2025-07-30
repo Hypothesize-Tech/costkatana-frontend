@@ -1,4 +1,3 @@
-// src/pages/Analytics.tsx
 import React, { useState, useEffect } from 'react';
 import {
     CalendarIcon,
@@ -10,6 +9,7 @@ import { analyticsService, AnalyticsService } from '../services/analytics.servic
 import { CostTrendChart } from '../components/analytics/CostTrendChart';
 import { ServiceAnalytics } from '../components/analytics/ServiceAnalytics';
 import { ModelComparison } from '../components/analytics/ModelComparison';
+import { PropertyAnalytics } from '../components/analytics/PropertyAnalytics';
 
 import { formatCurrency } from '../utils/formatters';
 import { ProjectService } from '../services/project.service';
@@ -98,6 +98,40 @@ interface ProjectComparison {
     };
 }
 
+// Helper to parse timeRange to startDate and endDate
+function getDateRange(timeRange: string): { startDate: string; endDate: string } {
+    const now = new Date();
+    const endDate = now.toISOString();
+    const startDateObj = new Date(now);
+
+    // If timeRange is a preset (e.g., '7d', '30d', etc.)
+    switch (timeRange) {
+        case '7d':
+            startDateObj.setDate(now.getDate() - 7);
+            break;
+        case '30d':
+            startDateObj.setDate(now.getDate() - 30);
+            break;
+        case '90d':
+            startDateObj.setDate(now.getDate() - 90);
+            break;
+        case '1y':
+            startDateObj.setFullYear(now.getFullYear() - 1);
+            break;
+        default:
+            // If timeRange is a date string, use it as startDate
+            // Validate date string
+            const parsed = new Date(timeRange);
+            if (!isNaN(parsed.getTime())) {
+                return { startDate: parsed.toISOString(), endDate };
+            } else {
+                // fallback to 30d
+                startDateObj.setDate(now.getDate() - 30);
+            }
+    }
+    return { startDate: startDateObj.toISOString(), endDate };
+}
+
 export const Analytics: React.FC = () => {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
@@ -116,33 +150,14 @@ export const Analytics: React.FC = () => {
             setRefreshing(true);
             const filters: any = { groupBy };
 
-            // Add date range filter
-            const now = new Date();
-            const startDate = new Date();
-
-            switch (timeRange) {
-                case '7d':
-                    startDate.setDate(now.getDate() - 7);
-                    break;
-                case '30d':
-                    startDate.setDate(now.getDate() - 30);
-                    break;
-                case '90d':
-                    startDate.setDate(now.getDate() - 90);
-                    break;
-                case '1y':
-                    startDate.setFullYear(now.getFullYear() - 1);
-                    break;
-            }
-
-            filters.startDate = startDate.toISOString();
-            filters.endDate = now.toISOString();
+            // Use helper to get valid ISO date strings
+            const { startDate, endDate } = getDateRange(timeRange);
+            filters.startDate = startDate;
+            filters.endDate = endDate;
 
             if (projectId && projectId !== 'all') {
                 filters.projectId = projectId;
                 const analyticsData = await AnalyticsService.getProjectAnalytics(projectId, filters);
-                console.log("analyticsData", analyticsData)
-
                 // Transform the data to match AnalyticsData interface
                 const transformedData = {
                     summary: {
@@ -239,33 +254,14 @@ export const Analytics: React.FC = () => {
         try {
             const filters: any = {};
 
-            // Add date range filter
-            const now = new Date();
-            const startDate = new Date();
-
-            switch (timeRange) {
-                case '7d':
-                    startDate.setDate(now.getDate() - 7);
-                    break;
-                case '30d':
-                    startDate.setDate(now.getDate() - 30);
-                    break;
-                case '90d':
-                    startDate.setDate(now.getDate() - 90);
-                    break;
-                case '1y':
-                    startDate.setFullYear(now.getFullYear() - 1);
-                    break;
-            }
-
-            filters.startDate = startDate.toISOString();
-            filters.endDate = now.toISOString();
+            // Use helper to get valid ISO date strings
+            const { startDate, endDate } = getDateRange(timeRange);
+            filters.startDate = startDate;
+            filters.endDate = endDate;
             filters.projectIds = selectedProjects;
             filters.metric = 'cost';
 
             const comparisonData = await AnalyticsService.compareProjects(filters);
-
-            console.log('Raw comparison data:', comparisonData);
 
             // Extract data from the response structure
             const actualData = comparisonData?.data || comparisonData;
@@ -283,8 +279,6 @@ export const Analytics: React.FC = () => {
                 budget: project?.budget || null,
                 budgetUtilization: project?.budgetUtilization || 0
             }));
-
-            console.log('Transformed projects:', transformedProjects);
 
             // Defensive: ensure summary exists and is valid
             let summary = actualData?.summary;
@@ -378,10 +372,29 @@ export const Analytics: React.FC = () => {
                                 <CalendarIcon className="w-5 h-5 text-gray-400" />
                                 <input
                                     type="date"
-                                    value={timeRange}
-                                    onChange={(e) => setTimeRange(e.target.value)}
+                                    value={
+                                        // If timeRange is a preset, show empty, else show the date string
+                                        ['7d', '30d', '90d', '1y'].includes(timeRange)
+                                            ? ''
+                                            : timeRange
+                                    }
+                                    onChange={(e) => {
+                                        // If user picks a date, set as ISO string
+                                        setTimeRange(e.target.value);
+                                    }}
                                     className="px-3 py-2 rounded-md border border-gray-300"
                                 />
+                                <select
+                                    value={['7d', '30d', '90d', '1y'].includes(timeRange) ? timeRange : ''}
+                                    onChange={e => setTimeRange(e.target.value)}
+                                    className="ml-2 px-2 py-2 rounded-md border border-gray-300"
+                                >
+                                    <option value="">Custom</option>
+                                    <option value="7d">Last 7 days</option>
+                                    <option value="30d">Last 30 days</option>
+                                    <option value="90d">Last 90 days</option>
+                                    <option value="1y">Last 1 year</option>
+                                </select>
                             </div>
                         </div>
                         <div className="flex space-x-2">
@@ -547,6 +560,11 @@ export const Analytics: React.FC = () => {
 
                             {/* Model Comparison */}
                             <ModelComparison data={data.breakdown.models} />
+
+                            {/* Property Analytics */}
+                            <PropertyAnalytics
+                                dateRange={getDateRange(timeRange)}
+                            />
 
                             {/* Insights */}
                             {data?.trends?.insights && data.trends.insights.length > 0 && (

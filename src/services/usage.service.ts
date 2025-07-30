@@ -99,25 +99,8 @@ class UsageService {
             };
         } catch (error) {
             console.error('Error fetching usage:', error);
-            return {
-                usage: [],
-                total: 0,
-                page: 1,
-                totalPages: 0,
-                pagination: {
-                    currentPage: 1,
-                    totalPages: 0,
-                    totalItems: 0,
-                    itemsPerPage: 20,
-                    hasNext: false,
-                    hasPrev: false
-                },
-                summary: {
-                    totalCost: 0,
-                    totalCalls: 0,
-                    avgCostPerCall: 0
-                }
-            };
+            // Re-throw the error to let React Query handle it properly
+            throw error;
         }
     }
 
@@ -411,6 +394,75 @@ class UsageService {
             return {
                 users: []
             };
+        }
+    }
+
+    async getPropertyAnalytics(params: {
+        groupBy: string;
+        startDate?: string;
+        endDate?: string;
+        projectId?: string;
+    }): Promise<{
+        groupBy: string;
+        data: Array<{
+            propertyValue: string;
+            totalCost: number;
+            totalTokens: number;
+            totalRequests: number;
+            averageCost: number;
+            averageTokens: number;
+            averageResponseTime: number;
+        }>;
+        totals: {
+            totalCost: number;
+            totalTokens: number;
+            totalRequests: number;
+        };
+        summary: {
+            uniqueValues: number;
+            totalCost: number;
+            totalTokens: number;
+            totalRequests: number;
+        };
+    }> {
+        try {
+            const response = await apiClient.get('/usage/properties/analytics', { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching property analytics:', error);
+            throw error;
+        }
+    }
+
+    async getAvailableProperties(params?: {
+        startDate?: string;
+        endDate?: string;
+        projectId?: string;
+    }): Promise<Array<{
+        property: string;
+        count: number;
+        sampleValues: string[];
+    }>> {
+        try {
+            const response = await apiClient.get('/usage/properties/available', { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Error fetching available properties:', error);
+            throw error;
+        }
+    }
+
+    async updateUsageProperties(usageId: string, properties: Record<string, any>): Promise<{
+        id: string;
+        updatedProperties: string[];
+        metadata: Record<string, any>;
+    }> {
+        try {
+            const response = await apiClient.put(`/usage/${usageId}/properties`, properties);
+            return response.data.data;
+        } catch (error) {
+            console.error('Error updating usage properties:', error);
+            throw error;
         }
     }
 

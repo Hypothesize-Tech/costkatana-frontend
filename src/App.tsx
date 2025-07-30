@@ -36,6 +36,9 @@ import { Integration } from './pages/Integration';
 import Pricing from './pages/Pricing';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
+import Gateway from './pages/Gateway';
+import Workflows from './pages/Workflows';
+import KeyVault from './pages/KeyVault';
 
 
 const queryClient = new QueryClient();
@@ -114,6 +117,18 @@ function App() {
                                         <Route
                                             path="experimentation"
                                             element={<Experimentation />}
+                                        />
+                                        <Route
+                                            path="gateway"
+                                            element={<Gateway />}
+                                        />
+                                        <Route
+                                            path="workflows"
+                                            element={<Workflows />}
+                                        />
+                                        <Route
+                                            path="key-vault"
+                                            element={<KeyVault />}
                                         />
 
                                         <Route

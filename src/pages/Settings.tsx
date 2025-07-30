@@ -1,23 +1,35 @@
 // src/pages/Settings.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import {
     UserCircleIcon,
     KeyIcon,
     BellIcon,
+    ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { userService } from '../services/user.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ApiKeySettings } from '../components/settings/ApiKeySettings';
 import { NotificationSettings } from '../components/settings/NotificationSettings';
+import { SecuritySettings } from '../components/settings/SecuritySettings';
 import { useNotifications } from '../contexts/NotificationContext';
-        
-type SettingsTab = 'profile' | 'api-keys' | 'notifications';
+
+type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security';
 
 export const Settings: React.FC = () => {
+    const [searchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
     const { showNotification } = useNotifications();
+
+    // Handle URL parameter to set active tab
+    useEffect(() => {
+        const tabParam = searchParams.get('tab') as SettingsTab;
+        if (tabParam && ['profile', 'api-keys', 'notifications', 'security'].includes(tabParam)) {
+            setActiveTab(tabParam);
+        }
+    }, [searchParams]);
 
     const { data: profile, isLoading } = useQuery(
         ['user-profile'],
@@ -56,6 +68,12 @@ export const Settings: React.FC = () => {
             name: 'Notifications',
             icon: BellIcon,
             component: NotificationSettings,
+        },
+        {
+            id: 'security' as const,
+            name: 'Security',
+            icon: ShieldCheckIcon,
+            component: SecuritySettings,
         },
     ];
 
@@ -101,6 +119,15 @@ export const Settings: React.FC = () => {
                     {activeTab === 'notifications' && (
                         <NotificationSettings
                             onUpdate={updateProfileMutation.mutate}
+                        />
+                    )}
+                    {activeTab === 'security' && (
+                        <SecuritySettings
+                            onUpdate={updateProfileMutation.mutate}
+                            security={{
+                                twoFactorEnabled: false,
+                                activeSessions: []
+                            }}
                         />
                     )}
                 </div>

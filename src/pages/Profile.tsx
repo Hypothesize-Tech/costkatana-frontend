@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/user.service';
 import { analyticsService } from '../services/analytics.service';
@@ -18,6 +19,7 @@ import {
 export const Profile: React.FC = () => {
     const { user, updateUser } = useAuth();
     const { showNotification } = useNotifications();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'preferences' | 'security' | 'subscription'>('overview');
 
@@ -301,7 +303,10 @@ export const Profile: React.FC = () => {
                                         <h4 className="font-medium text-gray-900">API Keys</h4>
                                         <p className="text-sm text-gray-600">Manage your API keys and access tokens</p>
                                     </div>
-                                    <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
+                                    <button
+                                        onClick={() => navigate('/settings?tab=api-keys')}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                                    >
                                         Manage Keys
                                     </button>
                                 </div>

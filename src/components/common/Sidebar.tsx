@@ -20,6 +20,9 @@ import {
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
     ClockIcon,
+    ServerIcon,
+    QueueListIcon,
+    KeyIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -35,6 +38,9 @@ const navigation = [
     { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
     { name: 'Requests', href: '/requests', icon: ClockIcon, description: 'Real-time LLM API requests' },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
+    { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
+    { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
+    { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
     { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
     { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
     { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
