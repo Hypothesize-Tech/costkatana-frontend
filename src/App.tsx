@@ -39,6 +39,7 @@ import Experimentation from './pages/Experimentation';
 import Gateway from './pages/Gateway';
 import Workflows from './pages/Workflows';
 import KeyVault from './pages/KeyVault';
+import { Training } from './pages/Training';
 
 
 const queryClient = new QueryClient();
@@ -129,6 +130,10 @@ function App() {
                                         <Route
                                             path="key-vault"
                                             element={<KeyVault />}
+                                        />
+                                        <Route
+                                            path="training"
+                                            element={<Training />}
                                         />
 
                                         <Route

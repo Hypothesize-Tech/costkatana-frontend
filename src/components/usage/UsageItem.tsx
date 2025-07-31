@@ -5,12 +5,16 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   ChevronRightIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  StarIcon
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { ProactiveTip } from '../intelligence';
 import { intelligenceService } from '../../services/intelligence.service';
+import { FeedbackButton } from '../feedback/FeedbackButton';
+import { feedbackService } from '../../services/feedback.service';
+import { RequestScoring } from '../training/RequestScoring';
 
 interface UsageItemProps {
   usage: Usage;
@@ -25,6 +29,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
 }) => {
   const [showTip, setShowTip] = useState(false);
   const [tipData, setTipData] = useState<any>(null);
+  const [showScoring, setShowScoring] = useState(false);
 
   useEffect(() => {
     // Check if this usage needs a tip
@@ -58,6 +63,26 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     e.stopPropagation();
     if (onOptimize) {
       onOptimize(usage);
+    }
+  };
+
+  const handleFeedbackSubmit = async (requestId: string, rating: boolean, comment?: string) => {
+    try {
+      const result = await feedbackService.submitFeedback(requestId, {
+        rating,
+        comment,
+        implicitSignals: {
+          sessionDuration: Date.now() - new Date(usage.createdAt).getTime()
+        }
+      });
+
+      if (result.success) {
+        console.log('Feedback submitted successfully for usage:', usage._id);
+      } else {
+        console.error('Failed to submit feedback:', result.message);
+      }
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
     }
   };
 
@@ -146,6 +171,25 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                 <SparklesIcon className="w-5 h-5" />
               </button>
             )}
+            {usage.metadata?.requestId && (
+              <FeedbackButton
+                requestId={usage.metadata.requestId}
+                onFeedbackSubmit={handleFeedbackSubmit}
+                size="sm"
+              />
+            )}
+            {usage.metadata?.requestId && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowScoring(!showScoring);
+                }}
+                className="text-blue-600 hover:text-blue-900"
+                title="Score this request for training"
+              >
+                <StarIcon className="w-5 h-5" />
+              </button>
+            )}
             <ChevronRightIcon className="w-5 h-5 text-gray-400" />
           </div>
         </td>
@@ -165,6 +209,26 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                 setShowTip(false);
               }}
             />
+          </td>
+        </tr>
+      )}
+
+      {showScoring && usage.metadata?.requestId && (
+        <tr>
+          <td colSpan={7} className="px-6 py-4 bg-blue-50 border-t">
+            <div className="max-w-md">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                Score this request for training
+              </h4>
+              <RequestScoring
+                requestId={usage.metadata.requestId}
+                size="sm"
+                onScoreSubmitted={(score) => {
+                  console.log(`Request ${usage.metadata?.requestId} scored: ${score}`);
+                  setShowScoring(false);
+                }}
+              />
+            </div>
           </td>
         </tr>
       )}

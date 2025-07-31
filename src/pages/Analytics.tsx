@@ -10,6 +10,7 @@ import { CostTrendChart } from '../components/analytics/CostTrendChart';
 import { ServiceAnalytics } from '../components/analytics/ServiceAnalytics';
 import { ModelComparison } from '../components/analytics/ModelComparison';
 import { PropertyAnalytics } from '../components/analytics/PropertyAnalytics';
+import { FeedbackAnalytics } from '../components/feedback';
 
 import { formatCurrency } from '../utils/formatters';
 import { ProjectService } from '../services/project.service';
@@ -565,6 +566,9 @@ export const Analytics: React.FC = () => {
                             <PropertyAnalytics
                                 dateRange={getDateRange(timeRange)}
                             />
+
+                            {/* Feedback Analytics - Return on AI Spend */}
+                            <FeedbackAnalytics />
 
                             {/* Insights */}
                             {data?.trends?.insights && data.trends.insights.length > 0 && (

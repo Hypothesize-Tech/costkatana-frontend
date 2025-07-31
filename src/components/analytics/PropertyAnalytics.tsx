@@ -12,12 +12,39 @@ interface PropertyAnalyticsProps {
     };
 }
 
+function renderPropertyValue(property: string, value: any) {
+    // For tags, join with comma if it's an array
+    if (property === 'tags' && Array.isArray(value)) {
+        return value.length > 0 ? value.join(', ') : '(empty)';
+    }
+    // For costAllocation, show key-value pairs
+    if (property === 'costAllocation' && typeof value === 'object' && value !== null) {
+        return Object.entries(value)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(', ');
+    }
+    // For metadata, show JSON stringified (shortened)
+    if (property === 'metadata' && typeof value === 'object' && value !== null) {
+        return JSON.stringify(value, null, 0);
+    }
+    // For other arrays, join with comma
+    if (Array.isArray(value)) {
+        return value.length > 0 ? value.join(', ') : '(empty)';
+    }
+    // For objects, show JSON string
+    if (typeof value === 'object' && value !== null) {
+        return JSON.stringify(value);
+    }
+    // Fallback
+    return value || '(empty)';
+}
+
 export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange }) => {
     const [selectedProperty, setSelectedProperty] = useState<string>('');
     const [availableProperties, setAvailableProperties] = useState<Array<{
         property: string;
         count: number;
-        sampleValues: string[];
+        sampleValues: any[];
     }>>([]);
     const { selectedProject } = useProject();
 
@@ -202,7 +229,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                                 <tr key={index} className="hover:bg-gray-50">
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="text-sm font-medium text-gray-900">
-                                                            {item.propertyValue || '(empty)'}
+                                                            {renderPropertyValue(selectedProperty, item.propertyValue)}
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

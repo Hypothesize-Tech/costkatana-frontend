@@ -21,7 +21,7 @@ import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { DashboardService, DashboardData } from '../services/dashboard.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
-import { formatTimestamp, formatSafeDate } from '../utils/formatters';
+import { formatTimestamp } from '../utils/formatters';
 import logo from '../assets/logo.png';
 import { useProject } from '@/contexts/ProjectContext';
 import { Menu, Transition } from '@headlessui/react';
@@ -44,7 +44,6 @@ export const Dashboard: React.FC = () => {
     const [timeRange, setTimeRange] = useState<string>('7d');
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-
     // Real-time updates
     const [realtimeUpdates, setRealtimeUpdates] = useState<any[]>([]);
     const [_sseConnection, setSseConnection] = useState<EventSource | null>(null);
@@ -572,7 +571,7 @@ export const Dashboard: React.FC = () => {
                                                             totalCost: typeof activity.cost === 'number' ? activity.cost : 0,
                                                             totalCalls: 1,
                                                             avgCost: typeof activity.cost === 'number' ? activity.cost : 0,
-                                                            lastUsed: formatSafeDate(activity.timestamp),
+                                                            lastUsed: activity.createdAt || activity.updatedAt || new Date(),
                                                             services: [activity.service || activity.type || 'unknown'],
                                                             models: []
                                                         })) || []}

@@ -18,6 +18,8 @@ import {
     QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline';
 import { ChatService } from '@/services/chat.service';
+import { FeedbackButton } from '../feedback/FeedbackButton';
+import { feedbackService } from '../../services/feedback.service';
 import { marked } from 'marked';
 
 // Configure marked for security
@@ -32,6 +34,7 @@ interface ChatMessage {
     role: 'user' | 'assistant';
     content: string;
     timestamp: Date;
+    requestId?: string; // For feedback tracking
     metadata?: {
         cost?: number;
         latency?: number;
@@ -446,6 +449,7 @@ export const ConversationalAgent: React.FC = () => {
                         role: 'assistant',
                         content: "Here's how I would approach optimizing your AI costs. This demo shows my thinking process as I analyze your requirements and develop a solution.",
                         timestamp: new Date(),
+                        requestId: `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate unique request ID
                         metadata: {
                             cost: 0.0003,
                             latency: 1200,
@@ -506,6 +510,7 @@ export const ConversationalAgent: React.FC = () => {
                 role: 'assistant',
                 content: response.response,
                 timestamp: new Date(),
+                requestId: `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate unique request ID
                 metadata: {
                     cost: response.cost,
                     latency: response.latency,
@@ -557,6 +562,29 @@ export const ConversationalAgent: React.FC = () => {
             setError(error instanceof Error ? error.message : 'Failed to send message');
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleFeedbackSubmit = async (requestId: string, rating: boolean, comment?: string) => {
+        try {
+            const result = await feedbackService.submitFeedback(requestId, {
+                rating,
+                comment,
+                implicitSignals: {
+                    copied: copiedCode !== null, // User has copied something
+                    conversationContinued: messages.length > 2, // Multi-turn conversation
+                    sessionDuration: Date.now() - (messages[0]?.timestamp?.getTime() || Date.now())
+                }
+            });
+
+            if (result.success) {
+                console.log('Feedback submitted successfully');
+                // Optionally show a success message to the user
+            } else {
+                console.error('Failed to submit feedback:', result.message);
+            }
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
         }
     };
 
@@ -854,9 +882,19 @@ export const ConversationalAgent: React.FC = () => {
                             <div className="message-content">
                                 {renderMessageContent(message.content, message)}
                                 <div className="message-footer">
-                                    <span className="message-time">{formatTimestamp(message.timestamp)}</span>
-                                    {message.metadata?.cost && (
-                                        <span className="message-cost">${message.metadata.cost.toFixed(4)}</span>
+                                    <div className="message-info">
+                                        <span className="message-time">{formatTimestamp(message.timestamp)}</span>
+                                        {message.metadata?.cost && (
+                                            <span className="message-cost">${message.metadata.cost.toFixed(4)}</span>
+                                        )}
+                                    </div>
+                                    {message.role === 'assistant' && message.requestId && (
+                                        <FeedbackButton
+                                            requestId={message.requestId}
+                                            onFeedbackSubmit={handleFeedbackSubmit}
+                                            size="sm"
+                                            className="ml-2"
+                                        />
                                     )}
                                 </div>
                             </div>
