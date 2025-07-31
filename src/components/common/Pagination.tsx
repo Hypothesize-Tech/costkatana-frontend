@@ -1,5 +1,5 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { cn } from '@/utils/helpers';
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { cn } from "@/utils/helpers";
 
 interface PaginationProps {
   currentPage: number;
@@ -18,7 +18,7 @@ export const Pagination = ({
 
   return (
     <nav
-      className={cn('flex items-center justify-between py-4', className)}
+      className={cn("flex items-center justify-between py-4", className)}
       aria-label="Pagination"
     >
       <div className="flex flex-1 justify-between sm:hidden">
@@ -37,17 +37,20 @@ export const Pagination = ({
           Next
         </button>
       </div>
-      
+
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            Page <span className="font-medium">{currentPage}</span> of{' '}
+            Page <span className="font-medium">{currentPage}</span> of{" "}
             <span className="font-medium">{totalPages}</span>
           </p>
         </div>
-        
+
         <div>
-          <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+          <nav
+            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            aria-label="Pagination"
+          >
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -56,7 +59,7 @@ export const Pagination = ({
               <span className="sr-only">Previous</span>
               <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
             </button>
-            
+
             {pages.map((page, index) => (
               <PageButton
                 key={index}
@@ -65,7 +68,7 @@ export const Pagination = ({
                 onClick={onPageChange}
               />
             ))}
-            
+
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
@@ -82,13 +85,13 @@ export const Pagination = ({
 };
 
 interface PageButtonProps {
-  page: number | '...';
+  page: number | "...";
   currentPage: number;
   onClick: (page: number) => void;
 }
 
 const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
-  if (page === '...') {
+  if (page === "...") {
     return (
       <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0 dark:text-gray-300 dark:ring-gray-600">
         ...
@@ -101,12 +104,12 @@ const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
   return (
     <button
       onClick={() => onClick(page)}
-      aria-current={isActive ? 'page' : undefined}
+      aria-current={isActive ? "page" : undefined}
       className={cn(
-        'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus:outline-offset-0',
+        "relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus:outline-offset-0",
         isActive
-          ? 'z-10 bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
-          : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+          ? "z-10 bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+          : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700",
       )}
     >
       {page}
@@ -115,14 +118,21 @@ const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
 };
 
 // Helper function to generate pagination array
-function generatePaginationArray(currentPage: number, totalPages: number): (number | '...')[] {
+function generatePaginationArray(
+  currentPage: number,
+  totalPages: number,
+): (number | "...")[] {
   const delta = 2;
   const range: number[] = [];
-  const rangeWithDots: (number | '...')[] = [];
+  const rangeWithDots: (number | "...")[] = [];
   let l: number;
 
   for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+    if (
+      i === 1 ||
+      i === totalPages ||
+      (i >= currentPage - delta && i <= currentPage + delta)
+    ) {
       range.push(i);
     }
   }
@@ -132,7 +142,7 @@ function generatePaginationArray(currentPage: number, totalPages: number): (numb
       if (i - l === 2) {
         rangeWithDots.push(l + 1);
       } else if (i - l !== 1) {
-        rangeWithDots.push('...');
+        rangeWithDots.push("...");
       }
     }
     rangeWithDots.push(i);

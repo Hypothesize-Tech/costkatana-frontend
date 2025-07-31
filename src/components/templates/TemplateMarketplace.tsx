@@ -1,68 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
-    FiStar,
-    FiDownload,
-    FiSearch,
-    FiTrendingUp,
-    FiCode,
-    FiEdit3,
-    FiBarChart,
-    FiBriefcase,
-    FiEye,
-    FiHeart,
-    FiZap,
-    FiCheckCircle,
-    FiArrowRight
-} from 'react-icons/fi';
-import { PromptTemplate } from '../../types/promptTemplate.types';
+  FiStar,
+  FiDownload,
+  FiSearch,
+  FiTrendingUp,
+  FiCode,
+  FiEdit3,
+  FiBarChart,
+  FiBriefcase,
+  FiEye,
+  FiHeart,
+  FiZap,
+  FiCheckCircle,
+  FiArrowRight,
+} from "react-icons/fi";
+import { PromptTemplate } from "../../types/promptTemplate.types";
 
 interface TemplateMarketplaceProps {
-    onImportTemplate: (template: any) => void;
-    onPreviewTemplate: (template: PromptTemplate) => void;
+  onImportTemplate: (template: any) => void;
+  onPreviewTemplate: (template: PromptTemplate) => void;
 }
 
 interface MarketplaceTemplate extends PromptTemplate {
-    downloadCount: number;
-    featured: boolean;
-    author: {
-        name: string;
-        avatar?: string;
-        verified: boolean;
-    };
-    preview: string;
-    costSavings: {
-        percentage: number;
-        avgSaved: number;
-    };
+  downloadCount: number;
+  featured: boolean;
+  author: {
+    name: string;
+    avatar?: string;
+    verified: boolean;
+  };
+  preview: string;
+  costSavings: {
+    percentage: number;
+    avgSaved: number;
+  };
 }
 
 export const TemplateMarketplace: React.FC<TemplateMarketplaceProps> = ({
-    onImportTemplate,
-    onPreviewTemplate
+  onImportTemplate,
+  onPreviewTemplate,
 }) => {
-    const [templates, setTemplates] = useState<MarketplaceTemplate[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [sortBy, setSortBy] = useState<'popular' | 'rating' | 'recent' | 'savings'>('popular');
-    const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [templates, setTemplates] = useState<MarketplaceTemplate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState<
+    "popular" | "rating" | "recent" | "savings"
+  >("popular");
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-    const categories = [
-        { id: 'all', name: 'All Templates', icon: <FiZap className="category-icon" />, count: 0 },
-        { id: 'coding', name: 'Code & Development', icon: <FiCode className="category-icon" />, count: 0 },
-        { id: 'writing', name: 'Content Writing', icon: <FiEdit3 className="category-icon" />, count: 0 },
-        { id: 'analysis', name: 'Data Analysis', icon: <FiBarChart className="category-icon" />, count: 0 },
-        { id: 'creative', name: 'Creative Content', icon: <FiArrowRight className="category-icon" />, count: 0 },
-        { id: 'business', name: 'Business & Marketing', icon: <FiBriefcase className="category-icon" />, count: 0 }
-    ];
+  const categories = [
+    {
+      id: "all",
+      name: "All Templates",
+      icon: <FiZap className="category-icon" />,
+      count: 0,
+    },
+    {
+      id: "coding",
+      name: "Code & Development",
+      icon: <FiCode className="category-icon" />,
+      count: 0,
+    },
+    {
+      id: "writing",
+      name: "Content Writing",
+      icon: <FiEdit3 className="category-icon" />,
+      count: 0,
+    },
+    {
+      id: "analysis",
+      name: "Data Analysis",
+      icon: <FiBarChart className="category-icon" />,
+      count: 0,
+    },
+    {
+      id: "creative",
+      name: "Creative Content",
+      icon: <FiArrowRight className="category-icon" />,
+      count: 0,
+    },
+    {
+      id: "business",
+      name: "Business & Marketing",
+      icon: <FiBriefcase className="category-icon" />,
+      count: 0,
+    },
+  ];
 
-    // Mock data for marketplace templates
-    const mockTemplates: MarketplaceTemplate[] = [
-        {
-            _id: 'marketplace-1',
-            name: 'API Documentation Generator',
-            description: 'Generate comprehensive API documentation with examples and error handling',
-            content: `Generate comprehensive API documentation for {{endpoint_name}}.
+  // Mock data for marketplace templates
+  const mockTemplates: MarketplaceTemplate[] = [
+    {
+      _id: "marketplace-1",
+      name: "API Documentation Generator",
+      description:
+        "Generate comprehensive API documentation with examples and error handling",
+      content: `Generate comprehensive API documentation for {{endpoint_name}}.
 
 **Endpoint:** {{method}} {{endpoint_path}}
 **Purpose:** {{purpose}}
@@ -79,63 +112,108 @@ Include:
 - Error codes and handling
 - Rate limiting information
 - SDK examples in {{language}}`,
-            category: 'coding',
-            createdBy: {
-                _id: 'user1',
-                name: 'TechWriter Pro',
-                email: 'techwriter@example.com'
-            },
-            version: 1,
-            variables: [
-                { name: 'endpoint_name', description: 'API endpoint name', defaultValue: '', required: true, type: 'text' },
-                { name: 'method', description: 'HTTP method', defaultValue: 'GET', required: true, type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE'] },
-                { name: 'endpoint_path', description: 'API path', defaultValue: '', required: true, type: 'text' },
-                { name: 'purpose', description: 'What the endpoint does', defaultValue: '', required: true, type: 'text' },
-                { name: 'parameters', description: 'Endpoint parameters', defaultValue: '', required: true, type: 'text' },
-                { name: 'response_format', description: 'Response structure', defaultValue: '', required: true, type: 'text' },
-                { name: 'language', description: 'Programming language for examples', defaultValue: 'JavaScript', required: false, type: 'text' }
-            ],
-            metadata: {
-                estimatedTokens: 420,
-                estimatedCost: 0.012,
-                recommendedModel: 'gpt-4',
-                tags: ['api', 'documentation', 'development'],
-                language: 'en'
-            },
-            usage: {
-                count: 1247,
-                lastUsed: new Date().toISOString(),
-                totalTokensSaved: 45000,
-                totalCostSaved: 890,
-                averageRating: 4.8,
-                feedback: []
-            },
-            sharing: {
-                visibility: 'public',
-                sharedWith: [],
-                allowFork: true
-            },
-            isActive: true,
-            isDeleted: false,
-            createdAt: '2024-01-15T10:00:00Z',
-            updatedAt: '2024-01-15T10:00:00Z',
-            downloadCount: 1247,
-            featured: true,
-            author: {
-                name: 'TechWriter Pro',
-                verified: true
-            },
-            preview: 'Perfect for creating professional API documentation that developers actually want to read.',
-            costSavings: {
-                percentage: 75,
-                avgSaved: 4.50
-            }
+      category: "coding",
+      createdBy: {
+        _id: "user1",
+        name: "TechWriter Pro",
+        email: "techwriter@example.com",
+      },
+      version: 1,
+      variables: [
+        {
+          name: "endpoint_name",
+          description: "API endpoint name",
+          defaultValue: "",
+          required: true,
+          type: "text",
         },
         {
-            _id: 'marketplace-2',
-            name: 'Blog Post Generator',
-            description: 'Create engaging, SEO-optimized blog posts with clear structure and CTAs',
-            content: `Write a {{tone}} blog post about {{topic}} for {{target_audience}}.
+          name: "method",
+          description: "HTTP method",
+          defaultValue: "GET",
+          required: true,
+          type: "select",
+          options: ["GET", "POST", "PUT", "DELETE"],
+        },
+        {
+          name: "endpoint_path",
+          description: "API path",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "purpose",
+          description: "What the endpoint does",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "parameters",
+          description: "Endpoint parameters",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "response_format",
+          description: "Response structure",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "language",
+          description: "Programming language for examples",
+          defaultValue: "JavaScript",
+          required: false,
+          type: "text",
+        },
+      ],
+      metadata: {
+        estimatedTokens: 420,
+        estimatedCost: 0.012,
+        recommendedModel: "gpt-4",
+        tags: ["api", "documentation", "development"],
+        language: "en",
+      },
+      usage: {
+        count: 1247,
+        lastUsed: new Date().toISOString(),
+        totalTokensSaved: 45000,
+        totalCostSaved: 890,
+        averageRating: 4.8,
+        feedback: [],
+      },
+      sharing: {
+        visibility: "public",
+        sharedWith: [],
+        allowFork: true,
+      },
+      isActive: true,
+      isDeleted: false,
+      createdAt: "2024-01-15T10:00:00Z",
+      updatedAt: "2024-01-15T10:00:00Z",
+      downloadCount: 1247,
+      featured: true,
+      author: {
+        name: "TechWriter Pro",
+        verified: true,
+      },
+      preview:
+        "Perfect for creating professional API documentation that developers actually want to read.",
+      costSavings: {
+        percentage: 75,
+        avgSaved: 4.5,
+      },
+    },
+    {
+      _id: "marketplace-2",
+      name: "Blog Post Generator",
+      description:
+        "Create engaging, SEO-optimized blog posts with clear structure and CTAs",
+      content: `Write a {{tone}} blog post about {{topic}} for {{target_audience}}.
 
 **Target Length:** {{word_count}} words
 **Primary Keyword:** {{primary_keyword}}
@@ -160,64 +238,115 @@ Include:
 - Meta description ready excerpt
 - Internal linking opportunities
 - Social media friendly format`,
-            category: 'writing',
-            createdBy: {
-                _id: 'user2',
-                name: 'Content Marketing Expert',
-                email: 'content@example.com'
-            },
-            version: 1,
-            variables: [
-                { name: 'topic', description: 'Blog post topic', defaultValue: '', required: true, type: 'text' },
-                { name: 'tone', description: 'Writing tone', defaultValue: 'professional', required: true, type: 'select', options: ['professional', 'casual', 'friendly', 'authoritative'] },
-                { name: 'target_audience', description: 'Target readers', defaultValue: '', required: true, type: 'text' },
-                { name: 'word_count', description: 'Target word count', defaultValue: '1000-1200', required: false, type: 'text' },
-                { name: 'primary_keyword', description: 'Main SEO keyword', defaultValue: '', required: true, type: 'text' },
-                { name: 'secondary_keywords', description: 'Additional keywords', defaultValue: '', required: false, type: 'text' },
-                { name: 'main_points', description: 'Key points to cover', defaultValue: '', required: true, type: 'text' },
-                { name: 'cta_type', description: 'Call-to-action type', defaultValue: 'newsletter signup', required: false, type: 'text' }
-            ],
-            metadata: {
-                estimatedTokens: 520,
-                estimatedCost: 0.015,
-                recommendedModel: 'gpt-4',
-                tags: ['blog', 'content', 'seo', 'marketing'],
-                language: 'en'
-            },
-            usage: {
-                count: 892,
-                lastUsed: new Date().toISOString(),
-                totalTokensSaved: 38000,
-                totalCostSaved: 750,
-                averageRating: 4.6,
-                feedback: []
-            },
-            sharing: {
-                visibility: 'public',
-                sharedWith: [],
-                allowFork: true
-            },
-            isActive: true,
-            isDeleted: false,
-            createdAt: '2024-01-10T14:30:00Z',
-            updatedAt: '2024-01-10T14:30:00Z',
-            downloadCount: 892,
-            featured: true,
-            author: {
-                name: 'Content Marketing Expert',
-                verified: true
-            },
-            preview: 'Generate high-quality, SEO-optimized blog content that drives traffic and engagement.',
-            costSavings: {
-                percentage: 68,
-                avgSaved: 3.80
-            }
+      category: "writing",
+      createdBy: {
+        _id: "user2",
+        name: "Content Marketing Expert",
+        email: "content@example.com",
+      },
+      version: 1,
+      variables: [
+        {
+          name: "topic",
+          description: "Blog post topic",
+          defaultValue: "",
+          required: true,
+          type: "text",
         },
         {
-            _id: 'marketplace-3',
-            name: 'Data Analysis Report',
-            description: 'Transform raw data into actionable business insights and recommendations',
-            content: `Analyze the {{data_type}} dataset and provide comprehensive insights.
+          name: "tone",
+          description: "Writing tone",
+          defaultValue: "professional",
+          required: true,
+          type: "select",
+          options: ["professional", "casual", "friendly", "authoritative"],
+        },
+        {
+          name: "target_audience",
+          description: "Target readers",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "word_count",
+          description: "Target word count",
+          defaultValue: "1000-1200",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "primary_keyword",
+          description: "Main SEO keyword",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "secondary_keywords",
+          description: "Additional keywords",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "main_points",
+          description: "Key points to cover",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "cta_type",
+          description: "Call-to-action type",
+          defaultValue: "newsletter signup",
+          required: false,
+          type: "text",
+        },
+      ],
+      metadata: {
+        estimatedTokens: 520,
+        estimatedCost: 0.015,
+        recommendedModel: "gpt-4",
+        tags: ["blog", "content", "seo", "marketing"],
+        language: "en",
+      },
+      usage: {
+        count: 892,
+        lastUsed: new Date().toISOString(),
+        totalTokensSaved: 38000,
+        totalCostSaved: 750,
+        averageRating: 4.6,
+        feedback: [],
+      },
+      sharing: {
+        visibility: "public",
+        sharedWith: [],
+        allowFork: true,
+      },
+      isActive: true,
+      isDeleted: false,
+      createdAt: "2024-01-10T14:30:00Z",
+      updatedAt: "2024-01-10T14:30:00Z",
+      downloadCount: 892,
+      featured: true,
+      author: {
+        name: "Content Marketing Expert",
+        verified: true,
+      },
+      preview:
+        "Generate high-quality, SEO-optimized blog content that drives traffic and engagement.",
+      costSavings: {
+        percentage: 68,
+        avgSaved: 3.8,
+      },
+    },
+    {
+      _id: "marketplace-3",
+      name: "Data Analysis Report",
+      description:
+        "Transform raw data into actionable business insights and recommendations",
+      content: `Analyze the {{data_type}} dataset and provide comprehensive insights.
 
 **Dataset Overview:**
 - Data Source: {{data_source}}
@@ -258,150 +387,199 @@ Include:
 - Next steps with priorities
 
 Focus on {{business_context}} implications and provide specific, measurable recommendations.`,
-            category: 'analysis',
-            createdBy: {
-                _id: 'user3',
-                name: 'Data Analytics Pro',
-                email: 'analytics@example.com'
-            },
-            version: 1,
-            variables: [
-                { name: 'data_type', description: 'Type of data being analyzed', defaultValue: '', required: true, type: 'text' },
-                { name: 'data_source', description: 'Where the data comes from', defaultValue: '', required: true, type: 'text' },
-                { name: 'time_period', description: 'Analysis time range', defaultValue: '', required: true, type: 'text' },
-                { name: 'sample_size', description: 'Number of data points', defaultValue: '', required: false, type: 'text' },
-                { name: 'key_metrics', description: 'Primary metrics to analyze', defaultValue: '', required: true, type: 'text' },
-                { name: 'analysis_objectives', description: 'What you want to discover', defaultValue: '', required: true, type: 'text' },
-                { name: 'business_context', description: 'Business context and goals', defaultValue: '', required: true, type: 'text' }
-            ],
-            metadata: {
-                estimatedTokens: 450,
-                estimatedCost: 0.013,
-                recommendedModel: 'gpt-4',
-                tags: ['analytics', 'data', 'business', 'insights'],
-                language: 'en'
-            },
-            usage: {
-                count: 634,
-                lastUsed: new Date().toISOString(),
-                totalTokensSaved: 28000,
-                totalCostSaved: 620,
-                averageRating: 4.7,
-                feedback: []
-            },
-            sharing: {
-                visibility: 'public',
-                sharedWith: [],
-                allowFork: true
-            },
-            isActive: true,
-            isDeleted: false,
-            createdAt: '2024-01-08T09:15:00Z',
-            updatedAt: '2024-01-08T09:15:00Z',
-            downloadCount: 634,
-            featured: false,
-            author: {
-                name: 'Data Analytics Pro',
-                verified: true
-            },
-            preview: 'Turn complex datasets into clear, actionable business intelligence reports.',
-            costSavings: {
-                percentage: 72,
-                avgSaved: 4.20
-            }
+      category: "analysis",
+      createdBy: {
+        _id: "user3",
+        name: "Data Analytics Pro",
+        email: "analytics@example.com",
+      },
+      version: 1,
+      variables: [
+        {
+          name: "data_type",
+          description: "Type of data being analyzed",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "data_source",
+          description: "Where the data comes from",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "time_period",
+          description: "Analysis time range",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "sample_size",
+          description: "Number of data points",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "key_metrics",
+          description: "Primary metrics to analyze",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "analysis_objectives",
+          description: "What you want to discover",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "business_context",
+          description: "Business context and goals",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+      ],
+      metadata: {
+        estimatedTokens: 450,
+        estimatedCost: 0.013,
+        recommendedModel: "gpt-4",
+        tags: ["analytics", "data", "business", "insights"],
+        language: "en",
+      },
+      usage: {
+        count: 634,
+        lastUsed: new Date().toISOString(),
+        totalTokensSaved: 28000,
+        totalCostSaved: 620,
+        averageRating: 4.7,
+        feedback: [],
+      },
+      sharing: {
+        visibility: "public",
+        sharedWith: [],
+        allowFork: true,
+      },
+      isActive: true,
+      isDeleted: false,
+      createdAt: "2024-01-08T09:15:00Z",
+      updatedAt: "2024-01-08T09:15:00Z",
+      downloadCount: 634,
+      featured: false,
+      author: {
+        name: "Data Analytics Pro",
+        verified: true,
+      },
+      preview:
+        "Turn complex datasets into clear, actionable business intelligence reports.",
+      costSavings: {
+        percentage: 72,
+        avgSaved: 4.2,
+      },
+    },
+  ];
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
+
+  const loadTemplates = async () => {
+    setLoading(true);
+    try {
+      // In real implementation, this would fetch from API
+      // For now, use mock data
+      setTemplates(mockTemplates);
+
+      // Update category counts
+      categories.forEach((category) => {
+        if (category.id === "all") {
+          category.count = mockTemplates.length;
+        } else {
+          category.count = mockTemplates.filter(
+            (t) => t.category === category.id,
+          ).length;
         }
-    ];
+      });
+    } catch (error) {
+      console.error("Error loading marketplace templates:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        loadTemplates();
-    }, []);
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      !searchQuery ||
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.metadata.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-    const loadTemplates = async () => {
-        setLoading(true);
-        try {
-            // In real implementation, this would fetch from API
-            // For now, use mock data
-            setTemplates(mockTemplates);
+    const matchesCategory =
+      selectedCategory === "all" || template.category === selectedCategory;
 
-            // Update category counts
-            categories.forEach(category => {
-                if (category.id === 'all') {
-                    category.count = mockTemplates.length;
-                } else {
-                    category.count = mockTemplates.filter(t => t.category === category.id).length;
-                }
-            });
-        } catch (error) {
-            console.error('Error loading marketplace templates:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    return matchesSearch && matchesCategory;
+  });
 
-    const filteredTemplates = templates.filter(template => {
-        const matchesSearch = !searchQuery ||
-            template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            template.metadata.tags.some(tag =>
-                tag.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
+    switch (sortBy) {
+      case "popular":
+        return b.downloadCount - a.downloadCount;
+      case "rating":
+        return (b.usage.averageRating || 0) - (a.usage.averageRating || 0);
+      case "recent":
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      case "savings":
+        return b.costSavings.percentage - a.costSavings.percentage;
+      default:
+        return 0;
+    }
+  });
 
-        const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
+  const handleImport = async (template: MarketplaceTemplate) => {
+    try {
+      // Convert marketplace template to create template format
+      const templateData = {
+        name: `${template.name} (Copy)`,
+        description: template.description,
+        content: template.content,
+        category: template.category,
+        variables: template.variables,
+        metadata: {
+          tags: [...template.metadata.tags, "marketplace"],
+          estimatedTokens: template.metadata.estimatedTokens,
+        },
+      };
 
-        return matchesSearch && matchesCategory;
+      await onImportTemplate(templateData);
+    } catch (error) {
+      console.error("Error importing template:", error);
+    }
+  };
+
+  const toggleFavorite = (templateId: string) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(templateId)) {
+        newFavorites.delete(templateId);
+      } else {
+        newFavorites.add(templateId);
+      }
+      return newFavorites;
     });
+  };
 
-    const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-        switch (sortBy) {
-            case 'popular':
-                return b.downloadCount - a.downloadCount;
-            case 'rating':
-                return (b.usage.averageRating || 0) - (a.usage.averageRating || 0);
-            case 'recent':
-                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-            case 'savings':
-                return b.costSavings.percentage - a.costSavings.percentage;
-            default:
-                return 0;
-        }
-    });
-
-    const handleImport = async (template: MarketplaceTemplate) => {
-        try {
-            // Convert marketplace template to create template format
-            const templateData = {
-                name: `${template.name} (Copy)`,
-                description: template.description,
-                content: template.content,
-                category: template.category,
-                variables: template.variables,
-                metadata: {
-                    tags: [...template.metadata.tags, 'marketplace'],
-                    estimatedTokens: template.metadata.estimatedTokens
-                }
-            };
-
-            await onImportTemplate(templateData);
-        } catch (error) {
-            console.error('Error importing template:', error);
-        }
-    };
-
-    const toggleFavorite = (templateId: string) => {
-        setFavorites(prev => {
-            const newFavorites = new Set(prev);
-            if (newFavorites.has(templateId)) {
-                newFavorites.delete(templateId);
-            } else {
-                newFavorites.add(templateId);
-            }
-            return newFavorites;
-        });
-    };
-
-    return (
-        <div className="template-marketplace">
-            <style>{`
+  return (
+    <div className="template-marketplace">
+      <style>{`
                 .template-marketplace {
                     padding: 2rem;
                     max-width: 1400px;
@@ -859,184 +1037,196 @@ Focus on {{business_context}} implications and provide specific, measurable reco
                 }
             `}</style>
 
-            <div className="marketplace-header">
-                <h1 className="marketplace-title">Template Marketplace</h1>
-                <p className="marketplace-subtitle">
-                    Discover professionally crafted templates created by our community.
-                    Save time and money with proven, high-quality prompts.
-                </p>
-            </div>
+      <div className="marketplace-header">
+        <h1 className="marketplace-title">Template Marketplace</h1>
+        <p className="marketplace-subtitle">
+          Discover professionally crafted templates created by our community.
+          Save time and money with proven, high-quality prompts.
+        </p>
+      </div>
 
-            <div className="filters-section">
-                <div className="search-bar">
-                    <FiSearch className="search-icon" />
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="Search templates by name, description, or tags..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-
-                <div className="filter-row">
-                    <div className="filter-group">
-                        <span className="filter-label">Sort by:</span>
-                        <select
-                            className="filter-select"
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as any)}
-                        >
-                            <option value="popular">Most Popular</option>
-                            <option value="rating">Highest Rated</option>
-                            <option value="recent">Recently Added</option>
-                            <option value="savings">Best Savings</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div className="categories-grid">
-                {categories.map((category) => (
-                    <div
-                        key={category.id}
-                        className={`category-card ${selectedCategory === category.id ? 'active' : ''}`}
-                        onClick={() => setSelectedCategory(category.id)}
-                    >
-                        {category.icon}
-                        <div className="category-name">{category.name}</div>
-                        <div className="category-count">{category.count} templates</div>
-                    </div>
-                ))}
-            </div>
-
-            {loading ? (
-                <div className="loading-state">
-                    <div>Loading templates...</div>
-                </div>
-            ) : sortedTemplates.length === 0 ? (
-                <div className="empty-state">
-                    <FiSearch className="empty-icon" />
-                    <h3>No templates found</h3>
-                    <p>Try adjusting your search or filter criteria</p>
-                </div>
-            ) : (
-                <div className="templates-grid">
-                    {sortedTemplates.map((template) => (
-                        <div
-                            key={template._id}
-                            className={`template-card ${template.featured ? 'featured' : ''}`}
-                        >
-                            {template.featured && (
-                                <div className="featured-badge">Featured</div>
-                            )}
-
-                            <div className="template-header">
-                                <div className="template-info">
-                                    <h3 className="template-name">{template.name}</h3>
-                                    <div className="template-author">
-                                        <span>by {template.author.name}</span>
-                                        {template.author.verified && (
-                                            <FiCheckCircle className="verified-badge" />
-                                        )}
-                                    </div>
-                                    <div className="template-rating">
-                                        <div className="rating-stars">
-                                            {[...Array(5)].map((_, i) => (
-                                                <FiStar
-                                                    key={i}
-                                                    style={{
-                                                        fill: i < Math.floor(template.usage.averageRating || 0) ? 'currentColor' : 'none'
-                                                    }}
-                                                />
-                                            ))}
-                                        </div>
-                                        <span className="rating-count">
-                                            {template.usage.averageRating?.toFixed(1)} ({template.downloadCount})
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="template-actions">
-                                    <button
-                                        className={`action-btn favorite-btn ${favorites.has(template._id) ? 'active' : ''}`}
-                                        onClick={() => toggleFavorite(template._id)}
-                                    >
-                                        <FiHeart />
-                                    </button>
-                                    <button
-                                        className="action-btn preview-btn"
-                                        onClick={() => onPreviewTemplate(template)}
-                                    >
-                                        <FiEye />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <p className="template-description">{template.description}</p>
-
-                            <div className="template-preview">
-                                "{template.preview}"
-                            </div>
-
-                            <div className="template-stats">
-                                <div className="stat-item">
-                                    <span className="stat-value">{template.downloadCount}</span>
-                                    <div className="stat-label">Downloads</div>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-value">{template.variables.length}</span>
-                                    <div className="stat-label">Variables</div>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-value">~{template.metadata.estimatedTokens}</span>
-                                    <div className="stat-label">Tokens</div>
-                                </div>
-                            </div>
-
-                            <div className="template-tags">
-                                {template.metadata.tags.map((tag) => (
-                                    <span key={tag} className="tag">#{tag}</span>
-                                ))}
-                            </div>
-
-                            <div className="cost-savings">
-                                <div className="savings-title">
-                                    <FiTrendingUp />
-                                    Cost Savings
-                                </div>
-                                <div className="savings-stats">
-                                    <div className="savings-item">
-                                        <span className="savings-value">{template.costSavings.percentage}%</span>
-                                        <div className="savings-label">Less Cost</div>
-                                    </div>
-                                    <div className="savings-item">
-                                        <span className="savings-value">${template.costSavings.avgSaved}</span>
-                                        <div className="savings-label">Avg Saved</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="template-footer">
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => onPreviewTemplate(template)}
-                                >
-                                    <FiEye />
-                                    Preview
-                                </button>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => handleImport(template)}
-                                >
-                                    <FiDownload />
-                                    Import Template
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+      <div className="filters-section">
+        <div className="search-bar">
+          <FiSearch className="search-icon" />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search templates by name, description, or tags..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
-    );
-}; 
+
+        <div className="filter-row">
+          <div className="filter-group">
+            <span className="filter-label">Sort by:</span>
+            <select
+              className="filter-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+            >
+              <option value="popular">Most Popular</option>
+              <option value="rating">Highest Rated</option>
+              <option value="recent">Recently Added</option>
+              <option value="savings">Best Savings</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="categories-grid">
+        {categories.map((category) => (
+          <div
+            key={category.id}
+            className={`category-card ${selectedCategory === category.id ? "active" : ""}`}
+            onClick={() => setSelectedCategory(category.id)}
+          >
+            {category.icon}
+            <div className="category-name">{category.name}</div>
+            <div className="category-count">{category.count} templates</div>
+          </div>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="loading-state">
+          <div>Loading templates...</div>
+        </div>
+      ) : sortedTemplates.length === 0 ? (
+        <div className="empty-state">
+          <FiSearch className="empty-icon" />
+          <h3>No templates found</h3>
+          <p>Try adjusting your search or filter criteria</p>
+        </div>
+      ) : (
+        <div className="templates-grid">
+          {sortedTemplates.map((template) => (
+            <div
+              key={template._id}
+              className={`template-card ${template.featured ? "featured" : ""}`}
+            >
+              {template.featured && (
+                <div className="featured-badge">Featured</div>
+              )}
+
+              <div className="template-header">
+                <div className="template-info">
+                  <h3 className="template-name">{template.name}</h3>
+                  <div className="template-author">
+                    <span>by {template.author.name}</span>
+                    {template.author.verified && (
+                      <FiCheckCircle className="verified-badge" />
+                    )}
+                  </div>
+                  <div className="template-rating">
+                    <div className="rating-stars">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          style={{
+                            fill:
+                              i < Math.floor(template.usage.averageRating || 0)
+                                ? "currentColor"
+                                : "none",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className="rating-count">
+                      {template.usage.averageRating?.toFixed(1)} (
+                      {template.downloadCount})
+                    </span>
+                  </div>
+                </div>
+
+                <div className="template-actions">
+                  <button
+                    className={`action-btn favorite-btn ${favorites.has(template._id) ? "active" : ""}`}
+                    onClick={() => toggleFavorite(template._id)}
+                  >
+                    <FiHeart />
+                  </button>
+                  <button
+                    className="action-btn preview-btn"
+                    onClick={() => onPreviewTemplate(template)}
+                  >
+                    <FiEye />
+                  </button>
+                </div>
+              </div>
+
+              <p className="template-description">{template.description}</p>
+
+              <div className="template-preview">"{template.preview}"</div>
+
+              <div className="template-stats">
+                <div className="stat-item">
+                  <span className="stat-value">{template.downloadCount}</span>
+                  <div className="stat-label">Downloads</div>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">
+                    {template.variables.length}
+                  </span>
+                  <div className="stat-label">Variables</div>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">
+                    ~{template.metadata.estimatedTokens}
+                  </span>
+                  <div className="stat-label">Tokens</div>
+                </div>
+              </div>
+
+              <div className="template-tags">
+                {template.metadata.tags.map((tag) => (
+                  <span key={tag} className="tag">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="cost-savings">
+                <div className="savings-title">
+                  <FiTrendingUp />
+                  Cost Savings
+                </div>
+                <div className="savings-stats">
+                  <div className="savings-item">
+                    <span className="savings-value">
+                      {template.costSavings.percentage}%
+                    </span>
+                    <div className="savings-label">Less Cost</div>
+                  </div>
+                  <div className="savings-item">
+                    <span className="savings-value">
+                      ${template.costSavings.avgSaved}
+                    </span>
+                    <div className="savings-label">Avg Saved</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="template-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => onPreviewTemplate(template)}
+                >
+                  <FiEye />
+                  Preview
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleImport(template)}
+                >
+                  <FiDownload />
+                  Import Template
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

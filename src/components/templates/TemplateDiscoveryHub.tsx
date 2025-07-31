@@ -1,123 +1,125 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
-    FiZap,
-    FiDollarSign,
-    FiClock,
-    FiTrendingUp,
-    FiCode,
-    FiEdit3,
-    FiBarChart,
-    FiPlay,
-    FiArrowRight,
-    FiUsers,
-    FiList,
-    FiBook,
-} from 'react-icons/fi';
+  FiZap,
+  FiDollarSign,
+  FiClock,
+  FiTrendingUp,
+  FiCode,
+  FiEdit3,
+  FiBarChart,
+  FiPlay,
+  FiArrowRight,
+  FiUsers,
+  FiList,
+  FiBook,
+} from "react-icons/fi";
 
 interface TemplateDiscoveryHubProps {
-    onCreateTemplate: () => void;
-    onStartTutorial: () => void;
-    onViewTemplates: () => void;
-    onUseTemplates?: () => void;
+  onCreateTemplate: () => void;
+  onStartTutorial: () => void;
+  onViewTemplates: () => void;
+  onUseTemplates?: () => void;
 }
 
 export const TemplateDiscoveryHub: React.FC<TemplateDiscoveryHubProps> = ({
-    onCreateTemplate,
-    onStartTutorial,
-    onViewTemplates,
-    onUseTemplates
+  onCreateTemplate,
+  onStartTutorial,
+  onViewTemplates,
+  onUseTemplates,
 }) => {
-    const [stats, setStats] = useState({
-        totalTemplates: 0,
-        totalSavings: 0,
-        timeSaved: 0,
-        avgRating: 4.8
-    });
-    const [selectedUseCase, setSelectedUseCase] = useState(0);
+  const [stats, setStats] = useState({
+    totalTemplates: 0,
+    totalSavings: 0,
+    timeSaved: 0,
+    avgRating: 4.8,
+  });
+  const [selectedUseCase, setSelectedUseCase] = useState(0);
 
-    const useCases = [
-        {
-            title: "Code Documentation",
-            description: "Generate comprehensive documentation for your code",
-            example: "Create detailed API documentation for {{function_name}} that {{description}}",
-            savings: "75% time saved",
-            cost: "$0.15 vs $0.60",
-            icon: <FiCode className="hub-icon" />
-        },
-        {
-            title: "Content Writing",
-            description: "Create engaging blog posts and articles",
-            example: "Write a {{tone}} blog post about {{topic}} for {{audience}}",
-            savings: "60% time saved",
-            cost: "$0.25 vs $0.65",
-            icon: <FiEdit3 className="hub-icon" />
-        },
-        {
-            title: "Data Analysis",
-            description: "Analyze and summarize complex datasets",
-            example: "Analyze {{data_type}} and provide insights on {{metric}}",
-            savings: "80% time saved",
-            cost: "$0.30 vs $1.20",
-            icon: <FiBarChart className="hub-icon" />
-        },
-        {
-            title: "Creative Content",
-            description: "Generate creative marketing and social content",
-            example: "Create {{content_type}} for {{product}} targeting {{demographic}}",
-            savings: "70% time saved",
-            cost: "$0.20 vs $0.75",
-            icon: <FiArrowRight className="hub-icon" />
-        }
-    ];
+  const useCases = [
+    {
+      title: "Code Documentation",
+      description: "Generate comprehensive documentation for your code",
+      example:
+        "Create detailed API documentation for {{function_name}} that {{description}}",
+      savings: "75% time saved",
+      cost: "$0.15 vs $0.60",
+      icon: <FiCode className="hub-icon" />,
+    },
+    {
+      title: "Content Writing",
+      description: "Create engaging blog posts and articles",
+      example: "Write a {{tone}} blog post about {{topic}} for {{audience}}",
+      savings: "60% time saved",
+      cost: "$0.25 vs $0.65",
+      icon: <FiEdit3 className="hub-icon" />,
+    },
+    {
+      title: "Data Analysis",
+      description: "Analyze and summarize complex datasets",
+      example: "Analyze {{data_type}} and provide insights on {{metric}}",
+      savings: "80% time saved",
+      cost: "$0.30 vs $1.20",
+      icon: <FiBarChart className="hub-icon" />,
+    },
+    {
+      title: "Creative Content",
+      description: "Generate creative marketing and social content",
+      example:
+        "Create {{content_type}} for {{product}} targeting {{demographic}}",
+      savings: "70% time saved",
+      cost: "$0.20 vs $0.75",
+      icon: <FiArrowRight className="hub-icon" />,
+    },
+  ];
 
-    const benefits = [
-        {
-            icon: <FiDollarSign className="benefit-icon cost" />,
-            title: "Reduce AI Costs",
-            description: "Save up to 80% on AI API costs with optimized prompts",
-            metric: "Average 65% savings"
-        },
-        {
-            icon: <FiClock className="benefit-icon time" />,
-            title: "Save Time",
-            description: "Reuse proven prompts instead of writing from scratch",
-            metric: "2-5 minutes per use"
-        },
-        {
-            icon: <FiTrendingUp className="benefit-icon performance" />,
-            title: "Better Results",
-            description: "Get consistent, high-quality outputs every time",
-            metric: "40% better outputs"
-        },
-        {
-            icon: <FiUsers className="benefit-icon team" />,
-            title: "Team Collaboration",
-            description: "Share best practices across your organization",
-            metric: "10x faster onboarding"
-        }
-    ];
+  const benefits = [
+    {
+      icon: <FiDollarSign className="benefit-icon cost" />,
+      title: "Reduce AI Costs",
+      description: "Save up to 80% on AI API costs with optimized prompts",
+      metric: "Average 65% savings",
+    },
+    {
+      icon: <FiClock className="benefit-icon time" />,
+      title: "Save Time",
+      description: "Reuse proven prompts instead of writing from scratch",
+      metric: "2-5 minutes per use",
+    },
+    {
+      icon: <FiTrendingUp className="benefit-icon performance" />,
+      title: "Better Results",
+      description: "Get consistent, high-quality outputs every time",
+      metric: "40% better outputs",
+    },
+    {
+      icon: <FiUsers className="benefit-icon team" />,
+      title: "Team Collaboration",
+      description: "Share best practices across your organization",
+      metric: "10x faster onboarding",
+    },
+  ];
 
-    useEffect(() => {
-        loadStats();
-    }, []);
+  useEffect(() => {
+    loadStats();
+  }, []);
 
-    const loadStats = async () => {
-        try {
-            // Mock data for now - replace with actual API calls
-            setStats({
-                totalTemplates: 1247,
-                totalSavings: 45230,
-                timeSaved: 892,
-                avgRating: 4.8
-            });
-        } catch (error) {
-            console.error('Error loading stats:', error);
-        }
-    };
+  const loadStats = async () => {
+    try {
+      // Mock data for now - replace with actual API calls
+      setStats({
+        totalTemplates: 1247,
+        totalSavings: 45230,
+        timeSaved: 892,
+        avgRating: 4.8,
+      });
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    }
+  };
 
-    return (
-        <div className="template-discovery-hub">
-            <style>{`
+  return (
+    <div className="template-discovery-hub">
+      <style>{`
                 .template-discovery-hub {
                     padding: 0;
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -760,171 +762,178 @@ export const TemplateDiscoveryHub: React.FC<TemplateDiscoveryHubProps> = ({
                 }
             `}</style>
 
-            {/* Hero Section */}
-            <section className="hero-section">
-                <div className="hero-content">
-                    <h1>Transform Your AI Prompts Into Powerful Templates</h1>
-                    <p>
-                        Save time, reduce costs, and get consistent results with our intelligent
-                        prompt template system. Join thousands of developers already saving money.
-                    </p>
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1>Transform Your AI Prompts Into Powerful Templates</h1>
+          <p>
+            Save time, reduce costs, and get consistent results with our
+            intelligent prompt template system. Join thousands of developers
+            already saving money.
+          </p>
 
-                    <div className="hero-stats">
-                        <div className="stat-card">
-                            <span className="stat-number">{stats.totalTemplates.toLocaleString()}</span>
-                            <span className="stat-label">Templates Created</span>
-                        </div>
-                        <div className="stat-card">
-                            <span className="stat-number">${stats.totalSavings.toLocaleString()}</span>
-                            <span className="stat-label">Total Savings</span>
-                        </div>
-                        <div className="stat-card">
-                            <span className="stat-number">{stats.timeSaved}h</span>
-                            <span className="stat-label">Time Saved</span>
-                        </div>
-                        <div className="stat-card">
-                            <span className="stat-number">{stats.avgRating} ★</span>
-                            <span className="stat-label">Average Rating</span>
-                        </div>
-                    </div>
+          <div className="hero-stats">
+            <div className="stat-card">
+              <span className="stat-number">
+                {stats.totalTemplates.toLocaleString()}
+              </span>
+              <span className="stat-label">Templates Created</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">
+                ${stats.totalSavings.toLocaleString()}
+              </span>
+              <span className="stat-label">Total Savings</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">{stats.timeSaved}h</span>
+              <span className="stat-label">Time Saved</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">{stats.avgRating} ★</span>
+              <span className="stat-label">Average Rating</span>
+            </div>
+          </div>
 
-                    <div className="cta-buttons">
-                        <button className="btn-primary" onClick={onCreateTemplate}>
-                            <FiZap />
-                            Create Your First Template
-                        </button>
-                        <button className="btn-secondary" onClick={onStartTutorial}>
-                            <FiPlay />
-                            Watch Tutorial
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* Benefits Section */}
-            <section className="benefits-section">
-                <h2 className="section-title">Why Use Prompt Templates?</h2>
-                <p className="section-subtitle">
-                    Discover how templates can revolutionize your AI workflow and save you money
-                </p>
-
-                <div className="benefits-grid">
-                    {benefits.map((benefit, index) => (
-                        <div key={index} className="benefit-card">
-                            <div className="benefit-icon">
-                                {benefit.icon}
-                            </div>
-                            <h3>{benefit.title}</h3>
-                            <p>{benefit.description}</p>
-                            <span className="benefit-metric">{benefit.metric}</span>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Use Cases Section */}
-            <section className="use-cases-section">
-                <h2 className="section-title">Popular Use Cases</h2>
-                <p className="section-subtitle">
-                    See how templates solve real problems across different domains
-                </p>
-
-                <div className="use-case-selector">
-                    {useCases.map((useCase, index) => (
-                        <div
-                            key={index}
-                            className={`use-case-tab ${selectedUseCase === index ? 'active' : ''}`}
-                            onClick={() => setSelectedUseCase(index)}
-                        >
-                            {useCase.icon}
-                            <h3>{useCase.title}</h3>
-                            <p>{useCase.description}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="use-case-demo">
-                    <h3>{useCases[selectedUseCase].title} Template Example</h3>
-                    <p>{useCases[selectedUseCase].description}</p>
-
-                    <div className="demo-example">
-                        {useCases[selectedUseCase].example}
-                    </div>
-
-                    <div className="demo-metrics">
-                        <div className="demo-metric">
-                            <span className="demo-metric-value">{useCases[selectedUseCase].savings}</span>
-                            <span className="demo-metric-label">Time Efficiency</span>
-                        </div>
-                        <div className="demo-metric">
-                            <span className="demo-metric-value">{useCases[selectedUseCase].cost}</span>
-                            <span className="demo-metric-label">Cost Comparison</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section - View All Templates */}
-            <section className="cta-section">
-                <div className="cta-container">
-                    <div className="cta-content">
-                        <h2>Ready to Explore Our Template Library?</h2>
-                        <p>
-                            Browse through hundreds of professionally crafted templates,
-                            organized by category and use case. Find the perfect starting point
-                            for your next AI project.
-                        </p>
-                    </div>
-
-                    <button onClick={onViewTemplates} className="cta-button">
-                        <span className="cta-text">View All Templates</span>
-                        <FiList className="cta-icon" />
-                    </button>
-
-                    <div className="cta-features">
-                        <div className="cta-feature">
-                            <div className="cta-feature-icon">
-                                <FiCode />
-                            </div>
-                            <h4>1,200+ Templates</h4>
-                            <p>Covering every use case</p>
-                        </div>
-                        <div className="cta-feature">
-                            <div className="cta-feature-icon">
-                                <FiTrendingUp />
-                            </div>
-                            <h4>Community Rated</h4>
-                            <p>Best templates rise to the top</p>
-                        </div>
-                        <div className="cta-feature">
-                            <div className="cta-feature-icon">
-                                <FiZap />
-                            </div>
-                            <h4>Instant Use</h4>
-                            <p>Copy, customize, and deploy</p>
-                        </div>
-                    </div>
-
-                    {/* Additional CTA buttons */}
-                    <div className="secondary-cta-buttons">
-                        {onUseTemplates && (
-                            <button onClick={onUseTemplates} className="secondary-cta-btn">
-                                <FiPlay className="cta-icon" />
-                                <span>Use Existing Templates</span>
-                            </button>
-                        )}
-                        <button onClick={onCreateTemplate} className="secondary-cta-btn">
-                            <FiZap className="cta-icon" />
-                            <span>Create New Template</span>
-                        </button>
-                        <button onClick={onStartTutorial} className="secondary-cta-btn">
-                            <FiBook className="cta-icon" />
-                            <span>Learn How</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
+          <div className="cta-buttons">
+            <button className="btn-primary" onClick={onCreateTemplate}>
+              <FiZap />
+              Create Your First Template
+            </button>
+            <button className="btn-secondary" onClick={onStartTutorial}>
+              <FiPlay />
+              Watch Tutorial
+            </button>
+          </div>
         </div>
-    );
-}; 
+      </section>
+
+      {/* Benefits Section */}
+      <section className="benefits-section">
+        <h2 className="section-title">Why Use Prompt Templates?</h2>
+        <p className="section-subtitle">
+          Discover how templates can revolutionize your AI workflow and save you
+          money
+        </p>
+
+        <div className="benefits-grid">
+          {benefits.map((benefit, index) => (
+            <div key={index} className="benefit-card">
+              <div className="benefit-icon">{benefit.icon}</div>
+              <h3>{benefit.title}</h3>
+              <p>{benefit.description}</p>
+              <span className="benefit-metric">{benefit.metric}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Use Cases Section */}
+      <section className="use-cases-section">
+        <h2 className="section-title">Popular Use Cases</h2>
+        <p className="section-subtitle">
+          See how templates solve real problems across different domains
+        </p>
+
+        <div className="use-case-selector">
+          {useCases.map((useCase, index) => (
+            <div
+              key={index}
+              className={`use-case-tab ${selectedUseCase === index ? "active" : ""}`}
+              onClick={() => setSelectedUseCase(index)}
+            >
+              {useCase.icon}
+              <h3>{useCase.title}</h3>
+              <p>{useCase.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="use-case-demo">
+          <h3>{useCases[selectedUseCase].title} Template Example</h3>
+          <p>{useCases[selectedUseCase].description}</p>
+
+          <div className="demo-example">
+            {useCases[selectedUseCase].example}
+          </div>
+
+          <div className="demo-metrics">
+            <div className="demo-metric">
+              <span className="demo-metric-value">
+                {useCases[selectedUseCase].savings}
+              </span>
+              <span className="demo-metric-label">Time Efficiency</span>
+            </div>
+            <div className="demo-metric">
+              <span className="demo-metric-value">
+                {useCases[selectedUseCase].cost}
+              </span>
+              <span className="demo-metric-label">Cost Comparison</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section - View All Templates */}
+      <section className="cta-section">
+        <div className="cta-container">
+          <div className="cta-content">
+            <h2>Ready to Explore Our Template Library?</h2>
+            <p>
+              Browse through hundreds of professionally crafted templates,
+              organized by category and use case. Find the perfect starting
+              point for your next AI project.
+            </p>
+          </div>
+
+          <button onClick={onViewTemplates} className="cta-button">
+            <span className="cta-text">View All Templates</span>
+            <FiList className="cta-icon" />
+          </button>
+
+          <div className="cta-features">
+            <div className="cta-feature">
+              <div className="cta-feature-icon">
+                <FiCode />
+              </div>
+              <h4>1,200+ Templates</h4>
+              <p>Covering every use case</p>
+            </div>
+            <div className="cta-feature">
+              <div className="cta-feature-icon">
+                <FiTrendingUp />
+              </div>
+              <h4>Community Rated</h4>
+              <p>Best templates rise to the top</p>
+            </div>
+            <div className="cta-feature">
+              <div className="cta-feature-icon">
+                <FiZap />
+              </div>
+              <h4>Instant Use</h4>
+              <p>Copy, customize, and deploy</p>
+            </div>
+          </div>
+
+          {/* Additional CTA buttons */}
+          <div className="secondary-cta-buttons">
+            {onUseTemplates && (
+              <button onClick={onUseTemplates} className="secondary-cta-btn">
+                <FiPlay className="cta-icon" />
+                <span>Use Existing Templates</span>
+              </button>
+            )}
+            <button onClick={onCreateTemplate} className="secondary-cta-btn">
+              <FiZap className="cta-icon" />
+              <span>Create New Template</span>
+            </button>
+            <button onClick={onStartTutorial} className="secondary-cta-btn">
+              <FiBook className="cta-icon" />
+              <span>Learn How</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};

@@ -1,9 +1,9 @@
-import React from 'react';
-import { IntegrationDashboard } from '../components/integration/IntegrationDashboard';
-import { useProject } from '../contexts/ProjectContext';
+import React from "react";
+import { IntegrationDashboard } from "../components/integration/IntegrationDashboard";
+import { useProject } from "../contexts/ProjectContext";
 
 export const Integration: React.FC = () => {
-    const { selectedProject } = useProject();
+  const { selectedProject } = useProject();
 
-    return <IntegrationDashboard projectId={selectedProject} />;
-}; 
+  return <IntegrationDashboard projectId={selectedProject} />;
+};

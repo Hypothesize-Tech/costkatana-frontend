@@ -1,11 +1,17 @@
-import { Fragment, useMemo } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { BellIcon, Bars3Icon, SunIcon, MoonIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth, useTheme, useNotifications } from '../../hooks';
-import { cn } from '../../utils/helpers';
-import { APP_NAME } from '../../utils/constant';
-import logo from '../../assets/logo.png';
+import { Fragment, useMemo } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import {
+  BellIcon,
+  Bars3Icon,
+  SunIcon,
+  MoonIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, useTheme, useNotifications } from "../../hooks";
+import { cn } from "../../utils/helpers";
+import { APP_NAME } from "../../utils/constant";
+import logo from "../../assets/logo.png";
 interface HeaderProps {
   onMenuClick: () => void;
 }
@@ -20,7 +26,11 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   const unreadCount = useMemo(() => {
     if (!notifications) return 0;
     // If notifications have a 'read' property, count unread, else count all
-    if (notifications.length > 0 && typeof notifications[0] === 'object' && 'read' in notifications[0]) {
+    if (
+      notifications.length > 0 &&
+      typeof notifications[0] === "object" &&
+      "read" in notifications[0]
+    ) {
       // @ts-expect-error - read property is not typed
       return notifications.filter((n: unknown) => !n.read).length;
     }
@@ -48,7 +58,9 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg">
             <img src={logo} alt="logo" className="w-10 h-10" />
           </div>
-          <span className="hidden font-semibold text-gray-900 dark:text-white sm:block">{APP_NAME}</span>
+          <span className="hidden font-semibold text-gray-900 dark:text-white sm:block">
+            {APP_NAME}
+          </span>
         </Link>
       </div>
 
@@ -59,7 +71,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           onClick={toggleTheme}
           className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          {theme === 'light' ? (
+          {theme === "light" ? (
             <MoonIcon className="w-5 h-5" />
           ) : (
             <SunIcon className="w-5 h-5" />
@@ -69,14 +81,14 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         {/* Notifications */}
         <button
           type="button"
-          onClick={() => navigate('/profile?tab=alerts')}
+          onClick={() => navigate("/profile?tab=alerts")}
           className="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <span className="sr-only">View notifications</span>
           <BellIcon className="w-5 h-5" />
           {unreadCount > 0 && (
             <span className="flex absolute -top-1 -right-1 justify-center items-center w-5 h-5 text-xs font-medium text-white rounded-full bg-danger-500">
-              {unreadCount > 9 ? '9+' : unreadCount}
+              {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </button>
@@ -103,7 +115,9 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           >
             <Menu.Items className="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none dark:bg-gray-700">
               <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-600">
-                <p className="text-sm text-gray-500 dark:text-gray-400">Signed in as</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Signed in as
+                </p>
                 <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
                   {user?.email}
                 </p>
@@ -114,8 +128,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                   <Link
                     to="/profile"
                     className={cn(
-                      active ? 'bg-gray-50 dark:bg-gray-600' : '',
-                      'block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white'
+                      active ? "bg-gray-50 dark:bg-gray-600" : "",
+                      "block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white",
                     )}
                   >
                     Profile Settings
@@ -128,8 +142,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                   <Link
                     to="/profile?tab=subscription"
                     className={cn(
-                      active ? 'bg-gray-50 dark:bg-gray-600' : '',
-                      'block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white'
+                      active ? "bg-gray-50 dark:bg-gray-600" : "",
+                      "block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white",
                     )}
                   >
                     Subscription
@@ -143,8 +157,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                     <button
                       onClick={handleLogout}
                       className={cn(
-                        active ? 'bg-gray-50 dark:bg-gray-600' : '',
-                        'block px-3 py-2 w-full text-sm leading-6 text-left text-gray-900 dark:text-white'
+                        active ? "bg-gray-50 dark:bg-gray-600" : "",
+                        "block px-3 py-2 w-full text-sm leading-6 text-left text-gray-900 dark:text-white",
                       )}
                     >
                       Sign out

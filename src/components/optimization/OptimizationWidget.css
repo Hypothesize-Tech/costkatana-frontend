@@ -304,7 +304,7 @@
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: 'Consolas', 'Monaco', monospace;
+  font-family: "Consolas", "Monaco", monospace;
   font-size: 13px;
   line-height: 1.5;
   color: #374151;
@@ -393,4 +393,4 @@
   .cancel-button {
     width: 100%;
   }
-} 
+}

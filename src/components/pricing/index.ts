@@ -1,1 +1,1 @@
-export { PriceComparison } from './PriceComparison'; 
+export { PriceComparison } from "./PriceComparison";

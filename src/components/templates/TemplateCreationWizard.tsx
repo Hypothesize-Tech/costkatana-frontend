@@ -1,68 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-    FiArrowRight,
-    FiArrowLeft,
-    FiCheck,
-    FiZap,
-    FiCode,
-    FiEdit3,
-    FiBarChart,
-    FiBriefcase,
-    FiGlobe,
-    FiEye,
-    FiRefreshCw,
-    FiSave,
-    FiX
-} from 'react-icons/fi';
-import { Modal } from '../common/Modal';
-import { TemplateVariable } from '../../types/promptTemplate.types';
+  FiArrowRight,
+  FiArrowLeft,
+  FiCheck,
+  FiZap,
+  FiCode,
+  FiEdit3,
+  FiBarChart,
+  FiBriefcase,
+  FiGlobe,
+  FiEye,
+  FiRefreshCw,
+  FiSave,
+  FiX,
+} from "react-icons/fi";
+import { Modal } from "../common/Modal";
+import { TemplateVariable } from "../../types/promptTemplate.types";
 
 interface TemplateCreationWizardProps {
-    onClose: () => void;
-    onSubmit: (templateData: any) => void;
+  onClose: () => void;
+  onSubmit: (templateData: any) => void;
 }
 
 interface UseCase {
-    id: string;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    category: string;
-    template: string;
-    variables: TemplateVariable[];
-    tags: string[];
-    estimatedTokens: number;
-    example: string;
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  category: string;
+  template: string;
+  variables: TemplateVariable[];
+  tags: string[];
+  estimatedTokens: number;
+  example: string;
 }
 
 export const TemplateCreationWizard: React.FC<TemplateCreationWizardProps> = ({
-    onClose,
-    onSubmit
+  onClose,
+  onSubmit,
 }) => {
-    const [currentStep, setCurrentStep] = useState(0);
-    const [selectedUseCase, setSelectedUseCase] = useState<UseCase | null>(null);
-    const [templateData, setTemplateData] = useState({
-        name: '',
-        description: '',
-        content: '',
-        category: 'general',
-        variables: [] as TemplateVariable[],
-        metadata: {
-            tags: [] as string[],
-            estimatedTokens: 0
-        }
-    });
-    const [previewVariables, setPreviewVariables] = useState<Record<string, string>>({});
-    const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedUseCase, setSelectedUseCase] = useState<UseCase | null>(null);
+  const [templateData, setTemplateData] = useState({
+    name: "",
+    description: "",
+    content: "",
+    category: "general",
+    variables: [] as TemplateVariable[],
+    metadata: {
+      tags: [] as string[],
+      estimatedTokens: 0,
+    },
+  });
+  const [previewVariables, setPreviewVariables] = useState<
+    Record<string, string>
+  >({});
+  const [loading, setLoading] = useState(false);
 
-    const useCases: UseCase[] = [
-        {
-            id: 'api-docs',
-            title: 'API Documentation',
-            description: 'Generate comprehensive API documentation',
-            icon: <FiCode className="use-case-icon" />,
-            category: 'coding',
-            template: `Generate comprehensive API documentation for {{function_name}}.
+  const useCases: UseCase[] = [
+    {
+      id: "api-docs",
+      title: "API Documentation",
+      description: "Generate comprehensive API documentation",
+      icon: <FiCode className="use-case-icon" />,
+      category: "coding",
+      template: `Generate comprehensive API documentation for {{function_name}}.
 
 **Function Purpose:** {{purpose}}
 **Parameters:** {{parameters}}
@@ -75,23 +77,48 @@ Include:
 - Usage examples
 - Error handling information
 - Performance considerations`,
-            variables: [
-                { name: 'function_name', description: 'Name of the function', defaultValue: '', required: true, type: 'text' },
-                { name: 'purpose', description: 'What the function does', defaultValue: '', required: true, type: 'text' },
-                { name: 'parameters', description: 'Function parameters', defaultValue: '', required: true, type: 'text' },
-                { name: 'return_type', description: 'What the function returns', defaultValue: '', required: true, type: 'text' }
-            ],
-            tags: ['documentation', 'api', 'coding'],
-            estimatedTokens: 350,
-            example: 'Perfect for documenting REST API endpoints, SDK functions, and code libraries'
+      variables: [
+        {
+          name: "function_name",
+          description: "Name of the function",
+          defaultValue: "",
+          required: true,
+          type: "text",
         },
         {
-            id: 'blog-post',
-            title: 'Blog Post Writing',
-            description: 'Create engaging blog content',
-            icon: <FiEdit3 className="use-case-icon" />,
-            category: 'writing',
-            template: `Write a {{tone}} blog post about {{topic}} for {{audience}}.
+          name: "purpose",
+          description: "What the function does",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "parameters",
+          description: "Function parameters",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "return_type",
+          description: "What the function returns",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+      ],
+      tags: ["documentation", "api", "coding"],
+      estimatedTokens: 350,
+      example:
+        "Perfect for documenting REST API endpoints, SDK functions, and code libraries",
+    },
+    {
+      id: "blog-post",
+      title: "Blog Post Writing",
+      description: "Create engaging blog content",
+      icon: <FiEdit3 className="use-case-icon" />,
+      category: "writing",
+      template: `Write a {{tone}} blog post about {{topic}} for {{audience}}.
 
 **Target Length:** {{word_count}} words
 **Key Points to Cover:**
@@ -108,24 +135,62 @@ Style Requirements:
 - SEO-optimized with relevant keywords
 - Include relevant statistics or data
 - Easy to read formatting with subheadings`,
-            variables: [
-                { name: 'topic', description: 'Blog post topic', defaultValue: '', required: true, type: 'text' },
-                { name: 'tone', description: 'Writing tone (professional, casual, etc.)', defaultValue: 'professional', required: true, type: 'select', options: ['professional', 'casual', 'friendly', 'authoritative', 'conversational'] },
-                { name: 'audience', description: 'Target audience', defaultValue: '', required: true, type: 'text' },
-                { name: 'word_count', description: 'Approximate word count', defaultValue: '800-1000', required: false, type: 'text' },
-                { name: 'key_points', description: 'Key points to cover', defaultValue: '', required: true, type: 'text' }
-            ],
-            tags: ['content', 'blog', 'writing'],
-            estimatedTokens: 450,
-            example: 'Great for creating technical blogs, marketing content, and thought leadership articles'
+      variables: [
+        {
+          name: "topic",
+          description: "Blog post topic",
+          defaultValue: "",
+          required: true,
+          type: "text",
         },
         {
-            id: 'data-analysis',
-            title: 'Data Analysis Report',
-            description: 'Analyze and summarize data insights',
-            icon: <FiBarChart className="use-case-icon" />,
-            category: 'analysis',
-            template: `Analyze the {{data_type}} data and provide insights on {{metric}}.
+          name: "tone",
+          description: "Writing tone (professional, casual, etc.)",
+          defaultValue: "professional",
+          required: true,
+          type: "select",
+          options: [
+            "professional",
+            "casual",
+            "friendly",
+            "authoritative",
+            "conversational",
+          ],
+        },
+        {
+          name: "audience",
+          description: "Target audience",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "word_count",
+          description: "Approximate word count",
+          defaultValue: "800-1000",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "key_points",
+          description: "Key points to cover",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+      ],
+      tags: ["content", "blog", "writing"],
+      estimatedTokens: 450,
+      example:
+        "Great for creating technical blogs, marketing content, and thought leadership articles",
+    },
+    {
+      id: "data-analysis",
+      title: "Data Analysis Report",
+      description: "Analyze and summarize data insights",
+      icon: <FiBarChart className="use-case-icon" />,
+      category: "analysis",
+      template: `Analyze the {{data_type}} data and provide insights on {{metric}}.
 
 **Dataset Overview:**
 - Data source: {{data_source}}
@@ -147,24 +212,55 @@ Style Requirements:
 - Next steps and follow-up actions
 
 Focus on {{metric}} as the primary metric of interest.`,
-            variables: [
-                { name: 'data_type', description: 'Type of data being analyzed', defaultValue: '', required: true, type: 'text' },
-                { name: 'metric', description: 'Primary metric to analyze', defaultValue: '', required: true, type: 'text' },
-                { name: 'data_source', description: 'Where the data comes from', defaultValue: '', required: true, type: 'text' },
-                { name: 'time_period', description: 'Time range of the data', defaultValue: '', required: false, type: 'text' },
-                { name: 'sample_size', description: 'Number of data points', defaultValue: '', required: false, type: 'text' }
-            ],
-            tags: ['analysis', 'data', 'reporting'],
-            estimatedTokens: 400,
-            example: 'Perfect for business analytics, research reports, and performance analysis'
+      variables: [
+        {
+          name: "data_type",
+          description: "Type of data being analyzed",
+          defaultValue: "",
+          required: true,
+          type: "text",
         },
         {
-            id: 'marketing-copy',
-            title: 'Marketing Copy',
-            description: 'Generate compelling marketing content',
-            icon: <FiArrowRight className="use-case-icon" />,
-            category: 'creative',
-            template: `Create {{content_type}} for {{product}} targeting {{demographic}}.
+          name: "metric",
+          description: "Primary metric to analyze",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "data_source",
+          description: "Where the data comes from",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "time_period",
+          description: "Time range of the data",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "sample_size",
+          description: "Number of data points",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+      ],
+      tags: ["analysis", "data", "reporting"],
+      estimatedTokens: 400,
+      example:
+        "Perfect for business analytics, research reports, and performance analysis",
+    },
+    {
+      id: "marketing-copy",
+      title: "Marketing Copy",
+      description: "Generate compelling marketing content",
+      icon: <FiArrowRight className="use-case-icon" />,
+      category: "creative",
+      template: `Create {{content_type}} for {{product}} targeting {{demographic}}.
 
 **Product Details:**
 - Product name: {{product}}
@@ -187,27 +283,82 @@ Focus on {{metric}} as the primary metric of interest.`,
 
 Tone: {{tone}}
 Length: {{length}}`,
-            variables: [
-                { name: 'content_type', description: 'Type of marketing content', defaultValue: '', required: true, type: 'select', options: ['email campaign', 'social media post', 'landing page', 'ad copy', 'product description'] },
-                { name: 'product', description: 'Product or service name', defaultValue: '', required: true, type: 'text' },
-                { name: 'demographic', description: 'Target demographic', defaultValue: '', required: true, type: 'text' },
-                { name: 'features', description: 'Key product features', defaultValue: '', required: true, type: 'text' },
-                { name: 'value_prop', description: 'Unique value proposition', defaultValue: '', required: true, type: 'text' },
-                { name: 'pain_points', description: 'Customer pain points', defaultValue: '', required: false, type: 'text' },
-                { name: 'tone', description: 'Marketing tone', defaultValue: 'persuasive', required: false, type: 'text' },
-                { name: 'length', description: 'Content length', defaultValue: 'medium', required: false, type: 'text' }
-            ],
-            tags: ['marketing', 'copywriting', 'creative'],
-            estimatedTokens: 380,
-            example: 'Ideal for email campaigns, social media, and sales copy'
+      variables: [
+        {
+          name: "content_type",
+          description: "Type of marketing content",
+          defaultValue: "",
+          required: true,
+          type: "select",
+          options: [
+            "email campaign",
+            "social media post",
+            "landing page",
+            "ad copy",
+            "product description",
+          ],
         },
         {
-            id: 'meeting-summary',
-            title: 'Meeting Summary',
-            description: 'Summarize meeting notes and action items',
-            icon: <FiBriefcase className="use-case-icon" />,
-            category: 'business',
-            template: `Summarize the {{meeting_type}} meeting from {{date}}.
+          name: "product",
+          description: "Product or service name",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "demographic",
+          description: "Target demographic",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "features",
+          description: "Key product features",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "value_prop",
+          description: "Unique value proposition",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "pain_points",
+          description: "Customer pain points",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "tone",
+          description: "Marketing tone",
+          defaultValue: "persuasive",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "length",
+          description: "Content length",
+          defaultValue: "medium",
+          required: false,
+          type: "text",
+        },
+      ],
+      tags: ["marketing", "copywriting", "creative"],
+      estimatedTokens: 380,
+      example: "Ideal for email campaigns, social media, and sales copy",
+    },
+    {
+      id: "meeting-summary",
+      title: "Meeting Summary",
+      description: "Summarize meeting notes and action items",
+      icon: <FiBriefcase className="use-case-icon" />,
+      category: "business",
+      template: `Summarize the {{meeting_type}} meeting from {{date}}.
 
 **Meeting Details:**
 - Date: {{date}}
@@ -231,128 +382,185 @@ Format the action items as a numbered list with:
 - Assigned person
 - Due date
 - Priority level`,
-            variables: [
-                { name: 'meeting_type', description: 'Type of meeting', defaultValue: '', required: true, type: 'select', options: ['team standup', 'project review', 'client meeting', 'board meeting', 'planning session'] },
-                { name: 'date', description: 'Meeting date', defaultValue: '', required: true, type: 'text' },
-                { name: 'attendees', description: 'Meeting attendees', defaultValue: '', required: true, type: 'text' },
-                { name: 'duration', description: 'Meeting duration', defaultValue: '', required: false, type: 'text' },
-                { name: 'agenda', description: 'Meeting agenda', defaultValue: '', required: false, type: 'text' },
-                { name: 'raw_notes', description: 'Raw meeting notes', defaultValue: '', required: true, type: 'text' }
-            ],
-            tags: ['business', 'meeting', 'summary'],
-            estimatedTokens: 320,
-            example: 'Turn messy meeting notes into professional summaries and clear action items'
+      variables: [
+        {
+          name: "meeting_type",
+          description: "Type of meeting",
+          defaultValue: "",
+          required: true,
+          type: "select",
+          options: [
+            "team standup",
+            "project review",
+            "client meeting",
+            "board meeting",
+            "planning session",
+          ],
         },
         {
-            id: 'custom',
-            title: 'Custom Template',
-            description: 'Start from scratch with a blank template',
-            icon: <FiGlobe className="use-case-icon" />,
-            category: 'custom',
-            template: 'Write your custom prompt template here...',
-            variables: [],
-            tags: ['custom'],
-            estimatedTokens: 200,
-            example: 'Create your own template for any specific use case'
-        }
-    ];
+          name: "date",
+          description: "Meeting date",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "attendees",
+          description: "Meeting attendees",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+        {
+          name: "duration",
+          description: "Meeting duration",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "agenda",
+          description: "Meeting agenda",
+          defaultValue: "",
+          required: false,
+          type: "text",
+        },
+        {
+          name: "raw_notes",
+          description: "Raw meeting notes",
+          defaultValue: "",
+          required: true,
+          type: "text",
+        },
+      ],
+      tags: ["business", "meeting", "summary"],
+      estimatedTokens: 320,
+      example:
+        "Turn messy meeting notes into professional summaries and clear action items",
+    },
+    {
+      id: "custom",
+      title: "Custom Template",
+      description: "Start from scratch with a blank template",
+      icon: <FiGlobe className="use-case-icon" />,
+      category: "custom",
+      template: "Write your custom prompt template here...",
+      variables: [],
+      tags: ["custom"],
+      estimatedTokens: 200,
+      example: "Create your own template for any specific use case",
+    },
+  ];
 
-    const steps = [
-        { title: 'Choose Use Case', description: 'Select what you want to create' },
-        { title: 'Customize Content', description: 'Tailor the template to your needs' },
-        { title: 'Preview & Save', description: 'Review and save your template' }
-    ];
+  const steps = [
+    { title: "Choose Use Case", description: "Select what you want to create" },
+    {
+      title: "Customize Content",
+      description: "Tailor the template to your needs",
+    },
+    { title: "Preview & Save", description: "Review and save your template" },
+  ];
 
-    const handleUseCaseSelect = (useCase: UseCase) => {
-        setSelectedUseCase(useCase);
-        setTemplateData({
-            name: useCase.title,
-            description: useCase.description,
-            content: useCase.template,
-            category: useCase.category,
-            variables: useCase.variables,
-            metadata: {
-                tags: useCase.tags,
-                estimatedTokens: useCase.estimatedTokens
-            }
-        });
+  const handleUseCaseSelect = (useCase: UseCase) => {
+    setSelectedUseCase(useCase);
+    setTemplateData({
+      name: useCase.title,
+      description: useCase.description,
+      content: useCase.template,
+      category: useCase.category,
+      variables: useCase.variables,
+      metadata: {
+        tags: useCase.tags,
+        estimatedTokens: useCase.estimatedTokens,
+      },
+    });
 
-        // Initialize preview variables with default values
-        const initialPreviewVars: Record<string, string> = {};
-        useCase.variables.forEach(variable => {
-            initialPreviewVars[variable.name] = variable.defaultValue || `[${variable.name}]`;
-        });
-        setPreviewVariables(initialPreviewVars);
+    // Initialize preview variables with default values
+    const initialPreviewVars: Record<string, string> = {};
+    useCase.variables.forEach((variable) => {
+      initialPreviewVars[variable.name] =
+        variable.defaultValue || `[${variable.name}]`;
+    });
+    setPreviewVariables(initialPreviewVars);
 
-        setCurrentStep(1);
+    setCurrentStep(1);
+  };
+
+  const generatePreview = () => {
+    let preview = templateData.content;
+    templateData.variables.forEach((variable) => {
+      const value = previewVariables[variable.name] || `[${variable.name}]`;
+      const regex = new RegExp(`{{${variable.name}}}`, "g");
+      preview = preview.replace(regex, value);
+    });
+    return preview;
+  };
+
+  const handleVariableChange = (
+    index: number,
+    field: keyof TemplateVariable,
+    value: any,
+  ) => {
+    const newVariables = [...templateData.variables];
+    newVariables[index] = { ...newVariables[index], [field]: value };
+    setTemplateData((prev) => ({ ...prev, variables: newVariables }));
+  };
+
+  const addVariable = () => {
+    const newVariable: TemplateVariable = {
+      name: "",
+      description: "",
+      defaultValue: "",
+      required: true,
+      type: "text",
     };
+    setTemplateData((prev) => ({
+      ...prev,
+      variables: [...prev.variables, newVariable],
+    }));
+  };
 
-    const generatePreview = () => {
-        let preview = templateData.content;
-        templateData.variables.forEach(variable => {
-            const value = previewVariables[variable.name] || `[${variable.name}]`;
-            const regex = new RegExp(`{{${variable.name}}}`, 'g');
-            preview = preview.replace(regex, value);
-        });
-        return preview;
-    };
+  const removeVariable = (index: number) => {
+    setTemplateData((prev) => ({
+      ...prev,
+      variables: prev.variables.filter((_, i) => i !== index),
+    }));
+  };
 
-    const handleVariableChange = (index: number, field: keyof TemplateVariable, value: any) => {
-        const newVariables = [...templateData.variables];
-        newVariables[index] = { ...newVariables[index], [field]: value };
-        setTemplateData(prev => ({ ...prev, variables: newVariables }));
-    };
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await onSubmit(templateData);
+      onClose();
+    } catch (error) {
+      console.error("Error creating template:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const addVariable = () => {
-        const newVariable: TemplateVariable = {
-            name: '',
-            description: '',
-            defaultValue: '',
-            required: true,
-            type: 'text'
-        };
-        setTemplateData(prev => ({
-            ...prev,
-            variables: [...prev.variables, newVariable]
-        }));
-    };
+  const canProceed = () => {
+    switch (currentStep) {
+      case 0:
+        return selectedUseCase !== null;
+      case 1:
+        return templateData.name.trim() && templateData.content.trim();
+      case 2:
+        return true;
+      default:
+        return false;
+    }
+  };
 
-    const removeVariable = (index: number) => {
-        setTemplateData(prev => ({
-            ...prev,
-            variables: prev.variables.filter((_, i) => i !== index)
-        }));
-    };
-
-    const handleSubmit = async () => {
-        setLoading(true);
-        try {
-            await onSubmit(templateData);
-            onClose();
-        } catch (error) {
-            console.error('Error creating template:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const canProceed = () => {
-        switch (currentStep) {
-            case 0:
-                return selectedUseCase !== null;
-            case 1:
-                return templateData.name.trim() && templateData.content.trim();
-            case 2:
-                return true;
-            default:
-                return false;
-        }
-    };
-
-    return (
-        <Modal isOpen={true} onClose={onClose} title="Create New Template" size='lg'>
-            <div className="template-wizard">
-                <style>{`
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title="Create New Template"
+      size="lg"
+    >
+      <div className="template-wizard">
+        <style>{`
                     .template-wizard {
                         max-height: 90vh;
                         overflow-y: auto;
@@ -721,247 +929,325 @@ Format the action items as a numbered list with:
                     }
                 `}</style>
 
-                <div className="wizard-header">
-                    <h2 className="wizard-title">Template Creation Wizard</h2>
-                    <div className="step-indicator">
-                        {steps.map((step, index) => (
-                            <React.Fragment key={index}>
-                                <div className={`step ${currentStep === index ? 'active' : ''} ${currentStep > index ? 'completed' : ''}`}>
-                                    <div className="step-number">
-                                        {currentStep > index ? <FiCheck /> : index + 1}
-                                    </div>
-                                    <span className="step-title">{step.title}</span>
-                                </div>
-                                {index < steps.length - 1 && <div className="step-connector" />}
-                            </React.Fragment>
-                        ))}
-                    </div>
+        <div className="wizard-header">
+          <h2 className="wizard-title">Template Creation Wizard</h2>
+          <div className="step-indicator">
+            {steps.map((step, index) => (
+              <React.Fragment key={index}>
+                <div
+                  className={`step ${currentStep === index ? "active" : ""} ${currentStep > index ? "completed" : ""}`}
+                >
+                  <div className="step-number">
+                    {currentStep > index ? <FiCheck /> : index + 1}
+                  </div>
+                  <span className="step-title">{step.title}</span>
                 </div>
+                {index < steps.length - 1 && <div className="step-connector" />}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
 
-                <div className="wizard-content">
-                    {/* Step 1: Choose Use Case */}
-                    {currentStep === 0 && (
-                        <div>
-                            <h3 className="section-title">
-                                <FiZap />
-                                Choose Your Use Case
-                            </h3>
-                            <p style={{ marginBottom: '2rem', color: '#6b7280' }}>
-                                Select a template type that matches what you want to create
-                            </p>
+        <div className="wizard-content">
+          {/* Step 1: Choose Use Case */}
+          {currentStep === 0 && (
+            <div>
+              <h3 className="section-title">
+                <FiZap />
+                Choose Your Use Case
+              </h3>
+              <p style={{ marginBottom: "2rem", color: "#6b7280" }}>
+                Select a template type that matches what you want to create
+              </p>
 
-                            <div className="use-case-grid">
-                                {useCases.map((useCase) => (
-                                    <div
-                                        key={useCase.id}
-                                        className={`use-case-card ${selectedUseCase?.id === useCase.id ? 'selected' : ''}`}
-                                        onClick={() => handleUseCaseSelect(useCase)}
-                                    >
-                                        {useCase.icon}
-                                        <h4 className="use-case-title">{useCase.title}</h4>
-                                        <p className="use-case-description">{useCase.description}</p>
-                                        <p className="use-case-example">{useCase.example}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 2: Customize Content */}
-                    {currentStep === 1 && selectedUseCase && (
-                        <div>
-                            <h3 className="section-title">
-                                <FiEdit3 />
-                                Customize Your Template
-                            </h3>
-
-                            <div className="customization-section">
-                                <div className="form-group">
-                                    <label className="form-label">Template Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={templateData.name}
-                                        onChange={(e) => setTemplateData(prev => ({ ...prev, name: e.target.value }))}
-                                        placeholder="Give your template a descriptive name"
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Description</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={templateData.description}
-                                        onChange={(e) => setTemplateData(prev => ({ ...prev, description: e.target.value }))}
-                                        placeholder="Describe what this template does"
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Template Content</label>
-                                    <textarea
-                                        className="form-input form-textarea"
-                                        value={templateData.content}
-                                        onChange={(e) => setTemplateData(prev => ({ ...prev, content: e.target.value }))}
-                                        placeholder="Write your prompt template here..."
-                                    />
-                                    <small style={{ color: '#6b7280', fontSize: '0.8rem' }}>
-                                        Use {`{{variable_name}}`} for variables that users can customize
-                                    </small>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Variables</label>
-                                    {templateData.variables.map((variable, index) => (
-                                        <div key={index} className="variable-card">
-                                            <div className="variable-header">
-                                                <span className="variable-title">Variable {index + 1}</span>
-                                                <button
-                                                    className="remove-btn"
-                                                    onClick={() => removeVariable(index)}
-                                                >
-                                                    <FiX />
-                                                </button>
-                                            </div>
-                                            <div className="variable-fields">
-                                                <div>
-                                                    <label className="form-label">Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-input"
-                                                        value={variable.name}
-                                                        onChange={(e) => handleVariableChange(index, 'name', e.target.value)}
-                                                        placeholder="variable_name"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="form-label">Type</label>
-                                                    <select
-                                                        className="form-input"
-                                                        value={variable.type || 'text'}
-                                                        onChange={(e) => handleVariableChange(index, 'type', e.target.value)}
-                                                    >
-                                                        <option value="text">Text</option>
-                                                        <option value="select">Select</option>
-                                                        <option value="number">Number</option>
-                                                        <option value="boolean">Boolean</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label className="form-label">Description</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-input"
-                                                        value={variable.description || ''}
-                                                        onChange={(e) => handleVariableChange(index, 'description', e.target.value)}
-                                                        placeholder="Describe this variable"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="form-label">Default Value</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-input"
-                                                        value={variable.defaultValue || ''}
-                                                        onChange={(e) => handleVariableChange(index, 'defaultValue', e.target.value)}
-                                                        placeholder="Default value (optional)"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    <button className="add-variable-btn" onClick={addVariable}>
-                                        Add Variable
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 3: Preview & Save */}
-                    {currentStep === 2 && (
-                        <div>
-                            <h3 className="section-title">
-                                <FiEye />
-                                Preview Your Template
-                            </h3>
-
-                            <div className="preview-section">
-                                <h4 style={{ marginBottom: '1rem', color: '#1f2937' }}>Test with Sample Data</h4>
-                                <div className="preview-variables">
-                                    {templateData.variables.map((variable, index) => (
-                                        <div key={index} className="preview-variable">
-                                            <span className="preview-variable-label">{variable.name}:</span>
-                                            <input
-                                                type="text"
-                                                className="preview-variable-input"
-                                                value={previewVariables[variable.name] || ''}
-                                                onChange={(e) => setPreviewVariables(prev => ({
-                                                    ...prev,
-                                                    [variable.name]: e.target.value
-                                                }))}
-                                                placeholder={variable.description || variable.name}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <h4 style={{ marginBottom: '1rem', color: '#1f2937' }}>Generated Output:</h4>
-                                <div className="preview-content">{generatePreview()}</div>
-                            </div>
-
-                            <div style={{ background: '#f0f9ff', padding: '1rem', borderRadius: '8px', border: '1px solid #bae6fd' }}>
-                                <h4 style={{ color: '#0369a1', marginBottom: '0.5rem' }}>Template Summary</h4>
-                                <p><strong>Name:</strong> {templateData.name}</p>
-                                <p><strong>Category:</strong> {templateData.category}</p>
-                                <p><strong>Variables:</strong> {templateData.variables.length}</p>
-                                <p><strong>Estimated Tokens:</strong> ~{templateData.metadata.estimatedTokens}</p>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="wizard-actions">
-                    <div>
-                        {currentStep > 0 && (
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => setCurrentStep(currentStep - 1)}
-                            >
-                                <FiArrowLeft />
-                                Back
-                            </button>
-                        )}
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button className="btn btn-secondary" onClick={onClose}>
-                            Cancel
-                        </button>
-
-                        {currentStep < steps.length - 1 ? (
-                            <button
-                                className="btn btn-primary"
-                                disabled={!canProceed()}
-                                onClick={() => setCurrentStep(currentStep + 1)}
-                            >
-                                Next
-                                <FiArrowRight />
-                            </button>
-                        ) : (
-                            <button
-                                className="btn btn-success"
-                                disabled={loading || !canProceed()}
-                                onClick={handleSubmit}
-                            >
-                                {loading ? <FiRefreshCw style={{ animation: 'spin 1s linear infinite' }} /> : <FiSave />}
-                                {loading ? 'Creating...' : 'Create Template'}
-                            </button>
-                        )}
-                    </div>
-                </div>
+              <div className="use-case-grid">
+                {useCases.map((useCase) => (
+                  <div
+                    key={useCase.id}
+                    className={`use-case-card ${selectedUseCase?.id === useCase.id ? "selected" : ""}`}
+                    onClick={() => handleUseCaseSelect(useCase)}
+                  >
+                    {useCase.icon}
+                    <h4 className="use-case-title">{useCase.title}</h4>
+                    <p className="use-case-description">
+                      {useCase.description}
+                    </p>
+                    <p className="use-case-example">{useCase.example}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-        </Modal>
-    );
-}; 
+          )}
+
+          {/* Step 2: Customize Content */}
+          {currentStep === 1 && selectedUseCase && (
+            <div>
+              <h3 className="section-title">
+                <FiEdit3 />
+                Customize Your Template
+              </h3>
+
+              <div className="customization-section">
+                <div className="form-group">
+                  <label className="form-label">Template Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={templateData.name}
+                    onChange={(e) =>
+                      setTemplateData((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    placeholder="Give your template a descriptive name"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Description</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={templateData.description}
+                    onChange={(e) =>
+                      setTemplateData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="Describe what this template does"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Template Content</label>
+                  <textarea
+                    className="form-input form-textarea"
+                    value={templateData.content}
+                    onChange={(e) =>
+                      setTemplateData((prev) => ({
+                        ...prev,
+                        content: e.target.value,
+                      }))
+                    }
+                    placeholder="Write your prompt template here..."
+                  />
+                  <small style={{ color: "#6b7280", fontSize: "0.8rem" }}>
+                    Use {`{{variable_name}}`} for variables that users can
+                    customize
+                  </small>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Variables</label>
+                  {templateData.variables.map((variable, index) => (
+                    <div key={index} className="variable-card">
+                      <div className="variable-header">
+                        <span className="variable-title">
+                          Variable {index + 1}
+                        </span>
+                        <button
+                          className="remove-btn"
+                          onClick={() => removeVariable(index)}
+                        >
+                          <FiX />
+                        </button>
+                      </div>
+                      <div className="variable-fields">
+                        <div>
+                          <label className="form-label">Name</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={variable.name}
+                            onChange={(e) =>
+                              handleVariableChange(
+                                index,
+                                "name",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="variable_name"
+                          />
+                        </div>
+                        <div>
+                          <label className="form-label">Type</label>
+                          <select
+                            className="form-input"
+                            value={variable.type || "text"}
+                            onChange={(e) =>
+                              handleVariableChange(
+                                index,
+                                "type",
+                                e.target.value,
+                              )
+                            }
+                          >
+                            <option value="text">Text</option>
+                            <option value="select">Select</option>
+                            <option value="number">Number</option>
+                            <option value="boolean">Boolean</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="form-label">Description</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={variable.description || ""}
+                            onChange={(e) =>
+                              handleVariableChange(
+                                index,
+                                "description",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Describe this variable"
+                          />
+                        </div>
+                        <div>
+                          <label className="form-label">Default Value</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={variable.defaultValue || ""}
+                            onChange={(e) =>
+                              handleVariableChange(
+                                index,
+                                "defaultValue",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Default value (optional)"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button className="add-variable-btn" onClick={addVariable}>
+                    Add Variable
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Preview & Save */}
+          {currentStep === 2 && (
+            <div>
+              <h3 className="section-title">
+                <FiEye />
+                Preview Your Template
+              </h3>
+
+              <div className="preview-section">
+                <h4 style={{ marginBottom: "1rem", color: "#1f2937" }}>
+                  Test with Sample Data
+                </h4>
+                <div className="preview-variables">
+                  {templateData.variables.map((variable, index) => (
+                    <div key={index} className="preview-variable">
+                      <span className="preview-variable-label">
+                        {variable.name}:
+                      </span>
+                      <input
+                        type="text"
+                        className="preview-variable-input"
+                        value={previewVariables[variable.name] || ""}
+                        onChange={(e) =>
+                          setPreviewVariables((prev) => ({
+                            ...prev,
+                            [variable.name]: e.target.value,
+                          }))
+                        }
+                        placeholder={variable.description || variable.name}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <h4 style={{ marginBottom: "1rem", color: "#1f2937" }}>
+                  Generated Output:
+                </h4>
+                <div className="preview-content">{generatePreview()}</div>
+              </div>
+
+              <div
+                style={{
+                  background: "#f0f9ff",
+                  padding: "1rem",
+                  borderRadius: "8px",
+                  border: "1px solid #bae6fd",
+                }}
+              >
+                <h4 style={{ color: "#0369a1", marginBottom: "0.5rem" }}>
+                  Template Summary
+                </h4>
+                <p>
+                  <strong>Name:</strong> {templateData.name}
+                </p>
+                <p>
+                  <strong>Category:</strong> {templateData.category}
+                </p>
+                <p>
+                  <strong>Variables:</strong> {templateData.variables.length}
+                </p>
+                <p>
+                  <strong>Estimated Tokens:</strong> ~
+                  {templateData.metadata.estimatedTokens}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="wizard-actions">
+          <div>
+            {currentStep > 0 && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => setCurrentStep(currentStep - 1)}
+              >
+                <FiArrowLeft />
+                Back
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <button className="btn btn-secondary" onClick={onClose}>
+              Cancel
+            </button>
+
+            {currentStep < steps.length - 1 ? (
+              <button
+                className="btn btn-primary"
+                disabled={!canProceed()}
+                onClick={() => setCurrentStep(currentStep + 1)}
+              >
+                Next
+                <FiArrowRight />
+              </button>
+            ) : (
+              <button
+                className="btn btn-success"
+                disabled={loading || !canProceed()}
+                onClick={handleSubmit}
+              >
+                {loading ? (
+                  <FiRefreshCw
+                    style={{ animation: "spin 1s linear infinite" }}
+                  />
+                ) : (
+                  <FiSave />
+                )}
+                {loading ? "Creating..." : "Create Template"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};

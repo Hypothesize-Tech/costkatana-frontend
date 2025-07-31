@@ -1,12 +1,12 @@
-import React from 'react';
-import { PriceComparison } from '../components/pricing';
+import React from "react";
+import { PriceComparison } from "../components/pricing";
 
 const Pricing: React.FC = () => {
-    return (
-        <div className="pricing-page">
-            <PriceComparison />
-        </div>
-    );
+  return (
+    <div className="pricing-page">
+      <PriceComparison />
+    </div>
+  );
 };
 
-export default Pricing; 
+export default Pricing;

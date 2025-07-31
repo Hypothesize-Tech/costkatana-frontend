@@ -1,221 +1,234 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
-    FiPlay,
-    FiCopy,
-    FiDownload,
-    FiSend,
-    FiEye,
-    FiRefreshCw,
-    FiZap,
-    FiClock,
-    FiCheck,
-    FiSearch,
-    FiSettings,
-    FiTarget,
-    FiBookmark
-} from 'react-icons/fi';
-import { PromptTemplate } from '../../types/promptTemplate.types';
-import { PromptTemplateService } from '../../services/promptTemplate.service';
+  FiPlay,
+  FiCopy,
+  FiDownload,
+  FiSend,
+  FiEye,
+  FiRefreshCw,
+  FiZap,
+  FiClock,
+  FiCheck,
+  FiSearch,
+  FiSettings,
+  FiTarget,
+  FiBookmark,
+} from "react-icons/fi";
+import { PromptTemplate } from "../../types/promptTemplate.types";
+import { PromptTemplateService } from "../../services/promptTemplate.service";
 
 interface TemplateUsageProps {
-    initialTemplate?: PromptTemplate;
-    onTemplateUsed?: (template: PromptTemplate, variables: Record<string, string>, generatedPrompt: string) => void;
+  initialTemplate?: PromptTemplate;
+  onTemplateUsed?: (
+    template: PromptTemplate,
+    variables: Record<string, string>,
+    generatedPrompt: string,
+  ) => void;
 }
 
 interface UsageSession {
-    templateId: string;
-    variables: Record<string, string>;
-    generatedPrompt: string;
-    estimatedTokens: number;
-    estimatedCost: number;
-    timestamp: string;
+  templateId: string;
+  variables: Record<string, string>;
+  generatedPrompt: string;
+  estimatedTokens: number;
+  estimatedCost: number;
+  timestamp: string;
 }
 
 export const TemplateUsage: React.FC<TemplateUsageProps> = ({
-    initialTemplate,
-    onTemplateUsed
+  initialTemplate,
+  onTemplateUsed,
 }) => {
-    const [templates, setTemplates] = useState<PromptTemplate[]>([]);
-    const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(initialTemplate || null);
-    const [variables, setVariables] = useState<Record<string, string>>({});
-    const [generatedPrompt, setGeneratedPrompt] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [generating, setGenerating] = useState(false);
-    const [copying, setCopying] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [recentSessions, setRecentSessions] = useState<UsageSession[]>([]);
-    const [estimatedTokens, setEstimatedTokens] = useState(0);
-    const [estimatedCost, setEstimatedCost] = useState(0);
+  const [templates, setTemplates] = useState<PromptTemplate[]>([]);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<PromptTemplate | null>(initialTemplate || null);
+  const [variables, setVariables] = useState<Record<string, string>>({});
+  const [generatedPrompt, setGeneratedPrompt] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [recentSessions, setRecentSessions] = useState<UsageSession[]>([]);
+  const [estimatedTokens, setEstimatedTokens] = useState(0);
+  const [estimatedCost, setEstimatedCost] = useState(0);
 
-    const categories = [
-        { value: 'all', label: 'All Templates' },
-        { value: 'coding', label: 'Coding' },
-        { value: 'writing', label: 'Writing' },
-        { value: 'analysis', label: 'Analysis' },
-        { value: 'creative', label: 'Creative' },
-        { value: 'business', label: 'Business' }
-    ];
+  const categories = [
+    { value: "all", label: "All Templates" },
+    { value: "coding", label: "Coding" },
+    { value: "writing", label: "Writing" },
+    { value: "analysis", label: "Analysis" },
+    { value: "creative", label: "Creative" },
+    { value: "business", label: "Business" },
+  ];
 
-    useEffect(() => {
-        loadTemplates();
-        loadRecentSessions();
-    }, []);
+  useEffect(() => {
+    loadTemplates();
+    loadRecentSessions();
+  }, []);
 
-    useEffect(() => {
-        if (selectedTemplate) {
-            // Initialize variables with default values
-            const initialVars: Record<string, string> = {};
-            selectedTemplate.variables.forEach(variable => {
-                initialVars[variable.name] = variable.defaultValue || '';
-            });
-            setVariables(initialVars);
-            generatePrompt(selectedTemplate, initialVars);
-        }
-    }, [selectedTemplate]);
+  useEffect(() => {
+    if (selectedTemplate) {
+      // Initialize variables with default values
+      const initialVars: Record<string, string> = {};
+      selectedTemplate.variables.forEach((variable) => {
+        initialVars[variable.name] = variable.defaultValue || "";
+      });
+      setVariables(initialVars);
+      generatePrompt(selectedTemplate, initialVars);
+    }
+  }, [selectedTemplate]);
 
-    useEffect(() => {
-        if (selectedTemplate) {
-            generatePrompt(selectedTemplate, variables);
-        }
-    }, [variables]);
+  useEffect(() => {
+    if (selectedTemplate) {
+      generatePrompt(selectedTemplate, variables);
+    }
+  }, [variables]);
 
-    const loadTemplates = async () => {
-        try {
-            setLoading(true);
-            const data = await PromptTemplateService.getTemplates();
-            setTemplates(Array.isArray(data) ? data : []);
-        } catch (error) {
-            console.error('Error loading templates:', error);
-            setTemplates([]);
-        } finally {
-            setLoading(false);
-        }
+  const loadTemplates = async () => {
+    try {
+      setLoading(true);
+      const data = await PromptTemplateService.getTemplates();
+      setTemplates(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading templates:", error);
+      setTemplates([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadRecentSessions = () => {
+    const stored = localStorage.getItem("templateUsageSessions");
+    if (stored) {
+      setRecentSessions(JSON.parse(stored));
+    }
+  };
+
+  const saveSession = (session: UsageSession) => {
+    const updatedSessions = [session, ...recentSessions.slice(0, 9)]; // Keep last 10
+    setRecentSessions(updatedSessions);
+    localStorage.setItem(
+      "templateUsageSessions",
+      JSON.stringify(updatedSessions),
+    );
+  };
+
+  const generatePrompt = async (
+    template: PromptTemplate,
+    vars: Record<string, string>,
+  ) => {
+    if (!template) return;
+
+    setGenerating(true);
+    try {
+      let prompt = template.content;
+
+      // Replace variables
+      template.variables.forEach((variable) => {
+        const value =
+          vars[variable.name] || variable.defaultValue || `[${variable.name}]`;
+        const regex = new RegExp(`{{${variable.name}}}`, "g");
+        prompt = prompt.replace(regex, value);
+      });
+
+      setGeneratedPrompt(prompt);
+
+      // Estimate tokens and cost (simplified calculation)
+      const tokens = Math.ceil(prompt.length / 4); // Rough estimation
+      const cost = tokens * 0.00002; // Rough GPT-4 pricing
+
+      setEstimatedTokens(tokens);
+      setEstimatedCost(cost);
+    } catch (error) {
+      console.error("Error generating prompt:", error);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleVariableChange = (name: string, value: string) => {
+    setVariables((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUseTemplate = async () => {
+    if (!selectedTemplate) return;
+
+    const session: UsageSession = {
+      templateId: selectedTemplate._id,
+      variables: { ...variables },
+      generatedPrompt,
+      estimatedTokens,
+      estimatedCost,
+      timestamp: new Date().toISOString(),
     };
 
-    const loadRecentSessions = () => {
-        const stored = localStorage.getItem('templateUsageSessions');
-        if (stored) {
-            setRecentSessions(JSON.parse(stored));
-        }
+    saveSession(session);
+
+    if (onTemplateUsed) {
+      onTemplateUsed(selectedTemplate, variables, generatedPrompt);
+    }
+
+    // Track usage in analytics
+    try {
+      await PromptTemplateService.useTemplate(selectedTemplate._id, variables);
+    } catch (error) {
+      console.error("Error tracking template usage:", error);
+    }
+  };
+
+  const handleCopyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedPrompt);
+      setCopying(true);
+      setTimeout(() => setCopying(false), 2000);
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
+    }
+  };
+
+  const handleDownloadPrompt = () => {
+    const blob = new Blob([generatedPrompt], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${selectedTemplate?.name.replace(/\s+/g, "_") || "prompt"}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      !searchQuery ||
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === "all" || template.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      coding: "#3B82F6",
+      writing: "#10B981",
+      analysis: "#8B5CF6",
+      creative: "#F59E0B",
+      business: "#6366F1",
+      general: "#6B7280",
     };
+    return colors[category as keyof typeof colors] || colors.general;
+  };
 
-    const saveSession = (session: UsageSession) => {
-        const updatedSessions = [session, ...recentSessions.slice(0, 9)]; // Keep last 10
-        setRecentSessions(updatedSessions);
-        localStorage.setItem('templateUsageSessions', JSON.stringify(updatedSessions));
-    };
-
-    const generatePrompt = async (template: PromptTemplate, vars: Record<string, string>) => {
-        if (!template) return;
-
-        setGenerating(true);
-        try {
-            let prompt = template.content;
-            
-            // Replace variables
-            template.variables.forEach(variable => {
-                const value = vars[variable.name] || variable.defaultValue || `[${variable.name}]`;
-                const regex = new RegExp(`{{${variable.name}}}`, 'g');
-                prompt = prompt.replace(regex, value);
-            });
-
-            setGeneratedPrompt(prompt);
-            
-            // Estimate tokens and cost (simplified calculation)
-            const tokens = Math.ceil(prompt.length / 4); // Rough estimation
-            const cost = tokens * 0.00002; // Rough GPT-4 pricing
-            
-            setEstimatedTokens(tokens);
-            setEstimatedCost(cost);
-
-        } catch (error) {
-            console.error('Error generating prompt:', error);
-        } finally {
-            setGenerating(false);
-        }
-    };
-
-    const handleVariableChange = (name: string, value: string) => {
-        setVariables(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleUseTemplate = async () => {
-        if (!selectedTemplate) return;
-
-        const session: UsageSession = {
-            templateId: selectedTemplate._id,
-            variables: { ...variables },
-            generatedPrompt,
-            estimatedTokens,
-            estimatedCost,
-            timestamp: new Date().toISOString()
-        };
-
-        saveSession(session);
-        
-        if (onTemplateUsed) {
-            onTemplateUsed(selectedTemplate, variables, generatedPrompt);
-        }
-
-        // Track usage in analytics
-        try {
-            await PromptTemplateService.useTemplate(selectedTemplate._id, variables);
-        } catch (error) {
-            console.error('Error tracking template usage:', error);
-        }
-    };
-
-    const handleCopyPrompt = async () => {
-        try {
-            await navigator.clipboard.writeText(generatedPrompt);
-            setCopying(true);
-            setTimeout(() => setCopying(false), 2000);
-        } catch (error) {
-            console.error('Error copying to clipboard:', error);
-        }
-    };
-
-    const handleDownloadPrompt = () => {
-        const blob = new Blob([generatedPrompt], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${selectedTemplate?.name.replace(/\s+/g, '_') || 'prompt'}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
-
-    const filteredTemplates = templates.filter(template => {
-        const matchesSearch = !searchQuery ||
-            template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            template.description?.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
-
-        return matchesSearch && matchesCategory;
-    });
-
-    const getCategoryColor = (category: string) => {
-        const colors = {
-            coding: '#3B82F6',
-            writing: '#10B981',
-            analysis: '#8B5CF6',
-            creative: '#F59E0B',
-            business: '#6366F1',
-            general: '#6B7280'
-        };
-        return colors[category as keyof typeof colors] || colors.general;
-    };
-
-    return (
-        <div className="template-usage">
-            <style>{`
+  return (
+    <div className="template-usage">
+      <style>{`
                 .template-usage {
                     display: grid;
                     grid-template-columns: 350px 1fr;
@@ -656,213 +669,234 @@ export const TemplateUsage: React.FC<TemplateUsageProps> = ({
                 }
             `}</style>
 
-            <div className="sidebar">
-                <div className="sidebar-header">
-                    <h2 className="sidebar-title">
-                        <FiPlay />
-                        Use Templates
-                    </h2>
-                    
-                    <div className="sidebar-search">
-                        <FiSearch className="search-icon" />
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Search templates..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    
-                    <select
-                        className="category-filter"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                    >
-                        {categories.map(category => (
-                            <option key={category.value} value={category.value}>
-                                {category.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">
+            <FiPlay />
+            Use Templates
+          </h2>
 
-                <div className="template-list">
-                    {loading ? (
-                        <div className="loading-state">
-                            <FiRefreshCw className="loading-spinner" />
-                            Loading templates...
-                        </div>
-                    ) : filteredTemplates.length === 0 ? (
-                        <div className="empty-state">
-                            <FiTarget className="empty-icon" />
-                            <p>No templates found</p>
-                        </div>
-                    ) : (
-                        filteredTemplates.map(template => (
-                            <div
-                                key={template._id}
-                                className={`template-item ${selectedTemplate?._id === template._id ? 'selected' : ''}`}
-                                onClick={() => setSelectedTemplate(template)}
-                            >
-                                <div className="template-name">{template.name}</div>
-                                <span
-                                    className="template-category"
-                                    style={{ backgroundColor: getCategoryColor(template.category) }}
-                                >
-                                    {template.category}
-                                </span>
-                                <div className="template-description">
-                                    {template.description || 'No description available'}
-                                </div>
-                                <div className="template-meta">
-                                    <span>{template.variables.length} variables</span>
-                                    <span>{template.usage.count} uses</span>
-                                </div>
-                            </div>
-                        ))
-                    )}
+          <div className="sidebar-search">
+            <FiSearch className="search-icon" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search templates..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-                    {recentSessions.length > 0 && (
-                        <div className="recent-sessions">
-                            <h4 className="panel-title">
-                                <FiClock />
-                                Recent Sessions
-                            </h4>
-                            {recentSessions.slice(0, 5).map((session, index) => {
-                                const template = templates.find(t => t._id === session.templateId);
-                                return (
-                                    <div
-                                        key={index}
-                                        className="session-item"
-                                        onClick={() => {
-                                            if (template) {
-                                                setSelectedTemplate(template);
-                                                setVariables(session.variables);
-                                            }
-                                        }}
-                                    >
-                                        <div className="session-template">
-                                            {template?.name || 'Unknown Template'}
-                                        </div>
-                                        <div className="session-time">
-                                            {new Date(session.timestamp).toLocaleString()}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <div className="main-content">
-                <div className="content-header">
-                    <h1 className="content-title">
-                        <FiZap />
-                        {selectedTemplate ? selectedTemplate.name : 'Select a Template'}
-                    </h1>
-                    
-                    {selectedTemplate && (
-                        <div className="action-buttons">
-                            <button
-                                className="btn btn-secondary"
-                                onClick={handleCopyPrompt}
-                                disabled={!generatedPrompt || copying}
-                            >
-                                {copying ? <FiCheck /> : <FiCopy />}
-                                {copying ? 'Copied!' : 'Copy'}
-                            </button>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={handleDownloadPrompt}
-                                disabled={!generatedPrompt}
-                            >
-                                <FiDownload />
-                                Download
-                            </button>
-                            <button
-                                className="btn btn-success"
-                                onClick={handleUseTemplate}
-                                disabled={!generatedPrompt}
-                            >
-                                <FiSend />
-                                Use Template
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {selectedTemplate ? (
-                    <div className="workspace">
-                        <div className="variables-panel">
-                            <h3 className="panel-title">
-                                <FiSettings />
-                                Template Variables
-                            </h3>
-                            
-                            {selectedTemplate.variables.length === 0 ? (
-                                <div className="empty-state">
-                                    <p>This template has no variables to configure.</p>
-                                </div>
-                            ) : (
-                                selectedTemplate.variables.map(variable => (
-                                    <div key={variable.name} className="variable-group">
-                                        <label className="variable-label">
-                                            {variable.name}
-                                            {variable.required && <span style={{ color: '#f59e0b' }}> *</span>}
-                                        </label>
-                                        {variable.description && (
-                                            <div className="variable-description">
-                                                {variable.description}
-                                            </div>
-                                        )}
-                                        <textarea
-                                            className={`variable-input ${variable.required ? 'required' : ''}`}
-                                            value={variables[variable.name] || ''}
-                                            onChange={(e) => handleVariableChange(variable.name, e.target.value)}
-                                            placeholder={variable.defaultValue || `Enter ${variable.name}...`}
-                                            rows={3}
-                                        />
-                                    </div>
-                                ))
-                            )}
-                        </div>
-
-                        <div className="preview-panel">
-                            <h3 className="panel-title">
-                                <FiEye />
-                                Generated Prompt
-                            </h3>
-                            
-                            <div className="preview-content">
-                                {generating ? 'Generating...' : generatedPrompt || 'Select a template to see the preview'}
-                            </div>
-
-                            <div className="preview-stats">
-                                <div className="stat-item tokens-stat">
-                                    <span className="stat-value">{estimatedTokens.toLocaleString()}</span>
-                                    <div className="stat-label">Est. Tokens</div>
-                                </div>
-                                <div className="stat-item cost-stat">
-                                    <span className="stat-value">${estimatedCost.toFixed(4)}</span>
-                                    <div className="stat-label">Est. Cost</div>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-value">{selectedTemplate.usage.count}</span>
-                                    <div className="stat-label">Total Uses</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="empty-state">
-                        <FiBookmark className="empty-icon" />
-                        <h3>Select a Template to Get Started</h3>
-                        <p>Choose a template from the sidebar to fill in variables and generate your prompt.</p>
-                    </div>
-                )}
-            </div>
+          <select
+            className="category-filter"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            {categories.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
+              </option>
+            ))}
+          </select>
         </div>
-    );
-}; 
+
+        <div className="template-list">
+          {loading ? (
+            <div className="loading-state">
+              <FiRefreshCw className="loading-spinner" />
+              Loading templates...
+            </div>
+          ) : filteredTemplates.length === 0 ? (
+            <div className="empty-state">
+              <FiTarget className="empty-icon" />
+              <p>No templates found</p>
+            </div>
+          ) : (
+            filteredTemplates.map((template) => (
+              <div
+                key={template._id}
+                className={`template-item ${selectedTemplate?._id === template._id ? "selected" : ""}`}
+                onClick={() => setSelectedTemplate(template)}
+              >
+                <div className="template-name">{template.name}</div>
+                <span
+                  className="template-category"
+                  style={{
+                    backgroundColor: getCategoryColor(template.category),
+                  }}
+                >
+                  {template.category}
+                </span>
+                <div className="template-description">
+                  {template.description || "No description available"}
+                </div>
+                <div className="template-meta">
+                  <span>{template.variables.length} variables</span>
+                  <span>{template.usage.count} uses</span>
+                </div>
+              </div>
+            ))
+          )}
+
+          {recentSessions.length > 0 && (
+            <div className="recent-sessions">
+              <h4 className="panel-title">
+                <FiClock />
+                Recent Sessions
+              </h4>
+              {recentSessions.slice(0, 5).map((session, index) => {
+                const template = templates.find(
+                  (t) => t._id === session.templateId,
+                );
+                return (
+                  <div
+                    key={index}
+                    className="session-item"
+                    onClick={() => {
+                      if (template) {
+                        setSelectedTemplate(template);
+                        setVariables(session.variables);
+                      }
+                    }}
+                  >
+                    <div className="session-template">
+                      {template?.name || "Unknown Template"}
+                    </div>
+                    <div className="session-time">
+                      {new Date(session.timestamp).toLocaleString()}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="main-content">
+        <div className="content-header">
+          <h1 className="content-title">
+            <FiZap />
+            {selectedTemplate ? selectedTemplate.name : "Select a Template"}
+          </h1>
+
+          {selectedTemplate && (
+            <div className="action-buttons">
+              <button
+                className="btn btn-secondary"
+                onClick={handleCopyPrompt}
+                disabled={!generatedPrompt || copying}
+              >
+                {copying ? <FiCheck /> : <FiCopy />}
+                {copying ? "Copied!" : "Copy"}
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={handleDownloadPrompt}
+                disabled={!generatedPrompt}
+              >
+                <FiDownload />
+                Download
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={handleUseTemplate}
+                disabled={!generatedPrompt}
+              >
+                <FiSend />
+                Use Template
+              </button>
+            </div>
+          )}
+        </div>
+
+        {selectedTemplate ? (
+          <div className="workspace">
+            <div className="variables-panel">
+              <h3 className="panel-title">
+                <FiSettings />
+                Template Variables
+              </h3>
+
+              {selectedTemplate.variables.length === 0 ? (
+                <div className="empty-state">
+                  <p>This template has no variables to configure.</p>
+                </div>
+              ) : (
+                selectedTemplate.variables.map((variable) => (
+                  <div key={variable.name} className="variable-group">
+                    <label className="variable-label">
+                      {variable.name}
+                      {variable.required && (
+                        <span style={{ color: "#f59e0b" }}> *</span>
+                      )}
+                    </label>
+                    {variable.description && (
+                      <div className="variable-description">
+                        {variable.description}
+                      </div>
+                    )}
+                    <textarea
+                      className={`variable-input ${variable.required ? "required" : ""}`}
+                      value={variables[variable.name] || ""}
+                      onChange={(e) =>
+                        handleVariableChange(variable.name, e.target.value)
+                      }
+                      placeholder={
+                        variable.defaultValue || `Enter ${variable.name}...`
+                      }
+                      rows={3}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="preview-panel">
+              <h3 className="panel-title">
+                <FiEye />
+                Generated Prompt
+              </h3>
+
+              <div className="preview-content">
+                {generating
+                  ? "Generating..."
+                  : generatedPrompt || "Select a template to see the preview"}
+              </div>
+
+              <div className="preview-stats">
+                <div className="stat-item tokens-stat">
+                  <span className="stat-value">
+                    {estimatedTokens.toLocaleString()}
+                  </span>
+                  <div className="stat-label">Est. Tokens</div>
+                </div>
+                <div className="stat-item cost-stat">
+                  <span className="stat-value">
+                    ${estimatedCost.toFixed(4)}
+                  </span>
+                  <div className="stat-label">Est. Cost</div>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">
+                    {selectedTemplate.usage.count}
+                  </span>
+                  <div className="stat-label">Total Uses</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="empty-state">
+            <FiBookmark className="empty-icon" />
+            <h3>Select a Template to Get Started</h3>
+            <p>
+              Choose a template from the sidebar to fill in variables and
+              generate your prompt.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

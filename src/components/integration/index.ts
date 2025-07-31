@@ -1,2 +1,2 @@
-export { ApiKeyIntegration } from './ApiKeyIntegration';
-export { IntegrationDashboard } from './IntegrationDashboard'; 
+export { ApiKeyIntegration } from "./ApiKeyIntegration";
+export { IntegrationDashboard } from "./IntegrationDashboard";

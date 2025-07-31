@@ -1,463 +1,503 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-    FiSkipForward,
-    FiSkipBack,
-    FiCheck,
-    FiX,
-    FiZap,
-    FiEdit3,
-    FiEye,
-    FiTarget,
-    FiDollarSign,
-    FiClock,
-    FiArrowRight,
-    FiHome
-} from 'react-icons/fi';
+  FiSkipForward,
+  FiSkipBack,
+  FiCheck,
+  FiX,
+  FiZap,
+  FiEdit3,
+  FiEye,
+  FiTarget,
+  FiDollarSign,
+  FiClock,
+  FiArrowRight,
+  FiHome,
+} from "react-icons/fi";
 
 interface TemplateTutorialProps {
-    onClose: () => void;
-    onCreateTemplate: () => void;
-    onViewMarketplace: () => void;
+  onClose: () => void;
+  onCreateTemplate: () => void;
+  onViewMarketplace: () => void;
 }
 
 interface TutorialStep {
-    id: string;
-    title: string;
-    description: string;
-    content: React.ReactNode;
-    type: 'info' | 'interactive' | 'demo' | 'completion';
-    estimatedTime: number; // in minutes
+  id: string;
+  title: string;
+  description: string;
+  content: React.ReactNode;
+  type: "info" | "interactive" | "demo" | "completion";
+  estimatedTime: number; // in minutes
 }
 
 export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
-    onClose,
-    onCreateTemplate,
-    onViewMarketplace
+  onClose,
+  onCreateTemplate,
+  onViewMarketplace,
 }) => {
-    const [currentStep, setCurrentStep] = useState(0);
-    const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
-    const [userInput, setUserInput] = useState({
-        samplePrompt: '',
-        variables: [''],
-        useCase: ''
-    });
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [userInput, setUserInput] = useState({
+    samplePrompt: "",
+    variables: [""],
+    useCase: "",
+  });
 
-    const tutorialSteps: TutorialStep[] = [
-        {
-            id: 'welcome',
-            title: 'Welcome to Template Mastery',
-            description: 'Learn how to create powerful, reusable prompt templates',
-            type: 'info',
-            estimatedTime: 1,
-            content: (
-                <div className="welcome-content">
-                    <div className="welcome-hero">
-                        <FiZap className="welcome-icon" />
-                        <h2>Master Template Creation</h2>
-                        <p>
-                            In the next 10 minutes, you'll learn how to create templates that save time,
-                            reduce costs, and improve consistency in your AI interactions.
-                        </p>
-                    </div>
+  const tutorialSteps: TutorialStep[] = [
+    {
+      id: "welcome",
+      title: "Welcome to Template Mastery",
+      description: "Learn how to create powerful, reusable prompt templates",
+      type: "info",
+      estimatedTime: 1,
+      content: (
+        <div className="welcome-content">
+          <div className="welcome-hero">
+            <FiZap className="welcome-icon" />
+            <h2>Master Template Creation</h2>
+            <p>
+              In the next 10 minutes, you'll learn how to create templates that
+              save time, reduce costs, and improve consistency in your AI
+              interactions.
+            </p>
+          </div>
 
-                    <div className="benefits-preview">
-                        <div className="benefit-item">
-                            <FiDollarSign className="benefit-icon cost" />
-                            <div>
-                                <h4>Save Money</h4>
-                                <p>Reduce AI costs by up to 75% with optimized prompts</p>
-                            </div>
-                        </div>
-                        <div className="benefit-item">
-                            <FiClock className="benefit-icon time" />
-                            <div>
-                                <h4>Save Time</h4>
-                                <p>Reuse proven prompts instead of writing from scratch</p>
-                            </div>
-                        </div>
-                        <div className="benefit-item">
-                            <FiTarget className="benefit-icon quality" />
-                            <div>
-                                <h4>Better Results</h4>
-                                <p>Get consistent, high-quality outputs every time</p>
-                            </div>
-                        </div>
-                    </div>
+          <div className="benefits-preview">
+            <div className="benefit-item">
+              <FiDollarSign className="benefit-icon cost" />
+              <div>
+                <h4>Save Money</h4>
+                <p>Reduce AI costs by up to 75% with optimized prompts</p>
+              </div>
+            </div>
+            <div className="benefit-item">
+              <FiClock className="benefit-icon time" />
+              <div>
+                <h4>Save Time</h4>
+                <p>Reuse proven prompts instead of writing from scratch</p>
+              </div>
+            </div>
+            <div className="benefit-item">
+              <FiTarget className="benefit-icon quality" />
+              <div>
+                <h4>Better Results</h4>
+                <p>Get consistent, high-quality outputs every time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "what-are-templates",
+      title: "What Are Prompt Templates?",
+      description: "Understanding the basics of prompt templates",
+      type: "demo",
+      estimatedTime: 2,
+      content: (
+        <div className="concept-explanation">
+          <div className="concept-visual">
+            <div className="before-after">
+              <div className="before">
+                <h4>❌ Without Templates</h4>
+                <div className="prompt-example bad">
+                  <p>Write a blog post about React hooks for developers</p>
+                  <p>
+                    Write a blog post about Vue composition API for developers
+                  </p>
+                  <p>Write a blog post about Angular signals for developers</p>
                 </div>
-            )
-        },
-        {
-            id: 'what-are-templates',
-            title: 'What Are Prompt Templates?',
-            description: 'Understanding the basics of prompt templates',
-            type: 'demo',
-            estimatedTime: 2,
-            content: (
-                <div className="concept-explanation">
-                    <div className="concept-visual">
-                        <div className="before-after">
-                            <div className="before">
-                                <h4>❌ Without Templates</h4>
-                                <div className="prompt-example bad">
-                                    <p>Write a blog post about React hooks for developers</p>
-                                    <p>Write a blog post about Vue composition API for developers</p>
-                                    <p>Write a blog post about Angular signals for developers</p>
-                                </div>
-                                <div className="problems">
-                                    <span>• Repetitive writing</span>
-                                    <span>• Inconsistent quality</span>
-                                    <span>• More tokens = Higher cost</span>
-                                </div>
-                            </div>
-
-                            <div className="after">
-                                <h4>✅ With Templates</h4>
-                                <div className="prompt-example good">
-                                    <p>Write a blog post about <span className="variable">{'{{topic}}'}</span> for <span className="variable">{'{{audience}}'}</span></p>
-                                </div>
-                                <div className="benefits">
-                                    <span>• Write once, use many times</span>
-                                    <span>• Consistent structure</span>
-                                    <span>• Optimized for efficiency</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="key-concept">
-                        <FiArrowRight className="concept-icon" />
-                        <div>
-                            <h4>Key Concept: Variables</h4>
-                            <p>
-                                Templates use variables like <code>{'{{topic}}'}</code> and <code>{'{{audience}}'}</code>
-                                that can be filled in with different values each time you use the template.
-                            </p>
-                        </div>
-                    </div>
+                <div className="problems">
+                  <span>• Repetitive writing</span>
+                  <span>• Inconsistent quality</span>
+                  <span>• More tokens = Higher cost</span>
                 </div>
-            )
-        },
-        {
-            id: 'identify-use-case',
-            title: 'Identify Your Use Case',
-            description: 'Choose what type of template you want to create',
-            type: 'interactive',
-            estimatedTime: 2,
-            content: (
-                <div className="use-case-selector">
-                    <h3>What do you want to create templates for?</h3>
-                    <p>Select the use case that best matches your needs:</p>
+              </div>
 
-                    <div className="use-case-options">
-                        {[
-                            {
-                                id: 'content',
-                                title: 'Content Creation',
-                                description: 'Blog posts, articles, social media content',
-                                example: 'Blog post templates, email campaigns, product descriptions',
-                                icon: <FiEdit3 />
-                            },
-                            {
-                                id: 'code',
-                                title: 'Code & Documentation',
-                                description: 'API docs, code comments, technical writing',
-                                example: 'API documentation, code reviews, README files',
-                                icon: <FiZap />
-                            },
-                            {
-                                id: 'analysis',
-                                title: 'Data Analysis',
-                                description: 'Reports, insights, business intelligence',
-                                example: 'Performance reports, data summaries, trend analysis',
-                                icon: <FiTarget />
-                            },
-                            {
-                                id: 'other',
-                                title: 'Something Else',
-                                description: 'Custom use case or mixed purposes',
-                                example: 'Meeting summaries, creative writing, brainstorming',
-                                icon: <FiArrowRight />
-                            }
-                        ].map((useCase) => (
-                            <div
-                                key={useCase.id}
-                                className={`use-case-option ${userInput.useCase === useCase.id ? 'selected' : ''}`}
-                                onClick={() => setUserInput(prev => ({ ...prev, useCase: useCase.id }))}
-                            >
-                                <div className="use-case-icon">{useCase.icon}</div>
-                                <div className="use-case-info">
-                                    <h4>{useCase.title}</h4>
-                                    <p>{useCase.description}</p>
-                                    <small>Examples: {useCase.example}</small>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+              <div className="after">
+                <h4>✅ With Templates</h4>
+                <div className="prompt-example good">
+                  <p>
+                    Write a blog post about{" "}
+                    <span className="variable">{"{{topic}}"}</span> for{" "}
+                    <span className="variable">{"{{audience}}"}</span>
+                  </p>
                 </div>
-            )
-        },
-        {
-            id: 'write-first-prompt',
-            title: 'Write Your First Template',
-            description: 'Create a simple template with variables',
-            type: 'interactive',
-            estimatedTime: 3,
-            content: (
-                <div className="prompt-creator">
-                    <h3>Let's create your first template</h3>
-                    <p>Write a prompt that you use often, but replace specific values with variables.</p>
+                <div className="benefits">
+                  <span>• Write once, use many times</span>
+                  <span>• Consistent structure</span>
+                  <span>• Optimized for efficiency</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                    <div className="prompt-input-section">
-                        <label htmlFor="sample-prompt">Your Template Content:</label>
-                        <textarea
-                            id="sample-prompt"
-                            className="prompt-textarea"
-                            value={userInput.samplePrompt}
-                            onChange={(e) => setUserInput(prev => ({ ...prev, samplePrompt: e.target.value }))}
-                            placeholder="Example: Write a professional email to {{recipient}} about {{subject}} with a {{tone}} tone..."
-                            rows={6}
+          <div className="key-concept">
+            <FiArrowRight className="concept-icon" />
+            <div>
+              <h4>Key Concept: Variables</h4>
+              <p>
+                Templates use variables like <code>{"{{topic}}"}</code> and{" "}
+                <code>{"{{audience}}"}</code>
+                that can be filled in with different values each time you use
+                the template.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "identify-use-case",
+      title: "Identify Your Use Case",
+      description: "Choose what type of template you want to create",
+      type: "interactive",
+      estimatedTime: 2,
+      content: (
+        <div className="use-case-selector">
+          <h3>What do you want to create templates for?</h3>
+          <p>Select the use case that best matches your needs:</p>
+
+          <div className="use-case-options">
+            {[
+              {
+                id: "content",
+                title: "Content Creation",
+                description: "Blog posts, articles, social media content",
+                example:
+                  "Blog post templates, email campaigns, product descriptions",
+                icon: <FiEdit3 />,
+              },
+              {
+                id: "code",
+                title: "Code & Documentation",
+                description: "API docs, code comments, technical writing",
+                example: "API documentation, code reviews, README files",
+                icon: <FiZap />,
+              },
+              {
+                id: "analysis",
+                title: "Data Analysis",
+                description: "Reports, insights, business intelligence",
+                example: "Performance reports, data summaries, trend analysis",
+                icon: <FiTarget />,
+              },
+              {
+                id: "other",
+                title: "Something Else",
+                description: "Custom use case or mixed purposes",
+                example: "Meeting summaries, creative writing, brainstorming",
+                icon: <FiArrowRight />,
+              },
+            ].map((useCase) => (
+              <div
+                key={useCase.id}
+                className={`use-case-option ${userInput.useCase === useCase.id ? "selected" : ""}`}
+                onClick={() =>
+                  setUserInput((prev) => ({ ...prev, useCase: useCase.id }))
+                }
+              >
+                <div className="use-case-icon">{useCase.icon}</div>
+                <div className="use-case-info">
+                  <h4>{useCase.title}</h4>
+                  <p>{useCase.description}</p>
+                  <small>Examples: {useCase.example}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "write-first-prompt",
+      title: "Write Your First Template",
+      description: "Create a simple template with variables",
+      type: "interactive",
+      estimatedTime: 3,
+      content: (
+        <div className="prompt-creator">
+          <h3>Let's create your first template</h3>
+          <p>
+            Write a prompt that you use often, but replace specific values with
+            variables.
+          </p>
+
+          <div className="prompt-input-section">
+            <label htmlFor="sample-prompt">Your Template Content:</label>
+            <textarea
+              id="sample-prompt"
+              className="prompt-textarea"
+              value={userInput.samplePrompt}
+              onChange={(e) =>
+                setUserInput((prev) => ({
+                  ...prev,
+                  samplePrompt: e.target.value,
+                }))
+              }
+              placeholder="Example: Write a professional email to {{recipient}} about {{subject}} with a {{tone}} tone..."
+              rows={6}
+            />
+            <div className="prompt-tips">
+              <h4>💡 Tips for great templates:</h4>
+              <ul>
+                <li>
+                  Use <code>{"{{variable_name}}"}</code> for values that change
+                </li>
+                <li>Be specific about format and style requirements</li>
+                <li>Include context and examples when helpful</li>
+                <li>Keep it clear and concise</li>
+              </ul>
+            </div>
+          </div>
+
+          {userInput.samplePrompt && (
+            <div className="live-preview">
+              <h4>Live Preview:</h4>
+              <div className="preview-content">{userInput.samplePrompt}</div>
+              <div className="detected-variables">
+                <h5>Detected Variables:</h5>
+                {(userInput.samplePrompt.match(/\{\{([^}]+)\}\}/g) || []).map(
+                  (variable, index) => (
+                    <span key={index} className="variable-tag">
+                      {variable}
+                    </span>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      id: "test-template",
+      title: "Test Your Template",
+      description: "See how variables work in practice",
+      type: "demo",
+      estimatedTime: 2,
+      content: (
+        <div className="template-tester">
+          <h3>Let's test your template</h3>
+          <p>Fill in the variables to see how your template works:</p>
+
+          {userInput.samplePrompt ? (
+            <div className="template-demo">
+              <div className="variable-inputs">
+                {(userInput.samplePrompt.match(/\{\{([^}]+)\}\}/g) || []).map(
+                  (variable, index) => {
+                    const varName = variable.replace(/[{}]/g, "");
+                    return (
+                      <div key={index} className="variable-input">
+                        <label>{varName}:</label>
+                        <input
+                          type="text"
+                          placeholder={`Enter ${varName}`}
+                          className="var-input"
                         />
-                        <div className="prompt-tips">
-                            <h4>💡 Tips for great templates:</h4>
-                            <ul>
-                                <li>Use <code>{'{{variable_name}}'}</code> for values that change</li>
-                                <li>Be specific about format and style requirements</li>
-                                <li>Include context and examples when helpful</li>
-                                <li>Keep it clear and concise</li>
-                            </ul>
-                        </div>
-                    </div>
+                      </div>
+                    );
+                  },
+                )}
+              </div>
 
-                    {userInput.samplePrompt && (
-                        <div className="live-preview">
-                            <h4>Live Preview:</h4>
-                            <div className="preview-content">
-                                {userInput.samplePrompt}
-                            </div>
-                            <div className="detected-variables">
-                                <h5>Detected Variables:</h5>
-                                {(userInput.samplePrompt.match(/\{\{([^}]+)\}\}/g) || []).map((variable, index) => (
-                                    <span key={index} className="variable-tag">
-                                        {variable}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+              <div className="generated-output">
+                <h4>Generated Output:</h4>
+                <div className="output-preview">{userInput.samplePrompt}</div>
+              </div>
+            </div>
+          ) : (
+            <div className="no-template">
+              <p>
+                No template created yet. Go back to the previous step to create
+                one!
+              </p>
+            </div>
+          )}
+
+          <div className="testing-tips">
+            <h4>🎯 Testing Best Practices:</h4>
+            <ul>
+              <li>Try different values to ensure flexibility</li>
+              <li>Check that the output makes sense</li>
+              <li>Verify all variables are properly replaced</li>
+              <li>Test edge cases (long/short values, special characters)</li>
+            </ul>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "save-and-organize",
+      title: "Save & Organize Templates",
+      description: "Learn how to save and categorize your templates",
+      type: "info",
+      estimatedTime: 1,
+      content: (
+        <div className="organization-guide">
+          <h3>Organizing Your Templates</h3>
+
+          <div className="organization-tips">
+            <div className="tip-section">
+              <h4>📁 Categorization</h4>
+              <p>Use categories to group similar templates:</p>
+              <div className="category-examples">
+                <span className="category-tag coding">Coding</span>
+                <span className="category-tag writing">Writing</span>
+                <span className="category-tag analysis">Analysis</span>
+                <span className="category-tag creative">Creative</span>
+                <span className="category-tag business">Business</span>
+              </div>
+            </div>
+
+            <div className="tip-section">
+              <h4>🏷️ Tags</h4>
+              <p>Add descriptive tags for easy searching:</p>
+              <div className="tag-examples">
+                <span className="tag">email</span>
+                <span className="tag">documentation</span>
+                <span className="tag">seo</span>
+                <span className="tag">reports</span>
+              </div>
+            </div>
+
+            <div className="tip-section">
+              <h4>📝 Descriptions</h4>
+              <p>
+                Write clear descriptions explaining when to use each template.
+              </p>
+            </div>
+
+            <div className="tip-section">
+              <h4>⭐ Favorites</h4>
+              <p>
+                Mark frequently used templates as favorites for quick access.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "completion",
+      title: "Congratulations!",
+      description: "You've mastered template creation",
+      type: "completion",
+      estimatedTime: 1,
+      content: (
+        <div className="completion-content">
+          <div className="success-animation">
+            <FiCheck className="success-icon" />
+            <h2>You're Now a Template Master! 🎉</h2>
+          </div>
+
+          <div className="achievement-summary">
+            <h3>What you've learned:</h3>
+            <div className="achievements">
+              <div className="achievement">
+                <FiCheck className="check-icon" />
+                <span>Understanding prompt templates and variables</span>
+              </div>
+              <div className="achievement">
+                <FiCheck className="check-icon" />
+                <span>Identifying the right use cases for templates</span>
+              </div>
+              <div className="achievement">
+                <FiCheck className="check-icon" />
+                <span>Creating your first template with variables</span>
+              </div>
+              <div className="achievement">
+                <FiCheck className="check-icon" />
+                <span>Testing and validating template functionality</span>
+              </div>
+              <div className="achievement">
+                <FiCheck className="check-icon" />
+                <span>Best practices for organizing templates</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="next-steps">
+            <h3>What's Next?</h3>
+            <div className="next-step-actions">
+              <button className="action-btn primary" onClick={onCreateTemplate}>
+                <FiZap />
+                Create Your First Real Template
+              </button>
+              <button
+                className="action-btn secondary"
+                onClick={onViewMarketplace}
+              >
+                <FiEye />
+                Explore Template Marketplace
+              </button>
+            </div>
+          </div>
+
+          <div className="potential-savings">
+            <h3>Your Potential Savings:</h3>
+            <div className="savings-calculator">
+              <div className="saving-item">
+                <FiDollarSign className="saving-icon" />
+                <div>
+                  <strong>$50-200/month</strong>
+                  <p>Typical cost savings with templates</p>
                 </div>
-            )
-        },
-        {
-            id: 'test-template',
-            title: 'Test Your Template',
-            description: 'See how variables work in practice',
-            type: 'demo',
-            estimatedTime: 2,
-            content: (
-                <div className="template-tester">
-                    <h3>Let's test your template</h3>
-                    <p>Fill in the variables to see how your template works:</p>
-
-                    {userInput.samplePrompt ? (
-                        <div className="template-demo">
-                            <div className="variable-inputs">
-                                {(userInput.samplePrompt.match(/\{\{([^}]+)\}\}/g) || []).map((variable, index) => {
-                                    const varName = variable.replace(/[{}]/g, '');
-                                    return (
-                                        <div key={index} className="variable-input">
-                                            <label>{varName}:</label>
-                                            <input
-                                                type="text"
-                                                placeholder={`Enter ${varName}`}
-                                                className="var-input"
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            <div className="generated-output">
-                                <h4>Generated Output:</h4>
-                                <div className="output-preview">
-                                    {userInput.samplePrompt}
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="no-template">
-                            <p>No template created yet. Go back to the previous step to create one!</p>
-                        </div>
-                    )}
-
-                    <div className="testing-tips">
-                        <h4>🎯 Testing Best Practices:</h4>
-                        <ul>
-                            <li>Try different values to ensure flexibility</li>
-                            <li>Check that the output makes sense</li>
-                            <li>Verify all variables are properly replaced</li>
-                            <li>Test edge cases (long/short values, special characters)</li>
-                        </ul>
-                    </div>
+              </div>
+              <div className="saving-item">
+                <FiClock className="saving-icon" />
+                <div>
+                  <strong>5-15 hours/week</strong>
+                  <p>Time saved on prompt writing</p>
                 </div>
-            )
-        },
-        {
-            id: 'save-and-organize',
-            title: 'Save & Organize Templates',
-            description: 'Learn how to save and categorize your templates',
-            type: 'info',
-            estimatedTime: 1,
-            content: (
-                <div className="organization-guide">
-                    <h3>Organizing Your Templates</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ];
 
-                    <div className="organization-tips">
-                        <div className="tip-section">
-                            <h4>📁 Categorization</h4>
-                            <p>Use categories to group similar templates:</p>
-                            <div className="category-examples">
-                                <span className="category-tag coding">Coding</span>
-                                <span className="category-tag writing">Writing</span>
-                                <span className="category-tag analysis">Analysis</span>
-                                <span className="category-tag creative">Creative</span>
-                                <span className="category-tag business">Business</span>
-                            </div>
-                        </div>
+  const currentStepData = tutorialSteps[currentStep];
+  const progress = ((currentStep + 1) / tutorialSteps.length) * 100;
 
-                        <div className="tip-section">
-                            <h4>🏷️ Tags</h4>
-                            <p>Add descriptive tags for easy searching:</p>
-                            <div className="tag-examples">
-                                <span className="tag">email</span>
-                                <span className="tag">documentation</span>
-                                <span className="tag">seo</span>
-                                <span className="tag">reports</span>
-                            </div>
-                        </div>
+  const handleNext = () => {
+    if (currentStep < tutorialSteps.length - 1) {
+      setCompletedSteps((prev) => new Set([...prev, currentStep]));
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
-                        <div className="tip-section">
-                            <h4>📝 Descriptions</h4>
-                            <p>Write clear descriptions explaining when to use each template.</p>
-                        </div>
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
-                        <div className="tip-section">
-                            <h4>⭐ Favorites</h4>
-                            <p>Mark frequently used templates as favorites for quick access.</p>
-                        </div>
-                    </div>
-                </div>
-            )
-        },
-        {
-            id: 'completion',
-            title: 'Congratulations!',
-            description: 'You\'ve mastered template creation',
-            type: 'completion',
-            estimatedTime: 1,
-            content: (
-                <div className="completion-content">
-                    <div className="success-animation">
-                        <FiCheck className="success-icon" />
-                        <h2>You're Now a Template Master! 🎉</h2>
-                    </div>
+  const canProceed = () => {
+    switch (currentStepData.id) {
+      case "identify-use-case":
+        return userInput.useCase !== "";
+      case "write-first-prompt":
+        return (
+          userInput.samplePrompt.trim() !== "" &&
+          userInput.samplePrompt.includes("{{")
+        );
+      default:
+        return true;
+    }
+  };
 
-                    <div className="achievement-summary">
-                        <h3>What you've learned:</h3>
-                        <div className="achievements">
-                            <div className="achievement">
-                                <FiCheck className="check-icon" />
-                                <span>Understanding prompt templates and variables</span>
-                            </div>
-                            <div className="achievement">
-                                <FiCheck className="check-icon" />
-                                <span>Identifying the right use cases for templates</span>
-                            </div>
-                            <div className="achievement">
-                                <FiCheck className="check-icon" />
-                                <span>Creating your first template with variables</span>
-                            </div>
-                            <div className="achievement">
-                                <FiCheck className="check-icon" />
-                                <span>Testing and validating template functionality</span>
-                            </div>
-                            <div className="achievement">
-                                <FiCheck className="check-icon" />
-                                <span>Best practices for organizing templates</span>
-                            </div>
-                        </div>
-                    </div>
+  const totalTime = tutorialSteps.reduce(
+    (sum, step) => sum + step.estimatedTime,
+    0,
+  );
+  const completedTime = tutorialSteps
+    .slice(0, currentStep + 1)
+    .reduce((sum, step) => sum + step.estimatedTime, 0);
 
-                    <div className="next-steps">
-                        <h3>What's Next?</h3>
-                        <div className="next-step-actions">
-                            <button className="action-btn primary" onClick={onCreateTemplate}>
-                                <FiZap />
-                                Create Your First Real Template
-                            </button>
-                            <button className="action-btn secondary" onClick={onViewMarketplace}>
-                                <FiEye />
-                                Explore Template Marketplace
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="potential-savings">
-                        <h3>Your Potential Savings:</h3>
-                        <div className="savings-calculator">
-                            <div className="saving-item">
-                                <FiDollarSign className="saving-icon" />
-                                <div>
-                                    <strong>$50-200/month</strong>
-                                    <p>Typical cost savings with templates</p>
-                                </div>
-                            </div>
-                            <div className="saving-item">
-                                <FiClock className="saving-icon" />
-                                <div>
-                                    <strong>5-15 hours/week</strong>
-                                    <p>Time saved on prompt writing</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-    ];
-
-    const currentStepData = tutorialSteps[currentStep];
-    const progress = ((currentStep + 1) / tutorialSteps.length) * 100;
-
-    const handleNext = () => {
-        if (currentStep < tutorialSteps.length - 1) {
-            setCompletedSteps(prev => new Set([...prev, currentStep]));
-            setCurrentStep(currentStep + 1);
-        }
-    };
-
-    const handlePrev = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
-
-    const canProceed = () => {
-        switch (currentStepData.id) {
-            case 'identify-use-case':
-                return userInput.useCase !== '';
-            case 'write-first-prompt':
-                return userInput.samplePrompt.trim() !== '' && userInput.samplePrompt.includes('{{');
-            default:
-                return true;
-        }
-    };
-
-    const totalTime = tutorialSteps.reduce((sum, step) => sum + step.estimatedTime, 0);
-    const completedTime = tutorialSteps.slice(0, currentStep + 1).reduce((sum, step) => sum + step.estimatedTime, 0);
-
-    return (
-        <div className="template-tutorial">
-            <style>{`
+  return (
+    <div className="template-tutorial">
+      <style>{`
                 .template-tutorial {
                     position: fixed;
                     top: 0;
@@ -1319,75 +1359,79 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                 }
             `}</style>
 
-            <div className="tutorial-container">
-                <div className="tutorial-header">
-                    <button className="close-btn" onClick={onClose}>
-                        <FiX />
-                    </button>
+      <div className="tutorial-container">
+        <div className="tutorial-header">
+          <button className="close-btn" onClick={onClose}>
+            <FiX />
+          </button>
 
-                    <div className="header-content">
-                        <h1 className="tutorial-title">{currentStepData.title}</h1>
-                        <p className="tutorial-description">{currentStepData.description}</p>
-                    </div>
+          <div className="header-content">
+            <h1 className="tutorial-title">{currentStepData.title}</h1>
+            <p className="tutorial-description">
+              {currentStepData.description}
+            </p>
+          </div>
 
-                    <div className="progress-info">
-                        <span>Step {currentStep + 1} of {tutorialSteps.length}</span>
-                        <span>{completedTime} / {totalTime} min</span>
-                    </div>
+          <div className="progress-info">
+            <span>
+              Step {currentStep + 1} of {tutorialSteps.length}
+            </span>
+            <span>
+              {completedTime} / {totalTime} min
+            </span>
+          </div>
 
-                    <div className="step-indicator">
-                        {tutorialSteps.map((_, index) => (
-                            <div
-                                key={index}
-                                className={`step-dot ${
-                                    completedSteps.has(index) 
-                                        ? 'completed' 
-                                        : index === currentStep 
-                                        ? 'current' 
-                                        : ''
-                                }`}
-                            />
-                        ))}
-                    </div>
+          <div className="step-indicator">
+            {tutorialSteps.map((_, index) => (
+              <div
+                key={index}
+                className={`step-dot ${
+                  completedSteps.has(index)
+                    ? "completed"
+                    : index === currentStep
+                      ? "current"
+                      : ""
+                }`}
+              />
+            ))}
+          </div>
 
-                    <div className="progress-bar">
-                        <div className="progress-fill"></div>
-                    </div>
-                </div>
-
-                <div className="tutorial-content">
-                    {currentStepData.content}
-                </div>
-
-                <div className="tutorial-footer">
-                    <button
-                        className="nav-btn secondary"
-                        onClick={handlePrev}
-                        disabled={currentStep === 0}
-                    >
-                        <FiSkipBack />
-                        Previous
-                    </button>
-
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        {currentStep === tutorialSteps.length - 1 ? (
-                            <button className="nav-btn secondary" onClick={onClose}>
-                                <FiHome />
-                                Finish Tutorial
-                            </button>
-                        ) : (
-                            <button
-                                className="nav-btn primary"
-                                onClick={handleNext}
-                                disabled={!canProceed()}
-                            >
-                                Next
-                                <FiSkipForward />
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </div>
+          <div className="progress-bar">
+            <div className="progress-fill"></div>
+          </div>
         </div>
-    );
-}; 
+
+        <div className="tutorial-content">{currentStepData.content}</div>
+
+        <div className="tutorial-footer">
+          <button
+            className="nav-btn secondary"
+            onClick={handlePrev}
+            disabled={currentStep === 0}
+          >
+            <FiSkipBack />
+            Previous
+          </button>
+
+          <div style={{ display: "flex", gap: "1rem" }}>
+            {currentStep === tutorialSteps.length - 1 ? (
+              <button className="nav-btn secondary" onClick={onClose}>
+                <FiHome />
+                Finish Tutorial
+              </button>
+            ) : (
+              <button
+                className="nav-btn primary"
+                onClick={handleNext}
+                disabled={!canProceed()}
+              >
+                Next
+                <FiSkipForward />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
