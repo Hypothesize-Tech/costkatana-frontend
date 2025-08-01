@@ -6,7 +6,6 @@ import {
   FiTag,
   FiTrendingUp,
   FiBookOpen,
-  FiEdit3,
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
@@ -15,7 +14,6 @@ import { Modal } from "../components/common/Modal";
 import {
   PromptTemplateCard,
   CreateTemplateModal,
-  EnhancedTemplateWizard,
   ViewTemplateModal,
   EditTemplateModal,
   DuplicateTemplateModal,
@@ -29,7 +27,6 @@ const PromptTemplates: React.FC = () => {
 
   // Modal states - simplified to just essential ones
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showSimpleCreateModal, setShowSimpleCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
@@ -198,29 +195,13 @@ const PromptTemplates: React.FC = () => {
             Create, manage, and use reusable prompt templates
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          {/* Primary Enhanced Create Button */}
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center space-x-2 px-6 py-3 text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-medium shadow-lg hover:shadow-xl hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200"
-          >
-            <FiPlus className="w-5 h-5" />
-            <span>Create Template</span>
-            <div className="ml-2 px-2 py-0.5 text-xs bg-white bg-opacity-20 rounded-full">
-              Enhanced
-            </div>
-          </button>
-
-          {/* Simple Form Option */}
-          <button
-            onClick={() => setShowSimpleCreateModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            title="Use simple form instead"
-          >
-            <FiEdit3 className="w-4 h-4" />
-            <span className="text-sm">Simple</span>
-          </button>
-        </div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+        >
+          <FiPlus />
+          New Template
+        </button>
       </div>
 
       {/* Quick Stats */}
@@ -337,26 +318,13 @@ const PromptTemplates: React.FC = () => {
               : "Get started by creating your first template"}
           </p>
           {!searchQuery && selectedCategory === "all" && !showFavoritesOnly && (
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                <FiPlus className="mr-2" />
-                Create Your First Template
-                <div className="ml-2 px-2 py-0.5 text-xs bg-white bg-opacity-20 rounded-full">
-                  Enhanced
-                </div>
-              </button>
-              <button
-                onClick={() => setShowSimpleCreateModal(true)}
-                className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
-                title="Use simple form"
-              >
-                <FiEdit3 className="mr-1" />
-                Simple
-              </button>
-            </div>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            >
+              <FiPlus className="mr-2" />
+              Create Template
+            </button>
           )}
         </div>
       ) : (
@@ -380,15 +348,8 @@ const PromptTemplates: React.FC = () => {
 
       {/* Modals - Simplified */}
       {showCreateModal && (
-        <EnhancedTemplateWizard
-          onClose={() => setShowCreateModal(false)}
-          onSubmit={handleCreateTemplate}
-        />
-      )}
-
-      {showSimpleCreateModal && (
         <CreateTemplateModal
-          onClose={() => setShowSimpleCreateModal(false)}
+          onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateTemplate}
         />
       )}

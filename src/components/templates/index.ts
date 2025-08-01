@@ -7,7 +7,6 @@ export { DuplicateTemplateModal } from "./DuplicateTemplateModal";
 export { TemplateVersionHistory } from "./TemplateVersionHistory";
 export { TemplateDiscoveryHub } from "./TemplateDiscoveryHub";
 export { TemplateCreationWizard } from "./TemplateCreationWizard";
-export { EnhancedTemplateWizard } from "./EnhancedTemplateWizard";
 export { TemplateMarketplace } from "./TemplateMarketplace";
 export { TemplateTutorial } from "./TemplateTutorial";
 export { TemplateAnalyticsDashboard } from "./TemplateAnalyticsDashboard";
