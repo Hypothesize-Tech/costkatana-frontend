@@ -19,6 +19,25 @@ export interface Usage {
     optimizationId?: string;
     errorOccurred: boolean;
     errorMessage?: string;
+    // Enhanced error tracking
+    httpStatusCode?: number;
+    errorType?: 'client_error' | 'server_error' | 'network_error' | 'auth_error' | 'rate_limit' | 'timeout' | 'validation_error' | 'integration_error';
+    errorDetails?: {
+        code?: string;
+        type?: string;
+        statusText?: string;
+        requestId?: string;
+        timestamp?: string;
+        endpoint?: string;
+        method?: string;
+        userAgent?: string;
+        clientVersion?: string;
+        [key: string]: any;
+    };
+    isClientError?: boolean;
+    isServerError?: boolean;
+    ipAddress?: string;
+    userAgent?: string;
     // Workflow tracking fields
     workflowId?: string;
     workflowName?: string;

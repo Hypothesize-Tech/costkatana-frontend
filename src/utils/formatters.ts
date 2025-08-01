@@ -363,3 +363,66 @@ export function formatComparisonData(data: any): any {
         }
     };
 }
+
+// Error formatting functions
+export const formatHttpStatusCode = (statusCode?: number): string => {
+    if (!statusCode) return '';
+    
+    let statusText = '';
+    
+    if (statusCode >= 200 && statusCode < 300) {
+        statusText = 'Success';
+    } else if (statusCode >= 300 && statusCode < 400) {
+        statusText = 'Redirect';
+    } else if (statusCode >= 400 && statusCode < 500) {
+        statusText = 'Client Error';
+    } else if (statusCode >= 500) {
+        statusText = 'Server Error';
+    }
+    
+    return `${statusCode} ${statusText}`;
+};
+
+export const formatErrorType = (errorType?: string): string => {
+    if (!errorType) return '';
+    
+    const errorTypeMap: Record<string, string> = {
+        'client_error': 'Client Error',
+        'server_error': 'Server Error',
+        'network_error': 'Network Error',
+        'auth_error': 'Authentication Error',
+        'rate_limit': 'Rate Limited',
+        'timeout': 'Timeout',
+        'validation_error': 'Validation Error',
+        'integration_error': 'Integration Error'
+    };
+    
+    return errorTypeMap[errorType] || errorType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+export const getStatusCodeColor = (statusCode?: number): string => {
+    if (!statusCode) return 'gray';
+    
+    if (statusCode >= 200 && statusCode < 300) return 'green';
+    if (statusCode >= 300 && statusCode < 400) return 'blue';
+    if (statusCode >= 400 && statusCode < 500) return 'yellow';
+    if (statusCode >= 500) return 'red';
+    
+    return 'gray';
+};
+
+export const getErrorTypeColor = (errorType?: string): string => {
+    if (!errorType) return 'gray';
+    
+    switch (errorType) {
+        case 'auth_error': return 'red';
+        case 'rate_limit': return 'orange';
+        case 'timeout': return 'yellow';
+        case 'validation_error': return 'blue';
+        case 'client_error': return 'yellow';
+        case 'server_error': return 'red';
+        case 'network_error': return 'purple';
+        case 'integration_error': return 'gray';
+        default: return 'gray';
+    }
+};

@@ -9,7 +9,11 @@ import {
   formatDateTime,
   formatServiceName,
   formatPrompt,
-  formatResponseTime
+  formatResponseTime,
+  formatHttpStatusCode,
+  formatErrorType,
+  getStatusCodeColor,
+  getErrorTypeColor
 } from '@/utils/formatters';
 import { AI_SERVICES } from '@/utils/constant';
 
@@ -101,6 +105,9 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
                   Cost
+                </th>
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                  Status
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
                   Time
@@ -277,6 +284,44 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           Optimized
                         </span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center space-x-2">
+                        {item.errorOccurred ? (
+                          <>
+                            {item.httpStatusCode && (
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                ${getStatusCodeColor(item.httpStatusCode) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                                  getStatusCodeColor(item.httpStatusCode) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                    getStatusCodeColor(item.httpStatusCode) === 'green' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                      'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}
+                              `}>
+                                {item.httpStatusCode}
+                              </span>
+                            )}
+                            {item.errorType && (
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                ${getErrorTypeColor(item.errorType) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                                  getErrorTypeColor(item.errorType) === 'orange' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                                    getErrorTypeColor(item.errorType) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                      getErrorTypeColor(item.errorType) === 'blue' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                                        'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}
+                              `}>
+                                {formatErrorType(item.errorType)}
+                              </span>
+                            )}
+                            {!item.httpStatusCode && !item.errorType && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                Error
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Success
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                       {formatDateTime(item.createdAt)}
@@ -576,6 +621,70 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {tag}
                         </span>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Error Details */}
+                {selectedUsage.errorOccurred && (
+                  <div className="p-4 bg-red-50 rounded-lg dark:bg-red-900/20">
+                    <h5 className="text-sm font-medium text-red-900 dark:text-red-100 mb-3">
+                      Error Details
+                    </h5>
+                    <div className="space-y-3">
+                      {selectedUsage.httpStatusCode && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-red-700 dark:text-red-300">HTTP Status:</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                            ${getStatusCodeColor(selectedUsage.httpStatusCode) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' :
+                              getStatusCodeColor(selectedUsage.httpStatusCode) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                                'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}
+                          `}>
+                            {formatHttpStatusCode(selectedUsage.httpStatusCode)}
+                          </span>
+                        </div>
+                      )}
+                      {selectedUsage.errorType && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-red-700 dark:text-red-300">Error Type:</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                            ${getErrorTypeColor(selectedUsage.errorType) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' :
+                              getErrorTypeColor(selectedUsage.errorType) === 'orange' ? 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200' :
+                                getErrorTypeColor(selectedUsage.errorType) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                                  'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}
+                          `}>
+                            {formatErrorType(selectedUsage.errorType)}
+                          </span>
+                        </div>
+                      )}
+                      {selectedUsage.errorMessage && (
+                        <div>
+                          <span className="text-sm text-red-700 dark:text-red-300">Error Message:</span>
+                          <p className="text-sm text-red-900 dark:text-red-100 mt-1 p-2 bg-red-100 dark:bg-red-900/30 rounded">
+                            {selectedUsage.errorMessage}
+                          </p>
+                        </div>
+                      )}
+                      {selectedUsage.errorDetails && Object.keys(selectedUsage.errorDetails).length > 0 && (
+                        <div>
+                          <span className="text-sm text-red-700 dark:text-red-300">Additional Details:</span>
+                          <div className="mt-1 space-y-1">
+                            {Object.entries(selectedUsage.errorDetails)
+                              .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+                              .map(([key, value]) => (
+                                <div key={key} className="flex justify-between items-start text-xs">
+                                  <span className="text-red-600 dark:text-red-400 capitalize">
+                                    {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                                  </span>
+                                  <span className="text-red-900 dark:text-red-100 max-w-xs text-right">
+                                    {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                                  </span>
+                                </div>
+                              ))
+                            }
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
