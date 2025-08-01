@@ -54,7 +54,7 @@ export interface TemplateVariable {
   description?: string;
   defaultValue?: string;
   required: boolean;
-  type?: "text" | "number" | "boolean" | "select" | "multiselect";
+  type?: "text" | "textarea" | "number" | "boolean" | "select" | "multiselect";
   options?: string[];
 }
 
