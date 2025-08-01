@@ -8,11 +8,11 @@ import {
   CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 import { ProjectService } from "../../services/project.service";
-import { useNotifications } from "../../contexts/NotificationContext";
+import { useNotification } from "../../contexts/NotificationContext";
 
 export const ProjectIdGuide: React.FC = () => {
   const [copied, setCopied] = useState<string>("");
-  const { showNotification } = useNotifications();
+  const { showNotification } = useNotification();
 
   const { data: projects } = useQuery(["projects"], ProjectService.getProjects);
 

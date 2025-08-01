@@ -20,6 +20,7 @@ import { ProjectService } from "../../services/project.service";
 import { analyticsService } from "../../services/analytics.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { ApiKeyIntegration } from "./ApiKeyIntegration";
+import { ProjectIdGuide } from "./ProjectIdGuide";
 import { formatCurrency } from "../../utils/formatters";
 
 interface IntegrationDashboardProps {
@@ -50,6 +51,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
   const [showIntegrationModal, setShowIntegrationModal] = useState(false);
   const [selectedActivity, setSelectedActivity] =
     useState<DetailedActivity | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects'>('overview');
 
   const { data: apiKeys, isLoading: loadingKeys } = useQuery(
     ["api-keys"],
@@ -163,247 +165,283 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
         </p>
       </div>
 
-      {/* Integration Health - Simplified */}
+      {/* Tab Navigation */}
       <div className="mb-8">
-        <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Quick Overview
-            </h2>
-            <div
-              className={`flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                health.color === "green"
-                  ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                  : health.color === "yellow"
-                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
-                    : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-              }`}
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'overview'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
-              {health.color === "green" ? (
-                <CheckCircleIcon className="mr-1 w-4 h-4" />
-              ) : (
-                <ExclamationTriangleIcon className="mr-1 w-4 h-4" />
-              )}
-              {health.label}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {integrationStatus.apiKeysConfigured}
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                API Keys
-              </div>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {integrationStatus.projectsWithUsage}
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Active Projects
-              </div>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {analytics?.summary?.totalRequests || 0}
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                API Calls
-              </div>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatCurrency(analytics?.summary?.totalCost || 0)}
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Total Spent
-              </div>
-            </div>
-          </div>
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('projects')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'projects'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+            >
+              Project IDs & Integration
+            </button>
+          </nav>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Left Column - Quick Actions */}
-        <div className="lg:col-span-1">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-            Quick Actions
-          </h2>
-          <div className="space-y-3">
-            {integrationStatus.apiKeysConfigured === 0 && (
-              <button
-                onClick={() => setShowIntegrationModal(true)}
-                className="w-full flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200 transition-colors dark:bg-blue-900/20 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30"
-              >
-                <CogIcon className="mr-3 w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <div className="text-left">
-                  <div className="font-medium text-blue-900 dark:text-blue-100">
-                    Setup Integration
+      {/* Tab Content */}
+      {activeTab === 'overview' && (
+        <>
+          {/* Integration Health - Simplified */}
+          <div className="mb-8">
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Quick Overview
+                </h2>
+                <div
+                  className={`flex items-center px-3 py-1 rounded-full text-sm font-medium ${health.color === "green"
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                      : health.color === "yellow"
+                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
+                        : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                    }`}
+                >
+                  {health.color === "green" ? (
+                    <CheckCircleIcon className="mr-1 w-4 h-4" />
+                  ) : (
+                    <ExclamationTriangleIcon className="mr-1 w-4 h-4" />
+                  )}
+                  {health.label}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {integrationStatus.apiKeysConfigured}
                   </div>
-                  <div className="text-sm text-blue-700 dark:text-blue-300">
-                    Add your first API key
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    API Keys
                   </div>
                 </div>
-              </button>
-            )}
-
-            <a
-              href="/settings"
-              className="w-full flex items-center p-4 bg-green-50 rounded-lg border border-green-200 transition-colors dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30"
-            >
-              <KeyIcon className="mr-3 w-6 h-6 text-green-600 dark:text-green-400" />
-              <div className="text-left">
-                <div className="font-medium text-green-900 dark:text-green-100">
-                  Manage API Keys
+                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {integrationStatus.projectsWithUsage}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Active Projects
+                  </div>
                 </div>
-                <div className="text-sm text-green-700 dark:text-green-300">
-                  {integrationStatus.apiKeysConfigured} configured
+                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {analytics?.summary?.totalRequests || 0}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    API Calls
+                  </div>
                 </div>
-              </div>
-            </a>
-
-            <a
-              href="/projects"
-              className="w-full flex items-center p-4 bg-purple-50 rounded-lg border border-purple-200 transition-colors dark:bg-purple-900/20 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30"
-            >
-              <DocumentTextIcon className="mr-3 w-6 h-6 text-purple-600 dark:text-purple-400" />
-              <div className="text-left">
-                <div className="font-medium text-purple-900 dark:text-purple-100">
-                  View Projects
-                </div>
-                <div className="text-sm text-purple-700 dark:text-purple-300">
-                  {integrationStatus.totalProjects} total projects
+                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {formatCurrency(analytics?.summary?.totalCost || 0)}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Total Spent
+                  </div>
                 </div>
               </div>
-            </a>
-
-            <a
-              href="/analytics"
-              className="w-full flex items-center p-4 bg-orange-50 rounded-lg border border-orange-200 transition-colors dark:bg-orange-900/20 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/30"
-            >
-              <ChartBarIcon className="mr-3 w-6 h-6 text-orange-600 dark:text-orange-400" />
-              <div className="text-left">
-                <div className="font-medium text-orange-900 dark:text-orange-100">
-                  Detailed Analytics
-                </div>
-                <div className="text-sm text-orange-700 dark:text-orange-300">
-                  View comprehensive reports
-                </div>
-              </div>
-            </a>
+            </div>
           </div>
-        </div>
 
-        {/* Right Column - Recent Activity */}
-        <div className="lg:col-span-2">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-            Recent AI Activity
-          </h2>
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            {loadingUsage ? (
-              <div className="p-8 text-center">
-                <LoadingSpinner />
-              </div>
-            ) : recentUsage && recentUsage.length > 0 ? (
-              <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
-                {recentUsage.map((usage: any, index: number) => (
-                  <div
-                    key={index}
-                    className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`p-2 rounded-lg ${getServiceColor(usage.service)} bg-opacity-10`}
-                        >
-                          {getActivityIcon(usage.service)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {usage.service} API Call
-                            </h4>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {usage.createdAt
-                                ? (() => {
-                                    const date = new Date(usage.createdAt);
-                                    const now = new Date();
-                                    const diffInHours =
-                                      (now.getTime() - date.getTime()) /
-                                      (1000 * 60 * 60);
-
-                                    if (diffInHours < 1) {
-                                      return "Just now";
-                                    } else if (diffInHours < 24) {
-                                      return `${Math.floor(diffInHours)}h ago`;
-                                    } else if (diffInHours < 168) {
-                                      return `${Math.floor(diffInHours / 24)}d ago`;
-                                    } else {
-                                      return date.toLocaleDateString();
-                                    }
-                                  })()
-                                : "N/A"}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                            <span className="font-medium">{usage.model}</span>
-                            {usage.projectName && (
-                              <span className="text-gray-500 dark:text-gray-400 ml-2">
-                                • {usage.projectName}
-                              </span>
-                            )}
-                          </p>
-                          {usage.prompt && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                              {truncateText(usage.prompt, 120)}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            <span>
-                              {usage.totalTokens?.toLocaleString() || "0"}{" "}
-                              tokens
-                            </span>
-                            <span>{formatCurrency(usage.cost)}</span>
-                          </div>
-                        </div>
-                      </div>
-                      {usage.prompt && (
-                        <button
-                          onClick={() => handleViewActivity(usage)}
-                          className="ml-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                        >
-                          <EyeIcon className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-8 text-center">
-                <ClockIcon className="mx-auto mb-4 w-12 h-12 text-gray-400" />
-                <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
-                  No Recent Activity
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  Start using the API to see activity here
-                </p>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {/* Left Column - Quick Actions */}
+            <div className="lg:col-span-1">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Quick Actions
+              </h2>
+              <div className="space-y-3">
                 {integrationStatus.apiKeysConfigured === 0 && (
                   <button
                     onClick={() => setShowIntegrationModal(true)}
-                    className="mt-4 inline-flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+                    className="w-full flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200 transition-colors dark:bg-blue-900/20 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30"
                   >
-                    Setup Integration
-                    <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
+                    <CogIcon className="mr-3 w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="text-left">
+                      <div className="font-medium text-blue-900 dark:text-blue-100">
+                        Setup Integration
+                      </div>
+                      <div className="text-sm text-blue-700 dark:text-blue-300">
+                        Add your first API key
+                      </div>
+                    </div>
                   </button>
                 )}
+
+                <a
+                  href="/settings"
+                  className="w-full flex items-center p-4 bg-green-50 rounded-lg border border-green-200 transition-colors dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30"
+                >
+                  <KeyIcon className="mr-3 w-6 h-6 text-green-600 dark:text-green-400" />
+                  <div className="text-left">
+                    <div className="font-medium text-green-900 dark:text-green-100">
+                      Manage API Keys
+                    </div>
+                    <div className="text-sm text-green-700 dark:text-green-300">
+                      {integrationStatus.apiKeysConfigured} configured
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href="/projects"
+                  className="w-full flex items-center p-4 bg-purple-50 rounded-lg border border-purple-200 transition-colors dark:bg-purple-900/20 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                >
+                  <DocumentTextIcon className="mr-3 w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  <div className="text-left">
+                    <div className="font-medium text-purple-900 dark:text-purple-100">
+                      View Projects
+                    </div>
+                    <div className="text-sm text-purple-700 dark:text-purple-300">
+                      {integrationStatus.totalProjects} total projects
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href="/analytics"
+                  className="w-full flex items-center p-4 bg-orange-50 rounded-lg border border-orange-200 transition-colors dark:bg-orange-900/20 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/30"
+                >
+                  <ChartBarIcon className="mr-3 w-6 h-6 text-orange-600 dark:text-orange-400" />
+                  <div className="text-left">
+                    <div className="font-medium text-orange-900 dark:text-orange-100">
+                      Detailed Analytics
+                    </div>
+                    <div className="text-sm text-orange-700 dark:text-orange-300">
+                      View comprehensive reports
+                    </div>
+                  </div>
+                </a>
               </div>
-            )}
+            </div>
+
+            {/* Right Column - Recent Activity */}
+            <div className="lg:col-span-2">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Recent AI Activity
+              </h2>
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                {loadingUsage ? (
+                  <div className="p-8 text-center">
+                    <LoadingSpinner />
+                  </div>
+                ) : recentUsage && recentUsage.length > 0 ? (
+                  <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+                    {recentUsage.map((usage: any, index: number) => (
+                      <div
+                        key={index}
+                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div
+                              className={`p-2 rounded-lg ${getServiceColor(usage.service)} bg-opacity-10`}
+                            >
+                              {getActivityIcon(usage.service)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                  {usage.service} API Call
+                                </h4>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {usage.createdAt
+                                    ? (() => {
+                                      const date = new Date(usage.createdAt);
+                                      const now = new Date();
+                                      const diffInHours =
+                                        (now.getTime() - date.getTime()) /
+                                        (1000 * 60 * 60);
+
+                                      if (diffInHours < 1) {
+                                        return "Just now";
+                                      } else if (diffInHours < 24) {
+                                        return `${Math.floor(diffInHours)}h ago`;
+                                      } else if (diffInHours < 168) {
+                                        return `${Math.floor(diffInHours / 24)}d ago`;
+                                      } else {
+                                        return date.toLocaleDateString();
+                                      }
+                                    })()
+                                    : "N/A"}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                <span className="font-medium">{usage.model}</span>
+                                {usage.projectName && (
+                                  <span className="text-gray-500 dark:text-gray-400 ml-2">
+                                    • {usage.projectName}
+                                  </span>
+                                )}
+                              </p>
+                              {usage.prompt && (
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                                  {truncateText(usage.prompt, 120)}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span>
+                                  {usage.totalTokens?.toLocaleString() || "0"}{" "}
+                                  tokens
+                                </span>
+                                <span>{formatCurrency(usage.cost)}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {usage.prompt && (
+                            <button
+                              onClick={() => handleViewActivity(usage)}
+                              className="ml-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            >
+                              <EyeIcon className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center">
+                    <ClockIcon className="mx-auto mb-4 w-12 h-12 text-gray-400" />
+                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                      No Recent Activity
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Start using the API to see activity here
+                    </p>
+                    {integrationStatus.apiKeysConfigured === 0 && (
+                      <button
+                        onClick={() => setShowIntegrationModal(true)}
+                        className="mt-4 inline-flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+                      >
+                        Setup Integration
+                        <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+        </>
+      )}
+
+      {activeTab === 'projects' && (
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700 p-6">
+          <ProjectIdGuide />
         </div>
-      </div>
+      )}
 
       {/* Activity Detail Modal */}
       {selectedActivity && (
@@ -475,11 +513,11 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                       {selectedActivity.totalTokens
                         ? selectedActivity.totalTokens.toLocaleString()
                         : selectedActivity.promptTokens &&
-                            selectedActivity.completionTokens
+                          selectedActivity.completionTokens
                           ? (
-                              selectedActivity.promptTokens +
-                              selectedActivity.completionTokens
-                            ).toLocaleString()
+                            selectedActivity.promptTokens +
+                            selectedActivity.completionTokens
+                          ).toLocaleString()
                           : "N/A"}
                     </div>
                   </div>

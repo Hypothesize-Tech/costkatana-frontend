@@ -12,6 +12,8 @@ import {
   FiActivity,
   FiBarChart,
   FiRefreshCw,
+  FiCopy,
+  FiCheck,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { Project } from "../../types/project.types";
@@ -36,6 +38,7 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
     "overview" | "members" | "budget" | "settings"
   >("overview");
   const [recalculating, setRecalculating] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -73,6 +76,17 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
     }
   };
 
+  const handleCopyProjectId = async () => {
+    try {
+      await navigator.clipboard.writeText(project._id);
+      setCopied(true);
+      showNotification("Project ID copied to clipboard!", "success");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      showNotification("Failed to copy project ID", "error");
+    }
+  };
+
   const spent = project.spending?.current || 0;
   const amount = project.budget?.amount || 0;
   const percentage = amount > 0 ? (spent / amount) * 100 : 0;
@@ -101,11 +115,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   {project.name}
                 </h2>
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    project.isActive
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${project.isActive
                       ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
                       : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                  }`}
+                    }`}
                 >
                   {project.isActive ? "Active" : "Inactive"}
                 </span>
@@ -117,6 +130,36 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                 {project.description}
               </p>
             )}
+
+            {/* Project ID Section */}
+            <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                    Project ID
+                  </label>
+                  <code className="block text-sm font-mono text-gray-900 dark:text-gray-100 mt-1">
+                    {project._id}
+                  </code>
+                </div>
+                <button
+                  onClick={handleCopyProjectId}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <FiCheck className="w-4 h-4" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <FiCopy className="w-4 h-4" />
+                      Copy ID
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
 
             <div className="flex gap-6 items-center text-sm text-gray-500 dark:text-gray-400">
               <div className="flex gap-2 items-center">
@@ -166,11 +209,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-8 py-4 text-sm font-medium transition-all ${
-                activeTab === tab.id
+              className={`flex items-center gap-2 px-8 py-4 text-sm font-medium transition-all ${activeTab === tab.id
                   ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400"
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
+                }`}
             >
               <tab.icon className="w-4 h-4" />
               {tab.label}
@@ -226,7 +268,7 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   <p className="mt-3 text-3xl font-bold text-purple-900 dark:text-purple-100">
                     {formatCurrency(
                       (project.budget?.amount || 0) -
-                        (project.spending?.current || 0),
+                      (project.spending?.current || 0),
                     )}
                   </p>
                   <p className="mt-2 text-sm text-purple-700 dark:text-purple-300">
@@ -251,13 +293,12 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </div>
                   <div className="w-full h-4 bg-gray-200 rounded-full dark:bg-gray-700 overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        percentage >= 90
+                      className={`h-full rounded-full transition-all duration-500 ${percentage >= 90
                           ? "bg-red-500"
                           : percentage >= 75
                             ? "bg-yellow-500"
                             : "bg-green-500"
-                      }`}
+                        }`}
                       style={{
                         width: `${Math.min(percentage, 100)}%`,
                       }}
@@ -317,11 +358,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                         </div>
                       </div>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          member.role === "admin"
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${member.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200"
                             : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                        }`}
+                          }`}
                       >
                         {member.role}
                       </span>
@@ -375,7 +415,7 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                       <p className="text-xl font-bold text-gray-900 dark:text-white">
                         {formatCurrency(
                           (project.budget?.amount || 0) -
-                            (project.spending?.current || 0),
+                          (project.spending?.current || 0),
                         )}
                       </p>
                     </div>
@@ -428,13 +468,12 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </div>
                   <div className="w-full h-3 bg-gray-200 rounded-full dark:bg-gray-700">
                     <div
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        percentage >= 90
+                      className={`h-2 rounded-full transition-all duration-300 ${percentage >= 90
                           ? "bg-red-500"
                           : percentage >= 75
                             ? "bg-yellow-500"
                             : "bg-green-500"
-                      }`}
+                        }`}
                       style={{
                         width: `${Math.min(percentage, 100)}%`,
                       }}
@@ -466,11 +505,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                         Automatic optimization
                       </span>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          project.settings?.costOptimization?.enabled
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.costOptimization?.enabled
                             ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
                             : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                        }`}
+                          }`}
                       >
                         {project.settings?.costOptimization?.enabled
                           ? "Enabled"
@@ -499,11 +537,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                         Budget alerts
                       </span>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          project.settings?.notifications?.budgetAlerts
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.notifications?.budgetAlerts
                             ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
                             : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                        }`}
+                          }`}
                       >
                         {project.settings?.notifications?.budgetAlerts
                           ? "Enabled"
@@ -515,11 +552,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                         Usage reports
                       </span>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          project.settings?.notifications?.usageReports
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.notifications?.usageReports
                             ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
                             : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                        }`}
+                          }`}
                       >
                         {project.settings?.notifications?.usageReports
                           ? "Enabled"
@@ -536,11 +572,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </h4>
                   <div className="flex gap-3 items-center">
                     <span
-                      className={`px-3 py-1 text-sm font-medium rounded-full ${
-                        project.isActive
+                      className={`px-3 py-1 text-sm font-medium rounded-full ${project.isActive
                           ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
                           : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                      }`}
+                        }`}
                     >
                       {project.isActive ? "Active" : "Inactive"}
                     </span>
