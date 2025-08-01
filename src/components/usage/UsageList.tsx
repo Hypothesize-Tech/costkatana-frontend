@@ -670,7 +670,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           <span className="text-sm text-red-700 dark:text-red-300">Additional Details:</span>
                           <div className="mt-1 space-y-1">
                             {Object.entries(selectedUsage.errorDetails)
-                              .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+                              .filter(([_, value]) => value !== null && value !== undefined && value !== '')
                               .map(([key, value]) => (
                                 <div key={key} className="flex justify-between items-start text-xs">
                                   <span className="text-red-600 dark:text-red-400 capitalize">
