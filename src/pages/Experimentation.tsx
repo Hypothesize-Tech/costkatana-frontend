@@ -12,10 +12,11 @@ import {
 import {
   ModelComparison,
   WhatIfScenarios,
+  RealTimeWhatIfSimulator,
 } from "../components/experimentation";
 import { ExperimentationService } from "../services/experimentation.service";
 
-type Tab = "model-comparison" | "what-if-scenarios";
+type Tab = "cost-simulator" | "model-comparison" | "what-if-scenarios";
 
 interface ExperimentationStats {
   totalExperiments: number;
@@ -32,7 +33,7 @@ interface ExperimentationStats {
 }
 
 const Experimentation: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("model-comparison");
+  const [activeTab, setActiveTab] = useState<Tab>("cost-simulator");
   const [stats, setStats] = useState<ExperimentationStats>({
     totalExperiments: 0,
     avgCostSavings: 0,
@@ -46,11 +47,27 @@ const Experimentation: React.FC = () => {
       totalSavingsChange: 0,
     },
   });
-  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<{
+    type: string;
+    title: string;
+    description: string;
+    priority: string;
+    potentialSavings: number;
+    effort: string;
+    actions: string[];
+  }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const tabs = [
+    {
+      id: "cost-simulator" as Tab,
+      name: "🚀 Cost Simulator",
+      icon: <SparklesIcon className="h-5 w-5" />,
+      description:
+        "Real-time prompt optimization - see instant cost savings up to 95%",
+      color: "text-purple-600",
+    },
     {
       id: "model-comparison" as Tab,
       name: "Model Comparison",
@@ -175,12 +192,10 @@ const Experimentation: React.FC = () => {
       // Load actual recommendations from backend
       const recs = await ExperimentationService.getExperimentRecommendations();
       setRecommendations(recs);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading experimentation data:", error);
-      setError(
-        "Failed to load experimentation data: " +
-          (error.message || "Unknown error"),
-      );
+      const errorMessage = (error as Error)?.message || "Unknown error";
+      setError("Failed to load experimentation data: " + errorMessage);
 
       // Set empty stats on error
       setStats({
@@ -203,6 +218,8 @@ const Experimentation: React.FC = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case "cost-simulator":
+        return <RealTimeWhatIfSimulator />;
       case "model-comparison":
         return <ModelComparison />;
       case "what-if-scenarios":
@@ -355,13 +372,12 @@ const Experimentation: React.FC = () => {
                           {rec.title}
                         </h3>
                         <span
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            rec.priority === "high"
-                              ? "bg-red-100 text-red-800"
-                              : rec.priority === "medium"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-green-100 text-green-800"
-                          }`}
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${rec.priority === "high"
+                            ? "bg-red-100 text-red-800"
+                            : rec.priority === "medium"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-green-100 text-green-800"
+                            }`}
                         >
                           {rec.priority}
                         </span>
@@ -382,13 +398,12 @@ const Experimentation: React.FC = () => {
                       </div>
                       <div className="mt-2">
                         <span
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            rec.type === "model_comparison"
-                              ? "bg-blue-100 text-blue-800"
-                              : rec.type === "what_if"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-purple-100 text-purple-800"
-                          }`}
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${rec.type === "model_comparison"
+                            ? "bg-blue-100 text-blue-800"
+                            : rec.type === "what_if"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-purple-100 text-purple-800"
+                            }`}
                         >
                           {rec.type.replace("_", " ")}
                         </span>
@@ -479,11 +494,10 @@ const Experimentation: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === tab.id
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    }`}
                 >
                   <span
                     className={

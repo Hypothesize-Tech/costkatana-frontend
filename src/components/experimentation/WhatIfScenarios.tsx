@@ -22,10 +22,10 @@ import { Modal } from "../common/Modal";
 
 interface ScenarioChange {
   type:
-    | "model_switch"
-    | "volume_change"
-    | "feature_addition"
-    | "optimization_applied";
+  | "model_switch"
+  | "volume_change"
+  | "feature_addition"
+  | "optimization_applied";
   currentValue: any;
   proposedValue: any;
   affectedMetrics: string[];
@@ -67,6 +67,64 @@ const WhatIfScenarios: React.FC = () => {
   });
 
   const scenarioTemplates: ScenarioTemplate[] = [
+    // 🚀 REAL-TIME COST SIMULATOR TEMPLATES
+    {
+      name: "🔥 Prompt Cost Optimizer",
+      description: "Real-time cost optimization for your specific prompt - see instant savings!",
+      category: "optimization",
+      changes: [
+        {
+          type: "optimization_applied",
+          currentValue: { prompt: "Your current prompt", model: "gpt-4" },
+          proposedValue: { optimizedPrompt: "Optimized version", estimatedSavings: "30-50%" },
+          affectedMetrics: ["cost", "efficiency", "quality"],
+          description: "Optimize prompt structure and reduce token usage",
+        },
+      ],
+    },
+    {
+      name: "✂️ Context Trimmer",
+      description: "Smart context trimming - maintain quality while cutting costs by up to 60%",
+      category: "optimization",
+      changes: [
+        {
+          type: "optimization_applied",
+          currentValue: { contextLength: "Full context", cost: "$0.24" },
+          proposedValue: { contextLength: "Trimmed 30%", cost: "$0.17" },
+          affectedMetrics: ["cost", "tokens", "latency"],
+          description: "Intelligently trim context while preserving key information",
+        },
+      ],
+    },
+    {
+      name: "⚡ Model Comparison Dashboard",
+      description: "Compare your prompt across 5+ models simultaneously - find the best value",
+      category: "model_switch",
+      changes: [
+        {
+          type: "model_switch",
+          currentValue: { model: "gpt-4", cost: "$0.24" },
+          proposedValue: { bestModel: "claude-3-haiku", cost: "$0.012", savings: "95%" },
+          affectedMetrics: ["cost", "quality", "speed"],
+          description: "Real-time comparison across multiple AI models",
+        },
+      ],
+    },
+    {
+      name: "🎯 Complete Optimization Suite",
+      description: "The full treatment - prompt optimization + model switch + context trimming",
+      category: "optimization",
+      changes: [
+        {
+          type: "optimization_applied",
+          currentValue: { cost: "$0.24", efficiency: "baseline" },
+          proposedValue: { cost: "$0.05", efficiency: "optimized", savings: "79%" },
+          affectedMetrics: ["cost", "speed", "quality", "efficiency"],
+          description: "Complete optimization analysis with actionable recommendations",
+        },
+      ],
+    },
+    // ENHANCED STRATEGIC SCENARIOS
     {
       name: "GPT-4 to Claude Switch",
       description:
@@ -131,6 +189,10 @@ const WhatIfScenarios: React.FC = () => {
     volume_change: "Volume Change",
     feature_addition: "Feature Addition",
     optimization_applied: "Optimization Applied",
+    prompt_optimization: "🔥 Prompt Optimization",
+    context_trimming: "✂️ Context Trimming",
+    model_comparison: "⚡ Model Comparison",
+    real_time_analysis: "🎯 Real-time Analysis",
   };
 
   const riskLevelColors = {
@@ -184,11 +246,9 @@ const WhatIfScenarios: React.FC = () => {
     setError(null); // Clear any previous errors
 
     try {
-      console.log("Creating scenario with data:", newScenario);
-      const result = await ExperimentationService.createWhatIfScenario(
+      await ExperimentationService.createWhatIfScenario(
         newScenario as WhatIfScenario,
       );
-      console.log("Scenario created successfully:", result);
 
       await loadScenarios();
       setShowCreateModal(false);
@@ -549,63 +609,63 @@ const WhatIfScenarios: React.FC = () => {
                   {(scenarioResults[scenario.name].recommendations?.length >
                     0 ||
                     scenarioResults[scenario.name].warnings?.length > 0) && (
-                    <div className="mt-4 space-y-3">
-                      {scenarioResults[scenario.name].recommendations?.length >
-                        0 && (
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                            <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
-                            Recommendations
-                          </h5>
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                            <div className="space-y-2">
-                              {scenarioResults[
-                                scenario.name
-                              ].recommendations.map(
-                                (rec: string, index: number) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-start space-x-2"
-                                  >
-                                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <span className="text-sm text-green-800">
-                                      {rec}
-                                    </span>
-                                  </div>
-                                ),
-                              )}
+                      <div className="mt-4 space-y-3">
+                        {scenarioResults[scenario.name].recommendations?.length >
+                          0 && (
+                            <div>
+                              <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
+                                Recommendations
+                              </h5>
+                              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                <div className="space-y-2">
+                                  {scenarioResults[
+                                    scenario.name
+                                  ].recommendations.map(
+                                    (rec: string, index: number) => (
+                                      <div
+                                        key={index}
+                                        className="flex items-start space-x-2"
+                                      >
+                                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <span className="text-sm text-green-800">
+                                          {rec}
+                                        </span>
+                                      </div>
+                                    ),
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      )}
+                          )}
 
-                      {scenarioResults[scenario.name].warnings?.length > 0 && (
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                            <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
-                            Warnings
-                          </h5>
-                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                            <div className="space-y-2">
-                              {scenarioResults[scenario.name].warnings.map(
-                                (warning: string, index: number) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-start space-x-2"
-                                  >
-                                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                                    <span className="text-sm text-orange-800">
-                                      {warning}
-                                    </span>
-                                  </div>
-                                ),
-                              )}
+                        {scenarioResults[scenario.name].warnings?.length > 0 && (
+                          <div>
+                            <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                              <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
+                              Warnings
+                            </h5>
+                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                              <div className="space-y-2">
+                                {scenarioResults[scenario.name].warnings.map(
+                                  (warning: string, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-start space-x-2"
+                                    >
+                                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                                      <span className="text-sm text-orange-800">
+                                        {warning}
+                                      </span>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        )}
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -867,12 +927,12 @@ const WhatIfScenarios: React.FC = () => {
                         <div className="text-gray-600 mt-1">
                           {typeof change.currentValue === "object"
                             ? Object.entries(change.currentValue).map(
-                                ([key, value]) => (
-                                  <div key={key}>
-                                    {key}: {String(value)}
-                                  </div>
-                                ),
-                              )
+                              ([key, value]) => (
+                                <div key={key}>
+                                  {key}: {String(value)}
+                                </div>
+                              ),
+                            )
                             : String(change.currentValue)}
                         </div>
                       </div>
@@ -883,12 +943,12 @@ const WhatIfScenarios: React.FC = () => {
                         <div className="text-gray-600 mt-1">
                           {typeof change.proposedValue === "object"
                             ? Object.entries(change.proposedValue).map(
-                                ([key, value]) => (
-                                  <div key={key}>
-                                    {key}: {String(value)}
-                                  </div>
-                                ),
-                              )
+                              ([key, value]) => (
+                                <div key={key}>
+                                  {key}: {String(value)}
+                                </div>
+                              ),
+                            )
                             : String(change.proposedValue)}
                         </div>
                       </div>
@@ -971,7 +1031,7 @@ const WhatIfScenarios: React.FC = () => {
                   {/* AI Insights */}
                   {scenarioResults[selectedScenario.name]?.aiInsights &&
                     scenarioResults[selectedScenario.name]?.aiInsights!.length >
-                      0 && (
+                    0 && (
                       <div>
                         <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                           <SparklesIcon className="h-4 w-4 mr-1 text-purple-600" />
@@ -1033,7 +1093,7 @@ const WhatIfScenarios: React.FC = () => {
                   {/* Warnings */}
                   {scenarioResults[selectedScenario.name]?.warnings &&
                     scenarioResults[selectedScenario.name]?.warnings.length >
-                      0 && (
+                    0 && (
                       <div>
                         <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                           <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />

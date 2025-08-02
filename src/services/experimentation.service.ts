@@ -230,6 +230,29 @@ export class ExperimentationService {
   }
 
   /**
+   * Real-time What-If Cost Simulator
+   */
+  static async runRealTimeSimulation(simulationRequest: {
+    prompt?: string;
+    currentModel?: string;
+    simulationType: 'prompt_optimization' | 'context_trimming' | 'model_comparison' | 'real_time_analysis';
+    options?: {
+      trimPercentage?: number;
+      alternativeModels?: string[];
+      optimizationGoals?: ('cost' | 'speed' | 'quality')[];
+    };
+  }): Promise<{
+    currentCost: any;
+    optimizedOptions: any[];
+    recommendations: any[];
+    potentialSavings: number;
+    confidence: number;
+  }> {
+    const response = await apiClient.post("/experimentation/real-time-simulation", simulationRequest);
+    return response.data.data;
+  }
+
+  /**
    * General Experiment Methods
    */
   static async getExperimentHistory(filters?: {
