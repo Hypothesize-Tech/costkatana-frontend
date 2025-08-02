@@ -38,13 +38,12 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
           <div className="flex-1">
             <div className="flex items-center space-x-2">
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  optimization.applied
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
-                }`}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${(optimization.applied || optimization.status === "applied" || optimization.status === "completed")
+                  ? "bg-green-100 text-green-800"
+                  : "bg-yellow-100 text-yellow-800"
+                  }`}
               >
-                {optimization.applied ? "Applied" : "Pending"}
+                {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") ? "Applied" : "Pending"}
               </span>
               <span className="text-sm text-gray-500">
                 {formatDate(optimization.createdAt)}
@@ -52,29 +51,33 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             </div>
 
             <h3 className="mt-2 text-lg font-medium text-gray-900">
-              {optimization.improvementPercentage.toFixed(1)}% Token Reduction
+              {optimization?.improvementPercentage ? optimization.improvementPercentage.toFixed(1) : '0.0'}% Token Reduction
             </h3>
 
             <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
                 <span className="text-gray-500">Tokens Saved:</span>
                 <span className="ml-2 font-medium">
-                  {optimization.tokensSaved}
+                  {optimization.tokensSaved || 0}
                 </span>
               </div>
               <div>
                 <span className="text-gray-500">Cost Saved:</span>
                 <span className="ml-2 font-medium text-green-600">
-                  {formatCurrency(optimization.costSaved)}
+                  {formatCurrency(optimization.costSaved || optimization.savings || 0)}
                 </span>
               </div>
               <div>
                 <span className="text-gray-500">Service:</span>
-                <span className="ml-2 font-medium">{optimization.service}</span>
+                <span className="ml-2 font-medium">
+                  {optimization.service || optimization.parameters?.model?.split('.')[0] || 'Unknown'}
+                </span>
               </div>
               <div>
                 <span className="text-gray-500">Model:</span>
-                <span className="ml-2 font-medium">{optimization.model}</span>
+                <span className="ml-2 font-medium">
+                  {optimization.model || optimization.parameters?.model || 'Unknown'}
+                </span>
               </div>
             </div>
           </div>
@@ -150,7 +153,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {/* Actions */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
               <div className="flex items-center space-x-4">
-                {!optimization.applied && (
+                {!(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && (
                   <button
                     onClick={() => onApply(optimization._id)}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -159,7 +162,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   </button>
                 )}
 
-                {optimization.applied && !showFeedback && (
+                {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && !showFeedback && (
                   <button
                     onClick={() => setShowFeedback(true)}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -172,7 +175,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               {optimization.metadata?.confidence && (
                 <div className="text-sm text-gray-500">
                   Confidence:{" "}
-                  {(optimization.metadata.confidence * 100).toFixed(0)}%
+                  {((optimization.metadata.confidence || 0) * 100).toFixed(0)}%
                 </div>
               )}
             </div>

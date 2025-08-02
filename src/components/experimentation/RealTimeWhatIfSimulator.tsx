@@ -52,6 +52,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
     const [results, setResults] = useState<SimulationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [autoSimulate, setAutoSimulate] = useState(false);
+    const [temperature, setTemperature] = useState(0.7);
+    const [maxTokens, setMaxTokens] = useState(1000);
+    const [trimPercentage, setTrimPercentage] = useState(30);
     const debounceTimeout = useRef<number>();
 
     // Get available Bedrock models from pricing data
@@ -110,6 +113,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 options: {
                     alternativeModels: availableModels.filter(m => m !== currentModel).slice(0, 4),
                     optimizationGoals: ['cost', 'speed', 'quality'] as ('cost' | 'speed' | 'quality')[],
+                    temperature,
+                    maxTokens,
+                    trimPercentage: simulationType === 'context_trimming' ? trimPercentage : undefined,
                 }
             };
 
@@ -141,7 +147,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 clearTimeout(debounceTimeout.current);
             }
         };
-    }, [prompt, currentModel, simulationType, autoSimulate, runSimulation]);
+    }, [prompt, currentModel, simulationType, temperature, maxTokens, trimPercentage, autoSimulate, runSimulation]);
 
     const getRiskColor = (risk: string) => {
         switch (risk) {
@@ -277,6 +283,73 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                             <div className="mt-1 text-xs text-gray-500">
                                 {simulationTypes.find(t => t.value === simulationType)?.description}
                             </div>
+                        </div>
+
+                        {/* Advanced Parameters */}
+                        <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                            <h4 className="text-sm font-medium text-gray-900">🎛️ Advanced Parameters</h4>
+
+                            {/* Temperature */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Temperature: {temperature}
+                                </label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="2"
+                                    step="0.1"
+                                    value={temperature}
+                                    onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                                    className="w-full"
+                                />
+                                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>Conservative</span>
+                                    <span>Creative</span>
+                                </div>
+                            </div>
+
+                            {/* Max Tokens */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Max Tokens: {maxTokens.toLocaleString()}
+                                </label>
+                                <input
+                                    type="range"
+                                    min="100"
+                                    max="4000"
+                                    step="100"
+                                    value={maxTokens}
+                                    onChange={(e) => setMaxTokens(parseInt(e.target.value))}
+                                    className="w-full"
+                                />
+                                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>100</span>
+                                    <span>4,000</span>
+                                </div>
+                            </div>
+
+                            {/* Context Trim Percentage (only for context trimming) */}
+                            {simulationType === 'context_trimming' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Trim Percentage: {trimPercentage}%
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="10"
+                                        max="80"
+                                        step="5"
+                                        value={trimPercentage}
+                                        onChange={(e) => setTrimPercentage(parseInt(e.target.value))}
+                                        className="w-full"
+                                    />
+                                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>10%</span>
+                                        <span>80%</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Auto-simulate toggle */}

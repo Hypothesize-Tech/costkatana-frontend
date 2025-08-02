@@ -13,10 +13,11 @@ import {
   ModelComparison,
   WhatIfScenarios,
   RealTimeWhatIfSimulator,
+  OptimizationLeaderboard,
 } from "../components/experimentation";
 import { ExperimentationService } from "../services/experimentation.service";
 
-type Tab = "cost-simulator" | "model-comparison" | "what-if-scenarios";
+type Tab = "cost-simulator" | "model-comparison" | "what-if-scenarios" | "leaderboard";
 
 interface ExperimentationStats {
   totalExperiments: number;
@@ -82,6 +83,13 @@ const Experimentation: React.FC = () => {
       icon: <LightBulbIcon className="h-5 w-5" />,
       description: "Analyze potential cost impacts of optimization strategies",
       color: "text-green-600",
+    },
+    {
+      id: "leaderboard" as Tab,
+      name: "🏆 Leaderboard",
+      icon: <ArrowTrendingUpIcon className="h-5 w-5" />,
+      description: "Top optimization wins and cost savings champions",
+      color: "text-yellow-600",
     },
   ];
 
@@ -224,6 +232,8 @@ const Experimentation: React.FC = () => {
         return <ModelComparison />;
       case "what-if-scenarios":
         return <WhatIfScenarios />;
+      case "leaderboard":
+        return <OptimizationLeaderboard timeRange="week" limit={20} showUserRank={true} />;
       default:
         return null;
     }

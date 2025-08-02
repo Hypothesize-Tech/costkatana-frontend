@@ -28,10 +28,9 @@ export const Optimization: React.FC = () => {
   const navigate = useNavigate();
 
   const { data: optimizations, isLoading } = useQuery(
-    ["optimizations", filter],
+    ["optimizations"],
     () =>
       optimizationService.getOptimizations({
-        applied: filter === "all" ? undefined : filter === "applied",
         sort: "createdAt",
         order: "desc",
       }),
@@ -48,9 +47,9 @@ export const Optimization: React.FC = () => {
       case "all":
         return optimizations.data.length;
       case "applied":
-        return optimizations.data.filter((o) => o.applied).length;
+        return optimizations.data.filter((o) => o.applied || o.status === "applied" || o.status === "completed").length;
       case "pending":
-        return optimizations.data.filter((o) => !o.applied).length;
+        return optimizations.data.filter((o) => !o.applied && o.status !== "applied" && o.status !== "completed").length;
       default:
         return 0;
     }
@@ -62,18 +61,18 @@ export const Optimization: React.FC = () => {
 
     const totalOptimizations = optimizations.data.length;
     const appliedOptimizations = optimizations.data.filter(
-      (o) => o.applied,
+      (o) => o.applied || o.status === "applied" || o.status === "completed",
     ).length;
     const totalSaved = optimizations.data.reduce(
-      (sum, opt) => sum + (opt.costSaved || 0),
+      (sum, opt) => sum + (opt.costSaved || opt.savings || 0),
       0,
     );
     const avgImprovement =
       optimizations.data.length > 0
         ? optimizations.data.reduce(
-            (sum, opt) => sum + (opt.improvementPercentage || 0),
-            0,
-          ) / optimizations.data.length
+          (sum, opt) => sum + (opt.improvementPercentage || 0),
+          0,
+        ) / optimizations.data.length
         : 0;
 
     return {
@@ -82,6 +81,19 @@ export const Optimization: React.FC = () => {
       totalSaved,
       avgImprovement,
     };
+  };
+
+  // Get filtered optimizations for display
+  const getFilteredOptimizations = () => {
+    if (!optimizations?.data) return [];
+    console.log("optimizations", optimizations)
+
+    return optimizations.data.filter((opt) => {
+      if (filter === "all") return true;
+      if (filter === "applied") return opt.applied || opt.status === "applied" || opt.status === "completed";
+      if (filter === "pending") return !opt.applied && opt.status !== "applied" && opt.status !== "completed";
+      return true;
+    });
   };
 
   const calculatedStats = calculateStats();
@@ -267,7 +279,7 @@ export const Optimization: React.FC = () => {
       </div>
 
       {/* Latest Optimization Preview */}
-      {optimizations?.data && optimizations.data.length > 0 && (
+      {optimizations?.data && optimizations.data.length > 0 && getFilteredOptimizations().length > 0 && (
         <div className="mb-8 p-6 bg-white rounded-lg border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-gray-900">
@@ -275,8 +287,8 @@ export const Optimization: React.FC = () => {
             </h3>
             <span className="text-sm text-gray-500">
               {new Date(
-                optimizations.data[0].createdAt ||
-                  optimizations.data[0].updatedAt,
+                getFilteredOptimizations()[0]?.createdAt ||
+                getFilteredOptimizations()[0]?.updatedAt,
               ).toLocaleDateString()}
             </span>
           </div>
@@ -284,26 +296,26 @@ export const Optimization: React.FC = () => {
           <div className="grid grid-cols-4 gap-4 mb-4">
             <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
               <div className="text-lg font-bold text-green-600">
-                {formatCurrency(optimizations.data[0].costSaved || 0)}
+                {formatCurrency(getFilteredOptimizations()[0]?.costSaved || getFilteredOptimizations()[0]?.savings || 0)}
               </div>
               <div className="text-xs text-green-700">Savings</div>
             </div>
             <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
               <div className="text-lg font-bold text-orange-600">
-                {formatCurrency(optimizations.data[0].originalCost || 0)}
+                {formatCurrency(getFilteredOptimizations()[0]?.originalCost || 0)}
               </div>
               <div className="text-xs text-orange-700">Original Cost</div>
             </div>
             <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
               <div className="text-lg font-bold text-blue-600">
-                {optimizations.data[0].improvementPercentage?.toFixed(1) || "0"}
+                {getFilteredOptimizations()[0]?.improvementPercentage?.toFixed(1) || "0"}
                 %
               </div>
               <div className="text-xs text-blue-700">Improvement</div>
             </div>
             <div className="p-3 bg-purple-50 rounded border border-purple-200 text-center">
               <div className="text-lg font-bold text-purple-600">
-                {optimizations.data[0].tokensSaved || 0}
+                {getFilteredOptimizations()[0]?.tokensSaved || 0}
               </div>
               <div className="text-xs text-purple-700">Tokens Saved</div>
             </div>
@@ -315,7 +327,7 @@ export const Optimization: React.FC = () => {
                 Original Prompt
               </label>
               <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
-                {optimizations.data[0].originalPrompt}
+                {getFilteredOptimizations()[0]?.originalPrompt || 'No original prompt available'}
               </div>
             </div>
 
@@ -324,7 +336,7 @@ export const Optimization: React.FC = () => {
                 Optimized Prompt
               </label>
               <OptimizedPromptDisplay
-                content={optimizations.data[0].optimizedPrompt}
+                content={getFilteredOptimizations()[0]?.optimizedPrompt || 'No optimized prompt available'}
                 maxHeight="max-h-32"
               />
             </div>
@@ -352,11 +364,10 @@ export const Optimization: React.FC = () => {
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  filter === tab
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${filter === tab
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 <span className="ml-2 text-gray-400">
@@ -370,13 +381,7 @@ export const Optimization: React.FC = () => {
 
       {/* Optimizations List */}
       <div className="space-y-4">
-        {optimizations?.data
-          .filter((opt) => {
-            if (filter === "all") return true;
-            if (filter === "applied") return opt.applied;
-            if (filter === "pending") return !opt.applied;
-            return true;
-          })
+        {getFilteredOptimizations()
           .sort((a, b) => {
             // Sort by createdAt date in descending order (most recent first)
             const dateA = new Date(a.createdAt || a.updatedAt || 0);
@@ -393,12 +398,7 @@ export const Optimization: React.FC = () => {
           ))}
       </div>
 
-      {optimizations?.data.filter((opt) => {
-        if (filter === "all") return true;
-        if (filter === "applied") return opt.applied;
-        if (filter === "pending") return !opt.applied;
-        return true;
-      }).length === 0 && (
+      {getFilteredOptimizations().length === 0 && (
         <div className="py-12 text-center">
           <SparklesIcon className="mx-auto w-12 h-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">

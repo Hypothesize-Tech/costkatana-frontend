@@ -10,12 +10,21 @@ export interface Optimization {
   originalCost: number;
   optimizedCost: number;
   costSaved: number;
+  savings?: number; // Alternative field name for costSaved
   improvementPercentage: number;
   service: string;
   model: string;
   category: OptimizationCategory;
   suggestions: OptimizationSuggestion[];
   metadata: OptimizationMetadata;
+  parameters?: {
+    model?: string;
+    threshold?: number;
+    confidence?: number;
+    impactLevel?: string;
+    businessValue?: number;
+  };
+  status?: string; // Alternative field for applied status
   applied: boolean;
   appliedAt?: string;
   appliedCount: number;
