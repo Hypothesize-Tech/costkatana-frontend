@@ -74,11 +74,6 @@ const RealTimeWhatIfSimulator: React.FC = () => {
             .map(model => model.model);
     }, []);
 
-    // Log available models for debugging
-    useEffect(() => {
-        console.log('🚀 Available Bedrock models for simulator:', availableModels);
-    }, [availableModels]);
-
     // Initialize current model with the first available Bedrock model  
     const [currentModel, setCurrentModel] = useState(() =>
         availableModels.length > 0 ? availableModels[0] : 'amazon-nova-micro'

@@ -7,7 +7,6 @@ import {
     SparklesIcon,
     CurrencyDollarIcon,
     ChartBarIcon,
-    CheckCircleIcon,
     ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
@@ -18,16 +17,6 @@ interface WhatIfSimulationModalProps {
     isOpen: boolean;
     onClose: () => void;
     usage: Usage | null;
-    onApplyOptimization?: (optimization: {
-        type: string;
-        description: string;
-        newModel?: string;
-        savings: number;
-        savingsPercentage: number;
-        newCost: number;
-        risk: 'low' | 'medium' | 'high';
-        implementation: 'easy' | 'moderate' | 'complex';
-    }) => void;
 }
 
 interface SimulationResult {
@@ -69,16 +58,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [selectedOptimization, setSelectedOptimization] = useState<{
-        type: string;
-        description: string;
-        newModel?: string;
-        savings: number;
-        savingsPercentage: number;
-        newCost: number;
-        risk: 'low' | 'medium' | 'high';
-        implementation: 'easy' | 'moderate' | 'complex';
-    } | null>(null);
+
 
     useEffect(() => {
         if (isOpen && usage) {
@@ -110,18 +90,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
         }
     };
 
-    const handleApplyOptimization = (optimization: {
-        type: string;
-        description: string;
-        newModel?: string;
-        savings: number;
-        savingsPercentage: number;
-        newCost: number;
-        risk: 'low' | 'medium' | 'high';
-        implementation: 'easy' | 'moderate' | 'complex';
-    }) => {
-        setSelectedOptimization(optimization);
-    };
+
 
     const getRiskColor = (risk: string) => {
         switch (risk) {

@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
-import { ProactiveTip } from '../intelligence';
+import { ProactiveTip, TipData } from '../intelligence/ProactiveTip';
 import { intelligenceService } from '../../services/intelligence.service';
 import { FeedbackButton } from '../feedback/FeedbackButton';
 import { feedbackService } from '../../services/feedback.service';
@@ -31,12 +31,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
   onSimulate
 }) => {
   const [showTip, setShowTip] = useState(false);
-  const [tipData, setTipData] = useState<{
-    tip: string;
-    impact: string;
-    effort: string;
-    category: string;
-  } | null>(null);
+  const [tipData, setTipData] = useState<TipData | null>(null);
   const [showScoring, setShowScoring] = useState(false);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     try {
       const tips = await intelligenceService.getTipsForUsage(usage._id);
       if (tips.length > 0) {
-        setTipData(tips[0]); // Get the most relevant tip
+        setTipData(tips[0])
       }
     } catch (error) {
       console.error('Error fetching tips:', error);
@@ -247,8 +242,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
               <RequestScoring
                 requestId={usage.metadata.requestId}
                 size="sm"
-                onScoreSubmitted={(score) => {
-                  // Request scored successfully
+                onScoreSubmitted={() => {
                   setShowScoring(false);
                 }}
               />

@@ -119,7 +119,7 @@ function getDateRange(timeRange: string): { startDate: string; endDate: string }
     case '1y':
       startDateObj.setFullYear(now.getFullYear() - 1);
       break;
-    default:
+    default: {
       // If timeRange is a date string, use it as startDate
       // Validate date string
       const parsed = new Date(timeRange);
@@ -129,6 +129,7 @@ function getDateRange(timeRange: string): { startDate: string; endDate: string }
         // fallback to 30d
         startDateObj.setDate(now.getDate() - 30);
       }
+    }
   }
   return { startDate: startDateObj.toISOString(), endDate };
 }

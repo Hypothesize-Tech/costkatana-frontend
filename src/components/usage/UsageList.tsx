@@ -38,7 +38,6 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
   const [simulationModalOpen, setSimulationModalOpen] = useState(false);
   const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
 
-
   const copyPromptToClipboard = async (prompt: string) => {
     try {
       await navigator.clipboard.writeText(prompt);
