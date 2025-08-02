@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { PlusIcon, FunnelIcon, ArrowDownTrayIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, FunnelIcon, ArrowDownTrayIcon, ChevronDownIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { UsageList } from '@/components/usage/UsageList';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -129,9 +129,16 @@ export default function Usage() {
       {/* Header */}
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            API Usage
-          </h1>
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              API Usage
+            </h1>
+            {data?.usage && data.usage.some((item: any) => item.cost > 0.01 || item.totalTokens > 500) && (
+              <div className="ml-3 px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-medium rounded-full animate-pulse">
+                💰 Savings
+              </div>
+            )}
+          </div>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Track and manage your AI API usage across all providers
             {selectedProject !== 'all' && (
@@ -247,6 +254,35 @@ export default function Usage() {
           </div>
         )}
       </div>
+
+      {/* Cost Optimization Opportunities Banner */}
+      {data?.usage && data.usage.length > 0 && (
+        <div className="mb-6">
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <SparklesIcon className="h-6 w-6 text-white" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-semibold text-purple-900">
+                    💡 Cost Optimization Opportunities
+                  </h3>
+                  <p className="text-sm text-purple-700">
+                    Scroll down to see AI-powered suggestions for reducing your costs
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              >
+                View Opportunities
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Usage List */}
       {isLoading ? (

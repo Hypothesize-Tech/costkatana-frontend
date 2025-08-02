@@ -6,7 +6,8 @@ import {
   CurrencyDollarIcon,
   ChevronRightIcon,
   ExclamationCircleIcon,
-  StarIcon
+  StarIcon,
+  BeakerIcon
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
@@ -20,15 +21,22 @@ interface UsageItemProps {
   usage: Usage;
   onClick: (usage: Usage) => void;
   onOptimize?: (usage: Usage) => void;
+  onSimulate?: (usage: Usage) => void;
 }
 
 export const UsageItem: React.FC<UsageItemProps> = ({
   usage,
   onClick,
-  onOptimize
+  onOptimize,
+  onSimulate
 }) => {
   const [showTip, setShowTip] = useState(false);
-  const [tipData, setTipData] = useState<any>(null);
+  const [tipData, setTipData] = useState<{
+    tip: string;
+    impact: string;
+    effort: string;
+    category: string;
+  } | null>(null);
   const [showScoring, setShowScoring] = useState(false);
 
   useEffect(() => {
@@ -66,6 +74,13 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     }
   };
 
+  const handleSimulateClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSimulate) {
+      onSimulate(usage);
+    }
+  };
+
   const handleFeedbackSubmit = async (requestId: string, rating: boolean, comment?: string) => {
     try {
       const result = await feedbackService.submitFeedback(requestId, {
@@ -77,7 +92,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
       });
 
       if (result.success) {
-        console.log('Feedback submitted successfully for usage:', usage._id);
+        // Feedback submitted successfully
       } else {
         console.error('Failed to submit feedback:', result.message);
       }
@@ -171,6 +186,15 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                 <SparklesIcon className="w-5 h-5" />
               </button>
             )}
+            {onSimulate && (usage.cost > 0.01 || usage.totalTokens > 500) && (
+              <button
+                onClick={handleSimulateClick}
+                className="text-purple-600 hover:text-purple-900"
+                title="Try What-If Simulation"
+              >
+                <BeakerIcon className="w-5 h-5" />
+              </button>
+            )}
             {usage.metadata?.requestId && (
               <FeedbackButton
                 requestId={usage.metadata.requestId}
@@ -224,7 +248,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                 requestId={usage.metadata.requestId}
                 size="sm"
                 onScoreSubmitted={(score) => {
-                  console.log(`Request ${usage.metadata?.requestId} scored: ${score}`);
+                  // Request scored successfully
                   setShowScoring(false);
                 }}
               />

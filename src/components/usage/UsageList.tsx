@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRightIcon, XMarkIcon, ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, XMarkIcon, ClipboardIcon, CheckIcon, BeakerIcon } from '@heroicons/react/24/outline';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { Usage } from '@/types';
 import { Pagination } from '@/components/common/Pagination';
@@ -16,6 +16,7 @@ import {
   getErrorTypeColor
 } from '@/utils/formatters';
 import { AI_SERVICES } from '@/utils/constant';
+import { WhatIfSimulationModal, HighCostSuggestions } from '../experimentation';
 
 // Helper function to get project name
 const getProjectName = (projectId: string | { _id: string; name: string } | undefined): string => {
@@ -34,6 +35,8 @@ interface UsageListProps {
 export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageListProps) => {
   const [selectedUsage, setSelectedUsage] = useState<Usage | null>(null);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
+  const [simulationModalOpen, setSimulationModalOpen] = useState(false);
+  const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
 
 
   const copyPromptToClipboard = async (prompt: string) => {
@@ -44,6 +47,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
     } catch (err) {
       console.error('Failed to copy prompt:', err);
     }
+  };
+
+  const handleSimulate = (usageItem: Usage) => {
+    setUsageForSimulation(usageItem);
+    setSimulationModalOpen(true);
   };
 
   if (usage.length === 0) {
@@ -327,7 +335,21 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       {formatDateTime(item.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                      <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                      <div className="flex items-center justify-end space-x-2">
+                        {(item.cost > 0.01 || item.totalTokens > 500) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSimulate(item);
+                            }}
+                            className="text-purple-600 hover:text-purple-900"
+                            title="Try What-If Simulation"
+                          >
+                            <BeakerIcon className="w-4 h-4" />
+                          </button>
+                        )}
+                        <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                      </div>
                     </td>
                   </tr>
                 );
@@ -346,6 +368,13 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
           </div>
         )}
       </div>
+
+      {/* High Cost Suggestions */}
+      <HighCostSuggestions
+        usages={usage}
+        onSimulate={handleSimulate}
+        className="mb-6"
+      />
 
       {/* Usage Details Modal */}
       {selectedUsage && (
@@ -711,6 +740,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
           </div>
         </div>
       )}
+
+      {/* What-If Simulation Modal */}
+      <WhatIfSimulationModal
+        isOpen={simulationModalOpen}
+        onClose={() => {
+          setSimulationModalOpen(false);
+          setUsageForSimulation(null);
+        }}
+        usage={usageForSimulation}
+      />
     </>
   );
 };

@@ -15,6 +15,7 @@ interface UsageTableProps {
   isLoading: boolean;
   onUsageClick: (usage: Usage) => void;
   onOptimize?: (usage: Usage) => void;
+  onSimulate?: (usage: Usage) => void;
   onSort?: (field: string, order: "asc" | "desc") => void;
   sortField?: string;
   sortOrder?: "asc" | "desc";
@@ -28,6 +29,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
   isLoading,
   onUsageClick,
   onOptimize,
+  onSimulate,
   onSort,
   sortField,
   sortOrder,
@@ -99,9 +101,8 @@ export const UsageTable: React.FC<UsageTableProps> = ({
               <th
                 key={column.key}
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                  column.sortable && onSort ? "cursor-pointer select-none" : ""
-                }`}
+                className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.sortable && onSort ? "cursor-pointer select-none" : ""
+                  }`}
                 onClick={() => column.sortable && handleSort(column.key)}
                 onMouseEnter={() => setHoveredColumn(column.key)}
                 onMouseLeave={() => setHoveredColumn(null)}
@@ -110,11 +111,10 @@ export const UsageTable: React.FC<UsageTableProps> = ({
                   <span>{column.label}</span>
                   {column.sortable && onSort && (
                     <span
-                      className={`transition-opacity ${
-                        hoveredColumn === column.key || sortField === column.key
+                      className={`transition-opacity ${hoveredColumn === column.key || sortField === column.key
                           ? "opacity-100"
                           : "opacity-0"
-                      }`}
+                        }`}
                     >
                       {getSortIcon(column.key)}
                     </span>
@@ -134,6 +134,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
               usage={usage}
               onClick={onUsageClick}
               onOptimize={onOptimize}
+              onSimulate={onSimulate}
             />
           ))}
         </tbody>

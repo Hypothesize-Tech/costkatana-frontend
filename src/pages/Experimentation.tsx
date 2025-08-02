@@ -443,28 +443,6 @@ const Experimentation: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Dynamic Getting Started State */}
-            {stats.totalExperiments === 0 &&
-              !isLoading &&
-              recommendations.length === 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-                  <div className="flex items-center">
-                    <InformationCircleIcon className="h-5 w-5 text-blue-400 mr-2" />
-                    <div>
-                      <h3 className="text-sm font-medium text-blue-900">
-                        Get Started with Experimentation
-                      </h3>
-                      <p className="text-sm text-blue-800 mt-1">
-                        Start by comparing models in the Model Comparison tab.
-                        Our system will analyze your actual usage data to
-                        provide meaningful insights.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
             {/* Dynamic No Recommendations State */}
             {recommendations.length === 0 &&
               stats.totalExperiments > 0 &&
