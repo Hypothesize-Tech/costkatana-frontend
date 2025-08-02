@@ -1,4 +1,4 @@
-import  api  from '../config/api';
+import   { apiClient }  from '../config/api';
 
 export interface ProviderKey {
     _id: string;
@@ -86,7 +86,7 @@ export class KeyVaultService {
      * Get Key Vault dashboard data
      */
     static async getDashboard(): Promise<KeyVaultDashboard> {
-        const response = await api.get('/key-vault/dashboard');
+        const response = await apiClient.get('/key-vault/dashboard');
         return response.data.data;
     }
 
@@ -94,7 +94,7 @@ export class KeyVaultService {
      * Get all provider keys
      */
     static async getProviderKeys(): Promise<ProviderKey[]> {
-        const response = await api.get('/key-vault/provider-keys');
+        const response = await apiClient.get('/key-vault/provider-keys');
         return response.data.data;
     }
 
@@ -102,7 +102,7 @@ export class KeyVaultService {
      * Create a new provider key
      */
     static async createProviderKey(data: CreateProviderKeyRequest): Promise<ProviderKey> {
-        const response = await api.post('/key-vault/provider-keys', data);
+        const response = await apiClient.post('/key-vault/provider-keys', data);
         return response.data.data;
     }
 
@@ -110,7 +110,7 @@ export class KeyVaultService {
      * Delete a provider key
      */
     static async deleteProviderKey(providerKeyId: string): Promise<void> {
-        await api.delete(`/key-vault/provider-keys/${providerKeyId}`);
+        await apiClient.delete(`/key-vault/provider-keys/${providerKeyId}`);
     }
 
     /**
@@ -118,7 +118,7 @@ export class KeyVaultService {
      */
     static async getProxyKeys(projectId?: string): Promise<ProxyKey[]> {
         const params = projectId ? { projectId } : {};
-        const response = await api.get('/key-vault/proxy-keys', { params });
+        const response = await apiClient.get('/key-vault/proxy-keys', { params });
         return response.data.data;
     }
 
@@ -126,7 +126,7 @@ export class KeyVaultService {
      * Create a new proxy key
      */
     static async createProxyKey(data: CreateProxyKeyRequest): Promise<ProxyKey> {
-        const response = await api.post('/key-vault/proxy-keys', data);
+        const response = await apiClient.post('/key-vault/proxy-keys', data);
         return response.data.data;
     }
 
@@ -134,14 +134,14 @@ export class KeyVaultService {
      * Delete a proxy key
      */
     static async deleteProxyKey(proxyKeyId: string): Promise<void> {
-        await api.delete(`/key-vault/proxy-keys/${proxyKeyId}`);
+        await apiClient.delete(`/key-vault/proxy-keys/${proxyKeyId}`);
     }
 
     /**
      * Update proxy key status (activate/deactivate)
      */
     static async updateProxyKeyStatus(proxyKeyId: string, isActive: boolean): Promise<ProxyKey> {
-        const response = await api.patch(`/key-vault/proxy-keys/${proxyKeyId}/status`, { isActive });
+        const response = await apiClient.patch(`/key-vault/proxy-keys/${proxyKeyId}/status`, { isActive });
         return response.data.data;
     }
 
@@ -150,7 +150,7 @@ export class KeyVaultService {
      */
     static async getProxyKeyAnalytics(proxyKeyId?: string): Promise<KeyVaultAnalytics> {
         const params = proxyKeyId ? { proxyKeyId } : {};
-        const response = await api.get('/key-vault/analytics', { params });
+        const response = await apiClient.get('/key-vault/analytics', { params });
         return response.data.data;
     }
 }

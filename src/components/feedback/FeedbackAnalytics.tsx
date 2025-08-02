@@ -8,7 +8,7 @@ import {
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks';
-import api from '../../config/api';
+import { apiClient } from '../../config/api';
 
 interface FeedbackAnalyticsProps {
   className?: string;
@@ -82,7 +82,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
       setLoading(true);
       setError(null);
 
-      const response = await api.get('/analytics/feedback');
+      const response = await apiClient.get('/analytics/feedback');
       setAnalytics(response.data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

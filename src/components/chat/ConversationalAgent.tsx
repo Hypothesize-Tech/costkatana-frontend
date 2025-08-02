@@ -21,6 +21,7 @@ import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
 import { feedbackService } from "../../services/feedback.service";
 import { marked } from "marked";
+import { apiClient } from "@/config/api";
 
 // Configure marked for security
 marked.setOptions({
@@ -112,20 +113,16 @@ export const ConversationalAgent: React.FC = () => {
       setQuestionsLoading(true);
 
       // Fetch user's recent usage data
-      const usageResponse = await fetch("/api/usage?limit=50&sort=-createdAt", {
+      const usageResponse = await apiClient.get("/api/usage?limit=50&sort=-createdAt", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      const usageData = usageResponse.ok
-        ? await usageResponse.json()
-        : { data: [] };
+      const usageData = usageResponse.data;
 
       // Fetch user's projects
-      const projectsResponse = await fetch("/api/projects", {
+      const projectsResponse = await apiClient.get("/api/projects", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      const projectsData = projectsResponse.ok
-        ? await projectsResponse.json()
-        : { data: [] };
+      const projectsData = projectsResponse.data;
 
       // Calculate real metrics from user data
       const totalCost =

@@ -1,4 +1,4 @@
-import api from '../config/api';
+import { apiClient } from "@/config/api";
 
 export interface FeedbackOptions {
     rating: boolean; // true = positive, false = negative
@@ -25,7 +25,7 @@ class FeedbackService {
      */
     async submitFeedback(requestId: string, feedback: FeedbackOptions): Promise<FeedbackSubmissionResult> {
         try {
-            const response = await api.post(`/v1/request/${requestId}/feedback`, feedback);
+            const response = await apiClient.post(`/v1/request/${requestId}/feedback`, feedback);
             
             return {
                 success: true,
@@ -45,7 +45,7 @@ class FeedbackService {
      */
     async updateImplicitSignals(requestId: string, signals: ImplicitSignals): Promise<FeedbackSubmissionResult> {
         try {
-            const response = await api.put(`/v1/request/${requestId}/implicit-signals`, signals);
+            const response = await apiClient.put(`/v1/request/${requestId}/implicit-signals`, signals);
             
             return {
                 success: true,
@@ -65,7 +65,7 @@ class FeedbackService {
      */
     async getFeedback(requestId: string): Promise<any> {
         try {
-            const response = await api.get(`/v1/request/${requestId}/feedback`);
+            const response = await apiClient.get(`/v1/request/${requestId}/feedback`);
             return response.data.data;
         } catch (error: any) {
             if (error.response?.status === 404) {
@@ -80,7 +80,7 @@ class FeedbackService {
      */
     async getFeedbackAnalytics(): Promise<any> {
         try {
-            const response = await api.get('/v1/feedback/analytics');
+            const response = await apiClient.get('/v1/feedback/analytics');
             return response.data.data;
         } catch (error: any) {
             console.error('Failed to get feedback analytics:', error);
@@ -93,7 +93,7 @@ class FeedbackService {
      */
     async getEnhancedFeedbackAnalytics(): Promise<any> {
         try {
-            const response = await api.get('/analytics/feedback');
+            const response = await apiClient.get('/analytics/feedback');
             return response.data.data;
         } catch (error: any) {
             console.error('Failed to get enhanced feedback analytics:', error);
@@ -106,7 +106,7 @@ class FeedbackService {
      */
     async getGlobalFeedbackAnalytics(): Promise<any> {
         try {
-            const response = await api.get('/v1/feedback/analytics/global');
+            const response = await apiClient.get('/v1/feedback/analytics/global');
             return response.data.data;
         } catch (error: any) {
             console.error('Failed to get global feedback analytics:', error);

@@ -1,4 +1,4 @@
-import api, { analyticsApiClient, longRunningApiClient } from "@/config/api";
+import api, { analyticsApiClient, apiClient, longRunningApiClient } from "@/config/api";
 
 export interface TagAnalytics {
   tag: string;
@@ -250,7 +250,7 @@ export class AdvancedMonitoringService {
     query?: string;
     limit?: number;
   }): Promise<any> {
-    const response = await api.get("/tags/suggestions", { params });
+    const response = await apiClient.get("/tags/suggestions", { params });
     return response.data.data;
   }
 

@@ -24,6 +24,7 @@ import {
   QueueListIcon,
   KeyIcon,
   AcademicCapIcon,
+  BoltIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -39,6 +40,7 @@ const navigation = [
   { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
   { name: 'Requests', href: '/requests', icon: ClockIcon, description: 'Real-time LLM API requests' },
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
+  { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
   { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
   { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
   { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },

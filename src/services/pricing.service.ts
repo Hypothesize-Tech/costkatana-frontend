@@ -1,4 +1,4 @@
-import api from "../config/api";
+import { apiClient } from "@/config/api";
 
 export interface ModelPricing {
   modelId: string;
@@ -62,7 +62,7 @@ class PricingService {
   > {
     try {
       console.log("🌐 Making API call to:", `${this.baseUrl}/all`);
-      const response = await api.get(`${this.baseUrl}/all`);
+      const response = await apiClient.get(`${this.baseUrl}/all`);
       console.log(
         "✅ API Response received:",
         response.status,
@@ -86,7 +86,7 @@ class PricingService {
     provider: string,
   ): Promise<PricingApiResponse<ProviderPricing>> {
     try {
-      const response = await api.get(
+      const response = await apiClient.get(
         `${this.baseUrl}/provider/${encodeURIComponent(provider)}`,
       );
       return response.data;
@@ -107,7 +107,7 @@ class PricingService {
     estimatedTokens: number,
   ): Promise<PricingApiResponse<PricingComparison>> {
     try {
-      const response = await api.post(`${this.baseUrl}/compare`, {
+      const response = await apiClient.post(`${this.baseUrl}/compare`, {
         task,
         estimatedTokens,
       });
@@ -125,7 +125,7 @@ class PricingService {
    */
   async forceUpdate(): Promise<PricingApiResponse<{ message: string }>> {
     try {
-      const response = await api.post(`${this.baseUrl}/update`);
+      const response = await apiClient.post(`${this.baseUrl}/update`);
       return response.data;
     } catch (error: any) {
       return {
@@ -147,7 +147,7 @@ class PricingService {
     }>
   > {
     try {
-      const response = await api.get(`${this.baseUrl}/cache-status`);
+      const response = await apiClient.get(`${this.baseUrl}/cache-status`);
       return response.data;
     } catch (error: any) {
       return {
@@ -162,7 +162,7 @@ class PricingService {
    */
   async initialize(): Promise<PricingApiResponse<{ message: string }>> {
     try {
-      const response = await api.post(`${this.baseUrl}/initialize`);
+      const response = await apiClient.post(`${this.baseUrl}/initialize`);
       return response.data;
     } catch (error: any) {
       return {

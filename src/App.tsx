@@ -40,6 +40,7 @@ import Gateway from './pages/Gateway';
 import Workflows from './pages/Workflows';
 import KeyVault from './pages/KeyVault';
 import { Training } from './pages/Training';
+import PredictiveIntelligence from './pages/PredictiveIntelligence';
 
 
 const queryClient = new QueryClient();
@@ -134,6 +135,10 @@ function App() {
                     <Route
                       path="training"
                       element={<Training />}
+                    />
+                    <Route
+                      path="predictive-intelligence"
+                      element={<PredictiveIntelligence />}
                     />
 
                     <Route

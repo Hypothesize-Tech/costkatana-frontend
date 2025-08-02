@@ -1,5 +1,5 @@
-// src/services/upload.service.ts
-import api from "../config/api";
+import { apiClient } from "@/config/api";
+
 
 class UploadService {
   async uploadUsageFile(
@@ -40,7 +40,7 @@ class UploadService {
       });
     }
 
-    const response = await api.post("/upload/usage", formData, {
+    const response = await apiClient.post("/upload/usage", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -88,7 +88,7 @@ class UploadService {
       });
     }
 
-    const response = await api.post("/upload/optimization", formData, {
+    const response = await apiClient.post("/upload/optimization", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -116,7 +116,7 @@ class UploadService {
     formData.append("file", file);
     formData.append("type", type);
 
-    const response = await api.post("/upload/validate", formData, {
+    const response = await apiClient.post("/upload/validate", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -152,7 +152,7 @@ class UploadService {
       };
     };
   }> {
-    const response = await api.get("/upload/history", { params });
+    const response = await apiClient.get("/upload/history", { params });
     return response.data;
   }
 
@@ -160,7 +160,7 @@ class UploadService {
     type: "usage" | "optimization",
     format: "csv" | "xlsx" = "csv",
   ): Promise<Blob> {
-    const response = await api.get(`/upload/template/${type}`, {
+    const response = await apiClient.get(`/upload/template/${type}`, {
       params: { format },
       responseType: "blob",
     });
@@ -180,7 +180,7 @@ class UploadService {
       completedAt?: string;
     };
   }> {
-    const response = await api.get(`/upload/status/${uploadId}`);
+    const response = await apiClient.get(`/upload/status/${uploadId}`);
     return response.data;
   }
 

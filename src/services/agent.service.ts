@@ -1,4 +1,4 @@
-import api from "../config/api";
+import { apiClient } from "@/config/api";
 
 export interface AgentQuery {
   query: string;
@@ -86,7 +86,7 @@ class AgentService {
    */
   async query(queryData: AgentQuery): Promise<AgentResponse> {
     try {
-      const response = await api.post(`${this.baseURL}/query`, queryData);
+      const response = await apiClient.post(`${this.baseURL}/query`, queryData);
       return response.data;
     } catch (error: any) {
       console.error("Agent query failed:", error);
@@ -104,7 +104,7 @@ class AgentService {
    */
   async startProjectWizard(data: WizardStartRequest): Promise<any> {
     try {
-      const response = await api.post(`${this.baseURL}/wizard/start`, data);
+      const response = await apiClient.post(`${this.baseURL}/wizard/start`, data);
       return response.data;
     } catch (error: any) {
       console.error("Project wizard start failed:", error);
@@ -117,7 +117,7 @@ class AgentService {
    */
   async continueProjectWizard(data: WizardContinueRequest): Promise<any> {
     try {
-      const response = await api.post(`${this.baseURL}/wizard/continue`, data);
+      const response = await apiClient.post(`${this.baseURL}/wizard/continue`, data);
       return response.data;
     } catch (error: any) {
       console.error("Project wizard continue failed:", error);
@@ -130,7 +130,7 @@ class AgentService {
    */
   async getSuggestedQueries(): Promise<SuggestedQueriesResponse> {
     try {
-      const response = await api.get(`${this.baseURL}/suggestions`);
+      const response = await apiClient.get(`${this.baseURL}/suggestions`);
       return response.data;
     } catch (error: any) {
       console.error("Failed to get suggested queries:", error);
@@ -161,7 +161,7 @@ class AgentService {
       if (conversationId) params.append("conversationId", conversationId);
       if (limit) params.append("limit", limit.toString());
 
-      const response = await api.get(
+      const response = await apiClient.get(
         `${this.baseURL}/conversations?${params.toString()}`,
       );
       return response.data;
@@ -176,7 +176,7 @@ class AgentService {
    */
   async getStatus(): Promise<AgentStatusResponse> {
     try {
-      const response = await api.get(`${this.baseURL}/status`);
+      const response = await apiClient.get(`${this.baseURL}/status`);
       return response.data;
     } catch (error: any) {
       console.error("Failed to get agent status:", error);
@@ -203,7 +203,7 @@ class AgentService {
     category?: string;
   }): Promise<{ success: boolean }> {
     try {
-      const response = await api.post(`${this.baseURL}/feedback`, data);
+      const response = await apiClient.post(`${this.baseURL}/feedback`, data);
       return response.data;
     } catch (error: any) {
       console.error("Failed to provide feedback:", error);
@@ -219,7 +219,7 @@ class AgentService {
   ): Promise<ReadableStream<Uint8Array> | null> {
     try {
       const response = await fetch(
-        `${api.defaults.baseURL}${this.baseURL}/stream`,
+        `${apiClient.defaults.baseURL}${this.baseURL}/stream`,
         {
           method: "POST",
           headers: {
@@ -407,7 +407,7 @@ class AgentService {
     format: "json" | "csv" | "txt" = "json",
   ): Promise<Blob | null> {
     try {
-      const response = await api.get(
+      const response = await apiClient.get(
         `${this.baseURL}/conversations/${conversationId}/export`,
         {
           params: { format },

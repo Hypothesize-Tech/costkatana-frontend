@@ -1,5 +1,4 @@
-// src/services/alert.service.ts
-import api from "../config/api";
+import { apiClient } from "@/config/api";
 import { Alert, PaginatedResponse } from "../types";
 
 class AlertService {
@@ -14,7 +13,7 @@ class AlertService {
     sort?: string;
     order?: "asc" | "desc";
   }): Promise<PaginatedResponse<Alert>> {
-    const response = await api.get("/user/alerts", { params });
+    const response = await apiClient.get("/user/alerts", { params });
     return response.data;
   }
 
@@ -22,7 +21,7 @@ class AlertService {
     success: boolean;
     data: Alert;
   }> {
-    const response = await api.get(`/user/alerts/${id}`);
+    const response = await apiClient.get(`/user/alerts/${id}`);
     return response.data;
   }
 
@@ -30,7 +29,7 @@ class AlertService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.put(`/user/alerts/${id}/read`);
+    const response = await apiClient.put(`/user/alerts/${id}/read`);
     return response.data;
   }
 
@@ -39,7 +38,7 @@ class AlertService {
     message: string;
     updated: number;
   }> {
-    const response = await api.put("/user/alerts/read-all");
+    const response = await apiClient.put("/user/alerts/read-all");
     return response.data;
   }
 
@@ -47,7 +46,7 @@ class AlertService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.delete(`/user/alerts/${id}`);
+    const response = await apiClient.delete(`/user/alerts/${id}`);
     return response.data;
   }
 
@@ -74,7 +73,7 @@ class AlertService {
       };
     };
   }> {
-    const response = await api.get("/user/alerts/settings");
+    const response = await apiClient.get("/user/alerts/settings");
     return response.data;
   }
 
@@ -82,7 +81,7 @@ class AlertService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.put("/user/alerts/settings", settings);
+    const response = await apiClient.put("/user/alerts/settings", settings);
     return response.data;
   }
 
@@ -90,7 +89,7 @@ class AlertService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.post("/user/alerts/test", { type });
+    const response = await apiClient.post("/user/alerts/test", { type });
     return response.data;
   }
 
@@ -104,7 +103,7 @@ class AlertService {
       low: number;
     };
   }> {
-    const response = await api.get("/user/alerts/unread-count");
+    const response = await apiClient.get("/user/alerts/unread-count");
     return response.data;
   }
 
@@ -115,7 +114,7 @@ class AlertService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.put(`/user/alerts/${id}/snooze`, { until });
+    const response = await apiClient.put(`/user/alerts/${id}/snooze`, { until });
     return response.data;
   }
 
@@ -145,7 +144,7 @@ class AlertService {
       };
     };
   }> {
-    const response = await api.get("/user/alerts/history", { params });
+    const response = await apiClient.get("/user/alerts/history", { params });
     return response.data;
   }
 }

@@ -1,5 +1,5 @@
-// src/services/export.service.ts
-import api from "../config/api";
+import { apiClient } from "@/config/api";
+
 
 export type ExportFormat = "csv" | "json" | "pdf" | "xlsx";
 
@@ -13,7 +13,7 @@ interface ExportOptions {
 
 class ExportService {
   async exportUsageData(options: ExportOptions): Promise<Blob> {
-    const response = await api.post("/export/usage", options, {
+    const response = await apiClient.post("/export/usage", options, {
       responseType: "blob",
     });
     return this.processExportResponse(response.data, options.format, "usage");
@@ -25,7 +25,7 @@ class ExportService {
       includeCharts?: boolean;
     },
   ): Promise<Blob> {
-    const response = await api.post("/export/analytics", options, {
+    const response = await apiClient.post("/export/analytics", options, {
       responseType: "blob",
     });
     return this.processExportResponse(
@@ -41,7 +41,7 @@ class ExportService {
       minSavings?: number;
     },
   ): Promise<Blob> {
-    const response = await api.post("/export/optimizations", options, {
+    const response = await apiClient.post("/export/optimizations", options, {
       responseType: "blob",
     });
     return this.processExportResponse(
@@ -61,7 +61,7 @@ class ExportService {
       sections?: string[];
     },
   ): Promise<Blob> {
-    const response = await api.post(`/export/report/${type}`, options || {}, {
+    const response = await apiClient.post(`/export/report/${type}`, options || {}, {
       responseType: "blob",
     });
     return this.processExportResponse(
@@ -75,7 +75,7 @@ class ExportService {
     invoiceId: string,
     format: "pdf" | "csv" = "pdf",
   ): Promise<Blob> {
-    const response = await api.get(`/export/invoice/${invoiceId}`, {
+    const response = await apiClient.get(`/export/invoice/${invoiceId}`, {
       params: { format },
       responseType: "blob",
     });
@@ -103,7 +103,7 @@ class ExportService {
       status: "active" | "paused";
     };
   }> {
-    const response = await api.post("/export/schedule", config);
+    const response = await apiClient.post("/export/schedule", config);
     return response.data;
   }
 
@@ -120,7 +120,7 @@ class ExportService {
       status: "active" | "paused" | "failed";
     }>;
   }> {
-    const response = await api.get("/export/schedules");
+    const response = await apiClient.get("/export/schedules");
     return response.data;
   }
 
@@ -128,7 +128,7 @@ class ExportService {
     success: boolean;
     message: string;
   }> {
-    const response = await api.delete(`/export/schedule/${id}`);
+    const response = await apiClient.delete(`/export/schedule/${id}`);
     return response.data;
   }
 
@@ -192,7 +192,7 @@ class ExportService {
       };
     };
   }> {
-    const response = await api.get("/export/history", { params });
+    const response = await apiClient.get("/export/history", { params });
     return response.data;
   }
 }

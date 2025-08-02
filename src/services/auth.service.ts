@@ -1,5 +1,5 @@
-// src/services/auth.service.ts
-import api from "@/config/api";
+
+import { apiClient } from "@/config/api";
 import { User, LoginCredentials, RegisterData } from "@/types";
 import { ApiResponse } from "@/types";
 
@@ -13,7 +13,7 @@ class AuthService {
   ): Promise<
     ApiResponse<{ user: User; accessToken: string; refreshToken: string }>
   > {
-    const response = await api.post<
+    const response = await apiClient.post<
       ApiResponse<{ user: User; accessToken: string; refreshToken: string }>
     >("/auth/login", credentials);
     const { data } = response.data;
@@ -26,7 +26,7 @@ class AuthService {
   }
 
   async register(userData: RegisterData): Promise<ApiResponse<null>> {
-    const response = await api.post<ApiResponse<null>>(
+    const response = await apiClient.post<ApiResponse<null>>(
       "/auth/register",
       userData,
     );
@@ -35,7 +35,7 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await api.post("/auth/logout");
+      await apiClient.post("/auth/logout");
     } finally {
       this.clearAuth();
     }
@@ -47,7 +47,7 @@ class AuthService {
       throw new Error("No refresh token available");
     }
 
-    const response = await api.post<
+    const response = await apiClient.post<
       ApiResponse<{ accessToken: string; refreshToken: string }>
     >("/auth/refresh", {
       refreshToken,
@@ -64,7 +64,7 @@ class AuthService {
   async forgotPassword(
     email: string,
   ): Promise<{ success: boolean; message: string }> {
-    const response = await api.post("/auth/forgot-password", { email });
+    const response = await apiClient.post("/auth/forgot-password", { email });
     return response.data;
   }
 
@@ -72,7 +72,7 @@ class AuthService {
     token: string,
     password: string,
   ): Promise<{ success: boolean; message: string }> {
-    const response = await api.post(`/auth/reset-password/${token}`, {
+    const response = await apiClient.post(`/auth/reset-password/${token}`, {
       password,
     });
     return response.data;
@@ -81,7 +81,7 @@ class AuthService {
   async verifyEmail(
     token: string,
   ): Promise<{ success: boolean; message: string }> {
-    const response = await api.get(`/auth/verify-email/${token}`);
+    const response = await apiClient.get(`/auth/verify-email/${token}`);
     return response.data;
   }
 

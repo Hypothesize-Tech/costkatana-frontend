@@ -1,8 +1,10 @@
-import api from "../config/api";
+
 
 // ============================================
 // TYPES
 // ============================================
+
+import { apiClient } from "@/config/api";
 
 export interface RequestScore {
   _id: string;
@@ -130,7 +132,7 @@ export const requestScoringService = {
    * Score a request for training quality
    */
   async scoreRequest(scoreData: ScoreRequestData): Promise<RequestScore> {
-    const response = await api.post("/training/score", scoreData);
+    const response = await apiClient.post("/training/score", scoreData);
     return response.data.data;
   },
 
@@ -139,7 +141,7 @@ export const requestScoringService = {
    */
   async getRequestScore(requestId: string): Promise<RequestScore | null> {
     try {
-      const response = await api.get(`/training/score/${requestId}`);
+      const response = await apiClient.get(`/training/score/${requestId}`);
       return response.data.data;
     } catch (error: any) {
       if (error.response?.status === 404) {
@@ -176,7 +178,7 @@ export const requestScoringService = {
     if (filters?.limit) params.append("limit", filters.limit.toString());
     if (filters?.offset) params.append("offset", filters.offset.toString());
 
-    const response = await api.get(`/training/scores?${params.toString()}`);
+    const response = await apiClient.get(`/training/scores?${params.toString()}`);
     return {
       scores: response.data.data,
       pagination: response.data.pagination,
@@ -210,7 +212,7 @@ export const requestScoringService = {
       params.append("features", filters.features.join(","));
     if (filters?.limit) params.append("limit", filters.limit.toString());
 
-    const response = await api.get(`/training/candidates?${params.toString()}`);
+    const response = await apiClient.get(`/training/candidates?${params.toString()}`);
     return response.data.data;
   },
 
@@ -218,7 +220,7 @@ export const requestScoringService = {
    * Get scoring analytics
    */
   async getScoringAnalytics(): Promise<ScoringAnalytics> {
-    const response = await api.get("/training/analytics");
+    const response = await apiClient.get("/training/analytics");
     return response.data.data;
   },
 
@@ -226,7 +228,7 @@ export const requestScoringService = {
    * Bulk score multiple requests
    */
   async bulkScoreRequests(scores: ScoreRequestData[]): Promise<RequestScore[]> {
-    const response = await api.post("/training/score/bulk", { scores });
+    const response = await apiClient.post("/training/score/bulk", { scores });
     return response.data.data;
   },
 
@@ -234,7 +236,7 @@ export const requestScoringService = {
    * Delete a request score
    */
   async deleteScore(requestId: string): Promise<void> {
-    await api.delete(`/training/score/${requestId}`);
+    await apiClient.delete(`/training/score/${requestId}`);
   },
 };
 
@@ -249,7 +251,7 @@ export const trainingDatasetService = {
   async createDataset(
     datasetData: CreateDatasetData,
   ): Promise<TrainingDataset> {
-    const response = await api.post("/training/datasets", datasetData);
+    const response = await apiClient.post("/training/datasets", datasetData);
     return response.data.data;
   },
 
@@ -257,7 +259,7 @@ export const trainingDatasetService = {
    * Get all datasets for the authenticated user
    */
   async getUserDatasets(): Promise<TrainingDataset[]> {
-    const response = await api.get("/training/datasets");
+    const response = await apiClient.get("/training/datasets");
     return response.data.data;
   },
 
@@ -265,7 +267,7 @@ export const trainingDatasetService = {
    * Get a specific dataset
    */
   async getDataset(datasetId: string): Promise<TrainingDataset> {
-    const response = await api.get(`/training/datasets/${datasetId}`);
+    const response = await apiClient.get(`/training/datasets/${datasetId}`);
     return response.data.data;
   },
 
@@ -276,7 +278,7 @@ export const trainingDatasetService = {
     datasetId: string,
     updates: Partial<CreateDatasetData>,
   ): Promise<TrainingDataset> {
-    const response = await api.put(`/training/datasets/${datasetId}`, updates);
+    const response = await apiClient.put(`/training/datasets/${datasetId}`, updates);
     return response.data.data;
   },
 
@@ -284,7 +286,7 @@ export const trainingDatasetService = {
    * Auto-populate dataset with high-scoring requests
    */
   async populateDataset(datasetId: string): Promise<TrainingDataset> {
-    const response = await api.post(`/training/datasets/${datasetId}/populate`);
+    const response = await apiClient.post(`/training/datasets/${datasetId}/populate`);
     return response.data.data;
   },
 
@@ -295,7 +297,7 @@ export const trainingDatasetService = {
     datasetId: string,
     requestIds: string[],
   ): Promise<TrainingDataset> {
-    const response = await api.post(
+    const response = await apiClient.post(
       `/training/datasets/${datasetId}/requests`,
       { requestIds },
     );
@@ -309,7 +311,7 @@ export const trainingDatasetService = {
     datasetId: string,
     requestIds: string[],
   ): Promise<TrainingDataset> {
-    const response = await api.delete(
+    const response = await apiClient.delete(
       `/training/datasets/${datasetId}/requests`,
       { data: { requestIds } },
     );
@@ -328,7 +330,7 @@ export const trainingDatasetService = {
     previewRecords: number;
     preview: any[];
   }> {
-    const response = await api.get(
+    const response = await apiClient.get(
       `/training/datasets/${datasetId}/preview?format=${format}`,
     );
     return response.data.data;
@@ -341,7 +343,7 @@ export const trainingDatasetService = {
     datasetId: string,
     exportFormat: ExportFormat,
   ): Promise<Blob> {
-    const response = await api.post(
+    const response = await apiClient.post(
       `/training/datasets/${datasetId}/export`,
       exportFormat,
       {
@@ -355,7 +357,7 @@ export const trainingDatasetService = {
    * Delete a dataset
    */
   async deleteDataset(datasetId: string): Promise<void> {
-    await api.delete(`/training/datasets/${datasetId}`);
+    await apiClient.delete(`/training/datasets/${datasetId}`);
   },
 };
 

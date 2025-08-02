@@ -1,5 +1,3 @@
-// src/services/dashboard.service.ts
-import api from "../config/api";
 import { apiClient } from "../config/api";
 import { analyticsService } from "./analytics.service";
 
@@ -325,7 +323,7 @@ export class DashboardService {
   ): EventSource | null {
     try {
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("token");
 
       if (!token) {
         console.error("No auth token available for SSE connection");
@@ -370,7 +368,7 @@ export class DashboardService {
     topService: string;
     topModel: string;
   }> {
-    const response = await api.get("/dashboard/quick-stats");
+    const response = await apiClient.get("/dashboard/quick-stats");
     return response.data.data || response.data;
   }
 
@@ -386,7 +384,7 @@ export class DashboardService {
     mostUsedService: string;
     mostExpensiveService: string;
   }> {
-    const response = await api.get("/dashboard/service-breakdown");
+    const response = await apiClient.get("/dashboard/service-breakdown");
     return response.data.data || response.data;
   }
 
@@ -410,7 +408,7 @@ export class DashboardService {
       reason: string;
     }>;
   }> {
-    const response = await api.get("/dashboard/model-performance");
+    const response = await apiClient.get("/dashboard/model-performance");
     return response.data.data || response.data;
   }
 
@@ -418,7 +416,7 @@ export class DashboardService {
     message: string;
     lastUpdated: string;
   }> {
-    const response = await api.post("/dashboard/refresh");
+    const response = await apiClient.post("/dashboard/refresh");
     return response.data.data || response.data;
   }
 }
