@@ -5,3 +5,5 @@ export { useApi } from "./useApi";
 export { useDebounce } from "./useDebounce";
 export { usePagination } from "./usePagination";
 export { useLocalStorage } from "./useLocalStorage";
+export { useMixpanel } from "./useMixpanel";
+export { useGlobalTracking } from "./useGlobalTracking";

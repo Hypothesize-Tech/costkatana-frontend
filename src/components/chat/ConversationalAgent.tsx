@@ -113,13 +113,13 @@ export const ConversationalAgent: React.FC = () => {
       setQuestionsLoading(true);
 
       // Fetch user's recent usage data
-      const usageResponse = await apiClient.get("/api/usage?limit=50&sort=-createdAt", {
+      const usageResponse = await apiClient.get("/usage?limit=50&sort=-createdAt", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const usageData = usageResponse.data;
 
       // Fetch user's projects
-      const projectsResponse = await apiClient.get("/api/projects", {
+      const projectsResponse = await apiClient.get("/projects", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const projectsData = projectsResponse.data;
@@ -287,7 +287,7 @@ export const ConversationalAgent: React.FC = () => {
         {
           text:
             usageData.data?.some((u: any) => u.model.includes("claude")) &&
-            usageData.data?.some((u: any) => u.model.includes("gpt"))
+              usageData.data?.some((u: any) => u.model.includes("gpt"))
               ? "Compare my Claude vs GPT actual costs and performance"
               : "Compare models for cost and quality",
           icon: CpuChipIcon,
@@ -611,39 +611,39 @@ export const ConversationalAgent: React.FC = () => {
         thinking:
           response.thinking ||
           (messageContent.toLowerCase().includes("money") ||
-          messageContent.toLowerCase().includes("cost") ||
-          messageContent.toLowerCase().includes("model") ||
-          messageContent.toLowerCase().includes("spend")
+            messageContent.toLowerCase().includes("cost") ||
+            messageContent.toLowerCase().includes("model") ||
+            messageContent.toLowerCase().includes("spend")
             ? {
-                title: "Analyzing your AI spending data",
-                summary:
-                  "I'm querying your actual usage database to provide real insights about your AI model costs and spending patterns.",
-                steps: [
-                  {
-                    step: 1,
-                    description: "Database Query",
-                    reasoning:
-                      "Accessing your real usage data from MongoDB to get accurate spending information.",
-                    outcome:
-                      "Retrieved your actual AI model usage and cost data",
-                  },
-                  {
-                    step: 2,
-                    description: "Cost Analysis",
-                    reasoning:
-                      "Analyzing which models are consuming the most of your budget and identifying spending patterns.",
-                    outcome: "Identified your highest-cost models and trends",
-                  },
-                  {
-                    step: 3,
-                    description: "Data Aggregation",
-                    reasoning:
-                      "Calculating totals and providing breakdown by model, provider, and time period.",
-                    outcome:
-                      "Generated comprehensive cost breakdown from your data",
-                  },
-                ],
-              }
+              title: "Analyzing your AI spending data",
+              summary:
+                "I'm querying your actual usage database to provide real insights about your AI model costs and spending patterns.",
+              steps: [
+                {
+                  step: 1,
+                  description: "Database Query",
+                  reasoning:
+                    "Accessing your real usage data from MongoDB to get accurate spending information.",
+                  outcome:
+                    "Retrieved your actual AI model usage and cost data",
+                },
+                {
+                  step: 2,
+                  description: "Cost Analysis",
+                  reasoning:
+                    "Analyzing which models are consuming the most of your budget and identifying spending patterns.",
+                  outcome: "Identified your highest-cost models and trends",
+                },
+                {
+                  step: 3,
+                  description: "Data Aggregation",
+                  reasoning:
+                    "Calculating totals and providing breakdown by model, provider, and time period.",
+                  outcome:
+                    "Generated comprehensive cost breakdown from your data",
+                },
+              ],
+            }
             : undefined),
       };
 

@@ -9,10 +9,14 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ProjectProvider } from './contexts/ProjectContext';
 
+// Hooks
+import { useGlobalTracking } from './hooks/useGlobalTracking';
+
 // Components
 import { Layout } from './components/common/Layout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { TrackingConfiguration } from './components/analytics/TrackingConfiguration';
 
 // Pages
 import Login from './pages/Login';
@@ -46,6 +50,9 @@ import PredictiveIntelligence from './pages/PredictiveIntelligence';
 const queryClient = new QueryClient();
 
 function App() {
+  // Initialize global tracking for all interactions
+  useGlobalTracking();
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -53,6 +60,8 @@ function App() {
           <NotificationProvider>
             <ProjectProvider>
               <ErrorBoundary>
+                {/* Global tracking configuration component */}
+                <TrackingConfiguration />
                 <Routes>
                   {/* Public routes */}
                   <Route path="/login" element={<Login />} />

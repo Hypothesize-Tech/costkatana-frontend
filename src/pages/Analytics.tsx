@@ -15,6 +15,7 @@ import { FeedbackAnalytics } from '../components/feedback';
 import { formatCurrency } from '../utils/formatters';
 import { ProjectService } from '../services/project.service';
 import { useNotification } from '../contexts/NotificationContext';
+import { useMixpanel } from '../hooks/useMixpanel';
 
 interface Project {
   _id: string;
@@ -146,6 +147,11 @@ export const Analytics: React.FC = () => {
   const [_refreshing, setRefreshing] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const { showNotification } = useNotification();
+  const {
+    trackAnalyticsEvent,
+    trackDashboardInteraction,
+    trackFilterUsage
+  } = useMixpanel();
 
   const fetchAnalyticsData = async (projectId?: string) => {
     try {
@@ -199,6 +205,15 @@ export const Analytics: React.FC = () => {
         };
 
         setData(transformedData);
+
+        // Track analytics data fetch
+        trackAnalyticsEvent('project_analytics_loaded', '/analytics', 'analytics_page', {
+          projectId,
+          timeRange,
+          groupBy,
+          dataPoints: transformedData.timeline.length,
+          totalCost: transformedData.summary.totalCost
+        });
       } else {
         const analyticsData = await analyticsService.getAnalytics(filters);
 
@@ -240,10 +255,26 @@ export const Analytics: React.FC = () => {
         };
 
         setData(transformedData);
+
+        // Track analytics data fetch
+        trackAnalyticsEvent('analytics_loaded', '/analytics', 'analytics_page', {
+          timeRange,
+          groupBy,
+          dataPoints: transformedData.timeline.length,
+          totalCost: transformedData.summary.totalCost,
+          totalRequests: transformedData.summary.totalRequests
+        });
       }
     } catch (error) {
       console.error('Error fetching analytics data:', error);
       showNotification('Failed to load analytics data', 'error');
+
+      // Track error
+      trackAnalyticsEvent('analytics_error', '/analytics', 'analytics_page', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timeRange,
+        groupBy
+      });
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -344,14 +375,39 @@ export const Analytics: React.FC = () => {
     if (showComparison && selectedProjects.length >= 2) {
       fetchProjectComparison();
     }
+
+    // Track refresh action
+    trackDashboardInteraction('refresh', 'analytics', '/analytics', 'analytics_page', {
+      selectedProject,
+      timeRange,
+      groupBy,
+      showComparison
+    });
   };
 
   const handleProjectSelectionToggle = (projectId: string) => {
+    const wasSelected = selectedProjects.includes(projectId);
     setSelectedProjects(prev =>
       prev.includes(projectId)
         ? prev.filter(id => id !== projectId)
         : [...prev, projectId]
     );
+
+    // Track project selection
+    trackFilterUsage('project_selection', projectId, '/analytics', 'project_selector', {
+      action: wasSelected ? 'deselected' : 'selected',
+      totalSelected: wasSelected ? selectedProjects.length - 1 : selectedProjects.length + 1
+    });
+  };
+
+  const handleTimeRangeChange = (newTimeRange: string) => {
+    const previousTimeRange = timeRange;
+    setTimeRange(newTimeRange);
+
+    // Track time range filter
+    trackFilterUsage('time_range', newTimeRange, '/analytics', 'time_range_selector', {
+      previousValue: previousTimeRange
+    });
   };
 
   if (loading) {
@@ -382,13 +438,13 @@ export const Analytics: React.FC = () => {
                   }
                   onChange={(e) => {
                     // If user picks a date, set as ISO string
-                    setTimeRange(e.target.value);
+                    handleTimeRangeChange(e.target.value);
                   }}
                   className="px-3 py-2 rounded-md border border-gray-300"
                 />
                 <select
                   value={['7d', '30d', '90d', '1y'].includes(timeRange) ? timeRange : ''}
-                  onChange={e => setTimeRange(e.target.value)}
+                  onChange={e => handleTimeRangeChange(e.target.value)}
                   className="ml-2 px-2 py-2 rounded-md border border-gray-300"
                 >
                   <option value="">Custom</option>
