@@ -17,6 +17,7 @@ import {
   AcademicCapIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
 import { feedbackService } from "../../services/feedback.service";
@@ -89,6 +90,7 @@ interface SuggestedQuestion {
 }
 
 export const ConversationalAgent: React.FC = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -999,6 +1001,17 @@ export const ConversationalAgent: React.FC = () => {
                   className="optimizations-button"
                 >
                   📊 Optimizations
+                </button>
+              </div>
+
+              <div className="memory-toggle">
+                <button
+                  onClick={() => navigate('/memory')}
+                  className="memory-button"
+                  title="Manage AI Memory & Personalization"
+                >
+                  <BoltIcon className="icon-small" />
+                  🧠 Memory
                 </button>
               </div>
             </div>
@@ -2309,6 +2322,26 @@ export const ConversationalAgent: React.FC = () => {
                 .optimizations-button:hover {
                     background: #e5e7eb;
                     border-color: #9ca3af;
+                }
+
+                .memory-button {
+                    padding: 4px 12px;
+                    background: #f0f9ff;
+                    border: 1px solid #0ea5e9;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    color: #0369a1;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .memory-button:hover {
+                    background: #e0f2fe;
+                    border-color: #0284c7;
+                    transform: translateY(-1px);
                 }
 
                 /* Multi-Agent Message Features */

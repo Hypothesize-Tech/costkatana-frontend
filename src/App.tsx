@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { ProjectProvider } from './contexts/ProjectContext';
+import { MemoryProvider } from './components/memory';
 
 // Hooks
 import { useGlobalTracking } from './hooks/useGlobalTracking';
@@ -45,6 +46,7 @@ import Workflows from './pages/Workflows';
 import KeyVault from './pages/KeyVault';
 import { Training } from './pages/Training';
 import PredictiveIntelligence from './pages/PredictiveIntelligence';
+import Memory from './pages/Memory';
 
 
 const queryClient = new QueryClient();
@@ -145,6 +147,10 @@ function AppContent() {
             path="predictive-intelligence"
             element={<PredictiveIntelligence />}
           />
+          <Route
+            path="memory"
+            element={<Memory />}
+          />
 
           <Route
             path="settings"
@@ -172,7 +178,9 @@ function App() {
         <ThemeProvider>
           <NotificationProvider>
             <ProjectProvider>
-              <AppContent />
+              <MemoryProvider>
+                <AppContent />
+              </MemoryProvider>
             </ProjectProvider>
           </NotificationProvider>
         </ThemeProvider>
