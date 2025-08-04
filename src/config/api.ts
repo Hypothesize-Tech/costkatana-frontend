@@ -7,7 +7,16 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 // Create standard axios instance
 const api: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 30000,
+    timeout: 60000, // Increased to 60 seconds
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Create chat-specific instance with longer timeout for complex queries
+const chatApi: AxiosInstance = axios.create({
+    baseURL: `${API_URL}/api`,
+    timeout: 120000, // 2 minutes timeout for chat operations
     headers: {
         'Content-Type': 'application/json',
     },
@@ -64,12 +73,14 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
 
 // Apply interceptors to all instances
 addAuthInterceptors(api);
+addAuthInterceptors(chatApi);
 addAuthInterceptors(analyticsApi);
 addAuthInterceptors(longRunningApi);
 
 // Export both default and named exports for compatibility
 export const apiClient = api;
 export const API_BASE_URL = API_URL;
+export const chatApiClient = chatApi; // For chat operations with longer timeout
 export const analyticsApiClient = analyticsApi; // For analytics operations with shorter timeout
 export const longRunningApiClient = longRunningApi; // For forecasting and heavy operations
 export default api;

@@ -49,123 +49,130 @@ import PredictiveIntelligence from './pages/PredictiveIntelligence';
 
 const queryClient = new QueryClient();
 
-function App() {
+// Component to handle global tracking inside the context providers
+function AppContent() {
   // Initialize global tracking for all interactions
   useGlobalTracking();
 
+  return (
+    <ErrorBoundary>
+      {/* Global tracking configuration component */}
+      <TrackingConfiguration />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <Navigate
+                to="/dashboard"
+                replace
+              />
+            }
+          />
+          <Route
+            path="dashboard"
+            element={<Dashboard />}
+          />
+          <Route path="usage" element={<Usage />} />
+          <Route path="requests" element={<Requests />} />
+          <Route
+            path="analytics"
+            element={<Analytics />}
+          />
+          <Route
+            path="pricing"
+            element={<Pricing />}
+          />
+          <Route
+            path="optimizations"
+            element={<Optimization />}
+          />
+          <Route
+            path="optimizations/wizard"
+            element={<CostAuditWizard />}
+          />
+          <Route
+            path="projects"
+            element={<Projects />}
+          />
+          <Route
+            path="templates"
+            element={<PromptTemplates />}
+          />
+          <Route
+            path="templates/use"
+            element={<TemplateUsage />}
+          />
+          <Route
+            path="advanced-monitoring"
+            element={<AdvancedMonitoring />}
+          />
+          <Route
+            path="experimentation"
+            element={<Experimentation />}
+          />
+          <Route
+            path="gateway"
+            element={<Gateway />}
+          />
+          <Route
+            path="workflows"
+            element={<Workflows />}
+          />
+          <Route
+            path="key-vault"
+            element={<KeyVault />}
+          />
+          <Route
+            path="training"
+            element={<Training />}
+          />
+          <Route
+            path="predictive-intelligence"
+            element={<PredictiveIntelligence />}
+          />
+
+          <Route
+            path="settings"
+            element={<Settings />}
+          />
+          <Route path="profile" element={<Profile />} />
+          <Route path="alerts" element={<Alerts />} />
+          <Route
+            path="integration"
+            element={<Integration />}
+          />
+        </Route>
+
+        {/* 404 page */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </ErrorBoundary>
+  );
+}
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
           <NotificationProvider>
             <ProjectProvider>
-              <ErrorBoundary>
-                {/* Global tracking configuration component */}
-                <TrackingConfiguration />
-                <Routes>
-                  {/* Public routes */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
-
-                  {/* Protected routes */}
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Layout />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route
-                      index
-                      element={
-                        <Navigate
-                          to="/dashboard"
-                          replace
-                        />
-                      }
-                    />
-                    <Route
-                      path="dashboard"
-                      element={<Dashboard />}
-                    />
-                    <Route path="usage" element={<Usage />} />
-                    <Route path="requests" element={<Requests />} />
-                    <Route
-                      path="analytics"
-                      element={<Analytics />}
-                    />
-                    <Route
-                      path="pricing"
-                      element={<Pricing />}
-                    />
-                    <Route
-                      path="optimizations"
-                      element={<Optimization />}
-                    />
-                    <Route
-                      path="optimizations/wizard"
-                      element={<CostAuditWizard />}
-                    />
-                    <Route
-                      path="projects"
-                      element={<Projects />}
-                    />
-                    <Route
-                      path="templates"
-                      element={<PromptTemplates />}
-                    />
-                    <Route
-                      path="templates/use"
-                      element={<TemplateUsage />}
-                    />
-                    <Route
-                      path="advanced-monitoring"
-                      element={<AdvancedMonitoring />}
-                    />
-                    <Route
-                      path="experimentation"
-                      element={<Experimentation />}
-                    />
-                    <Route
-                      path="gateway"
-                      element={<Gateway />}
-                    />
-                    <Route
-                      path="workflows"
-                      element={<Workflows />}
-                    />
-                    <Route
-                      path="key-vault"
-                      element={<KeyVault />}
-                    />
-                    <Route
-                      path="training"
-                      element={<Training />}
-                    />
-                    <Route
-                      path="predictive-intelligence"
-                      element={<PredictiveIntelligence />}
-                    />
-
-                    <Route
-                      path="settings"
-                      element={<Settings />}
-                    />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="alerts" element={<Alerts />} />
-                    <Route
-                      path="integration"
-                      element={<Integration />}
-                    />
-                  </Route>
-
-                  {/* 404 page */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </ErrorBoundary>
+              <AppContent />
             </ProjectProvider>
           </NotificationProvider>
         </ThemeProvider>

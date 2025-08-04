@@ -40,6 +40,9 @@ interface ChatMessage {
     cost?: number;
     latency?: number;
     tokenCount?: number;
+    qualityScore?: number;
+    qualityRecommendations?: string[];
+    processingTime?: number;
   };
   thinking?: {
     title: string;
@@ -51,6 +54,11 @@ interface ChatMessage {
     }>;
     summary?: string;
   };
+  // Multi-agent enhancements
+  optimizationsApplied?: string[];
+  cacheHit?: boolean;
+  agentPath?: string[];
+  riskLevel?: string;
 }
 
 interface Conversation {
@@ -97,6 +105,11 @@ export const ConversationalAgent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
+
+  // Multi-agent features
+  const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
+  const [useMultiAgent, setUseMultiAgent] = useState<boolean>(true);
+  const [showOptimizations, setShowOptimizations] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -594,6 +607,8 @@ export const ConversationalAgent: React.FC = () => {
         message: messageContent,
         modelId: selectedModel.id,
         conversationId: currentConversationId || undefined,
+        chatMode: chatMode,
+        useMultiAgent: useMultiAgent,
       });
 
       const assistantMessage: ChatMessage = {
@@ -607,6 +622,11 @@ export const ConversationalAgent: React.FC = () => {
           latency: response.latency,
           tokenCount: response.tokenCount,
         },
+        // Multi-agent enhancements
+        optimizationsApplied: response.optimizationsApplied || [],
+        cacheHit: response.cacheHit || false,
+        agentPath: response.agentPath || [],
+        riskLevel: response.riskLevel || 'low',
         // Add thinking data from backend response or generate fallback based on query type
         thinking:
           response.thinking ||
@@ -704,6 +724,13 @@ export const ConversationalAgent: React.FC = () => {
     if (diffHours < 24) return `${diffHours}h ago`;
 
     return date.toLocaleDateString();
+  };
+
+  const getQualityLevel = (score: number): string => {
+    if (score >= 9) return 'excellent';
+    if (score >= 8) return 'good';
+    if (score >= 6) return 'fair';
+    return 'poor';
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -938,6 +965,43 @@ export const ConversationalAgent: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Chat Mode Controls */}
+            <div className="chat-controls">
+              <div className="chat-mode-selector">
+                <label className="control-label">Chat Mode:</label>
+                <select
+                  value={chatMode}
+                  onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
+                  className="chat-mode-select"
+                >
+                  <option value="fastest">⚡ Fastest</option>
+                  <option value="balanced">⚖️ Balanced</option>
+                  <option value="cheapest">💰 Cheapest</option>
+                </select>
+              </div>
+
+              <div className="multi-agent-toggle">
+                <label className="control-label">
+                  <input
+                    type="checkbox"
+                    checked={useMultiAgent}
+                    onChange={(e) => setUseMultiAgent(e.target.checked)}
+                    className="toggle-checkbox"
+                  />
+                  🤖 Multi-Agent
+                </label>
+              </div>
+
+              <div className="optimizations-toggle">
+                <button
+                  onClick={() => setShowOptimizations(!showOptimizations)}
+                  className="optimizations-button"
+                >
+                  📊 Optimizations
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1009,7 +1073,99 @@ export const ConversationalAgent: React.FC = () => {
                         ${message.metadata.cost.toFixed(4)}
                       </span>
                     )}
+                    {message.cacheHit && (
+                      <span className="cache-hit-badge">
+                        ⚡ Cached
+                      </span>
+                    )}
+                    {message.riskLevel && message.riskLevel !== 'low' && (
+                      <span className={`risk-badge risk-${message.riskLevel}`}>
+                        {message.riskLevel === 'high' ? '🔴' : '🟡'} {message.riskLevel.toUpperCase()} RISK
+                      </span>
+                    )}
                   </div>
+
+                  {/* Enhanced Multi-Agent Display */}
+                  {showOptimizations && message.role === "assistant" && (
+                    (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
+                    (message.agentPath && message.agentPath.length > 0) ||
+                    message.cacheHit ||
+                    message.riskLevel
+                  ) && (
+                      <div className="multi-agent-display">
+                        {/* Cache Hit Indicator */}
+                        {message.cacheHit && (
+                          <div className="cache-hit-indicator">
+                            <span className="cache-badge">⚡ Semantic Cache Hit - Instant Response</span>
+                          </div>
+                        )}
+
+                        {/* Optimizations Applied */}
+                        {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
+                          <div className="optimizations-section">
+                            <div className="section-header">
+                              <span className="section-title">🔧 Optimizations Applied:</span>
+                            </div>
+                            <div className="optimizations-grid">
+                              {message.optimizationsApplied.map((opt, idx) => (
+                                <span key={idx} className={`optimization-tag ${opt.replace(/_/g, '-')}`}>
+                                  {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Agent Processing Flow */}
+                        {message.agentPath && message.agentPath.length > 1 && (
+                          <div className="agent-flow-section">
+                            <div className="section-header">
+                              <span className="section-title">🤖 Agent Processing Flow:</span>
+                            </div>
+                            <div className="agent-flow-container">
+                              {message.agentPath.map((agent, idx) => (
+                                <div key={idx} className="agent-flow-item">
+                                  <span className={`agent-step ${agent.replace(/_/g, '-')}`}>
+                                    {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  </span>
+                                  {idx < message.agentPath!.length - 1 && (
+                                    <span className="flow-arrow">→</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Performance Metrics */}
+                        <div className="performance-metrics">
+                          {message.riskLevel && (
+                            <div className="metric-item">
+                              <span className={`risk-badge risk-${message.riskLevel}`}>
+                                📊 Risk: {message.riskLevel.toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+
+                          {message.metadata?.qualityScore && (
+                            <div className="metric-item">
+                              <span className={`quality-badge quality-${getQualityLevel(message.metadata.qualityScore)}`}>
+                                ⭐ Quality: {message.metadata.qualityScore}/10
+                              </span>
+                            </div>
+                          )}
+
+                          {message.metadata?.processingTime && (
+                            <div className="metric-item">
+                              <span className="time-badge">
+                                ⏱️ {message.metadata.processingTime}ms
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                   {message.role === "assistant" && message.requestId && (
                     <FeedbackButton
                       requestId={message.requestId}
@@ -2088,6 +2244,376 @@ export const ConversationalAgent: React.FC = () => {
 
                 .message.assistant .markdown-content th {
                     background: #f8fafc;
+                }
+
+                /* Multi-Agent Chat Controls */
+                .chat-controls {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    margin-left: 16px;
+                }
+
+                .chat-mode-selector {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .control-label {
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: #64748b;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .chat-mode-select {
+                    padding: 4px 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    background: white;
+                    color: #374151;
+                    cursor: pointer;
+                    transition: border-color 0.2s;
+                }
+
+                .chat-mode-select:focus {
+                    outline: none;
+                    border-color: #3b82f6;
+                }
+
+                .multi-agent-toggle {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .toggle-checkbox {
+                    margin-right: 6px;
+                    cursor: pointer;
+                }
+
+                .optimizations-button {
+                    padding: 4px 12px;
+                    background: #f3f4f6;
+                    border: 1px solid #d1d5db;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    color: #374151;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .optimizations-button:hover {
+                    background: #e5e7eb;
+                    border-color: #9ca3af;
+                }
+
+                /* Multi-Agent Message Features */
+                .cache-hit-badge {
+                    background: #dcfce7;
+                    color: #166534;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    font-weight: 600;
+                    margin-left: 8px;
+                }
+
+                .risk-badge {
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    font-weight: 600;
+                    margin-left: 8px;
+                }
+
+                .risk-medium {
+                    background: #fef3c7;
+                    color: #92400e;
+                }
+
+                .risk-high {
+                    background: #fee2e2;
+                    color: #991b1b;
+                }
+
+                .optimizations-display {
+                    margin-top: 12px;
+                    padding: 12px;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    border: 1px solid #e2e8f0;
+                }
+
+                .optimizations-header {
+                    margin-bottom: 8px;
+                }
+
+                .optimizations-title {
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #374151;
+                }
+
+                .optimizations-list {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 6px;
+                    margin-bottom: 8px;
+                }
+
+                .optimization-tag {
+                    background: #dbeafe;
+                    color: #1e40af;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 500;
+                }
+
+                .agent-path {
+                    margin-top: 8px;
+                }
+
+                .agent-path-title {
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #374151;
+                    display: block;
+                    margin-bottom: 4px;
+                }
+
+                .agent-path-flow {
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .agent-step {
+                    background: #f1f5f9;
+                    color: #475569;
+                    padding: 2px 6px;
+                    border-radius: 6px;
+                    font-size: 10px;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .arrow {
+                    color: #9ca3af;
+                    font-weight: normal;
+                }
+
+                /* Enhanced Multi-Agent Display Styles */
+                .multi-agent-display {
+                    margin-top: 14px;
+                    padding: 16px;
+                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                    border-radius: 12px;
+                    border: 1px solid #e2e8f0;
+                    font-size: 12px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+                }
+
+                .cache-hit-indicator {
+                    margin-bottom: 12px;
+                }
+
+                .cache-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+                }
+
+                .optimizations-section, .agent-flow-section {
+                    margin-bottom: 12px;
+                }
+
+                .section-header {
+                    margin-bottom: 8px;
+                }
+
+                .section-title {
+                    font-weight: 600;
+                    color: #374151;
+                    font-size: 12px;
+                }
+
+                .optimizations-grid {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 6px;
+                }
+
+                .optimization-tag {
+                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                    color: #1e40af;
+                    padding: 4px 10px;
+                    border-radius: 14px;
+                    font-size: 11px;
+                    font-weight: 500;
+                    border: 1px solid #93c5fd;
+                    transition: all 0.2s;
+                }
+
+                .optimization-tag.prompt-refinement {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border-color: #f59e0b;
+                }
+
+                .optimization-tag.semantic-cache {
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    color: #065f46;
+                    border-color: #10b981;
+                }
+
+                .agent-flow-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .agent-flow-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .agent-step {
+                    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+                    color: #065f46;
+                    padding: 4px 8px;
+                    border-radius: 10px;
+                    font-size: 10px;
+                    font-weight: 500;
+                    border: 1px solid #a7f3d0;
+                }
+
+                .agent-step.master-agent {
+                    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+                    color: #5b21b6;
+                    border-color: #a78bfa;
+                }
+
+                .agent-step.cost-optimizer {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border-color: #f59e0b;
+                }
+
+                .agent-step.quality-analyst {
+                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                    color: #1e40af;
+                    border-color: #3b82f6;
+                }
+
+                .flow-arrow {
+                    color: #6b7280;
+                    font-weight: bold;
+                    font-size: 12px;
+                }
+
+                .performance-metrics {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    padding-top: 8px;
+                    border-top: 1px solid #e5e7eb;
+                }
+
+                .metric-item {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .risk-badge, .quality-badge, .time-badge {
+                    padding: 3px 8px;
+                    border-radius: 10px;
+                    font-size: 10px;
+                    font-weight: 600;
+                }
+
+                .risk-badge.risk-low {
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    color: #065f46;
+                    border: 1px solid #10b981;
+                }
+
+                .risk-badge.risk-medium {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border: 1px solid #f59e0b;
+                }
+
+                .risk-badge.risk-high {
+                    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+                    color: #991b1b;
+                    border: 1px solid #ef4444;
+                }
+
+                .quality-badge.quality-excellent {
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    color: #065f46;
+                    border: 1px solid #10b981;
+                }
+
+                .quality-badge.quality-good {
+                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+                    color: #1e40af;
+                    border: 1px solid #3b82f6;
+                }
+
+                .quality-badge.quality-fair {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                    color: #92400e;
+                    border: 1px solid #f59e0b;
+                }
+
+                .quality-badge.quality-poor {
+                    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+                    color: #991b1b;
+                    border: 1px solid #ef4444;
+                }
+
+                .time-badge {
+                    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+                    color: #374151;
+                    border: 1px solid #d1d5db;
+                }
+
+                /* Responsive adjustments */
+                @media (max-width: 768px) {
+                    .chat-controls {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 8px;
+                        margin-left: 0;
+                        margin-top: 8px;
+                    }
+                    
+                    .optimizations-display {
+                        padding: 8px;
+                    }
+                    
+                    .agent-path-flow {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
                 }
             `}</style>
     </div>

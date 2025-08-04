@@ -1,4 +1,4 @@
-import apiClient from "@/config/api";
+import apiClient, { chatApiClient } from "@/config/api";
 
 export interface ChatMessage {
   id: string;
@@ -40,6 +40,8 @@ export interface SendMessageRequest {
   conversationId?: string;
   temperature?: number;
   maxTokens?: number;
+  chatMode?: 'fastest' | 'cheapest' | 'balanced';
+  useMultiAgent?: boolean;
 }
 
 export interface SendMessageResponse {
@@ -60,6 +62,11 @@ export interface SendMessageResponse {
     }>;
     summary?: string;
   };
+  // Multi-agent enhancements
+  optimizationsApplied?: string[];
+  cacheHit?: boolean;
+  agentPath?: string[];
+  riskLevel?: string;
 }
 
 export interface ConversationHistoryResponse {
@@ -96,7 +103,7 @@ export class ChatService {
     request: SendMessageRequest,
   ): Promise<SendMessageResponse> {
     try {
-      const response = await apiClient.post(`${this.baseUrl}/message`, request);
+      const response = await chatApiClient.post(`${this.baseUrl}/message`, request);
       return response.data.data;
     } catch (error: any) {
       console.error("Error sending message:", error);
