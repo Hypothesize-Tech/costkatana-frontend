@@ -9,6 +9,8 @@ import {
   PlusIcon,
   CheckCircleIcon,
   ArrowTrendingUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import { optimizationService } from "../services/optimization.service";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
@@ -23,17 +25,31 @@ import { useNotifications } from "../contexts/NotificationContext";
 export const Optimization: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [filter, setFilter] = useState<"all" | "applied" | "pending">("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const { showNotification } = useNotifications();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: optimizations, isLoading } = useQuery(
-    ["optimizations"],
+  const { data: optimizations, isLoading: optimizationsLoading } = useQuery(
+    ["optimizations", currentPage, pageSize, filter],
     () =>
       optimizationService.getOptimizations({
+        page: currentPage,
+        limit: pageSize,
         sort: "createdAt",
         order: "desc",
+        applied: filter === "applied" ? true : filter === "pending" ? false : undefined,
       }),
+    {
+      refetchInterval: 30000, // Refresh every 30 seconds
+    },
+  );
+
+  // Get optimization summary for accurate totals
+  const { data: summary, isLoading: summaryLoading } = useQuery(
+    ["optimization-summary"],
+    () => optimizationService.getOptimizationSummary("all"),
     {
       refetchInterval: 30000, // Refresh every 30 seconds
     },
@@ -41,59 +57,49 @@ export const Optimization: React.FC = () => {
 
   // Get counts for each filter
   const getFilterCount = (filterType: "all" | "pending" | "applied") => {
-    if (!optimizations?.data) return 0;
+    if (!summary) return 0;
 
     switch (filterType) {
       case "all":
-        return optimizations.data.length;
+        return summary.total;
       case "applied":
-        return optimizations.data.filter((o) => o.applied || o.status === "applied" || o.status === "completed").length;
+        return summary.applied;
       case "pending":
-        return optimizations.data.filter((o) => !o.applied && o.status !== "applied" && o.status !== "completed").length;
+        return summary.total - summary.applied;
       default:
         return 0;
     }
   };
 
-  // Calculate accurate statistics from optimizations data
+  // Use summary data for accurate statistics
   const calculateStats = () => {
-    if (!optimizations?.data) return null;
-
-    const totalOptimizations = optimizations.data.length;
-    const appliedOptimizations = optimizations.data.filter(
-      (o) => o.applied || o.status === "applied" || o.status === "completed",
-    ).length;
-    const totalSaved = optimizations.data.reduce(
-      (sum, opt) => sum + (opt.costSaved || opt.savings || 0),
-      0,
-    );
-    const avgImprovement =
-      optimizations.data.length > 0
-        ? optimizations.data.reduce(
-          (sum, opt) => sum + (opt.improvementPercentage || 0),
-          0,
-        ) / optimizations.data.length
-        : 0;
+    if (!summary) return null;
 
     return {
-      total: totalOptimizations,
-      applied: appliedOptimizations,
-      totalSaved,
-      avgImprovement,
+      total: summary.total,
+      applied: summary.applied,
+      totalSaved: summary.totalSaved,
+      totalTokensSaved: summary.totalTokensSaved,
+      avgImprovement: summary.avgImprovement,
+      applicationRate: summary.applicationRate,
     };
   };
 
-  // Get filtered optimizations for display
+  // Get filtered optimizations for display (now handled by backend)
   const getFilteredOptimizations = () => {
     if (!optimizations?.data) return [];
-    console.log("optimizations", optimizations)
+    return optimizations.data;
+  };
 
-    return optimizations.data.filter((opt) => {
-      if (filter === "all") return true;
-      if (filter === "applied") return opt.applied || opt.status === "applied" || opt.status === "completed";
-      if (filter === "pending") return !opt.applied && opt.status !== "applied" && opt.status !== "completed";
-      return true;
-    });
+  // Handle filter change
+  const handleFilterChange = (newFilter: "all" | "applied" | "pending") => {
+    setFilter(newFilter);
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const calculatedStats = calculateStats();
@@ -132,7 +138,7 @@ export const Optimization: React.FC = () => {
     });
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (optimizationsLoading || summaryLoading) return <LoadingSpinner />;
 
   return (
     <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -223,7 +229,7 @@ export const Optimization: React.FC = () => {
       )}
 
       {/* Show stats even when no optimizations exist */}
-      {!calculatedStats && !isLoading && (
+      {!calculatedStats && !optimizationsLoading && !summaryLoading && (
         <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
           <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
             <div className="flex justify-between items-center">
@@ -363,7 +369,7 @@ export const Optimization: React.FC = () => {
             {(["all", "pending", "applied"] as const).map((tab) => (
               <button
                 key={tab}
-                onClick={() => setFilter(tab)}
+                onClick={() => handleFilterChange(tab)}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${filter === tab
                   ? "border-indigo-500 text-indigo-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -397,6 +403,55 @@ export const Optimization: React.FC = () => {
             />
           ))}
       </div>
+
+      {/* Pagination Controls */}
+      {optimizations?.pagination && optimizations.pagination.pages > 1 && (
+        <div className="flex items-center justify-between mt-8">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-700">
+              Showing {((optimizations.pagination.page - 1) * optimizations.pagination.limit) + 1} to{" "}
+              {Math.min(optimizations.pagination.page * optimizations.pagination.limit, optimizations.pagination.total)} of{" "}
+              {optimizations.pagination.total} results
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: Math.min(5, optimizations.pagination.pages) }, (_, i) => {
+                const page = i + 1;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
+                      }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage >= optimizations.pagination.pages}
+              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {getFilteredOptimizations().length === 0 && (
         <div className="py-12 text-center">
