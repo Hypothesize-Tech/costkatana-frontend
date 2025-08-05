@@ -2629,6 +2629,38 @@ export const ConversationalAgent: React.FC = () => {
                     border: 1px solid #d1d5db;
                 }
 
+                /* Loading Suggestions Styles */
+                .loading-suggestions {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 40px 20px;
+                    text-align: center;
+                }
+
+                .loading-spinner {
+                    width: 32px;
+                    height: 32px;
+                    border: 3px solid #e2e8f0;
+                    border-top: 3px solid #3b82f6;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin-bottom: 16px;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .loading-suggestions p {
+                    color: #64748b;
+                    font-size: 14px;
+                    font-weight: 500;
+                    margin: 0;
+                }
+
                 /* Responsive adjustments */
                 @media (max-width: 768px) {
                     .chat-controls {

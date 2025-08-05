@@ -231,7 +231,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                             <div className="flex items-center">
                                                 <ChartBarIcon className="h-5 w-5 text-blue-500 mr-2" />
                                                 <span className="text-sm text-gray-600">
-                                                    Confidence: {Math.round((simulationResult.confidence || 0) * 100)}%
+                                                    Confidence: {Math.round(simulationResult.confidence || 0)}%
                                                 </span>
                                             </div>
                                         </div>
@@ -263,25 +263,29 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                 )}
                                                                 <div className="flex items-center space-x-4 text-sm">
                                                                     <div className="flex items-center">
-                                                                        <CurrencyDollarIcon className="h-4 w-4 text-green-500 mr-1" />
-                                                                        <span className="text-green-600 font-medium">
-                                                                            Save {(() => {
-                                                                                if (typeof option.savings === 'number') {
-                                                                                    return formatCurrency(option.savings);
-                                                                                } else if (typeof option.savings === 'object' && option.savings !== null) {
-                                                                                    const savings = option.savings as any;
-                                                                                    if (savings.cost) {
-                                                                                        return formatCurrency(savings.cost);
-                                                                                    } else if (savings.percentage) {
-                                                                                        return `${savings.percentage.toFixed(1)}%`;
-                                                                                    } else {
-                                                                                        return formatCurrency(0);
-                                                                                    }
-                                                                                } else {
-                                                                                    return formatCurrency(0);
-                                                                                }
-                                                                            })()} ({(option.savingsPercentage || 0).toFixed(1)}%)
-                                                                        </span>
+                                                                        {(() => {
+                                                                            const savings = option.savings as any;
+                                                                            const cost = typeof savings === 'object' && savings !== null && typeof savings.cost === 'number'
+                                                                                ? savings.cost
+                                                                                : (typeof option.savings === 'number' ? option.savings : 0);
+                                                                            const percentage = typeof savings === 'object' && savings !== null && typeof savings.percentage === 'number'
+                                                                                ? savings.percentage
+                                                                                : (option.savingsPercentage || 0);
+
+                                                                            const isIncrease = cost < 0 || percentage < 0;
+                                                                            const iconClass = isIncrease ? "h-4 w-4 text-red-500 mr-1" : "h-4 w-4 text-green-500 mr-1";
+                                                                            const textClass = isIncrease ? "text-red-600 font-medium" : "text-green-600 font-medium";
+                                                                            const actionText = isIncrease ? "Cost increase" : "Save";
+
+                                                                            return (
+                                                                                <>
+                                                                                    <CurrencyDollarIcon className={iconClass} />
+                                                                                    <span className={textClass}>
+                                                                                        {actionText} {formatCurrency(Math.abs(cost))} ({Math.abs(percentage).toFixed(1)}%)
+                                                                                    </span>
+                                                                                </>
+                                                                            );
+                                                                        })()}
                                                                     </div>
                                                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(option.risk || 'medium')}`}>
                                                                         {option.risk || 'medium'} risk
