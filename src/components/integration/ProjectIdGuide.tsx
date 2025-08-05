@@ -206,7 +206,7 @@ await optimizer.bulkImport(usageData);`;
         <div className="space-y-1 text-sm font-mono">
           <div className="flex items-center justify-between bg-yellow-100 dark:bg-yellow-800 px-2 py-1 rounded">
             <span className="text-yellow-800 dark:text-yellow-200">
-              AI_COST_DASHBOARD_URL={window.location.origin}/api
+            API_KEY={import.meta.env.VITE_APP_API_URL}/api
             </span>
             <button
               onClick={() =>
