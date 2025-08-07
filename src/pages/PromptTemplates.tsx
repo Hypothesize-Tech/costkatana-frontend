@@ -186,62 +186,68 @@ const PromptTemplates: React.FC = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Prompt Templates
           </h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             Create, manage, and use reusable prompt templates
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+          className="flex gap-2 items-center px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl transition-all hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl"
         >
-          <FiPlus />
+          <FiPlus className="w-5 h-5" />
           New Template
         </button>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
-        <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
+      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
           <div className="flex items-center">
-            <FiBookOpen className="mr-2 text-blue-600" />
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mr-4">
+              <FiBookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Total Templates
               </p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {templates.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
           <div className="flex items-center">
-            <FiStar className="mr-2 text-yellow-600" />
+            <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center mr-4">
+              <FiStar className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Favorites
               </p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {templates.filter((t) => t.isFavorite).length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
           <div className="flex items-center">
-            <FiTrendingUp className="mr-2 text-green-600" />
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mr-4">
+              <FiTrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Most Used
               </p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {templates.reduce(
                   (max, t) => Math.max(max, t.usage?.count || 0),
                   0,
@@ -251,14 +257,16 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 bg-white rounded-lg shadow dark:bg-gray-800">
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
           <div className="flex items-center">
-            <FiTag className="mr-2 text-purple-600" />
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mr-4">
+              <FiTag className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Categories
               </p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {new Set(templates.map((t) => t.category)).size}
               </p>
             </div>
@@ -266,23 +274,23 @@ const PromptTemplates: React.FC = () => {
         </div>
       </div>
 
-      {/* Simplified Filters */}
-      <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center">
+      {/* Enhanced Filters */}
+      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <FiSearch className="absolute left-3 top-1/2 text-gray-400 transform -translate-y-1/2" />
+          <FiSearch className="absolute left-4 top-1/2 text-gray-400 transform -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search templates..."
+            placeholder="Search templates by name, description, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="py-2 pr-4 pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            className="py-3 pr-4 pl-12 w-full rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
           />
         </div>
 
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          className="px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
         >
           {categories.map((category) => (
             <option key={category.value} value={category.value}>
@@ -293,42 +301,44 @@ const PromptTemplates: React.FC = () => {
 
         <button
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-          className={`flex gap-2 items-center px-4 py-2 rounded-lg transition-colors ${showFavoritesOnly
-            ? "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20"
-            : "text-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-300"
+          className={`flex gap-2 items-center px-6 py-3 rounded-xl transition-all ${showFavoritesOnly
+            ? "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800"
+            : "text-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600"
             }`}
         >
-          <FiStar className={showFavoritesOnly ? "fill-current" : ""} />
+          <FiStar className={`w-5 h-5 ${showFavoritesOnly ? "fill-current" : ""}`} />
           Favorites Only
         </button>
       </div>
 
       {/* Templates Grid */}
       {sortedTemplates.length === 0 ? (
-        <div className="py-12 text-center bg-white rounded-lg shadow dark:bg-gray-800">
-          <FiBookOpen className="mx-auto mb-4 w-12 h-12 text-gray-400" />
-          <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
+        <div className="py-16 text-center bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
+          <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FiBookOpen className="w-12 h-12 text-gray-400" />
+          </div>
+          <h3 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
             {searchQuery || selectedCategory !== "all" || showFavoritesOnly
               ? "No templates found"
               : "No templates yet"}
           </h3>
-          <p className="mb-4 text-gray-600 dark:text-gray-400">
+          <p className="mb-8 text-lg text-gray-600 dark:text-gray-400 max-w-md mx-auto">
             {searchQuery || selectedCategory !== "all" || showFavoritesOnly
-              ? "Try adjusting your search or filter criteria"
-              : "Get started by creating your first template"}
+              ? "Try adjusting your search or filter criteria to find what you're looking for."
+              : "Get started by creating your first template to save time and improve consistency in your AI interactions."}
           </p>
           {!searchQuery && selectedCategory === "all" && !showFavoritesOnly && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+              className="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all"
             >
-              <FiPlus className="mr-2" />
+              <FiPlus className="mr-3 w-6 h-6" />
               Create Template
             </button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {sortedTemplates.map((template) => (
             <PromptTemplateCard
               key={template._id}

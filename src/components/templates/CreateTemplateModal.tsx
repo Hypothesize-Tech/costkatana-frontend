@@ -1,5 +1,18 @@
-import React, { useState } from "react";
-import { FiPlus, FiMinus } from "react-icons/fi";
+import React, { useState, useEffect } from "react";
+import {
+  FiPlus,
+  FiMinus,
+  FiInfo,
+  FiCheck,
+  FiCode,
+  FiTag,
+  FiSettings,
+  FiZap,
+  FiBookOpen,
+  FiStar,
+  FiX,
+  FiEye,
+} from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { TemplateVariable } from "../../types/promptTemplate.types";
 
@@ -21,29 +34,23 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     metadata: {
       tags: [""],
       language: "en",
-      estimatedTokens: undefined as number | undefined,
-      recommendedModel: "",
     },
     sharing: {
-      visibility: "private" as
-        | "private"
-        | "project"
-        | "organization"
-        | "public",
+      visibility: "private" as "private" | "project" | "organization" | "public",
       allowFork: false,
     },
   });
 
   const [loading, setLoading] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const categories = [
-    { value: "general", label: "General" },
-    { value: "coding", label: "Coding" },
-    { value: "writing", label: "Writing" },
-    { value: "analysis", label: "Analysis" },
-    { value: "creative", label: "Creative" },
-    { value: "business", label: "Business" },
-    { value: "custom", label: "Custom" },
+    { value: "general", label: "General", icon: FiBookOpen, color: "bg-gray-100 text-gray-800" },
+    { value: "coding", label: "Coding", icon: FiCode, color: "bg-blue-100 text-blue-800" },
+    { value: "writing", label: "Writing", icon: FiBookOpen, color: "bg-green-100 text-green-800" },
+    { value: "analysis", label: "Analysis", icon: FiZap, color: "bg-purple-100 text-purple-800" },
+    { value: "creative", label: "Creative", icon: FiStar, color: "bg-pink-100 text-pink-800" },
+    { value: "business", label: "Business", icon: FiSettings, color: "bg-yellow-100 text-yellow-800" },
   ];
 
   const handleInputChange = (field: string, value: any) => {
@@ -110,22 +117,6 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     }));
   };
 
-  const addVariable = () => {
-    setFormData((prev) => ({
-      ...prev,
-      variables: [
-        ...prev.variables,
-        {
-          name: "",
-          description: "",
-          defaultValue: "",
-          required: false,
-          type: "text",
-        },
-      ],
-    }));
-  };
-
   const removeVariable = (index: number) => {
     setFormData((prev) => ({
       ...prev,
@@ -133,36 +124,35 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     }));
   };
 
-  const extractVariablesFromContent = () => {
-    const variablePattern = /\{\{(\w+)\}\}/g;
-    const matches = [...formData.content.matchAll(variablePattern)];
-    const variableNames = [...new Set(matches.map((match) => match[1]))];
+  // Auto-detect variables when content changes
+  useEffect(() => {
+    const variableRegex = /\{\{([^}]+)\}\}/g;
+    const matches = formData.content.match(variableRegex);
 
-    const newVariables = variableNames.map((name) => {
-      const existing = formData.variables.find((v) => v.name === name);
-      return (
-        existing || {
+    if (matches) {
+      const newVariables = matches.map((match) => {
+        const name = match.replace(/\{\{|\}\}/g, "");
+        return {
           name,
-          description: "",
-          defaultValue: "",
-          required: true,
           type: "text" as const,
-        }
-      );
-    });
+          description: "",
+          required: false,
+          defaultValue: "",
+        };
+      });
 
-    setFormData((prev) => ({
-      ...prev,
-      variables: newVariables,
-    }));
-  };
+      setFormData((prev) => ({
+        ...prev,
+        variables: newVariables,
+      }));
+    }
+  }, [formData.content]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Clean up data
       const cleanData = {
         ...formData,
         metadata: {
@@ -173,7 +163,6 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
       await onSubmit(cleanData);
 
-      // Reset form
       setFormData({
         name: "",
         description: "",
@@ -183,8 +172,6 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         metadata: {
           tags: [""],
           language: "en",
-          estimatedTokens: undefined,
-          recommendedModel: "",
         },
         sharing: {
           visibility: "private",
@@ -202,316 +189,332 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Create New Template"
-      size="lg"
+      title=""
+      size="xl"
     >
-      <form
-        onSubmit={handleSubmit}
-        className="p-6 space-y-6 max-h-[80vh] overflow-y-auto"
-      >
-        {/* Basic Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Basic Information
-          </h3>
-
+      <div className="flex flex-col h-full max-h-[90vh]">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Template Name *
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Enter template name"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              rows={3}
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Describe your template"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Category
-            </label>
-            <select
-              value={formData.category}
-              onChange={(e) => handleInputChange("category", e.target.value)}
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            >
-              {categories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Template Content */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Template Content
-            </h3>
-            <button
-              type="button"
-              onClick={extractVariablesFromContent}
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
-              Extract Variables
-            </button>
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Prompt Content *
-            </label>
-            <textarea
-              value={formData.content}
-              onChange={(e) => handleInputChange("content", e.target.value)}
-              rows={8}
-              className="px-3 py-2 w-full font-mono text-sm rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Enter your prompt template. Use {{variable_name}} for variables."
-              required
-            />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Use double curly braces for variables: {`{{variable_name}}`}
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Create New Template
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Create a reusable prompt template with variables
             </p>
           </div>
         </div>
 
-        {/* Variables */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Variables
-            </h3>
-            <button
-              type="button"
-              onClick={addVariable}
-              className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
-            >
-              <FiPlus /> Add Variable
-            </button>
-          </div>
-
-          {formData.variables.map((variable, index) => (
-            <div
-              key={index}
-              className="p-4 space-y-3 rounded-lg border border-gray-200 dark:border-gray-600"
-            >
-              <div className="flex justify-between items-start">
-                <h4 className="font-medium text-gray-900 dark:text-white">
-                  Variable {index + 1}
-                </h4>
-                <button
-                  type="button"
-                  onClick={() => removeVariable(index)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <FiMinus />
-                </button>
+        {/* Content */}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Basic Information */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <FiInfo className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Basic Information
+                </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Name
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Template Name *
                   </label>
                   <input
                     type="text"
-                    value={variable.name}
-                    onChange={(e) =>
-                      handleVariableChange(index, "name", e.target.value)
-                    }
-                    className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="variable_name"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    placeholder="e.g., Email Writer, Code Reviewer"
+                    required
                   />
                 </div>
+
                 <div>
-                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Type
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Category
                   </label>
                   <select
-                    value={variable.type || "text"}
-                    onChange={(e) =>
-                      handleVariableChange(index, "type", e.target.value)
-                    }
-                    className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    value={formData.category}
+                    onChange={(e) => handleInputChange("category", e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="text">Text</option>
-                    <option value="number">Number</option>
-                    <option value="boolean">Boolean</option>
-                    <option value="select">Select</option>
+                    {categories.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Description
                 </label>
-                <input
-                  type="text"
-                  value={variable.description || ""}
-                  onChange={(e) =>
-                    handleVariableChange(index, "description", e.target.value)
-                  }
-                  className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Describe this variable"
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="Describe what this template does and when to use it"
                 />
-              </div>
-
-              <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Default Value
-                </label>
-                <input
-                  type="text"
-                  value={variable.defaultValue || ""}
-                  onChange={(e) =>
-                    handleVariableChange(index, "defaultValue", e.target.value)
-                  }
-                  className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Default value (optional)"
-                />
-              </div>
-
-              <div>
-                <label className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    checked={variable.required}
-                    onChange={(e) =>
-                      handleVariableChange(index, "required", e.target.checked)
-                    }
-                    className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
-                    Required
-                  </span>
-                </label>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Tags */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Tags
-          </h3>
+            {/* Template Content */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <FiCode className="w-5 h-5 text-green-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Template Content *
+                </h3>
+              </div>
 
-          {formData.metadata.tags.map((tag, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="text"
-                value={tag}
-                onChange={(e) => handleTagChange(index, e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Enter tag"
-              />
-              {formData.metadata.tags.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeTag(index)}
-                  className="p-2 text-red-600 rounded-lg transition-colors hover:bg-red-50"
-                >
-                  <FiMinus />
-                </button>
+              <div className="relative">
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => handleInputChange("content", e.target.value)}
+                  rows={8}
+                  className="w-full px-4 py-3 font-mono text-sm rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="Write your prompt template here. Use {{variable_name}} for dynamic content.
+
+Example:
+You are a helpful assistant. Please help me with the following task:
+
+Task: {{task_description}}
+Context: {{context}}
+Tone: {{tone}}
+
+Please provide a detailed response that is {{response_length}}."
+                  required
+                />
+                <div className="absolute bottom-4 right-4">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 max-w-xs">
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      💡 Use {"{{variable_name}}"} for dynamic content
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Variables Section */}
+            {formData.variables.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <FiTag className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Variables ({formData.variables.length})
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {formData.variables.map((variable, index) => (
+                    <div
+                      key={index}
+                      className="p-4 space-y-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {variable.name}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeVariable(index)}
+                          className="text-red-600 hover:text-red-700 p-1"
+                        >
+                          <FiMinus className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={variable.description}
+                        onChange={(e) =>
+                          handleVariableChange(index, "description", e.target.value)
+                        }
+                        className="w-full px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        placeholder="Describe what this variable is for (optional)"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Advanced Options */}
+            <div className="space-y-4">
+              <button
+                type="button"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              >
+                <FiPlus className={`transform transition-transform ${showAdvanced ? 'rotate-45' : ''}`} />
+                Advanced Options
+              </button>
+
+              {showAdvanced && (
+                <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                  {/* Tags */}
+                  <div>
+                    <label className="block mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Tags
+                    </label>
+                    <div className="space-y-2">
+                      {formData.metadata.tags.map((tag, index) => (
+                        <div key={index} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={tag}
+                            onChange={(e) => handleTagChange(index, e.target.value)}
+                            className="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            placeholder="Enter tag"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeTag(index)}
+                            className="px-3 py-2 text-red-600 hover:text-red-700"
+                          >
+                            <FiMinus />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addTag}
+                        className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
+                      >
+                        <FiPlus /> Add Tag
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Visibility */}
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Visibility
+                    </label>
+                    <select
+                      value={formData.sharing.visibility}
+                      onChange={(e) =>
+                        handleNestedInputChange(["sharing", "visibility"], e.target.value)
+                      }
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="private">Private - Only you can see this</option>
+                      <option value="project">Project - Team members can see this</option>
+                      <option value="organization">Organization - Everyone in your org can see this</option>
+                      <option value="public">Public - Anyone can see this</option>
+                    </select>
+                  </div>
+                </div>
               )}
             </div>
-          ))}
 
-          <button
-            type="button"
-            onClick={addTag}
-            className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
-          >
-            <FiPlus /> Add Tag
-          </button>
+            {/* Preview Section */}
+            {(formData.name || formData.content) && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <FiEye className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Preview
+                  </h3>
+                </div>
+
+                <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                  {formData.name && (
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                        {formData.name}
+                      </h4>
+                      {formData.description && (
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                          {formData.description}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className={`px-2 py-1 text-xs rounded-full ${categories.find(c => c.value === formData.category)?.color || 'bg-gray-100 text-gray-800'
+                          }`}>
+                          {categories.find(c => c.value === formData.category)?.label}
+                        </span>
+                        {formData.variables.length > 0 && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {formData.variables.length} variable{formData.variables.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.content && (
+                    <div>
+                      <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                        Template Content:
+                      </h5>
+                      <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-mono bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                        {formData.content}
+                      </pre>
+                    </div>
+                  )}
+
+                  {formData.variables.length > 0 && (
+                    <div className="mt-4">
+                      <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                        Variables:
+                      </h5>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.variables.map((variable, index) => (
+                          <div key={index} className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
+                            <span className="font-mono">{variable.name}</span>
+                            {variable.description && (
+                              <span className="text-xs opacity-75">- {variable.description}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </form>
         </div>
 
-        {/* Sharing Settings */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Sharing Settings
-          </h3>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Visibility
-            </label>
-            <select
-              value={formData.sharing.visibility}
-              onChange={(e) =>
-                handleNestedInputChange(
-                  ["sharing", "visibility"],
-                  e.target.value,
-                )
-              }
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            >
-              <option value="private">Private</option>
-              <option value="project">Project</option>
-              <option value="organization">Organization</option>
-              <option value="public">Public</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="flex gap-2 items-center">
-              <input
-                type="checkbox"
-                checked={formData.sharing.allowFork}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    ["sharing", "allowFork"],
-                    e.target.checked,
-                  )
-                }
-                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Allow others to fork this template
-              </span>
-            </label>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+        {/* Footer */}
+        <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 rounded-lg transition-colors dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="px-6 py-3 text-gray-700 rounded-xl transition-colors dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             Cancel
           </button>
+
           <button
             type="submit"
-            disabled={
-              loading || !formData.name.trim() || !formData.content.trim()
-            }
-            className="px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleSubmit}
+            disabled={loading || !formData.name || !formData.content}
+            className="flex items-center gap-2 px-8 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl transition-all hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
-            {loading ? "Creating..." : "Create Template"}
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Creating...
+              </>
+            ) : (
+              <>
+                <FiCheck className="w-4 h-4" />
+                Create Template
+              </>
+            )}
           </button>
         </div>
-      </form>
+      </div>
     </Modal>
   );
 };
