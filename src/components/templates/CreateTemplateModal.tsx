@@ -10,7 +10,6 @@ import {
   FiZap,
   FiBookOpen,
   FiStar,
-  FiX,
   FiEye,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
