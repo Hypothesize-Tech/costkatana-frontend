@@ -1,311 +1,364 @@
-import { apiClient } from '../config/api';
+import api from '../config/api';
+
+export interface WorkflowTemplate {
+    id: string;
+    name: string;
+    description: string;
+    version: string;
+    steps: WorkflowStep[];
+    variables?: Record<string, any>;
+    triggers?: any[];
+    settings?: {
+        timeout?: number;
+        retryPolicy?: {
+            maxRetries: number;
+            backoffStrategy: 'linear' | 'exponential';
+            retryDelay: number;
+        };
+        parallelism?: number;
+        caching?: boolean;
+    };
+    createdBy: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 export interface WorkflowStep {
-    step: string;
-    sequence: number;
-    cost: number;
-    tokens: number;
-    responseTime: number;
-    model: string;
-    service: string;
-    timestamp: string;
+    id: string;
+    name: string;
+    type: 'llm_call' | 'data_processing' | 'api_call' | 'conditional' | 'parallel' | 'custom';
+    status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
+    startTime?: Date;
+    endTime?: Date;
+    duration?: number;
+    input?: any;
+    output?: any;
+    error?: string;
+    metadata?: {
+        model?: string;
+        provider?: string;
+        tokens?: {
+            input: number;
+            output: number;
+            total: number;
+        };
+        cost?: number;
+        retryAttempts?: number;
+        cacheHit?: boolean;
+        latency?: number;
+        [key: string]: any;
+    };
+    dependencies?: string[];
+    conditions?: {
+        if: string;
+        then: string;
+        else?: string;
+    };
 }
 
-export interface WorkflowSummary {
+export interface WorkflowExecution {
+    id: string;
     workflowId: string;
-    workflowName: string;
-    totalCost: number;
-    totalTokens: number;
-    requestCount: number;
-    averageCost: number;
+    name: string;
+    userId: string;
+    status: 'running' | 'completed' | 'failed' | 'paused' | 'cancelled';
+    startTime: Date;
+    endTime?: Date;
+    duration?: number;
     steps: WorkflowStep[];
-    startTime: string;
-    endTime: string;
-    duration: number;
+    input?: any;
+    output?: any;
+    error?: string;
+    metadata?: {
+        totalCost?: number;
+        totalTokens?: number;
+        cacheHitRate?: number;
+        averageLatency?: number;
+        environment?: string;
+        version?: string;
+        tags?: string[];
+        [key: string]: any;
+    };
+    traceId: string;
+    parentExecutionId?: string;
 }
 
-export interface WorkflowAnalytics {
-    totalWorkflows: number;
-    totalCost: number;
-    averageWorkflowCost: number;
-    topWorkflowTypes: Array<{
-        workflowName: string;
+export interface WorkflowMetrics {
+    executionCount: number;
+    successRate: number;
+    averageDuration: number;
+    averageCost: number;
+    averageTokens: number;
+    cacheHitRate: number;
+    errorRate: number;
+    topErrors: {
+        error: string;
         count: number;
-        totalCost: number;
+        percentage: number;
+    }[];
+    performanceByStep: {
+        stepName: string;
+        averageDuration: number;
+        successRate: number;
         averageCost: number;
-    }>;
-    costByStep: Array<{
-        step: string;
-        totalCost: number;
-        count: number;
-        averageCost: number;
-    }>;
+    }[];
+    trends: {
+        period: string;
+        executions: number;
+        avgDuration: number;
+        avgCost: number;
+        successRate: number;
+    }[];
 }
 
-export interface WorkflowFilters {
-    page?: number;
-    limit?: number;
-    workflowName?: string;
-    startDate?: string;
-    endDate?: string;
-}
-
-export class WorkflowService {
-    /**
-     * Get user workflows with pagination and filters
-     */
-    static async getUserWorkflows(filters: WorkflowFilters = {}): Promise<{
-        success: boolean;
-        data: WorkflowSummary[];
-        pagination: {
-            currentPage: number;
-            totalPages: number;
-            totalItems: number;
-            itemsPerPage: number;
-        };
-    }> {
-        try {
-            const params = new URLSearchParams();
-            
-            if (filters.page) params.append('page', filters.page.toString());
-            if (filters.limit) params.append('limit', filters.limit.toString());
-            if (filters.workflowName) params.append('workflowName', filters.workflowName);
-            if (filters.startDate) params.append('startDate', filters.startDate);
-            if (filters.endDate) params.append('endDate', filters.endDate);
-
-            const response = await apiClient.get(`/workflows?${params.toString()}`);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching workflows:', error);
-            return {
-                success: false,
-                data: [],
-                pagination: {
-                    currentPage: 1,
-                    totalPages: 0,
-                    totalItems: 0,
-                    itemsPerPage: 20
-                }
-            };
-        }
-    }
-
-    /**
-     * Get workflow analytics
-     */
-    static async getWorkflowAnalytics(filters: { startDate?: string; endDate?: string } = {}): Promise<{
-        success: boolean;
-        data: WorkflowAnalytics;
-    }> {
-        try {
-            const params = new URLSearchParams();
-            if (filters.startDate) params.append('startDate', filters.startDate);
-            if (filters.endDate) params.append('endDate', filters.endDate);
-
-            const response = await apiClient.get(`/workflows/analytics?${params.toString()}`);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching workflow analytics:', error);
-            return {
-                success: false,
-                data: {
-                    totalWorkflows: 0,
-                    totalCost: 0,
-                    averageWorkflowCost: 0,
-                    topWorkflowTypes: [],
-                    costByStep: []
-                }
-            };
-        }
-    }
-
-    /**
-     * Get specific workflow details
-     */
-    static async getWorkflowDetails(workflowId: string): Promise<{
-        success: boolean;
-        data?: WorkflowSummary;
-        message?: string;
-    }> {
-        try {
-            const response = await apiClient.get(`/workflows/${workflowId}`);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching workflow details:', error);
-            return {
-                success: false,
-                message: 'Failed to fetch workflow details'
-            };
-        }
-    }
-
-    /**
-     * Get workflow steps
-     */
-    static async getWorkflowSteps(workflowId: string): Promise<{
-        success: boolean;
-        data?: {
-            workflowId: string;
-            workflowName: string;
-            steps: WorkflowStep[];
-            totalCost: number;
-            duration: number;
-        };
-        message?: string;
-    }> {
-        try {
-            const response = await apiClient.get(`/workflows/${workflowId}/steps`);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching workflow steps:', error);
-            return {
-                success: false,
-                message: 'Failed to fetch workflow steps'
-            };
-        }
-    }
-
-    /**
-     * Compare multiple workflows
-     */
-    static async compareWorkflows(workflowIds: string[]): Promise<{
-        success: boolean;
-        data: WorkflowSummary[];
-        message?: string;
-    }> {
-        try {
-            const response = await apiClient.post('/workflows/compare', { workflowIds });
-            return response.data;
-        } catch (error) {
-            console.error('Error comparing workflows:', error);
-            return {
-                success: false,
-                data: [],
-                message: 'Failed to compare workflows'
-            };
-        }
-    }
-
-    /**
-     * Format currency for display
-     */
-    static formatCurrency(amount: number): string {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 6,
-            maximumFractionDigits: 6
-        }).format(amount);
-    }
-
-    /**
-     * Format duration for display
-     */
-    static formatDuration(milliseconds: number): string {
-        if (milliseconds < 1000) {
-            return `${milliseconds}ms`;
-        } else if (milliseconds < 60000) {
-            return `${(milliseconds / 1000).toFixed(1)}s`;
-        } else if (milliseconds < 3600000) {
-            return `${(milliseconds / 60000).toFixed(1)}m`;
-        } else {
-            return `${(milliseconds / 3600000).toFixed(1)}h`;
-        }
-    }
-
-    /**
-     * Format step path for display
-     */
-    static formatStepPath(step: string): string {
-        if (!step) return 'Unknown Step';
-        
-        // Remove leading slash and replace slashes with arrows
-        return step.replace(/^\//, '').replace(/\//g, ' → ');
-    }
-
-    /**
-     * Get step depth for indentation
-     */
-    static getStepDepth(step: string): number {
-        if (!step) return 0;
-        return (step.match(/\//g) || []).length;
-    }
-
-    /**
-     * Group workflows by name for analytics
-     */
-    static groupWorkflowsByName(workflows: WorkflowSummary[]): Record<string, WorkflowSummary[]> {
-        return workflows.reduce((groups, workflow) => {
-            const name = workflow.workflowName || 'Unknown';
-            if (!groups[name]) {
-                groups[name] = [];
-            }
-            groups[name].push(workflow);
-            return groups;
-        }, {} as Record<string, WorkflowSummary[]>);
-    }
-
-    /**
-     * Calculate workflow efficiency metrics
-     */
-    static calculateEfficiencyMetrics(workflow: WorkflowSummary): {
+export interface WorkflowTrace {
+    execution: {
+        id: string;
+        workflowId: string;
+        name: string;
+        status: string;
+        startTime: Date;
+        endTime?: Date;
+        duration?: number;
+        traceId: string;
+    };
+    steps: WorkflowStep[];
+    metrics: any;
+    timeline: {
+        stepId: string;
+        stepName: string;
+        startTime?: Date;
+        endTime?: Date;
+        duration?: number;
+        status: string;
+    }[];
+    costBreakdown: {
+        totalCost: number;
+        stepBreakdown: {
+            stepName: string;
+            cost: number;
+            tokens: number;
+            model?: string;
+        }[];
         costPerToken: number;
-        costPerStep: number;
-        avgResponseTime: number;
-        efficiency: 'High' | 'Medium' | 'Low';
-    } {
-        const costPerToken = workflow.totalTokens > 0 ? workflow.totalCost / workflow.totalTokens : 0;
-        const costPerStep = workflow.requestCount > 0 ? workflow.totalCost / workflow.requestCount : 0;
-        const avgResponseTime = workflow.steps.reduce((sum, step) => sum + step.responseTime, 0) / workflow.steps.length;
-        
-        // Simple efficiency calculation based on cost per token
-        let efficiency: 'High' | 'Medium' | 'Low' = 'Medium';
-        if (costPerToken < 0.00001) efficiency = 'High';
-        else if (costPerToken > 0.0001) efficiency = 'Low';
-        
-        return {
-            costPerToken,
-            costPerStep,
-            avgResponseTime,
-            efficiency
-        };
+    };
+    performanceInsights: {
+        type: string;
+        message: string;
+        suggestion: string;
+    }[];
+}
+
+export interface ObservabilityDashboard {
+    overview: {
+        totalExecutions: number;
+        successRate: number;
+        averageDuration: number;
+        totalCost: number;
+        activeWorkflows: number;
+    };
+    recentExecutions: {
+        id: string;
+        workflowName: string;
+        status: string;
+        duration: number | null;
+        cost: number;
+        startTime: Date;
+    }[];
+    performanceMetrics: {
+        throughput: { period: string; values: number[] };
+        latency: { p50: number; p95: number; p99: number };
+        errorRate: { current: number; trend: number };
+    };
+    costAnalysis: {
+        totalSpend: number;
+        breakdown: { category: string; amount: number; percentage: number }[];
+        trend: { daily: number[] };
+    };
+    alerts: {
+        type: 'warning' | 'info' | 'error';
+        message: string;
+        timestamp: Date;
+    }[];
+}
+
+class WorkflowService {
+    /**
+     * Create a new workflow template
+     */
+    async createTemplate(template: Omit<WorkflowTemplate, 'id' | 'createdAt' | 'updatedAt'>): Promise<WorkflowTemplate> {
+        try {
+            const response = await api.post('/workflows/templates', template);
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to create workflow template:', error);
+            throw error;
+        }
     }
 
     /**
-     * Export workflows to CSV format
+     * Get workflow template by ID
      */
-    static exportToCSV(workflows: WorkflowSummary[]): string {
-        const headers = [
-            'Workflow ID',
-            'Workflow Name', 
-            'Start Time',
-            'End Time',
-            'Duration (ms)',
-            'Total Cost ($)',
-            'Total Tokens',
-            'Request Count',
-            'Average Cost per Request ($)',
-            'Steps'
-        ];
+    async getTemplate(templateId: string): Promise<WorkflowTemplate> {
+        try {
+            const response = await api.get(`/workflows/templates/${templateId}`);
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to get workflow template:', error);
+            throw error;
+        }
+    }
 
-        const rows = workflows.map(workflow => [
-            workflow.workflowId,
-            workflow.workflowName,
-            new Date(workflow.startTime).toISOString(),
-            new Date(workflow.endTime).toISOString(),
-            workflow.duration.toString(),
-            workflow.totalCost.toFixed(6),
-            workflow.totalTokens.toString(),
-            workflow.requestCount.toString(),
-            workflow.averageCost.toFixed(6),
-            workflow.steps.map(step => `${step.step} (${step.cost.toFixed(6)}$)`).join('; ')
-        ]);
+    /**
+     * Execute a workflow
+     */
+    async executeWorkflow(
+        templateId: string,
+        input?: any,
+        options?: {
+            variables?: Record<string, any>;
+            environment?: string;
+            tags?: string[];
+        }
+    ): Promise<WorkflowExecution> {
+        try {
+            const response = await api.post(`/workflows/templates/${templateId}/execute`, {
+                input,
+                ...options
+            });
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to execute workflow:', error);
+            throw error;
+        }
+    }
 
-        const csvContent = [
-            headers.join(','),
-            ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-        ].join('\n');
+    /**
+     * Get workflow execution status
+     */
+    async getExecution(executionId: string): Promise<WorkflowExecution> {
+        try {
+            const response = await api.get(`/workflows/executions/${executionId}`);
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to get workflow execution:', error);
+            throw error;
+        }
+    }
 
-        return csvContent;
+    /**
+     * Get workflow execution trace
+     */
+    async getWorkflowTrace(executionId: string): Promise<WorkflowTrace> {
+        try {
+            const response = await api.get(`/workflows/executions/${executionId}/trace`);
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to get workflow trace:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Pause workflow execution
+     */
+    async pauseWorkflow(executionId: string): Promise<void> {
+        try {
+            await api.post(`/workflows/executions/${executionId}/pause`);
+        } catch (error) {
+            console.error('Failed to pause workflow:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Resume workflow execution
+     */
+    async resumeWorkflow(executionId: string): Promise<void> {
+        try {
+            await api.post(`/workflows/executions/${executionId}/resume`);
+        } catch (error) {
+            console.error('Failed to resume workflow:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Cancel workflow execution
+     */
+    async cancelWorkflow(executionId: string): Promise<void> {
+        try {
+            await api.post(`/workflows/executions/${executionId}/cancel`);
+        } catch (error) {
+            console.error('Failed to cancel workflow:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get workflow metrics
+     */
+    async getWorkflowMetrics(workflowId: string, timeRange?: string): Promise<WorkflowMetrics> {
+        try {
+            const params = timeRange ? { timeRange } : {};
+            const response = await api.get(`/workflows/workflows/${workflowId}/metrics`, { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to get workflow metrics:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get observability dashboard data
+     */
+    async getObservabilityDashboard(timeRange?: string): Promise<ObservabilityDashboard> {
+        try {
+            const params = timeRange ? { timeRange } : {};
+            const response = await api.get('/workflows/observability/dashboard', { params });
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to get observability dashboard:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * List workflow templates
+     */
+    async listTemplates(filters?: {
+        createdBy?: string;
+        tags?: string[];
+        limit?: number;
+        offset?: number;
+    }): Promise<{ templates: WorkflowTemplate[]; total: number }> {
+        try {
+            const response = await api.get('/workflows/templates', { params: filters });
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to list workflow templates:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * List workflow executions
+     */
+    async listExecutions(filters?: {
+        workflowId?: string;
+        status?: string;
+        userId?: string;
+        limit?: number;
+        offset?: number;
+    }): Promise<{ executions: WorkflowExecution[]; total: number }> {
+        try {
+            const response = await api.get('/workflows/executions', { params: filters });
+            return response.data.data;
+        } catch (error) {
+            console.error('Failed to list workflow executions:', error);
+            throw error;
+        }
     }
 }
+
+export const workflowService = new WorkflowService();

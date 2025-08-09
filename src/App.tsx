@@ -47,6 +47,7 @@ import KeyVault from './pages/KeyVault';
 import { Training } from './pages/Training';
 import PredictiveIntelligence from './pages/PredictiveIntelligence';
 import Memory from './pages/Memory';
+import Cache from './pages/Cache';
 
 
 const queryClient = new QueryClient();
@@ -102,6 +103,10 @@ function AppContent() {
           <Route
             path="optimizations"
             element={<Optimization />}
+          />
+          <Route
+            path="cache"
+            element={<Cache />}
           />
           <Route
             path="optimizations/wizard"

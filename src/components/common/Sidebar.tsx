@@ -25,6 +25,7 @@ import {
   KeyIcon,
   AcademicCapIcon,
   BoltIcon,
+  CpuChipIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -42,6 +43,7 @@ const navigation = [
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
   { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
   { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
+  { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
   { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
   { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
   { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
@@ -160,10 +162,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
   const sidebarContent = (collapsed: boolean = false) => (
     <>
-      <nav className="flex flex-col flex-1 relative">
+      <nav className="flex relative flex-col flex-1">
         {/* Toggle button - positioned absolutely when collapsed */}
         {collapsed && (
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-200">
+          <div className="absolute top-0 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
             <Tooltip
               content="Expand sidebar"
               show={true}
@@ -172,11 +174,11 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               <button
                 onClick={onToggleCollapse}
                 className={cn(
-                  "p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
+                  "p-2 text-gray-600 rounded-lg hover:text-gray-900 hover:bg-gray-100",
                   "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
-                  "transition-all duration-200 flex-shrink-0",
+                  "flex-shrink-0 transition-all duration-200",
                   "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50",
-                  "shadow-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
+                  "bg-white border border-gray-200 shadow-sm dark:border-gray-600 dark:bg-gray-800"
                 )}
                 aria-label="Expand sidebar"
               >
@@ -327,14 +329,14 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
       {/* Desktop sidebar */}
       <div className={cn(
-        "hidden lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:flex-col transition-all duration-300",
+        "hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:flex-col",
         isCollapsed ? "lg:w-16" : "lg:w-72"
       )}>
         <div className={cn(
-          "flex flex-col gap-y-5 bg-white border-r border-gray-200 grow dark:border-gray-700 dark:bg-gray-800 transition-all duration-300 relative",
-          isCollapsed ? "px-2 overflow-visible" : "px-6 overflow-y-auto"
+          "flex relative flex-col gap-y-5 bg-white border-r border-gray-200 transition-all duration-300 grow dark:border-gray-700 dark:bg-gray-800",
+          isCollapsed ? "overflow-visible px-2" : "overflow-y-auto px-6"
         )}>
-          <div className="pt-4 flex-1">
+          <div className="flex-1 pt-4">
             {sidebarContent(isCollapsed)}
           </div>
         </div>
