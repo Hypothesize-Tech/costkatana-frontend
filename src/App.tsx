@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { Routes, Route, Navigate } from 'react-router-dom';
+import CachePage from './pages/Cache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -49,7 +50,6 @@ import PredictiveIntelligence from './pages/PredictiveIntelligence';
 import Memory from './pages/Memory';
 import Cache from './pages/Cache';
 
-
 const queryClient = new QueryClient();
 
 // Component to handle global tracking inside the context providers
@@ -86,10 +86,8 @@ function AppContent() {
               />
             }
           />
-          <Route
-            path="dashboard"
-            element={<Dashboard />}
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/cache" element={<CachePage />} />
           <Route path="usage" element={<Usage />} />
           <Route path="requests" element={<Requests />} />
           <Route
