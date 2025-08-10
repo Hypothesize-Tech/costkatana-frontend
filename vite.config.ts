@@ -30,12 +30,35 @@ export default defineConfig({
         sourcemap: true,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-                    'chart-vendor': ['chart.js', 'react-chartjs-2', 'recharts'],
-                    'ui-vendor': ['@headlessui/react', '@heroicons/react', 'framer-motion'],
-                },
+                manualChunks(id: any) {
+                    // Split node_modules into separate chunks
+                    if (id.includes('node_modules')) {
+                        // Split large libraries into their own chunks
+                        if (id.includes('@tanstack/react-query')) return 'react-query';
+                        if (id.includes('recharts')) return 'recharts';
+                        if (id.includes('heroicons')) return 'heroicons';
+                        
+                        // Generic vendor chunk for other libraries
+                        return 'vendor';
+                    }
+
+                    // Split telemetry components into separate chunks
+                    if (id.includes('src/components/telemetry')) {
+                        const componentName = id.split('/').pop()?.replace('.tsx', '');
+                        return `telemetry-${componentName}`;
+                    }
+                }
             },
         },
+        // Reduce chunk size warning limit
+        chunkSizeWarningLimit: 1000,
+        // Minify and optimize
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true
+            }
+        }
     },
 });

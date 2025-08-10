@@ -47,6 +47,7 @@ const navigation = [
   { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
   { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
   { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
+  { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'OpenTelemetry dashboard for performance insights' },
   { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
   { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
   { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },

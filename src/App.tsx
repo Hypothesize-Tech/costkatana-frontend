@@ -51,6 +51,7 @@ import Memory from './pages/Memory';
 import Cache from './pages/Cache';
 import { Sessions } from './pages/Sessions';
 import { SessionDetail } from './pages/SessionDetail';
+import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
 
 const queryClient = new QueryClient();
 
@@ -163,6 +164,10 @@ function AppContent() {
           <Route
             path="sessions/:id"
             element={<SessionDetail />}
+          />
+          <Route
+            path="telemetry"
+            element={<TelemetryDashboard />}
           />
 
           <Route

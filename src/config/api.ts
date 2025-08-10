@@ -83,4 +83,5 @@ export const API_BASE_URL = API_URL;
 export const chatApiClient = chatApi; // For chat operations with longer timeout
 export const analyticsApiClient = analyticsApi; // For analytics operations with shorter timeout
 export const longRunningApiClient = longRunningApi; // For forecasting and heavy operations
+
 export default api;
