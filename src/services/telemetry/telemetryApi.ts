@@ -1,5 +1,4 @@
 import { 
-  TelemetryQuery, 
   MetricsResponse, 
   TraceResponse, 
   DashboardResponse, 
