@@ -26,6 +26,7 @@ import {
   AcademicCapIcon,
   BoltIcon,
   CpuChipIcon,
+  ChartPieIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -40,6 +41,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
   { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
   { name: 'Requests', href: '/requests', icon: ClockIcon, description: 'Real-time LLM API requests' },
+  { name: 'Sessions', href: '/sessions', icon: ChartPieIcon, description: 'Trace and visualize agent flows' },
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
   { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
   { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
