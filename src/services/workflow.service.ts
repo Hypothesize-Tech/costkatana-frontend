@@ -149,6 +149,11 @@ export interface WorkflowTrace {
     }[];
 }
 
+export interface ObservabilityDashboardResponse {
+  success: boolean;
+  data: ObservabilityDashboard;
+}
+
 export interface ObservabilityDashboard {
     overview: {
         totalExecutions: number;
@@ -158,12 +163,25 @@ export interface ObservabilityDashboard {
         activeWorkflows: number;
     };
     recentExecutions: {
-        id: string;
+        workflowId: string;
         workflowName: string;
-        status: string;
-        duration: number | null;
-        cost: number;
-        startTime: Date;
+        totalCost: number;
+        totalTokens: number;
+        requestCount: number;
+        averageCost: number;
+        steps: {
+            step: string;
+            sequence: number;
+            cost: number;
+            tokens: number;
+            responseTime: number;
+            model: string;
+            service: string;
+            timestamp: string;
+        }[];
+        startTime: string;
+        endTime: string;
+        duration: number;
     }[];
     performanceMetrics: {
         throughput: { period: string; values: number[] };
@@ -301,7 +319,7 @@ class WorkflowService {
     async getWorkflowMetrics(workflowId: string, timeRange?: string): Promise<WorkflowMetrics> {
         try {
             const params = timeRange ? { timeRange } : {};
-            const response = await api.get(`/workflows/workflows/${workflowId}/metrics`, { params });
+            const response = await api.get(`/workflows/${workflowId}/metrics`, { params });
             return response.data.data;
         } catch (error) {
             console.error('Failed to get workflow metrics:', error);
@@ -312,10 +330,10 @@ class WorkflowService {
     /**
      * Get observability dashboard data
      */
-    async getObservabilityDashboard(timeRange?: string): Promise<ObservabilityDashboard> {
+    async getObservabilityDashboard(timeRange?: string): Promise<ObservabilityDashboardResponse> {
         try {
             const params = timeRange ? { timeRange } : {};
-            const response = await api.get('/workflows/observability/dashboard', { params });
+            const response = await api.get('/workflows/dashboard', { params });
             return response.data.data;
         } catch (error) {
             console.error('Failed to get observability dashboard:', error);

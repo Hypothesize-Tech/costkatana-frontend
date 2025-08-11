@@ -11,9 +11,13 @@ import { ProfilePreferences } from '../components/profile/ProfilePreferences';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotifications } from '../contexts/NotificationContext';
 import { User } from '../types';
+import { UsageOverview } from '../components/guardrails/UsageOverview';
+import { UsageAlerts } from '../components/guardrails/UsageAlerts';
+import { UsageTrendChart } from '../components/guardrails/UsageTrendChart';
 import {
   ShieldCheckIcon,
-  CreditCardIcon
+  CreditCardIcon,
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 
 export const Profile: React.FC = () => {
@@ -237,19 +241,39 @@ export const Profile: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <ProfileStats stats={stats || {
-                totalSpent: 0,
-                totalSaved: 0,
-                apiCalls: 0,
-                optimizations: 0,
-                currentMonthSpent: 0,
-                currentMonthSaved: 0,
-                avgDailyCost: 0,
-                mostUsedService: 'N/A',
-                mostUsedModel: 'N/A',
-                accountAge: 0,
-                savingsRate: 0
-              }} />
+              <>
+                <ProfileStats stats={stats || {
+                  totalSpent: 0,
+                  totalSaved: 0,
+                  apiCalls: 0,
+                  optimizations: 0,
+                  currentMonthSpent: 0,
+                  currentMonthSaved: 0,
+                  avgDailyCost: 0,
+                  mostUsedService: 'N/A',
+                  mostUsedModel: 'N/A',
+                  accountAge: 0,
+                  savingsRate: 0
+                }} />
+
+                <div className="mt-8">
+                  <div className="flex items-center mb-4">
+                    <ChartBarIcon className="w-6 h-6 text-blue-600 mr-3" />
+                    <h3 className="text-lg font-medium text-gray-900">Usage Overview</h3>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                      <UsageOverview />
+                    </div>
+                    <div>
+                      <UsageAlerts />
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <UsageTrendChart days={7} chartType="area" />
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -334,23 +358,90 @@ export const Profile: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">API Calls Limit</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">API Calls</h4>
                     <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '1,000'}
+                      {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '10,000'}
                     </p>
                     <p className="text-sm text-gray-600">calls per month</p>
                   </div>
 
                   <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Optimizations Limit</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">Tokens</h4>
                     <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.limits?.optimizations?.toLocaleString() || '10'}
+                      {(profileData?.subscription?.limits?.tokensPerMonth || 1000000).toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-600">optimizations per month</p>
+                    <p className="text-sm text-gray-600">tokens per month</p>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-2">Projects</h4>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {profileData?.subscription?.limits?.projects || 5}
+                    </p>
+                    <p className="text-sm text-gray-600">projects</p>
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-2">Workflows</h4>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {profileData?.subscription?.limits?.workflows || 10}
+                    </p>
+                    <p className="text-sm text-gray-600">AI workflows</p>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-2">Logs</h4>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {(profileData?.subscription?.limits?.logsPerMonth || 15000).toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-600">logs per month</p>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-2">Models</h4>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {profileData?.subscription?.plan === 'free' ? '3' : 'All'}
+                    </p>
+                    <p className="text-sm text-gray-600">AI models</p>
+                  </div>
+                </div>
+
+                {/* Free Plan Features */}
+                {profileData?.subscription?.plan === 'free' && (
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="font-medium text-blue-900 mb-3">Free Plan Features</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">1M tokens per month</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">10K API requests per month</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">15K logs per month</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">5 projects</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">10 AI workflows</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-green-600 mr-2">✓</span>
+                        <span className="text-blue-800">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
@@ -361,6 +452,20 @@ export const Profile: React.FC = () => {
                     Upgrade Now
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Usage Guardrails */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center mb-4">
+                <ChartBarIcon className="w-6 h-6 text-blue-600 mr-3" />
+                <h3 className="text-lg font-medium text-gray-900">Usage Guardrails</h3>
+              </div>
+
+              <div className="space-y-6">
+                <UsageOverview />
+                <UsageTrendChart days={30} chartType="area" />
+                <UsageAlerts />
               </div>
             </div>
 
