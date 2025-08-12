@@ -1,4 +1,4 @@
-import mixpanel from 'mixpanel-browser';
+import mixpanel, { Config as MixpanelConfig } from 'mixpanel-browser';
 
 interface MixpanelEvent {
     event: string;
@@ -204,6 +204,7 @@ export class MixpanelService {
     private static instance: MixpanelService;
     private isEnabled: boolean;
     private isInitialized: boolean = false;
+    private isSessionRecordingEnabled: boolean = false;
 
     private constructor() {
         const token = import.meta.env.VITE_MIXPANEL_TOKEN;
@@ -215,10 +216,17 @@ export class MixpanelService {
                     debug: import.meta.env.NODE_ENV === 'development',
                     track_pageview: false, // We'll handle this manually
                     persistence: 'localStorage',
-                    api_host: 'https://api.mixpanel.com'
+                    api_host: 'https://api.mixpanel.com',
+                    record_sessions_percent: 1, // Records 1% of all sessions
+                    record_idle_timeout_ms: 1800000, // End a replay capture after 30mins of inactivity
+                    record_mask_text_selector: '*', // Mask all text elements by default
+                    record_block_selector: 'img, video', // Block images and videos by default
+                    autocapture: true,
+                    autotrack: true,
                 });
                 this.isInitialized = true;
-                console.log('Mixpanel initialized successfully');
+                this.isSessionRecordingEnabled = true;
+                console.log('Mixpanel initialized successfully with Session Replay enabled');
             } catch (error) {
                 console.error('Failed to initialize Mixpanel:', error);
                 this.isEnabled = false;
@@ -276,6 +284,15 @@ export class MixpanelService {
                 }
             }
 
+            // Add session recording properties if available
+            const sessionProps = this.getSessionRecordingProperties();
+            if (sessionProps) {
+                eventData.properties = {
+                    ...eventData.properties,
+                    ...sessionProps
+                };
+            }
+            
             mixpanel.track(event, eventData.properties);
             console.debug('Mixpanel event tracked:', event, properties);
         } catch (error) {
@@ -978,6 +995,84 @@ export class MixpanelService {
      */
     public getMixpanelInstance(): typeof mixpanel | null {
         return this.isEnabled && this.isInitialized ? mixpanel : null;
+    }
+
+    /**
+     * Start session recording manually
+     */
+    public startSessionRecording(): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            console.debug('Mixpanel not initialized, cannot start session recording');
+            return;
+        }
+
+        try {
+            // The type definition may not include this method, but it exists in the latest Mixpanel SDK
+            (mixpanel as any).start_session_recording();
+            this.isSessionRecordingEnabled = true;
+            console.debug('Mixpanel session recording started manually');
+        } catch (error) {
+            console.error('Error starting Mixpanel session recording:', error);
+        }
+    }
+
+    /**
+     * Stop session recording manually
+     */
+    public stopSessionRecording(): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            // The type definition may not include this method, but it exists in the latest Mixpanel SDK
+            (mixpanel as any).stop_session_recording();
+            this.isSessionRecordingEnabled = false;
+            console.debug('Mixpanel session recording stopped manually');
+        } catch (error) {
+            console.error('Error stopping Mixpanel session recording:', error);
+        }
+    }
+
+    /**
+     * Get session recording properties (including replay ID)
+     */
+    public getSessionRecordingProperties(): Record<string, any> | null {
+        if (!this.isEnabled || !this.isInitialized || !this.isSessionRecordingEnabled) {
+            return null;
+        }
+
+        try {
+            // The type definition may not include this method, but it exists in the latest Mixpanel SDK
+            return (mixpanel as any).get_session_recording_properties() || null;
+        } catch (error) {
+            console.error('Error getting Mixpanel session recording properties:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Get session replay URL for the current session
+     */
+    public getSessionReplayUrl(): string | null {
+        if (!this.isEnabled || !this.isInitialized || !this.isSessionRecordingEnabled) {
+            return null;
+        }
+
+        try {
+            // The type definition may not include this method, but it exists in the latest Mixpanel SDK
+            return (mixpanel as any).get_session_replay_url() || null;
+        } catch (error) {
+            console.error('Error getting Mixpanel session replay URL:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Check if session recording is currently enabled
+     */
+    public isSessionRecordingActive(): boolean {
+        return this.isEnabled && this.isInitialized && this.isSessionRecordingEnabled;
     }
 }
 

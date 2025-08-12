@@ -297,6 +297,23 @@ export const useMixpanel = () => {
         }
     }, [user?.id]);
 
+    // Session Replay methods
+    const startSessionRecording = useCallback(() => {
+        mixpanelService.startSessionRecording();
+    }, []);
+
+    const stopSessionRecording = useCallback(() => {
+        mixpanelService.stopSessionRecording();
+    }, []);
+
+    const getSessionRecordingProperties = useCallback(() => {
+        return mixpanelService.getSessionRecordingProperties();
+    }, []);
+
+    const getSessionReplayUrl = useCallback(() => {
+        return mixpanelService.getSessionReplayUrl();
+    }, []);
+
     return {
         trackEvent,
         trackUserAction,
@@ -319,6 +336,12 @@ export const useMixpanel = () => {
         trackButtonAnalytics,
         setUserProfile,
         incrementUserProperty,
+        // Session Replay methods
+        startSessionRecording,
+        stopSessionRecording,
+        getSessionRecordingProperties,
+        getSessionReplayUrl,
+        isSessionRecordingActive: mixpanelService.isSessionRecordingActive(),
         isTrackingEnabled: mixpanelService.isTrackingEnabled()
     };
 }; 

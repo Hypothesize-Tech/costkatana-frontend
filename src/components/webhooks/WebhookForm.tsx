@@ -67,7 +67,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                 url: webhook.url,
                 active: webhook.active,
                 events: webhook.events,
-                auth: webhook.auth ? { 
+                auth: webhook.auth ? {
                     type: webhook.auth.type as 'none' | 'basic' | 'bearer' | 'custom_header',
                     credentials: {
                         username: '',
@@ -86,7 +86,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                 useDefaultPayload: webhook.useDefaultPayload,
                 payloadTemplate: webhook.payloadTemplate || '',
                 timeout: webhook.timeout,
-                retryConfig: webhook.retryConfig
+                retryConfig: webhook.retryConfig ? { ...webhook.retryConfig } : formData.retryConfig
             });
         }
     }, [webhook]);
