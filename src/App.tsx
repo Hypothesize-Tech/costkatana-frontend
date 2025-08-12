@@ -52,6 +52,7 @@ import Cache from './pages/Cache';
 import { Sessions } from './pages/Sessions';
 import { SessionDetail } from './pages/SessionDetail';
 import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
+import Webhooks from './pages/Webhooks';
 
 const queryClient = new QueryClient();
 
@@ -156,6 +157,10 @@ function AppContent() {
           <Route
             path="memory"
             element={<Memory />}
+          />
+          <Route
+            path="webhooks"
+            element={<Webhooks />}
           />
           <Route
             path="sessions"

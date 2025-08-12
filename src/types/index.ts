@@ -4,6 +4,7 @@ export * from "./optimization.types";
 export * from "./usage.types";
 export * from "./intelligence.types";
 export * from "./project.types";
+export * from "./webhook.types";
 
 // Common types
 export interface PaginatedResponse<T> {

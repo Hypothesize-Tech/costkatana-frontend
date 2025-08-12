@@ -49,6 +49,7 @@ const navigation = [
   { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
   { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'OpenTelemetry dashboard for performance insights' },
   { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
+  { name: 'Webhooks', href: '/webhooks', icon: BellIcon, description: 'Configure webhooks for real-time notifications' },
   { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
   { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
   { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
