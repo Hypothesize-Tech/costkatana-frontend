@@ -15,7 +15,14 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   accessToken: string | null;
+  mfaRequired: boolean;
+  mfaData: {
+    mfaToken?: string;
+    userId?: string;
+    availableMethods?: Array<'email' | 'totp'>;
+  } | null;
   login: (credentials: LoginCredentials) => Promise<void>;
+  completeMFALogin: (result: any) => void;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
@@ -39,6 +46,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaData, setMfaData] = useState<{
+    mfaToken?: string;
+    userId?: string;
+    availableMethods?: Array<'email' | 'totp'>;
+  } | null>(null);
   const navigate = useNavigate();
 
   // Initialize auth state
@@ -66,14 +79,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setIsLoading(true);
         const response = await authService.login(credentials);
-        if (
-          !response ||
-          !response.data ||
-          !response.data.user ||
-          !response.data.accessToken
-        ) {
+        if (!response || !response.data) {
           throw new Error("Invalid login response");
         }
+
+        // Check if MFA is required
+        if (response.data.requiresMFA) {
+          setMfaRequired(true);
+          setMfaData({
+            mfaToken: response.data.mfaToken,
+            userId: response.data.userId,
+            availableMethods: response.data.availableMethods,
+          });
+          // Store user email for MFA setup
+          localStorage.setItem('userEmail', credentials.email);
+          return; // Don't navigate, stay on login page to show MFA
+        }
+
+        // Regular login without MFA
+        if (!response.data.user || !response.data.accessToken) {
+          throw new Error("Invalid login response");
+        }
+
+        // Store tokens using AuthService
+        authService.setTokens(response.data.accessToken, response.data.refreshToken);
+        authService.setUser(response.data.user);
+
         setUser(response.data.user);
         setAccessToken(response.data.accessToken);
         sessionStorage.setItem("showTokenOnLoad", "true");
@@ -83,9 +114,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         toast.error(error.response?.data?.message || "Login failed");
         setUser(null);
         setAccessToken(null);
-        navigate("/login");
+        setMfaRequired(false);
+        setMfaData(null);
       } finally {
         setIsLoading(false);
+      }
+    },
+    [navigate],
+  );
+
+  const completeMFALogin = useCallback(
+    (result: any) => {
+      try {
+        // Store tokens using AuthService
+        authService.setTokens(result.accessToken, result.refreshToken);
+        authService.setUser(result.user);
+
+        // Update React state
+        setUser(result.user);
+        setAccessToken(result.accessToken);
+        setMfaRequired(false);
+        setMfaData(null);
+
+        // Clean up temporary storage
+        localStorage.removeItem('userEmail');
+
+        sessionStorage.setItem("showTokenOnLoad", "true");
+        toast.success("Welcome back!");
+        navigate("/dashboard");
+      } catch (error: any) {
+        toast.error("Failed to complete login");
+        setUser(null);
+        setAccessToken(null);
+        setMfaRequired(false);
+        setMfaData(null);
       }
     },
     [navigate],
@@ -138,7 +200,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: !!user,
     isLoading,
     accessToken,
+    mfaRequired,
+    mfaData,
     login,
+    completeMFALogin,
     register,
     logout,
     updateUser,

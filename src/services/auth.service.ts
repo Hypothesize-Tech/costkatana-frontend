@@ -11,17 +11,38 @@ class AuthService {
   async login(
     credentials: LoginCredentials,
   ): Promise<
-    ApiResponse<{ user: User; accessToken: string; refreshToken: string }>
+    ApiResponse<{ 
+      user: User; 
+      accessToken: string; 
+      refreshToken: string;
+      requiresMFA?: boolean;
+      mfaToken?: string;
+      userId?: string;
+      availableMethods?: Array<'email' | 'totp'>;
+    }>
   > {
     const response = await apiClient.post<
-      ApiResponse<{ user: User; accessToken: string; refreshToken: string }>
+      ApiResponse<{ 
+        user: User; 
+        accessToken: string; 
+        refreshToken: string;
+        requiresMFA?: boolean;
+        mfaToken?: string;
+        userId?: string;
+        availableMethods?: Array<'email' | 'totp'>;
+      }>
     >("/auth/login", credentials);
     const { data } = response.data;
     if (!data) {
       throw new Error("Invalid login response: missing data");
     }
-    this.setTokens(data.accessToken, data.refreshToken);
-    this.setUser(data.user);
+    
+    // Only set tokens and user if MFA is not required
+    if (!data.requiresMFA) {
+      this.setTokens(data.accessToken, data.refreshToken);
+      this.setUser(data.user);
+    }
+    
     return response.data;
   }
 
@@ -102,12 +123,12 @@ class AuthService {
     return !!this.getToken();
   }
 
-  private setTokens(accessToken: string, refreshToken: string): void {
+  setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
   }
 
-  private setUser(user: User): void {
+  setUser(user: User): void {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
 

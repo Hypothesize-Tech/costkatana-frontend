@@ -63,8 +63,14 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
         },
         (error: AxiosError) => {
             if (error.response?.status === 401) {
-                authService.logout();
-                window.location.href = '/login';
+                // Don't auto-logout for MFA-related endpoints
+                const url = error.config?.url || '';
+                const isMFAEndpoint = url.includes('/mfa/') || url.includes('/auth/login');
+                
+                if (!isMFAEndpoint) {
+                    authService.logout();
+                    window.location.href = '/login';
+                }
             }
             return Promise.reject(error);
         }

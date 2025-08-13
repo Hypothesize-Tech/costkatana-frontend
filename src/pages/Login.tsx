@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginForm } from "../components/auth/LoginForm";
+import { MFAVerification } from "../components/auth/MFAVerification";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
+import toast from "react-hot-toast";
 
 export default function Login() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, mfaRequired, mfaData, completeMFALogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,7 +39,22 @@ export default function Login() {
           </div>
 
           <div className="mt-10">
-            <LoginForm />
+            {mfaRequired && mfaData ? (
+              <MFAVerification
+                mfaToken={mfaData.mfaToken!}
+                userId={mfaData.userId!}
+                availableMethods={mfaData.availableMethods!}
+                onSuccess={completeMFALogin}
+                onError={(error: any) => {
+                  console.error('MFA Error:', error);
+                  toast.error(error.message)
+                  // Could show error toast here
+                }}
+                embedded={true}
+              />
+            ) : (
+              <LoginForm />
+            )}
           </div>
         </div>
       </div>

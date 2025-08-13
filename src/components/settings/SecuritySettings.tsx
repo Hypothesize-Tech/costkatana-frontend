@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheckIcon, DevicePhoneMobileIcon, ExclamationTriangleIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { GatewayService, FirewallAnalytics } from '../../services/gateway.service';
+import { MFASetup } from '../auth/MFASetup';
 
 interface SecuritySettings {
   twoFactorEnabled: boolean;
@@ -140,6 +141,11 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Two-Factor Authentication */}
+      <div>
+        <MFASetup />
       </div>
 
       {/* Active Sessions */}
