@@ -27,6 +27,8 @@ import {
   BoltIcon,
   CpuChipIcon,
   ChartPieIcon,
+  ShieldCheckIcon,
+  ShieldExclamationIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -54,6 +56,8 @@ const navigation = [
   { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
   { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
   { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
+  { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
+  { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
   { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
   { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
   { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },

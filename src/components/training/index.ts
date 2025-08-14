@@ -4,3 +4,7 @@ export { CreateDatasetModal } from "./CreateDatasetModal";
 export { DatasetCard } from "./DatasetCard";
 export { ExportDatasetModal } from "./ExportDatasetModal";
 export { TrainingAnalytics } from "./TrainingAnalytics";
+export { FineTuningPipeline } from "./FineTuningPipeline";
+export { DatasetVersionsModal } from "./DatasetVersionsModal";
+export { PIIAnalysisModal } from "./PIIAnalysisModal";
+export { CreateFineTuneJobModal } from "./CreateFineTuneJobModal";

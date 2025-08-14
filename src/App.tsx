@@ -53,6 +53,8 @@ import { Sessions } from './pages/Sessions';
 import { SessionDetail } from './pages/SessionDetail';
 import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
 import Webhooks from './pages/Webhooks';
+import { Moderation } from './pages/Moderation';
+import { Security } from './pages/Security';
 
 const queryClient = new QueryClient();
 
@@ -145,6 +147,14 @@ function AppContent() {
           <Route
             path="key-vault"
             element={<KeyVault />}
+          />
+          <Route
+            path="moderation"
+            element={<Moderation />}
+          />
+          <Route
+            path="security"
+            element={<Security />}
           />
           <Route
             path="training"
