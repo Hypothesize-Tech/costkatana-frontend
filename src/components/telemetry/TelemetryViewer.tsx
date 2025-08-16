@@ -28,7 +28,7 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
     const [records, setRecords] = useState<TelemetryRecord[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedRecords, setSelectedRecords] = useState<Set<string>>(new Set());
-    const [selectedRecord, setSelectedRecord] = useState<TelemetryRecord | null>(null);
+    const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [filter, setFilter] = useState({
         timeframe: '24h',
