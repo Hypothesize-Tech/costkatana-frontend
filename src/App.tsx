@@ -52,6 +52,7 @@ import Cache from './pages/Cache';
 import { Sessions } from './pages/Sessions';
 import { SessionDetail } from './pages/SessionDetail';
 import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
+import CostLake from './pages/CostLake';
 import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
@@ -183,6 +184,10 @@ function AppContent() {
           <Route
             path="telemetry"
             element={<TelemetryDashboard />}
+          />
+          <Route
+            path="cost-lake"
+            element={<CostLake />}
           />
 
           <Route
