@@ -56,6 +56,7 @@ import CostLake from './pages/CostLake';
 import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
+import { CPIDashboard } from './components/cpi/CPIDashboard';
 
 const queryClient = new QueryClient();
 
@@ -188,6 +189,10 @@ function AppContent() {
           <Route
             path="cost-lake"
             element={<CostLake />}
+          />
+          <Route
+            path="cpi"
+            element={<CPIDashboard userId="current" />}
           />
 
           <Route
