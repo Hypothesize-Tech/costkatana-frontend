@@ -64,6 +64,7 @@ const navigation = [
   { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
   { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
   { name: 'Cost Debugger', href: '/cost-debugger', icon: BugAntIcon, description: 'DevTools for AI prompts - analyze token usage and optimize costs' },
+  { name: 'Unexplained Costs', href: '/unexplained-costs', icon: ChartBarIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
   { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
   { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
   { name: 'Use Templates', href: '/templates/use', icon: PlayIcon, description: 'Apply templates' },

@@ -58,6 +58,7 @@ import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
 import { CPIDashboard } from './components/cpi/CPIDashboard';
 import CostDebuggerPage from './pages/CostDebugger';
+import UnexplainedCosts from './pages/UnexplainedCosts';
 
 const queryClient = new QueryClient();
 
@@ -114,6 +115,10 @@ function AppContent() {
           <Route
             path="cost-debugger"
             element={<CostDebuggerPage />}
+          />
+          <Route
+            path="unexplained-costs"
+            element={<UnexplainedCosts />}
           />
           <Route
             path="cache"
