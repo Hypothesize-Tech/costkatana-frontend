@@ -57,6 +57,7 @@ import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
 import { CPIDashboard } from './components/cpi/CPIDashboard';
+import CostDebuggerPage from './pages/CostDebugger';
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,10 @@ function AppContent() {
           <Route
             path="optimizations"
             element={<Optimization />}
+          />
+          <Route
+            path="cost-debugger"
+            element={<CostDebuggerPage />}
           />
           <Route
             path="cache"

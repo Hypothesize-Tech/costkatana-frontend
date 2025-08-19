@@ -108,7 +108,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   Properties
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
-                  Tokens
+                  Token Breakdown
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
                   Cost
@@ -276,10 +276,26 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-white">
-                        {formatNumber(item.totalTokens)}
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{formatNumber(item.totalTokens)}</span>
+                          <span className="text-xs text-gray-500">total</span>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {formatResponseTime(item.responseTime)}
+                      <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 mt-1">
+                        <div className="flex justify-between">
+                          <span>Input:</span>
+                          <span className="font-medium">{formatNumber(item.promptTokens || 0)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Output:</span>
+                          <span className="font-medium">{formatNumber(item.completionTokens || 0)}</span>
+                        </div>
+                        {item.responseTime && (
+                          <div className="flex justify-between pt-1 border-t border-gray-200 dark:border-gray-600">
+                            <span>Time:</span>
+                            <span>{formatResponseTime(item.responseTime)}</span>
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

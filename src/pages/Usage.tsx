@@ -218,6 +218,115 @@ export default function Usage() {
         </div>
       </div>
 
+      {/* Stats Cards */}
+      {data?.usage && data.usage.length > 0 && (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Total Cost */}
+          <div className="bg-white overflow-hidden shadow rounded-lg dark:bg-gray-800">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center dark:bg-green-900">
+                    <span className="text-green-600 text-sm font-semibold">$</span>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
+                      Total Cost
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      ${data.usage.reduce((sum: number, item: any) => sum + (item.cost || 0), 0).toFixed(2)}
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Total Tokens */}
+          <div className="bg-white overflow-hidden shadow rounded-lg dark:bg-gray-800">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center dark:bg-blue-900">
+                    <span className="text-blue-600 text-sm font-semibold">T</span>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
+                      Total Tokens
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      {data.usage.reduce((sum: number, item: any) => sum + (item.totalTokens || 0), 0).toLocaleString()}
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Token Breakdown */}
+          <div className="bg-white overflow-hidden shadow rounded-lg dark:bg-gray-800">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center dark:bg-purple-900">
+                    <span className="text-purple-600 text-sm font-semibold">I/O</span>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
+                      Token Breakdown
+                    </dt>
+                    <dd className="text-sm text-gray-900 dark:text-white">
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500 dark:text-gray-400">Input:</span>
+                          <span>{data.usage.reduce((sum: number, item: any) => sum + ((item as any).promptTokens || 0), 0).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500 dark:text-gray-400">Output:</span>
+                          <span>{data.usage.reduce((sum: number, item: any) => sum + ((item as any).completionTokens || 0), 0).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Average Response Time */}
+          <div className="bg-white overflow-hidden shadow rounded-lg dark:bg-gray-800">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-orange-100 rounded-md flex items-center justify-center dark:bg-orange-900">
+                    <span className="text-orange-600 text-sm font-semibold">⏱</span>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
+                      Avg Response
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      {(() => {
+                        const avgTime = data.usage.reduce((sum: number, item: any) => sum + (item.responseTime || 0), 0) / data.usage.length;
+                        return avgTime > 1000 ? `${(avgTime / 1000).toFixed(1)}s` : `${Math.round(avgTime)}ms`;
+                      })()}
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search and Filters */}
       <div className="p-4 card">
         <div className="flex flex-col gap-4 sm:flex-row">

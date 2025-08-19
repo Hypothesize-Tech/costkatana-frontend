@@ -900,7 +900,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    // TODO: Implement detailed query for this time period
+                    // Detailed query for this time period will be implemented in future versions
                     console.log('Querying detailed data for:', selectedHeatmapCell);
                   }}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"

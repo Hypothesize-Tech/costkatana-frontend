@@ -30,6 +30,7 @@ import {
   ShieldCheckIcon,
   ShieldExclamationIcon,
   RocketLaunchIcon,
+  BugAntIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -62,6 +63,7 @@ const navigation = [
   { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
   { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
   { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
+  { name: 'Cost Debugger', href: '/cost-debugger', icon: BugAntIcon, description: 'DevTools for AI prompts - analyze token usage and optimize costs' },
   { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
   { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
   { name: 'Use Templates', href: '/templates/use', icon: PlayIcon, description: 'Apply templates' },

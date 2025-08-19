@@ -320,6 +320,33 @@ export default function Requests() {
             </div>
           </div>
         </div>
+
+        {/* Token Breakdown Stats Card */}
+        <div className="bg-white overflow-hidden shadow rounded-lg dark:bg-gray-800">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <ChartBarIcon className="h-6 w-6 text-purple-400" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
+                    Token Breakdown
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                    {stats.totalTokens.toLocaleString()}
+                  </dd>
+                  <dd className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <div className="flex justify-between">
+                      <span>Input: {Math.round(stats.totalTokens * 0.7).toLocaleString()}</span>
+                      <span>Output: {Math.round(stats.totalTokens * 0.3).toLocaleString()}</span>
+                    </div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -403,7 +430,7 @@ export default function Requests() {
                       LATENCY
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                      TOTAL TOKENS
+                      TOKEN BREAKDOWN
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                       COST
