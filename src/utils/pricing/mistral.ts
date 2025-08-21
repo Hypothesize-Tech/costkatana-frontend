@@ -4,12 +4,32 @@ export const MISTRAL_PRICING: ModelPricing[] = [
   // Premier Models
   {
     provider: "Mistral AI",
+    model: "mistral-medium-2508",
+    inputPrice: 0.4, // $0.4/1M tokens = $0.0004/1K tokens
+    outputPrice: 2.0, // $2/1M tokens = $0.002/1K tokens
+    contextWindow: 128000,
+    capabilities: ["text", "multimodal", "vision", "analysis", "reasoning", "enterprise"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
     model: "mistral-medium-latest",
     inputPrice: 0.4, // $0.4/1M tokens = $0.0004/1K tokens
     outputPrice: 2.0, // $2/1M tokens = $0.002/1K tokens
     contextWindow: 128000,
-    capabilities: ["text", "analysis", "reasoning", "multilingual"],
-    category: "text",
+    capabilities: ["text", "multimodal", "vision", "analysis", "reasoning", "enterprise"],
+    category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "magistral-medium-2507",
+    inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
+    outputPrice: 5.0, // $5/1M tokens = $0.005/1K tokens
+    contextWindow: 40000,
+    capabilities: ["text", "reasoning", "thinking", "domain-specific", "multilingual"],
+    category: "reasoning",
     isLatest: true,
   },
   {
@@ -17,15 +37,19 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     model: "magistral-medium-latest",
     inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
     outputPrice: 5.0, // $5/1M tokens = $0.005/1K tokens
-    contextWindow: 128000,
-    capabilities: [
-      "text",
-      "reasoning",
-      "thinking",
-      "domain-specific",
-      "multilingual",
-    ],
+    contextWindow: 40000,
+    capabilities: ["text", "reasoning", "thinking", "domain-specific", "multilingual"],
     category: "reasoning",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "codestral-2508",
+    inputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    outputPrice: 0.9, // $0.9/1M tokens = $0.0009/1K tokens
+    contextWindow: 256000,
+    capabilities: ["code", "programming", "multilingual-code", "fill-in-middle", "code-correction", "test-generation"],
+    category: "code",
     isLatest: true,
   },
   {
@@ -33,9 +57,29 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     model: "codestral-latest",
     inputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
     outputPrice: 0.9, // $0.9/1M tokens = $0.0009/1K tokens
-    contextWindow: 32000,
-    capabilities: ["code", "programming", "multilingual-code"],
+    contextWindow: 256000,
+    capabilities: ["code", "programming", "multilingual-code", "fill-in-middle", "code-correction", "test-generation"],
     category: "code",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-mini-2507",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 0,
+    capabilities: ["audio", "transcription", "efficient"],
+    category: "audio",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-mini-latest",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 0,
+    capabilities: ["audio", "transcription", "efficient"],
+    category: "audio",
     isLatest: true,
   },
   {
@@ -44,8 +88,28 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 0.4, // $0.4/1M tokens = $0.0004/1K tokens
     outputPrice: 2.0, // $2/1M tokens = $0.002/1K tokens
     contextWindow: 128000,
-    capabilities: ["code", "agents", "advanced-coding"],
+    capabilities: ["code", "agents", "advanced-coding", "codebase-exploration", "multi-file-editing"],
     category: "code",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "devstral-medium-latest",
+    inputPrice: 0.4, // $0.4/1M tokens = $0.0004/1K tokens
+    outputPrice: 2.0, // $2/1M tokens = $0.002/1K tokens
+    contextWindow: 128000,
+    capabilities: ["code", "agents", "advanced-coding", "codebase-exploration", "multi-file-editing"],
+    category: "code",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "mistral-ocr-2505",
+    inputPrice: 1.0, // $1/1000 pages
+    outputPrice: 3.0, // $3/1000 pages
+    contextWindow: 0,
+    capabilities: ["ocr", "document-understanding", "annotations", "text-extraction"],
+    category: "document",
     isLatest: true,
   },
   {
@@ -54,17 +118,17 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 1.0, // $1/1000 pages
     outputPrice: 3.0, // $3/1000 pages
     contextWindow: 0,
-    capabilities: ["ocr", "document-understanding", "annotations"],
+    capabilities: ["ocr", "document-understanding", "annotations", "text-extraction"],
     category: "document",
     isLatest: true,
   },
   {
     provider: "Mistral AI",
-    model: "mistral-saba-latest",
-    inputPrice: 0.2, // $0.2/1M tokens = $0.0002/1K tokens
-    outputPrice: 0.6, // $0.6/1M tokens = $0.0006/1K tokens
+    model: "mistral-large-2411",
+    inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
+    outputPrice: 6.0, // $6/1M tokens = $0.006/1K tokens
     contextWindow: 128000,
-    capabilities: ["text", "custom-trained", "regional"],
+    capabilities: ["text", "reasoning", "complex-tasks", "high-complexity"],
     category: "text",
     isLatest: true,
   },
@@ -74,8 +138,18 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
     outputPrice: 6.0, // $6/1M tokens = $0.006/1K tokens
     contextWindow: 128000,
-    capabilities: ["text", "reasoning", "complex-tasks"],
+    capabilities: ["text", "reasoning", "complex-tasks", "high-complexity"],
     category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "pixtral-large-2411",
+    inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
+    outputPrice: 6.0, // $6/1M tokens = $0.006/1K tokens
+    contextWindow: 128000,
+    capabilities: ["vision", "multimodal", "reasoning", "frontier-class"],
+    category: "multimodal",
     isLatest: true,
   },
   {
@@ -84,28 +158,28 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 2.0, // $2.0/1M tokens = $0.002/1K tokens
     outputPrice: 6.0, // $6/1M tokens = $0.006/1K tokens
     contextWindow: 128000,
-    capabilities: ["vision", "multimodal", "reasoning"],
+    capabilities: ["vision", "multimodal", "reasoning", "frontier-class"],
     category: "multimodal",
     isLatest: true,
   },
   {
     provider: "Mistral AI",
-    model: "ministral-8b-latest",
+    model: "mistral-small-2407",
     inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
-    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
-    contextWindow: 128000,
-    capabilities: ["text", "edge", "on-device"],
-    category: "text",
-    isLatest: true,
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 32000,
+    capabilities: ["text", "multimodal", "multilingual", "open-source"],
+    category: "multimodal",
+    isLatest: false,
   },
   {
     provider: "Mistral AI",
-    model: "ministral-3b-latest",
-    inputPrice: 0.04, // $0.04/1M tokens = $0.00004/1K tokens
-    outputPrice: 0.04, // $0.04/1M tokens = $0.00004/1K tokens
-    contextWindow: 128000,
-    capabilities: ["text", "edge", "efficient"],
-    category: "text",
+    model: "mistral-embed",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 8192,
+    capabilities: ["embedding", "text", "semantic"],
+    category: "embedding",
     isLatest: true,
   },
   {
@@ -114,18 +188,18 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
     outputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
     contextWindow: 8192,
-    capabilities: ["embedding", "code"],
+    capabilities: ["embedding", "code", "semantic"],
     category: "embedding",
     isLatest: true,
   },
   {
     provider: "Mistral AI",
-    model: "mistral-embed",
+    model: "mistral-moderation-2411",
     inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
     outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
-    contextWindow: 8192,
-    capabilities: ["embedding", "text"],
-    category: "embedding",
+    contextWindow: 32000,
+    capabilities: ["moderation", "classification", "harmful-content-detection"],
+    category: "moderation",
     isLatest: true,
   },
   {
@@ -134,11 +208,82 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
     outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
     contextWindow: 32000,
-    capabilities: ["moderation", "classification"],
+    capabilities: ["moderation", "classification", "harmful-content-detection"],
     category: "moderation",
     isLatest: true,
   },
+  
   // Open Models
+  {
+    provider: "Mistral AI",
+    model: "magistral-small-2507",
+    inputPrice: 0.5, // $0.5/1M tokens = $0.0005/1K tokens
+    outputPrice: 1.5, // $1.5/1M tokens = $0.0015/1K tokens
+    contextWindow: 40000,
+    capabilities: ["text", "reasoning", "thinking", "domain-specific", "multilingual"],
+    category: "reasoning",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "magistral-small-latest",
+    inputPrice: 0.5, // $0.5/1M tokens = $0.0005/1K tokens
+    outputPrice: 1.5, // $1.5/1M tokens = $0.0015/1K tokens
+    contextWindow: 40000,
+    capabilities: ["text", "reasoning", "thinking", "domain-specific", "multilingual"],
+    category: "reasoning",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-small-2507",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 32000,
+    capabilities: ["audio", "instruct", "multimodal"],
+    category: "audio",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-small-latest",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 32000,
+    capabilities: ["audio", "instruct", "multimodal"],
+    category: "audio",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-mini-2507",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 32000,
+    capabilities: ["audio", "instruct", "mini"],
+    category: "audio",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "voxtral-mini-latest",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    contextWindow: 32000,
+    capabilities: ["audio", "instruct", "mini"],
+    category: "audio",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "mistral-small-2506",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 128000,
+    capabilities: ["text", "multimodal", "multilingual", "open-source"],
+    category: "multimodal",
+    isLatest: true,
+  },
   {
     provider: "Mistral AI",
     model: "mistral-small-latest",
@@ -151,19 +296,13 @@ export const MISTRAL_PRICING: ModelPricing[] = [
   },
   {
     provider: "Mistral AI",
-    model: "magistral-small-latest",
+    model: "magistral-small-2506",
     inputPrice: 0.5, // $0.5/1M tokens = $0.0005/1K tokens
     outputPrice: 1.5, // $1.5/1M tokens = $0.0015/1K tokens
-    contextWindow: 128000,
-    capabilities: [
-      "text",
-      "reasoning",
-      "thinking",
-      "domain-specific",
-      "multilingual",
-    ],
+    contextWindow: 40000,
+    capabilities: ["text", "reasoning", "thinking", "domain-specific", "multilingual"],
     category: "reasoning",
-    isLatest: true,
+    isLatest: false,
   },
   {
     provider: "Mistral AI",
@@ -171,8 +310,58 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
     outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
     contextWindow: 128000,
-    capabilities: ["code", "agents", "open-source"],
+    capabilities: ["code", "agents", "open-source", "codebase-exploration", "multi-file-editing"],
     category: "code",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "devstral-small-latest",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 128000,
+    capabilities: ["code", "agents", "open-source", "codebase-exploration", "multi-file-editing"],
+    category: "code",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "mistral-small-2503",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 128000,
+    capabilities: ["text", "multimodal", "multilingual", "open-source", "image-understanding"],
+    category: "multimodal",
+    isLatest: false,
+  },
+  {
+    provider: "Mistral AI",
+    model: "mistral-small-2501",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 32000,
+    capabilities: ["text", "multimodal", "multilingual", "open-source"],
+    category: "multimodal",
+    isLatest: false,
+  },
+  {
+    provider: "Mistral AI",
+    model: "devstral-small-2505",
+    inputPrice: 0.1, // $0.1/1M tokens = $0.0001/1K tokens
+    outputPrice: 0.3, // $0.3/1M tokens = $0.0003/1K tokens
+    contextWindow: 128000,
+    capabilities: ["code", "agents", "open-source", "24b-parameter"],
+    category: "code",
+    isLatest: false,
+  },
+  {
+    provider: "Mistral AI",
+    model: "pixtral-12b-2409",
+    inputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    outputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    contextWindow: 128000,
+    capabilities: ["vision", "multimodal", "small", "image-understanding"],
+    category: "multimodal",
     isLatest: true,
   },
   {
@@ -181,8 +370,28 @@ export const MISTRAL_PRICING: ModelPricing[] = [
     inputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
     outputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
     contextWindow: 128000,
-    capabilities: ["vision", "multimodal", "small"],
+    capabilities: ["vision", "multimodal", "small", "image-understanding"],
     category: "multimodal",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "open-mistral-nemo-2407",
+    inputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    outputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    contextWindow: 128000,
+    capabilities: ["text", "multilingual", "open-source", "best-multilingual"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "Mistral AI",
+    model: "open-mistral-nemo",
+    inputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    outputPrice: 0.15, // $0.15/1M tokens = $0.00015/1K tokens
+    contextWindow: 128000,
+    capabilities: ["text", "multilingual", "open-source", "best-multilingual"],
+    category: "text",
     isLatest: true,
   },
   {

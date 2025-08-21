@@ -166,7 +166,7 @@ const ModelComparison: React.FC = () => {
       console.error("Error loading available models:", error);
       setError(
         "Failed to load available models: " +
-          (error.message || "Unknown error"),
+        (error.message || "Unknown error"),
       );
       setAvailableModels([]); // Set empty array instead of fallback models
     }
@@ -388,7 +388,7 @@ const ModelComparison: React.FC = () => {
       console.error("Error starting real-time comparison:", error);
       setError(
         "Failed to start real-time comparison: " +
-          (error.message || "Unknown error"),
+        (error.message || "Unknown error"),
       );
       setIsRunning(false);
     }
@@ -492,11 +492,39 @@ const ModelComparison: React.FC = () => {
       return modelData.pricing;
     }
 
-    // Fallback pricing data for common AWS Bedrock models
+    // Fallback pricing data for common models
     const fallbackPricing: Record<
       string,
       { input: number; output: number; unit: string }
     > = {
+      // === OpenAI GPT-5 Models (Latest) ===
+      "gpt-5": {
+        input: 1.25,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "gpt-5-mini": {
+        input: 0.25,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "gpt-5-nano": {
+        input: 0.05,
+        output: 0.4,
+        unit: "Per 1M tokens",
+      },
+      "gpt-5-chat-latest": {
+        input: 1.25,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "gpt-5-chat": {
+        input: 1.25,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+
+      // === AWS Models ===
       "amazon.nova-micro-v1:0": {
         input: 0.035,
         output: 0.14,
@@ -522,14 +550,29 @@ const ModelComparison: React.FC = () => {
         output: 1.6,
         unit: "Per 1M tokens",
       },
-      "anthropic.claude-3-5-sonnet-20240620-v1:0": {
+      "anthropic.claude-sonnet-4-20250514-v1:0": {
         input: 3.0,
         output: 15.0,
         unit: "Per 1M tokens",
       },
       "anthropic.claude-3-5-haiku-20241022-v1:0": {
-        input: 1.0,
-        output: 5.0,
+        input: 0.8,
+        output: 4.0,
+        unit: "Per 1M tokens",
+      },
+      "anthropic.claude-opus-4-1-20250805-v1:0": {
+        input: 15.0,
+        output: 75.0,
+        unit: "Per 1M tokens",
+      },
+      "meta.llama3-70b-instruct-v1:0": {
+        input: 0.59,
+        output: 0.79,
+        unit: "Per 1M tokens",
+      },
+      "meta.llama3-8b-instruct-v1:0": {
+        input: 0.05,
+        output: 0.10,
         unit: "Per 1M tokens",
       },
       "anthropic.claude-3-haiku-20240307-v1:0": {
@@ -562,14 +605,351 @@ const ModelComparison: React.FC = () => {
         output: 0.99,
         unit: "Per 1M tokens",
       },
-      "cohere.command-r-v1:0": {
+      "command-a-03-2025": {
+        input: 2.5,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "command-r7b-12-2024": {
+        input: 0.0375,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "command-a-reasoning-08-2025": {
+        input: 2.5,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "command-a-vision-07-2025": {
+        input: 2.5,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "command-r-plus-04-2024": {
+        input: 2.5,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "command-r-08-2024": {
+        input: 0.15,
+        output: 0.6,
+        unit: "Per 1M tokens",
+      },
+      // === Google AI Models ===
+      "gemini-2.5-pro": {
+        input: 1.25,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash": {
+        input: 0.3,
+        output: 2.5,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-lite-preview": {
+        input: 0.1,
+        output: 0.4,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-audio": {
+        input: 1.0,
+        output: 2.5,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-lite-audio-preview": {
+        input: 0.5,
+        output: 0.4,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-native-audio": {
+        input: 0.5,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-native-audio-output": {
+        input: 3.0,
+        output: 12.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-flash-preview-tts": {
+        input: 0.5,
+        output: 10.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.5-pro-preview-tts": {
+        input: 1.0,
+        output: 20.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.0-flash": {
+        input: 0.1,
+        output: 0.4,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.0-flash-lite": {
+        input: 0.075,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "gemini-2.0-flash-audio": {
+        input: 0.7,
+        output: 0.4,
+        unit: "Per 1M tokens",
+      },
+      "gemini-1.5-pro": {
+        input: 1.25,
+        output: 5.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-1.5-flash": {
+        input: 0.075,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "gemini-1.0-pro": {
+        input: 1.0,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "gemini-1.0-pro-vision": {
+        input: 1.0,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      // === Mistral AI Models ===
+      // Premier Models
+      "mistral-medium-2508": {
+        input: 0.4,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-medium-latest": {
+        input: 0.4,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "magistral-medium-2507": {
+        input: 2.0,
+        output: 5.0,
+        unit: "Per 1M tokens",
+      },
+      "magistral-medium-latest": {
+        input: 2.0,
+        output: 5.0,
+        unit: "Per 1M tokens",
+      },
+      "codestral-2508": {
+        input: 0.3,
+        output: 0.9,
+        unit: "Per 1M tokens",
+      },
+      "codestral-latest": {
+        input: 0.3,
+        output: 0.9,
+        unit: "Per 1M tokens",
+      },
+      "voxtral-mini-2507": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "voxtral-mini-latest": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "devstral-medium-2507": {
+        input: 0.4,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "devstral-medium-latest": {
+        input: 0.4,
+        output: 2.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-ocr-2505": {
+        input: 1.0,
+        output: 3.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-ocr-latest": {
+        input: 1.0,
+        output: 3.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-large-2411": {
+        input: 2.0,
+        output: 6.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-large-latest": {
+        input: 2.0,
+        output: 6.0,
+        unit: "Per 1M tokens",
+      },
+      "pixtral-large-2411": {
+        input: 2.0,
+        output: 6.0,
+        unit: "Per 1M tokens",
+      },
+      "pixtral-large-latest": {
+        input: 2.0,
+        output: 6.0,
+        unit: "Per 1M tokens",
+      },
+      "mistral-small-2407": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "mistral-embed": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "codestral-embed-2505": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "mistral-moderation-2411": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "mistral-moderation-latest": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+
+      // Open Models
+      "magistral-small-2507": {
         input: 0.5,
         output: 1.5,
         unit: "Per 1M tokens",
       },
-      "cohere.command-r-plus-v1:0": {
+      "magistral-small-latest": {
+        input: 0.5,
+        output: 1.5,
+        unit: "Per 1M tokens",
+      },
+      "voxtral-small-2507": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "voxtral-small-latest": {
+        input: 0.1,
+        output: 0.1,
+        unit: "Per 1M tokens",
+      },
+      "mistral-small-2506": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "devstral-small-2507": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "devstral-small-latest": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "mistral-small-2503": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "mistral-small-2501": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "devstral-small-2505": {
+        input: 0.1,
+        output: 0.3,
+        unit: "Per 1M tokens",
+      },
+      "pixtral-12b-2409": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "pixtral-12b": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "open-mistral-nemo-2407": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "open-mistral-nemo": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "mistral-nemo": {
+        input: 0.15,
+        output: 0.15,
+        unit: "Per 1M tokens",
+      },
+      "open-mistral-7b": {
+        input: 0.25,
+        output: 0.25,
+        unit: "Per 1M tokens",
+      },
+      "open-mixtral-8x7b": {
+        input: 0.7,
+        output: 0.7,
+        unit: "Per 1M tokens",
+      },
+      "open-mixtral-8x22b": {
+        input: 2.0,
+        output: 6.0,
+        unit: "Per 1M tokens",
+      },
+      // === Grok AI Models ===
+      "grok-4-0709": {
         input: 3.0,
         output: 15.0,
+        unit: "Per 1M tokens",
+      },
+      "grok-3": {
+        input: 3.0,
+        output: 15.0,
+        unit: "Per 1M tokens",
+      },
+      "grok-3-mini": {
+        input: 0.3,
+        output: 0.5,
+        unit: "Per 1M tokens",
+      },
+      "grok-2-image-1212": {
+        input: 0.07,
+        output: 0.07,
+        unit: "Per image",
+      },
+      // === Meta Llama 4 Models ===
+      "llama-4-scout": {
+        input: 0.19,
+        output: 0.49,
+        unit: "Per 1M tokens",
+      },
+      "llama-4-maverick": {
+        input: 0.19,
+        output: 0.49,
+        unit: "Per 1M tokens",
+      },
+      "llama-4-behemoth-preview": {
+        input: 0.19,
+        output: 0.49,
         unit: "Per 1M tokens",
       },
     };
@@ -786,11 +1166,11 @@ const ModelComparison: React.FC = () => {
                         m.provider === model.provider &&
                         m.model === model.model,
                     ).length > 1 && (
-                      <div className="text-xs text-amber-600 mt-1 flex items-center">
-                        <ExclamationTriangleIcon className="h-3 w-3 mr-1" />
-                        Duplicate model selected
-                      </div>
-                    )}
+                        <div className="text-xs text-amber-600 mt-1 flex items-center">
+                          <ExclamationTriangleIcon className="h-3 w-3 mr-1" />
+                          Duplicate model selected
+                        </div>
+                      )}
                     {(() => {
                       const pricing = getModelPricing(
                         model.provider,
@@ -1016,13 +1396,13 @@ const ModelComparison: React.FC = () => {
                             {(() => {
                               const pricing = result.pricing?.inputCost
                                 ? {
-                                    input: result.pricing.inputCost * 1000000,
-                                    output: result.pricing.outputCost || 0,
-                                  }
+                                  input: result.pricing.inputCost * 1000000,
+                                  output: result.pricing.outputCost || 0,
+                                }
                                 : getModelPricing(
-                                    result.provider,
-                                    result.model,
-                                  );
+                                  result.provider,
+                                  result.model,
+                                );
                               return pricing?.input
                                 ? pricing.input.toFixed(2)
                                 : "N/A";
@@ -1039,13 +1419,13 @@ const ModelComparison: React.FC = () => {
                             {(() => {
                               const pricing = result.pricing?.outputCost
                                 ? {
-                                    input: result.pricing.inputCost || 0,
-                                    output: result.pricing.outputCost * 1000000,
-                                  }
+                                  input: result.pricing.inputCost || 0,
+                                  output: result.pricing.outputCost * 1000000,
+                                }
                                 : getModelPricing(
-                                    result.provider,
-                                    result.model,
-                                  );
+                                  result.provider,
+                                  result.model,
+                                );
                               return pricing?.output
                                 ? pricing.output.toFixed(2)
                                 : "N/A";
@@ -1242,15 +1622,15 @@ const ModelComparison: React.FC = () => {
                           {(() => {
                             const pricing = selectedResult.pricing?.inputCost
                               ? {
-                                  input:
-                                    selectedResult.pricing.inputCost * 1000000,
-                                  output:
-                                    selectedResult.pricing.outputCost || 0,
-                                }
+                                input:
+                                  selectedResult.pricing.inputCost * 1000000,
+                                output:
+                                  selectedResult.pricing.outputCost || 0,
+                              }
                               : getModelPricing(
-                                  selectedResult.provider,
-                                  selectedResult.model,
-                                );
+                                selectedResult.provider,
+                                selectedResult.model,
+                              );
                             return pricing?.input
                               ? pricing.input.toFixed(2)
                               : "N/A";
@@ -1262,14 +1642,14 @@ const ModelComparison: React.FC = () => {
                           {(() => {
                             const pricing = selectedResult.pricing?.outputCost
                               ? {
-                                  input: selectedResult.pricing.inputCost || 0,
-                                  output:
-                                    selectedResult.pricing.outputCost * 1000000,
-                                }
+                                input: selectedResult.pricing.inputCost || 0,
+                                output:
+                                  selectedResult.pricing.outputCost * 1000000,
+                              }
                               : getModelPricing(
-                                  selectedResult.provider,
-                                  selectedResult.model,
-                                );
+                                selectedResult.provider,
+                                selectedResult.model,
+                              );
                             return pricing?.output
                               ? pricing.output.toFixed(2)
                               : "N/A";
