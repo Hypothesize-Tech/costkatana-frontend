@@ -43,6 +43,9 @@ export interface Usage {
     workflowName?: string;
     workflowStep?: string;
     workflowSequence?: number;
+    // Email tracking fields
+    userEmail?: string;
+    customerEmail?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -99,6 +102,9 @@ export interface UsageFilters {
     minCost?: number;
     maxCost?: number;
     customProperties?: Record<string, string>;
+    // Email filter fields
+    userEmail?: string;
+    customerEmail?: string;
 }
 
 export interface TrackUsageData {

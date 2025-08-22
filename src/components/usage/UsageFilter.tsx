@@ -27,6 +27,8 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
     dateRange: '7d',
     minCost: '',
     maxCost: '',
+    userEmail: '',
+    customerEmail: '',
     customProperties: [] as Array<{ key: string; value: string; }>
   });
   const { selectedProject } = useProject();
@@ -102,6 +104,8 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
       dateRange: '7d',
       minCost: '',
       maxCost: '',
+      userEmail: '',
+      customerEmail: '',
       customProperties: []
     };
     setFilters(defaultFilters);
@@ -210,6 +214,34 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   placeholder="100.00"
                   step="0.01"
+                />
+              </div>
+            </div>
+
+            {/* Email Filter Fields */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  User Email
+                </label>
+                <input
+                  type="email"
+                  value={filters.userEmail}
+                  onChange={(e) => handleFilterChange('userEmail', e.target.value)}
+                  className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  placeholder="developer@company.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Customer Email
+                </label>
+                <input
+                  type="email"
+                  value={filters.customerEmail}
+                  onChange={(e) => handleFilterChange('customerEmail', e.target.value)}
+                  className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  placeholder="client@client.com"
                 />
               </div>
             </div>

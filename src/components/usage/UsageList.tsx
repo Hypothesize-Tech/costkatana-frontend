@@ -102,7 +102,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   Workflow
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
-                  Prompt
+                  Email Information
+                </th>
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                  Request/Response
                 </th>
                 <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
                   Properties
@@ -182,18 +185,107 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                         </div>
                       )}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {(item.userEmail || item.customerEmail) ? (
+                        <div className="space-y-1">
+                          {item.userEmail && (
+                            <div className="text-xs">
+                              <span className="font-medium text-gray-700 dark:text-gray-300">User:</span>
+                              <span className="ml-1 text-gray-600 dark:text-gray-400 truncate block max-w-32" title={item.userEmail}>
+                                {item.userEmail}
+                              </span>
+                            </div>
+                          )}
+                          {item.customerEmail && (
+                            <div className="text-xs">
+                              <span className="font-medium text-gray-700 dark:text-gray-300">Customer:</span>
+                              <span className="ml-1 text-gray-600 dark:text-gray-400 truncate block max-w-32" title={item.customerEmail}>
+                                {item.customerEmail}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-400 dark:text-gray-500">
+                          No email data
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-4">
-                      <div className="max-w-xs text-sm text-gray-900 truncate dark:text-white">
-                        {formatPrompt(
-                          item.prompt ||
-                          item.metadata?.prompt ||
-                          item.metadata?.messages?.[0]?.content ||
-                          item.metadata?.input ||
-                          '', 60
-                        )}
+                      <div className="max-w-xs text-sm text-gray-900 dark:text-white">
+                        {/* Enhanced prompt display with request/response content */}
+                        <div className="space-y-2">
+                          {/* Request/Prompt Section */}
+                          <div>
+                            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              Request:
+                            </div>
+                            <div className="text-sm">
+                              {formatPrompt(
+                                item.prompt ||
+                                item.metadata?.prompt ||
+                                item.metadata?.messages?.[0]?.content ||
+                                item.metadata?.input ||
+                                '', 80
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Response/Completion Section */}
+                          {item.completion && (
+                            <div>
+                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Response:
+                              </div>
+                              <div className="text-sm">
+                                {formatPrompt(item.completion, 80)}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Messages Section for Chat Models */}
+                          {item.metadata?.messages && Array.isArray(item.metadata.messages) && item.metadata.messages.length > 0 && (
+                            <div>
+                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                Messages:
+                              </div>
+                              <div className="space-y-1">
+                                {item.metadata.messages.slice(0, 3).map((msg: any, idx: number) => (
+                                  <div key={idx} className="text-xs">
+                                    <span className="font-medium text-gray-500 dark:text-gray-400">
+                                      {msg.role || 'user'}:
+                                    </span>
+                                    <span className="ml-1">
+                                      {formatPrompt(msg.content || '', 60)}
+                                    </span>
+                                  </div>
+                                ))}
+                                {item.metadata.messages.length > 3 && (
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    +{item.metadata.messages.length - 3} more messages
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* System Message */}
+                          {item.metadata?.system && (
+                            <div>
+                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                System:
+                              </div>
+                              <div className="text-sm">
+                                {formatPrompt(item.metadata.system, 80)}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
+
+                      {/* Tags section remains unchanged */}
                       {item.tags && item.tags.length > 0 && (
-                        <div className="flex gap-1 mt-1">
+                        <div className="flex gap-1 mt-2">
                           {item.tags.slice(0, 3).map((tag, index) => (
                             <span
                               key={index}
@@ -470,11 +562,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   </div>
                 )}
 
-                {/* Prompt */}
+                {/* Enhanced Request/Response Section */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <h5 className="text-sm font-medium text-gray-900 dark:text-white">
-                      Prompt
+                      Request & Response
                     </h5>
                     <button
                       onClick={() => copyPromptToClipboard(selectedUsage.prompt)}
@@ -494,40 +586,83 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       )}
                     </button>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                    <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
-                      {selectedUsage.prompt ||
-                        selectedUsage.metadata?.prompt ||
-                        selectedUsage.metadata?.messages?.[0]?.content ||
-                        selectedUsage.metadata?.input ||
-                        'No prompt available'}
-                    </p>
+
+                  <div className="space-y-4">
+                    {/* Request/Prompt Section */}
+                    <div>
+                      <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                        Request:
+                      </h6>
+                      <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                        <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                          {selectedUsage.prompt ||
+                            selectedUsage.metadata?.prompt ||
+                            selectedUsage.metadata?.messages?.[0]?.content ||
+                            selectedUsage.metadata?.input ||
+                            'No prompt available'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Response/Completion Section */}
+                    {selectedUsage.completion && (
+                      <div>
+                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                          Response:
+                        </h6>
+                        <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                          <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                            {selectedUsage.completion}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Messages Section for Chat Models */}
+                    {selectedUsage.metadata?.messages && Array.isArray(selectedUsage.metadata.messages) && selectedUsage.metadata.messages.length > 0 && (
+                      <div>
+                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                          Conversation History:
+                        </h6>
+                        <div className="space-y-2">
+                          {selectedUsage.metadata.messages.map((msg: any, idx: number) => (
+                            <div key={idx} className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                              <div className="flex items-start justify-between mb-1">
+                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
+                                  {msg.role || 'user'}:
+                                </span>
+                                <button
+                                  onClick={() => copyPromptToClipboard(msg.content || '')}
+                                  className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                  title="Copy message to clipboard"
+                                >
+                                  <ClipboardIcon className="w-3 h-3" />
+                                </button>
+                              </div>
+                              <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                                {msg.content || 'No content'}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* System Message */}
+                    {selectedUsage.metadata?.system && (
+                      <div>
+                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                          System Instructions:
+                        </h6>
+                        <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                          <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                            {selectedUsage.metadata.system}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                {/* Completion */}
-                {selectedUsage.completion && (
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <h5 className="text-sm font-medium text-gray-900 dark:text-white">
-                        Completion
-                      </h5>
-                      <button
-                        onClick={() => copyPromptToClipboard(selectedUsage.completion || '')}
-                        className="flex items-center px-2 py-1 space-x-1 text-xs text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                        title="Copy completion to clipboard"
-                      >
-                        <ClipboardIcon className="w-4 h-4" />
-                        <span>Copy</span>
-                      </button>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                      <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
-                        {selectedUsage.completion}
-                      </p>
-                    </div>
-                  </div>
-                )}
 
                 {/* Custom Properties */}
                 {selectedUsage.metadata && Object.keys(selectedUsage.metadata).length > 0 && (

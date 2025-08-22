@@ -95,6 +95,8 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
       project: "",
       tags: "",
     },
+    userEmail: "",
+    customerEmail: "",
     projectId: projectId && projectId !== "all" ? projectId : undefined,
   });
   const [autoCalculate, setAutoCalculate] = useState(true);
@@ -556,6 +558,41 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   placeholder="e.g., support, production"
                 />
+              </div>
+            </div>
+
+            {/* Email Fields */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  User Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={formData.userEmail}
+                  onChange={(e) => handleChange("userEmail", e.target.value)}
+                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="developer@company.com"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Email of the developer/integrator
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Customer Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={formData.customerEmail}
+                  onChange={(e) => handleChange("customerEmail", e.target.value)}
+                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="client@client.com"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Email of the end customer/client
+                </p>
               </div>
             </div>
 
