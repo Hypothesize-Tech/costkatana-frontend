@@ -47,6 +47,7 @@ interface EnhancedDashboardData {
             insight: string;
             cost_impact?: number;
             routing_decision?: string;
+            priority?: 'high' | 'medium' | 'low';
         }>;
     };
 }
@@ -135,9 +136,6 @@ const EnhancedTelemetryContent: React.FC = () => {
 
     useEffect(() => {
         fetchEnhancedData();
-        // Refresh every 30 seconds
-        const interval = setInterval(fetchEnhancedData, 30000);
-        return () => clearInterval(interval);
     }, []);
 
     const formatNumber = (num: number) => {
@@ -210,6 +208,21 @@ const EnhancedTelemetryContent: React.FC = () => {
             {/* Tab Content */}
             {activeTab === 'overview' && (
                 <div className="space-y-6">
+                    {/* Header with actions */}
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold text-gray-900">System Overview</h2>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={fetchEnhancedData}
+                                disabled={loading}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                            >
+                                <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
                     {/* KPIs */}
                     <PerformanceOverview />
 
@@ -249,30 +262,30 @@ const EnhancedTelemetryContent: React.FC = () => {
                             <div className="bg-white p-4 rounded-lg shadow-sm border">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">Total Cost</p>
-                                        <p className="text-2xl font-bold text-purple-600">
-                                            ${enhancedData.current.avg_latency_ms ? (enhancedData.current.requests_per_minute * 0.0001).toFixed(4) : '0.0000'}
+                                        <p className="text-sm font-medium text-gray-600">AI Recommendations</p>
+                                        <p className="text-2xl font-bold text-orange-600">
+                                            {enhancedData.enrichment.ai_recommendations.length}
                                         </p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            Estimated hourly
+                                            {enhancedData.enrichment.ai_recommendations.length > 0 ? 'Available' : 'Processing...'}
                                         </p>
                                     </div>
-                                    <Sparkles className="w-8 h-8 text-purple-500" />
+                                    <Activity className="w-8 h-8 text-orange-500" />
                                 </div>
                             </div>
 
                             <div className="bg-white p-4 rounded-lg shadow-sm border">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">AI Recommendations</p>
-                                        <p className="text-2xl font-bold text-orange-600">
-                                            {enhancedData.enrichment.ai_recommendations.length}
+                                        <p className="text-sm font-medium text-gray-600">Processing Types</p>
+                                        <p className="text-2xl font-bold text-purple-600">
+                                            {enhancedData.enrichment.stats.processing_types.length}
                                         </p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {enhancedData.enrichment.stats.enriched_spans === 0 ? 'Processing...' : 'Available'}
+                                            {enhancedData.enrichment.stats.processing_types.length > 0 ? 'Identified' : 'Analyzing...'}
                                         </p>
                                     </div>
-                                    <Activity className="w-8 h-8 text-orange-500" />
+                                    <Sparkles className="w-8 h-8 text-purple-500" />
                                 </div>
                             </div>
                         </div>
@@ -297,6 +310,19 @@ const EnhancedTelemetryContent: React.FC = () => {
 
             {activeTab === 'ai-insights' && (
                 <div className="space-y-6">
+                    {/* Header with refresh button */}
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold text-gray-900">AI Insights & Recommendations</h2>
+                        <button
+                            onClick={fetchEnhancedData}
+                            disabled={loading}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                        >
+                            <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                            Refresh Insights
+                        </button>
+                    </div>
+
                     {loading ? (
                         <div className="flex items-center justify-center py-12">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -343,7 +369,12 @@ const EnhancedTelemetryContent: React.FC = () => {
                                             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
                                                 <p className="text-sm text-yellow-800">
                                                     <strong>AI Enrichment Starting:</strong> Spans are being processed and enriched with AI insights.
-                                                    Check back in a few minutes to see enriched data.
+                                                    <button
+                                                        onClick={fetchEnhancedData}
+                                                        className="ml-2 text-blue-600 hover:text-blue-800 underline"
+                                                    >
+                                                        Click here to trigger enrichment
+                                                    </button>
                                                 </p>
                                             </div>
                                         )}
@@ -399,25 +430,35 @@ const EnhancedTelemetryContent: React.FC = () => {
                                             <div className="text-gray-400 mb-4">
                                                 <Brain className="w-16 h-16 mx-auto" />
                                             </div>
-                                            <h4 className="text-lg font-medium text-gray-700 mb-2">AI Recommendations Coming Soon</h4>
-                                            <p className="text-gray-500 text-sm max-w-md mx-auto">
-                                                Once your spans are enriched with AI insights, you'll see personalized recommendations for cost optimization,
-                                                performance improvements, and routing decisions here.
+                                            <h4 className="text-lg font-medium text-gray-700 mb-2">No AI Recommendations Available</h4>
+                                            <p className="text-gray-500 text-sm max-w-md mx-auto mb-4">
+                                                AI recommendations will appear here once the system analyzes your telemetry data.
                                             </p>
-                                            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-md p-3 max-w-md mx-auto">
-                                                <p className="text-sm text-blue-800">
-                                                    <strong>Current Status:</strong> {formatNumber(enhancedData.enrichment.stats.total_spans)} spans detected,
-                                                    AI enrichment in progress...
-                                                </p>
-                                            </div>
+                                            <button
+                                                onClick={fetchEnhancedData}
+                                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                                            >
+                                                Refresh Data
+                                            </button>
                                         </div>
                                     ) : (
                                         <div className="space-y-6">
                                             {enhancedData.enrichment.ai_recommendations.map((rec, index) => (
-                                                <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
+                                                <div key={index} className={`border-l-4 p-4 rounded-lg ${rec.priority === 'high' ? 'border-red-500 bg-red-50' :
+                                                    rec.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
+                                                        'border-green-500 bg-green-50'
+                                                    }`}>
                                                     <div className="flex justify-between items-start mb-2">
-                                                        <h4 className="font-medium text-gray-900">{rec.operation}</h4>
-                                                        {rec.cost_impact && (
+                                                        <div className="flex items-center gap-2">
+                                                            <h4 className="font-medium text-gray-900">{rec.operation}</h4>
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                                                rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                                                    'bg-green-100 text-green-800'
+                                                                }`}>
+                                                                {rec.priority} priority
+                                                            </span>
+                                                        </div>
+                                                        {rec.cost_impact && rec.cost_impact > 0 && (
                                                             <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
                                                                 ${rec.cost_impact.toFixed(4)} impact
                                                             </span>
@@ -453,9 +494,9 @@ const EnhancedTelemetryContent: React.FC = () => {
                                             <div className="text-gray-400 mb-3">
                                                 <Eye className="w-12 h-12 mx-auto" />
                                             </div>
-                                            <h4 className="text-lg font-medium text-gray-700 mb-2">Recent Insights</h4>
+                                            <h4 className="text-lg font-medium text-gray-700 mb-2">No Recent Insights</h4>
                                             <p className="text-gray-500 text-sm">
-                                                AI-generated insights from your recent operations will appear here once enrichment begins.
+                                                AI-generated insights will appear here once spans are enriched.
                                             </p>
                                         </div>
                                     ) : (

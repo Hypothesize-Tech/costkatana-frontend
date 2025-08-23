@@ -29,9 +29,29 @@ export const ErrorMonitor: React.FC = () => {
     });
 
     const handleCopyTraceId = useCallback((traceId: string) => {
+        // Clear any previously copied trace ID
+        setCopiedTraceId(null);
+
+        // Copy to clipboard
         navigator.clipboard.writeText(traceId).then(() => {
             setCopiedTraceId(traceId);
+            // Clear the copied state after 2 seconds
             setTimeout(() => setCopiedTraceId(null), 2000);
+        }).catch((err) => {
+            console.error('Failed to copy trace ID:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = traceId;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                setCopiedTraceId(traceId);
+                setTimeout(() => setCopiedTraceId(null), 2000);
+            } catch (fallbackErr) {
+                console.error('Fallback copy failed:', fallbackErr);
+            }
+            document.body.removeChild(textArea);
         });
     }, []);
 
