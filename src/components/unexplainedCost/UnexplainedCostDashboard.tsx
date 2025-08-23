@@ -17,6 +17,13 @@ export const UnexplainedCostDashboard: React.FC = () => {
     const [anomalies, setAnomalies] = useState<CostAnomaly[]>([]);
     const [trends, setTrends] = useState<CostTrends | null>(null);
 
+    const [loadingStates, setLoadingStates] = useState({
+        costAnalysis: false,
+        dailyReport: false,
+        anomalies: false,
+        trends: false
+    });
+
     useEffect(() => {
         loadDashboardData();
     }, [timeframe, workspaceId]);
@@ -24,25 +31,64 @@ export const UnexplainedCostDashboard: React.FC = () => {
     const loadDashboardData = async () => {
         setLoading(true);
         setError(null);
+        setLoadingStates({
+            costAnalysis: true,
+            dailyReport: true,
+            anomalies: true,
+            trends: true
+        });
 
-        try {
-            const [analysis, report, anomaliesData, trendsData] = await Promise.all([
-                UnexplainedCostService.analyzeUnexplainedCosts(timeframe, workspaceId),
-                UnexplainedCostService.generateDailyCostReport(undefined, workspaceId),
-                UnexplainedCostService.getCostAnomalies(timeframe, workspaceId),
-                UnexplainedCostService.getCostTrends('30d', workspaceId)
-            ]);
+        // Load each API independently
+        UnexplainedCostService.analyzeUnexplainedCosts(timeframe, workspaceId)
+            .then(analysis => {
+                setCostAnalysis(analysis);
+                setLoadingStates(prev => ({ ...prev, costAnalysis: false }));
+            })
+            .catch(err => {
+                console.error('Cost analysis error:', err);
+                setLoadingStates(prev => ({ ...prev, costAnalysis: false }));
+            });
 
-            setCostAnalysis(analysis);
-            setDailyReport(report);
-            setAnomalies(anomaliesData.anomalies);
-            setTrends(trendsData);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
-            console.error('Dashboard data loading error:', err);
-        } finally {
-            setLoading(false);
-        }
+        UnexplainedCostService.generateDailyCostReport(undefined, workspaceId)
+            .then(report => {
+                setDailyReport(report);
+                setLoadingStates(prev => ({ ...prev, dailyReport: false }));
+            })
+            .catch(err => {
+                console.error('Daily report error:', err);
+                setLoadingStates(prev => ({ ...prev, dailyReport: false }));
+            });
+
+        UnexplainedCostService.getCostAnomalies(timeframe, workspaceId)
+            .then(anomaliesData => {
+                setAnomalies(anomaliesData.anomalies);
+                setLoadingStates(prev => ({ ...prev, anomalies: false }));
+            })
+            .catch(err => {
+                console.error('Anomalies error:', err);
+                setLoadingStates(prev => ({ ...prev, anomalies: false }));
+            });
+
+        UnexplainedCostService.getCostTrends('30d', workspaceId)
+            .then(trendsData => {
+                setTrends(trendsData);
+                setLoadingStates(prev => ({ ...prev, trends: false }));
+            })
+            .catch(err => {
+                console.error('Trends error:', err);
+                setLoadingStates(prev => ({ ...prev, trends: false }));
+            });
+
+        // Check if all data is loaded
+        const checkAllLoaded = setInterval(() => {
+            setLoadingStates(prev => {
+                if (!prev.costAnalysis && !prev.dailyReport && !prev.anomalies && !prev.trends) {
+                    setLoading(false);
+                    clearInterval(checkAllLoaded);
+                }
+                return prev;
+            });
+        }, 100);
     };
 
     const handleTimeframeChange = (newTimeframe: string) => {
@@ -53,7 +99,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
         setWorkspaceId(newWorkspaceId);
     };
 
-    if (loading) {
+    if (loading && !costAnalysis && !dailyReport && !anomalies.length && !trends) {
         return (
             <div className="min-h-screen bg-gray-50 p-6">
                 <div className="max-w-7xl mx-auto">
@@ -143,7 +189,11 @@ export const UnexplainedCostDashboard: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     {/* Cost Story Card */}
                     <div className="lg:col-span-2">
-                        {dailyReport && <CostStoryCard report={dailyReport} />}
+                        {dailyReport ? (
+                            <CostStoryCard report={dailyReport} />
+                        ) : loadingStates.dailyReport ? (
+                            <div className="h-64 bg-gray-200 rounded animate-pulse"></div>
+                        ) : null}
                     </div>
 
                     {/* Cost Attribution Tree */}
