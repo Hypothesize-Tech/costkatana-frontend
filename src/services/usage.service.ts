@@ -16,6 +16,8 @@ class UsageService {
         q?: string;
         minCost?: string;
         maxCost?: string;
+        userEmail?: string;
+        customerEmail?: string;
     }): Promise<{
         usage: Usage[];
         total: number;
@@ -56,18 +58,31 @@ class UsageService {
                 service: item.service,
                 model: item.model,
                 prompt: item.prompt,
-                completion: item.completion || '',
+                completion: item.completion,
                 promptTokens: item.promptTokens || 0,
                 completionTokens: item.completionTokens || 0,
                 totalTokens: item.totalTokens || (item.promptTokens + item.completionTokens) || 0,
                 cost: item.cost || 0,
                 responseTime: item.responseTime || 0,
-                metadata: item.metadata || {},
+                metadata: {
+                    ...item.metadata,
+                    // Ensure messages array is properly handled
+                    messages: Array.isArray(item.metadata?.messages) ? item.metadata.messages : undefined,
+                    // Ensure system message is captured
+                    system: item.metadata?.system || item.metadata?.systemMessage,
+                    // Ensure prompt is captured in metadata if not at root level
+                    prompt: item.metadata?.prompt || item.prompt,
+                    // Ensure input is captured
+                    input: item.metadata?.input || item.prompt
+                },
                 tags: item.tags || [],
                 optimizationApplied: item.optimizationApplied || false,
                 optimizationId: item.optimizationId,
                 errorOccurred: item.errorOccurred || false,
                 errorMessage: item.errorMessage,
+                // Email tracking fields
+                userEmail: item.userEmail,
+                customerEmail: item.customerEmail,
                 createdAt: item.createdAt,
                 updatedAt: item.updatedAt
             }));

@@ -1,6 +1,49 @@
 import { ModelPricing } from "../cost";
 
 export const OPENAI_PRICING: ModelPricing[] = [
+  // === GPT-5 Models (Latest) ===
+  {
+    provider: "OpenAI",
+    model: "gpt-5",
+    inputPrice: 1.25,
+    outputPrice: 10.0,
+    contextWindow: 128000,
+    capabilities: ["text", "reasoning", "analysis", "advanced-intelligence"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5-mini",
+    inputPrice: 0.25,
+    outputPrice: 2.0,
+    contextWindow: 128000,
+    capabilities: ["text", "reasoning", "analysis", "efficient"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5-nano",
+    inputPrice: 0.05,
+    outputPrice: 0.4,
+    contextWindow: 128000,
+    capabilities: ["text", "fast", "cost-effective"],
+    category: "text",
+    isLatest: true,
+  },
+  {
+    provider: "OpenAI",
+    model: "gpt-5-chat-latest",
+    inputPrice: 1.25,
+    outputPrice: 10.0,
+    contextWindow: 128000,
+    capabilities: ["text", "chat", "reasoning", "analysis"],
+    category: "text",
+    isLatest: true,
+  },
+
+  // === GPT-4.1 Series (Latest) ===
   {
     provider: "OpenAI",
     model: "gpt-4.1-2025-04-14",

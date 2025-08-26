@@ -52,9 +52,12 @@ export const PromptAnalyzer: React.FC<PromptAnalyzerProps> = ({
     useEffect(() => {
         const models = PROVIDER_MODELS[provider];
         if (models && models.length > 0) {
-            setModel(models[0]);
+            // Only update if current model is not in the new provider's models
+            if (!models.includes(model)) {
+                setModel(models[0]);
+            }
         }
-    }, [provider, model]);
+    }, [provider]);
 
     // Real-time token/cost estimation
     useEffect(() => {

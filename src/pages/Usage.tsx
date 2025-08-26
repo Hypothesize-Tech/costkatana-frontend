@@ -72,28 +72,32 @@ export default function Usage() {
 
   // Prepare query parameters with memoization to prevent infinite re-renders
   const queryParams = useMemo(() => {
-    const dateRange = getDateRange(filters.dateRange || '7d');
     const params: any = {
       page: currentPage,
       limit,
-      projectId: selectedProject && selectedProject !== 'all' ? selectedProject : undefined,
-      service: filters.service || undefined,
-      model: filters.model || undefined,
-      minCost: filters.minCost ? filters.minCost.toString() : undefined,
-      maxCost: filters.maxCost ? filters.maxCost.toString() : undefined,
-      q: debouncedSearch || undefined,
-      ...dateRange
+      q: debouncedSearch,
+      ...getDateRange(filters.dateRange || '7d')
     };
 
-    // Add custom properties as property.* query parameters
-    if (filters.customProperties && typeof filters.customProperties === 'object') {
+    if (filters.service) params.service = filters.service;
+    if (filters.model) params.model = filters.model;
+    if (filters.minCost) params.minCost = filters.minCost;
+    if (filters.maxCost) params.maxCost = filters.maxCost;
+    if (filters.userEmail) params.userEmail = filters.userEmail;
+    if (filters.customerEmail) params.customerEmail = filters.customerEmail;
+    if (selectedProject && selectedProject !== 'all') params.projectId = selectedProject;
+
+    // Handle custom properties
+    if (filters.customProperties && Object.keys(filters.customProperties).length > 0) {
       Object.entries(filters.customProperties).forEach(([key, value]) => {
-        params[`property.${key}`] = value;
+        if (key && value) {
+          params[`properties.${key}`] = value;
+        }
       });
     }
 
     return params;
-  }, [currentPage, limit, selectedProject, filters.service, filters.model, filters.minCost, filters.maxCost, debouncedSearch, filters.dateRange, filters.customProperties]);
+  }, [currentPage, limit, debouncedSearch, filters, selectedProject]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['usage', queryParams],
