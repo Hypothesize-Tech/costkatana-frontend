@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   FiPlus,
   FiSearch,
@@ -6,6 +7,7 @@ import {
   FiTag,
   FiTrendingUp,
   FiBookOpen,
+  FiPlay,
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
@@ -188,27 +190,36 @@ const PromptTemplates: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
             Prompt Templates
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             Create, manage, and use reusable prompt templates
           </p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="flex gap-2 items-center px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl transition-all hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl"
-        >
-          <FiPlus className="w-5 h-5" />
-          New Template
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex gap-2 items-center px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
+          >
+            <FiPlus className="w-5 h-5" />
+            New Template
+          </button>
+          <Link
+            to="/templates/use"
+            className="flex gap-2 items-center px-6 py-3 text-green-600 bg-green-50 rounded-xl border-2 border-green-200 transition-all dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-700"
+          >
+            <FiPlay className="w-5 h-5" />
+            Use Template
+          </Link>
+        </div>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
+        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mr-4">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-blue-100 rounded-xl dark:bg-blue-900/30">
               <FiBookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
@@ -222,9 +233,9 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
+        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center mr-4">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-yellow-100 rounded-xl dark:bg-yellow-900/30">
               <FiStar className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
             </div>
             <div>
@@ -238,9 +249,9 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
+        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mr-4">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-green-100 rounded-xl dark:bg-green-900/30">
               <FiTrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
             <div>
@@ -257,9 +268,9 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all">
+        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mr-4">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-purple-100 rounded-xl dark:bg-purple-900/30">
               <FiTag className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
@@ -283,14 +294,14 @@ const PromptTemplates: React.FC = () => {
             placeholder="Search templates by name, description, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="py-3 pr-4 pl-12 w-full rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
+            className="py-3 pr-4 pl-12 w-full text-lg rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
           />
         </div>
 
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-lg"
+          className="px-4 py-3 text-lg rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
         >
           {categories.map((category) => (
             <option key={category.value} value={category.value}>
@@ -302,8 +313,8 @@ const PromptTemplates: React.FC = () => {
         <button
           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
           className={`flex gap-2 items-center px-6 py-3 rounded-xl transition-all ${showFavoritesOnly
-            ? "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800"
-            : "text-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600"
+            ? "text-yellow-600 bg-yellow-50 border-2 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800"
+            : "text-gray-600 bg-gray-50 border-2 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"
             }`}
         >
           <FiStar className={`w-5 h-5 ${showFavoritesOnly ? "fill-current" : ""}`} />
@@ -313,8 +324,8 @@ const PromptTemplates: React.FC = () => {
 
       {/* Templates Grid */}
       {sortedTemplates.length === 0 ? (
-        <div className="py-16 text-center bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
-          <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="py-16 text-center bg-white rounded-2xl border border-gray-100 shadow-lg dark:bg-gray-800 dark:border-gray-700">
+          <div className="flex justify-center items-center mx-auto mb-6 w-24 h-24 bg-gray-100 rounded-full dark:bg-gray-700">
             <FiBookOpen className="w-12 h-12 text-gray-400" />
           </div>
           <h3 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
@@ -322,7 +333,7 @@ const PromptTemplates: React.FC = () => {
               ? "No templates found"
               : "No templates yet"}
           </h3>
-          <p className="mb-8 text-lg text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+          <p className="mx-auto mb-8 max-w-md text-lg text-gray-600 dark:text-gray-400">
             {searchQuery || selectedCategory !== "all" || showFavoritesOnly
               ? "Try adjusting your search or filter criteria to find what you're looking for."
               : "Get started by creating your first template to save time and improve consistency in your AI interactions."}
@@ -330,7 +341,7 @@ const PromptTemplates: React.FC = () => {
           {!searchQuery && selectedCategory === "all" && !showFavoritesOnly && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all"
+              className="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
             >
               <FiPlus className="mr-3 w-6 h-6" />
               Create Template

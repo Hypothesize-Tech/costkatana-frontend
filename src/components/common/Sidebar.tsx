@@ -1,17 +1,15 @@
-import { Fragment, useState, useRef, useEffect } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { usePopper } from 'react-popper';
 import {
   XMarkIcon,
   HomeIcon,
-  ChartBarIcon,
   CircleStackIcon,
   LightBulbIcon,
   UserIcon,
   FolderIcon,
   DocumentTextIcon,
-  PlayIcon,
   BellIcon,
   CogIcon,
   CurrencyDollarIcon,
@@ -19,14 +17,13 @@ import {
   BeakerIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
-  ClockIcon,
+  ChevronDownIcon,
   ServerIcon,
   QueueListIcon,
   KeyIcon,
   AcademicCapIcon,
   BoltIcon,
   CpuChipIcon,
-  ChartPieIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
   RocketLaunchIcon,
@@ -41,39 +38,85 @@ interface SidebarProps {
   onToggleCollapse: () => void;
 }
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
-  { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
-  { name: 'Requests', href: '/requests', icon: ClockIcon, description: 'Real-time LLM API requests' },
-  { name: 'Sessions', href: '/sessions', icon: ChartPieIcon, description: 'Trace and visualize agent flows' },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, description: 'View detailed analytics' },
-  { name: 'CPI Dashboard', href: '/cpi', icon: RocketLaunchIcon, description: 'Cost-Performance Index & Intelligent Routing' },
-  { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
-  { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
-  { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
-  { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
-  { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
-  { name: 'Cost Lake', href: '/cost-lake', icon: CircleStackIcon, description: 'Unified telemetry lake with semantic search and natural language queries' },
-  { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
-  { name: 'Webhooks', href: '/webhooks', icon: BellIcon, description: 'Configure webhooks for real-time notifications' },
-  { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
-  { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
-  { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
-  { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
-  { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
-  { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
-  { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
-  { name: 'Cost Debugger', href: '/cost-debugger', icon: BugAntIcon, description: 'DevTools for AI prompts - analyze token usage and optimize costs' },
-  { name: 'Unexplained Costs', href: '/unexplained-costs', icon: ChartBarIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
-  { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
-  { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
-  { name: 'Use Templates', href: '/templates/use', icon: PlayIcon, description: 'Apply templates' },
-  { name: 'Integration', href: '/integration', icon: CogIcon, description: 'Integration settings' },
-  { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
-  { name: 'Profile', href: '/profile', icon: UserIcon, description: 'User profile settings' },
+// ------------------------------
+// Types
+// ------------------------------
+export type NavItem = {
+  name: string;
+  href: string;
+  icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+  description?: string;
+};
+
+export type NavCategory = {
+  id: string;
+  label: string;
+  items: NavItem[];
+};
+
+// ------------------------------
+// Grouped Navigation (Helicon-style)
+// ------------------------------
+const navCategories: NavCategory[] = [
+  {
+    id: 'core',
+    label: 'Core',
+    items: [
+      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
+      { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
+      { name: 'CPI Dashboard', href: '/cpi', icon: RocketLaunchIcon, description: 'Cost-Performance Index & Intelligent Routing' },
+      { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
+    ],
+  },
+  {
+    id: 'monitor',
+    label: 'Monitor',
+    items: [
+      { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
+      { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
+      { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
+      { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
+      { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
+    ],
+  },
+  {
+    id: 'optimize',
+    label: 'Optimize & Debug',
+    items: [
+      { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
+      { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
+      { name: 'Cost Debugger', href: '/cost-debugger', icon: BugAntIcon, description: 'DevTools for AI prompts - analyze token usage and optimize costs' },
+      { name: 'Unexplained Costs', href: '/unexplained-costs', icon: CircleStackIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
+    ],
+  },
+  {
+    id: 'security',
+    label: 'Security & Compliance',
+    items: [
+      { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
+      { name: 'Webhooks', href: '/webhooks', icon: BellIcon, description: 'Configure webhooks for real-time notifications' },
+      { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
+      { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
+    ],
+  },
+  {
+    id: 'build',
+    label: 'Build & Manage',
+    items: [
+      { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
+      { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
+      { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
+      { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
+      { name: 'Integration', href: '/integration', icon: CogIcon, description: 'Integration settings' },
+      { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
+      { name: 'Profile', href: '/profile', icon: UserIcon, description: 'User profile settings' },
+    ],
+  },
 ];
 
-// Tooltip Component using React Popper
+// ------------------------------
+// Tooltip (unchanged)
+// ------------------------------
 interface TooltipProps {
   children: React.ReactNode;
   content: string;
@@ -91,33 +134,16 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-      {
-        name: 'preventOverflow',
-        options: {
-          padding: 8,
-        },
-      },
-      {
-        name: 'flip',
-        options: {
-          fallbackPlacements: ['left', 'top', 'bottom'],
-        },
-      },
+      { name: 'offset', options: { offset: [0, 8] } },
+      { name: 'preventOverflow', options: { padding: 8 } },
+      { name: 'flip', options: { fallbackPlacements: ['left', 'top', 'bottom'] } },
     ],
   });
 
   const handleMouseEnter = () => {
     if (!show) return;
     clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setShowTooltip(true);
-    }, delay);
+    timeoutRef.current = setTimeout(() => setShowTooltip(true), delay);
   };
 
   const handleMouseLeave = () => {
@@ -125,14 +151,7 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
     setShowTooltip(false);
   };
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  useEffect(() => () => timeoutRef.current && clearTimeout(timeoutRef.current), []);
 
   if (!show) return <>{children}</>;
 
@@ -158,7 +177,6 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
             data-popper-arrow
             className="absolute w-2 h-2 bg-gray-900 transform rotate-45"
             style={{
-              ...styles.arrow,
               ...(placement === 'right' && { left: '-4px' }),
               ...(placement === 'left' && { right: '-4px' }),
               ...(placement === 'top' && { bottom: '-4px' }),
@@ -171,115 +189,163 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
   );
 };
 
+// ------------------------------
+// Sidebar
+// ------------------------------
 export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) => {
   const location = useLocation();
 
-  const sidebarContent = (collapsed: boolean = false) => (
-    <>
-      <nav className="flex relative flex-col flex-1">
-        {/* Toggle button - positioned absolutely when collapsed */}
-        {collapsed && (
-          <div className="absolute top-0 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
-            <Tooltip
-              content="Expand sidebar"
-              show={true}
-              placement="right"
+  // expanded state per category; persisted so it feels sticky
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Map route -> category id for quick lookup
+  const routeToCategory = useMemo(() => {
+    const map = new Map<string, string>();
+    navCategories.forEach((cat) => cat.items.forEach((it) => map.set(it.href, cat.id)));
+    return map;
+  }, []);
+
+  // Initialize / load from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('ck.sidebar.categories');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Record<string, boolean>;
+        setExpanded(parsed);
+      } catch { }
+    } else {
+      // Default: open the category for the active route
+      const activeCat = routeToCategory.get(location.pathname);
+      if (activeCat) setExpanded({ [activeCat]: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist when changed
+  useEffect(() => {
+    localStorage.setItem('ck.sidebar.categories', JSON.stringify(expanded));
+  }, [expanded]);
+
+  // Ensure active category is open when navigating (only when expanded sidebar)
+  useEffect(() => {
+    if (isCollapsed) return;
+    const activeCat = routeToCategory.get(location.pathname);
+    if (activeCat && !expanded[activeCat]) {
+      setExpanded((prev) => ({ ...prev, [activeCat]: true }));
+    }
+  }, [isCollapsed, location.pathname, expanded, routeToCategory]);
+
+  const toggleCat = (id: string) => setExpanded((p) => ({ ...p, [id]: !p[id] }));
+
+  const renderItem = (item: NavItem, collapsed: boolean) => {
+    const isActive = location.pathname === item.href;
+    const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
+
+    return (
+      <li key={item.name}>
+        <Tooltip content={tooltipContent} show={collapsed} placement="right">
+          <NavLink
+            to={item.href}
+            onClick={onClose}
+            className={cn(
+              isActive
+                ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
+                : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
+              'flex items-center gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
+              collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
+            )}
+          >
+            <item.icon
+              className={cn(
+                isActive
+                  ? 'text-primary-600 dark:text-primary-400'
+                  : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
+                'w-6 h-6 shrink-0'
+              )}
+              aria-hidden="true"
+            />
+            {!collapsed && <span className="truncate">{item.name}</span>}
+          </NavLink>
+        </Tooltip>
+      </li>
+    );
+  };
+
+  const CategoryHeader = ({ id, label }: { id: string; label: string }) => (
+    <button
+      type="button"
+      onClick={() => toggleCat(id)}
+      className={cn(
+        'w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wide',
+        'text-gray-500 dark:text-gray-400 px-2.5 select-none',
+        'hover:text-gray-900 dark:hover:text-gray-100'
+      )}
+      aria-expanded={!!expanded[id]}
+    >
+      <span>{label}</span>
+      <ChevronDownIcon
+        className={cn('w-4 h-4 transition-transform duration-200', expanded[id] ? 'rotate-0' : '-rotate-90')}
+      />
+    </button>
+  );
+
+  const sidebarContent = (collapsed = false) => (
+    <nav className="flex relative flex-col flex-1">
+      {/* When collapsed, show a floating expand toggle at top */}
+      {collapsed && (
+        <div className="absolute top-0 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
+          <Tooltip content="Expand sidebar" show placement="right">
+            <button
+              onClick={onToggleCollapse}
+              className={cn(
+                'p-2 text-gray-600 rounded-lg hover:text-gray-900 hover:bg-gray-100',
+                'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700',
+                'flex-shrink-0 transition-all duration-200',
+                'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50',
+                'bg-white border border-gray-200 shadow-sm dark:border-gray-600 dark:bg-gray-800'
+              )}
+              aria-label="Expand sidebar"
             >
-              <button
-                onClick={onToggleCollapse}
-                className={cn(
-                  "p-2 text-gray-600 rounded-lg hover:text-gray-900 hover:bg-gray-100",
-                  "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
-                  "flex-shrink-0 transition-all duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50",
-                  "bg-white border border-gray-200 shadow-sm dark:border-gray-600 dark:bg-gray-800"
-                )}
-                aria-label="Expand sidebar"
-              >
-                <ChevronDoubleRightIcon className="w-4 h-4" />
-              </button>
-            </Tooltip>
-          </div>
-        )}
+              <ChevronDoubleRightIcon className="w-4 h-4" />
+            </button>
+          </Tooltip>
+        </div>
+      )}
 
-        {/* Navigation items */}
-        <ul role="list" className={cn(
-          "flex flex-col flex-1 gap-y-7",
-          collapsed ? "pt-14" : "pt-4"
-        )}>
-          <li>
-            <ul role="list" className="-mx-2 space-y-1">
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
-                const isDashboard = item.name === 'Dashboard';
+      <ul role="list" className={cn('flex flex-col flex-1 gap-y-6', collapsed ? 'pt-14' : 'pt-4')}>
+        {navCategories.map((cat) => (
+          <li key={cat.id}>
+            {/* Category header hidden when collapsed */}
+            {!collapsed && (
+              <div className="flex justify-between items-center px-1">
+                <CategoryHeader id={cat.id} label={cat.label} />
+              </div>
+            )}
 
-                return (
-                  <li key={item.name}>
-                    <Tooltip
-                      content={tooltipContent}
-                      show={collapsed}
-                      placement="right"
-                    >
-                      <div className="relative">
-                        <NavLink
-                          to={item.href}
-                          onClick={() => onClose()}
-                          className={cn(
-                            isActive
-                              ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                              : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
-                            'flex gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
-                            collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
-                          )}
-                        >
-                          <item.icon
-                            className={cn(
-                              isActive
-                                ? 'text-primary-600 dark:text-primary-400'
-                                : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
-                              'w-6 h-6 shrink-0'
-                            )}
-                            aria-hidden="true"
-                          />
-                          {!collapsed && (
-                            <span className="truncate">{item.name}</span>
-                          )}
-                        </NavLink>
-
-                        {/* Collapse button positioned absolutely on the right side of Dashboard */}
-                        {isDashboard && !collapsed && (
-                          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                            <Tooltip
-                              content="Collapse sidebar"
-                              show={true}
-                              placement="left"
-                            >
-                              <button
-                                onClick={onToggleCollapse}
-                                className={cn(
-                                  "p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100",
-                                  "dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700",
-                                  "transition-all duration-200 flex-shrink-0",
-                                  "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
-                                )}
-                                aria-label="Collapse sidebar"
-                              >
-                                <ChevronDoubleLeftIcon className="w-4 h-4" />
-                              </button>
-                            </Tooltip>
-                          </div>
-                        )}
-                      </div>
-                    </Tooltip>
-                  </li>
-                );
-              })}
+            {/* Item list */}
+            <ul
+              role="list"
+              className={cn(
+                'mt-2 space-y-1 -mx-2',
+                collapsed ? '' : 'px-1',
+                collapsed
+                  ? ''
+                  : expanded[cat.id]
+                    ? 'max-h-[640px] transition-[max-height] duration-300 ease-in-out'
+                    : 'max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out'
+              )}
+            >
+              {cat.items.map((item) => renderItem(item, collapsed))}
             </ul>
+
+            {/* Divider between categories */}
+            {collapsed ? (
+              <div className="mx-2 my-3 border-t border-gray-200 dark:border-gray-700" />
+            ) : null}
           </li>
-        </ul>
-      </nav>
-    </>
+        ))}
+      </ul>
+    </nav>
   );
 
   return (
@@ -342,17 +408,37 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       </Transition.Root>
 
       {/* Desktop sidebar */}
-      <div className={cn(
-        "hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:flex-col",
-        isCollapsed ? "lg:w-16" : "lg:w-72"
-      )}>
-        <div className={cn(
-          "flex relative flex-col gap-y-5 bg-white border-r border-gray-200 transition-all duration-300 grow dark:border-gray-700 dark:bg-gray-800",
-          isCollapsed ? "overflow-visible px-2" : "overflow-y-auto px-6"
-        )}>
-          <div className="flex-1 pt-4">
-            {sidebarContent(isCollapsed)}
-          </div>
+      <div
+        className={cn(
+          'hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:top-16 lg:z-50 lg:flex lg:flex-col',
+          isCollapsed ? 'lg:w-16' : 'lg:w-72'
+        )}
+      >
+        <div
+          className={cn(
+            'flex relative flex-col gap-y-5 bg-white border-r border-gray-200 transition-all duration-300 grow dark:border-gray-700 dark:bg-gray-800',
+            isCollapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-6'
+          )}
+        >
+          {/* Collapse button (anchored next to the first item when expanded) */}
+          {!isCollapsed && (
+            <div className="absolute right-2 top-3">
+              <button
+                onClick={onToggleCollapse}
+                className={cn(
+                  'p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+                  'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700',
+                  'transition-all duration-200 flex-shrink-0',
+                  'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50'
+                )}
+                aria-label="Collapse sidebar"
+              >
+                <ChevronDoubleLeftIcon className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          <div className="flex-1 pt-4">{sidebarContent(isCollapsed)}</div>
         </div>
       </div>
     </>

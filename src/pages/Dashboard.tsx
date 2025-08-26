@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   ChartBarIcon,
   CurrencyDollarIcon,
@@ -120,8 +121,8 @@ export const Dashboard: React.FC = () => {
                 100,
               budgetUtilization: (project as any).budget
                 ? ((projectData.stats.totalCost || 0) /
-                    (project as any).budget) *
-                  100
+                  (project as any).budget) *
+                100
                 : undefined,
             };
           }),
@@ -270,38 +271,44 @@ export const Dashboard: React.FC = () => {
               <div className="hidden md:flex items-center bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-1 shadow-inner">
                 <button
                   onClick={() => setViewMode("chat")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    viewMode === "chat"
-                      ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-                  }`}
+                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "chat"
+                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    }`}
                 >
                   <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
                   Chat
                 </button>
                 <button
                   onClick={() => setViewMode("split")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    viewMode === "split"
-                      ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-                  }`}
+                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "split"
+                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    }`}
                 >
                   <Squares2X2Icon className="w-4 h-4 mr-2" />
                   Split
                 </button>
                 <button
                   onClick={() => setViewMode("dashboard")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    viewMode === "dashboard"
-                      ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-                  }`}
+                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "dashboard"
+                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    }`}
                 >
                   <ChartBarIcon className="w-4 h-4 mr-2" />
                   Analytics
                 </button>
               </div>
+
+              {/* View Full Analytics Button */}
+              <Link
+                to="/analytics"
+                className="hidden md:flex items-center px-4 py-2.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                <ChartBarIcon className="w-4 h-4 mr-2" />
+                View Full Analytics
+              </Link>
 
               {/* Mobile Menu Button */}
               <button
@@ -334,9 +341,8 @@ export const Dashboard: React.FC = () => {
                         {({ active }) => (
                           <button
                             onClick={() => setSelectedProject("all")}
-                            className={`${
-                              active ? "bg-slate-50 dark:bg-slate-700/50" : ""
-                            } ${selectedProject === "all" ? "text-blue-600 dark:text-blue-400 font-medium" : "text-slate-700 dark:text-slate-300"} 
+                            className={`${active ? "bg-slate-50 dark:bg-slate-700/50" : ""
+                              } ${selectedProject === "all" ? "text-blue-600 dark:text-blue-400 font-medium" : "text-slate-700 dark:text-slate-300"} 
                                                         block w-full text-left px-4 py-3 text-sm transition-colors`}
                           >
                             All Projects
@@ -348,9 +354,8 @@ export const Dashboard: React.FC = () => {
                           {({ active }) => (
                             <button
                               onClick={() => setSelectedProject(project._id)}
-                              className={`${
-                                active ? "bg-slate-50 dark:bg-slate-700/50" : ""
-                              } ${selectedProject === project._id ? "text-blue-600 dark:text-blue-400 font-medium" : "text-slate-700 dark:text-slate-300"} 
+                              className={`${active ? "bg-slate-50 dark:bg-slate-700/50" : ""
+                                } ${selectedProject === project._id ? "text-blue-600 dark:text-blue-400 font-medium" : "text-slate-700 dark:text-slate-300"} 
                                                             block w-full text-left px-4 py-3 text-sm transition-colors`}
                             >
                               {project.name}
@@ -442,11 +447,10 @@ export const Dashboard: React.FC = () => {
                       setViewMode("chat");
                       setSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-                      viewMode === "chat"
-                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                    }`}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${viewMode === "chat"
+                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      }`}
                   >
                     <ChatBubbleLeftRightIcon className="w-5 h-5 mr-3" />
                     Chat Interface
@@ -456,11 +460,10 @@ export const Dashboard: React.FC = () => {
                       setViewMode("split");
                       setSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-                      viewMode === "split"
-                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                    }`}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${viewMode === "split"
+                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      }`}
                   >
                     <Squares2X2Icon className="w-5 h-5 mr-3" />
                     Split View
@@ -470,11 +473,10 @@ export const Dashboard: React.FC = () => {
                       setViewMode("dashboard");
                       setSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-                      viewMode === "dashboard"
-                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                    }`}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${viewMode === "dashboard"
+                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      }`}
                   >
                     <ChartBarIcon className="w-5 h-5 mr-3" />
                     Analytics Dashboard
@@ -490,13 +492,12 @@ export const Dashboard: React.FC = () => {
       <main className="flex-1 min-h-0 flex">
         {/* Chat Interface Area */}
         <div
-          className={`transition-all duration-500 ease-in-out ${
-            viewMode === "dashboard"
-              ? "w-0 overflow-hidden"
-              : viewMode === "chat"
-                ? "w-full"
-                : "w-2/3"
-          } flex flex-col`}
+          className={`transition-all duration-500 ease-in-out ${viewMode === "dashboard"
+            ? "w-0 overflow-hidden"
+            : viewMode === "chat"
+              ? "w-full"
+              : "w-2/3"
+            } flex flex-col`}
         >
           <div className="h-[calc(100vh-5rem)] p-6">
             <div className="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
@@ -508,9 +509,8 @@ export const Dashboard: React.FC = () => {
         {/* Dashboard Panel */}
         {viewMode !== "chat" && (
           <div
-            className={`transition-all duration-500 ease-in-out ${
-              viewMode === "dashboard" ? "w-full" : "w-1/3"
-            } flex flex-col`}
+            className={`transition-all duration-500 ease-in-out ${viewMode === "dashboard" ? "w-full" : "w-1/3"
+              } flex flex-col`}
           >
             {/* Dashboard Content */}
             <div className="h-[calc(100vh-5rem)] p-6 pl-0">
@@ -626,11 +626,11 @@ export const Dashboard: React.FC = () => {
                             change={
                               data.stats.costChange
                                 ? {
-                                    value: data.stats.costChange,
-                                    percentage: Math.abs(data.stats.costChange),
-                                    trend:
-                                      data.stats.costChange > 0 ? "up" : "down",
-                                  }
+                                  value: data.stats.costChange,
+                                  percentage: Math.abs(data.stats.costChange),
+                                  trend:
+                                    data.stats.costChange > 0 ? "up" : "down",
+                                }
                                 : undefined
                             }
                           />
@@ -685,8 +685,8 @@ export const Dashboard: React.FC = () => {
                                   new Date(),
                                 services: [
                                   activity.service ||
-                                    activity.type ||
-                                    "unknown",
+                                  activity.type ||
+                                  "unknown",
                                 ],
                                 models: [],
                               })) || []
@@ -719,7 +719,7 @@ export const Dashboard: React.FC = () => {
                         </div>
 
                         {data.recentActivity &&
-                        data.recentActivity.length > 0 ? (
+                          data.recentActivity.length > 0 ? (
                           <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-5 border border-slate-200/50 dark:border-slate-700/50">
                             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
                               <ClockIcon className="w-4 h-4 mr-2 text-blue-600" />

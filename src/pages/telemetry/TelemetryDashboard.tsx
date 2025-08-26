@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PerformanceOverview } from '../../components/telemetry/PerformanceOverview';
 import { CostAnalytics } from '../../components/telemetry/CostAnalytics';
@@ -9,7 +10,7 @@ import { TopOperations } from '../../components/telemetry/TopOperations';
 import { TopErrors } from '../../components/telemetry/TopErrors';
 import { TelemetryExplorer } from '../../components/telemetry/TelemetryExplorer';
 import SpanExplorer from '../../components/telemetry/SpanExplorer';
-import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
+import { ExclamationTriangleIcon, ArrowPathIcon, CircleStackIcon } from '@heroicons/react/24/solid';
 import { Brain, Activity, Eye, Sparkles } from 'lucide-react';
 import { apiClient } from '@/config/api';
 
@@ -89,16 +90,16 @@ class ErrorBoundary extends React.Component<
         if (this.state.hasError) {
             // You can render any custom fallback UI
             return (
-                <div className="bg-red-100 text-red-800 p-6 rounded-lg flex items-center">
-                    <ExclamationTriangleIcon className="w-10 h-10 mr-4 text-red-500" />
+                <div className="flex items-center p-6 text-red-800 bg-red-100 rounded-lg">
+                    <ExclamationTriangleIcon className="mr-4 w-10 h-10 text-red-500" />
                     <div>
-                        <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+                        <h2 className="mb-2 text-xl font-bold">Something went wrong</h2>
                         <p className="mb-4">{this.state.error?.message || 'An unexpected error occurred'}</p>
                         <button
                             onClick={this.handleReset}
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center"
+                            className="flex items-center px-4 py-2 text-white bg-red-500 rounded-lg"
                         >
-                            <ArrowPathIcon className="w-5 h-5 mr-2" />
+                            <ArrowPathIcon className="mr-2 w-5 h-5" />
                             Try Again
                         </button>
                     </div>
@@ -152,13 +153,22 @@ const EnhancedTelemetryContent: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="p-6 min-h-screen bg-gray-50">
             <header className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex gap-3 items-center mb-2">
                     <Brain className="w-8 h-8 text-blue-600" />
                     <h1 className="text-3xl font-bold text-gray-900">Enhanced Telemetry Dashboard</h1>
                 </div>
                 <p className="text-gray-600">AI-powered observability with intelligent insights and cost optimization</p>
+                <div className="mt-4">
+                    <Link
+                        to="/cost-lake"
+                        className="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-900/30"
+                    >
+                        <CircleStackIcon className="w-4 h-4" />
+                        Cost Lake
+                    </Link>
+                </div>
             </header>
 
             {/* Navigation Tabs */}
@@ -215,15 +225,15 @@ const EnhancedTelemetryContent: React.FC = () => {
 
                     {/* Enhanced Metrics Row */}
                     {enhancedData && (
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div className="bg-white p-4 rounded-lg shadow-sm border">
-                                <div className="flex items-center justify-between">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                                <div className="flex justify-between items-center">
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Total Spans</p>
                                         <p className="text-2xl font-bold text-gray-900">
                                             {formatNumber(enhancedData.enrichment.stats.total_spans)}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-1 text-xs text-gray-500">
                                             Last {enhancedData.enrichment.stats.timeframe || '1h'}
                                         </p>
                                     </div>
@@ -231,14 +241,14 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white p-4 rounded-lg shadow-sm border">
-                                <div className="flex items-center justify-between">
+                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                                <div className="flex justify-between items-center">
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">AI Enriched</p>
                                         <p className="text-2xl font-bold text-green-600">
                                             {formatNumber(enhancedData.enrichment.stats.enriched_spans)}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-1 text-xs text-gray-500">
                                             {enhancedData.enrichment.stats.enrichment_rate.toFixed(1)}% enriched
                                         </p>
                                     </div>
@@ -246,14 +256,14 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white p-4 rounded-lg shadow-sm border">
-                                <div className="flex items-center justify-between">
+                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                                <div className="flex justify-between items-center">
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">Total Cost</p>
                                         <p className="text-2xl font-bold text-purple-600">
                                             ${enhancedData.current.avg_latency_ms ? (enhancedData.current.requests_per_minute * 0.0001).toFixed(4) : '0.0000'}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-1 text-xs text-gray-500">
                                             Estimated hourly
                                         </p>
                                     </div>
@@ -261,14 +271,14 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white p-4 rounded-lg shadow-sm border">
-                                <div className="flex items-center justify-between">
+                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                                <div className="flex justify-between items-center">
                                     <div>
                                         <p className="text-sm font-medium text-gray-600">AI Recommendations</p>
                                         <p className="text-2xl font-bold text-orange-600">
                                             {enhancedData.enrichment.ai_recommendations.length}
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-1 text-xs text-gray-500">
                                             {enhancedData.enrichment.stats.enriched_spans === 0 ? 'Processing...' : 'Available'}
                                         </p>
                                     </div>
@@ -279,13 +289,13 @@ const EnhancedTelemetryContent: React.FC = () => {
                     )}
 
                     {/* Analytics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <CostAnalytics />
                         <ErrorMonitor />
                     </div>
 
                     {/* Top lists */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <TopOperations />
                         <TopErrors />
                     </div>
@@ -298,16 +308,16 @@ const EnhancedTelemetryContent: React.FC = () => {
             {activeTab === 'ai-insights' && (
                 <div className="space-y-6">
                     {loading ? (
-                        <div className="flex items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <div className="flex justify-center items-center py-12">
+                            <div className="w-8 h-8 rounded-full border-b-2 border-blue-500 animate-spin"></div>
                             <span className="ml-2 text-gray-600">Loading AI insights...</span>
                         </div>
                     ) : enhancedData ? (
                         <>
                             {/* AI Enrichment Stats */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div className="bg-white p-6 rounded-lg shadow-sm border">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <div className="p-6 bg-white rounded-lg border shadow-sm">
+                                    <h3 className="flex gap-2 items-center mb-4 text-lg font-medium text-gray-900">
                                         <Brain className="w-5 h-5 text-purple-500" />
                                         AI Enrichment Status
                                     </h3>
@@ -332,15 +342,15 @@ const EnhancedTelemetryContent: React.FC = () => {
                                             </span>
                                         </div>
 
-                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div className="w-full h-2 bg-gray-200 rounded-full">
                                             <div
-                                                className="bg-blue-600 h-2 rounded-full"
+                                                className="h-2 bg-blue-600 rounded-full"
                                                 style={{ width: `${Math.max(enhancedData.enrichment.stats.enrichment_rate, 2)}%` }}
                                             ></div>
                                         </div>
 
                                         {enhancedData.enrichment.stats.enriched_spans === 0 && (
-                                            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                                            <div className="p-3 bg-yellow-50 rounded-md border border-yellow-200">
                                                 <p className="text-sm text-yellow-800">
                                                     <strong>AI Enrichment Starting:</strong> Spans are being processed and enriched with AI insights.
                                                     Check back in a few minutes to see enriched data.
@@ -350,8 +360,8 @@ const EnhancedTelemetryContent: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white p-6 rounded-lg shadow-sm border">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Processing Types</h3>
+                                <div className="p-6 bg-white rounded-lg border shadow-sm">
+                                    <h3 className="mb-4 text-lg font-medium text-gray-900">Processing Types</h3>
 
                                     <div className="space-y-3">
                                         {enhancedData.enrichment.stats.processing_types.length > 0 ? (
@@ -371,11 +381,11 @@ const EnhancedTelemetryContent: React.FC = () => {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="text-center py-8">
-                                                <div className="text-gray-400 mb-2">
-                                                    <Brain className="w-12 h-12 mx-auto" />
+                                            <div className="py-8 text-center">
+                                                <div className="mb-2 text-gray-400">
+                                                    <Brain className="mx-auto w-12 h-12" />
                                                 </div>
-                                                <p className="text-gray-500 text-sm">
+                                                <p className="text-sm text-gray-500">
                                                     Processing types will appear here once AI enrichment begins analyzing your spans.
                                                 </p>
                                             </div>
@@ -385,9 +395,9 @@ const EnhancedTelemetryContent: React.FC = () => {
                             </div>
 
                             {/* AI Recommendations */}
-                            <div className="bg-white rounded-lg shadow-sm border">
+                            <div className="bg-white rounded-lg border shadow-sm">
                                 <div className="px-6 py-4 border-b border-gray-200">
-                                    <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                                    <h3 className="flex gap-2 items-center text-lg font-medium text-gray-900">
                                         <Brain className="w-5 h-5 text-purple-500" />
                                         AI Recommendations
                                     </h3>
@@ -395,16 +405,16 @@ const EnhancedTelemetryContent: React.FC = () => {
 
                                 <div className="p-6">
                                     {enhancedData.enrichment.ai_recommendations.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <div className="text-gray-400 mb-4">
-                                                <Brain className="w-16 h-16 mx-auto" />
+                                        <div className="py-8 text-center">
+                                            <div className="mb-4 text-gray-400">
+                                                <Brain className="mx-auto w-16 h-16" />
                                             </div>
-                                            <h4 className="text-lg font-medium text-gray-700 mb-2">AI Recommendations Coming Soon</h4>
-                                            <p className="text-gray-500 text-sm max-w-md mx-auto">
+                                            <h4 className="mb-2 text-lg font-medium text-gray-700">AI Recommendations Coming Soon</h4>
+                                            <p className="mx-auto max-w-md text-sm text-gray-500">
                                                 Once your spans are enriched with AI insights, you'll see personalized recommendations for cost optimization,
                                                 performance improvements, and routing decisions here.
                                             </p>
-                                            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-md p-3 max-w-md mx-auto">
+                                            <div className="p-3 mx-auto mt-4 max-w-md bg-blue-50 rounded-md border border-blue-200">
                                                 <p className="text-sm text-blue-800">
                                                     <strong>Current Status:</strong> {formatNumber(enhancedData.enrichment.stats.total_spans)} spans detected,
                                                     AI enrichment in progress...
@@ -414,22 +424,22 @@ const EnhancedTelemetryContent: React.FC = () => {
                                     ) : (
                                         <div className="space-y-6">
                                             {enhancedData.enrichment.ai_recommendations.map((rec, index) => (
-                                                <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
+                                                <div key={index} className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <h4 className="font-medium text-gray-900">{rec.operation}</h4>
                                                         {rec.cost_impact && (
-                                                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                            <span className="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
                                                                 ${rec.cost_impact.toFixed(4)} impact
                                                             </span>
                                                         )}
                                                     </div>
 
-                                                    <p className="text-gray-700 mb-3">{rec.insight}</p>
+                                                    <p className="mb-3 text-gray-700">{rec.insight}</p>
 
-                                                    <div className="flex items-center justify-between text-sm">
+                                                    <div className="flex justify-between items-center text-sm">
                                                         <span className="text-gray-500">Trace: {rec.trace_id.substring(0, 16)}...</span>
                                                         {rec.routing_decision && (
-                                                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                                            <span className="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">
                                                                 {rec.routing_decision}
                                                             </span>
                                                         )}
@@ -442,33 +452,33 @@ const EnhancedTelemetryContent: React.FC = () => {
                             </div>
 
                             {/* Recent Insights */}
-                            <div className="bg-white rounded-lg shadow-sm border">
+                            <div className="bg-white rounded-lg border shadow-sm">
                                 <div className="px-6 py-4 border-b border-gray-200">
                                     <h3 className="text-lg font-medium text-gray-900">Recent AI Insights</h3>
                                 </div>
 
                                 <div className="p-6">
                                     {enhancedData.enrichment.recent_insights.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <div className="text-gray-400 mb-3">
-                                                <Eye className="w-12 h-12 mx-auto" />
+                                        <div className="py-8 text-center">
+                                            <div className="mb-3 text-gray-400">
+                                                <Eye className="mx-auto w-12 h-12" />
                                             </div>
-                                            <h4 className="text-lg font-medium text-gray-700 mb-2">Recent Insights</h4>
-                                            <p className="text-gray-500 text-sm">
+                                            <h4 className="mb-2 text-lg font-medium text-gray-700">Recent Insights</h4>
+                                            <p className="text-sm text-gray-500">
                                                 AI-generated insights from your recent operations will appear here once enrichment begins.
                                             </p>
                                         </div>
                                     ) : (
                                         <div className="space-y-4">
                                             {enhancedData.enrichment.recent_insights.slice(0, 5).map((insight, index) => (
-                                                <div key={index} className="border-l-4 border-blue-500 pl-4">
+                                                <div key={index} className="pl-4 border-l-4 border-blue-500">
                                                     <div className="flex justify-between items-start">
                                                         <div>
                                                             <h4 className="font-medium text-gray-900">{insight.operation_name}</h4>
-                                                            <p className="text-sm text-gray-600 mt-1">{insight.insights}</p>
+                                                            <p className="mt-1 text-sm text-gray-600">{insight.insights}</p>
                                                         </div>
                                                         {insight.cost_usd && (
-                                                            <span className="text-sm font-medium text-green-600 ml-4">
+                                                            <span className="ml-4 text-sm font-medium text-green-600">
                                                                 ${insight.cost_usd.toFixed(4)}
                                                             </span>
                                                         )}
@@ -481,7 +491,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="text-center py-12">
+                        <div className="py-12 text-center">
                             <p className="text-gray-500">No enhanced data available</p>
                         </div>
                     )}

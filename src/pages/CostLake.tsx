@@ -72,36 +72,36 @@ export const CostLake: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center gap-4 mb-4">
+        <div className="px-6 py-8 mx-auto max-w-7xl">
+          <div className="flex gap-4 items-center mb-4">
             <div className="p-3 bg-blue-100 rounded-xl">
               <Database className="w-8 h-8 text-blue-600" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Cost Lake</h1>
-              <p className="text-gray-600 mt-1">
+              <p className="mt-1 text-gray-600">
                 Unified telemetry lake with semantic search and AI-powered cost analysis
               </p>
             </div>
           </div>
 
           {/* Key Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="flex gap-3 items-center p-4 bg-blue-50 rounded-lg">
               <Sparkles className="w-5 h-5 text-blue-600" />
               <div>
                 <div className="font-medium text-blue-900">Natural Language Queries</div>
                 <div className="text-sm text-blue-700">Ask "why did costs spike?" in plain English</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+            <div className="flex gap-3 items-center p-4 bg-green-50 rounded-lg">
               <TrendingUp className="w-5 h-5 text-green-600" />
               <div>
                 <div className="font-medium text-green-900">Semantic Search</div>
                 <div className="text-sm text-green-700">Find patterns and anomalies automatically</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg">
+            <div className="flex gap-3 items-center p-4 bg-purple-50 rounded-lg">
               <Brain className="w-5 h-5 text-purple-600" />
               <div>
                 <div className="font-medium text-purple-900">AI-Powered Insights</div>
@@ -114,7 +114,7 @@ export const CostLake: React.FC = () => {
 
       {/* Navigation Tabs */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="px-6 mx-auto max-w-7xl">
           <nav className="flex space-x-8">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -137,11 +137,11 @@ export const CostLake: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="px-6 py-8 mx-auto max-w-7xl">
         {activeTab === 'query' && (
           <div>
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Ask Anything About Your Costs</h2>
+              <h2 className="mb-2 text-2xl font-bold text-gray-900">Ask Anything About Your Costs</h2>
               <p className="text-gray-600">
                 Use natural language to query your telemetry data. Ask questions like "What are my most expensive AI operations?"
                 or "Show me slow requests that cost more than $0.01"
@@ -156,7 +156,7 @@ export const CostLake: React.FC = () => {
             {showNotebookGallery ? (
               <div>
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Analysis Notebooks</h2>
+                  <h2 className="mb-2 text-2xl font-bold text-gray-900">Analysis Notebooks</h2>
                   <p className="text-gray-600">
                     Create and execute interactive cost analysis notebooks with embedded queries,
                     visualizations, and AI-generated insights.
@@ -172,7 +172,7 @@ export const CostLake: React.FC = () => {
                 <div className="mb-6">
                   <button
                     onClick={handleBackToGallery}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
+                    className="font-medium text-blue-600 hover:text-blue-800"
                   >
                     ← Back to Notebooks
                   </button>
@@ -189,7 +189,7 @@ export const CostLake: React.FC = () => {
         {activeTab === 'vectorization' && (
           <div>
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Vector Search Setup</h2>
+              <h2 className="mb-2 text-2xl font-bold text-gray-900">Vector Search Setup</h2>
               <p className="text-gray-600">
                 Configure and manage semantic search capabilities for your telemetry data
               </p>
@@ -207,7 +207,7 @@ export const CostLake: React.FC = () => {
         {activeTab === 'telemetry' && (
           <div>
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Telemetry Data Management</h2>
+              <h2 className="mb-2 text-2xl font-bold text-gray-900">Telemetry Data Management</h2>
               <p className="text-gray-600">
                 View your telemetry records and vectorize them for semantic search capabilities.
                 Vectorized data enables natural language queries and AI-powered insights.
