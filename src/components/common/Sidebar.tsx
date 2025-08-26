@@ -44,7 +44,7 @@ interface SidebarProps {
 export type NavItem = {
   name: string;
   href: string;
-  icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+  icon: React.ComponentType<React.ComponentProps<'svg'>>;
   description?: string;
 };
 
@@ -151,7 +151,13 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
     setShowTooltip(false);
   };
 
-  useEffect(() => () => timeoutRef.current && clearTimeout(timeoutRef.current), []);
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!show) return <>{children}</>;
 
@@ -212,7 +218,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       try {
         const parsed = JSON.parse(saved) as Record<string, boolean>;
         setExpanded(parsed);
-      } catch { }
+      } catch {
+        // Ignore parsing errors, use default state
+        console.error('Error parsing sidebar state:', saved);
+      }
     } else {
       // Default: open the category for the active route
       const activeCat = routeToCategory.get(location.pathname);
