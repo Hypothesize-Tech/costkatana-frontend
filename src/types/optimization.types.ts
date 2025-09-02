@@ -56,6 +56,15 @@ export interface OptimizationMetadata {
     tokens: number;
     cost: number;
   }>;
+  cortexOptimized?: boolean;
+  cortexMetrics?: {
+    encodingReduction?: number;
+    semanticCompression?: number;
+    processingTime?: number;
+    cacheUtilization?: number;
+    tokenReduction?: number;
+    costReduction?: number;
+  };
   [key: string]: any;
 }
 
@@ -71,6 +80,7 @@ export interface OptimizationRequest {
   service: string;
   model: string;
   context?: string;
+  useCortex?: boolean;
   options?: {
     targetReduction?: number;
     preserveIntent?: boolean;

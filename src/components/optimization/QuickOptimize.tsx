@@ -20,6 +20,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
   className = "",
 }) => {
   const [prompt, setPrompt] = useState("");
+  const [useCortex, setUseCortex] = useState(false);
   const [optimizationResult, setOptimizationResult] = useState<any>(null);
   const [showResult, setShowResult] = useState(false);
   const { showNotification } = useNotifications();
@@ -31,6 +32,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         prompt,
         service: "openai",
         model: "gpt-4",
+        useCortex,
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
@@ -66,6 +68,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
   const handleReset = () => {
     setPrompt("");
+    setUseCortex(false);
     setOptimizationResult(null);
     setShowResult(false);
   };
@@ -95,6 +98,21 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Paste your AI prompt here for instant optimization..."
               />
+            </div>
+
+            {/* Cortex Toggle */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="quick-cortex-toggle"
+                checked={useCortex}
+                onChange={(e) => setUseCortex(e.target.checked)}
+                className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+              />
+              <label htmlFor="quick-cortex-toggle" className="text-sm text-gray-700">
+                <span className="font-medium">🧠 Enable Cortex</span>
+                <span className="ml-1 text-gray-500">(Advanced semantic optimization)</span>
+              </label>
             </div>
 
             <button
@@ -207,8 +225,8 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                             <p className="text-sm text-gray-600">
                               {renderFormattedContent(
                                 suggestion.description ||
-                                  suggestion.explanation ||
-                                  "",
+                                suggestion.explanation ||
+                                "",
                               )}
                             </p>
                           </div>

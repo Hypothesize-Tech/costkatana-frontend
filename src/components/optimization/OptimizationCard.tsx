@@ -45,6 +45,11 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               >
                 {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") ? "Applied" : "Pending"}
               </span>
+              {optimization.metadata?.cortexOptimized && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  🧠 Cortex Enhanced
+                </span>
+              )}
               <span className="text-sm text-gray-500">
                 {formatDate(optimization.createdAt)}
               </span>
@@ -126,6 +131,49 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Cortex Metrics */}
+            {optimization.metadata?.cortexMetrics && (
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <h4 className="text-sm font-medium text-purple-900 mb-3">
+                  🧠 Cortex Meta-Language Metrics
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                  {optimization.metadata.cortexMetrics.encodingReduction && (
+                    <div>
+                      <span className="text-purple-700">Encoding Reduction:</span>
+                      <span className="ml-1 font-medium text-purple-900">
+                        {optimization.metadata.cortexMetrics.encodingReduction}%
+                      </span>
+                    </div>
+                  )}
+                  {optimization.metadata.cortexMetrics.semanticCompression && (
+                    <div>
+                      <span className="text-purple-700">Semantic Compression:</span>
+                      <span className="ml-1 font-medium text-purple-900">
+                        {optimization.metadata.cortexMetrics.semanticCompression}%
+                      </span>
+                    </div>
+                  )}
+                  {optimization.metadata.cortexMetrics.processingTime && (
+                    <div>
+                      <span className="text-purple-700">Processing Time:</span>
+                      <span className="ml-1 font-medium text-purple-900">
+                        {optimization.metadata.cortexMetrics.processingTime}ms
+                      </span>
+                    </div>
+                  )}
+                  {optimization.metadata.cortexMetrics.cacheUtilization && (
+                    <div>
+                      <span className="text-purple-700">Cache Hit:</span>
+                      <span className="ml-1 font-medium text-purple-900">
+                        {optimization.metadata.cortexMetrics.cacheUtilization}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Suggestions */}
             {optimization.suggestions &&

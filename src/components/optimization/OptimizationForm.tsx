@@ -36,6 +36,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
     service: "openai",
     model: "gpt-4",
     prompt: "",
+    useCortex: false,
   });
 
   const [showPreview, setShowPreview] = useState(false);
@@ -46,11 +47,12 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
 
   // Preview mutation for real-time optimization preview
   const previewMutation = useMutation({
-    mutationFn: (data: { prompt: string; model: string; service: string }) =>
+    mutationFn: (data: { prompt: string; model: string; service: string; useCortex: boolean }) =>
       optimizationService.getOptimizationPreview({
         prompt: data.prompt,
         model: data.model,
         service: data.service,
+        useCortex: data.useCortex,
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
@@ -69,11 +71,12 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
 
   // Create optimization mutation
   const createMutation = useMutation({
-    mutationFn: (data: { prompt: string; model: string; service: string }) =>
+    mutationFn: (data: { prompt: string; model: string; service: string; useCortex: boolean }) =>
       optimizationService.createOptimization({
         prompt: data.prompt,
         model: data.model,
         service: data.service,
+        useCortex: data.useCortex,
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
@@ -196,6 +199,29 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                       </option>
                     ))}
                   </select>
+                </div>
+              </div>
+
+              {/* Cortex Toggle */}
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium text-purple-900 mb-1">
+                      🧠 Cortex Meta-Language Optimization
+                    </h3>
+                    <p className="text-sm text-purple-700">
+                      Enable advanced semantic optimization using Cortex to reduce token costs by up to 60%
+                    </p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer ml-4">
+                    <input
+                      type="checkbox"
+                      checked={formData.useCortex}
+                      onChange={(e) => handleChange("useCortex", e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                  </label>
                 </div>
               </div>
 
@@ -335,7 +361,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   Optimization Suggestions
                 </h4>
                 {previewData.suggestions &&
-                previewData.suggestions.length > 0 ? (
+                  previewData.suggestions.length > 0 ? (
                   <div className="space-y-4">
                     {formatOptimizationSuggestions(previewData.suggestions).map(
                       (suggestion: any, index: number) => (
@@ -379,13 +405,12 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                           {suggestion.impact && (
                             <div className="mt-2">
                               <span
-                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                  suggestion.impact === "high"
-                                    ? "bg-red-100 text-red-800"
-                                    : suggestion.impact === "medium"
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : "bg-green-100 text-green-800"
-                                }`}
+                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${suggestion.impact === "high"
+                                  ? "bg-red-100 text-red-800"
+                                  : suggestion.impact === "medium"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-green-100 text-green-800"
+                                  }`}
                               >
                                 {suggestion.impact} impact
                               </span>
