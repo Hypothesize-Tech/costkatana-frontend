@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const api: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
     timeout: 60000, // Increased to 60 seconds
+    withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',
     },
@@ -17,6 +18,7 @@ const api: AxiosInstance = axios.create({
 const chatApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
     timeout: 120000, // 2 minutes timeout for chat operations
+    withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',
     },
@@ -26,6 +28,7 @@ const chatApi: AxiosInstance = axios.create({
 const analyticsApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
     timeout: 15000, // 15 seconds timeout for analytics
+    withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',
     },
@@ -35,6 +38,7 @@ const analyticsApi: AxiosInstance = axios.create({
 const longRunningApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
     timeout: 25000, // 25 seconds for forecasting operations
+    withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',
     },
@@ -61,15 +65,43 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
         (response: AxiosResponse) => {
             return response;
         },
-        (error: AxiosError) => {
+        async (error: AxiosError) => {
             if (error.response?.status === 401) {
-                // Don't auto-logout for MFA-related endpoints
                 const url = error.config?.url || '';
                 const isMFAEndpoint = url.includes('/mfa/') || url.includes('/auth/login');
+                const isRefreshEndpoint = url.includes('/auth/refresh');
                 
-                if (!isMFAEndpoint) {
+                // Don't auto-logout for MFA-related endpoints or refresh endpoint
+                if (!isMFAEndpoint && !isRefreshEndpoint) {
+                    // Try to refresh token first
+                    try {
+                        const refreshToken = authService.getRefreshToken();
+                        if (refreshToken) {
+                            await authService.refreshToken();
+                            // Retry the original request with new token
+                            if (error.config) {
+                                const newToken = authService.getToken();
+                                if (newToken && error.config.headers) {
+                                    error.config.headers.Authorization = `Bearer ${newToken}`;
+                                }
+                                return instance.request(error.config);
+                            }
+                        }
+                    } catch (refreshError) {
+                        // Refresh failed, clear auth and redirect
+                        authService.logout();
+                        // Use a more gentle redirect that works with React Router
+                        if (window.location.pathname !== '/login') {
+                            window.location.href = '/login';
+                        }
+                    }
+                } else if (isRefreshEndpoint) {
+                    // If refresh endpoint returns 401, the refresh token is invalid
+                    // Clear auth and redirect to login
                     authService.logout();
-                    window.location.href = '/login';
+                    if (window.location.pathname !== '/login') {
+                        window.location.href = '/login';
+                    }
                 }
             }
             return Promise.reject(error);

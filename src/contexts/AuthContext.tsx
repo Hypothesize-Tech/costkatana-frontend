@@ -22,10 +22,11 @@ interface AuthContextType {
     availableMethods?: Array<'email' | 'totp'>;
   } | null;
   login: (credentials: LoginCredentials) => Promise<void>;
-  completeMFALogin: (result: any) => void;
+  completeMFALogin: (result: { user: User; accessToken: string; refreshToken: string }) => void;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
+  refreshAuth: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isValidatingToken, setIsValidatingToken] = useState(false);
+  const [isRefreshingToken, setIsRefreshingToken] = useState(false);
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaData, setMfaData] = useState<{
     mfaToken?: string;
@@ -54,25 +57,88 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   } | null>(null);
   const navigate = useNavigate();
 
+  // Token validation function
+  const validateAndRefreshToken = useCallback(async (): Promise<boolean> => {
+    const token = authService.getToken();
+    const refreshToken = authService.getRefreshToken();
+
+    if (!token) {
+      return false;
+    }
+
+    // Check if token is expired by trying to decode it
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      // If token is expired, try to refresh
+      if (payload.exp && payload.exp < currentTime) {
+        if (!refreshToken) {
+          // No refresh token, user needs to login again
+          authService.logout();
+          return false;
+        }
+
+        if (isRefreshingToken) {
+          // Already refreshing, wait a bit and return false to prevent loops
+          return false;
+        }
+
+        try {
+          setIsRefreshingToken(true);
+          const newToken = await authService.refreshToken();
+          setAccessToken(newToken);
+          return true;
+        } catch (error) {
+          // Refresh failed, clear auth and redirect to login
+          console.error('Token refresh failed:', error);
+          authService.logout();
+          setUser(null);
+          setAccessToken(null);
+          return false;
+        } finally {
+          setIsRefreshingToken(false);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      // Token is malformed, clear auth
+      authService.logout();
+      return false;
+    }
+  }, [isRefreshingToken]);
+
   // Initialize auth state
   useEffect(() => {
-    const initAuth = () => {
+    const initAuth = async () => {
       try {
+        setIsValidatingToken(true);
         const currentUser = authService.getUser();
         const token = authService.getToken();
+
         if (currentUser && token) {
-          setUser(currentUser);
-          setAccessToken(token);
+          const isValid = await validateAndRefreshToken();
+          if (isValid) {
+            setUser(currentUser);
+            setAccessToken(authService.getToken());
+          } else {
+            setUser(null);
+            setAccessToken(null);
+          }
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
+        setUser(null);
+        setAccessToken(null);
       } finally {
         setIsLoading(false);
+        setIsValidatingToken(false);
       }
     };
 
     initAuth();
-  }, []);
+  }, [validateAndRefreshToken]);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {
@@ -110,8 +176,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         sessionStorage.setItem("showTokenOnLoad", "true");
         toast.success("Welcome back!");
         navigate("/dashboard");
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || "Login failed");
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error && 'response' in error
+          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed"
+          : "Login failed";
+        toast.error(errorMessage);
         setUser(null);
         setAccessToken(null);
         setMfaRequired(false);
@@ -124,7 +193,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 
   const completeMFALogin = useCallback(
-    (result: any) => {
+    (result: { user: User; accessToken: string; refreshToken: string }) => {
       try {
         // Store tokens using AuthService
         authService.setTokens(result.accessToken, result.refreshToken);
@@ -142,7 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         sessionStorage.setItem("showTokenOnLoad", "true");
         toast.success("Welcome back!");
         navigate("/dashboard");
-      } catch (error: any) {
+      } catch (error: unknown) {
         toast.error("Failed to complete login");
         setUser(null);
         setAccessToken(null);
@@ -164,8 +233,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(response.data);
         toast.success("Registration successful! Please verify your email.");
         navigate("/dashboard");
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || "Registration failed");
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error && 'response' in error
+          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Registration failed"
+          : "Registration failed";
+        toast.error(errorMessage);
         throw error;
       } finally {
         setIsLoading(false);
@@ -195,10 +267,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(updatedUser));
   }, []);
 
+  const refreshAuth = useCallback(async (): Promise<boolean> => {
+    if (isValidatingToken || isRefreshingToken) {
+      return false; // Already validating or refreshing
+    }
+
+    try {
+      setIsValidatingToken(true);
+      const isValid = await validateAndRefreshToken();
+      if (isValid) {
+        const currentUser = authService.getUser();
+        const token = authService.getToken();
+        setUser(currentUser);
+        setAccessToken(token);
+      } else {
+        setUser(null);
+        setAccessToken(null);
+      }
+      return isValid;
+    } catch (error) {
+      console.error("Token refresh error:", error);
+      setUser(null);
+      setAccessToken(null);
+      return false;
+    } finally {
+      setIsValidatingToken(false);
+    }
+  }, [isValidatingToken, isRefreshingToken, validateAndRefreshToken]);
+
   const value = {
     user,
-    isAuthenticated: !!user,
-    isLoading,
+    isAuthenticated: !!user && !!accessToken && !isValidatingToken && !isRefreshingToken,
+    isLoading: isLoading || isValidatingToken || isRefreshingToken,
     accessToken,
     mfaRequired,
     mfaData,
@@ -207,6 +307,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     updateUser,
+    refreshAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

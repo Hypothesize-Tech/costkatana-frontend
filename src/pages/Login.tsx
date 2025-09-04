@@ -2,23 +2,34 @@ import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginForm } from "../components/auth/LoginForm";
 import { MFAVerification } from "../components/auth/MFAVerification";
+import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
 import toast from "react-hot-toast";
 
 export default function Login() {
-  const { isAuthenticated, mfaRequired, mfaData, completeMFALogin } = useAuth();
+  const { isAuthenticated, isLoading, mfaRequired, mfaData, completeMFALogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
-    if (isAuthenticated) {
+    // Only redirect if we're sure the user is authenticated and not loading
+    if (isAuthenticated && !isLoading) {
       navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate, from]);
+  }, [isAuthenticated, isLoading, navigate, from]);
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 min-h-screen bg-white dark:bg-gray-900 items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 min-h-screen bg-white dark:bg-gray-900">
@@ -45,9 +56,9 @@ export default function Login() {
                 userId={mfaData.userId!}
                 availableMethods={mfaData.availableMethods!}
                 onSuccess={completeMFALogin}
-                onError={(error: any) => {
+                onError={(error: unknown) => {
                   console.error('MFA Error:', error);
-                  toast.error(error.message)
+                  toast.error(error instanceof Error ? error.message : 'MFA verification failed')
                   // Could show error toast here
                 }}
                 embedded={true}
