@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import { Routes, Route, Navigate } from 'react-router-dom';
 import CachePage from './pages/Cache';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // Contexts
@@ -59,8 +58,9 @@ import { Security } from './pages/Security';
 import { CPIDashboard } from './components/cpi/CPIDashboard';
 import CostDebuggerPage from './pages/CostDebugger';
 import UnexplainedCosts from './pages/UnexplainedCosts';
+import SAST from './pages/SAST';
 
-const queryClient = new QueryClient();
+
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -119,6 +119,10 @@ function AppContent() {
           <Route
             path="unexplained-costs"
             element={<UnexplainedCosts />}
+          />
+          <Route
+            path="sast"
+            element={<SAST />}
           />
           <Route
             path="cache"
@@ -226,20 +230,18 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider>
-          <NotificationProvider>
-            <ProjectProvider>
-              <MemoryProvider>
-                <AppContent />
-              </MemoryProvider>
-            </ProjectProvider>
-          </NotificationProvider>
-        </ThemeProvider>
-      </AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <NotificationProvider>
+          <ProjectProvider>
+            <MemoryProvider>
+              <AppContent />
+            </MemoryProvider>
+          </ProjectProvider>
+        </NotificationProvider>
+      </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </AuthProvider>
   );
 }
 

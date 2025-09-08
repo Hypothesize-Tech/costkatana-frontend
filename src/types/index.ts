@@ -5,6 +5,7 @@ export * from "./usage.types";
 export * from "./intelligence.types";
 export * from "./project.types";
 export * from "./webhook.types";
+export * from "./cortex.types";
 
 // AI Provider types
 export enum AIProvider {

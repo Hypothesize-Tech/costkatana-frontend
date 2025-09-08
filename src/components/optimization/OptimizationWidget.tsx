@@ -9,6 +9,7 @@ import {
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { optimizationService } from "@/services/optimization.service";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { formatSmartNumber } from "@/utils/formatters";
 
 interface OptimizationWidgetProps {
   prompt: string;
@@ -102,12 +103,12 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
                 Estimated Savings
               </span>
               <span className="text-lg font-bold text-green-600">
-                ${optimizationResult.totalSavings.toFixed(4)}
+                ${formatSmartNumber(optimizationResult.totalSavings)}
               </span>
             </div>
             {optimizationResult.improvementPercentage && (
               <div className="mt-1 text-xs text-green-700">
-                {optimizationResult.improvementPercentage.toFixed(1)}%
+                {formatSmartNumber(optimizationResult.improvementPercentage)}%
                 improvement
               </div>
             )}
@@ -129,7 +130,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
                       {suggestion.type.replace(/_/g, " ")}
                     </h5>
                     <span className="text-xs text-green-600 font-medium">
-                      ${suggestion.estimatedSavings.toFixed(4)}
+                      ${formatSmartNumber(suggestion.estimatedSavings)}
                     </span>
                   </div>
 

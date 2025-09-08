@@ -30,6 +30,10 @@ export interface Optimization {
   appliedCount: number;
   feedback?: OptimizationFeedback;
   tags?: string[];
+  
+  // Cortex-specific fields
+  cortexEnabled?: boolean;
+  
   createdAt: string;
   updatedAt: string;
 }
@@ -56,6 +60,30 @@ export interface OptimizationMetadata {
     tokens: number;
     cost: number;
   }>;
+  
+  // Cortex-specific metadata
+  cortex?: {
+    processingTime: number;
+    encodingConfidence: number;
+    decodingConfidence: number;
+    semanticIntegrity: number;
+    tokensSaved: number;
+    reductionPercentage: number;
+    optimizationsApplied: number;
+    cortexModel: {
+      encoder: string;
+      core: string;
+      decoder: string;
+    };
+    error?: string;
+    fallbackUsed?: boolean;
+    detailsForDebugging?: {
+      errorType?: string;
+      errorMessage?: string;
+      initStatus?: boolean;
+    };
+  };
+  
   [key: string]: any;
 }
 
@@ -76,6 +104,19 @@ export interface OptimizationRequest {
     preserveIntent?: boolean;
     suggestAlternatives?: boolean;
   };
+  
+  // Cortex-specific fields
+  enableCortex?: boolean;
+  cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+  cortexEncodingModel?: string;
+  cortexCoreModel?: string;
+  cortexDecodingModel?: string;
+  cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
+  cortexFormat?: 'plain' | 'markdown' | 'structured' | 'json';
+  cortexSemanticCache?: boolean;
+  cortexStructuredContext?: boolean;
+  cortexPreserveSemantics?: boolean;
+  cortexIntelligentRouting?: boolean;
 }
 
 export interface OptimizationOpportunity {

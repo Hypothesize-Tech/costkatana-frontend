@@ -19,7 +19,7 @@ import { OptimizationForm } from "../components/optimization/OptimizationForm";
 import { BulkOptimizer } from "../components/optimization/BulkOptimizer";
 import { QuickOptimize } from "../components/optimization/QuickOptimize";
 import { OptimizedPromptDisplay } from "../components/common/FormattedContent";
-import { formatCurrency } from "../utils/formatters";
+import { formatCurrency, formatSmartNumber } from "../utils/formatters";
 import { useNotifications } from "../contexts/NotificationContext";
 
 export const Optimization: React.FC = () => {
@@ -31,29 +31,111 @@ export const Optimization: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: optimizations, isLoading: optimizationsLoading } = useQuery(
-    ["optimizations", currentPage, pageSize, filter],
-    () =>
-      optimizationService.getOptimizations({
+  // Debug logging
+  console.log("🔄 OPTIMIZATION PAGE: Component render", {
+    filter,
+    currentPage,
+    pageSize,
+    timestamp: new Date().toISOString()
+  });
+
+  // Direct API calls instead of React Query
+  const [optimizations, setOptimizations] = useState<any>(null);
+  const [optimizationsLoading, setOptimizationsLoading] = useState(false);
+  const [optimizationsError, setOptimizationsError] = useState<any>(null);
+
+  const [summary, setSummary] = useState<any>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState<any>(null);
+
+  // Fetch optimizations
+  const fetchOptimizations = async () => {
+    console.log("🚀 DIRECT API CALL: Starting optimizations fetch", {
+      page: currentPage,
+      limit: pageSize,
+      filter,
+      timestamp: new Date().toISOString()
+    });
+
+    setOptimizationsLoading(true);
+    setOptimizationsError(null);
+
+    try {
+      const result = await optimizationService.getOptimizations({
         page: currentPage,
         limit: pageSize,
         sort: "createdAt",
         order: "desc",
         applied: filter === "applied" ? true : filter === "pending" ? false : undefined,
-      }),
-    {
-      refetchInterval: 30000, // Refresh every 30 seconds
-    },
-  );
+      });
 
-  // Get optimization summary for accurate totals
-  const { data: summary, isLoading: summaryLoading } = useQuery(
-    ["optimization-summary"],
-    () => optimizationService.getOptimizationSummary("all"),
-    {
-      refetchInterval: 30000, // Refresh every 30 seconds
-    },
-  );
+      console.log("✅ DIRECT API CALL: Optimizations success", {
+        totalResults: result.data?.length || 0,
+        pagination: result.pagination,
+        timestamp: new Date().toISOString()
+      });
+
+      setOptimizations(result);
+    } catch (error) {
+      console.error("❌ DIRECT API CALL: Optimizations error", error);
+      setOptimizationsError(error);
+    } finally {
+      setOptimizationsLoading(false);
+    }
+  };
+
+  // Fetch summary
+  const fetchSummary = async () => {
+    console.log("📊 DIRECT API CALL: Starting summary fetch", new Date().toISOString());
+
+    setSummaryLoading(true);
+    setSummaryError(null);
+
+    try {
+      const result = await optimizationService.getOptimizationSummary("all");
+
+      console.log("✅ DIRECT API CALL: Summary success", result);
+
+      setSummary(result);
+    } catch (error) {
+      console.error("❌ DIRECT API CALL: Summary error", error);
+      setSummaryError(error);
+    } finally {
+      setSummaryLoading(false);
+    }
+  };
+
+  // Fetch data on mount and when dependencies change
+  React.useEffect(() => {
+    fetchOptimizations();
+  }, [currentPage, pageSize, filter]);
+
+  React.useEffect(() => {
+    fetchSummary();
+  }, []);
+
+  // Check auth status and API call status
+  React.useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    console.log("🔐 AUTH CHECK:", {
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+      tokenPreview: token ? `${token.slice(0, 20)}...` : 'no token',
+      timestamp: new Date().toISOString()
+    });
+
+    // Debug API call status
+    console.log("🔍 DIRECT API DEBUG:", {
+      optimizationsLoading,
+      summaryLoading,
+      optimizationsError: optimizationsError?.message || 'none',
+      summaryError: summaryError?.message || 'none',
+      hasOptimizations: !!optimizations,
+      hasSummary: !!summary,
+      optimizationsCount: optimizations?.data?.length || 0,
+      timestamp: new Date().toISOString()
+    });
+  }, [optimizationsLoading, summaryLoading, optimizationsError, summaryError, optimizations, summary]);
 
   // Get counts for each filter
   const getFilterCount = (filterType: "all" | "pending" | "applied") => {
@@ -219,7 +301,7 @@ export const Optimization: React.FC = () => {
                   Avg Improvement
                 </p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {calculatedStats.avgImprovement.toFixed(1)}%
+                  {formatSmartNumber(calculatedStats.avgImprovement)}%
                 </p>
               </div>
               <ArrowTrendingUpIcon className="w-12 h-12 text-purple-600 opacity-20" />
@@ -302,20 +384,19 @@ export const Optimization: React.FC = () => {
           <div className="grid grid-cols-4 gap-4 mb-4">
             <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
               <div className="text-lg font-bold text-green-600">
-                {formatCurrency(getFilteredOptimizations()[0]?.costSaved || getFilteredOptimizations()[0]?.savings || 0)}
+                ${formatSmartNumber(getFilteredOptimizations()[0]?.costSaved || getFilteredOptimizations()[0]?.savings || 0)}
               </div>
               <div className="text-xs text-green-700">Savings</div>
             </div>
             <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
               <div className="text-lg font-bold text-orange-600">
-                {formatCurrency(getFilteredOptimizations()[0]?.originalCost || 0)}
+                ${formatSmartNumber(getFilteredOptimizations()[0]?.originalCost || 0)}
               </div>
               <div className="text-xs text-orange-700">Original Cost</div>
             </div>
             <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
               <div className="text-lg font-bold text-blue-600">
-                {getFilteredOptimizations()[0]?.improvementPercentage?.toFixed(1) || "0"}
-                %
+                {formatSmartNumber(getFilteredOptimizations()[0]?.improvementPercentage || 0)}%
               </div>
               <div className="text-xs text-blue-700">Improvement</div>
             </div>
@@ -388,13 +469,13 @@ export const Optimization: React.FC = () => {
       {/* Optimizations List */}
       <div className="space-y-4">
         {getFilteredOptimizations()
-          .sort((a, b) => {
+          .sort((a: any, b: any) => {
             // Sort by createdAt date in descending order (most recent first)
             const dateA = new Date(a.createdAt || a.updatedAt || 0);
             const dateB = new Date(b.createdAt || b.updatedAt || 0);
             return dateB.getTime() - dateA.getTime();
           })
-          .map((optimization) => (
+          .map((optimization: any) => (
             <OptimizationCard
               key={optimization._id}
               optimization={optimization}

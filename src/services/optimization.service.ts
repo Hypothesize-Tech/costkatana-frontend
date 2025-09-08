@@ -23,14 +23,72 @@ class OptimizationService {
       enableCompression?: boolean;
       enableContextTrimming?: boolean;
       enableRequestFusion?: boolean;
+      // Cortex-specific parameters
+      enableCortex?: boolean;
+      cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+      cortexEncodingModel?: string;
+      cortexCoreModel?: string;
+      cortexDecodingModel?: string;
+      cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
+      cortexFormat?: 'plain' | 'markdown' | 'structured' | 'json';
+      cortexSemanticCache?: boolean;
+      cortexStructuredContext?: boolean;
+      cortexPreserveSemantics?: boolean;
+      cortexIntelligentRouting?: boolean;
     },
   ): Promise<Optimization> {
     try {
+      console.log("🚀 OPTIMIZATION SERVICE: Creating optimization", {
+        requestKeys: Object.keys(request),
+        enableCortex: request.enableCortex,
+        preserveSemantics: request.cortexPreserveSemantics,
+        timestamp: new Date().toISOString()
+      });
+
       const response = await apiClient.post("/optimizations", request);
-      return response.data.data;
-    } catch (error) {
-      console.error("Error creating optimization:", error);
-      throw error;
+      
+      console.log("✅ OPTIMIZATION SERVICE: Response received", {
+        status: response.status,
+        hasData: !!response.data,
+        hasDataData: !!response.data?.data,
+        dataKeys: response.data?.data ? Object.keys(response.data.data) : [],
+        timestamp: new Date().toISOString()
+      });
+
+      // Validate response structure before returning
+      if (!response.data || !response.data.data) {
+        throw new Error('Invalid response structure - missing data');
+      }
+
+      const optimization = response.data.data;
+      
+      // Ensure optimization has required properties with safe defaults
+      const safeOptimization = {
+        ...optimization,
+        suggestions: Array.isArray(optimization.suggestions) ? optimization.suggestions : [],
+        metadata: optimization.metadata || {},
+        costSaved: typeof optimization.costSaved === 'number' ? optimization.costSaved : 0,
+        tokensSaved: typeof optimization.tokensSaved === 'number' ? optimization.tokensSaved : 0,
+        improvementPercentage: typeof optimization.improvementPercentage === 'number' ? optimization.improvementPercentage : 0,
+        optimizedPrompt: optimization.optimizedPrompt || optimization.originalPrompt || ''
+      };
+
+      return safeOptimization;
+    } catch (error: any) {
+      console.error("❌ OPTIMIZATION SERVICE: Error creating optimization", {
+        error: error.message || 'Unknown error',
+        status: error.response?.status,
+        responseData: error.response?.data,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Re-throw with more context for debugging
+      const enhancedError = new Error(`Optimization failed: ${error.message || 'Unknown error'}`);
+      (enhancedError as any).originalError = error;
+      (enhancedError as any).responseStatus = error.response?.status;
+      (enhancedError as any).responseData = error.response?.data;
+      
+      throw enhancedError;
     }
   }
 
@@ -165,6 +223,19 @@ class OptimizationService {
     enableCompression?: boolean;
     enableContextTrimming?: boolean;
     enableRequestFusion?: boolean;
+    
+    // Cortex-specific parameters
+    enableCortex?: boolean;
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexEncodingModel?: string;
+    cortexCoreModel?: string;
+    cortexDecodingModel?: string;
+    cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
+    cortexFormat?: 'plain' | 'markdown' | 'structured' | 'json';
+    cortexSemanticCache?: boolean;
+    cortexStructuredContext?: boolean;
+    cortexPreserveSemantics?: boolean;
+    cortexIntelligentRouting?: boolean;
   }): Promise<{
     suggestions: Array<{
       type: string;
@@ -201,6 +272,11 @@ class OptimizationService {
   async createBatchOptimization(request: {
     requests: BatchOptimizationRequest[];
     enableFusion?: boolean;
+    
+    // Cortex batch options
+    enableCortex?: boolean;
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
   }): Promise<{
     message: string;
     data: Array<{
@@ -226,6 +302,11 @@ class OptimizationService {
     service: string;
     enableCompression?: boolean;
     enableContextTrimming?: boolean;
+    
+    // Cortex conversation optimization
+    enableCortex?: boolean;
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
   }): Promise<{
     message: string;
     id: string;
@@ -436,7 +517,7 @@ class OptimizationService {
     }
   }
 
-  async getOptimizationConfig(): Promise<any> {
+  async getOptimizationConfig(): Promise<Record<string, unknown>> {
     try {
       const response = await apiClient.get("/optimizations/config");
       return response.data.data;
@@ -450,7 +531,7 @@ class OptimizationService {
     }
   }
 
-  async updateOptimizationConfig(config: any): Promise<void> {
+  async updateOptimizationConfig(config: Record<string, unknown>): Promise<void> {
     try {
       await apiClient.put("/optimizations/config", config);
     } catch (error) {
