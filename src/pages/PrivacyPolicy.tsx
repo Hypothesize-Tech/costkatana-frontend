@@ -77,10 +77,10 @@ const PrivacyPolicy: React.FC = () => {
                 If you have any questions about this Privacy Policy, please
                 contact us at{" "}
                 <a
-                  href="mailto:hello@hypothesize.tech"
+                  href="mailto:support@costkatana.com"
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  hello@hypothesize.tech
+                  support@costkatana.com
                 </a>
               </p>
             </section>
