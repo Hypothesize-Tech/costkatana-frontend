@@ -39,6 +39,10 @@ export const useGlobalTracking = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { trackUserAction, trackButtonAnalytics, isTrackingEnabled } = useMixpanel();
+  
+  // Disable tracking on authentication pages to prevent refresh loops
+  const isAuthPage = location.pathname.includes('/login') || location.pathname.includes('/register');
+  const shouldTrack = isTrackingEnabled && !isAuthPage;
 
   // Generate session ID for this session
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -144,7 +148,7 @@ export const useGlobalTracking = () => {
 
   // Track click event
   const trackClick = useCallback((event: MouseEvent) => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     const target = event.target as HTMLElement;
     if (!target) return;
@@ -255,11 +259,11 @@ export const useGlobalTracking = () => {
         page: location.pathname
       });
     }
-  }, [isTrackingEnabled, location.pathname, sessionId, extractElementInfo, categorizeElement, getElementPosition, trackUserAction, trackButtonAnalytics]);
+  }, [shouldTrack, location.pathname, sessionId, extractElementInfo, categorizeElement, getElementPosition, trackUserAction, trackButtonAnalytics]);
 
   // Track form submissions
   const trackFormSubmission = useCallback((event: Event) => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     const form = event.target as HTMLFormElement;
     if (!form) return;
@@ -292,11 +296,11 @@ export const useGlobalTracking = () => {
         formFields: Object.keys(formFields)
       }
     );
-  }, [isTrackingEnabled, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
 
   // Track navigation events
   const trackNavigation = useCallback((_event: PopStateEvent) => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     const navigationEventName = `navigation_${location.pathname.replace(/\//g, '_').substring(1)}_browser`;
     
@@ -315,11 +319,11 @@ export const useGlobalTracking = () => {
         navigationType: 'popstate'
       }
     );
-  }, [isTrackingEnabled, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
 
   // Set up global event listeners
   useEffect(() => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     // Track clicks
     document.addEventListener('click', trackClick, true);
@@ -335,11 +339,11 @@ export const useGlobalTracking = () => {
       document.removeEventListener('submit', trackFormSubmission, true);
       window.removeEventListener('popstate', trackNavigation);
     };
-  }, [isTrackingEnabled, trackClick, trackFormSubmission, trackNavigation]);
+  }, [shouldTrack, trackClick, trackFormSubmission, trackNavigation]);
 
   // Track page visibility changes
   useEffect(() => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     const handleVisibilityChange = () => {
       const visibilityEventName = document.hidden ? 'page_hide' : 'page_show';
@@ -366,11 +370,11 @@ export const useGlobalTracking = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isTrackingEnabled, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
 
   // Track scroll events (throttled)
   useEffect(() => {
-    if (!isTrackingEnabled) return;
+    if (!shouldTrack) return;
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
     let lastScrollY = window.scrollY;
@@ -416,10 +420,10 @@ export const useGlobalTracking = () => {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimeout);
     };
-  }, [isTrackingEnabled, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
 
   return {
     sessionId,
-    isTrackingEnabled
+    isTrackingEnabled: shouldTrack
   };
 }; 

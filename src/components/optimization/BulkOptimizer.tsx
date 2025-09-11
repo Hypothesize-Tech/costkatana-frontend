@@ -5,6 +5,9 @@ import { RocketLaunchIcon } from "@heroicons/react/24/outline";
 import { optimizationService } from "../../services/optimization.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useNotification } from "../../contexts/NotificationContext";
+import { CortexToggle } from "../cortex";
+import { DEFAULT_CORTEX_CONFIG } from "../../types/cortex.types";
+import type { CortexConfig } from "../../types/cortex.types";
 
 interface OptimizablePrompt {
   prompt: string;
@@ -21,6 +24,8 @@ export const BulkOptimizer: React.FC = () => {
   });
   const [prompts, setPrompts] = useState<OptimizablePrompt[]>([]);
   const [selectedPrompts, setSelectedPrompts] = useState<string[]>([]);
+  const [cortexEnabled, setCortexEnabled] = useState(false);
+  const [cortexConfig, setCortexConfig] = useState<CortexConfig>(DEFAULT_CORTEX_CONFIG);
 
   const { showNotification } = useNotification();
   const queryClient = useQueryClient();
@@ -42,7 +47,11 @@ export const BulkOptimizer: React.FC = () => {
 
   const bulkOptimizeMutation = useMutation({
     mutationFn: (promptIds: string[]) =>
-      optimizationService.bulkOptimize({ promptIds }),
+      optimizationService.bulkOptimize({
+        promptIds,
+        cortexEnabled,
+        cortexConfig: cortexEnabled ? cortexConfig : undefined
+      }),
     onSuccess: (result) => {
       showNotification(
         `Successfully optimized ${result.successful} out of ${result.total} prompts.`,
@@ -166,6 +175,19 @@ export const BulkOptimizer: React.FC = () => {
                 <option value="all">All time</option>
               </select>
             </div>
+          </div>
+
+          {/* Cortex Toggle */}
+          <div className="mt-4 p-3 rounded-lg bg-white/10">
+            <CortexToggle
+              enabled={cortexEnabled}
+              onChange={setCortexEnabled}
+            />
+            {cortexEnabled && (
+              <p className="mt-2 text-sm text-indigo-100">
+                Cortex will generate answers in LISP format for maximum token savings
+              </p>
+            )}
           </div>
 
           <div className="flex justify-end mt-4">

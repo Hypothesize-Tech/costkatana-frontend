@@ -1,6 +1,6 @@
 // src/pages/Optimization.tsx
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
   SparklesIcon,
@@ -18,22 +18,21 @@ import { OptimizationCard } from "../components/optimization/OptimizationCard";
 import { OptimizationForm } from "../components/optimization/OptimizationForm";
 import { BulkOptimizer } from "../components/optimization/BulkOptimizer";
 import { QuickOptimize } from "../components/optimization/QuickOptimize";
-import { OptimizedPromptDisplay } from "../components/common/FormattedContent";
 import { formatCurrency, formatSmartNumber } from "../utils/formatters";
 import { useNotifications } from "../contexts/NotificationContext";
+import { processFormattedText } from "../utils/codeFormatter";
+import "../styles/codeBlocks.css";
 
 export const Optimization: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
-  const [filter, setFilter] = useState<"all" | "applied" | "pending">("all");
+  // Removed filter - no longer tracking applied/pending status
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const { showNotification } = useNotifications();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // Debug logging
   console.log("🔄 OPTIMIZATION PAGE: Component render", {
-    filter,
     currentPage,
     pageSize,
     timestamp: new Date().toISOString()
@@ -53,7 +52,6 @@ export const Optimization: React.FC = () => {
     console.log("🚀 DIRECT API CALL: Starting optimizations fetch", {
       page: currentPage,
       limit: pageSize,
-      filter,
       timestamp: new Date().toISOString()
     });
 
@@ -66,7 +64,7 @@ export const Optimization: React.FC = () => {
         limit: pageSize,
         sort: "createdAt",
         order: "desc",
-        applied: filter === "applied" ? true : filter === "pending" ? false : undefined,
+        // No filter needed - all optimizations are simply completed answers
       });
 
       console.log("✅ DIRECT API CALL: Optimizations success", {
@@ -108,7 +106,7 @@ export const Optimization: React.FC = () => {
   // Fetch data on mount and when dependencies change
   React.useEffect(() => {
     fetchOptimizations();
-  }, [currentPage, pageSize, filter]);
+  }, [currentPage, pageSize]);
 
   React.useEffect(() => {
     fetchSummary();
@@ -137,21 +135,7 @@ export const Optimization: React.FC = () => {
     });
   }, [optimizationsLoading, summaryLoading, optimizationsError, summaryError, optimizations, summary]);
 
-  // Get counts for each filter
-  const getFilterCount = (filterType: "all" | "pending" | "applied") => {
-    if (!summary) return 0;
-
-    switch (filterType) {
-      case "all":
-        return summary.total;
-      case "applied":
-        return summary.applied;
-      case "pending":
-        return summary.total - summary.applied;
-      default:
-        return 0;
-    }
-  };
+  // Removed filter count - no longer needed
 
   // Use summary data for accurate statistics
   const calculateStats = () => {
@@ -167,16 +151,10 @@ export const Optimization: React.FC = () => {
     };
   };
 
-  // Get filtered optimizations for display (now handled by backend)
-  const getFilteredOptimizations = () => {
+  // Get all optimizations (no filtering needed)
+  const getAllOptimizations = () => {
     if (!optimizations?.data) return [];
     return optimizations.data;
-  };
-
-  // Handle filter change
-  const handleFilterChange = (newFilter: "all" | "applied" | "pending") => {
-    setFilter(newFilter);
-    setCurrentPage(1); // Reset to first page when filter changes
   };
 
   // Handle page change
@@ -185,19 +163,6 @@ export const Optimization: React.FC = () => {
   };
 
   const calculatedStats = calculateStats();
-
-  const applyMutation = useMutation(
-    (id: string) => optimizationService.applyOptimization(id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["optimizations"]);
-        showNotification("Optimization applied successfully!", "success");
-      },
-      onError: () => {
-        showNotification("Failed to apply optimization", "error");
-      },
-    },
-  );
 
   const feedbackMutation = useMutation(
     ({ id, feedback }: { id: string; feedback: any }) =>
@@ -208,10 +173,6 @@ export const Optimization: React.FC = () => {
       },
     },
   );
-
-  const handleApply = (id: string) => {
-    applyMutation.mutate(id);
-  };
 
   const handleFeedback = (id: string, helpful: boolean, comment?: string) => {
     feedbackMutation.mutate({
@@ -228,7 +189,7 @@ export const Optimization: React.FC = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            AI Prompt Optimization
+            AI Usage Optimization
           </h1>
           <div className="flex space-x-4">
             <button
@@ -248,7 +209,7 @@ export const Optimization: React.FC = () => {
           </div>
         </div>
         <p className="text-gray-600">
-          AI-powered prompt optimization to reduce costs while maintaining
+          AI-powered usage optimization to reduce costs while maintaining
           quality
         </p>
       </div>
@@ -367,7 +328,7 @@ export const Optimization: React.FC = () => {
       </div>
 
       {/* Latest Optimization Preview */}
-      {optimizations?.data && optimizations.data.length > 0 && getFilteredOptimizations().length > 0 && (
+      {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
         <div className="mb-8 p-6 bg-white rounded-lg border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-gray-900">
@@ -375,8 +336,8 @@ export const Optimization: React.FC = () => {
             </h3>
             <span className="text-sm text-gray-500">
               {new Date(
-                getFilteredOptimizations()[0]?.createdAt ||
-                getFilteredOptimizations()[0]?.updatedAt,
+                getAllOptimizations()[0]?.createdAt ||
+                getAllOptimizations()[0]?.updatedAt,
               ).toLocaleDateString()}
             </span>
           </div>
@@ -384,25 +345,25 @@ export const Optimization: React.FC = () => {
           <div className="grid grid-cols-4 gap-4 mb-4">
             <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
               <div className="text-lg font-bold text-green-600">
-                ${formatSmartNumber(getFilteredOptimizations()[0]?.costSaved || getFilteredOptimizations()[0]?.savings || 0)}
+                ${formatSmartNumber(getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0)}
               </div>
               <div className="text-xs text-green-700">Savings</div>
             </div>
             <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
               <div className="text-lg font-bold text-orange-600">
-                ${formatSmartNumber(getFilteredOptimizations()[0]?.originalCost || 0)}
+                ${formatSmartNumber(getAllOptimizations()[0]?.originalCost || 0)}
               </div>
               <div className="text-xs text-orange-700">Original Cost</div>
             </div>
             <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
               <div className="text-lg font-bold text-blue-600">
-                {formatSmartNumber(getFilteredOptimizations()[0]?.improvementPercentage || 0)}%
+                {formatSmartNumber(getAllOptimizations()[0]?.improvementPercentage || 0)}%
               </div>
               <div className="text-xs text-blue-700">Improvement</div>
             </div>
             <div className="p-3 bg-purple-50 rounded border border-purple-200 text-center">
               <div className="text-lg font-bold text-purple-600">
-                {getFilteredOptimizations()[0]?.tokensSaved || 0}
+                {getAllOptimizations()[0]?.tokensSaved || 0}
               </div>
               <div className="text-xs text-purple-700">Tokens Saved</div>
             </div>
@@ -411,21 +372,24 @@ export const Optimization: React.FC = () => {
           <div className="space-y-3">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-1">
-                Original Prompt
+                User Query
               </label>
               <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
-                {getFilteredOptimizations()[0]?.originalPrompt || 'No original prompt available'}
+                {getAllOptimizations()[0]?.userQuery || getAllOptimizations()[0]?.originalPrompt || 'No query available'}
               </div>
             </div>
 
             <div>
               <label className="text-sm font-medium text-gray-700 mb-1">
-                Optimized Prompt
+                Generated Answer
               </label>
-              <OptimizedPromptDisplay
-                content={getFilteredOptimizations()[0]?.optimizedPrompt || 'No optimized prompt available'}
-                maxHeight="max-h-32"
-              />
+              <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: processFormattedText(getAllOptimizations()[0]?.generatedAnswer || getAllOptimizations()[0]?.optimizedPrompt || 'No answer generated')
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -443,32 +407,11 @@ export const Optimization: React.FC = () => {
         <BulkOptimizer />
       </div>
 
-      {/* Filter Tabs */}
-      <div className="mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px space-x-8">
-            {(["all", "pending", "applied"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => handleFilterChange(tab)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${filter === tab
-                  ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                <span className="ml-2 text-gray-400">
-                  ({getFilterCount(tab)})
-                </span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      {/* No filter tabs needed - all answers are simply generated */}
 
       {/* Optimizations List */}
       <div className="space-y-4">
-        {getFilteredOptimizations()
+        {getAllOptimizations()
           .sort((a: any, b: any) => {
             // Sort by createdAt date in descending order (most recent first)
             const dateA = new Date(a.createdAt || a.updatedAt || 0);
@@ -479,7 +422,6 @@ export const Optimization: React.FC = () => {
             <OptimizationCard
               key={optimization._id}
               optimization={optimization}
-              onApply={handleApply}
               onFeedback={handleFeedback}
             />
           ))}
@@ -534,22 +476,14 @@ export const Optimization: React.FC = () => {
         </div>
       )}
 
-      {getFilteredOptimizations().length === 0 && (
+      {getAllOptimizations().length === 0 && (
         <div className="py-12 text-center">
           <SparklesIcon className="mx-auto w-12 h-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            {filter === "all"
-              ? "No optimizations yet"
-              : filter === "applied"
-                ? "No applied optimizations"
-                : "No pending optimizations"}
+            No answer generations yet
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {filter === "all"
-              ? "Use the Quick Optimize tool above to get started."
-              : filter === "applied"
-                ? "Apply some optimizations to see them here."
-                : "All optimizations have been applied."}
+            Use the Quick Optimize tool above to get started.
           </p>
         </div>
       )}

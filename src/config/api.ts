@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 // Create standard axios instance
 const api: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 60000, // Increased to 60 seconds
+    timeout: 1200000, // Increased to 60 seconds
     headers: {
         'Content-Type': 'application/json',
     },
@@ -16,7 +16,7 @@ const api: AxiosInstance = axios.create({
 // Create chat-specific instance with longer timeout for complex queries
 const chatApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 120000, // 2 minutes timeout for chat operations
+    timeout: 1200000, // 2 minutes timeout for chat operations
     headers: {
         'Content-Type': 'application/json',
     },
@@ -25,7 +25,7 @@ const chatApi: AxiosInstance = axios.create({
 // Create optimized instance for analytics operations (shorter timeout, faster failure)
 const analyticsApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 15000, // 15 seconds timeout for analytics
+    timeout: 1500000, // 15 seconds timeout for analytics
     headers: {
         'Content-Type': 'application/json',
     },
@@ -34,7 +34,7 @@ const analyticsApi: AxiosInstance = axios.create({
 // Create instance for long-running operations with longer timeout
 const longRunningApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 25000, // 25 seconds for forecasting operations
+    timeout: 2500000, // 25 seconds for forecasting operations
     headers: {
         'Content-Type': 'application/json',
     },
@@ -63,13 +63,21 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
         },
         (error: AxiosError) => {
             if (error.response?.status === 401) {
-                // Don't auto-logout for MFA-related endpoints
+                // Don't auto-logout for MFA-related endpoints or logout endpoint
                 const url = error.config?.url || '';
                 const isMFAEndpoint = url.includes('/mfa/') || url.includes('/auth/login');
+                const isLogoutEndpoint = url.includes('/auth/logout');
                 
-                if (!isMFAEndpoint) {
-                    authService.logout();
-                    window.location.href = '/login';
+                if (!isMFAEndpoint && !isLogoutEndpoint) {
+                    // Clear auth state without making API call to avoid infinite loop
+                    localStorage.removeItem("access_token");
+                    localStorage.removeItem("refresh_token");
+                    localStorage.removeItem("user");
+                    
+                    // Use React Router navigation instead of hard refresh
+                    if (window.location.pathname !== '/login') {
+                        window.location.href = '/login';
+                    }
                 }
             }
             return Promise.reject(error);

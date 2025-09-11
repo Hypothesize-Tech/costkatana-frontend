@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useMixpanel } from '../../hooks/useMixpanel';
-import { useGlobalTracking } from '../../hooks/useGlobalTracking';
 
 interface TrackingStats {
     totalClicks: number;
@@ -26,7 +25,8 @@ export const TrackingConfiguration: React.FC = () => {
     const [sessionStartTime] = useState(Date.now());
 
     const { isTrackingEnabled, trackUserAction } = useMixpanel();
-    const { sessionId } = useGlobalTracking();
+    // Get sessionId from a static source instead of calling useGlobalTracking again
+    const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Simulate tracking stats (in real implementation, this would come from analytics)
     useEffect(() => {
@@ -196,8 +196,8 @@ export const TrackingConfiguration: React.FC = () => {
                             <button
                                 onClick={handleToggleTracking}
                                 className={`w-full px-3 py-2 text-xs rounded ${isTrackingEnabled
-                                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
                                     }`}
                             >
                                 {isTrackingEnabled ? 'Disable Tracking' : 'Enable Tracking'}

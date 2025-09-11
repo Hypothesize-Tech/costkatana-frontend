@@ -64,7 +64,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         enableRequestFusion: true,
         // Cortex parameters
         enableCortex: cortexEnabled,
-        cortexOperation: cortexConfig.processingOperation,
+        cortexOperation: 'answer', // NEW ARCHITECTURE: Always answer generation,
         cortexStyle: cortexConfig.outputStyle,
         cortexFormat: cortexConfig.outputFormat,
         cortexSemanticCache: cortexConfig.enableSemanticCache,
@@ -96,7 +96,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         enableRequestFusion: true,
         // Cortex parameters
         enableCortex: cortexEnabled,
-        cortexOperation: cortexConfig.processingOperation,
+        cortexOperation: 'answer', // NEW ARCHITECTURE: Always answer generation,
         cortexEncodingModel: cortexConfig.encodingModel,
         cortexCoreModel: cortexConfig.coreProcessingModel,
         cortexDecodingModel: cortexConfig.decodingModel,
@@ -163,7 +163,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            AI Prompt Optimization
+            AI Usage Optimization
           </h2>
           <button
             onClick={onClose}
@@ -185,8 +185,8 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   Quick Start
                 </h3>
                 <p className="text-sm text-blue-700">
-                  Simply paste your prompt below and we'll automatically
-                  optimize it for cost and performance. No API keys or complex
+                  Simply paste your AI query below and we'll automatically
+                  optimize your AI usage for cost and performance. No API keys or complex
                   configuration required.
                 </p>
               </div>
@@ -231,18 +231,18 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               {/* Prompt Input */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Your Prompt
+                  Your AI Query
                 </label>
                 <textarea
                   value={formData.prompt}
                   onChange={(e) => handleChange("prompt", e.target.value)}
                   rows={12}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Paste your AI prompt here. We'll analyze it and suggest optimizations to reduce costs while maintaining quality..."
+                  placeholder="Paste your AI query here. We'll analyze your usage patterns and suggest optimizations to reduce costs while maintaining quality..."
                 />
                 <p className="mt-2 text-sm text-gray-500">
-                  Our AI will automatically apply prompt compression, context
-                  trimming, and other optimization techniques.
+                  Our AI will automatically apply usage optimization, context
+                  trimming, and other efficiency techniques.
                 </p>
               </div>
 

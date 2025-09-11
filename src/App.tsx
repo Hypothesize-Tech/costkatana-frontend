@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import CachePage from './pages/Cache';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -12,6 +12,8 @@ import { MemoryProvider } from './components/memory';
 
 // Hooks
 import { useGlobalTracking } from './hooks/useGlobalTracking';
+import { useEffect } from 'react';
+import { setupCopyCodeFunction } from './utils/copyToClipboard';
 
 // Components
 import { Layout } from './components/common/Layout';
@@ -64,7 +66,12 @@ import SAST from './pages/SAST';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
-  // Initialize global tracking for all interactions
+  // Initialize copy code functionality
+  useEffect(() => {
+    setupCopyCodeFunction();
+  }, []);
+
+  // Initialize global tracking for all interactions - temporarily disabled to debug login refresh
   useGlobalTracking();
 
   return (

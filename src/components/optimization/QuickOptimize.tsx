@@ -6,10 +6,13 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { LoadingSpinner } from "../common/LoadingSpinner";
-import { optimizationService } from "@/services/optimization.service";
+import { optimizationService } from "../../services/optimization.service";
 import { useNotifications } from "../../contexts/NotificationContext";
-import { renderFormattedContent, formatSmartNumber, formatCurrency } from "@/utils/formatters";
-import { OptimizedPromptDisplay } from "../common/FormattedContent";
+import { renderFormattedContent, formatSmartNumber } from "../../utils/formatters";
+import { processFormattedText } from "../../utils/codeFormatter";
+
+// Import code block styling
+import "../../styles/codeBlocks.css";
 import { CortexToggle, CortexResultsDisplay, CortexConfigPanel } from "../cortex";
 import { DEFAULT_CORTEX_CONFIG } from "../../types/cortex.types";
 import type { CortexConfig } from "../../types/cortex.types";
@@ -57,7 +60,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         enableRequestFusion: true,
         // Cortex parameters (using configurable settings)
         enableCortex: cortexEnabled,
-        cortexOperation: cortexConfig.processingOperation,
+        cortexOperation: 'answer', // NEW ARCHITECTURE: Always answer generation,
         cortexEncodingModel: cortexConfig.encodingModel,
         cortexCoreModel: cortexConfig.coreProcessingModel,
         cortexDecodingModel: cortexConfig.decodingModel,
@@ -88,7 +91,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         costSaved: typeof result?.costSaved === 'number' ? result.costSaved : 0,
         tokensSaved: typeof result?.tokensSaved === 'number' ? result.tokensSaved : 0,
         improvementPercentage: typeof result?.improvementPercentage === 'number' ? result.improvementPercentage : 0,
-        optimizedPrompt: result?.optimizedPrompt || ''
+        generatedAnswer: result?.generatedAnswer || ''
       };
 
       setOptimizationResult(safeResult);
@@ -115,7 +118,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
     try {
       await navigator.clipboard.writeText(text);
       showNotification("Copied to clipboard!", "success");
-    } catch (error) {
+    } catch {
       showNotification("Failed to copy to clipboard", "error");
     }
   };
@@ -155,14 +158,14 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter your prompt
+                Enter your AI query
               </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={6}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Paste your AI prompt here for instant optimization..."
+                placeholder="Paste your AI query here for instant usage optimization..."
               />
             </div>
 
@@ -257,11 +260,11 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <div className="space-y-4">
               {/* Original vs Optimized Prompts */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Original Prompt */}
+                {/* User Query */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-medium text-gray-700">
-                      Original Prompt
+                      User Query
                     </label>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
@@ -282,20 +285,23 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 max-h-48 overflow-y-auto">
-                    <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                      {prompt}
-                    </div>
+                    <div
+                      className="text-sm text-gray-700"
+                      dangerouslySetInnerHTML={{
+                        __html: processFormattedText(prompt)
+                      }}
+                    />
                   </div>
                 </div>
 
-                {/* Optimized Prompt */}
+                {/* Generated Answer */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className={`text-sm font-medium ${cortexEnabled && optimizationResult?.metadata?.cortex
                       ? 'text-purple-700'
                       : 'text-gray-700'
                       }`}>
-                      Optimized Prompt
+                      Generated Answer
                     </label>
                     <div className="flex items-center space-x-2">
                       <span className={`text-xs px-2 py-1 rounded ${cortexEnabled && optimizationResult?.metadata?.cortex
@@ -305,12 +311,12 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                         {(() => {
                           const optimizedTokens = optimizationResult?.metadata?.cortexTokenReduction?.cortexTokens
                             || optimizationResult?.optimizedTokens
-                            || Math.ceil((optimizationResult?.optimizedPrompt?.split(/\s+/).length || 0) * 1.3);
+                            || Math.ceil((optimizationResult?.generatedAnswer?.split(/\s+/).length || 0) * 1.3);
                           return `${Math.round(optimizedTokens)} tokens`;
                         })()}
                       </span>
                       <button
-                        onClick={() => handleCopy(optimizationResult?.optimizedPrompt || "")}
+                        onClick={() => handleCopy(optimizationResult?.generatedAnswer || "")}
                         className={`flex items-center px-2 py-1 text-xs font-medium ${cortexEnabled && optimizationResult?.metadata?.cortex
                           ? 'text-purple-600 hover:text-purple-800'
                           : 'text-indigo-600 hover:text-indigo-800'
@@ -324,9 +330,11 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     ? 'bg-purple-50 border border-purple-200'
                     : 'bg-green-50 border border-green-200'
                     }`}>
-                    <OptimizedPromptDisplay
-                      content={optimizationResult?.optimizedPrompt || ""}
-                      maxHeight=""
+                    <div
+                      className="text-sm text-gray-700"
+                      dangerouslySetInnerHTML={{
+                        __html: processFormattedText(optimizationResult?.generatedAnswer || '')
+                      }}
                     />
                   </div>
                 </div>
@@ -440,7 +448,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                   </h4>
                   <div className="space-y-2">
                     {optimizationResult.suggestions.map(
-                      (suggestion: any, index: number) => {
+                      (suggestion: { type?: string; implemented?: boolean; description?: string; explanation?: string }, index: number) => {
                         // Safe access to suggestion properties with fallbacks
                         const suggestionType = suggestion?.type || 'optimization';
                         const isImplemented = suggestion?.implemented || false;
@@ -486,7 +494,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 Optimize Another
               </button>
               <button
-                onClick={() => handleCopy(optimizationResult?.optimizedPrompt || "")}
+                onClick={() => handleCopy(optimizationResult?.generatedAnswer || "")}
                 className="flex-1 px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Copy Result

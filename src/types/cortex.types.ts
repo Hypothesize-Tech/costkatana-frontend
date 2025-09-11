@@ -36,9 +36,9 @@ export interface CortexConfig {
 }
 
 export const DEFAULT_CORTEX_CONFIG: CortexConfig = {
-  encodingModel: 'claude-3-haiku',
-  coreProcessingModel: 'claude-3-sonnet',
-  decodingModel: 'claude-3-haiku',
+  encodingModel: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+  coreProcessingModel: 'anthropic.claude-opus-4-1-20250805-v1:0',
+  decodingModel: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
   processingOperation: 'optimize',
   optimizationLevel: 'balanced',
   outputStyle: 'conversational',

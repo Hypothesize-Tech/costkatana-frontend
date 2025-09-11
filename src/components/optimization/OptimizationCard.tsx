@@ -8,17 +8,20 @@ import {
   HandThumbDownIcon,
 } from "@heroicons/react/24/outline";
 import { formatCurrency, formatDate } from "../../utils/formatters";
+import { processFormattedText } from "../../utils/codeFormatter";
 import { Optimization } from "../../types";
+import { CortexImpactDisplay } from "../cortex";
+
+// Import code block styling
+import "../../styles/codeBlocks.css";
 
 interface OptimizationCardProps {
   optimization: Optimization;
-  onApply: (id: string) => void;
   onFeedback: (id: string, helpful: boolean, comment?: string) => void;
 }
 
 export const OptimizationCard: React.FC<OptimizationCardProps> = ({
   optimization,
-  onApply,
   onFeedback,
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -37,14 +40,14 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center space-x-2">
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${(optimization.applied || optimization.status === "applied" || optimization.status === "completed")
-                  ? "bg-green-100 text-green-800"
-                  : "bg-yellow-100 text-yellow-800"
-                  }`}
-              >
-                {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") ? "Applied" : "Pending"}
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                Answer Generated
               </span>
+              {optimization.cortexImpactMetrics && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  Cortex Optimized
+                </span>
+              )}
               <span className="text-sm text-gray-500">
                 {formatDate(optimization.createdAt)}
               </span>
@@ -100,12 +103,15 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2">
-                  Original Prompt
+                  User Query
                 </h4>
                 <div className="p-3 bg-gray-50 rounded-md">
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                    {optimization.originalPrompt}
-                  </p>
+                  <div
+                    className="text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{
+                      __html: processFormattedText(optimization.userQuery || '')
+                    }}
+                  />
                   <div className="mt-2 text-xs text-gray-500">
                     Tokens: {optimization.originalTokens}
                   </div>
@@ -114,12 +120,15 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2">
-                  Optimized Prompt
+                  Generated Answer
                 </h4>
                 <div className="p-3 bg-green-50 rounded-md">
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                    {optimization.optimizedPrompt}
-                  </p>
+                  <div
+                    className="text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{
+                      __html: processFormattedText(optimization.generatedAnswer || '')
+                    }}
+                  />
                   <div className="mt-2 text-xs text-gray-500">
                     Tokens: {optimization.optimizedTokens}
                   </div>
@@ -127,10 +136,17 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               </div>
             </div>
 
+            {/* Cortex Impact Metrics */}
+            {optimization.cortexImpactMetrics && (
+              <div className="mt-6">
+                <CortexImpactDisplay metrics={optimization.cortexImpactMetrics} />
+              </div>
+            )}
+
             {/* Suggestions */}
             {optimization.suggestions &&
               optimization.suggestions.length > 0 && (
-                <div>
+                <div className={optimization.cortexImpactMetrics ? "mt-6" : ""}>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">
                     Optimization Techniques
                   </h4>
@@ -153,16 +169,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {/* Actions */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
               <div className="flex items-center space-x-4">
-                {!(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && (
-                  <button
-                    onClick={() => onApply(optimization._id)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Apply Optimization
-                  </button>
-                )}
+                {/* Apply button removed - answers are automatically generated */}
 
-                {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && !showFeedback && (
+                {!showFeedback && (
                   <button
                     onClick={() => setShowFeedback(true)}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

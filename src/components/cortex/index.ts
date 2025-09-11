@@ -2,6 +2,7 @@
 export { CortexToggle } from './CortexToggle';
 export { CortexConfigPanel } from './CortexConfigPanel';
 export { CortexResultsDisplay } from './CortexResultsDisplay';
+export { CortexImpactDisplay } from './CortexImpactDisplay';
 
 // Re-export types for convenience
 export type { 

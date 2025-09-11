@@ -1,6 +1,7 @@
 // src/services/optimization.service.ts
 import { apiClient } from "../config/api";
 import { Optimization, OptimizationRequest, PaginatedResponse } from "../types";
+import type { CortexConfig } from "../types/cortex.types";
 
 interface ConversationMessage {
   role: "user" | "assistant" | "system";
@@ -25,7 +26,7 @@ class OptimizationService {
       enableRequestFusion?: boolean;
       // Cortex-specific parameters
       enableCortex?: boolean;
-      cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+      cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';
       cortexEncodingModel?: string;
       cortexCoreModel?: string;
       cortexDecodingModel?: string;
@@ -226,7 +227,7 @@ class OptimizationService {
     
     // Cortex-specific parameters
     enableCortex?: boolean;
-    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';
     cortexEncodingModel?: string;
     cortexCoreModel?: string;
     cortexDecodingModel?: string;
@@ -275,7 +276,7 @@ class OptimizationService {
     
     // Cortex batch options
     enableCortex?: boolean;
-    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';
     cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
   }): Promise<{
     message: string;
@@ -305,7 +306,7 @@ class OptimizationService {
     
     // Cortex conversation optimization
     enableCortex?: boolean;
-    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast';
+    cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';
     cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
   }): Promise<{
     message: string;
@@ -336,6 +337,8 @@ class OptimizationService {
     timeframe?: string;
     limit?: number;
     promptIds?: string[];
+    cortexEnabled?: boolean;
+    cortexConfig?: CortexConfig;
   }): Promise<{
     total: number;
     successful: number;

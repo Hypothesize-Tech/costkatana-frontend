@@ -31,48 +31,43 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
                 <h3 className="text-lg font-medium text-gray-900">Cortex Configuration</h3>
             </div>
 
-            {/* Processing Operation */}
+            {/* Processing Mode - NEW ARCHITECTURE */}
             <div className="space-y-2">
                 <label className="flex items-center space-x-2">
                     <ChartBarIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium text-gray-700">Processing Operation</span>
+                    <span className="text-sm font-medium text-gray-700">Processing Mode</span>
                 </label>
-                <select
-                    value={config.processingOperation || 'optimize'}
-                    onChange={(e) => updateConfig({
-                        processingOperation: e.target.value as CortexConfig['processingOperation']
-                    })}
-                    disabled={disabled}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <option value="optimize">Optimize - Best balance of compression and quality</option>
-                    <option value="compress">Compress - Maximum token reduction</option>
-                    <option value="analyze">Analyze - Understand structure without changes</option>
-                    <option value="transform">Transform - Advanced semantic restructuring</option>
-                    <option value="sast">SAST - Semantic Abstract Syntax Tree processing</option>
-                </select>
+                <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                        <CheckCircleIcon className="h-5 w-5 text-purple-600" />
+                        <span className="text-sm font-medium text-purple-900">Answer Generation Mode</span>
+                    </div>
+                    <p className="text-xs text-purple-700 mt-2">
+                        Cortex now generates answers in LISP format, reducing output tokens by 70-85%.
+                        The system processes queries through: Query → LISP → Answer (LISP) → Natural Language
+                    </p>
+                </div>
             </div>
 
-            {/* Optimization Level */}
+            {/* Answer Generation Settings */}
             <div className="space-y-2">
                 <label className="flex items-center space-x-2">
                     <CpuChipIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium text-gray-700">Optimization Level</span>
+                    <span className="text-sm font-medium text-gray-700">Answer Generation Settings</span>
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                     {[
-                        { value: 'conservative', label: 'Conservative', desc: 'Minimal changes' },
-                        { value: 'balanced', label: 'Balanced', desc: 'Good balance' },
-                        { value: 'aggressive', label: 'Aggressive', desc: 'Maximum compression' },
+                        { value: 'concise', label: 'Concise', desc: 'Brief LISP answers' },
+                        { value: 'detailed', label: 'Detailed', desc: 'Comprehensive LISP responses' },
                     ].map((level) => (
                         <button
                             key={level.value}
                             type="button"
                             onClick={() => updateConfig({
-                                optimizationLevel: level.value as CortexConfig['optimizationLevel']
+                                outputStyle: level.value === 'concise' ? 'conversational' : 'formal'
                             })}
                             disabled={disabled}
-                            className={`p-3 rounded-lg border-2 text-center transition-colors ${config.optimizationLevel === level.value
+                            className={`p-3 rounded-lg border-2 text-center transition-colors ${(config.outputStyle === 'conversational' && level.value === 'concise') || (config.outputStyle === 'formal' && level.value === 'detailed')
                                 ? 'border-purple-500 bg-purple-50 text-purple-700'
                                 : 'border-gray-200 hover:border-gray-300 text-gray-700'
                                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
