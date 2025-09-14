@@ -13,25 +13,39 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
         <div className="provider-comparison">
             <div className="comparison-header">
                 <button onClick={onBack} className="back-btn">← Back to Suggestions</button>
-                <h2>⚖️ Prompt Comparison Results</h2>
+                <div className="flex items-center gap-3">
+                    <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                        <span className="text-lg">⚖️</span>
+                    </div>
+                    <h2>Prompt Comparison Results</h2>
+                </div>
             </div>
 
             {/* Summary Cards */}
             <div className="comparison-summary">
                 <div className="summary-card savings">
-                    <h3>💰 Cost Savings</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xl">💰</span>
+                        <h3>Cost Savings</h3>
+                    </div>
                     <div className="metric-large">${improvements.costSaved.toFixed(6)}</div>
                     <div className="metric-small">{improvements.savingsPercentage.toFixed(1)}% reduction</div>
                 </div>
 
                 <div className="summary-card tokens">
-                    <h3>🎯 Token Efficiency</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xl">🎯</span>
+                        <h3>Token Efficiency</h3>
+                    </div>
                     <div className="metric-large">{improvements.tokensSaved}</div>
                     <div className="metric-small">tokens saved</div>
                 </div>
 
                 <div className="summary-card quality">
-                    <h3>📈 Quality Impact</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xl">📈</span>
+                        <h3>Quality Impact</h3>
+                    </div>
                     <div className="metric-large">+{improvements.qualityImpact}</div>
                     <div className="metric-small">quality score improvement</div>
                 </div>
@@ -40,7 +54,10 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
             {/* Side-by-Side Comparison */}
             <div className="comparison-grid">
                 <div className="comparison-column original">
-                    <h3>📝 Original Prompt</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                        <span className="text-xl">📝</span>
+                        <h3>Original Prompt</h3>
+                    </div>
                     <div className="prompt-metrics">
                         <span>Tokens: {originalAnalysis.totalTokens.toLocaleString()}</span>
                         <span>Cost: ${originalAnalysis.totalCost.toFixed(6)}</span>
@@ -75,7 +92,10 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
                 </div>
 
                 <div className="comparison-column optimized">
-                    <h3>✨ Optimized Prompt</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                        <span className="text-xl">✨</span>
+                        <h3>Optimized Prompt</h3>
+                    </div>
                     <div className="prompt-metrics">
                         <span>Tokens: {optimizedAnalysis.totalTokens.toLocaleString()}</span>
                         <span>Cost: ${optimizedAnalysis.totalCost.toFixed(6)}</span>
@@ -105,7 +125,12 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
 
             {/* Quality Comparison */}
             <div className="quality-comparison">
-                <h3>📊 Quality Metrics Comparison</h3>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-gradient-accent p-2 rounded-lg glow-accent">
+                        <span className="text-lg text-white">📊</span>
+                    </div>
+                    <h3>Quality Metrics Comparison</h3>
+                </div>
                 <div className="quality-grid">
                     <div className="quality-metric">
                         <span className="label">Instruction Clarity</span>

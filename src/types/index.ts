@@ -20,7 +20,10 @@ export enum AIProvider {
   HuggingFace = 'huggingface',
   Ollama = 'ollama',
   Replicate = 'replicate',
-  Azure = 'azure'
+  Azure = 'azure',
+  MistralAI = 'mistral-ai',
+  Meta = 'meta',
+  xAI = 'xai'
 }
 
 // Cost Debugger types

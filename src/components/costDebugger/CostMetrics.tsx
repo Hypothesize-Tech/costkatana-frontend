@@ -22,7 +22,12 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
         <div className="cost-metrics">
             <div className="metrics-header">
                 <button onClick={onBack} className="back-btn">← Back</button>
-                <h2>📊 Cost Metrics</h2>
+                <div className="flex items-center gap-3">
+                    <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                        <span className="text-lg">📊</span>
+                    </div>
+                    <h2>Cost Metrics</h2>
+                </div>
             </div>
 
             <div className="metrics-overview">
@@ -52,7 +57,10 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
                 <div className="breakdown-grid">
                     <div className="breakdown-item system">
                         <div className="breakdown-header">
-                            <span className="breakdown-label">🔧 System Prompt</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">🔧</span>
+                                <span className="breakdown-label">System Prompt</span>
+                            </div>
                             <span className="breakdown-percentage">{calculatePercentage(tokenAttribution?.systemPrompt?.tokens || 0)}%</span>
                         </div>
                         <div className="breakdown-details">
@@ -69,7 +77,10 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
 
                     <div className="breakdown-item user">
                         <div className="breakdown-header">
-                            <span className="breakdown-label">👤 User Message</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">👤</span>
+                                <span className="breakdown-label">User Message</span>
+                            </div>
                             <span className="breakdown-percentage">{calculatePercentage(tokenAttribution?.userMessage?.tokens || 0)}%</span>
                         </div>
                         <div className="breakdown-details">
@@ -86,7 +97,10 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
 
                     <div className="breakdown-item history">
                         <div className="breakdown-header">
-                            <span className="breakdown-label">💬 Conversation History</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">💬</span>
+                                <span className="breakdown-label">Conversation History</span>
+                            </div>
                             <span className="breakdown-percentage">{calculatePercentage(tokenAttribution?.conversationHistory?.tokens || 0)}%</span>
                         </div>
                         <div className="breakdown-details">
@@ -103,7 +117,10 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
 
                     <div className="breakdown-item tools">
                         <div className="breakdown-header">
-                            <span className="breakdown-label">🔨 Tool Calls</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">🔨</span>
+                                <span className="breakdown-label">Tool Calls</span>
+                            </div>
                             <span className="breakdown-percentage">{calculatePercentage(tokenAttribution?.toolCalls?.tokens || 0)}%</span>
                         </div>
                         <div className="breakdown-details">
@@ -120,7 +137,10 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
 
                     <div className="breakdown-item metadata">
                         <div className="breakdown-header">
-                            <span className="breakdown-label">📋 Metadata</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">📋</span>
+                                <span className="breakdown-label">Metadata</span>
+                            </div>
                             <span className="breakdown-percentage">{calculatePercentage(tokenAttribution?.metadata?.tokens || 0)}%</span>
                         </div>
                         <div className="breakdown-details">

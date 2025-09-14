@@ -10,29 +10,29 @@ const Guardrails: React.FC = () => {
     const [trendDays, setTrendDays] = useState(7);
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                                <Shield className="w-8 h-8 text-blue-600" />
+                            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
+                                <Shield className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                                 Usage Guardrails
                             </h1>
-                            <p className="text-gray-600 mt-2">
+                            <p className="text-light-text-secondary dark:text-dark-text-secondary mt-2">
                                 Monitor and manage your resource usage to stay within limits
                             </p>
                         </div>
                         <div className="flex gap-3">
                             <button
                                 onClick={() => window.location.href = 'https://costkatana.com/pricing'}
-                                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all flex items-center gap-2"
+                                className="btn-primary px-4 py-2 rounded-lg transition-all flex items-center gap-2"
                             >
                                 <TrendingUp className="w-4 h-4" />
                                 Upgrade Plan
                             </button>
-                            <button className="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-all flex items-center gap-2">
+                            <button className="btn-secondary px-4 py-2 rounded-lg transition-all flex items-center gap-2">
                                 <Settings className="w-4 h-4" />
                                 Settings
                             </button>
@@ -42,13 +42,13 @@ const Guardrails: React.FC = () => {
 
                 {/* Navigation Tabs */}
                 <div className="mb-6">
-                    <div className="border-b border-gray-200">
-                        <nav className="-mb-px flex space-x-8">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2">
+                        <nav className="flex space-x-2">
                             <button
                                 onClick={() => setActiveTab('overview')}
-                                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'overview'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                className={`py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === 'overview'
+                                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                                    : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10'
                                     }`}
                             >
                                 <div className="flex items-center gap-2">

@@ -18,21 +18,27 @@ const buildSpanTree = (spans: any[]) => {
 const SpanNode: React.FC<{ span: any; depth?: number; onSpanSelect: (span: any) => void }>
     = ({ span, depth = 0, onSpanSelect }) => {
         const [isExpanded, setIsExpanded] = useState(false);
-        const statusColor = span.status === 'error' ? 'border-rose-500 bg-rose-50' : 'border-emerald-500 bg-emerald-50';
+        const statusColor = span.status === 'error' ? 'border-danger-500 bg-gradient-danger/10' : 'border-success-500 bg-gradient-success/10';
         return (
-            <div className={`border-l-4 ${statusColor} mb-2 p-2 rounded-r-lg`} style={{ marginLeft: `${depth * 20}px` }}>
+            <div className={`glass border-l-4 ${statusColor} mb-3 p-3 rounded-r-xl shadow-lg backdrop-blur-xl`} style={{ marginLeft: `${depth * 20}px` }}>
                 <div
-                    className="flex justify-between items-center cursor-pointer hover:bg-gray-100 p-2 rounded"
+                    className="flex justify-between items-center cursor-pointer hover:bg-gradient-primary/5 p-2 rounded-lg transition-all duration-200"
                     onClick={() => { onSpanSelect(span); setIsExpanded(!isExpanded); }}
                 >
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                         {span.children.length > 0 && (
-                            <ChevronRightIcon className={`w-4 h-4 mr-2 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                            <div className="w-6 h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center">
+                                <ChevronRightIcon className={`w-3 h-3 text-primary-600 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                            </div>
                         )}
-                        <span className="font-medium">{span.operation_name}</span>
-                        {span.status === 'error' && (<ExclamationTriangleIcon className="w-4 h-4 text-rose-500 ml-2" />)}
+                        <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{span.operation_name}</span>
+                        {span.status === 'error' && (
+                            <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center glow-danger">
+                                <ExclamationTriangleIcon className="w-3 h-3 text-white" />
+                            </div>
+                        )}
                     </div>
-                    <span className="text-sm text-gray-600">{Number(span.duration_ms || 0).toFixed(2)} ms</span>
+                    <span className="font-display font-semibold gradient-text-warning">{Number(span.duration_ms || 0).toFixed(2)} ms</span>
                 </div>
                 {isExpanded && span.children.map((child: any) => (
                     <SpanNode key={child.span_id} span={child} depth={depth + 1} onSpanSelect={onSpanSelect} />
@@ -63,34 +69,51 @@ export const TraceViewer: React.FC = () => {
 
     const renderErrorMessage = (): React.ReactNode => {
         const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : 'An unknown error occurred';
-        return (<div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">Error loading trace details: {errorMessage}</div>);
+        return (
+            <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                        <span className="text-white text-sm">⚠️</span>
+                    </div>
+                    <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                        Error loading trace details: {errorMessage}
+                    </span>
+                </div>
+            </div>
+        );
     };
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200">
-            <div className="mb-4">
-                <form onSubmit={handleSubmit} className="flex items-center gap-2">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
+                        <span className="text-white text-lg">🔍</span>
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text">Trace Viewer</h2>
+                </div>
+                <form onSubmit={handleSubmit} className="flex items-center gap-3">
                     <input
                         type="text"
                         value={traceId}
                         onChange={(e) => setTraceId(e.target.value)}
                         placeholder="Enter Trace ID"
-                        className="flex-grow border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="input flex-grow"
                     />
                     <button
                         type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded-lg inline-flex items-center"
+                        className="btn-primary inline-flex items-center gap-2"
                         disabled={!traceId || isFetching}
                     >
-                        <MagnifyingGlassIcon className="w-5 h-5 mr-2" />
+                        <MagnifyingGlassIcon className="w-5 h-5" />
                         {isFetching ? 'Loading...' : 'View Trace'}
                     </button>
                 </form>
             </div>
 
             {isLoading && (
-                <div className="animate-pulse space-y-3">
-                    {[...Array(5)].map((_, i) => (<div key={i} className="h-10 bg-gray-100 rounded-lg" />))}
+                <div className="animate-pulse space-y-4">
+                    {[...Array(5)].map((_, i) => (<div key={i} className="h-12 bg-gradient-primary/20 rounded-xl" />))}
                 </div>
             )}
 
@@ -99,33 +122,59 @@ export const TraceViewer: React.FC = () => {
             {traceData && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="md:col-span-2">
-                        <h3 className="text-base font-semibold mb-3">Trace Spans (Total: {traceData.summary?.total_spans || 0})</h3>
-                        <div className="max-h-[500px] overflow-y-auto">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                                <span className="text-white text-sm">🌳</span>
+                            </div>
+                            <h3 className="font-display font-semibold gradient-text-secondary">Trace Spans (Total: {traceData.summary?.total_spans || 0})</h3>
+                        </div>
+                        <div className="max-h-[500px] overflow-y-auto glass rounded-xl p-4 border border-primary-200/30">
                             {spanTree.length === 0 ? (
-                                <p className="text-gray-500 text-center">No spans found for this trace</p>
+                                <div className="text-center py-8">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-3">
+                                        <span className="text-xl">🔍</span>
+                                    </div>
+                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">No spans found for this trace</p>
+                                </div>
                             ) : (
                                 spanTree.map((span) => (<SpanNode key={span.span_id} span={span} onSpanSelect={setSelectedSpan} />))
                             )}
                         </div>
                     </div>
 
-                    <div className="bg-gray-50 p-4 rounded-xl ring-1 ring-gray-200">
-                        <h3 className="text-base font-semibold mb-3">Span Details</h3>
+                    <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                                <span className="text-white text-sm">📋</span>
+                            </div>
+                            <h3 className="font-display font-semibold gradient-text">Span Details</h3>
+                        </div>
                         {selectedSpan ? (
-                            <div className="space-y-2">
-                                <div><strong>Operation:</strong> {selectedSpan.operation_name}</div>
-                                <div><strong>Duration:</strong> {Number(selectedSpan.duration_ms || 0).toFixed(2)} ms</div>
-                                <div>
-                                    <strong>Status:</strong>
-                                    <span className={`ml-2 px-2 py-1 rounded text-xs ${selectedSpan.status === 'error' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}`}>{selectedSpan.status}</span>
+                            <div className="space-y-4">
+                                <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                    <span className="font-display font-medium gradient-text">Operation:</span>
+                                    <div className="font-body text-light-text-primary dark:text-dark-text-primary mt-1">{selectedSpan.operation_name}</div>
                                 </div>
-                                <div>
-                                    <strong>Attributes:</strong>
-                                    <pre className="bg-white p-2 rounded text-xs overflow-x-auto">{JSON.stringify(selectedSpan.attributes || {}, null, 2)}</pre>
+                                <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                    <span className="font-display font-medium gradient-text">Duration:</span>
+                                    <div className="font-display font-semibold gradient-text-warning mt-1">{Number(selectedSpan.duration_ms || 0).toFixed(2)} ms</div>
+                                </div>
+                                <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                    <span className="font-display font-medium gradient-text">Status:</span>
+                                    <span className={`ml-2 glass px-3 py-1 rounded-full font-display font-semibold border ${selectedSpan.status === 'error' ? 'border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' : 'border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300'}`}>{selectedSpan.status}</span>
+                                </div>
+                                <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                    <span className="font-display font-medium gradient-text mb-2 block">Attributes:</span>
+                                    <pre className="glass p-3 rounded border border-primary-200/30 font-mono text-xs overflow-x-auto text-light-text-primary dark:text-dark-text-primary">{JSON.stringify(selectedSpan.attributes || {}, null, 2)}</pre>
                                 </div>
                             </div>
                         ) : (
-                            <p className="text-gray-500 text-center">Select a span to view details</p>
+                            <div className="text-center py-8">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-info/20 flex items-center justify-center mx-auto mb-3">
+                                    <span className="text-xl">👆</span>
+                                </div>
+                                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Select a span to view details</p>
+                            </div>
                         )}
                     </div>
                 </div>

@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useTheme, useNotifications } from "../../hooks";
 import { cn } from "../../utils/helpers";
 import { APP_NAME } from "../../utils/constant";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.jpg";
 interface HeaderProps {
   onMenuClick: () => void;
 }
@@ -42,10 +42,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   };
 
   return (
-    <header className="flex sticky top-0 z-40 gap-x-4 items-center px-4 h-16 bg-white border-b border-gray-200 shadow-sm shrink-0 dark:border-gray-700 dark:bg-gray-800 sm:gap-x-6 sm:px-6 lg:px-8">
+    <header className="flex sticky top-0 z-40 gap-x-4 items-center px-4 h-16 glass border-b border-primary-200/30 shadow-lg shrink-0 backdrop-blur-xl sm:gap-x-6 sm:px-6 lg:px-8 light:bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <button
         type="button"
-        className="-m-2.5 p-2.5 text-gray-700 dark:text-gray-200 lg:hidden"
+        className="-m-2.5 p-2.5 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110 lg:hidden"
         onClick={onMenuClick}
       >
         <span className="sr-only">Open sidebar</span>
@@ -54,22 +54,22 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
 
       {/* Logo */}
       <div className="flex flex-1 gap-x-4 items-center lg:gap-x-6">
-        <Link to="/dashboard" className="flex gap-x-2 items-center">
-          <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg">
-            <img src={logo} alt="logo" className="w-10 h-10" />
+        <Link to="/dashboard" className="flex gap-x-3 items-center group">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-105 transition-all duration-300">
+            <img src={logo} alt="logo" className="w-8 h-8 rounded-lg" />
           </div>
-          <span className="hidden font-semibold text-gray-900 dark:text-white sm:block">
+          <span className="hidden font-display font-bold text-xl gradient-text sm:block group-hover:scale-105 transition-transform duration-300">
             {APP_NAME}
           </span>
         </Link>
       </div>
 
-      <div className="flex gap-x-4 items-center lg:gap-x-6">
+      <div className="flex gap-x-2 items-center lg:gap-x-4">
         {/* Theme toggle */}
         <button
           type="button"
           onClick={toggleTheme}
-          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="p-3 rounded-xl glass hover:bg-primary-500/20 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110 hover:rotate-12"
         >
           {theme === "light" ? (
             <MoonIcon className="w-5 h-5" />
@@ -82,12 +82,12 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         <button
           type="button"
           onClick={() => navigate("/profile?tab=alerts")}
-          className="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="relative p-3 rounded-xl glass hover:bg-primary-500/20 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110"
         >
           <span className="sr-only">View notifications</span>
           <BellIcon className="w-5 h-5" />
           {unreadCount > 0 && (
-            <span className="flex absolute -top-1 -right-1 justify-center items-center w-5 h-5 text-xs font-medium text-white rounded-full bg-danger-500">
+            <span className="flex absolute -top-1 -right-1 justify-center items-center w-6 h-6 text-xs font-bold text-white rounded-full bg-gradient-danger animate-pulse shadow-lg">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
@@ -95,70 +95,74 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
 
         {/* Profile dropdown */}
         <Menu as="div" className="relative">
-          <Menu.Button className="flex items-center gap-x-3 p-1.5 text-sm">
+          <Menu.Button className="flex items-center gap-x-3 p-2 rounded-xl glass hover:bg-primary-500/20 transition-all duration-300 hover:scale-105">
             <span className="sr-only">Open user menu</span>
-            <UserCircleIcon className="w-8 h-8 text-gray-400" />
+            <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg">
+              <UserCircleIcon className="w-8 h-8 text-white" />
+            </div>
             <span className="hidden lg:flex lg:items-center">
-              <span className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
+              <span className="text-sm font-display font-semibold leading-6 text-light-text-primary dark:text-dark-text-primary">
                 {user?.name}
               </span>
             </span>
           </Menu.Button>
           <Transition
             as={Fragment}
-            enter="transition ease-out duration-100"
+            enter="transition ease-out duration-200"
             enterFrom="transform opacity-0 scale-95"
             enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
+            leave="transition ease-in duration-150"
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none dark:bg-gray-700">
-              <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-600">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+            <Menu.Items className="absolute right-0 z-10 mt-3 w-56 origin-top-right rounded-2xl card shadow-2xl border-primary-200/30 focus:outline-none animate-scale-in">
+              <div className="px-4 py-3 border-b border-primary-200/20">
+                <p className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
                   Signed in as
                 </p>
-                <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate">
                   {user?.email}
                 </p>
               </div>
 
-              <Menu.Item>
-                {({ active }) => (
-                  <Link
-                    to="/profile"
-                    className={cn(
-                      active ? "bg-gray-50 dark:bg-gray-600" : "",
-                      "block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white",
-                    )}
-                  >
-                    Profile Settings
-                  </Link>
-                )}
-              </Menu.Item>
+              <div className="py-2">
+                <Menu.Item>
+                  {({ active }) => (
+                    <Link
+                      to="/profile"
+                      className={cn(
+                        active ? "bg-primary-500/10 text-primary-600 dark:text-primary-400" : "text-light-text-primary dark:text-dark-text-primary",
+                        "block px-4 py-3 text-sm font-medium leading-6 transition-all duration-200 hover:bg-primary-500/10 rounded-lg mx-2",
+                      )}
+                    >
+                      Profile Settings
+                    </Link>
+                  )}
+                </Menu.Item>
 
-              <Menu.Item>
-                {({ active }) => (
-                  <Link
-                    to="/profile?tab=subscription"
-                    className={cn(
-                      active ? "bg-gray-50 dark:bg-gray-600" : "",
-                      "block px-3 py-2 text-sm leading-6 text-gray-900 dark:text-white",
-                    )}
-                  >
-                    Subscription
-                  </Link>
-                )}
-              </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <Link
+                      to="/profile?tab=subscription"
+                      className={cn(
+                        active ? "bg-primary-500/10 text-primary-600 dark:text-primary-400" : "text-light-text-primary dark:text-dark-text-primary",
+                        "block px-4 py-3 text-sm font-medium leading-6 transition-all duration-200 hover:bg-primary-500/10 rounded-lg mx-2",
+                      )}
+                    >
+                      Subscription
+                    </Link>
+                  )}
+                </Menu.Item>
+              </div>
 
-              <div className="border-t border-gray-200 dark:border-gray-600">
+              <div className="border-t border-primary-200/20 pt-2">
                 <Menu.Item>
                   {({ active }) => (
                     <button
                       onClick={handleLogout}
                       className={cn(
-                        active ? "bg-gray-50 dark:bg-gray-600" : "",
-                        "block px-3 py-2 w-full text-sm leading-6 text-left text-gray-900 dark:text-white",
+                        active ? "bg-danger-500/10 text-danger-600 dark:text-danger-400" : "text-light-text-primary dark:text-dark-text-primary",
+                        "block px-4 py-3 w-full text-sm font-medium leading-6 text-left transition-all duration-200 hover:bg-danger-500/10 rounded-lg mx-2 mb-2",
                       )}
                     >
                       Sign out

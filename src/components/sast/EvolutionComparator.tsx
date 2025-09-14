@@ -13,7 +13,6 @@ import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import {
     Zap,
-    ArrowRight,
     BarChart3,
     Brain,
     Globe,
@@ -116,266 +115,262 @@ const EvolutionComparator: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Input Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <Zap className="w-5 h-5 mr-2 text-purple-500" />
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold gradient-text">
                         Evolution Comparator
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                Input Text
+                    </h2>
+                </div>
+                <div className="space-y-6">
+                    <div>
+                        <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                            Input Text
+                        </label>
+                        <textarea
+                            placeholder="Enter text to compare traditional Cortex vs SAST approaches..."
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            rows={4}
+                            className="input resize-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-6">
+                        <div className="flex-1">
+                            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                Language
                             </label>
-                            <Textarea
-                                placeholder="Enter text to compare traditional Cortex vs SAST approaches..."
-                                value={inputText}
-                                onChange={(e) => setInputText(e.target.value)}
-                                rows={4}
-                                className="resize-none"
-                            />
+                            <select
+                                value={selectedLanguage}
+                                onChange={(e) => setSelectedLanguage(e.target.value)}
+                                className="input"
+                            >
+                                {languages.map((lang) => (
+                                    <option key={lang.code} value={lang.code}>
+                                        {lang.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <div className="flex-1">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                    Language
-                                </label>
-                                <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {languages.map((lang) => (
-                                            <SelectItem key={lang.code} value={lang.code}>
-                                                {lang.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="flex items-end">
-                                <Button onClick={handleCompare} disabled={loading} className="w-full sm:w-auto">
-                                    {loading ? (
-                                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                    ) : (
-                                        <Zap className="w-4 h-4 mr-2" />
-                                    )}
-                                    Compare
-                                </Button>
-                            </div>
+                        <div className="flex items-end">
+                            <button onClick={handleCompare} disabled={loading} className="btn-primary w-full sm:w-auto">
+                                {loading ? (
+                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                ) : (
+                                    <Zap className="w-4 h-4 mr-2" />
+                                )}
+                                Compare
+                            </button>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {/* Example Texts */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-sm">Try These Examples</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                        {exampleTexts.map((example, index) => (
-                            <Button
-                                key={index}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleExampleSelect(example)}
-                                className="text-xs h-auto py-2 px-3 leading-tight"
-                            >
-                                {example.length > 40 ? `${example.substring(0, 37)}...` : example}
-                            </Button>
-                        ))}
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <span className="text-white text-sm">💡</span>
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="font-display font-semibold gradient-text-secondary">Try These Examples</h3>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                    {exampleTexts.map((example, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handleExampleSelect(example)}
+                            className="glass px-4 py-2 rounded-lg border border-primary-200/30 font-body text-sm text-light-text-primary dark:text-dark-text-primary hover:scale-105 transition-all duration-200 hover:border-primary-300/50"
+                        >
+                            {example.length > 40 ? `${example.substring(0, 37)}...` : example}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             {/* Error Display */}
             {error && (
-                <Card className="border-red-200">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-red-600">
-                            <AlertTriangle className="w-4 h-4" />
-                            <span>{error}</span>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
+                        <AlertTriangle className="w-5 h-5" />
+                        <span className="font-body">{error}</span>
+                    </div>
+                </div>
             )}
 
             {/* Comparison Results */}
             {comparison && (
                 <div className="space-y-6">
                     {/* Overview Card */}
-                    <Card>
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <CardTitle className="flex items-center">
-                                    <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
+                    <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                    <BarChart3 className="w-5 h-5 text-white" />
+                                </div>
+                                <h3 className="text-xl font-display font-bold gradient-text">
                                     Comparison Results
-                                </CardTitle>
-                                {getRecommendationBadge(comparison.metadata.recommendedApproach)}
+                                </h3>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                <div className="text-center">
-                                    <div className={`text-2xl font-bold ${getImprovementColor(comparison.improvements.tokenReduction)}`}>
-                                        {formatPercentage(comparison.improvements.tokenReduction)}
-                                    </div>
-                                    <div className="text-sm text-gray-600">Token Reduction</div>
-                                    {comparison.improvements.tokenReduction > 0 ? (
-                                        <TrendingDown className="w-4 h-4 mx-auto mt-1 text-green-500" />
+                            {getRecommendationBadge(comparison.metadata.recommendedApproach)}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className="glass rounded-lg p-6 border border-success-200/30 text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.tokenReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.tokenReduction) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                                    {formatPercentage(comparison.improvements.tokenReduction)}
+                                </div>
+                                <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Token Reduction</div>
+                                {comparison.improvements.tokenReduction > 0 ? (
+                                    <TrendingDown className="w-5 h-5 mx-auto text-success-500" />
+                                ) : (
+                                    <TrendingUp className="w-5 h-5 mx-auto text-danger-500" />
+                                )}
+                            </div>
+
+                            <div className="glass rounded-lg p-6 border border-secondary-200/30 text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                                    {formatPercentage(comparison.improvements.ambiguityReduction)}
+                                </div>
+                                <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Ambiguity Reduction</div>
+                                <Brain className="w-5 h-5 mx-auto text-secondary-500" />
+                            </div>
+
+                            <div className="glass rounded-lg p-6 border border-accent-200/30 text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                                    {formatPercentage(comparison.improvements.semanticClarityGain * 100)}
+                                </div>
+                                <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Semantic Clarity</div>
+                                <CheckCircle2 className="w-5 h-5 mx-auto text-accent-500" />
+                            </div>
+
+                            <div className="glass rounded-lg p-6 border border-warning-200/30 text-center">
+                                <div className="text-3xl font-display font-bold mb-2">
+                                    {comparison.improvements.crossLingualCompatibility ? (
+                                        <CheckCircle2 className="w-10 h-10 mx-auto text-success-500" />
                                     ) : (
-                                        <TrendingUp className="w-4 h-4 mx-auto mt-1 text-red-500" />
+                                        <AlertTriangle className="w-10 h-10 mx-auto text-warning-500" />
                                     )}
                                 </div>
-
-                                <div className="text-center">
-                                    <div className={`text-2xl font-bold ${getImprovementColor(comparison.improvements.ambiguityReduction)}`}>
-                                        {formatPercentage(comparison.improvements.ambiguityReduction)}
-                                    </div>
-                                    <div className="text-sm text-gray-600">Ambiguity Reduction</div>
-                                    <Brain className="w-4 h-4 mx-auto mt-1 text-purple-500" />
-                                </div>
-
-                                <div className="text-center">
-                                    <div className={`text-2xl font-bold ${getImprovementColor(comparison.improvements.semanticClarityGain * 100)}`}>
-                                        {formatPercentage(comparison.improvements.semanticClarityGain * 100)}
-                                    </div>
-                                    <div className="text-sm text-gray-600">Semantic Clarity</div>
-                                    <CheckCircle2 className="w-4 h-4 mx-auto mt-1 text-blue-500" />
-                                </div>
-
-                                <div className="text-center">
-                                    <div className="text-2xl font-bold">
-                                        {comparison.improvements.crossLingualCompatibility ? (
-                                            <CheckCircle2 className="w-8 h-8 mx-auto text-green-500" />
-                                        ) : (
-                                            <AlertTriangle className="w-8 h-8 mx-auto text-orange-500" />
-                                        )}
-                                    </div>
-                                    <div className="text-sm text-gray-600">Cross-Lingual</div>
-                                    <Globe className="w-4 h-4 mx-auto mt-1 text-indigo-500" />
-                                </div>
+                                <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Cross-Lingual</div>
+                                <Globe className="w-5 h-5 mx-auto text-warning-500" />
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
 
                     {/* Detailed Comparison */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Traditional Cortex */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center text-blue-600">
-                                    <FileText className="w-5 h-5 mr-2" />
+                        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                    <FileText className="w-5 h-5 text-white" />
+                                </div>
+                                <h3 className="text-xl font-display font-bold gradient-text">
                                     Traditional Cortex
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-medium">Token Count</span>
-                                        <Badge variant="outline">{formatNumber(comparison.traditionalCortex.tokenCount)}</Badge>
-                                    </div>
+                                </h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Token Count</span>
+                                    <span className="glass px-3 py-1 rounded-full border border-primary-200/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-semibold">{formatNumber(comparison.traditionalCortex.tokenCount)}</span>
+                                </div>
 
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-medium">Ambiguity Level</span>
-                                        <Badge
-                                            variant={comparison.traditionalCortex.ambiguityLevel === 'high' ? 'destructive' :
-                                                comparison.traditionalCortex.ambiguityLevel === 'medium' ? 'default' : 'secondary'}
-                                        >
-                                            {comparison.traditionalCortex.ambiguityLevel}
-                                        </Badge>
-                                    </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Ambiguity Level</span>
+                                    <span className={`glass px-3 py-1 rounded-full border font-display font-semibold ${comparison.traditionalCortex.ambiguityLevel === 'high' ? 'border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
+                                        comparison.traditionalCortex.ambiguityLevel === 'medium' ? 'border-warning-200/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                            'border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300'
+                                        }`}>
+                                        {comparison.traditionalCortex.ambiguityLevel}
+                                    </span>
+                                </div>
 
-                                    <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span>Semantic Explicitness</span>
-                                            <span>{((comparison.traditionalCortex.semanticExplicitness || 0) * 100).toFixed(1)}%</span>
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-2">
-                                            <div
-                                                className="bg-blue-500 h-2 rounded-full"
-                                                style={{ width: `${(comparison.traditionalCortex.semanticExplicitness || 0) * 100}%` }}
-                                            />
-                                        </div>
+                                <div>
+                                    <div className="flex justify-between mb-2">
+                                        <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Explicitness</span>
+                                        <span className="font-display font-semibold gradient-text">{((comparison.traditionalCortex.semanticExplicitness || 0) * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
+                                        <div
+                                            className="bg-gradient-primary h-3 rounded-full transition-all duration-500"
+                                            style={{ width: `${(comparison.traditionalCortex.semanticExplicitness || 0) * 100}%` }}
+                                        />
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
 
                         {/* SAST Cortex */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center text-purple-600">
-                                    <Brain className="w-5 h-5 mr-2" />
+                        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                                    <Brain className="w-5 h-5 text-white" />
+                                </div>
+                                <h3 className="text-xl font-display font-bold gradient-text-secondary">
                                     SAST Cortex
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-medium">Primitive Count</span>
-                                        <Badge variant="outline">{formatNumber(comparison.sastCortex.primitiveCount)}</Badge>
-                                    </div>
+                                </h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Primitive Count</span>
+                                    <span className="glass px-3 py-1 rounded-full border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-semibold">{formatNumber(comparison.sastCortex.primitiveCount)}</span>
+                                </div>
 
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-medium">Ambiguities Resolved</span>
-                                        <Badge variant="outline" className="text-green-700 border-green-300">
-                                            {formatNumber(comparison.sastCortex.ambiguitiesResolved)}
-                                        </Badge>
-                                    </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Ambiguities Resolved</span>
+                                    <span className="glass px-3 py-1 rounded-full border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-semibold">
+                                        {formatNumber(comparison.sastCortex.ambiguitiesResolved)}
+                                    </span>
+                                </div>
 
-                                    <div>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span>Semantic Explicitness</span>
-                                            <span>{((comparison.sastCortex.semanticExplicitness || 0) * 100).toFixed(1)}%</span>
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-2">
-                                            <div
-                                                className="bg-purple-500 h-2 rounded-full"
-                                                style={{ width: `${(comparison.sastCortex.semanticExplicitness || 0) * 100}%` }}
-                                            />
-                                        </div>
+                                <div>
+                                    <div className="flex justify-between mb-2">
+                                        <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Explicitness</span>
+                                        <span className="font-display font-semibold gradient-text-secondary">{((comparison.sastCortex.semanticExplicitness || 0) * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
+                                        <div
+                                            className="bg-gradient-secondary h-3 rounded-full transition-all duration-500"
+                                            style={{ width: `${(comparison.sastCortex.semanticExplicitness || 0) * 100}%` }}
+                                        />
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Processing Metadata */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Clock className="w-5 h-5 mr-2 text-gray-500" />
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+                                <Clock className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-display font-bold gradient-text-accent">
                                 Processing Details
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                                <div>
-                                    <div className="font-medium text-gray-700">Complexity Level</div>
-                                    <div className="capitalize">{comparison.metadata.complexityLevel}</div>
-                                </div>
-                                <div>
-                                    <div className="font-medium text-gray-700">Processing Time</div>
-                                    <div>{comparison.metadata.comparisonTime}ms</div>
-                                </div>
-                                <div>
-                                    <div className="font-medium text-gray-700">Processing Efficiency</div>
-                                    <div className={getImprovementColor(comparison.improvements.processingEfficiency)}>
-                                        {formatPercentage(comparison.improvements.processingEfficiency)}
-                                    </div>
+                            </h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                                <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Complexity Level</div>
+                                <div className="font-display font-bold gradient-text capitalize">{comparison.metadata.complexityLevel}</div>
+                            </div>
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                                <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Processing Time</div>
+                                <div className="font-display font-bold gradient-text">{comparison.metadata.comparisonTime}ms</div>
+                            </div>
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                                <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Processing Efficiency</div>
+                                <div className={`font-display font-bold ${getImprovementColor(comparison.improvements.processingEfficiency) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.processingEfficiency) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                                    {formatPercentage(comparison.improvements.processingEfficiency)}
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

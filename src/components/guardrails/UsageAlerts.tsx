@@ -43,184 +43,207 @@ export const UsageAlerts: React.FC = () => {
     const getSeverityIcon = (severity: string) => {
         switch (severity) {
             case 'high':
-                return <XCircle className="w-5 h-5 text-red-600" />;
+                return (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                        <XCircle className="w-4 h-4 text-white" />
+                    </div>
+                );
             case 'medium':
-                return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
+                return (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
+                        <AlertTriangle className="w-4 h-4 text-white" />
+                    </div>
+                );
             case 'low':
-                return <Info className="w-5 h-5 text-blue-600" />;
+                return (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <Info className="w-4 h-4 text-white" />
+                    </div>
+                );
             default:
-                return <Bell className="w-5 h-5 text-gray-600" />;
+                return (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                        <Bell className="w-4 h-4 text-white" />
+                    </div>
+                );
         }
     };
 
     const getSeverityColor = (severity: string) => {
         switch (severity) {
             case 'high':
-                return 'bg-red-50 border-red-200';
+                return 'bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30';
             case 'medium':
-                return 'bg-yellow-50 border-yellow-200';
+                return 'bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30';
             case 'low':
-                return 'bg-blue-50 border-blue-200';
+                return 'bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30';
             default:
-                return 'bg-gray-50 border-gray-200';
+                return 'bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30';
         }
     };
 
     const getSeverityTextColor = (severity: string) => {
         switch (severity) {
             case 'high':
-                return 'text-red-900';
+                return 'gradient-text-danger';
             case 'medium':
-                return 'text-yellow-900';
+                return 'gradient-text-warning';
             case 'low':
-                return 'text-blue-900';
+                return 'gradient-text';
             default:
-                return 'text-gray-900';
+                return 'text-light-text-primary dark:text-dark-text-primary';
         }
     };
 
     if (loading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Bell className="w-5 h-5" />
-                        Usage Alerts
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-center h-32">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <Bell className="w-5 h-5 text-white" />
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                </div>
+                <div className="flex items-center justify-center h-32">
+                    <div className="spinner-lg text-primary-500"></div>
+                </div>
+            </div>
         );
     }
 
     if (alerts.length === 0) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Bell className="w-5 h-5" />
-                        Usage Alerts
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col items-center justify-center h-32 text-gray-500">
-                        <CheckCircle className="w-12 h-12 mb-2 text-green-500" />
-                        <p className="text-sm">No active alerts</p>
-                        <p className="text-xs mt-1">Your usage is within normal limits</p>
+            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <Bell className="w-5 h-5 text-white" />
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                </div>
+                <div className="flex flex-col items-center justify-center h-32 text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mb-4 shadow-2xl glow-success animate-pulse">
+                        <CheckCircle className="w-8 w-8 text-white" />
+                    </div>
+                    <p className="text-lg font-display font-bold gradient-text-success mb-2">No Active Alerts</p>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Your usage is within normal limits</p>
+                </div>
+            </div>
         );
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                        <Bell className="w-5 h-5" />
-                        Usage Alerts
-                    </span>
-                    {alerts.length > 0 && (
-                        <span className="text-sm font-normal bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                            {alerts.length} active
-                        </span>
-                    )}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-3">
-                    {alerts.map(alert => (
-                        <div
-                            key={alert._id}
-                            className={`p-4 rounded-lg border ${getSeverityColor(alert.severity)} transition-all hover:shadow-md`}
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-start gap-3 flex-1">
-                                    {getSeverityIcon(alert.severity)}
-                                    <div className="flex-1">
-                                        <h4 className={`font-semibold text-sm ${getSeverityTextColor(alert.severity)}`}>
-                                            {alert.title}
-                                        </h4>
-                                        <p className="text-xs text-gray-600 mt-1">
-                                            {alert.message}
-                                        </p>
-
-                                        {alert.metadata?.suggestions && alert.metadata.suggestions.length > 0 && (
-                                            <div className="mt-3">
-                                                <p className="text-xs font-semibold text-gray-700 mb-1">
-                                                    Recommendations:
-                                                </p>
-                                                <ul className="space-y-1">
-                                                    {alert.metadata.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
-                                                        <li key={index} className="text-xs text-gray-600 flex items-start">
-                                                            <span className="mr-1">•</span>
-                                                            <span>{suggestion}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
-
-                                        {alert.metadata?.percentage && (
-                                            <div className="mt-2">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                                        <div
-                                                            className={`h-2 rounded-full ${alert.metadata.percentage >= 90
-                                                                ? 'bg-red-500'
-                                                                : alert.metadata.percentage >= 75
-                                                                    ? 'bg-yellow-500'
-                                                                    : 'bg-blue-500'
-                                                                }`}
-                                                            style={{ width: `${Math.min(alert.metadata.percentage, 100)}%` }}
-                                                        />
-                                                    </div>
-                                                    <span className="text-xs font-semibold">
-                                                        {alert.metadata.percentage.toFixed(1)}%
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <p className="text-xs text-gray-500 mt-2">
-                                            {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-                                        </p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => dismissAlert(alert._id)}
-                                    className="ml-2 p-1 hover:bg-white hover:bg-opacity-50 rounded transition-colors"
-                                    aria-label="Dismiss alert"
-                                >
-                                    <X className="w-4 h-4 text-gray-500" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {alerts.some(alert => alert.severity === 'high') && (
-                    <div className="mt-4 p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white">
-                        <p className="text-sm font-semibold mb-1">
-                            Approaching usage limits
-                        </p>
-                        <p className="text-xs mb-2">
-                            Upgrade your plan for increased limits and access to all features.
-                        </p>
-                        <a
-                            href="https://costkatana.com/pricing"
-                            className="inline-flex items-center text-xs bg-white text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50 transition-colors"
-                        >
-                            View Plans →
-                        </a>
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <Bell className="w-5 h-5 text-white" />
                     </div>
+                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                </div>
+                {alerts.length > 0 && (
+                    <span className="text-sm font-display font-bold bg-gradient-danger text-white px-3 py-1 rounded-full shadow-lg">
+                        {alerts.length} active
+                    </span>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+            <div className="space-y-4">
+                {alerts.map(alert => (
+                    <div
+                        key={alert._id}
+                        className={`card card-hover p-6 rounded-xl border ${getSeverityColor(alert.severity)} transition-all duration-300 hover:scale-105`}
+                    >
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-4 flex-1">
+                                {getSeverityIcon(alert.severity)}
+                                <div className="flex-1">
+                                    <h4 className={`font-display font-bold text-lg ${getSeverityTextColor(alert.severity)}`}>
+                                        {alert.title}
+                                    </h4>
+                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                        {alert.message}
+                                    </p>
+
+                                    {alert.metadata?.suggestions && alert.metadata.suggestions.length > 0 && (
+                                        <div className="mt-4 glass p-4 rounded-xl border border-primary-200/30">
+                                            <p className="text-sm font-display font-bold gradient-text mb-3">
+                                                💡 Recommendations:
+                                            </p>
+                                            <ul className="space-y-2">
+                                                {alert.metadata.suggestions.slice(0, 2).map((suggestion: string, index: number) => (
+                                                    <li key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                                                        <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
+                                                        <span>{suggestion}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    {alert.metadata?.percentage && (
+                                        <div className="mt-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Usage Progress</span>
+                                                <span className={`text-sm font-display font-bold ${alert.metadata.percentage >= 90
+                                                    ? 'gradient-text-danger'
+                                                    : alert.metadata.percentage >= 75
+                                                        ? 'gradient-text-warning'
+                                                        : 'gradient-text-success'
+                                                    }`}>
+                                                    {alert.metadata.percentage.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                            <div className="w-full bg-primary-200/30 rounded-full h-3 overflow-hidden">
+                                                <div
+                                                    className={`h-3 rounded-full transition-all duration-500 ${alert.metadata.percentage >= 90
+                                                        ? 'bg-gradient-danger glow-danger'
+                                                        : alert.metadata.percentage >= 75
+                                                            ? 'bg-gradient-warning glow-warning'
+                                                            : 'bg-gradient-success glow-success'
+                                                        }`}
+                                                    style={{ width: `${Math.min(alert.metadata.percentage, 100)}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-4">
+                                        ⏰ {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => dismissAlert(alert._id)}
+                                className="ml-4 p-2 hover:bg-primary-500/10 rounded-xl transition-all duration-300 hover:scale-110"
+                                aria-label="Dismiss alert"
+                            >
+                                <X className="w-4 h-4 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500" />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {alerts.some(alert => alert.severity === 'high') && (
+                <div className="mt-6 card p-6 bg-gradient-primary shadow-2xl backdrop-blur-xl border border-primary-200/30">
+                    <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3">
+                            <AlertTriangle className="w-4 h-4 text-white" />
+                        </div>
+                        <p className="text-lg font-display font-bold text-white">
+                            🚨 Approaching Usage Limits
+                        </p>
+                    </div>
+                    <p className="text-sm font-body text-white/90 mb-4">
+                        Upgrade your plan for increased limits and access to all features.
+                    </p>
+                    <a
+                        href="https://costkatana.com/pricing"
+                        className="inline-flex items-center text-sm font-display font-semibold bg-white text-primary-600 px-4 py-2 rounded-xl hover:bg-primary-50 transition-all duration-300 hover:scale-105 shadow-lg"
+                    >
+                        ✨ View Plans →
+                    </a>
+                </div>
+            )}
+        </div>
     );
 };

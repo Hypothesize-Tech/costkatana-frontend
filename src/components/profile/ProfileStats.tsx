@@ -30,28 +30,40 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       value: formatCurrency(stats.totalSpent || 0),
       subValue: `${formatCurrency(stats.currentMonthSpent || 0)} this month`,
       icon: CurrencyDollarIcon,
-      color: "bg-blue-500",
+      gradient: "bg-gradient-primary",
+      textGradient: "gradient-text",
+      borderColor: "border-primary-200/30",
+      glowClass: "glow-primary",
     },
     {
       title: "Total Saved",
       value: formatCurrency(stats.totalSaved || 0),
       subValue: `${formatCurrency(stats.currentMonthSaved || 0)} this month`,
       icon: SparklesIcon,
-      color: "bg-green-500",
+      gradient: "bg-gradient-success",
+      textGradient: "gradient-text-success",
+      borderColor: "border-success-200/30",
+      glowClass: "glow-success",
     },
     {
       title: "API Calls",
       value: (stats.apiCalls || 0).toLocaleString(),
       subValue: `${stats.avgDailyCost ? formatCurrency(stats.avgDailyCost) : "$0"}/day avg`,
       icon: ChartBarIcon,
-      color: "bg-purple-500",
+      gradient: "bg-gradient-secondary",
+      textGradient: "gradient-text-secondary",
+      borderColor: "border-secondary-200/30",
+      glowClass: "glow-secondary",
     },
     {
       title: "Optimizations",
       value: (stats.optimizations || 0).toLocaleString(),
       subValue: `${stats.totalSpent > 0 ? (((stats.totalSaved || 0) / stats.totalSpent) * 100).toFixed(1) : '0.0'}% savings rate`,
       icon: ClockIcon,
-      color: "bg-indigo-500",
+      gradient: "bg-gradient-accent",
+      textGradient: "gradient-text-accent",
+      borderColor: "border-accent-200/30",
+      glowClass: "glow-accent",
     },
   ];
 
@@ -60,41 +72,60 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+          className={`glass rounded-xl shadow-lg border ${card.borderColor} backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-opacity-50 p-6`}
         >
-          <div className="flex items-center">
-            <div className={`p-3 rounded-lg ${card.color} bg-opacity-10`}>
-              <card.icon
-                className={`h-6 w-6 ${card.color.replace("bg-", "text-")}`}
-              />
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-xl ${card.gradient} flex items-center justify-center ${card.glowClass}`}>
+              <card.icon className="h-7 w-7 text-white" />
             </div>
-            <div className="ml-4 flex-1">
-              <p className="text-sm font-medium text-gray-600">{card.title}</p>
-              <p className="text-xl font-bold text-gray-900">{card.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{card.subValue}</p>
+            <div className="flex-1">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mb-1">
+                {card.title}
+              </p>
+              <p className={`text-2xl font-display font-bold ${card.textGradient} mb-1`}>
+                {card.value}
+              </p>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">
+                {card.subValue}
+              </p>
             </div>
           </div>
         </div>
       ))}
 
       {/* Additional Stats */}
-      <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <div className="bg-gray-50 rounded-lg p-4">
-          <p className="text-sm font-medium text-gray-600">Most Used Service</p>
-          <p className="text-lg font-semibold text-gray-900 capitalize">
-            {stats.mostUsedService}
+      <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="glass rounded-xl p-6 border border-primary-200/30 hover:scale-105 transition-all duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-sm">🏢</span>
+            </div>
+            <p className="font-display font-semibold gradient-text">Most Used Service</p>
+          </div>
+          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary capitalize">
+            {stats.mostUsedService || 'N/A'}
           </p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <p className="text-sm font-medium text-gray-600">Most Used Model</p>
-          <p className="text-lg font-semibold text-gray-900">
-            {stats.mostUsedModel}
+        <div className="glass rounded-xl p-6 border border-secondary-200/30 hover:scale-105 transition-all duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+              <span className="text-white text-sm">🤖</span>
+            </div>
+            <p className="font-display font-semibold gradient-text-secondary">Most Used Model</p>
+          </div>
+          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+            {stats.mostUsedModel || 'N/A'}
           </p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
-          <p className="text-sm font-medium text-gray-600">Account Age</p>
-          <p className="text-lg font-semibold text-gray-900">
-            {stats.accountAge} days
+        <div className="glass rounded-xl p-6 border border-accent-200/30 hover:scale-105 transition-all duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+              <span className="text-white text-sm">📅</span>
+            </div>
+            <p className="font-display font-semibold gradient-text-accent">Account Age</p>
+          </div>
+          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+            {stats.accountAge || 0} days
           </p>
         </div>
       </div>

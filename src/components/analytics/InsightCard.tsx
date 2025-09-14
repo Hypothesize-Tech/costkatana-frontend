@@ -32,46 +32,52 @@ export const InsightCard: React.FC<InsightCardProps> = ({ insight }) => {
     }
   };
 
-  const getIconColor = () => {
-    switch (insight.severity) {
-      case "high":
-        return "text-red-600";
-      case "medium":
-        return "text-yellow-600";
-      default:
-        return "text-blue-600";
-    }
-  };
-
   const getBorderColor = () => {
     switch (insight.severity) {
       case "high":
-        return "border-red-200 bg-red-50";
+        return "border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger";
       case "medium":
-        return "border-yellow-200 bg-yellow-50";
+        return "border-accent-200/50 bg-gradient-to-br from-accent-50 to-accent-100/50";
       default:
-        return "border-blue-200 bg-blue-50";
+        return "border-primary-200/50 bg-gradient-to-br from-primary-50 to-primary-100/50";
+    }
+  };
+
+  const getGradientIcon = () => {
+    switch (insight.severity) {
+      case "high":
+        return "bg-gradient-danger";
+      case "medium":
+        return "bg-gradient-accent";
+      default:
+        return "bg-gradient-primary";
     }
   };
 
   return (
-    <div className={`p-4 rounded-lg border ${getBorderColor()}`}>
+    <div className={`p-6 rounded-2xl border backdrop-blur-xl ${getBorderColor()} transition-all duration-300 hover:shadow-xl hover:scale-[1.02] animate-fade-in`}>
       <div className="flex items-start">
-        <div className={`flex-shrink-0 ${getIconColor()}`}>{getIcon()}</div>
-        <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium text-gray-900">{insight.title}</h3>
-          <p className="mt-1 text-sm text-gray-600">{insight.description}</p>
+        <div className={`flex-shrink-0 w-12 h-12 rounded-xl ${getGradientIcon()} flex items-center justify-center shadow-lg mr-4`}>
+          <div className="text-white">
+            {getIcon()}
+          </div>
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">{insight.title}</h3>
+          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">{insight.description}</p>
 
           {insight.impact && (
-            <p className="mt-2 text-sm font-medium text-gray-700">
-              Impact: <span className="font-normal">{insight.impact}</span>
-            </p>
+            <div className="mb-3 p-3 rounded-xl glass border border-white/20">
+              <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                Impact: <span className="gradient-text-accent font-normal">{insight.impact}</span>
+              </p>
+            </div>
           )}
 
           {insight.recommendation && (
-            <div className="mt-3 text-sm">
-              <p className="font-medium text-gray-700">Recommendation:</p>
-              <p className="text-gray-600">{insight.recommendation}</p>
+            <div className="p-4 rounded-xl bg-gradient-to-r from-primary-50/50 to-secondary-50/50 border border-primary-200/30">
+              <p className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300 mb-2">💡 Recommendation:</p>
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{insight.recommendation}</p>
             </div>
           )}
         </div>

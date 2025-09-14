@@ -27,46 +27,58 @@ export const OptimizationStats: React.FC<OptimizationStatsProps> = ({
       title: "Total Saved",
       value: formatCurrency(stats.totalSaved),
       icon: CurrencyDollarIcon,
-      color: "text-green-600",
-      bgColor: "bg-green-100",
+      gradient: "bg-gradient-success",
+      textGradient: "gradient-text-success",
+      borderColor: "border-success-200/30",
+      glowClass: "glow-success",
     },
     {
       title: "Tokens Saved",
       value: stats.totalTokensSaved.toLocaleString(),
       icon: ChartBarIcon,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      gradient: "bg-gradient-primary",
+      textGradient: "gradient-text",
+      borderColor: "border-primary-200/30",
+      glowClass: "glow-primary",
     },
     {
       title: "Avg Improvement",
       value: `${stats.avgImprovement.toFixed(1)}%`,
       icon: ArrowTrendingUpIcon,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100",
+      gradient: "bg-gradient-secondary",
+      textGradient: "gradient-text-secondary",
+      borderColor: "border-secondary-200/30",
+      glowClass: "glow-secondary",
     },
     {
       title: "Application Rate",
       value: `${stats.applicationRate.toFixed(0)}%`,
       icon: ClockIcon,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-100",
+      gradient: "bg-gradient-accent",
+      textGradient: "gradient-text-accent",
+      borderColor: "border-accent-200/30",
+      glowClass: "glow-accent",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+          className={`glass rounded-xl p-6 shadow-lg border ${card.borderColor} backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-opacity-50`}
         >
-          <div className="flex items-center">
-            <div className={`p-3 rounded-lg ${card.bgColor}`}>
-              <card.icon className={`h-6 w-6 ${card.color}`} />
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center ${card.glowClass}`}>
+              <card.icon className="h-6 w-6 text-white" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{card.title}</p>
-              <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
+            <div className="flex-1">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mb-1">
+                {card.title}
+              </p>
+              <p className={`text-2xl font-display font-bold ${card.textGradient}`}>
+                {card.value}
+              </p>
             </div>
           </div>
         </div>

@@ -49,210 +49,205 @@ export const CortexImpactDisplay: React.FC<CortexImpactDisplayProps> = ({
     metrics,
     className = ''
 }) => {
-    const formatNumber = (num: number) => {
-        return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+    const formatNumber = (num: number): string => {
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toFixed(0);
     };
 
-    const formatCurrency = (num: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 3,
-            maximumFractionDigits: 4
-        }).format(num);
+    const formatPercentage = (num: number): string => {
+        return `${num.toFixed(1)}%`;
     };
 
-    const getScoreColor = (score: number) => {
-        if (score >= 90) return 'text-green-600';
-        if (score >= 70) return 'text-blue-600';
-        if (score >= 50) return 'text-yellow-600';
-        return 'text-red-600';
-    };
-
-    const getScoreBg = (score: number) => {
-        if (score >= 90) return 'bg-green-100';
-        if (score >= 70) return 'bg-blue-100';
-        if (score >= 50) return 'bg-yellow-100';
-        return 'bg-red-100';
+    const formatCurrency = (num: number): string => {
+        if (num >= 1) return `$${num.toFixed(2)}`;
+        if (num >= 0.01) return `$${num.toFixed(3)}`;
+        if (num >= 0.001) return `$${num.toFixed(4)}`;
+        return `$${num.toFixed(6)}`;
     };
 
     return (
-        <div className={`space-y-6 ${className}`}>
-            {/* Header with Confidence Score */}
-            <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <SparklesIcon className="w-5 h-5 mr-2 text-indigo-600" />
-                    Cortex Optimization Impact Analysis
-                </h3>
+        <div className={`glass rounded-xl p-6 border border-secondary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/80 to-accent-50/60 dark:from-secondary-900/40 dark:to-accent-900/30 ${className}`}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-secondary-500 to-accent-500 text-white">
+                        <SparklesIcon className="h-5 w-5" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-display font-semibold gradient-text-secondary">
+                            Cortex Optimization Impact
+                        </h3>
+                        <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Advanced semantic analysis results
+                        </p>
+                    </div>
+                </div>
                 <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Confidence:</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreBg(metrics.justification.confidenceScore)} ${getScoreColor(metrics.justification.confidenceScore)}`}>
-                        {metrics.justification.confidenceScore}%
+                    <CheckCircleIcon className="h-5 w-5 text-success-500" />
+                    <span className="text-sm font-medium text-success-600 dark:text-success-400">
+                        Optimized
                     </span>
                 </div>
             </div>
 
-            {/* Token Reduction Comparison */}
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                    <ChartBarIcon className="w-4 h-4 mr-2" />
-                    Token Usage Comparison
-                </h4>
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Without Cortex</p>
-                        <p className="text-2xl font-bold text-gray-700">{formatNumber(metrics.tokenReduction.withoutCortex)}</p>
-                        <p className="text-xs text-gray-500">tokens (estimated)</p>
+            {/* Token Reduction Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="glass rounded-lg p-4 border border-secondary-200/20">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                            {metrics.tokenReduction.absoluteSavings >= 0 ? 'Tokens Saved' : 'Token Increase'}
+                        </span>
+                        <ChartBarIcon className="h-5 w-5 text-secondary-500" />
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">With Cortex</p>
-                        <p className="text-2xl font-bold text-green-600">{formatNumber(metrics.tokenReduction.withCortex)}</p>
-                        <p className="text-xs text-gray-500">tokens (actual)</p>
+                    <div className="space-y-2">
+                        <span className={`text-2xl font-display font-bold ${metrics.tokenReduction.absoluteSavings >= 0 ? 'gradient-text' : 'text-danger-600 dark:text-danger-400'}`}>
+                            {formatNumber(Math.abs(metrics.tokenReduction.absoluteSavings))} ({Math.abs(metrics.tokenReduction.percentageSavings).toFixed(1)}%)
+                        </span>
+                        <div className="flex justify-between text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <span>Original: {formatNumber(metrics.tokenReduction.withoutCortex)}</span>
+                            <span>Optimized: {formatNumber(metrics.tokenReduction.withCortex)}</span>
+                        </div>
                     </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-indigo-200">
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Tokens Saved</span>
-                        <span className="text-lg font-bold text-green-600">
-                            {formatNumber(metrics.tokenReduction.absoluteSavings)} ({metrics.tokenReduction.percentageSavings}%)
+
+                <div className="glass rounded-lg p-4 border border-secondary-200/20">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                            {metrics.costImpact.costSavings >= 0 ? 'Cost Saved' : 'Cost Increase'}
                         </span>
+                        <CurrencyDollarIcon className="h-5 w-5 text-success-500" />
+                    </div>
+                    <div className="space-y-2">
+                        <span className={`text-2xl font-display font-bold ${metrics.costImpact.costSavings >= 0 ? 'gradient-text-success' : 'text-danger-600 dark:text-danger-400'}`}>
+                            {formatCurrency(Math.abs(metrics.costImpact.costSavings))} ({Math.abs(metrics.costImpact.savingsPercentage).toFixed(1)}%)
+                        </span>
+                        <div className="flex justify-between text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <span>Original: {formatCurrency(metrics.costImpact.estimatedCostWithoutCortex)}</span>
+                            <span>Optimized: {formatCurrency(metrics.costImpact.actualCostWithCortex)}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Quality Metrics */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                    <ArrowTrendingUpIcon className="w-4 h-4 mr-2" />
-                    Quality Improvements
+            <div className="mb-6">
+                <h4 className="text-md font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                    Quality Metrics
                 </h4>
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Clarity Score</span>
-                        <div className="flex items-center">
-                            <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                                <div
-                                    className="bg-blue-600 h-2 rounded-full"
-                                    style={{ width: `${metrics.qualityMetrics.clarityScore}%` }}
-                                />
-                            </div>
-                            <span className={`text-sm font-medium ${getScoreColor(metrics.qualityMetrics.clarityScore)}`}>
-                                {metrics.qualityMetrics.clarityScore}%
-                            </span>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Completeness</span>
-                        <div className="flex items-center">
-                            <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                                <div
-                                    className="bg-blue-600 h-2 rounded-full"
-                                    style={{ width: `${metrics.qualityMetrics.completenessScore}%` }}
-                                />
-                            </div>
-                            <span className={`text-sm font-medium ${getScoreColor(metrics.qualityMetrics.completenessScore)}`}>
-                                {metrics.qualityMetrics.completenessScore}%
-                            </span>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Relevance</span>
-                        <div className="flex items-center">
-                            <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                                <div
-                                    className="bg-blue-600 h-2 rounded-full"
-                                    style={{ width: `${metrics.qualityMetrics.relevanceScore}%` }}
-                                />
-                            </div>
-                            <span className={`text-sm font-medium ${getScoreColor(metrics.qualityMetrics.relevanceScore)}`}>
-                                {metrics.qualityMetrics.relevanceScore}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="text-center">
-                        <p className="text-xs text-gray-500">Ambiguity Reduced</p>
-                        <p className="text-lg font-bold text-green-600">{metrics.qualityMetrics.ambiguityReduction}%</p>
+                        <div className="text-lg font-display font-bold gradient-text-secondary mb-1">
+                            {metrics.qualityMetrics.clarityScore.toFixed(0)}%
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Clarity Score
+                        </div>
                     </div>
                     <div className="text-center">
-                        <p className="text-xs text-gray-500">Redundancy Removed</p>
-                        <p className="text-lg font-bold text-green-600">{metrics.qualityMetrics.redundancyRemoval}%</p>
+                        <div className="text-lg font-display font-bold gradient-text-secondary mb-1">
+                            {metrics.qualityMetrics.completenessScore.toFixed(0)}%
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Completeness
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Cost Impact */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                    <CurrencyDollarIcon className="w-4 h-4 mr-2" />
-                    Cost Impact Analysis
-                </h4>
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Estimated Cost (No Cortex)</p>
-                        <p className="text-xl font-bold text-gray-700">{formatCurrency(metrics.costImpact.estimatedCostWithoutCortex)}</p>
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 mb-1">Actual Cost (With Cortex)</p>
-                        <p className="text-xl font-bold text-green-600">{formatCurrency(metrics.costImpact.actualCostWithCortex)}</p>
-                    </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-green-200">
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Total Savings</span>
-                        <span className="text-lg font-bold text-green-600">
-                            {formatCurrency(metrics.costImpact.costSavings)} ({metrics.costImpact.savingsPercentage}%)
-                        </span>
+                    <div className="text-center">
+                        <div className="text-lg font-display font-bold gradient-text-secondary mb-1">
+                            {metrics.qualityMetrics.relevanceScore.toFixed(0)}%
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Relevance
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Performance Metrics */}
-            <div className="bg-gray-50 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                    <BoltIcon className="w-4 h-4 mr-2" />
-                    Performance Metrics
+            <div className="mb-6">
+                <h4 className="text-md font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                    Performance Impact
                 </h4>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                        <p className="text-xs text-gray-500">Processing Time</p>
-                        <p className="text-lg font-bold text-blue-600">{metrics.performanceMetrics.processingTime}ms</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="glass rounded-lg p-3 border border-secondary-200/20 text-center">
+                        <BoltIcon className="h-5 w-5 text-accent-500 mx-auto mb-2" />
+                        <div className="text-lg font-display font-bold gradient-text-accent mb-1">
+                            {metrics.performanceMetrics.processingTime}ms
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Processing Time
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-500">Response Latency</p>
-                        <p className="text-lg font-bold text-blue-600">{metrics.performanceMetrics.responseLatency}ms</p>
+                    <div className="glass rounded-lg p-3 border border-secondary-200/20 text-center">
+                        <ArrowTrendingUpIcon className="h-5 w-5 text-primary-500 mx-auto mb-2" />
+                        <div className="text-lg font-display font-bold gradient-text mb-1">
+                            {metrics.performanceMetrics.responseLatency}ms
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Response Latency
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-500">Compression Ratio</p>
-                        <p className="text-lg font-bold text-green-600">{(metrics.performanceMetrics.compressionRatio * 100).toFixed(1)}%</p>
+                    <div className="glass rounded-lg p-3 border border-secondary-200/20 text-center">
+                        <ChartBarIcon className="h-5 w-5 text-success-500 mx-auto mb-2" />
+                        <div className="text-lg font-display font-bold gradient-text-success mb-1">
+                            {(metrics.performanceMetrics.compressionRatio * 100).toFixed(1)}%
+                        </div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Compression Ratio
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Optimization Techniques */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4">Optimization Techniques Applied</h4>
-                <div className="space-y-2">
+            <div className="mb-6">
+                <h4 className="text-md font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                    Applied Techniques
+                </h4>
+                <div className="flex flex-wrap gap-2">
                     {metrics.justification.optimizationTechniques.map((technique, index) => (
-                        <div key={index} className="flex items-start">
-                            <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-600">{technique}</span>
-                        </div>
+                        <span
+                            key={index}
+                            className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-secondary-100 to-accent-100 text-secondary-700 dark:from-secondary-800 dark:to-accent-800 dark:text-secondary-200 border border-secondary-200/30"
+                        >
+                            {technique}
+                        </span>
                     ))}
                 </div>
             </div>
 
             {/* Key Improvements */}
-            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-4">Key Improvements Achieved</h4>
-                <div className="space-y-2">
+            <div className="mb-4">
+                <h4 className="text-md font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                    Key Improvements
+                </h4>
+                <ul className="space-y-2">
                     {metrics.justification.keyImprovements.map((improvement, index) => (
-                        <div key={index} className="flex items-start">
-                            <SparklesIcon className="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-700">{improvement}</span>
-                        </div>
+                        <li key={index} className="flex items-start space-x-2">
+                            <CheckCircleIcon className="h-4 w-4 text-success-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {improvement}
+                            </span>
+                        </li>
                     ))}
+                </ul>
+            </div>
+
+            {/* Confidence Score */}
+            <div className="flex items-center justify-between pt-4 border-t border-secondary-200/30">
+                <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    Optimization Confidence
+                </span>
+                <div className="flex items-center space-x-2">
+                    <div className="w-24 h-2 bg-light-surface-secondary dark:bg-dark-surface-secondary rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-gradient-to-r from-success-400 to-success-600 rounded-full transition-all duration-300"
+                            style={{ width: `${metrics.justification.confidenceScore}%` }}
+                        />
+                    </div>
+                    <span className="text-sm font-display font-semibold gradient-text-success">
+                        {metrics.justification.confidenceScore.toFixed(0)}%
+                    </span>
                 </div>
             </div>
         </div>

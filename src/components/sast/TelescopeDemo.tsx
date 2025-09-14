@@ -121,52 +121,52 @@ const TelescopeDemo: React.FC = () => {
             </Card>
 
             {/* Interpretations */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <Brain className="w-5 h-5 mr-2 text-purple-500" />
-                        Possible Interpretations
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {demoData.explanation.interpretations.map((interpretation, index) => (
-                            <Card
-                                key={index}
-                                className={`cursor-pointer transition-all hover:shadow-md ${selectedInterpretation === index
-                                    ? 'ring-2 ring-blue-500 border-blue-300'
-                                    : 'border-gray-200'
-                                    }`}
-                                onClick={() => setSelectedInterpretation(index)}
-                            >
-                                <CardContent className="p-4">
-                                    <div className="flex items-start gap-3">
-                                        <div className={`mt-1 ${interpretationIcons[index]?.color || 'text-gray-500'}`}>
-                                            {interpretationIcons[index]?.icon || <Lightbulb className="w-5 h-5" />}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="font-medium text-gray-900 mb-1">
-                                                Interpretation {index + 1}
-                                            </div>
-                                            <p className="text-sm text-gray-700 leading-relaxed">
-                                                {interpretation}
-                                            </p>
-                                            <div className="mt-2">
-                                                <Badge
-                                                    variant={selectedInterpretation === index ? "default" : "outline"}
-                                                    className="text-xs"
-                                                >
-                                                    {interpretationIcons[index]?.description}
-                                                </Badge>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+            <div className="glass rounded-xl p-8 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <Brain className="w-6 h-6 text-white" />
                     </div>
-                </CardContent>
-            </Card>
+                    <h2 className="text-2xl font-display font-bold gradient-text-secondary">
+                        Possible Interpretations
+                    </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {demoData.explanation.interpretations.map((interpretation, index) => (
+                        <div
+                            key={index}
+                            className={`glass rounded-xl p-6 border cursor-pointer transition-all duration-300 hover:scale-105 ${selectedInterpretation === index
+                                ? 'border-primary-300/50 shadow-xl glow-primary'
+                                : 'border-primary-200/30 hover:border-primary-300/50'
+                                }`}
+                            onClick={() => setSelectedInterpretation(index)}
+                        >
+                            <div className="flex items-start gap-4">
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${interpretationIcons[index]?.color === 'text-blue-500' ? 'bg-gradient-primary glow-primary' : 'bg-gradient-success glow-success'}`}>
+                                    <div className="text-white">
+                                        {interpretationIcons[index]?.icon || <Lightbulb className="w-6 h-6" />}
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 text-lg">
+                                        Interpretation {index + 1}
+                                    </div>
+                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary leading-relaxed mb-3">
+                                        {interpretation}
+                                    </p>
+                                    <div>
+                                        <span className={`glass px-3 py-1 rounded-full border font-display font-medium text-sm ${selectedInterpretation === index
+                                                ? 'border-primary-200/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300'
+                                                : 'border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300'
+                                            }`}>
+                                            {interpretationIcons[index]?.description}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
 
             {/* SAST Analysis */}
             <Card>

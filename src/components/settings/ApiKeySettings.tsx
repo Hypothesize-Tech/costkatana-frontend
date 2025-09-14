@@ -108,48 +108,57 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div>
-      <div className="mb-6">
-        <h2 className="text-lg font-medium text-gray-900">
-          Dashboard API Keys
-        </h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Create API keys to access your dashboard data programmatically. These
-          keys can be used to retrieve project information, track usage, and
-          access analytics.
-        </p>
+    <div className="space-y-8">
+      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <span className="text-white text-lg">🔑</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-display font-bold gradient-text">
+              Dashboard API Keys
+            </h2>
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+              Create API keys to access your dashboard data programmatically. These
+              keys can be used to retrieve project information, track usage, and
+              access analytics.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Show newly created key */}
       {showCreatedKey && (
-        <div className="p-4 mb-6 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-medium text-green-900">
-              🎉 API Key Created Successfully
+        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-display font-semibold gradient-text-success flex items-center gap-2">
+              <span className="text-xl">🎉</span>
+              API Key Created Successfully
             </h3>
             <button
               onClick={() => setShowCreatedKey(null)}
-              className="text-lg text-green-600 hover:text-green-800"
+              className="btn-icon-secondary"
             >
               ×
             </button>
           </div>
-          <div className="p-3 mb-3 bg-yellow-50 rounded border border-yellow-200">
-            <p className="text-sm font-medium text-yellow-800">
-              ⚠️ IMPORTANT: Copy this API key now!
+          <div className="glass rounded-lg p-4 mb-4 border border-warning-200/30 bg-gradient-warning/10">
+            <p className="font-display font-semibold gradient-text-warning flex items-center gap-2">
+              <span>⚠️</span>
+              IMPORTANT: Copy this API key now!
             </p>
-            <p className="mt-1 text-xs text-yellow-700">
+            <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
               This is the only time you'll see the full key. After closing this
               dialog, only a masked version will be shown for security.
             </p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block mb-1 text-xs font-medium text-green-800">
+              <label className="block mb-2 font-display font-medium gradient-text-success">
                 Full API Key (copy this):
               </label>
-              <div className="flex items-center space-x-2">
-                <code className="flex-1 p-3 font-mono text-sm break-all bg-white rounded border border-green-300">
+              <div className="flex items-center gap-3">
+                <code className="flex-1 p-4 font-mono text-sm break-all glass rounded-lg border border-primary-200/30">
                   {showCreatedKey}
                 </code>
                 <button
@@ -160,17 +169,20 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                       "success",
                     );
                   }}
-                  className="px-4 py-3 text-sm font-medium text-white whitespace-nowrap bg-green-600 rounded border hover:bg-green-700"
+                  className="btn-primary whitespace-nowrap"
                 >
                   Copy Full Key
                 </button>
               </div>
             </div>
-            <div className="p-2 text-xs text-green-700 bg-green-100 rounded">
-              <strong>Usage:</strong> Set this as your <code>API_KEY</code>{" "}
-              environment variable:
-              <br />
-              <code className="px-1 bg-white rounded">
+            <div className="glass rounded-lg p-4 border border-info-200/30 bg-gradient-info/10">
+              <p className="font-display font-semibold gradient-text mb-2">
+                Usage Instructions:
+              </p>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                Set this as your <code className="glass px-2 py-1 rounded font-mono">API_KEY</code> environment variable:
+              </p>
+              <code className="glass px-3 py-2 rounded-lg font-mono text-sm block">
                 API_KEY={showCreatedKey}
               </code>
             </div>
@@ -179,67 +191,71 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
       )}
 
       {/* Existing API Keys */}
-      <div className="mb-6 space-y-4">
+      <div className="space-y-4">
         {apiKeys && Array.isArray(apiKeys) && apiKeys.length > 0 ? (
           apiKeys.map((apiKey: any) => (
             <div
               key={apiKey.keyId}
-              className={`bg-white p-4 rounded-lg border ${
-                isExpired(apiKey.expiresAt)
-                  ? "border-red-200 bg-red-50"
-                  : "border-gray-200"
-              }`}
+              className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl ${isExpired(apiKey.expiresAt)
+                  ? "border-danger-200/30 bg-gradient-danger/10"
+                  : "border-primary-200/30"
+                }`}
             >
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-sm font-medium text-gray-900">
+                  <div className="flex items-center gap-3 mb-4">
+                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       {apiKey.name}
                     </h3>
                     {isExpired(apiKey.expiresAt) && (
-                      <span className="px-2 py-1 text-xs text-red-800 bg-red-100 rounded">
+                      <span className="glass px-3 py-1 rounded-full font-display font-semibold border border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300">
                         Expired
                       </span>
                     )}
                   </div>
-                  <div className="mt-1 space-y-1">
-                    <div className="space-y-2">
-                      <div>
-                        <label className="block mb-1 text-xs font-medium text-gray-700">
-                          Masked Key ID (for reference only):
-                        </label>
-                        <div className="flex items-center space-x-2">
-                          <code className="px-2 py-1 font-mono text-sm bg-gray-100 rounded">
-                            {apiKey.maskedKey}
-                          </code>
-                        </div>
-                      </div>
-                      <div className="p-2 bg-amber-50 rounded border border-amber-200">
-                        <p className="text-xs font-medium text-amber-800">
-                          🔒 Security Notice
-                        </p>
-                        <p className="mt-1 text-xs text-amber-700">
-                          Full API key was only shown once during creation. If
-                          you need the full key again, you'll need to delete
-                          this key and create a new one.
-                        </p>
-                      </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block mb-2 font-display font-medium gradient-text">
+                        Masked Key ID (for reference only):
+                      </label>
+                      <code className="glass px-3 py-2 font-mono rounded-lg border border-primary-200/30">
+                        {apiKey.maskedKey}
+                      </code>
                     </div>
-                    <div className="flex items-center space-x-4 text-xs text-gray-500">
-                      <span>Permissions: {apiKey.permissions.join(", ")}</span>
-                      <span>Created: {formatDate(apiKey.createdAt)}</span>
+                    <div className="glass rounded-lg p-4 border border-warning-200/30 bg-gradient-warning/10">
+                      <p className="font-display font-semibold gradient-text-warning flex items-center gap-2 mb-2">
+                        <span>🔒</span>
+                        Security Notice
+                      </p>
+                      <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        Full API key was only shown once during creation. If
+                        you need the full key again, you'll need to delete
+                        this key and create a new one.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-4 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                      <span className="glass px-2 py-1 rounded-full border border-secondary-200/30">
+                        Permissions: {apiKey.permissions.join(", ")}
+                      </span>
+                      <span className="glass px-2 py-1 rounded-full border border-accent-200/30">
+                        Created: {formatDate(apiKey.createdAt)}
+                      </span>
                       {apiKey.expiresAt && (
-                        <span>Expires: {formatDate(apiKey.expiresAt)}</span>
+                        <span className="glass px-2 py-1 rounded-full border border-warning-200/30">
+                          Expires: {formatDate(apiKey.expiresAt)}
+                        </span>
                       )}
                       {apiKey.lastUsed && (
-                        <span>Last used: {formatDate(apiKey.lastUsed)}</span>
+                        <span className="glass px-2 py-1 rounded-full border border-info-200/30">
+                          Last used: {formatDate(apiKey.lastUsed)}
+                        </span>
                       )}
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => deleteKeyMutation.mutate(apiKey.keyId)}
-                  className="ml-4 text-red-600 hover:text-red-800"
+                  className="btn-icon-danger"
                   disabled={deleteKeyMutation.isLoading}
                 >
                   <TrashIcon className="w-5 h-5" />
@@ -248,10 +264,12 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
             </div>
           ))
         ) : (
-          <div className="py-6 text-center bg-gray-50 rounded-lg">
-            <CogIcon className="mx-auto w-12 h-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-500">No API keys configured</p>
-            <p className="text-xs text-gray-400">
+          <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
+              <CogIcon className="w-8 h-8 text-secondary-500" />
+            </div>
+            <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">No API keys configured</p>
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Create an API key to access your dashboard data
             </p>
           </div>
@@ -260,32 +278,32 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
 
       {/* Add New Key Form */}
       {showAddForm ? (
-        <form onSubmit={handleCreateKey} className="p-4 bg-gray-50 rounded-lg">
-          <h3 className="mb-4 text-sm font-medium text-gray-900">
+        <form onSubmit={handleCreateKey} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+          <h3 className="mb-6 font-display font-bold gradient-text text-lg">
             Create New API Key
           </h3>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block font-display font-medium gradient-text mb-2">
                 Name
               </label>
               <input
                 type="text"
                 value={newKey.name}
                 onChange={(e) => setNewKey({ ...newKey, name: e.target.value })}
-                className="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
                 placeholder="e.g., Production API, Development Access"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block font-display font-medium gradient-text mb-3">
                 Permissions
               </label>
-              <div className="mt-2 space-y-2">
+              <div className="space-y-3">
                 {PERMISSION_OPTIONS.map((permission) => (
-                  <label key={permission.id} className="flex items-start">
+                  <label key={permission.id} className="flex items-start gap-3 glass rounded-lg p-4 border border-primary-200/30 cursor-pointer hover:bg-gradient-primary/5 transition-all duration-200">
                     <input
                       type="checkbox"
                       checked={newKey.permissions.includes(permission.id)}
@@ -293,17 +311,17 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                         const permissions = e.target.checked
                           ? [...newKey.permissions, permission.id]
                           : newKey.permissions.filter(
-                              (p) => p !== permission.id,
-                            );
+                            (p) => p !== permission.id,
+                          );
                         setNewKey({ ...newKey, permissions });
                       }}
-                      className="mt-1 w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                      className="mt-1 w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                     />
-                    <div className="ml-3">
-                      <span className="text-sm font-medium text-gray-700">
+                    <div>
+                      <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                         {permission.name}
                       </span>
-                      <p className="text-xs text-gray-500">
+                      <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mt-1">
                         {permission.description}
                       </p>
                     </div>
@@ -313,7 +331,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block font-display font-medium gradient-text mb-2">
                 Expiration (Optional)
               </label>
               <input
@@ -322,29 +340,29 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                 onChange={(e) =>
                   setNewKey({ ...newKey, expiresAt: e.target.value })
                 }
-                className="block px-3 py-2 mt-1 w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
                 min={new Date().toISOString().split("T")[0]}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                 Leave empty for no expiration
               </p>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end gap-3 pt-4">
               <button
                 type="button"
                 onClick={() => {
                   setShowAddForm(false);
                   setNewKey({ name: "", permissions: ["read"], expiresAt: "" });
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={createKeyMutation.isLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent hover:bg-indigo-700 disabled:opacity-50"
+                className="btn-primary"
               >
                 {createKeyMutation.isLoading ? "Creating..." : "Create API Key"}
               </button>
@@ -354,30 +372,39 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
       ) : (
         <button
           onClick={() => setShowAddForm(true)}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+          className="btn-primary inline-flex items-center gap-2"
         >
-          <PlusIcon className="mr-2 w-4 h-4" />
+          <PlusIcon className="w-4 h-4" />
           Create API Key
         </button>
       )}
 
-      <div className="p-4 mt-6 bg-blue-50 rounded-lg">
-        <h4 className="text-sm font-medium text-blue-900">
-          Usage Instructions
-        </h4>
-        <div className="mt-2 space-y-1 text-sm text-blue-700">
-          <p>
-            • Use these API keys in the Authorization header:{" "}
-            <code>Bearer your_api_key</code>
+      <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl bg-gradient-info/10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+            <span className="text-white text-sm">📚</span>
+          </div>
+          <h4 className="font-display font-semibold gradient-text">
+            Usage Instructions
+          </h4>
+        </div>
+        <div className="space-y-3 font-body text-light-text-primary dark:text-dark-text-primary">
+          <p className="flex items-start gap-2">
+            <span className="text-info-500">•</span>
+            Use these API keys in the Authorization header:{" "}
+            <code className="glass px-2 py-1 rounded font-mono">Bearer your_api_key</code>
           </p>
-          <p>
-            • Access project data: <code>GET /api/projects</code>
+          <p className="flex items-start gap-2">
+            <span className="text-info-500">•</span>
+            Access project data: <code className="glass px-2 py-1 rounded font-mono">GET /api/projects</code>
           </p>
-          <p>
-            • Track usage: <code>POST /api/usage/track</code>
+          <p className="flex items-start gap-2">
+            <span className="text-info-500">•</span>
+            Track usage: <code className="glass px-2 py-1 rounded font-mono">POST /api/usage/track</code>
           </p>
-          <p>
-            • View analytics: <code>GET /api/analytics</code>
+          <p className="flex items-start gap-2">
+            <span className="text-info-500">•</span>
+            View analytics: <code className="glass px-2 py-1 rounded font-mono">GET /api/analytics</code>
           </p>
         </div>
       </div>

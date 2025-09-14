@@ -23,12 +23,12 @@ export const WebhookList: React.FC<WebhookListProps> = ({
 }) => {
     if (loading) {
         return (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold mb-4">Your Webhooks</h2>
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+                <h2 className="text-lg font-semibold mb-4 text-light-text-primary dark:text-dark-text-primary">Your Webhooks</h2>
                 <div className="space-y-4">
                     {[1, 2, 3].map(i => (
                         <div key={i} className="animate-pulse">
-                            <div className="h-20 bg-gray-200 rounded-lg"></div>
+                            <div className="h-20 glass rounded-xl"></div>
                         </div>
                     ))}
                 </div>
@@ -37,14 +37,14 @@ export const WebhookList: React.FC<WebhookListProps> = ({
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Your Webhooks</h2>
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+            <h2 className="text-lg font-semibold mb-4 text-light-text-primary dark:text-dark-text-primary">Your Webhooks</h2>
 
             {webhooks.length === 0 ? (
                 <div className="text-center py-8">
-                    <Webhook className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600">No webhooks configured</p>
-                    <p className="text-sm text-gray-500 mt-1">Create your first webhook to get started</p>
+                    <Webhook className="w-12 h-12 text-light-text-tertiary dark:text-dark-text-tertiary mx-auto mb-3" />
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary">No webhooks configured</p>
+                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">Create your first webhook to get started</p>
                 </div>
             ) : (
                 <div className="space-y-3">
@@ -52,22 +52,22 @@ export const WebhookList: React.FC<WebhookListProps> = ({
                         <div
                             key={webhook.id}
                             onClick={() => onSelect(webhook)}
-                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedWebhook?.id === webhook.id
-                                    ? 'border-blue-500 bg-blue-50'
-                                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                            className={`p-4 glass rounded-xl border-2 cursor-pointer transition-all duration-300 ${selectedWebhook?.id === webhook.id
+                                ? 'border-primary-500 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30 shadow-lg'
+                                : 'border-accent-200/30 hover:border-accent-300/50 bg-gradient-to-br from-light-bg-100/30 to-light-bg-200/30 dark:from-dark-bg-100/30 dark:to-dark-bg-200/30 hover:shadow-md'
                                 }`}
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
-                                        <h3 className="font-medium text-gray-900">{webhook.name}</h3>
+                                        <h3 className="font-medium text-light-text-primary dark:text-dark-text-primary">{webhook.name}</h3>
                                         {webhook.active ? (
-                                            <CheckCircle className="w-4 h-4 text-green-500" />
+                                            <CheckCircle className="w-4 h-4 text-success-500" />
                                         ) : (
-                                            <XCircle className="w-4 h-4 text-red-500" />
+                                            <XCircle className="w-4 h-4 text-error-500" />
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-600 mt-1">{webhook.url}</p>
+                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{webhook.url}</p>
                                     <div className="flex items-center gap-4 mt-2">
                                         <span className="text-xs text-gray-500">
                                             {webhook.events.length} events
@@ -118,27 +118,27 @@ export const WebhookList: React.FC<WebhookListProps> = ({
                             </div>
 
                             {/* Stats Bar */}
-                            <div className="flex items-center gap-4 mt-3 pt-3 border-t">
+                            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-accent-200/30">
                                 <div className="text-xs">
-                                    <span className="text-gray-500">Total:</span>
-                                    <span className="font-medium ml-1">{webhook.stats.totalDeliveries}</span>
+                                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Total:</span>
+                                    <span className="font-medium ml-1 text-light-text-primary dark:text-dark-text-primary">{webhook.stats.totalDeliveries}</span>
                                 </div>
                                 <div className="text-xs">
-                                    <span className="text-gray-500">Success:</span>
-                                    <span className="font-medium text-green-600 ml-1">
+                                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Success:</span>
+                                    <span className="font-medium text-success-600 dark:text-success-400 ml-1">
                                         {webhook.stats.successfulDeliveries}
                                     </span>
                                 </div>
                                 <div className="text-xs">
-                                    <span className="text-gray-500">Failed:</span>
-                                    <span className="font-medium text-red-600 ml-1">
+                                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Failed:</span>
+                                    <span className="font-medium text-error-600 dark:text-error-400 ml-1">
                                         {webhook.stats.failedDeliveries}
                                     </span>
                                 </div>
                                 {webhook.stats.averageResponseTime && (
                                     <div className="text-xs">
-                                        <span className="text-gray-500">Avg:</span>
-                                        <span className="font-medium ml-1">
+                                        <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Avg:</span>
+                                        <span className="font-medium ml-1 text-light-text-primary dark:text-dark-text-primary">
                                             {webhook.stats.averageResponseTime}ms
                                         </span>
                                     </div>

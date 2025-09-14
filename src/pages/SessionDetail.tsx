@@ -90,20 +90,20 @@ export const SessionDetail: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader className="w-8 h-8 animate-spin text-blue-600" />
+            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex items-center justify-center">
+                <Loader className="w-8 h-8 animate-spin text-primary-600" />
             </div>
         );
     }
 
     if (error || !details?.session) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
-                <p className="text-red-600 mb-4">{error || 'Session not found'}</p>
+            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex flex-col items-center justify-center">
+                <AlertCircle className="w-12 h-12 text-error-500 mb-4" />
+                <p className="text-error-600 dark:text-error-400 mb-4">{error || 'Session not found'}</p>
                 <button
                     onClick={() => navigate('/sessions')}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="btn-primary"
                 >
                     Back to Sessions
                 </button>
@@ -114,31 +114,31 @@ export const SessionDetail: React.FC = () => {
     const session = details.session;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6 mb-8">
+                <div className="max-w-7xl mx-auto px-6 py-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => navigate('/sessions')}
-                                className="p-2 hover:bg-gray-100 rounded-lg"
+                                className="p-2 hover:bg-light-bg-300 dark:hover:bg-dark-bg-300 rounded-lg transition-colors"
                                 aria-label="Back to sessions"
                             >
-                                <ArrowLeft className="w-5 h-5" />
+                                <ArrowLeft className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary" />
                             </button>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <h1 className="text-2xl font-display font-bold gradient-text-primary flex items-center gap-2">
                                     Session Details
                                     {getStatusIcon(session.status)}
                                 </h1>
-                                <p className="text-sm text-gray-500 font-mono">{session.sessionId}</p>
+                                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-mono">{session.sessionId}</p>
                             </div>
                         </div>
                         {session.status === 'active' && (
                             <button
                                 onClick={handleEndSession}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                className="btn btn-error"
                             >
                                 End Session
                             </button>
@@ -149,21 +149,21 @@ export const SessionDetail: React.FC = () => {
 
             {/* Summary Cards */}
             <div className="max-w-7xl mx-auto px-6 py-6">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                    <div className="bg-white p-4 rounded-lg shadow">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-500 text-sm">Started</p>
-                                <p className="text-sm font-medium">{formatDate(session.startedAt)}</p>
+                                <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm font-medium">Started</p>
+                                <p className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">{formatDate(session.startedAt)}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-500 text-sm">Duration</p>
-                                <p className="text-lg font-bold">
+                                <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm font-medium">Duration</p>
+                                <p className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {formatDuration(session.summary?.totalDuration)}
                                 </p>
                             </div>

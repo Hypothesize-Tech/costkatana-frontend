@@ -167,61 +167,73 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={handleClose} />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
 
-        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
-          <div className="absolute top-0 right-0 pt-4 pr-4">
+        <div className="inline-block align-bottom card card-gradient rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl backdrop-blur-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full border border-primary-200/30">
+          <div className="absolute top-4 right-4">
             <button
               type="button"
               onClick={handleClose}
-              className="bg-white rounded-md text-gray-400 hover:text-gray-600"
+              className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             >
-              <XMarkIcon className="h-6 w-6" />
+              <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
 
           <div className="sm:flex sm:items-start">
             <div className="w-full">
-              <div className="text-center sm:text-left">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Create Proxy Key
-                </h3>
-                <p className="text-sm text-gray-500 mb-6">
+              <div className="text-center sm:text-left mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <span className="text-white text-xl">🔑</span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-display font-bold gradient-text">
+                      Create Proxy Key
+                    </h3>
+                  </div>
+                </div>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Create a controlled access key that provides secure, limited access to your provider keys.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Basic Information */}
-                <div className="space-y-4">
-                  <h4 className="text-md font-medium text-gray-900">Basic Information</h4>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                      <span className="text-white text-sm">📝</span>
+                    </div>
+                    <h4 className="text-lg font-display font-bold gradient-text">Basic Information</h4>
+                  </div>
 
                   {/* Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Name *
                     </label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input w-full"
                       placeholder="e.g., WebApp-Backend-Key"
                     />
                     {errors.name && (
-                      <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                      <p className="mt-2 text-sm gradient-text-danger">{errors.name}</p>
                     )}
                   </div>
 
                   {/* Provider Key */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Provider Key *
                     </label>
                     <select
                       value={formData.providerKeyId}
                       onChange={(e) => setFormData({ ...formData, providerKeyId: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input w-full"
                     >
                       <option value="">Select a provider key</option>
                       {providerKeys.map((providerKey) => (
@@ -231,25 +243,27 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                       ))}
                     </select>
                     {errors.providerKeyId && (
-                      <p className="mt-1 text-sm text-red-600">{errors.providerKeyId}</p>
+                      <p className="mt-2 text-sm gradient-text-danger">{errors.providerKeyId}</p>
                     )}
                     {selectedProviderKey && (
-                      <p className="mt-1 text-xs text-gray-500">
-                        This proxy key will use the {selectedProviderKey.provider} API key: {selectedProviderKey.maskedKey}
-                      </p>
+                      <div className="glass p-3 rounded-xl border border-primary-200/30 mt-2">
+                        <p className="text-xs font-body text-primary-600 dark:text-primary-400">
+                          This proxy key will use the <span className="font-semibold">{selectedProviderKey.provider}</span> API key: <code className="bg-primary-100/50 dark:bg-primary-900/50 px-2 py-1 rounded text-xs">{selectedProviderKey.maskedKey}</code>
+                        </p>
+                      </div>
                     )}
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Description (Optional)
                     </label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input w-full resize-none"
                       placeholder="Brief description of this proxy key..."
                     />
                   </div>
@@ -257,17 +271,24 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Permissions */}
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-3">Permissions</h4>
-                  <div className="space-y-2">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                      <span className="text-white text-sm">🔒</span>
+                    </div>
+                    <h4 className="text-lg font-display font-bold gradient-text">Permissions</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {['read', 'write', 'admin'].map((permission) => (
-                      <label key={permission} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={(formData.permissions || []).includes(permission as any)}
-                          onChange={(e) => handlePermissionChange(permission, e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 capitalize">{permission}</span>
+                      <label key={permission} className="glass p-4 rounded-xl border border-primary-200/30 cursor-pointer hover:border-primary-300/50 transition-all duration-300">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={(formData.permissions || []).includes(permission as any)}
+                            onChange={(e) => handlePermissionChange(permission, e.target.checked)}
+                            className="w-5 h-5 rounded border-2 border-primary-300 text-primary-600 focus:ring-primary-500"
+                          />
+                          <span className="font-display font-semibold gradient-text capitalize">{permission}</span>
+                        </div>
                       </label>
                     ))}
                   </div>
@@ -275,10 +296,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Budget Limits */}
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-3">Budget Limits (Optional)</h4>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                      <span className="text-white text-sm">💰</span>
+                    </div>
+                    <h4 className="text-lg font-display font-bold gradient-text">Budget Limits (Optional)</h4>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block font-display font-semibold gradient-text mb-2">
                         Total Budget ($)
                       </label>
                       <input
@@ -290,15 +316,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                           ...formData,
                           budgetLimit: e.target.value ? parseFloat(e.target.value) : undefined
                         })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input w-full"
                         placeholder="100.00"
                       />
                       {errors.budgetLimit && (
-                        <p className="mt-1 text-sm text-red-600">{errors.budgetLimit}</p>
+                        <p className="mt-2 text-sm gradient-text-danger">{errors.budgetLimit}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block font-display font-semibold gradient-text mb-2">
                         Daily Budget ($)
                       </label>
                       <input
@@ -310,15 +336,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                           ...formData,
                           dailyBudgetLimit: e.target.value ? parseFloat(e.target.value) : undefined
                         })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input w-full"
                         placeholder="10.00"
                       />
                       {errors.dailyBudgetLimit && (
-                        <p className="mt-1 text-sm text-red-600">{errors.dailyBudgetLimit}</p>
+                        <p className="mt-2 text-sm gradient-text-danger">{errors.dailyBudgetLimit}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block font-display font-semibold gradient-text mb-2">
                         Monthly Budget ($)
                       </label>
                       <input
@@ -330,11 +356,11 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                           ...formData,
                           monthlyBudgetLimit: e.target.value ? parseFloat(e.target.value) : undefined
                         })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input w-full"
                         placeholder="300.00"
                       />
                       {errors.monthlyBudgetLimit && (
-                        <p className="mt-1 text-sm text-red-600">{errors.monthlyBudgetLimit}</p>
+                        <p className="mt-2 text-sm gradient-text-danger">{errors.monthlyBudgetLimit}</p>
                       )}
                     </div>
                   </div>
@@ -342,9 +368,14 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Rate Limiting */}
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-3">Rate Limiting (Optional)</h4>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning">
+                      <span className="text-white text-sm">⚡</span>
+                    </div>
+                    <h4 className="text-lg font-display font-bold gradient-text">Rate Limiting (Optional)</h4>
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Requests per minute
                     </label>
                     <input
@@ -356,38 +387,43 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         ...formData,
                         rateLimit: e.target.value ? parseInt(e.target.value) : undefined
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input w-full"
                       placeholder="1000"
                     />
                     {errors.rateLimit && (
-                      <p className="mt-1 text-sm text-red-600">{errors.rateLimit}</p>
+                      <p className="mt-2 text-sm gradient-text-danger">{errors.rateLimit}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Security Restrictions */}
                 <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-3">Security Restrictions (Optional)</h4>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                      <span className="text-white text-sm">🔒</span>
+                    </div>
+                    <h4 className="text-lg font-display font-bold gradient-text">Security Restrictions (Optional)</h4>
+                  </div>
 
                   {/* Allowed IPs */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <div className="mb-6">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Allowed IP Addresses
                     </label>
-                    <div className="flex space-x-2 mb-2">
+                    <div className="flex gap-2 mb-3">
                       <input
                         type="text"
                         value={newIP}
                         onChange={(e) => setNewIP(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input flex-1"
                         placeholder="192.168.1.100"
                       />
                       <button
                         type="button"
                         onClick={addIP}
-                        className="px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        className="btn-ghost w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform duration-300"
                       >
-                        <PlusIcon className="h-4 w-4" />
+                        <PlusIcon className="h-5 w-5" />
                       </button>
                     </div>
                     {formData.allowedIPs && formData.allowedIPs.length > 0 && (
@@ -395,13 +431,13 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         {formData.allowedIPs.map((ip) => (
                           <span
                             key={ip}
-                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-sm"
                           >
                             {ip}
                             <button
                               type="button"
                               onClick={() => removeIP(ip)}
-                              className="ml-1 text-blue-600 hover:text-blue-800"
+                              className="text-primary-600 hover:text-danger-500 transition-colors duration-300"
                             >
                               <TrashIcon className="h-3 w-3" />
                             </button>
@@ -413,23 +449,23 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                   {/* Allowed Domains */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block font-display font-semibold gradient-text mb-2">
                       Allowed Domains
                     </label>
-                    <div className="flex space-x-2 mb-2">
+                    <div className="flex gap-2 mb-3">
                       <input
                         type="text"
                         value={newDomain}
                         onChange={(e) => setNewDomain(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="input flex-1"
                         placeholder="example.com"
                       />
                       <button
                         type="button"
                         onClick={addDomain}
-                        className="px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        className="btn-ghost w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform duration-300"
                       >
-                        <PlusIcon className="h-4 w-4" />
+                        <PlusIcon className="h-5 w-5" />
                       </button>
                     </div>
                     {formData.allowedDomains && formData.allowedDomains.length > 0 && (
@@ -437,13 +473,13 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         {formData.allowedDomains.map((domain) => (
                           <span
                             key={domain}
-                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-sm"
                           >
                             {domain}
                             <button
                               type="button"
                               onClick={() => removeDomain(domain)}
-                              className="ml-1 text-green-600 hover:text-green-800"
+                              className="text-success-600 hover:text-danger-500 transition-colors duration-300"
                             >
                               <TrashIcon className="h-3 w-3" />
                             </button>
@@ -456,26 +492,41 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* General Error */}
                 {errors.general && (
-                  <div className="rounded-md bg-red-50 p-4">
-                    <div className="text-sm text-red-700">{errors.general}</div>
+                  <div className="glass p-4 rounded-xl border border-danger-200/30 bg-gradient-danger/10">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center glow-danger">
+                        <span className="text-white text-xs">!</span>
+                      </div>
+                      <div className="font-body text-sm gradient-text-danger">{errors.general}</div>
+                    </div>
                   </div>
                 )}
 
                 {/* Actions */}
-                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <div className="flex justify-end gap-3 pt-6 border-t border-primary-200/30">
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                    className="btn-ghost hover:scale-105 transition-transform duration-300"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createProxyKeyMutation.isPending}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-secondary hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    {createProxyKeyMutation.isPending ? 'Creating...' : 'Create Proxy Key'}
+                    {createProxyKeyMutation.isPending ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Creating...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <span>🔑</span>
+                        Create Proxy Key
+                      </span>
+                    )}
                   </button>
                 </div>
               </form>

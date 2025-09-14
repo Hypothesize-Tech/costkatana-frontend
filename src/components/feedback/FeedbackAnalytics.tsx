@@ -93,11 +93,13 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (!isAuthenticated) {
     return (
-      <div className={`bg-white rounded-lg border border-gray-200 p-6 ${className}`}>
-        <div className="text-center py-8">
-          <InformationCircleIcon className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Authentication Required</h3>
-          <p className="text-gray-600">
+      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+        <div className="text-center py-12">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+            <InformationCircleIcon className="h-8 w-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-display font-bold gradient-text mb-4">Authentication Required</h3>
+          <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
             Please log in to view your Return on AI Spend analytics.
           </p>
         </div>
@@ -107,12 +109,12 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (loading) {
     return (
-      <div className={`bg-white rounded-lg border border-gray-200 p-6 ${className}`}>
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-gradient-primary/20 rounded-xl w-1/3"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded"></div>
+              <div key={i} className="h-24 bg-gradient-primary/10 rounded-xl border border-primary-200/30"></div>
             ))}
           </div>
         </div>
@@ -122,16 +124,18 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (error) {
     return (
-      <div className={`bg-white rounded-lg border border-red-200 p-6 ${className}`}>
-        <div className="flex items-center text-red-600">
-          <ExclamationTriangleIcon className="h-5 w-5 mr-2" />
-          <span>Error loading feedback analytics: {error}</span>
+      <div className={`card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl ${className}`}>
+        <div className="flex items-center text-danger-600 dark:text-danger-400 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
+            <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+          </div>
+          <span className="font-display font-semibold">Error loading feedback analytics: {error}</span>
         </div>
         <button
           onClick={fetchFeedbackAnalytics}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          className="btn-danger px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
         >
-          Retry
+          🔄 Retry
         </button>
       </div>
     );
@@ -139,11 +143,13 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (!analytics || analytics.totalRequests === 0) {
     return (
-      <div className={`bg-white rounded-lg border border-gray-200 p-6 ${className}`}>
-        <div className="text-center py-8">
-          <InformationCircleIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Feedback Data</h3>
-          <p className="text-gray-600">
+      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+        <div className="text-center py-12">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+            <InformationCircleIcon className="h-10 w-10 text-white" />
+          </div>
+          <h3 className="text-2xl font-display font-bold gradient-text mb-4">No Feedback Data</h3>
+          <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
             Start collecting user feedback to see Return on AI Spend analytics here.
           </p>
         </div>
@@ -155,86 +161,100 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
     (analytics.negativeCost / analytics.totalCost * 100) : 0;
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-8 ${className}`}>
       {/* Header */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="flex items-center mb-4">
-          <ChartBarIcon className="h-6 w-6 text-blue-600 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900">Return on AI Spend Analytics</h2>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+            <ChartBarIcon className="h-7 w-7 text-white" />
+          </div>
+          <h2 className="text-3xl font-display font-bold gradient-text">💰 Return on AI Spend Analytics</h2>
         </div>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gray-900">
+          <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+            <div className="text-4xl font-display font-bold gradient-text mb-2">
               {analytics.totalRequests}
             </div>
-            <div className="text-sm text-gray-600">Total Requests</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</div>
           </div>
 
-          <div className="text-center">
-            <div className="text-3xl font-bold text-green-600">
+          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+            <div className="text-4xl font-display font-bold gradient-text-success mb-2">
               {(analytics.averageRating * 100).toFixed(1)}%
             </div>
-            <div className="text-sm text-gray-600">Satisfaction Rate</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Satisfaction Rate</div>
           </div>
 
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">
+          <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 text-center">
+            <div className="text-4xl font-display font-bold text-secondary-600 dark:text-secondary-400 mb-2">
               ${analytics.totalCost.toFixed(4)}
             </div>
-            <div className="text-sm text-gray-600">Total Spend</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Spend</div>
           </div>
 
-          <div className="text-center">
-            <div className={`text-3xl font-bold ${wastedPercentage > 20 ? 'text-red-600' : wastedPercentage > 10 ? 'text-yellow-600' : 'text-green-600'}`}>
+          <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+            <div className={`text-4xl font-display font-bold mb-2 ${wastedPercentage > 20 ? 'gradient-text-danger' : wastedPercentage > 10 ? 'gradient-text-warning' : 'gradient-text-success'}`}>
               {wastedPercentage.toFixed(1)}%
             </div>
-            <div className="text-sm text-gray-600">Wasted Spend</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Wasted Spend</div>
           </div>
         </div>
       </div>
 
       {/* Cost Breakdown */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <CurrencyDollarIcon className="h-5 w-5 mr-2 text-green-600" />
-          Cost vs Value Breakdown
-        </h3>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+            <CurrencyDollarIcon className="h-5 w-5 text-white" />
+          </div>
+          <h3 className="text-2xl font-display font-bold gradient-text">
+            💸 Cost vs Value Breakdown
+          </h3>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-            <div className="flex items-center">
-              <HandThumbUpIcon className="h-5 w-5 text-green-600 mr-2" />
-              <div>
-                <div className="font-medium text-green-900">Positive Responses</div>
-                <div className="text-sm text-green-700">{analytics.positiveRatings} responses</div>
+          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
+                  <HandThumbUpIcon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-display font-bold text-success-700 dark:text-success-300 text-lg">Positive Responses</div>
+                  <div className="text-sm font-medium text-success-600 dark:text-success-400">{analytics.positiveRatings} responses</div>
+                </div>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-green-900">
-                ${analytics.positiveCost.toFixed(4)}
-              </div>
-              <div className="text-sm text-green-700">
-                ${analytics.costPerPositiveRating.toFixed(4)} avg
+              <div className="text-right">
+                <div className="text-2xl font-display font-bold gradient-text-success">
+                  ${analytics.positiveCost.toFixed(4)}
+                </div>
+                <div className="text-sm font-medium text-success-600 dark:text-success-400">
+                  ${analytics.costPerPositiveRating.toFixed(4)} avg
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
-            <div className="flex items-center">
-              <HandThumbDownIcon className="h-5 w-5 text-red-600 mr-2" />
-              <div>
-                <div className="font-medium text-red-900">Negative Responses</div>
-                <div className="text-sm text-red-700">{analytics.negativeRatings} responses</div>
+          <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
+                  <HandThumbDownIcon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-display font-bold text-danger-700 dark:text-danger-300 text-lg">Negative Responses</div>
+                  <div className="text-sm font-medium text-danger-600 dark:text-danger-400">{analytics.negativeRatings} responses</div>
+                </div>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-red-900">
-                ${analytics.negativeCost.toFixed(4)}
-              </div>
-              <div className="text-sm text-red-700">
-                ${analytics.costPerNegativeRating.toFixed(4)} avg
+              <div className="text-right">
+                <div className="text-2xl font-display font-bold gradient-text-danger">
+                  ${analytics.negativeCost.toFixed(4)}
+                </div>
+                <div className="text-sm font-medium text-danger-600 dark:text-danger-400">
+                  ${analytics.costPerNegativeRating.toFixed(4)} avg
+                </div>
               </div>
             </div>
           </div>
@@ -243,16 +263,27 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
       {/* Insights & Recommendations */}
       {analytics.insights && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            💡 AI-Powered Insights & Recommendations
-          </h3>
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">
+              💡 AI-Powered Insights & Recommendations
+            </h3>
+          </div>
 
           <div className="space-y-4">
             {analytics.insights.recommendations.map((recommendation, index) => (
-              <div key={index} className="flex items-start p-4 bg-blue-50 rounded-lg">
-                <InformationCircleIcon className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <p className="text-blue-900">{recommendation}</p>
+              <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0 mt-1">
+                    <InformationCircleIcon className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{recommendation}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -261,8 +292,15 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
       {/* Feature Performance */}
       {Object.keys(analytics.ratingsByFeature).length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Feature Performance</h3>
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg glow-secondary">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">🎯 Feature Performance</h3>
+          </div>
 
           <div className="space-y-4">
             {Object.entries(analytics.ratingsByFeature).map(([feature, stats]) => {
@@ -271,21 +309,23 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
               const avgCost = total > 0 ? (stats.cost / total) : 0;
 
               return (
-                <div key={feature} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div>
-                    <div className="font-medium text-gray-900 capitalize">
-                      {feature.replace(/-/g, ' ')}
+                <div key={feature} className="card card-hover p-6 border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-display font-bold text-light-text-primary dark:text-dark-text-primary text-lg capitalize">
+                        {feature.replace(/-/g, ' ')}
+                      </div>
+                      <div className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                        {stats.positive} positive, {stats.negative} negative
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {stats.positive} positive, {stats.negative} negative
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`text-lg font-bold ${satisfaction >= 80 ? 'text-green-600' : satisfaction >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                      {satisfaction.toFixed(1)}%
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      ${avgCost.toFixed(4)} avg cost
+                    <div className="text-right">
+                      <div className={`text-2xl font-display font-bold ${satisfaction >= 80 ? 'gradient-text-success' : satisfaction >= 60 ? 'gradient-text-warning' : 'gradient-text-danger'}`}>
+                        {satisfaction.toFixed(1)}%
+                      </div>
+                      <div className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                        ${avgCost.toFixed(4)} avg cost
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -296,40 +336,47 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
       )}
 
       {/* Behavioral Insights */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">User Behavior Analysis</h3>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg glow-accent">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-display font-bold gradient-text">👥 User Behavior Analysis</h3>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+            <div className="text-3xl font-display font-bold gradient-text-success mb-2">
               {(analytics.implicitSignalsAnalysis.copyRate * 100).toFixed(1)}%
             </div>
-            <div className="text-sm text-gray-600">Copy Rate</div>
-            <div className="text-xs text-gray-500 mt-1">High value indicator</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Copy Rate</div>
+            <div className="text-xs font-body text-success-600 dark:text-success-400 mt-1">High value indicator</div>
           </div>
 
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+            <div className="text-3xl font-display font-bold gradient-text mb-2">
               {(analytics.implicitSignalsAnalysis.continuationRate * 100).toFixed(1)}%
             </div>
-            <div className="text-sm text-gray-600">Continuation Rate</div>
-            <div className="text-xs text-gray-500 mt-1">Engagement indicator</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Continuation Rate</div>
+            <div className="text-xs font-body text-primary-600 dark:text-primary-400 mt-1">Engagement indicator</div>
           </div>
 
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="card card-hover p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30 text-center">
+            <div className="text-3xl font-display font-bold gradient-text-warning mb-2">
               {(analytics.implicitSignalsAnalysis.rephraseRate * 100).toFixed(1)}%
             </div>
-            <div className="text-sm text-gray-600">Rephrase Rate</div>
-            <div className="text-xs text-gray-500 mt-1">Confusion indicator</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Rephrase Rate</div>
+            <div className="text-xs font-body text-warning-600 dark:text-warning-400 mt-1">Confusion indicator</div>
           </div>
 
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+            <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
               {(analytics.implicitSignalsAnalysis.averageSessionDuration / 1000).toFixed(1)}s
             </div>
-            <div className="text-sm text-gray-600">Avg Session</div>
-            <div className="text-xs text-gray-500 mt-1">Engagement time</div>
+            <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Session</div>
+            <div className="text-xs font-body text-accent-600 dark:text-accent-400 mt-1">Engagement time</div>
           </div>
         </div>
       </div>

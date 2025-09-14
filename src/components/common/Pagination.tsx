@@ -25,14 +25,14 @@ export const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="btn-outline"
+          className="btn-secondary font-display font-medium"
         >
           Previous
         </button>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="btn-outline"
+          className="btn-secondary font-display font-medium"
         >
           Next
         </button>
@@ -40,24 +40,24 @@ export const Pagination = ({
 
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            Page <span className="font-medium">{currentPage}</span> of{" "}
-            <span className="font-medium">{totalPages}</span>
+          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            Page <span className="font-display font-semibold gradient-text">{currentPage}</span> of{" "}
+            <span className="font-display font-semibold gradient-text">{totalPages}</span>
           </p>
         </div>
 
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            className="isolate inline-flex -space-x-px rounded-xl shadow-lg glass backdrop-blur-xl border border-primary-200/30"
             aria-label="Pagination"
           >
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed dark:ring-gray-600 dark:hover:bg-gray-700"
+              className="relative inline-flex items-center rounded-l-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
             >
               <span className="sr-only">Previous</span>
-              <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
             </button>
 
             {pages.map((page, index) => (
@@ -72,10 +72,10 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed dark:ring-gray-600 dark:hover:bg-gray-700"
+              className="relative inline-flex items-center rounded-r-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
             >
               <span className="sr-only">Next</span>
-              <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
             </button>
           </nav>
         </div>
@@ -93,7 +93,7 @@ interface PageButtonProps {
 const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
   if (page === "...") {
     return (
-      <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0 dark:text-gray-300 dark:ring-gray-600">
+      <span className="relative inline-flex items-center px-4 py-2 text-sm font-display font-semibold text-light-text-muted dark:text-dark-text-muted">
         ...
       </span>
     );
@@ -106,10 +106,10 @@ const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
       onClick={() => onClick(page)}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus:outline-offset-0",
+        "relative inline-flex items-center px-4 py-2 text-sm font-display font-semibold focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300",
         isActive
-          ? "z-10 bg-primary-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-          : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700",
+          ? "z-10 bg-gradient-primary text-white shadow-lg glow-primary"
+          : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 hover:scale-105",
       )}
     >
       {page}

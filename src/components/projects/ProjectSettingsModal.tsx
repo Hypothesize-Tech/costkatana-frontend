@@ -242,10 +242,10 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
     switch (activeTab) {
       case "budget":
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Amount
                 </label>
                 <input
@@ -257,11 +257,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                       Number(e.target.value),
                     )
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Currency
                 </label>
                 <select
@@ -269,7 +269,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                   onChange={(e) =>
                     handleInputChange(["budget", "currency"], e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="input"
                 >
                   {currencies.map((currency) => (
                     <option key={currency} value={currency}>
@@ -281,7 +281,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Period
               </label>
               <select
@@ -289,7 +289,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                 onChange={(e) =>
                   handleInputChange(["budget", "period"], e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="input"
               >
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
@@ -299,27 +299,27 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-display font-bold gradient-text">
                   Budget Alerts
                 </h3>
                 <button
                   onClick={addAlert}
-                  className="flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg dark:hover:bg-blue-900/20"
+                  className="btn-secondary"
                 >
                   <FiPlus className="w-4 h-4" />
                   Add Alert
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {settings.budget.alerts.map((alert, index) => (
                   <div
                     key={index}
-                    className="p-4 border border-gray-200 rounded-lg dark:border-gray-600"
+                    className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block mb-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                           Threshold (%)
                         </label>
                         <input
@@ -333,11 +333,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                               Number(e.target.value),
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="input"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block mb-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                           Alert Type
                         </label>
                         <select
@@ -350,7 +350,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                               e.target.value,
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="input"
                         >
                           <option value="in-app">In-App Only</option>
                           <option value="email">Email Only</option>
@@ -360,7 +360,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                       <div className="flex items-end">
                         <button
                           onClick={() => removeAlert(index)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/20"
+                          className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:bg-danger-900/20 transition-all duration-200 hover:scale-110"
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -375,9 +375,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
 
       case "security":
         return (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Require Approval Above ($)
               </label>
               <input
@@ -389,15 +389,15 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                     Number(e.target.value),
                   )
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="input"
               />
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
                 API calls exceeding this amount will require approval
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Max Tokens Per Request
               </label>
               <input
@@ -409,17 +409,17 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                     Number(e.target.value),
                   )
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="input"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block mb-4 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Allowed Models
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 {availableModels.map((model) => (
-                  <label key={model} className="flex items-center gap-2">
+                  <label key={model} className="flex items-center gap-3 glass p-3 rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200">
                     <input
                       type="checkbox"
                       checked={settings.security.allowedModels.includes(model)}
@@ -427,16 +427,16 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                         const newModels = e.target.checked
                           ? [...settings.security.allowedModels, model]
                           : settings.security.allowedModels.filter(
-                              (m) => m !== model,
-                            );
+                            (m) => m !== model,
+                          );
                         handleInputChange(
                           ["security", "allowedModels"],
                           newModels,
                         );
                       }}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="checkbox"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                    <span className="font-body text-light-text-primary dark:text-dark-text-primary">
                       {model}
                     </span>
                   </label>
@@ -450,29 +450,30 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         return (
           <div className="space-y-6">
             {Object.entries(settings.features).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                    {key
-                      .replace(/([A-Z])/g, " $1")
-                      .replace(/^./, (str) => str.toUpperCase())}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {getFeatureDescription(key)}
-                  </p>
+              <div key={key} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                      {key
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, (str) => str.toUpperCase())}
+                    </h3>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      {getFeatureDescription(key)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleInputChange(["features", key], !value)}
+                    className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${value ? "text-primary-600 bg-gradient-primary/20" : "text-light-text-secondary dark:text-dark-text-secondary"
+                      }`}
+                  >
+                    {value ? (
+                      <FiToggleRight className="w-8 h-8" />
+                    ) : (
+                      <FiToggleLeft className="w-8 h-8" />
+                    )}
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleInputChange(["features", key], !value)}
-                  className={`p-1 rounded-full transition-colors ${
-                    value ? "text-blue-600" : "text-gray-400"
-                  }`}
-                >
-                  {value ? (
-                    <FiToggleRight className="w-6 h-6" />
-                  ) : (
-                    <FiToggleLeft className="w-6 h-6" />
-                  )}
-                </button>
               </div>
             ))}
           </div>
@@ -497,9 +498,8 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                   onClick={() =>
                     handleInputChange(["notifications", key], !value)
                   }
-                  className={`p-1 rounded-full transition-colors ${
-                    value ? "text-blue-600" : "text-gray-400"
-                  }`}
+                  className={`p-1 rounded-full transition-colors ${value ? "text-blue-600" : "text-gray-400"
+                    }`}
                 >
                   {value ? (
                     <FiToggleRight className="w-6 h-6" />
@@ -695,22 +695,27 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Project Settings" size="xl">
-      <div className="flex flex-col h-full max-h-[90vh]">
+    <Modal isOpen={true} onClose={onClose} title="" size="xl">
+      <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="glass rounded-t-xl p-8 border-b border-primary-200/30">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {project.name} Settings
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Configure advanced settings for your project
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                <FiSettings className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-display font-bold gradient-text">
+                  {project.name} Settings
+                </h2>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  Configure advanced settings for your project
+                </p>
+              </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="btn-icon-secondary"
             >
               <FiX className="w-5 h-5" />
             </button>
@@ -718,16 +723,15 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <div className="flex border-b border-primary-200/30 bg-gradient-primary/5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              }`}
+              className={`flex items-center gap-2 px-6 py-4 font-display font-medium transition-all duration-200 ${activeTab === tab.id
+                  ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
+                }`}
             >
               <tab.icon className="w-4 h-4" />
               {tab.label}
@@ -736,26 +740,26 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">{renderTabContent()}</div>
+        <div className="flex-1 overflow-y-auto p-8">{renderTabContent()}</div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="glass rounded-b-xl p-6 border-t border-primary-200/30">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
               <FiInfo className="w-4 h-4" />
               <span>Changes will be applied immediately</span>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={!hasChanges || loading}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiSave className="w-4 h-4" />
                 {loading ? "Saving..." : "Save Changes"}

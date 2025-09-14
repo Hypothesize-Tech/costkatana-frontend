@@ -47,16 +47,23 @@ export const PerformanceOverview: React.FC = () => {
     );
 
     if (isLoading) return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
             {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-white h-24 rounded-xl shadow-sm" />
+                <div key={i} className="glass h-32 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl" />
             ))}
         </div>
     );
 
     if (error) return (
-        <div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">
-            Error loading performance metrics
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                    <span className="text-white text-sm">⚠️</span>
+                </div>
+                <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                    Error loading performance metrics
+                </span>
+            </div>
         </div>
     );
 
@@ -74,15 +81,20 @@ export const PerformanceOverview: React.FC = () => {
     const timeframes = ['1h', '24h', '7d'];
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-5 ring-1 ring-gray-200">
-            <div className="flex justify-between items-center mb-5">
-                <h2 className="text-lg font-semibold text-gray-900">Performance Overview</h2>
-                <div className="inline-flex rounded-lg bg-gray-100 p-1">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
+                        <span className="text-white text-lg">📊</span>
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text">Performance Overview</h2>
+                </div>
+                <div className="glass rounded-lg border border-primary-200/30 p-1">
                     {timeframes.map(frame => (
                         <button
                             key={frame}
                             onClick={() => setTimeframe(frame)}
-                            className={`px-3 py-1.5 text-sm rounded-md transition ${timeframe === frame ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/10'}`}
                         >
                             {frame}
                         </button>
@@ -90,49 +102,65 @@ export const PerformanceOverview: React.FC = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className={`p-4 rounded-xl ${getStatusColor(metrics.requests_per_minute || 0, 100)}`}>
-                    <div className="flex justify-between items-center">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="text-xs uppercase tracking-wide text-gray-500">RPM</p>
-                            <p className="text-2xl font-bold">{(metrics.requests_per_minute || 0).toFixed(1)}</p>
+                            <p className="font-display font-medium gradient-text text-sm uppercase tracking-wide">RPM</p>
+                            <p className="text-3xl font-display font-bold gradient-text mt-2">{(metrics.requests_per_minute || 0).toFixed(1)}</p>
                         </div>
-                        <rpmTrend.icon className={`w-6 h-6 ${rpmTrend.color}`} />
+                        <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                            <rpmTrend.icon className="w-6 h-6 text-white" />
+                        </div>
                     </div>
-                    <p className="text-xs mt-1 text-gray-600">{rpmTrend.percentage}% {rpmTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        {rpmTrend.percentage}% {rpmTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
+                    </p>
                 </div>
 
-                <div className={`p-4 rounded-xl ${getStatusColor((metrics.error_rate || 0), 5)}`}>
-                    <div className="flex justify-between items-center">
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="text-xs uppercase tracking-wide text-gray-500">Error Rate</p>
-                            <p className="text-2xl font-bold">{(metrics.error_rate || 0).toFixed(2)}%</p>
+                            <p className="font-display font-medium gradient-text-danger text-sm uppercase tracking-wide">Error Rate</p>
+                            <p className="text-3xl font-display font-bold gradient-text-danger mt-2">{(metrics.error_rate || 0).toFixed(2)}%</p>
                         </div>
-                        <errorRateTrend.icon className={`w-6 h-6 ${errorRateTrend.color}`} />
+                        <div className="w-10 h-10 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                            <errorRateTrend.icon className="w-6 h-6 text-white" />
+                        </div>
                     </div>
-                    <p className="text-xs mt-1 text-gray-600">{errorRateTrend.percentage}% {errorRateTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        {errorRateTrend.percentage}% {errorRateTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
+                    </p>
                 </div>
 
-                <div className={`p-4 rounded-xl ${getStatusColor(metrics.avg_latency_ms || 0, 200)}`}>
-                    <div className="flex justify-between items-center">
+                <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="text-xs uppercase tracking-wide text-gray-500">Avg Latency</p>
-                            <p className="text-2xl font-bold">{(metrics.avg_latency_ms || 0).toFixed(1)} ms</p>
+                            <p className="font-display font-medium gradient-text-warning text-sm uppercase tracking-wide">Avg Latency</p>
+                            <p className="text-3xl font-display font-bold gradient-text-warning mt-2">{(metrics.avg_latency_ms || 0).toFixed(1)} ms</p>
                         </div>
-                        <latencyTrend.icon className={`w-6 h-6 ${latencyTrend.color}`} />
+                        <div className="w-10 h-10 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning">
+                            <latencyTrend.icon className="w-6 h-6 text-white" />
+                        </div>
                     </div>
-                    <p className="text-xs mt-1 text-gray-600">{latencyTrend.percentage}% {latencyTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        {latencyTrend.percentage}% {latencyTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
+                    </p>
                 </div>
 
-                <div className={`p-4 rounded-xl ${getStatusColor(metrics.p95_latency_ms || 0, 300)}`}>
-                    <div className="flex justify-between items-center">
+                <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="text-xs uppercase tracking-wide text-gray-500">P95 Latency</p>
-                            <p className="text-2xl font-bold">{(metrics.p95_latency_ms || 0).toFixed(1)} ms</p>
+                            <p className="font-display font-medium gradient-text-accent text-sm uppercase tracking-wide">P95 Latency</p>
+                            <p className="text-3xl font-display font-bold gradient-text-accent mt-2">{(metrics.p95_latency_ms || 0).toFixed(1)} ms</p>
                         </div>
-                        <ArrowRightIcon className="w-6 h-6 text-gray-500" />
+                        <div className="w-10 h-10 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                            <ArrowRightIcon className="w-6 h-6 text-white" />
+                        </div>
                     </div>
-                    <p className="text-xs mt-1 text-gray-600">Performance Threshold</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        Performance Threshold
+                    </p>
                 </div>
             </div>
         </div>

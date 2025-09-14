@@ -54,12 +54,12 @@ export const UsageItem: React.FC<UsageItemProps> = ({
 
   const getServiceColor = (service: string) => {
     const colors: Record<string, string> = {
-      openai: 'bg-green-100 text-green-800',
-      anthropic: 'bg-purple-100 text-purple-800',
-      google: 'bg-blue-100 text-blue-800',
-      'aws-bedrock': 'bg-orange-100 text-orange-800',
+      openai: 'bg-gradient-to-r from-green-400/20 to-green-500/20 text-green-600 dark:text-green-400 border-green-300/30',
+      anthropic: 'bg-gradient-to-r from-purple-400/20 to-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-300/30',
+      google: 'bg-gradient-to-r from-blue-400/20 to-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-300/30',
+      'aws-bedrock': 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-300/30',
     };
-    return colors[service] || 'bg-gray-100 text-gray-800';
+    return colors[service] || 'bg-gradient-to-r from-accent-400/20 to-accent-500/20 text-accent-600 dark:text-accent-400 border-accent-300/30';
   };
 
   const handleOptimizeClick = (e: React.MouseEvent) => {
@@ -105,17 +105,17 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     <>
       <tr
         onClick={() => onClick(usage)}
-        className="transition-colors cursor-pointer hover:bg-gray-50"
+        className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 border-b border-accent-200/30"
       >
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="flex items-center">
             <div>
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                 {usage.prompt.length > 50
                   ? usage.prompt.substring(0, 50) + '...'
                   : usage.prompt}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                 {formatDate(usage.createdAt)}
               </div>
             </div>
@@ -123,39 +123,39 @@ export const UsageItem: React.FC<UsageItemProps> = ({
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getServiceColor(usage.service)}`}>
+          <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-medium glass border ${getServiceColor(usage.service)}`}>
             {usage.service}
           </span>
         </td>
 
-        <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        <td className="px-6 py-4 text-sm text-light-text-secondary dark:text-dark-text-secondary whitespace-nowrap">
           {usage.model}
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-gray-900">
+          <div className="text-sm text-light-text-primary dark:text-dark-text-primary">
             {usage.totalTokens.toLocaleString()}
             {usage.totalTokens > 4000 && (
-              <ExclamationCircleIcon className="inline-block ml-1 w-4 h-4 text-yellow-500" />
+              <ExclamationCircleIcon className="inline-block ml-1 w-4 h-4 text-warning-500" />
             )}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             {usage.promptTokens} / {usage.completionTokens}
           </div>
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center text-sm text-gray-900">
-            <CurrencyDollarIcon className="mr-1 w-4 h-4 text-green-500" />
+          <div className="flex items-center text-sm text-light-text-primary dark:text-dark-text-primary">
+            <CurrencyDollarIcon className="mr-1 w-4 h-4 text-success-500" />
             {formatCurrency(usage.cost)}
             {usage.cost > 0.5 && (
-              <ExclamationCircleIcon className="ml-1 w-4 h-4 text-yellow-500" />
+              <ExclamationCircleIcon className="ml-1 w-4 h-4 text-warning-500" />
             )}
           </div>
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary">
             <ClockIcon className="mr-1 w-4 h-4" />
             {usage.responseTime}ms
           </div>
@@ -166,28 +166,28 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {tipData && (
               <button
                 onClick={handleTipClick}
-                className="text-yellow-600 hover:text-yellow-900"
+                className="p-2 rounded-xl glass border border-accent-200/30 text-warning-500 hover:text-warning-600 hover:border-warning-300/50 hover:shadow-md transition-all duration-300"
                 title="Optimization tip available"
               >
-                <ExclamationCircleIcon className="w-5 h-5" />
+                <ExclamationCircleIcon className="w-4 h-4" />
               </button>
             )}
             {onOptimize && usage.totalTokens > 100 && (
               <button
                 onClick={handleOptimizeClick}
-                className="text-indigo-600 hover:text-indigo-900"
+                className="p-2 rounded-xl glass border border-accent-200/30 text-primary-500 hover:text-primary-600 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
                 title="Optimize this prompt"
               >
-                <SparklesIcon className="w-5 h-5" />
+                <SparklesIcon className="w-4 h-4" />
               </button>
             )}
             {onSimulate && (usage.cost > 0.01 || usage.totalTokens > 500) && (
               <button
                 onClick={handleSimulateClick}
-                className="text-purple-600 hover:text-purple-900"
+                className="p-2 rounded-xl glass border border-accent-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
                 title="Try What-If Simulation"
               >
-                <BeakerIcon className="w-5 h-5" />
+                <BeakerIcon className="w-4 h-4" />
               </button>
             )}
             {usage.metadata?.requestId && (
@@ -203,20 +203,20 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                   e.stopPropagation();
                   setShowScoring(!showScoring);
                 }}
-                className="text-blue-600 hover:text-blue-900"
+                className="p-2 rounded-xl glass border border-accent-200/30 text-blue-500 hover:text-blue-600 hover:border-blue-300/50 hover:shadow-md transition-all duration-300"
                 title="Score this request for training"
               >
-                <StarIcon className="w-5 h-5" />
+                <StarIcon className="w-4 h-4" />
               </button>
             )}
-            <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+            <ChevronRightIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
           </div>
         </td>
       </tr>
 
       {showTip && tipData && (
         <tr>
-          <td colSpan={7} className="px-6 py-4 bg-yellow-50">
+          <td colSpan={7} className="px-6 py-4 glass bg-gradient-to-r from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20 border-t border-warning-200/30">
             <ProactiveTip
               tipData={tipData}
               position="inline"
@@ -234,9 +234,9 @@ export const UsageItem: React.FC<UsageItemProps> = ({
 
       {showScoring && usage.metadata?.requestId && (
         <tr>
-          <td colSpan={7} className="px-6 py-4 bg-blue-50 border-t">
+          <td colSpan={7} className="px-6 py-4 glass bg-gradient-to-r from-blue-50/30 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/20 border-t border-blue-200/30">
             <div className="max-w-md">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">
+              <h4 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Score this request for training
               </h4>
               <RequestScoring

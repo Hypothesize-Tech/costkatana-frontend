@@ -21,11 +21,11 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
     const getEffortColor = (effort: string) => {
         const colors: Record<string, string> = {
-            low: 'bg-green-100 text-green-800',
-            medium: 'bg-yellow-100 text-yellow-800',
-            high: 'bg-red-100 text-red-800'
+            low: 'badge-success',
+            medium: 'badge-warning',
+            high: 'badge-danger'
         };
-        return colors[effort] || 'bg-gray-100 text-gray-800';
+        return colors[effort] || 'badge-secondary';
     };
 
     const getEffortIcon = (effort: string) => {
@@ -48,11 +48,11 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
     const getTypeColor = (type: string) => {
         const colors: Record<string, string> = {
-            immediate: 'bg-red-50 border-red-200',
-            short_term: 'bg-yellow-50 border-yellow-200',
-            long_term: 'bg-blue-50 border-blue-200'
+            immediate: 'glass border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20',
+            short_term: 'glass border-warning-200/30 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20',
+            long_term: 'glass border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20'
         };
-        return colors[type] || 'bg-gray-50 border-gray-200';
+        return colors[type] || 'glass border-accent-200/30 bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary';
     };
 
     const filteredRecommendations = analysis.optimization_recommendations.filter(rec =>
@@ -91,79 +91,79 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
     };
 
     return (
-        <div className="p-6 bg-white rounded-2xl ring-1 ring-gray-200 shadow-sm">
+        <div className="p-6 glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900">Cost Optimization</h2>
-                    <p className="mt-1 text-gray-600">Actionable recommendations to reduce costs</p>
+                    <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Optimization</h2>
+                    <p className="mt-1 text-light-text-secondary dark:text-dark-text-secondary">Actionable recommendations to reduce costs</p>
                 </div>
 
                 <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-display font-bold gradient-text-success">
                         {formatCurrency(totalPotentialSavings)}
                     </div>
-                    <div className="text-sm text-gray-500">Total Savings Potential</div>
+                    <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Total Savings Potential</div>
                 </div>
             </div>
 
             {/* Savings Summary */}
             <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="p-3 text-center bg-red-50 rounded-lg border border-red-200">
-                    <div className="text-lg font-bold text-red-700">
+                <div className="p-3 text-center glass rounded-xl border border-danger-200/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
+                    <div className="text-lg font-display font-bold text-danger-700 dark:text-danger-300">
                         {formatCurrency(immediateSavings)}
                     </div>
-                    <div className="text-xs text-red-600">Immediate</div>
+                    <div className="text-xs text-danger-600 dark:text-danger-400">Immediate</div>
                 </div>
 
-                <div className="p-3 text-center bg-yellow-50 rounded-lg border border-yellow-200">
-                    <div className="text-lg font-bold text-yellow-700">
+                <div className="p-3 text-center glass rounded-xl border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
+                    <div className="text-lg font-display font-bold text-warning-700 dark:text-warning-300">
                         {formatCurrency(shortTermSavings)}
                     </div>
-                    <div className="text-xs text-yellow-600">Short Term</div>
+                    <div className="text-xs text-warning-600 dark:text-warning-400">Short Term</div>
                 </div>
 
-                <div className="p-3 text-center bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="text-lg font-bold text-blue-700">
+                <div className="p-3 text-center glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                    <div className="text-lg font-display font-bold text-primary-700 dark:text-primary-300">
                         {formatCurrency(longTermSavings)}
                     </div>
-                    <div className="text-xs text-blue-600">Long Term</div>
+                    <div className="text-xs text-primary-600 dark:text-primary-400">Long Term</div>
                 </div>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex p-1 mb-6 space-x-1 bg-gray-100 rounded-lg">
+            <div className="flex p-1 mb-6 space-x-1 glass rounded-xl border border-accent-200/30 backdrop-blur-xl">
                 <button
                     onClick={() => setSelectedFilter('all')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${selectedFilter === 'all'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                    className={`flex-1 px-3 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 hover:scale-105 ${selectedFilter === 'all'
+                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary'
                         }`}
                 >
                     All ({analysis.optimization_recommendations.length})
                 </button>
                 <button
                     onClick={() => setSelectedFilter('immediate')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${selectedFilter === 'immediate'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                    className={`flex-1 px-3 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 hover:scale-105 ${selectedFilter === 'immediate'
+                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary'
                         }`}
                 >
                     Immediate ({analysis.optimization_recommendations.filter(r => r.type === 'immediate').length})
                 </button>
                 <button
                     onClick={() => setSelectedFilter('short_term')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${selectedFilter === 'short_term'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                    className={`flex-1 px-3 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 hover:scale-105 ${selectedFilter === 'short_term'
+                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary'
                         }`}
                 >
                     Short Term ({analysis.optimization_recommendations.filter(r => r.type === 'short_term').length})
                 </button>
                 <button
                     onClick={() => setSelectedFilter('long_term')}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${selectedFilter === 'long_term'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                    className={`flex-1 px-3 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 hover:scale-105 ${selectedFilter === 'long_term'
+                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary'
                         }`}
                 >
                     Long Term ({analysis.optimization_recommendations.filter(r => r.type === 'long_term').length})
@@ -184,23 +184,23 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                                 </div>
 
                                 <div className="flex-1">
-                                    <h3 className="mb-2 text-sm font-medium text-gray-900">
+                                    <h3 className="mb-2 text-sm font-display font-medium gradient-text-primary">
                                         {recommendation.description}
                                     </h3>
 
-                                    <div className="flex items-center space-x-4 text-xs text-gray-600">
+                                    <div className="flex items-center space-x-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
                                         <span className="flex items-center">
                                             <span className="mr-1">{getEffortIcon(recommendation.implementation_effort)}</span>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEffortColor(recommendation.implementation_effort)}`}>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-display font-medium ${getEffortColor(recommendation.implementation_effort)}`}>
                                                 {recommendation.implementation_effort} effort
                                             </span>
                                         </span>
 
                                         <span className="flex items-center">
-                                            <svg className="mr-1 w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="mr-1 w-4 h-4 text-success-600 dark:text-success-400" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2 1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
-                                            <span className="font-medium text-green-700">
+                                            <span className="font-display font-medium text-success-700 dark:text-success-400">
                                                 Save {formatCurrency(recommendation.potential_savings)}
                                             </span>
                                         </span>
@@ -218,9 +218,9 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                                             alert(`This ${recommendation.type.replace('_', ' ')} recommendation requires planning and cannot be applied immediately.\n\nConsider scheduling a review to implement this optimization.`);
                                         }
                                     }}
-                                    className={`p-2 rounded-md hover:bg-gray-100 ${recommendation.type === 'immediate'
-                                            ? 'text-green-600 hover:text-green-700'
-                                            : 'text-gray-400 hover:text-gray-600'
+                                    className={`btn-icon-secondary ${recommendation.type === 'immediate'
+                                        ? 'text-success-600 dark:text-success-400 hover:text-success-700 dark:hover:text-success-300'
+                                        : 'text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary'
                                         }`}
                                     title={recommendation.type === 'immediate' ? 'Apply Now' : 'Requires Planning'}
                                 >
@@ -239,7 +239,7 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                                     onClick={() => {
                                         alert(`Details for: ${recommendation.description}\n\nType: ${recommendation.type.replace('_', ' ')}\nEffort: ${recommendation.implementation_effort}\nPotential Savings: ${formatCurrency(recommendation.potential_savings)}\n\nThis recommendation focuses on optimizing your cost drivers to reduce expenses.`);
                                     }}
-                                    className="p-2 text-gray-400 rounded-md hover:text-gray-600 hover:bg-gray-100"
+                                    className="btn-icon-secondary"
                                     title="View Details"
                                 >
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -253,14 +253,14 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
             </div>
 
             {/* Quick Actions */}
-            <div className="pt-6 mt-6 border-t border-gray-200">
+            <div className="pt-6 mt-6 border-t border-accent-200/30">
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={handleApplyImmediate}
                         disabled={immediateSavings === 0}
-                        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${immediateSavings === 0
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-green-600 hover:bg-green-700'
+                        className={`inline-flex items-center ${immediateSavings === 0
+                            ? 'btn-secondary opacity-50 cursor-not-allowed'
+                            : 'btn-success'
                             }`}
                     >
                         <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -271,7 +271,7 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
                     <button
                         onClick={() => setShowDetailedPlan(true)}
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="btn-secondary inline-flex items-center"
                     >
                         <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
@@ -281,7 +281,7 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
                     <button
                         onClick={handleScheduleReview}
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="btn-secondary inline-flex items-center"
                     >
                         <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -293,12 +293,12 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
             {/* Applied Recommendations Status */}
             {appliedRecommendations.length > 0 && (
-                <div className="p-3 mt-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="p-3 mt-4 glass rounded-xl border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                     <div className="flex items-center">
-                        <svg className="mr-2 w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="mr-2 w-5 h-5 text-success-600 dark:text-success-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2 1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
-                        <span className="text-sm font-medium text-green-800">
+                        <span className="text-sm font-display font-medium text-success-800 dark:text-success-300">
                             {appliedRecommendations.length} recommendation(s) applied
                         </span>
                     </div>
@@ -307,13 +307,13 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
             {/* Detailed Plan Modal */}
             {showDetailedPlan && (
-                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg p-6 max-w-4xl max-h-[80vh] overflow-y-auto">
+                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black/50 backdrop-blur-sm">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold text-gray-900">Detailed Optimization Plan</h3>
+                            <h3 className="text-xl font-display font-bold gradient-text-primary">Detailed Optimization Plan</h3>
                             <button
                                 onClick={() => setShowDetailedPlan(false)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="btn-icon-secondary"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -327,23 +327,23 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                                 if (recommendations.length === 0) return null;
 
                                 return (
-                                    <div key={type} className="p-4 rounded-lg border">
-                                        <h4 className="mb-3 text-lg font-semibold text-gray-900 capitalize">
+                                    <div key={type} className="p-4 glass rounded-xl border border-accent-200/30 backdrop-blur-xl">
+                                        <h4 className="mb-3 text-lg font-display font-bold gradient-text-primary capitalize">
                                             {type.replace('_', ' ')} Optimizations
                                         </h4>
                                         <div className="space-y-3">
                                             {recommendations.map((rec, index) => (
-                                                <div key={index} className="flex items-start p-3 space-x-3 bg-gray-50 rounded-lg">
+                                                <div key={index} className="flex items-start p-3 space-x-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
                                                     <div className="flex-shrink-0 mt-1">
                                                         <span className="text-lg">{getTypeIcon(rec.type)}</span>
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h5 className="mb-1 font-medium text-gray-900">{rec.description}</h5>
-                                                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEffortColor(rec.implementation_effort)}`}>
+                                                        <h5 className="mb-1 font-display font-medium gradient-text-primary">{rec.description}</h5>
+                                                        <div className="flex items-center space-x-4 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-display font-medium ${getEffortColor(rec.implementation_effort)}`}>
                                                                 {rec.implementation_effort} effort
                                                             </span>
-                                                            <span className="font-medium text-green-700">
+                                                            <span className="font-display font-medium text-success-700 dark:text-success-400">
                                                                 Save {formatCurrency(rec.potential_savings)}
                                                             </span>
                                                         </div>
@@ -361,13 +361,13 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
             {/* Schedule Review Modal */}
             {showScheduleReview && (
-                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
-                    <div className="p-6 max-w-md bg-white rounded-lg">
+                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black/50 backdrop-blur-sm">
+                    <div className="p-6 max-w-md glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-gray-900">Schedule Cost Review</h3>
+                            <h3 className="text-lg font-display font-bold gradient-text-primary">Schedule Cost Review</h3>
                             <button
                                 onClick={() => setShowScheduleReview(false)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="btn-icon-secondary"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -376,12 +376,12 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                         </div>
 
                         <div className="space-y-4">
-                            <p className="text-gray-600">
+                            <p className="text-light-text-secondary dark:text-dark-text-secondary">
                                 Schedule a review with our cost optimization team to discuss implementation strategies for your recommendations.
                             </p>
 
-                            <div className="p-3 bg-blue-50 rounded-lg">
-                                <div className="text-sm text-blue-800">
+                            <div className="p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                                <div className="text-sm text-primary-800 dark:text-primary-300">
                                     <strong>Total Potential Savings:</strong> {formatCurrency(totalPotentialSavings)}
                                 </div>
                             </div>
@@ -392,13 +392,13 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
                                         alert('Review scheduled! Our team will contact you within 24 hours to arrange a meeting.');
                                         setShowScheduleReview(false);
                                     }}
-                                    className="flex-1 px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                    className="flex-1 btn-primary"
                                 >
                                     Schedule Now
                                 </button>
                                 <button
                                     onClick={() => setShowScheduleReview(false)}
-                                    className="flex-1 px-4 py-2 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-50"
+                                    className="flex-1 btn-secondary"
                                 >
                                     Cancel
                                 </button>

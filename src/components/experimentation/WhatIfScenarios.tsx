@@ -196,9 +196,9 @@ const WhatIfScenarios: React.FC = () => {
   };
 
   const riskLevelColors = {
-    low: "bg-green-100 text-green-800",
-    medium: "bg-yellow-100 text-yellow-800",
-    high: "bg-red-100 text-red-800",
+    low: "bg-gradient-success/10 text-success-700 border-success-200/30",
+    medium: "bg-gradient-accent/10 text-accent-700 border-accent-200/30",
+    high: "bg-gradient-danger/10 text-danger-700 border-danger-200/30",
   };
 
   useEffect(() => {
@@ -369,31 +369,36 @@ const WhatIfScenarios: React.FC = () => {
   const getRiskIcon = (riskLevel: string) => {
     switch (riskLevel) {
       case "low":
-        return <InformationCircleIcon className="h-5 w-5 text-green-600" />;
+        return <InformationCircleIcon className="h-5 w-5 text-success-500 glow-success" />;
       case "medium":
-        return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600" />;
+        return <ExclamationTriangleIcon className="h-5 w-5 text-accent-500 glow-accent" />;
       case "high":
-        return <ShieldExclamationIcon className="h-5 w-5 text-red-600" />;
+        return <ShieldExclamationIcon className="h-5 w-5 text-danger-500 glow-danger" />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">What-If Scenarios</h2>
-        <div className="flex space-x-2">
+    <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center">
+          <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
+            <BeakerIcon className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-3xl font-display font-bold gradient-text">What-If Scenarios</h2>
+        </div>
+        <div className="flex space-x-3">
           <button
             onClick={() => setShowTemplatesModal(true)}
-            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
           >
             <BeakerIcon className="h-4 w-4 mr-2" />
             Templates
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Create Scenario
@@ -402,28 +407,32 @@ const WhatIfScenarios: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="mb-6 card p-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
           <div className="flex items-center">
-            <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
-            <span className="text-sm text-red-800">{error}</span>
+            <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
+              <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
           </div>
         </div>
       )}
 
       {/* Scenarios List */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {scenarios.length === 0 ? (
-          <div className="text-center py-8">
-            <BeakerIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-12">
+            <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+              <BeakerIcon className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-xl font-display font-bold gradient-text mb-3">
               No Scenarios Yet
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
               Create your first what-if scenario to analyze potential changes.
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
             >
               Create your first scenario
             </button>
@@ -432,47 +441,51 @@ const WhatIfScenarios: React.FC = () => {
           scenarios.map((scenario) => (
             <div
               key={scenario.name}
-              className="border border-gray-200 rounded-lg p-4"
+              className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
             >
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-xl font-display font-bold gradient-text">
                     {scenario.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
                     {scenario.description}
                   </p>
-                  <div className="flex items-center mt-2 space-x-4">
-                    <span className="text-xs text-gray-500">
-                      Timeframe: {scenario.timeframe}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {scenario.changes.length} change
-                      {scenario.changes.length !== 1 ? "s" : ""}
-                    </span>
+                  <div className="flex items-center mt-3 space-x-6">
+                    <div className="glass p-2 rounded-lg border border-primary-200/30">
+                      <span className="text-xs font-display font-semibold text-primary-600 dark:text-primary-400">
+                        Timeframe: {scenario.timeframe}
+                      </span>
+                    </div>
+                    <div className="glass p-2 rounded-lg border border-accent-200/30">
+                      <span className="text-xs font-display font-semibold text-accent-600 dark:text-accent-400">
+                        {scenario.changes.length} change
+                        {scenario.changes.length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <button
                     onClick={() => runAnalysis(scenario)}
                     disabled={isAnalyzing[scenario.name]}
-                    className="flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-primary text-sm font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     {isAnalyzing[scenario.name] ? (
                       <>
-                        <ArrowPathIcon className="h-4 w-4 mr-1 animate-spin" />
+                        <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
                         Analyzing...
                       </>
                     ) : (
                       <>
-                        <PlayIcon className="h-4 w-4 mr-1" />
+                        <PlayIcon className="h-4 w-4 mr-2" />
                         Analyze
                       </>
                     )}
                   </button>
                   <button
                     onClick={() => deleteScenario(scenario.name)}
-                    className="text-red-600 hover:text-red-800"
+                    className="p-2 rounded-xl text-danger-500 hover:text-white hover:bg-gradient-danger transition-all duration-300 hover:scale-110 shadow-lg"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
@@ -480,22 +493,24 @@ const WhatIfScenarios: React.FC = () => {
               </div>
 
               {/* Changes Preview */}
-              <div className="border-t pt-3">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+              <div className="border-t border-primary-200/30 pt-4">
+                <h4 className="text-sm font-display font-bold gradient-text mb-3">
                   Changes:
                 </h4>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {scenario.changes.map((change, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-2 text-sm"
+                      className="glass p-3 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300"
                     >
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {changeTypeLabels[change.type]}
-                      </span>
-                      <span className="text-gray-600">
-                        {change.description || `${change.type} change`}
-                      </span>
+                      <div className="flex items-center space-x-3">
+                        <span className="px-3 py-1 rounded-xl text-xs font-display font-bold bg-gradient-primary text-white shadow-lg">
+                          {changeTypeLabels[change.type]}
+                        </span>
+                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                          {change.description || `${change.type} change`}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -503,9 +518,9 @@ const WhatIfScenarios: React.FC = () => {
 
               {/* Results */}
               {scenarioResults[scenario.name] && (
-                <div className="border-t pt-3 mt-3">
-                  <div className="flex justify-between items-center mb-2">
-                    <h4 className="text-sm font-medium text-gray-700">
+                <div className="border-t border-primary-200/30 pt-4 mt-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Results:
                     </h4>
                     <button
@@ -513,59 +528,59 @@ const WhatIfScenarios: React.FC = () => {
                         setSelectedScenario(scenario);
                         setShowDetailsModal(true);
                       }}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
+                      className="text-primary-500 hover:text-primary-600 font-display font-medium hover:scale-105 transition-all duration-300"
                     >
                       View Details
                     </button>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
+                    <div className="card card-hover p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
+                      <div className="flex items-center justify-center space-x-2 mb-2">
                         {scenarioResults[scenario.name].projectedImpact
                           .costChange >= 0 ? (
-                          <ArrowTrendingUpIcon className="h-4 w-4 text-red-600" />
+                          <ArrowTrendingUpIcon className="h-4 w-4 text-danger-500 glow-danger" />
                         ) : (
-                          <ArrowTrendingDownIcon className="h-4 w-4 text-green-600" />
+                          <ArrowTrendingDownIcon className="h-4 w-4 text-success-500 glow-success" />
                         )}
-                        <span className="text-sm font-medium">Cost Impact</span>
+                        <span className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400">Cost Impact</span>
                       </div>
                       <div
-                        className={`text-lg font-bold ${scenarioResults[scenario.name].projectedImpact.costChange >= 0 ? "text-red-600" : "text-green-600"}`}
+                        className={`text-3xl font-display font-bold gradient-text ${scenarioResults[scenario.name].projectedImpact.costChange >= 0 ? "text-danger-600" : "text-success-600"}`}
                       >
                         {formatCurrency(
                           scenarioResults[scenario.name].projectedImpact
                             .costChange,
                         )}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
                         {formatPercentage(
                           scenarioResults[scenario.name].projectedImpact
                             .costChangePercentage,
                         )}
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
-                        <LightBulbIcon className="h-4 w-4 text-yellow-600" />
-                        <span className="text-sm font-medium">Confidence</span>
+                    <div className="card card-hover p-6 text-center bg-gradient-accent/10 border-l-4 border-accent-500">
+                      <div className="flex items-center justify-center space-x-2 mb-2">
+                        <LightBulbIcon className="h-4 w-4 text-accent-500 glow-accent" />
+                        <span className="text-sm font-display font-semibold text-accent-600 dark:text-accent-400">Confidence</span>
                       </div>
-                      <div className="text-lg font-bold text-gray-900">
+                      <div className="text-3xl font-display font-bold gradient-text">
                         {formatPercentage(
                           scenarioResults[scenario.name].projectedImpact
                             .confidence,
                         )}
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
+                    <div className="card card-hover p-6 text-center bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                      <div className="flex items-center justify-center space-x-2 mb-2">
                         {getRiskIcon(
                           scenarioResults[scenario.name].projectedImpact
                             .riskLevel,
                         )}
-                        <span className="text-sm font-medium">Risk Level</span>
+                        <span className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-400">Risk Level</span>
                       </div>
                       <div
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${riskLevelColors[scenarioResults[scenario.name].projectedImpact.riskLevel]}`}
+                        className={`inline-flex items-center px-3 py-1 rounded-xl border text-xs font-display font-bold shadow-lg ${riskLevelColors[scenarioResults[scenario.name].projectedImpact.riskLevel]}`}
                       >
                         {scenarioResults[
                           scenario.name
@@ -579,21 +594,21 @@ const WhatIfScenarios: React.FC = () => {
                     const aiInsights =
                       scenarioResults[scenario.name]?.aiInsights;
                     return aiInsights && aiInsights.length > 0 ? (
-                      <div className="mt-4">
-                        <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                          <SparklesIcon className="h-4 w-4 mr-1 text-purple-600" />
+                      <div className="mt-6">
+                        <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                          <SparklesIcon className="h-5 w-5 mr-2 text-accent-500 glow-accent" />
                           AI Insights
                         </h5>
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                          <div className="space-y-2">
+                        <div className="glass p-4 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                          <div className="space-y-3">
                             {aiInsights.map(
                               (insight: string, index: number) => (
                                 <div
                                   key={index}
-                                  className="flex items-start space-x-2"
+                                  className="flex items-start space-x-3"
                                 >
-                                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                                  <span className="text-sm text-purple-800">
+                                  <div className="w-2.5 h-2.5 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
+                                  <span className="font-body text-accent-800 dark:text-accent-200">
                                     {insight}
                                   </span>
                                 </div>
@@ -609,26 +624,26 @@ const WhatIfScenarios: React.FC = () => {
                   {(scenarioResults[scenario.name].recommendations?.length >
                     0 ||
                     scenarioResults[scenario.name].warnings?.length > 0) && (
-                      <div className="mt-4 space-y-3">
+                      <div className="mt-6 space-y-4">
                         {scenarioResults[scenario.name].recommendations?.length >
                           0 && (
                             <div>
-                              <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
+                              <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                                <LightBulbIcon className="h-5 w-5 mr-2 text-success-500 glow-success" />
                                 Recommendations
                               </h5>
-                              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                                <div className="space-y-2">
+                              <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
+                                <div className="space-y-3">
                                   {scenarioResults[
                                     scenario.name
                                   ].recommendations.map(
                                     (rec: string, index: number) => (
                                       <div
                                         key={index}
-                                        className="flex items-start space-x-2"
+                                        className="flex items-start space-x-3"
                                       >
-                                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <span className="text-sm text-green-800">
+                                        <div className="w-2.5 h-2.5 bg-success-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <span className="font-body text-success-800 dark:text-success-200">
                                           {rec}
                                         </span>
                                       </div>
@@ -641,20 +656,20 @@ const WhatIfScenarios: React.FC = () => {
 
                         {scenarioResults[scenario.name].warnings?.length > 0 && (
                           <div>
-                            <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                              <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
+                            <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                              <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-warning-500 glow-warning" />
                               Warnings
                             </h5>
-                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                              <div className="space-y-2">
+                            <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-500/5">
+                              <div className="space-y-3">
                                 {scenarioResults[scenario.name].warnings.map(
                                   (warning: string, index: number) => (
                                     <div
                                       key={index}
-                                      className="flex items-start space-x-2"
+                                      className="flex items-start space-x-3"
                                     >
-                                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                                      <span className="text-sm text-orange-800">
+                                      <div className="w-2.5 h-2.5 bg-warning-500 rounded-full mt-2 flex-shrink-0"></div>
+                                      <span className="font-body text-warning-800 dark:text-warning-200">
                                         {warning}
                                       </span>
                                     </div>
@@ -684,29 +699,29 @@ const WhatIfScenarios: React.FC = () => {
             {scenarioTemplates.map((template, index) => (
               <div
                 key={index}
-                className="border border-gray-200 rounded-lg p-4"
+                className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
               >
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">
+                    <h3 className="text-lg font-display font-bold gradient-text">
                       {template.name}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       {template.description}
                     </p>
                   </div>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-display font-semibold bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
                     {template.category}
                   </span>
                 </div>
-                <div className="flex justify-between items-center mt-3">
-                  <span className="text-sm text-gray-500">
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-sm font-body text-light-text-muted dark:text-dark-text-muted">
                     {template.changes.length} change
                     {template.changes.length !== 1 ? "s" : ""}
                   </span>
                   <button
                     onClick={() => applyTemplate(template)}
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    className="text-primary-500 hover:text-primary-600 font-display font-medium hover:scale-105 transition-all duration-300"
                   >
                     Use Template
                   </button>
@@ -724,9 +739,9 @@ const WhatIfScenarios: React.FC = () => {
           onClose={() => setShowCreateModal(false)}
           title="Create What-If Scenario"
         >
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label mb-2">
                 Scenario Name
               </label>
               <input
@@ -735,13 +750,13 @@ const WhatIfScenarios: React.FC = () => {
                 onChange={(e) =>
                   setNewScenario({ ...newScenario, name: e.target.value })
                 }
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="input"
                 placeholder="Enter scenario name..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label mb-2">
                 Description
               </label>
               <textarea
@@ -752,14 +767,14 @@ const WhatIfScenarios: React.FC = () => {
                     description: e.target.value,
                   })
                 }
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="input"
                 rows={3}
                 placeholder="Describe what this scenario tests..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label mb-2">
                 Timeframe
               </label>
               <select
@@ -770,7 +785,7 @@ const WhatIfScenarios: React.FC = () => {
                     timeframe: e.target.value as any,
                   })
                 }
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="input"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -780,30 +795,30 @@ const WhatIfScenarios: React.FC = () => {
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+              <div className="flex justify-between items-center mb-3">
+                <label className="label">
                   Changes
                 </label>
                 <button
                   onClick={addChange}
-                  className="text-blue-600 hover:text-blue-800 text-sm"
+                  className="text-primary-500 hover:text-primary-600 font-display font-medium hover:scale-105 transition-all duration-300"
                 >
                   Add Change
                 </button>
               </div>
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="space-y-4 max-h-64 overflow-y-auto">
                 {newScenario.changes?.map((change, index) => (
                   <div
                     key={index}
-                    className="border border-gray-200 rounded-lg p-3"
+                    className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5"
                   >
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex justify-between items-start mb-3">
                       <select
                         value={change.type}
                         onChange={(e) =>
                           updateChange(index, "type", e.target.value)
                         }
-                        className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="input"
                       >
                         <option value="model_switch">Model Switch</option>
                         <option value="volume_change">Volume Change</option>
@@ -816,7 +831,7 @@ const WhatIfScenarios: React.FC = () => {
                       </select>
                       <button
                         onClick={() => removeChange(index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-danger-500 hover:text-danger-700 hover:scale-110 transition-all duration-300"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </button>
@@ -827,7 +842,7 @@ const WhatIfScenarios: React.FC = () => {
                       onChange={(e) =>
                         updateChange(index, "description", e.target.value)
                       }
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                       placeholder="Description of the change..."
                     />
                   </div>
@@ -835,17 +850,17 @@ const WhatIfScenarios: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-2 pt-4">
+            <div className="flex justify-end space-x-3 pt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 onClick={createScenario}
                 disabled={isCreating}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isCreating ? "Creating..." : "Create Scenario"}
               </button>
@@ -862,35 +877,35 @@ const WhatIfScenarios: React.FC = () => {
           title={`Scenario Details: ${selectedScenario.name}`}
           size="lg"
         >
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Scenario Information */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">
+              <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">
                 Scenario Information
               </h4>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="space-y-2">
+              <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5">
+                <div className="space-y-4">
                   <div>
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Description:
                     </span>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
                       {selectedScenario.description}
                     </p>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Timeframe:
                     </span>
-                    <span className="text-sm text-gray-600 ml-2 capitalize">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary ml-2 capitalize">
                       {selectedScenario.timeframe}
                     </span>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Created:
                     </span>
-                    <span className="text-sm text-gray-600 ml-2">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary ml-2">
                       {new Date(
                         selectedScenario.createdAt || Date.now(),
                       ).toLocaleDateString()}
@@ -902,29 +917,29 @@ const WhatIfScenarios: React.FC = () => {
 
             {/* Changes */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">
+              <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">
                 Proposed Changes
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {selectedScenario.changes.map((change, index) => (
                   <div
                     key={index}
-                    className="bg-blue-50 border border-blue-200 rounded-lg p-4"
+                    className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-display font-bold bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
                         {changeTypeLabels[change.type]}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-700 mb-3">
+                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-4">
                       {change.description}
                     </p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-6 text-sm">
                       <div>
-                        <span className="font-medium text-gray-700">
+                        <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                           Current:
                         </span>
-                        <div className="text-gray-600 mt-1">
+                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
                           {typeof change.currentValue === "object"
                             ? Object.entries(change.currentValue).map(
                               ([key, value]) => (
@@ -937,10 +952,10 @@ const WhatIfScenarios: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-700">
+                        <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                           Proposed:
                         </span>
-                        <div className="text-gray-600 mt-1">
+                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
                           {typeof change.proposedValue === "object"
                             ? Object.entries(change.proposedValue).map(
                               ([key, value]) => (
@@ -953,15 +968,15 @@ const WhatIfScenarios: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-3">
-                      <span className="text-xs font-medium text-gray-700">
+                    <div className="mt-4">
+                      <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                         Affected Metrics:
                       </span>
-                      <div className="flex flex-wrap gap-1 mt-1">
+                      <div className="flex flex-wrap gap-2 mt-2">
                         {change.affectedMetrics.map((metric, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700"
+                            className="inline-flex items-center px-3 py-1 rounded-xl text-xs bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
                           >
                             {metric}
                           </span>
@@ -976,28 +991,28 @@ const WhatIfScenarios: React.FC = () => {
             {/* Analysis Results */}
             {scenarioResults[selectedScenario.name] && (
               <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
+                <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">
                   Analysis Results
                 </h4>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {/* Impact Summary */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-blue-50 rounded-lg p-4">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <ArrowTrendingUpIcon className="h-5 w-5 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-900">
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="card card-hover p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
+                      <div className="flex items-center justify-center space-x-2 mb-3">
+                        <ArrowTrendingUpIcon className="h-5 w-5 text-primary-500 glow-primary" />
+                        <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
                           Cost Impact
                         </span>
                       </div>
                       <div
-                        className={`text-2xl font-bold ${scenarioResults[selectedScenario.name]?.projectedImpact.costChange >= 0 ? "text-red-600" : "text-green-600"}`}
+                        className={`text-4xl font-display font-bold gradient-text ${scenarioResults[selectedScenario.name]?.projectedImpact.costChange >= 0 ? "text-danger-600" : "text-success-600"}`}
                       >
                         {formatCurrency(
                           scenarioResults[selectedScenario.name]
                             ?.projectedImpact.costChange || 0,
                         )}
                       </div>
-                      <div className="text-sm text-blue-700">
+                      <div className="font-body text-primary-700 dark:text-primary-300">
                         {formatPercentage(
                           scenarioResults[selectedScenario.name]
                             ?.projectedImpact.costChangePercentage || 0,
@@ -1005,22 +1020,22 @@ const WhatIfScenarios: React.FC = () => {
                         change
                       </div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-4">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <LightBulbIcon className="h-5 w-5 text-green-600" />
-                        <span className="text-sm font-medium text-green-900">
+                    <div className="card card-hover p-6 text-center bg-gradient-success/10 border-l-4 border-success-500">
+                      <div className="flex items-center justify-center space-x-2 mb-3">
+                        <LightBulbIcon className="h-5 w-5 text-success-500 glow-success" />
+                        <span className="font-display font-semibold text-success-600 dark:text-success-400">
                           Performance Impact
                         </span>
                       </div>
                       <div
-                        className={`text-2xl font-bold ${scenarioResults[selectedScenario.name]?.projectedImpact.performanceChange >= 0 ? "text-green-600" : "text-red-600"}`}
+                        className={`text-4xl font-display font-bold gradient-text ${scenarioResults[selectedScenario.name]?.projectedImpact.performanceChange >= 0 ? "text-success-600" : "text-danger-600"}`}
                       >
                         {formatPercentage(
                           scenarioResults[selectedScenario.name]
                             ?.projectedImpact.performanceChange || 0,
                         )}
                       </div>
-                      <div className="text-sm text-green-700">
+                      <div className="font-body text-success-700 dark:text-success-300">
                         Risk Level:{" "}
                         {scenarioResults[selectedScenario.name]?.projectedImpact
                           .riskLevel || "unknown"}
@@ -1033,22 +1048,22 @@ const WhatIfScenarios: React.FC = () => {
                     scenarioResults[selectedScenario.name]?.aiInsights!.length >
                     0 && (
                       <div>
-                        <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                          <SparklesIcon className="h-4 w-4 mr-1 text-purple-600" />
+                        <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                          <SparklesIcon className="h-5 w-5 mr-2 text-accent-500 glow-accent" />
                           AI Insights
                         </h5>
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                          <div className="space-y-2">
+                        <div className="glass p-4 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                          <div className="space-y-3">
                             {scenarioResults[
                               selectedScenario.name
                             ]?.aiInsights?.map(
                               (insight: string, index: number) => (
                                 <div
                                   key={index}
-                                  className="flex items-start space-x-2"
+                                  className="flex items-start space-x-3"
                                 >
-                                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                                  <span className="text-sm text-purple-800">
+                                  <div className="w-2.5 h-2.5 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
+                                  <span className="font-body text-accent-800 dark:text-accent-200">
                                     {insight}
                                   </span>
                                 </div>
@@ -1064,22 +1079,22 @@ const WhatIfScenarios: React.FC = () => {
                     scenarioResults[selectedScenario.name]?.recommendations
                       .length > 0 && (
                       <div>
-                        <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                          <LightBulbIcon className="h-4 w-4 mr-1 text-green-600" />
+                        <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                          <LightBulbIcon className="h-5 w-5 mr-2 text-success-500 glow-success" />
                           Recommendations
                         </h5>
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                          <div className="space-y-2">
+                        <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
+                          <div className="space-y-3">
                             {scenarioResults[
                               selectedScenario.name
                             ]?.recommendations?.map(
                               (rec: string, index: number) => (
                                 <div
                                   key={index}
-                                  className="flex items-start space-x-2"
+                                  className="flex items-start space-x-3"
                                 >
-                                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                  <span className="text-sm text-green-800">
+                                  <div className="w-2.5 h-2.5 bg-success-500 rounded-full mt-2 flex-shrink-0"></div>
+                                  <span className="font-body text-success-800 dark:text-success-200">
                                     {rec}
                                   </span>
                                 </div>
@@ -1095,22 +1110,22 @@ const WhatIfScenarios: React.FC = () => {
                     scenarioResults[selectedScenario.name]?.warnings.length >
                     0 && (
                       <div>
-                        <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                          <ExclamationTriangleIcon className="h-4 w-4 mr-1 text-orange-600" />
+                        <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
+                          <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-warning-500 glow-warning" />
                           Warnings
                         </h5>
-                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                          <div className="space-y-2">
+                        <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-500/5">
+                          <div className="space-y-3">
                             {scenarioResults[
                               selectedScenario.name
                             ]?.warnings?.map(
                               (warning: string, index: number) => (
                                 <div
                                   key={index}
-                                  className="flex items-start space-x-2"
+                                  className="flex items-start space-x-3"
                                 >
-                                  <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                                  <span className="text-sm text-orange-800">
+                                  <div className="w-2.5 h-2.5 bg-warning-500 rounded-full mt-2 flex-shrink-0"></div>
+                                  <span className="font-body text-warning-800 dark:text-warning-200">
                                     {warning}
                                   </span>
                                 </div>

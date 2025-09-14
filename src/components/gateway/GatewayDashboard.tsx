@@ -68,12 +68,12 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-32 bg-gray-200 rounded-lg"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
-            <div className="h-64 bg-gray-200 rounded-lg"></div>
+        <div className="animate-pulse space-y-6">
+          <div className="h-32 glass rounded-xl border border-primary-200/30"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
+            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
+            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
           </div>
         </div>
       </div>
@@ -83,16 +83,16 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-600 mb-4">
-          <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-16 h-16 rounded-full bg-gradient-danger/20 flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8 text-danger-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Gateway Error</h3>
-        <p className="text-gray-600 mb-4">{error}</p>
+        <h3 className="text-xl font-display font-bold gradient-text-danger mb-3">Gateway Error</h3>
+        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">{error}</p>
         <button
           onClick={loadGatewayData}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+          className="btn-primary"
         >
           Retry
         </button>
@@ -101,13 +101,21 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Gateway Analytics</h2>
-        <div className="flex items-center space-x-2">
-          <div className={`w-3 h-3 rounded-full ${health?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-          <span className="text-sm text-gray-600">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <span className="text-white text-xl">🌐</span>
+          </div>
+          <h2 className="text-3xl font-display font-bold gradient-text">Gateway Analytics</h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className={`w-4 h-4 rounded-full ${health?.status === 'healthy' ? 'bg-gradient-success glow-success' : 'bg-gradient-danger glow-danger'}`}></div>
+          <span className={`px-3 py-1 rounded-full font-display font-medium ${health?.status === 'healthy'
+              ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
+              : 'bg-gradient-danger/20 text-danger-700 dark:text-danger-300'
+            }`}>
             {health?.status === 'healthy' ? 'Online' : 'Offline'}
           </span>
         </div>
@@ -115,195 +123,210 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Requests</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {analytics?.summary.totalRequests?.toLocaleString() || 0}
-            </div>
-            <p className="text-sm text-gray-600 mt-1">via Gateway</p>
-          </CardContent>
-        </Card>
+        <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary/20 flex items-center justify-center mx-auto mb-3">
+            <span className="text-2xl">📊</span>
+          </div>
+          <div className="text-3xl font-display font-bold gradient-text mb-2">
+            {analytics?.summary.totalRequests?.toLocaleString() || 0}
+          </div>
+          <p className="font-display font-semibold text-primary-700 dark:text-primary-300">Total Requests</p>
+          <p className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">via Gateway</p>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Cost</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              ${analytics?.summary.totalCost?.toFixed(4) || '0.0000'}
-            </div>
-            <p className="text-sm text-green-600 mt-1">
-              ${analytics?.summary.cost_savings?.toFixed(4) || '0'} saved
-            </p>
-          </CardContent>
-        </Card>
+        <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl bg-gradient-success/20 flex items-center justify-center mx-auto mb-3">
+            <span className="text-2xl">💰</span>
+          </div>
+          <div className="text-3xl font-display font-bold gradient-text-success mb-2">
+            ${analytics?.summary.totalCost?.toFixed(4) || '0.0000'}
+          </div>
+          <p className="font-display font-semibold text-success-700 dark:text-success-300">Total Cost</p>
+          <p className="font-body text-sm text-success-600 dark:text-success-400 mt-1">
+            ${analytics?.summary.cost_savings?.toFixed(4) || '0'} saved
+          </p>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Cache Hit Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {analytics?.summary.cacheHitRate?.toFixed(1) || 0}%
-            </div>
-            <p className="text-sm text-gray-600 mt-1">
-              {analytics?.cacheMetrics.totalHits || 0} hits
-            </p>
-          </CardContent>
-        </Card>
+        <div className="glass p-6 rounded-xl border border-warning-200/30 text-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl bg-gradient-warning/20 flex items-center justify-center mx-auto mb-3">
+            <span className="text-2xl">⚡</span>
+          </div>
+          <div className="text-3xl font-display font-bold gradient-text-warning mb-2">
+            {analytics?.summary.cacheHitRate?.toFixed(1) || 0}%
+          </div>
+          <p className="font-display font-semibold text-warning-700 dark:text-warning-300">Cache Hit Rate</p>
+          <p className="font-body text-sm text-warning-600 dark:text-warning-400 mt-1">
+            {analytics?.cacheMetrics.totalHits || 0} hits
+          </p>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Avg Latency</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {analytics?.summary.averageLatency?.toFixed(0) || 0}ms
-            </div>
-            <p className="text-sm text-gray-600 mt-1">Gateway overhead</p>
-          </CardContent>
-        </Card>
+        <div className="glass p-6 rounded-xl border border-accent-200/30 text-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-3">
+            <span className="text-2xl">⏱️</span>
+          </div>
+          <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
+            {analytics?.summary.averageLatency?.toFixed(0) || 0}ms
+          </div>
+          <p className="font-display font-semibold text-accent-700 dark:text-accent-300">Avg Latency</p>
+          <p className="font-body text-sm text-accent-600 dark:text-accent-400 mt-1">Gateway overhead</p>
+        </div>
       </div>
 
       {/* System Stats */}
       {stats && (
-        <Card>
-          <CardHeader>
-            <CardTitle>System Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <h4 className="text-sm font-medium text-gray-600 mb-2">Uptime</h4>
-                <p className="text-lg font-semibold">{formatUptime(stats.uptime)}</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-600 mb-2">Memory Usage</h4>
-                <p className="text-lg font-semibold">{formatBytes(stats.memoryUsage.heapUsed)}</p>
-                <p className="text-sm text-gray-500">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-600 mb-2">Cache Size</h4>
-                <p className="text-lg font-semibold">{stats.cacheSize} items</p>
-              </div>
+        <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+              <span className="text-white text-lg">💻</span>
             </div>
-          </CardContent>
-        </Card>
+            <h3 className="text-xl font-display font-bold gradient-text">System Status</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="glass p-4 rounded-lg border border-success-200/30 text-center">
+              <h4 className="font-display font-semibold text-success-700 dark:text-success-300 mb-2">Uptime</h4>
+              <p className="text-2xl font-display font-bold gradient-text-success">{formatUptime(stats.uptime)}</p>
+            </div>
+            <div className="glass p-4 rounded-lg border border-warning-200/30 text-center">
+              <h4 className="font-display font-semibold text-warning-700 dark:text-warning-300 mb-2">Memory Usage</h4>
+              <p className="text-2xl font-display font-bold gradient-text-warning">{formatBytes(stats.memoryUsage.heapUsed)}</p>
+              <p className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
+            </div>
+            <div className="glass p-4 rounded-lg border border-accent-200/30 text-center">
+              <h4 className="font-display font-semibold text-accent-700 dark:text-accent-300 mb-2">Cache Size</h4>
+              <p className="text-2xl font-display font-bold gradient-text-accent">{stats.cacheSize} items</p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Provider Breakdown */}
       {analytics?.providerBreakdown && analytics.providerBreakdown.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Provider Usage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {analytics.providerBreakdown.map((provider, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-900">{provider.provider}</span>
-                      <span className="text-sm text-gray-600">{provider.percentage.toFixed(1)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full"
-                        style={{ width: `${provider.percentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>{provider.requests} requests</span>
-                      <span>${provider.cost.toFixed(4)}</span>
-                      <span>{provider.averageLatency > 0 ? `${provider.averageLatency.toFixed(0)}ms avg` : 'N/A'}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-lg">🎯</span>
             </div>
-          </CardContent>
-        </Card>
+            <h3 className="text-xl font-display font-bold gradient-text">Provider Usage</h3>
+          </div>
+          <div className="space-y-6">
+            {analytics.providerBreakdown.map((provider, index) => (
+              <div key={index} className="glass p-4 rounded-lg border border-primary-200/30">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-display font-semibold gradient-text">{provider.provider}</span>
+                  <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-sm">
+                    {provider.percentage.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gradient-secondary/20 rounded-full h-3 mb-3">
+                  <div
+                    className="bg-gradient-primary h-3 rounded-full glow-primary"
+                    style={{ width: `${provider.percentage}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between">
+                  <span className="px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-xs">
+                    {provider.requests} requests
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display font-medium text-xs">
+                    ${provider.cost.toFixed(4)}
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-gradient-accent/20 text-accent-700 dark:text-accent-300 font-display font-medium text-xs">
+                    {provider.averageLatency > 0 ? `${provider.averageLatency.toFixed(0)}ms avg` : 'N/A'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Budget Utilization */}
       {analytics?.budgetUtilization && analytics.budgetUtilization.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Budget Utilization</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {analytics.budgetUtilization.map((budget, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-900">{budget.budgetName}</span>
-                      <span className="text-sm text-gray-600">{budget.percentage.toFixed(1)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-600 h-2 rounded-full"
-                        style={{ width: `${budget.percentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>${budget.utilized.toFixed(4)} used</span>
-                      <span>${budget.total.toFixed(4)} total</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <div className="glass p-6 rounded-xl border border-success-200/30 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+              <span className="text-white text-lg">💰</span>
             </div>
-          </CardContent>
-        </Card>
+            <h3 className="text-xl font-display font-bold gradient-text-success">Budget Utilization</h3>
+          </div>
+          <div className="space-y-6">
+            {analytics.budgetUtilization.map((budget, index) => (
+              <div key={index} className="glass p-4 rounded-lg border border-success-200/30">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-display font-semibold gradient-text">{budget.budgetName}</span>
+                  <span className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-sm">
+                    {budget.percentage.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gradient-secondary/20 rounded-full h-3 mb-3">
+                  <div
+                    className="bg-gradient-success h-3 rounded-full glow-success"
+                    style={{ width: `${budget.percentage}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between">
+                  <span className="px-2 py-1 rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display font-medium text-xs">
+                    ${budget.utilized.toFixed(4)} used
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-xs">
+                    ${budget.total.toFixed(4)} total
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Features Usage */}
       {analytics?.featuresUsage && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Features Usage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {analytics.featuresUsage.map((feature, index) => (
-                <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">{feature.feature}</h4>
-                  <p className="text-2xl font-bold text-blue-600 mb-1">{feature.count}</p>
-                  <p className="text-sm text-gray-600">{feature.percentage.toFixed(1)}% usage</p>
-                </div>
-              ))}
+        <div className="glass p-6 rounded-xl border border-accent-200/30 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+              <span className="text-white text-lg">⚙️</span>
             </div>
-          </CardContent>
-        </Card>
+            <h3 className="text-xl font-display font-bold gradient-text-accent">Features Usage</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {analytics.featuresUsage.map((feature, index) => (
+              <div key={index} className="glass p-6 rounded-lg border border-accent-200/30 text-center">
+                <h4 className="font-display font-semibold gradient-text mb-3">{feature.feature}</h4>
+                <p className="text-3xl font-display font-bold gradient-text-accent mb-2">{feature.count}</p>
+                <p className="font-body text-sm text-accent-600 dark:text-accent-400">{feature.percentage.toFixed(1)}% usage</p>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Top Properties */}
       {analytics?.topProperties && analytics.topProperties.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Most Used Properties</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {analytics.topProperties.slice(0, 5).map((prop, index) => (
-                <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
-                  <div>
-                    <span className="font-medium text-gray-900">{prop.property}:</span>
-                    <span className="text-gray-600 ml-1">{prop.value}</span>
+        <div className="glass p-6 rounded-xl border border-secondary-200/30 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+              <span className="text-white text-lg">🏷️</span>
+            </div>
+            <h3 className="text-xl font-display font-bold gradient-text">Most Used Properties</h3>
+          </div>
+          <div className="space-y-4">
+            {analytics.topProperties.slice(0, 5).map((prop, index) => (
+              <div key={index} className="glass p-4 rounded-lg border border-secondary-200/30 flex items-center justify-between">
+                <div className="flex-1">
+                  <span className="font-display font-semibold gradient-text">{prop.property}:</span>
+                  <span className="font-body text-light-text-secondary dark:text-dark-text-secondary ml-2">{prop.value}</span>
+                </div>
+                <div className="text-right">
+                  <div className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-sm mb-1">
+                    {prop.count} requests
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium text-gray-900">{prop.count} requests</div>
-                    <div className="text-xs text-gray-500">${prop.cost.toFixed(4)}</div>
+                  <div className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-xs">
+                    ${prop.cost.toFixed(4)}
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

@@ -74,41 +74,50 @@ await optimizer.bulkImport(usageData);`;
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-        <div className="flex items-center">
-          <InformationCircleIcon className="h-5 w-5 text-blue-500 mr-2" />
-          <h3 className="font-medium text-blue-900 dark:text-blue-100">
-            Project ID Integration
+    <div className="space-y-8">
+      <div className="card p-6 bg-gradient-primary/10 border border-primary-200/30 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+            <InformationCircleIcon className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-xl font-display font-bold gradient-text">
+            🆔 Project ID Integration
           </h3>
         </div>
-        <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+        <p className="font-body text-primary-700 dark:text-primary-300">
           Project IDs help you organize and track AI usage across different
           projects, teams, and departments.
         </p>
       </div>
 
       {/* Project List */}
-      <div>
-        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-          Available Projects
-        </h4>
-        <div className="space-y-3">
+      <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
+            <FolderIcon className="w-4 h-4 text-white" />
+          </div>
+          <h4 className="text-xl font-display font-bold gradient-text">
+            📁 Available Projects
+          </h4>
+        </div>
+        <div className="space-y-6">
           {projects?.map((project) => (
             <div
               key={project._id}
-              className="border border-gray-200 dark:border-gray-700 rounded-lg"
+              className="card border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden"
             >
-              <div className="p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              <div className="p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-b border-success-200/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <FolderIcon className="h-5 w-5 text-blue-500 mr-2" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
+                      <FolderIcon className="w-5 h-5 text-white" />
+                    </div>
                     <div>
-                      <h5 className="font-medium text-gray-900 dark:text-white">
+                      <h5 className="font-display font-bold text-lg gradient-text-success">
                         {project.name}
                       </h5>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {project.description || "No description"}
+                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        {project.description || "📝 No description"}
                       </p>
                     </div>
                   </div>
@@ -116,32 +125,39 @@ await optimizer.bulkImport(usageData);`;
                     onClick={() =>
                       copyToClipboard(project._id, `project-${project._id}`)
                     }
-                    className="flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    className="btn-success px-4 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
                   >
                     {copied === `project-${project._id}` ? (
-                      <CheckIcon className="h-4 w-4 mr-1" />
+                      <>
+                        <CheckIcon className="h-4 w-4 mr-2" />
+                        ✅ Copied!
+                      </>
                     ) : (
-                      <DocumentDuplicateIcon className="h-4 w-4 mr-1" />
+                      <>
+                        <DocumentDuplicateIcon className="h-4 w-4 mr-2" />
+                        📋 Copy ID
+                      </>
                     )}
-                    {copied === `project-${project._id}`
-                      ? "Copied!"
-                      : "Copy ID"}
                   </button>
                 </div>
-                <div className="mt-2">
-                  <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
-                    {project._id}
+                <div className="mt-4 glass p-3 rounded-xl border border-success-200/30">
+                  <code className="text-sm font-mono text-success-700 dark:text-success-300 break-all">
+                    🆔 {project._id}
                   </code>
                 </div>
               </div>
 
               {/* Usage Example for this project */}
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h6 className="text-sm font-medium text-gray-900 dark:text-white flex items-center">
-                    <CodeBracketIcon className="h-4 w-4 mr-1" />
-                    Usage Example
-                  </h6>
+              <div className="p-6 bg-gradient-to-br from-primary-50/30 to-primary-100/30">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center mr-2 shadow-lg">
+                      <CodeBracketIcon className="w-3 h-3 text-white" />
+                    </div>
+                    <h6 className="text-sm font-display font-bold gradient-text">
+                      💻 Usage Example
+                    </h6>
+                  </div>
                   <button
                     onClick={() =>
                       copyToClipboard(
@@ -149,29 +165,33 @@ await optimizer.bulkImport(usageData);`;
                         `example-${project._id}`,
                       )
                     }
-                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    className="p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                   >
                     {copied === `example-${project._id}` ? (
-                      <CheckIcon className="h-4 w-4" />
+                      <CheckIcon className="h-4 w-4 gradient-text-success" />
                     ) : (
-                      <DocumentDuplicateIcon className="h-4 w-4" />
+                      <DocumentDuplicateIcon className="h-4 w-4 gradient-text" />
                     )}
                   </button>
                 </div>
-                <pre className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-3 rounded overflow-x-auto">
-                  <code>
-                    {generateProjectUsageExample(project._id, project.name)}
-                  </code>
-                </pre>
+                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-dark-bg/5 dark:bg-light-bg/5">
+                  <pre className="text-xs font-mono text-light-text-primary dark:text-dark-text-primary overflow-x-auto">
+                    <code>
+                      {generateProjectUsageExample(project._id, project.name)}
+                    </code>
+                  </pre>
+                </div>
               </div>
             </div>
           ))}
 
           {(!projects || projects.length === 0) && (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              <FolderIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No projects found</p>
-              <p className="text-sm">
+            <div className="text-center py-12">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+                <FolderIcon className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-lg font-display font-bold gradient-text mb-2">No projects found</p>
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Create a project to get started with project-based tracking
               </p>
             </div>
@@ -180,54 +200,78 @@ await optimizer.bulkImport(usageData);`;
       </div>
 
       {/* Integration Tips */}
-      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-        <h5 className="font-medium text-gray-900 dark:text-white mb-2">
-          Integration Tips
-        </h5>
-        <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <li>
-            • Use project IDs to separate costs by team, department, or client
-          </li>
-          <li>• Set up budget alerts for each project to monitor spending</li>
-          <li>• Use cost allocation metadata for detailed tracking</li>
-          <li>• Tag your usage data for better organization and reporting</li>
-          <li>• Monitor project analytics to optimize AI usage</li>
-        </ul>
+      <div className="card p-6 bg-gradient-accent/10 border border-accent-200/30 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center mr-3 shadow-lg">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h5 className="text-xl font-display font-bold gradient-text-accent">
+            💡 Integration Tips
+          </h5>
+        </div>
+        <div className="space-y-3">
+          {[
+            "Use project IDs to separate costs by team, department, or client",
+            "Set up budget alerts for each project to monitor spending",
+            "Use cost allocation metadata for detailed tracking",
+            "Tag your usage data for better organization and reporting",
+            "Monitor project analytics to optimize AI usage"
+          ].map((tip, index) => (
+            <div key={index} className="glass p-3 rounded-xl border border-accent-200/30 hover:bg-accent-500/5 transition-all duration-300">
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-gradient-accent rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
+                <span className="text-sm font-body text-accent-700 dark:text-accent-300">{tip}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Environment Variables */}
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-        <h5 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
-          Environment Variables
-        </h5>
-        <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-2">
+      <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center mr-3 shadow-lg">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h5 className="text-xl font-display font-bold gradient-text-warning">
+            ⚙️ Environment Variables
+          </h5>
+        </div>
+        <p className="text-sm font-body text-warning-700 dark:text-warning-300 mb-4">
           Set these environment variables in your application:
         </p>
-        <div className="space-y-1 text-sm font-mono">
-          <div className="flex items-center justify-between bg-yellow-100 dark:bg-yellow-800 px-2 py-1 rounded">
-            <span className="text-yellow-800 dark:text-yellow-200">
-            API_KEY={import.meta.env.VITE_APP_API_URL}/api
-            </span>
-            <button
-              onClick={() =>
-                copyToClipboard(
-                  `${window.location.origin}/api`,
-                  "dashboard-url",
-                )
-              }
-              className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-200"
-            >
-              {copied === "dashboard-url" ? (
-                <CheckIcon className="h-4 w-4" />
-              ) : (
-                <DocumentDuplicateIcon className="h-4 w-4" />
-              )}
-            </button>
+        <div className="space-y-3">
+          <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-100/20 dark:bg-warning-800/20">
+            <div className="flex items-center justify-between">
+              <code className="text-sm font-mono text-warning-800 dark:text-warning-200 break-all">
+                API_KEY={window.location.origin}/api
+              </code>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    `${window.location.origin}/api`,
+                    "dashboard-url",
+                  )
+                }
+                className="ml-3 p-2 glass rounded-xl border border-warning-200/30 hover:bg-warning-500/10 transition-all duration-300 hover:scale-110"
+              >
+                {copied === "dashboard-url" ? (
+                  <CheckIcon className="h-4 w-4 gradient-text-success" />
+                ) : (
+                  <DocumentDuplicateIcon className="h-4 w-4 gradient-text-warning" />
+                )}
+              </button>
+            </div>
           </div>
-          <div className="flex items-center justify-between bg-yellow-100 dark:bg-yellow-800 px-2 py-1 rounded">
-            <span className="text-yellow-800 dark:text-yellow-200">
+          <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-100/20 dark:bg-warning-800/20">
+            <code className="text-sm font-mono text-warning-800 dark:text-warning-200">
               DEFAULT_PROJECT_ID=your-project-id
-            </span>
+            </code>
           </div>
         </div>
       </div>

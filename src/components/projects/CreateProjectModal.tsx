@@ -105,10 +105,10 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           currency: "USD",
           alerts: formData.budget.alerts.enabled
             ? formData.budget.alerts.thresholds.map((threshold) => ({
-                threshold,
-                type: "both" as const,
-                recipients: [],
-              }))
+              threshold,
+              type: "both" as const,
+              recipients: [],
+            }))
             : [],
         },
         settings: {
@@ -157,50 +157,60 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Project">
-      <form onSubmit={handleSubmit} className="p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="p-8 space-y-8">
         {/* Basic Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Basic Information
-          </h3>
+        <div className="glass rounded-xl p-6 border border-primary-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-lg">📋</span>
+            </div>
+            <h3 className="text-xl font-display font-bold gradient-text">
+              Basic Information
+            </h3>
+          </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
               Project Name *
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              className="input"
               placeholder="Enter project name"
               required
             />
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
               Description
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
               rows={3}
-              className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              className="input"
               placeholder="Describe your project"
             />
           </div>
         </div>
 
         {/* Budget Settings */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Budget Settings
-          </h3>
+        <div className="glass rounded-xl p-6 border border-success-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+              <span className="text-white text-lg">💰</span>
+            </div>
+            <h3 className="text-xl font-display font-bold gradient-text-success">
+              Budget Settings
+            </h3>
+          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Amount ($)
               </label>
               <input
@@ -212,13 +222,13 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                     Number(e.target.value),
                   )
                 }
-                className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="input"
                 min="1"
                 required
               />
             </div>
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Period
               </label>
               <select
@@ -226,7 +236,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 onChange={(e) =>
                   handleNestedInputChange(["budget", "period"], e.target.value)
                 }
-                className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="input"
               >
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
@@ -236,154 +246,179 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Team Members */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Team Members
-          </h3>
-
-          {formData.members.map((member, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="email"
-                value={member}
-                onChange={(e) =>
-                  handleArrayChange("members", index, e.target.value)
-                }
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Enter email address"
-              />
-              {formData.members.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeArrayItem("members", index)}
-                  className="p-2 text-red-600 rounded-lg transition-colors hover:bg-red-50"
-                >
-                  <FiMinus />
-                </button>
-              )}
+        <div className="glass rounded-xl p-6 border border-secondary-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+              <span className="text-white text-lg">👥</span>
             </div>
-          ))}
+            <h3 className="text-xl font-display font-bold gradient-text-secondary">
+              Team Members
+            </h3>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => addArrayItem("members")}
-            className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
-          >
-            <FiPlus /> Add Member
-          </button>
+          <div className="space-y-4">
+            {formData.members.map((member, index) => (
+              <div key={index} className="flex gap-3">
+                <input
+                  type="email"
+                  value={member}
+                  onChange={(e) =>
+                    handleArrayChange("members", index, e.target.value)
+                  }
+                  className="flex-1 input"
+                  placeholder="Enter email address"
+                />
+                {formData.members.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem("members", index)}
+                    className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                  >
+                    <FiMinus />
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => addArrayItem("members")}
+              className="flex gap-2 items-center font-display font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors"
+            >
+              <FiPlus /> Add Member
+            </button>
+          </div>
         </div>
 
         {/* Tags */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Tags
-          </h3>
-
-          {formData.tags.map((tag, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="text"
-                value={tag}
-                onChange={(e) =>
-                  handleArrayChange("tags", index, e.target.value)
-                }
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Enter tag"
-              />
-              {formData.tags.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeArrayItem("tags", index)}
-                  className="p-2 text-red-600 rounded-lg transition-colors hover:bg-red-50"
-                >
-                  <FiMinus />
-                </button>
-              )}
+        <div className="glass rounded-xl p-6 border border-accent-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+              <span className="text-white text-lg">🏷️</span>
             </div>
-          ))}
+            <h3 className="text-xl font-display font-bold gradient-text-accent">
+              Tags
+            </h3>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => addArrayItem("tags")}
-            className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
-          >
-            <FiPlus /> Add Tag
-          </button>
+          <div className="space-y-4">
+            {formData.tags.map((tag, index) => (
+              <div key={index} className="flex gap-3">
+                <input
+                  type="text"
+                  value={tag}
+                  onChange={(e) =>
+                    handleArrayChange("tags", index, e.target.value)
+                  }
+                  className="flex-1 input"
+                  placeholder="Enter tag"
+                />
+                {formData.tags.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeArrayItem("tags", index)}
+                    className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                  >
+                    <FiMinus />
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => addArrayItem("tags")}
+              className="flex gap-2 items-center font-display font-medium text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 transition-colors"
+            >
+              <FiPlus /> Add Tag
+            </button>
+          </div>
         </div>
 
         {/* Settings */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Project Settings
-          </h3>
+        <div className="glass rounded-xl p-6 border border-warning-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+              <span className="text-white text-lg">⚙️</span>
+            </div>
+            <h3 className="text-xl font-display font-bold gradient-text-warning">
+              Project Settings
+            </h3>
+          </div>
 
-          <div className="space-y-3">
-            <label className="flex gap-2 items-center">
-              <input
-                type="checkbox"
-                checked={formData.settings.costOptimization.enabled}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    ["settings", "costOptimization", "enabled"],
-                    e.target.checked,
-                  )
-                }
-                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Enable cost optimization
-              </span>
-            </label>
+          <div className="space-y-6">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <label className="flex gap-3 items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.settings.costOptimization.enabled}
+                  onChange={(e) =>
+                    handleNestedInputChange(
+                      ["settings", "costOptimization", "enabled"],
+                      e.target.checked,
+                    )
+                  }
+                  className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                />
+                <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Enable cost optimization
+                </span>
+              </label>
+            </div>
 
-            <label className="flex gap-2 items-center">
-              <input
-                type="checkbox"
-                checked={formData.settings.notifications.budgetAlerts}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    ["settings", "notifications", "budgetAlerts"],
-                    e.target.checked,
-                  )
-                }
-                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Budget alerts
-              </span>
-            </label>
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <label className="flex gap-3 items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.settings.notifications.budgetAlerts}
+                  onChange={(e) =>
+                    handleNestedInputChange(
+                      ["settings", "notifications", "budgetAlerts"],
+                      e.target.checked,
+                    )
+                  }
+                  className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                />
+                <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Budget alerts
+                </span>
+              </label>
+            </div>
 
-            <label className="flex gap-2 items-center">
-              <input
-                type="checkbox"
-                checked={formData.settings.notifications.weeklyReports}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    ["settings", "notifications", "weeklyReports"],
-                    e.target.checked,
-                  )
-                }
-                className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Weekly reports
-              </span>
-            </label>
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <label className="flex gap-3 items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.settings.notifications.weeklyReports}
+                  onChange={(e) =>
+                    handleNestedInputChange(
+                      ["settings", "notifications", "weeklyReports"],
+                      e.target.checked,
+                    )
+                  }
+                  className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                />
+                <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Weekly reports
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex gap-4 justify-end pt-8 border-t border-primary-200/30">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 rounded-lg transition-colors dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="btn-secondary"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading || !formData.name.trim()}
-            className="px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary"
           >
             {loading ? "Creating..." : "Create Project"}
           </button>

@@ -200,318 +200,322 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <ProfileHeader
-        user={profileData || user!}
-        onAvatarChange={handleAvatarChange}
-        editable={true}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <ProfileHeader
+          user={profileData || user!}
+          onAvatarChange={handleAvatarChange}
+          editable={true}
+        />
 
-      <div className="mt-8 border-b border-gray-200">
-        <nav className="flex -mb-px space-x-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+        <div className="mt-8">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2 mb-6">
+            <nav className="flex space-x-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`py-3 px-4 rounded-xl font-display font-semibold text-sm transition-all duration-300 ${activeTab === tab.id
+                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                    : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10'
+                    }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-      <div className="mt-8">
-        {activeTab === 'overview' && (
-          <div className="space-y-8">
-            {statsLoading ? (
-              <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div className="animate-pulse">
-                  <div className="mb-4 w-1/4 h-4 bg-gray-200 rounded"></div>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="p-6 bg-gray-100 rounded-lg">
-                        <div className="mb-2 w-1/2 h-4 bg-gray-200 rounded"></div>
-                        <div className="w-3/4 h-8 bg-gray-200 rounded"></div>
+          <div className="mt-8">
+            {activeTab === 'overview' && (
+              <div className="space-y-8">
+                {statsLoading ? (
+                  <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="animate-pulse">
+                      <div className="mb-4 w-1/4 h-4 bg-gray-200 rounded"></div>
+                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        {[...Array(4)].map((_, i) => (
+                          <div key={i} className="p-6 bg-gray-100 rounded-lg">
+                            <div className="mb-2 w-1/2 h-4 bg-gray-200 rounded"></div>
+                            <div className="w-3/4 h-8 bg-gray-200 rounded"></div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <ProfileStats stats={stats || {
+                      totalSpent: 0,
+                      totalSaved: 0,
+                      apiCalls: 0,
+                      optimizations: 0,
+                      currentMonthSpent: 0,
+                      currentMonthSaved: 0,
+                      avgDailyCost: 0,
+                      mostUsedService: 'N/A',
+                      mostUsedModel: 'N/A',
+                      accountAge: 0,
+                      savingsRate: 0
+                    }} />
+
+                    <div className="mt-8">
+                      <div className="flex items-center mb-4">
+                        <ChartBarIcon className="mr-3 w-6 h-6 text-blue-600" />
+                        <h3 className="text-lg font-medium text-gray-900">Usage Overview</h3>
+                      </div>
+                      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                        <div className="lg:col-span-2">
+                          <UsageOverview />
+                        </div>
+                        <div>
+                          <UsageAlerts />
+                        </div>
+                      </div>
+                      <div className="mt-6">
+                        <UsageTrendChart days={7} chartType="area" />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'activity' && (
+              <ProfileActivity
+                activities={allActivities}
+                loading={usageLoading || activityLoading}
+              />
+            )}
+
+            {activeTab === 'preferences' && (
+              <ProfilePreferences
+                preferences={preferences}
+                onUpdate={(data) => updateProfileMutation.mutate({ preferences: data })}
+              />
+            )}
+
+            {activeTab === 'security' && (
+              <div className="space-y-6">
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <div className="flex items-center mb-4">
+                    <ShieldCheckIcon className="mr-3 w-6 h-6 text-green-600" />
+                    <h3 className="text-lg font-medium text-gray-900">Security Settings</h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Email Verification</h4>
+                        <p className="text-sm text-gray-600">Verify your email address for enhanced security</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${profileData?.emailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                        {profileData?.emailVerified ? 'Verified' : 'Not Verified'}
+                      </span>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <MFASetup />
+                    </div>
+
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">API Keys</h4>
+                        <p className="text-sm text-gray-600">Manage your API keys and access tokens</p>
+                      </div>
+                      <button
+                        onClick={() => navigate('/settings?tab=api-keys')}
+                        className="px-4 py-2 text-white bg-gray-600 rounded-md transition-colors hover:bg-gray-700"
+                      >
+                        Manage Keys
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            ) : (
-              <>
-                <ProfileStats stats={stats || {
-                  totalSpent: 0,
-                  totalSaved: 0,
-                  apiCalls: 0,
-                  optimizations: 0,
-                  currentMonthSpent: 0,
-                  currentMonthSaved: 0,
-                  avgDailyCost: 0,
-                  mostUsedService: 'N/A',
-                  mostUsedModel: 'N/A',
-                  accountAge: 0,
-                  savingsRate: 0
-                }} />
+            )}
 
-                <div className="mt-8">
+            {activeTab === 'subscription' && (
+              <div className="space-y-6">
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <div className="flex items-center mb-4">
+                    <CreditCardIcon className="mr-3 w-6 h-6 text-blue-600" />
+                    <h3 className="text-lg font-medium text-gray-900">Subscription Details</h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Current Plan</h4>
+                        <p className="text-sm text-gray-600">Your current subscription plan and features</p>
+                      </div>
+                      <span className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
+                        {profileData?.subscription?.plan || 'Free'} Plan
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">API Calls</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '10,000'}
+                        </p>
+                        <p className="text-sm text-gray-600">calls per month</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">Tokens</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {(profileData?.subscription?.limits?.tokensPerMonth || 1000000).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-600">tokens per month</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">Projects</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {profileData?.subscription?.limits?.projects || 5}
+                        </p>
+                        <p className="text-sm text-gray-600">projects</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">Workflows</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {profileData?.subscription?.limits?.workflows || 10}
+                        </p>
+                        <p className="text-sm text-gray-600">AI workflows</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">Logs</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {(profileData?.subscription?.limits?.logsPerMonth || 15000).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-600">logs per month</p>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="mb-2 font-medium text-gray-900">Models</h4>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {profileData?.subscription?.plan === 'free' ? '3' : 'All'}
+                        </p>
+                        <p className="text-sm text-gray-600">AI models</p>
+                      </div>
+                    </div>
+
+                    {/* Free Plan Features */}
+                    {profileData?.subscription?.plan === 'free' && (
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 className="mb-3 font-medium text-blue-900">Free Plan Features</h4>
+                        <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">1M tokens per month</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">10K API requests per month</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">15K logs per month</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">5 projects</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">10 AI workflows</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-green-600">✓</span>
+                            <span className="text-blue-800">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Upgrade Plan</h4>
+                        <p className="text-sm text-gray-600">Get more features and higher limits</p>
+                      </div>
+                      <button className="px-4 py-2 text-white bg-green-600 rounded-md transition-colors hover:bg-green-700">
+                        Upgrade Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Usage Guardrails */}
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
                   <div className="flex items-center mb-4">
                     <ChartBarIcon className="mr-3 w-6 h-6 text-blue-600" />
-                    <h3 className="text-lg font-medium text-gray-900">Usage Overview</h3>
+                    <h3 className="text-lg font-medium text-gray-900">Usage Guardrails</h3>
                   </div>
-                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    <div className="lg:col-span-2">
-                      <UsageOverview />
-                    </div>
-                    <div>
-                      <UsageAlerts />
-                    </div>
-                  </div>
-                  <div className="mt-6">
-                    <UsageTrendChart days={7} chartType="area" />
+
+                  <div className="space-y-6">
+                    <UsageOverview />
+                    <UsageTrendChart days={30} chartType="area" />
+                    <UsageAlerts />
                   </div>
                 </div>
-              </>
+
+                {/* Notification Settings */}
+                <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <div className="flex items-center mb-4">
+                    <svg className="mr-3 w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-900">Notification Settings</h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Email Notifications</h4>
+                        <p className="text-sm text-gray-600">Receive updates about your usage and optimizations</p>
+                      </div>
+                      <label className="inline-flex relative items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Cost Alerts</h4>
+                        <p className="text-sm text-gray-600">Get notified when you reach cost thresholds</p>
+                      </div>
+                      <label className="inline-flex relative items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <h4 className="font-medium text-gray-900">Weekly Reports</h4>
+                        <p className="text-sm text-gray-600">Receive weekly summaries of your usage and savings</p>
+                      </div>
+                      <label className="inline-flex relative items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-        )}
-
-        {activeTab === 'activity' && (
-          <ProfileActivity
-            activities={allActivities}
-            loading={usageLoading || activityLoading}
-          />
-        )}
-
-        {activeTab === 'preferences' && (
-          <ProfilePreferences
-            preferences={preferences}
-            onUpdate={(data) => updateProfileMutation.mutate({ preferences: data })}
-          />
-        )}
-
-        {activeTab === 'security' && (
-          <div className="space-y-6">
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center mb-4">
-                <ShieldCheckIcon className="mr-3 w-6 h-6 text-green-600" />
-                <h3 className="text-lg font-medium text-gray-900">Security Settings</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Email Verification</h4>
-                    <p className="text-sm text-gray-600">Verify your email address for enhanced security</p>
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${profileData?.emailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                    {profileData?.emailVerified ? 'Verified' : 'Not Verified'}
-                  </span>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <MFASetup />
-                </div>
-
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">API Keys</h4>
-                    <p className="text-sm text-gray-600">Manage your API keys and access tokens</p>
-                  </div>
-                  <button
-                    onClick={() => navigate('/settings?tab=api-keys')}
-                    className="px-4 py-2 text-white bg-gray-600 rounded-md transition-colors hover:bg-gray-700"
-                  >
-                    Manage Keys
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'subscription' && (
-          <div className="space-y-6">
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center mb-4">
-                <CreditCardIcon className="mr-3 w-6 h-6 text-blue-600" />
-                <h3 className="text-lg font-medium text-gray-900">Subscription Details</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Current Plan</h4>
-                    <p className="text-sm text-gray-600">Your current subscription plan and features</p>
-                  </div>
-                  <span className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
-                    {profileData?.subscription?.plan || 'Free'} Plan
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">API Calls</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '10,000'}
-                    </p>
-                    <p className="text-sm text-gray-600">calls per month</p>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">Tokens</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {(profileData?.subscription?.limits?.tokensPerMonth || 1000000).toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-600">tokens per month</p>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">Projects</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.limits?.projects || 5}
-                    </p>
-                    <p className="text-sm text-gray-600">projects</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">Workflows</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.limits?.workflows || 10}
-                    </p>
-                    <p className="text-sm text-gray-600">AI workflows</p>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">Logs</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {(profileData?.subscription?.limits?.logsPerMonth || 15000).toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-600">logs per month</p>
-                  </div>
-
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="mb-2 font-medium text-gray-900">Models</h4>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {profileData?.subscription?.plan === 'free' ? '3' : 'All'}
-                    </p>
-                    <p className="text-sm text-gray-600">AI models</p>
-                  </div>
-                </div>
-
-                {/* Free Plan Features */}
-                {profileData?.subscription?.plan === 'free' && (
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="mb-3 font-medium text-blue-900">Free Plan Features</h4>
-                    <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">1M tokens per month</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">10K API requests per month</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">15K logs per month</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">5 projects</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">10 AI workflows</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="mr-2 text-green-600">✓</span>
-                        <span className="text-blue-800">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Upgrade Plan</h4>
-                    <p className="text-sm text-gray-600">Get more features and higher limits</p>
-                  </div>
-                  <button className="px-4 py-2 text-white bg-green-600 rounded-md transition-colors hover:bg-green-700">
-                    Upgrade Now
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Usage Guardrails */}
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center mb-4">
-                <ChartBarIcon className="mr-3 w-6 h-6 text-blue-600" />
-                <h3 className="text-lg font-medium text-gray-900">Usage Guardrails</h3>
-              </div>
-
-              <div className="space-y-6">
-                <UsageOverview />
-                <UsageTrendChart days={30} chartType="area" />
-                <UsageAlerts />
-              </div>
-            </div>
-
-            {/* Notification Settings */}
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center mb-4">
-                <svg className="mr-3 w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-lg font-medium text-gray-900">Notification Settings</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Email Notifications</h4>
-                    <p className="text-sm text-gray-600">Receive updates about your usage and optimizations</p>
-                  </div>
-                  <label className="inline-flex relative items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Cost Alerts</h4>
-                    <p className="text-sm text-gray-600">Get notified when you reach cost thresholds</p>
-                  </div>
-                  <label className="inline-flex relative items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Weekly Reports</h4>
-                    <p className="text-sm text-gray-600">Receive weekly summaries of your usage and savings</p>
-                  </div>
-                  <label className="inline-flex relative items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

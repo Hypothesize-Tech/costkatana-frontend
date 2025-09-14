@@ -21,7 +21,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
             name: 'Markdown',
             description: 'Add explanations, headers, and documentation',
             example: '# Cost Analysis\n\nThis section analyzes our AI spending patterns...',
-            color: 'bg-gray-100 text-gray-700'
+            color: 'bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300'
         },
         {
             type: 'query',
@@ -29,7 +29,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
             name: 'Query',
             description: 'Ask questions in natural language',
             example: 'Show me expensive AI operations from the last 24 hours',
-            color: 'bg-blue-100 text-blue-700'
+            color: 'bg-gradient-primary/20 text-primary-700 dark:text-primary-300'
         },
         {
             type: 'visualization',
@@ -37,7 +37,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
             name: 'Visualization',
             description: 'Create charts and graphs from your data',
             example: 'cost_timeline, model_comparison, usage_heatmap',
-            color: 'bg-green-100 text-green-700'
+            color: 'bg-gradient-success/20 text-success-700 dark:text-success-300'
         },
         {
             type: 'insight',
@@ -45,7 +45,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
             name: 'AI Insight',
             description: 'Get AI-powered analysis and recommendations',
             example: 'analyze_cost_spike, analyze_model_efficiency',
-            color: 'bg-purple-100 text-purple-700'
+            color: 'bg-gradient-accent/20 text-accent-700 dark:text-accent-300'
         }
     ];
 
@@ -116,15 +116,17 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
     ];
 
     return (
-        <div className={`bg-white border border-gray-200 rounded-xl ${className}`}>
+        <div className={`card shadow-2xl backdrop-blur-xl border border-primary-200/30 ${className}`}>
             {/* Header */}
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 border-b border-primary-200/30">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <BookOpen className="w-6 h-6 text-blue-600" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                            <BookOpen className="w-6 h-6 text-white" />
+                        </div>
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-900">Notebook Guide</h2>
-                            <p className="text-gray-600 text-sm">
+                            <h2 className="text-2xl font-display font-bold gradient-text">Notebook Guide</h2>
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                 Learn how to create powerful cost analysis notebooks
                             </p>
                         </div>
@@ -132,15 +134,15 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                     {onClose && (
                         <button
                             onClick={onClose}
-                            className="text-gray-500 hover:text-gray-700 text-xl"
+                            className="w-10 h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
                         >
-                            ×
+                            <span className="text-xl">×</span>
                         </button>
                     )}
                 </div>
 
                 {/* Tabs */}
-                <div className="flex mt-4 border-b border-gray-200">
+                <div className="flex mt-6 border-b border-primary-200/30">
                     {[
                         { id: 'overview', name: 'Overview' },
                         { id: 'examples', name: 'Examples' },
@@ -149,9 +151,9 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
-                            className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === tab.id
-                                ? 'border-blue-500 text-blue-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                            className={`px-6 py-3 font-display font-semibold border-b-2 transition-all duration-300 ${activeTab === tab.id
+                                ? 'border-primary-500 gradient-text'
+                                : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary'
                                 }`}
                         >
                             {tab.name}
@@ -165,21 +167,35 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'overview' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">What are Analysis Notebooks?</h3>
-                            <p className="text-gray-700 mb-4">
+                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">What are Analysis Notebooks?</h3>
+                            <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-6 text-lg">
                                 Notebooks are interactive documents that combine queries, visualizations, and AI insights
                                 to help you investigate cost issues and discover optimization opportunities.
                             </p>
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div className="flex items-start gap-3">
-                                    <Sparkles className="w-5 h-5 text-blue-600 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-medium text-blue-900">Key Benefits</h4>
-                                        <ul className="text-sm text-blue-800 mt-2 space-y-1">
-                                            <li>• Ask questions in plain English - no complex queries needed</li>
-                                            <li>• Get AI-powered insights and recommendations automatically</li>
-                                            <li>• Create visual charts to spot patterns and trends</li>
-                                            <li>• Document your findings and share with your team</li>
+                            <div className="glass p-6 rounded-xl border border-primary-200/30">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                        <Sparkles className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-display font-bold gradient-text mb-3">Key Benefits</h4>
+                                        <ul className="font-body text-light-text-primary dark:text-dark-text-primary space-y-2">
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-primary-500 mt-1">•</span>
+                                                <span>Ask questions in plain English - no complex queries needed</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-primary-500 mt-1">•</span>
+                                                <span>Get AI-powered insights and recommendations automatically</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-primary-500 mt-1">•</span>
+                                                <span>Create visual charts to spot patterns and trends</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-primary-500 mt-1">•</span>
+                                                <span>Document your findings and share with your team</span>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -187,27 +203,27 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">How to Get Started</h3>
-                            <div className="space-y-3">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">Choose a Template</h4>
-                                        <p className="text-gray-600 text-sm">Start with a pre-built template for common scenarios like cost spikes or performance analysis</p>
+                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">How to Get Started</h3>
+                            <div className="space-y-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">1</div>
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Choose a Template</h4>
+                                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Start with a pre-built template for common scenarios like cost spikes or performance analysis</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">Run the Analysis</h4>
-                                        <p className="text-gray-600 text-sm">Click "Run All" to execute all cells and see your data come to life</p>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">2</div>
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Run the Analysis</h4>
+                                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Click "Run All" to execute all cells and see your data come to life</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">Customize & Explore</h4>
-                                        <p className="text-gray-600 text-sm">Modify queries, add new cells, and dive deeper into your findings</p>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">3</div>
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Customize & Explore</h4>
+                                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Modify queries, add new cells, and dive deeper into your findings</p>
                                     </div>
                                 </div>
                             </div>
@@ -218,48 +234,55 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'examples' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Common Use Cases</h3>
-                            <p className="text-gray-600 mb-4">
+                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">Common Use Cases</h3>
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6 text-lg">
                                 Here are some real-world scenarios where notebooks can help you solve problems:
                             </p>
                         </div>
 
                         {examples.map((example, index) => (
-                            <div key={index} className="border border-gray-200 rounded-lg p-4">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h4 className="font-medium text-gray-900">{example.title}</h4>
-                                        <p className="text-gray-600 text-sm mt-1">{example.description}</p>
+                            <div key={index} className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <h4 className="text-lg font-display font-bold gradient-text mb-2">{example.title}</h4>
+                                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">{example.description}</p>
                                     </div>
                                     <button
                                         onClick={() => onCreateExample?.(example.templateId)}
-                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                                        className="btn-primary flex items-center gap-2 ml-4"
                                     >
                                         <Play className="w-3 h-3" />
                                         Try It
                                     </button>
                                 </div>
-                                <div className="space-y-2">
-                                    <div className="text-sm font-medium text-gray-700">Typical workflow:</div>
+                                <div className="space-y-3">
+                                    <div className="font-display font-semibold gradient-text">Typical workflow:</div>
                                     {example.steps.map((step, stepIndex) => (
-                                        <div key={stepIndex} className="flex items-start gap-2 text-sm text-gray-600">
-                                            <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                                            <span>{step}</span>
+                                        <div key={stepIndex} className="flex items-start gap-3">
+                                            <div className="w-5 h-5 rounded-full bg-gradient-primary/20 flex items-center justify-center mt-0.5">
+                                                <ChevronRight className="w-3 h-3 text-primary-600" />
+                                            </div>
+                                            <span className="font-body text-light-text-primary dark:text-dark-text-primary flex-1">{step}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         ))}
 
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <h4 className="font-medium text-green-900 mb-2">Sample Query Ideas</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="glass p-6 rounded-xl border border-success-200/30">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                                    <span className="text-white text-sm">💡</span>
+                                </div>
+                                <h4 className="text-lg font-display font-bold gradient-text-success">Sample Query Ideas</h4>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {queryExamples.map((category, index) => (
                                     <div key={index}>
-                                        <h5 className="font-medium text-green-800 text-sm mb-2">{category.category}</h5>
-                                        <ul className="space-y-1">
+                                        <h5 className="font-display font-semibold gradient-text mb-3">{category.category}</h5>
+                                        <ul className="space-y-2">
                                             {category.queries.map((query, qIndex) => (
-                                                <li key={qIndex} className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded">
+                                                <li key={qIndex} className="glass p-3 rounded-lg border border-success-200/30 font-body text-sm text-light-text-primary dark:text-dark-text-primary">
                                                     "{query}"
                                                 </li>
                                             ))}
@@ -274,29 +297,29 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'cells' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Cell Types Explained</h3>
-                            <p className="text-gray-600 mb-4">
+                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">Cell Types Explained</h3>
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6 text-lg">
                                 Notebooks are made up of different types of cells. Each cell type serves a specific purpose:
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {cellTypes.map((cellType) => {
                                 const Icon = cellType.icon;
                                 return (
-                                    <div key={cellType.type} className="border border-gray-200 rounded-lg p-4">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className={`p-2 rounded-lg ${cellType.color}`}>
-                                                <Icon className="w-5 h-5" />
+                                    <div key={cellType.type} className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${cellType.color}`}>
+                                                <Icon className="w-6 h-6" />
                                             </div>
-                                            <div>
-                                                <h4 className="font-medium text-gray-900">{cellType.name}</h4>
-                                                <p className="text-gray-600 text-sm">{cellType.description}</p>
+                                            <div className="flex-1">
+                                                <h4 className="text-lg font-display font-bold gradient-text mb-1">{cellType.name}</h4>
+                                                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">{cellType.description}</p>
                                             </div>
                                         </div>
-                                        <div className="bg-gray-50 rounded p-3">
-                                            <div className="text-xs text-gray-500 mb-1">Example:</div>
-                                            <code className="text-xs text-gray-800 font-mono">
+                                        <div className="glass p-4 rounded-lg border border-primary-200/30">
+                                            <div className="font-display font-semibold gradient-text text-sm mb-2">Example:</div>
+                                            <code className="font-mono text-sm gradient-text block">
                                                 {cellType.example}
                                             </code>
                                         </div>
@@ -305,14 +328,34 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             })}
                         </div>
 
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                            <h4 className="font-medium text-purple-900 mb-2">Pro Tips</h4>
-                            <ul className="text-sm text-purple-800 space-y-1">
-                                <li>• Start with markdown cells to document your investigation goals</li>
-                                <li>• Use query cells to ask specific questions about your data</li>
-                                <li>• Add visualization cells after queries to see patterns visually</li>
-                                <li>• Use insight cells to get AI recommendations based on your data</li>
-                                <li>• End with markdown cells to summarize your findings and next steps</li>
+                        <div className="glass p-6 rounded-xl border border-accent-200/30">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                                    <span className="text-white text-sm">🏆</span>
+                                </div>
+                                <h4 className="text-lg font-display font-bold gradient-text-accent">Pro Tips</h4>
+                            </div>
+                            <ul className="font-body text-light-text-primary dark:text-dark-text-primary space-y-3">
+                                <li className="flex items-start gap-2">
+                                    <span className="text-accent-500 mt-1">•</span>
+                                    <span>Start with markdown cells to document your investigation goals</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-accent-500 mt-1">•</span>
+                                    <span>Use query cells to ask specific questions about your data</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-accent-500 mt-1">•</span>
+                                    <span>Add visualization cells after queries to see patterns visually</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-accent-500 mt-1">•</span>
+                                    <span>Use insight cells to get AI recommendations based on your data</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-accent-500 mt-1">•</span>
+                                    <span>End with markdown cells to summarize your findings and next steps</span>
+                                </li>
                             </ul>
                         </div>
                     </div>

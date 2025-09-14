@@ -32,14 +32,21 @@ export const CostAnalytics: React.FC = () => {
     });
 
     if (isLoading) return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200 animate-pulse">
-            <div className="h-64 bg-gray-100 rounded-xl" />
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl animate-pulse">
+            <div className="h-64 bg-gradient-primary/20 rounded-xl" />
         </div>
     );
 
     if (error) return (
-        <div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">
-            Error loading cost analytics
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                    <span className="text-white text-sm">⚠️</span>
+                </div>
+                <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                    Error loading cost analytics
+                </span>
+            </div>
         </div>
     );
 
@@ -60,15 +67,20 @@ export const CostAnalytics: React.FC = () => {
     }));
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200">
-            <div className="flex justify-between items-center mb-5">
-                <h2 className="text-lg font-semibold text-gray-900">AI Cost Analytics</h2>
-                <div className="inline-flex rounded-lg bg-gray-100 p-1">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                        <span className="text-white text-lg">💰</span>
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text">AI Cost Analytics</h2>
+                </div>
+                <div className="glass rounded-lg border border-primary-200/30 p-1">
                     {timeframes.map((frame) => (
                         <button
                             key={frame}
                             onClick={() => setTimeframe(frame)}
-                            className={`px-3 py-1.5 text-sm rounded-md transition ${timeframe === frame ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/10'}`}
                         >
                             {frame}
                         </button>
@@ -77,7 +89,14 @@ export const CostAnalytics: React.FC = () => {
             </div>
 
             {chartData.length === 0 ? (
-                <div className="text-center text-gray-500 py-12">No cost data available for the selected timeframe</div>
+                <div className="glass rounded-xl p-8 border border-accent-200/30 text-center">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl">📊</span>
+                    </div>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        No cost data available for the selected timeframe
+                    </p>
+                </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Donut Chart */}
@@ -108,30 +127,38 @@ export const CostAnalytics: React.FC = () => {
                             </ResponsiveContainer>
                         </div>
                         {/* Custom legend below the chart */}
-                        <div className="mt-4 flex flex-wrap gap-3">
-                            {chartData.map((m, index) => (
-                                <div key={`${m.display_name}-${index}`} className="flex items-center text-xs text-gray-700 max-w-[180px]">
-                                    <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                    <span className="truncate" title={m.model_name}>{m.display_name}</span>
-                                </div>
-                            ))}
+                        <div className="mt-6">
+                            <h4 className="font-display font-semibold gradient-text mb-4">Models</h4>
+                            <div className="flex flex-wrap gap-3">
+                                {chartData.map((m, index) => (
+                                    <div key={`${m.display_name}-${index}`} className="glass rounded-lg p-2 border border-primary-200/30 flex items-center max-w-[180px]">
+                                        <span className="inline-block w-4 h-4 rounded-full mr-2 shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                        <span className="font-body text-light-text-primary dark:text-dark-text-primary text-sm truncate" title={m.model_name}>{m.display_name}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
                     {/* Cost Breakdown Table */}
-                    <div>
-                        <div className="flex items-baseline justify-between mb-3">
-                            <h3 className="text-base font-semibold">Total Cost</h3>
-                            <span className="text-2xl font-bold">${(totalCost || 0).toFixed(2)}</span>
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                                    <span className="text-white text-sm">💵</span>
+                                </div>
+                                <h3 className="font-display font-semibold gradient-text-success">Total Cost</h3>
+                            </div>
+                            <span className="text-3xl font-display font-bold gradient-text-success">${(totalCost || 0).toFixed(2)}</span>
                         </div>
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                            <table className="w-full">
                                 <thead>
-                                    <tr className="text-left text-gray-600 border-b">
-                                        <th className="px-3 py-2">Model</th>
-                                        <th className="px-3 py-2">Cost ($)</th>
-                                        <th className="px-3 py-2">Requests</th>
-                                        <th className="px-3 py-2">% of Total</th>
+                                    <tr className="border-b border-primary-200/30">
+                                        <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Model</th>
+                                        <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Cost ($)</th>
+                                        <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Requests</th>
+                                        <th className="px-4 py-3 text-left font-display font-semibold gradient-text">% of Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -139,16 +166,16 @@ export const CostAnalytics: React.FC = () => {
                                         const key = `${model.model_name}-${index}`;
                                         const pct = totalCost > 0 ? ((model.total_cost_usd || 0) / totalCost * 100).toFixed(1) : '0.0';
                                         return (
-                                            <tr key={key} className="border-b hover:bg-gray-50">
-                                                <td className="px-3 py-2">
-                                                    <div className="flex items-center">
-                                                        <span className="inline-block w-3 h-3 mr-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                        <span className="truncate max-w-[220px]" title={model.model_name}>{formatModelLabel(model.model_name)}</span>
+                                            <tr key={key} className="border-b border-primary-200/20 hover:bg-gradient-primary/5 transition-all duration-200">
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="inline-block w-4 h-4 rounded-full shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                                        <span className="font-body text-light-text-primary dark:text-dark-text-primary truncate max-w-[220px]" title={model.model_name}>{formatModelLabel(model.model_name)}</span>
                                                     </div>
                                                 </td>
-                                                <td className="px-3 py-2">${(model.total_cost_usd || 0).toFixed(2)}</td>
-                                                <td className="px-3 py-2">{model.request_count || 0}</td>
-                                                <td className="px-3 py-2">{pct}%</td>
+                                                <td className="px-4 py-3 font-display font-semibold gradient-text-success">${(model.total_cost_usd || 0).toFixed(2)}</td>
+                                                <td className="px-4 py-3 font-body text-light-text-primary dark:text-dark-text-primary">{model.request_count || 0}</td>
+                                                <td className="px-4 py-3 font-display font-semibold gradient-text-accent">{pct}%</td>
                                             </tr>
                                         );
                                     })}

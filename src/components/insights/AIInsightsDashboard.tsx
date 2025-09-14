@@ -23,7 +23,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
   const loadInsights = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const data = await NotebookService.getAIInsights(selectedTimeframe);
       setInsights(data);
@@ -36,11 +36,11 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-700 bg-red-100 border-red-200';
-      case 'high': return 'text-orange-700 bg-orange-100 border-orange-200';
-      case 'medium': return 'text-yellow-700 bg-yellow-100 border-yellow-200';
-      case 'low': return 'text-blue-700 bg-blue-100 border-blue-200';
-      default: return 'text-gray-700 bg-gray-100 border-gray-200';
+      case 'critical': return 'gradient-text-danger bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30';
+      case 'high': return 'gradient-text-warning bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30';
+      case 'medium': return 'gradient-text-accent bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30';
+      case 'low': return 'gradient-text bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30';
+      default: return 'text-light-text-primary dark:text-dark-text-primary bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30';
     }
   };
 
@@ -56,19 +56,19 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'text-green-700 bg-green-100';
-      case 'medium': return 'text-yellow-700 bg-yellow-100';
-      case 'low': return 'text-gray-700 bg-gray-100';
-      default: return 'text-gray-700 bg-gray-100';
+      case 'high': return 'gradient-text-success bg-gradient-success/10 border border-success-200/30';
+      case 'medium': return 'gradient-text-warning bg-gradient-warning/10 border border-warning-200/30';
+      case 'low': return 'text-light-text-secondary dark:text-dark-text-secondary bg-gradient-secondary/10 border border-secondary-200/30';
+      default: return 'text-light-text-secondary dark:text-dark-text-secondary bg-gradient-secondary/10 border border-secondary-200/30';
     }
   };
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'low': return 'text-green-700 bg-green-100';
-      case 'medium': return 'text-yellow-700 bg-yellow-100';
-      case 'high': return 'text-red-700 bg-red-100';
-      default: return 'text-gray-700 bg-gray-100';
+      case 'low': return 'gradient-text-success bg-gradient-success/10 border border-success-200/30';
+      case 'medium': return 'gradient-text-warning bg-gradient-warning/10 border border-warning-200/30';
+      case 'high': return 'gradient-text-danger bg-gradient-danger/10 border border-danger-200/30';
+      default: return 'text-light-text-secondary dark:text-dark-text-secondary bg-gradient-secondary/10 border border-secondary-200/30';
     }
   };
 
@@ -82,33 +82,40 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
   };
 
   const getHealthScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-700 bg-green-100';
-    if (score >= 60) return 'text-yellow-700 bg-yellow-100';
-    if (score >= 40) return 'text-orange-700 bg-orange-100';
-    return 'text-red-700 bg-red-100';
+    if (score >= 80) return 'gradient-text-success bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30';
+    if (score >= 60) return 'gradient-text-warning bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30';
+    if (score >= 40) return 'gradient-text-accent bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30';
+    return 'gradient-text-danger bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30';
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Generating AI insights...</div>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="spinner-lg text-primary-500 mb-4"></div>
+            <div className="text-lg font-display font-semibold gradient-text">🧠 Generating AI insights...</div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
-        <div className="flex items-center gap-2 text-red-700">
-          <AlertCircle className="w-5 h-5" />
-          <span className="font-medium">Error Loading Insights</span>
+      <div className="card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
+            <AlertCircle className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-xl font-display font-bold gradient-text-danger">Error Loading Insights</span>
         </div>
-        <p className="text-red-600 mt-1">{error}</p>
+        <p className="font-body text-danger-700 dark:text-danger-300 mb-6">{error}</p>
         <button
           onClick={loadInsights}
-          className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          className="btn-danger px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
         >
-          Retry
+          🔄 Retry
         </button>
       </div>
     );
@@ -116,92 +123,108 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   if (!insights) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">No insights available</div>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center justify-center h-64 text-center">
+          <div>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-lg font-display font-bold gradient-text mb-2">No Insights Available</div>
+            <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Start using AI services to generate insights</div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-8 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Brain className="w-6 h-6 text-purple-600" />
-          <h2 className="text-2xl font-bold text-gray-900">AI-Powered Insights</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <select
-            value={selectedTimeframe}
-            onChange={(e) => setSelectedTimeframe(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="1h">Last Hour</option>
-            <option value="24h">Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-            <option value="30d">Last 30 Days</option>
-          </select>
-          <button
-            onClick={loadInsights}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Refresh
-          </button>
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
+              <Brain className="w-6 h-6 text-white" />
+            </div>
+            <h2 className="text-3xl font-display font-bold gradient-text">🧠 AI-Powered Insights</h2>
+          </div>
+          <div className="flex items-center gap-3">
+            <select
+              value={selectedTimeframe}
+              onChange={(e) => setSelectedTimeframe(e.target.value)}
+              className="input px-4 py-2 font-display font-semibold"
+            >
+              <option value="1h">⏰ Last Hour</option>
+              <option value="24h">📅 Last 24 Hours</option>
+              <option value="7d">📊 Last 7 Days</option>
+              <option value="30d">📈 Last 30 Days</option>
+            </select>
+            <button
+              onClick={loadInsights}
+              className="btn-primary px-6 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
+            >
+              🔄 Refresh
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Health Score & Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-lg border ${getHealthScoreColor(insights.overall_health_score)}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold">{insights.overall_health_score}</div>
-              <div className="text-sm font-medium">Health Score</div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className={`card card-hover p-6 border ${getHealthScoreColor(insights.overall_health_score)} text-center`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <Target className="w-5 h-5 text-white" />
             </div>
-            <Target className="w-8 h-8 opacity-60" />
+            <div className="text-3xl font-display font-bold">{insights.overall_health_score}</div>
           </div>
+          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🎯 Health Score</div>
         </div>
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold text-red-700">{insights.anomalies.length}</div>
-              <div className="text-sm font-medium text-red-600">Anomalies</div>
+        <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30 text-center">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
+              <AlertTriangle className="w-5 h-5 text-white" />
             </div>
-            <AlertTriangle className="w-8 h-8 text-red-400" />
+            <div className="text-3xl font-display font-bold gradient-text-danger">{insights.anomalies.length}</div>
           </div>
+          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚠️ Anomalies</div>
         </div>
-        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold text-green-700">{insights.optimizations.length}</div>
-              <div className="text-sm font-medium text-green-600">Optimizations</div>
+        <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <Zap className="w-8 h-8 text-green-400" />
+            <div className="text-3xl font-display font-bold gradient-text-success">{insights.optimizations.length}</div>
           </div>
+          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚡ Optimizations</div>
         </div>
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold text-blue-700">{insights.forecasts.length}</div>
-              <div className="text-sm font-medium text-blue-600">Forecasts</div>
+        <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <TrendingUp className="w-8 h-8 text-blue-400" />
+            <div className="text-3xl font-display font-bold gradient-text">{insights.forecasts.length}</div>
           </div>
+          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📈 Forecasts</div>
         </div>
       </div>
 
       {/* Key Insights */}
       {insights.key_insights.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
-            Key Insights
-          </h3>
-          <div className="space-y-2">
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+              <Brain className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">💡 Key Insights</h3>
+          </div>
+          <div className="space-y-4">
             {insights.key_insights.map((insight, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <div className="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0" />
-                <p className="text-gray-700">{insight}</p>
+              <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-gradient-primary rounded-full mt-2 flex-shrink-0 shadow-lg"></div>
+                  <p className="font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{insight}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -210,18 +233,22 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Priority Actions */}
       {insights.priority_actions.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-yellow-900 mb-4 flex items-center gap-2">
-            <Target className="w-5 h-5 text-yellow-600" />
-            Priority Actions
-          </h3>
-          <div className="space-y-2">
+        <div className="card p-8 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg glow-warning">
+              <Target className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text-warning">🎯 Priority Actions</h3>
+          </div>
+          <div className="space-y-4">
             {insights.priority_actions.map((action, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <div className="w-6 h-6 bg-yellow-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                  {index + 1}
+              <div key={index} className="glass p-4 rounded-xl border border-warning-200/30 hover:bg-warning-500/5 transition-all duration-300">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-gradient-warning text-white rounded-xl flex items-center justify-center text-sm font-display font-bold flex-shrink-0 shadow-lg">
+                    {index + 1}
+                  </div>
+                  <p className="font-body text-warning-800 dark:text-warning-200 leading-relaxed">{action}</p>
                 </div>
-                <p className="text-yellow-800">{action}</p>
               </div>
             ))}
           </div>
@@ -230,42 +257,49 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Anomalies */}
       {insights.anomalies.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            Anomaly Detection
-          </h3>
-          <div className="space-y-4">
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg glow-danger">
+              <AlertTriangle className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">⚠️ Anomaly Detection</h3>
+          </div>
+          <div className="space-y-6">
             {insights.anomalies.map((anomaly) => {
               const SeverityIcon = getSeverityIcon(anomaly.severity);
               return (
-                <div key={anomaly.id} className={`p-4 border rounded-lg ${getSeverityColor(anomaly.severity)}`}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      <SeverityIcon className="w-5 h-5 mt-0.5" />
-                      <div>
-                        <div className="font-medium">{anomaly.description}</div>
-                        <div className="text-sm mt-1">
-                          Type: {anomaly.type.replace('_', ' ')} • 
-                          Detected: {new Date(anomaly.detected_at).toLocaleString()}
+                <div key={anomaly.id} className={`card card-hover p-6 border ${getSeverityColor(anomaly.severity)} transition-all duration-300 hover:scale-105`}>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                        <SeverityIcon className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-display font-bold text-lg text-light-text-primary dark:text-dark-text-primary mb-2">{anomaly.description}</div>
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                          📊 Type: {anomaly.type.replace('_', ' ')} •
+                          🕒 Detected: {new Date(anomaly.detected_at).toLocaleString()}
                         </div>
-                        <div className="text-sm mt-1">
-                          Current: {anomaly.metrics.current_value.toFixed(2)} • 
-                          Expected: {anomaly.metrics.expected_value.toFixed(2)} • 
-                          Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                          📈 Current: {anomaly.metrics.current_value.toFixed(2)} •
+                          🎯 Expected: {anomaly.metrics.expected_value.toFixed(2)} •
+                          📊 Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%
                         </div>
                       </div>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityColor(anomaly.severity)}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getSeverityColor(anomaly.severity)} shadow-lg`}>
                       {anomaly.severity}
                     </span>
                   </div>
                   {anomaly.recommendations.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-current border-opacity-20">
-                      <div className="text-sm font-medium mb-1">Recommendations:</div>
-                      <div className="space-y-1">
+                    <div className="glass p-4 rounded-xl border border-primary-200/30 mt-4">
+                      <div className="text-sm font-display font-bold gradient-text mb-3">💡 Recommendations:</div>
+                      <div className="space-y-2">
                         {anomaly.recommendations.slice(0, 2).map((rec, index) => (
-                          <div key={index} className="text-sm">• {rec}</div>
+                          <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                            <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
+                            <span>{rec}</span>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -279,42 +313,47 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Cost Optimizations */}
       {insights.optimizations.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-green-600" />
-            Cost Optimization Opportunities
-          </h3>
-          <div className="space-y-4">
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">⚡ Cost Optimization Opportunities</h3>
+          </div>
+          <div className="space-y-6">
             {insights.optimizations.map((optimization) => (
-              <div key={optimization.id} className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="font-medium text-gray-900">{optimization.title}</div>
-                    <div className="text-gray-600 text-sm mt-1">{optimization.description}</div>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-700">
-                          ${optimization.potential_savings.amount_usd.toFixed(2)} 
-                          ({optimization.potential_savings.percentage}%)
-                        </span>
+              <div key={optimization.id} className="card card-hover p-6 border border-primary-200/30 transition-all duration-300 hover:scale-105">
+                <div className="mb-4">
+                  <div className="font-display font-bold text-xl text-light-text-primary dark:text-dark-text-primary mb-2">{optimization.title}</div>
+                  <div className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{optimization.description}</div>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2 glass p-3 rounded-xl border border-success-200/30">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                        <DollarSign className="w-3 h-3 text-white" />
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getImpactColor(optimization.impact)}`}>
-                        {optimization.impact} impact
-                      </span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEffortColor(optimization.implementation_effort)}`}>
-                        {optimization.implementation_effort} effort
+                      <span className="text-sm font-display font-bold gradient-text-success">
+                        ${optimization.potential_savings.amount_usd.toFixed(2)}
+                        ({optimization.potential_savings.percentage}%)
                       </span>
                     </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getImpactColor(optimization.impact)} shadow-lg`}>
+                      {optimization.impact} impact
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getEffortColor(optimization.implementation_effort)} shadow-lg`}>
+                      {optimization.implementation_effort} effort
+                    </span>
                   </div>
                 </div>
                 {optimization.steps.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-200">
-                    <div className="text-sm font-medium text-gray-900 mb-2">Implementation Steps:</div>
-                    <div className="space-y-1">
+                  <div className="glass p-4 rounded-xl border border-primary-200/30 mt-4">
+                    <div className="text-sm font-display font-bold gradient-text mb-3">🛠️ Implementation Steps:</div>
+                    <div className="space-y-2">
                       {optimization.steps.slice(0, 3).map((step, index) => (
-                        <div key={index} className="text-sm text-gray-600">
-                          {index + 1}. {step}
+                        <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                          <div className="w-6 h-6 bg-gradient-primary text-white rounded-lg flex items-center justify-center text-xs font-display font-bold mr-3 mt-0.5 flex-shrink-0 shadow-lg">
+                            {index + 1}
+                          </div>
+                          <span>{step}</span>
                         </div>
                       ))}
                     </div>
@@ -328,26 +367,33 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Predictive Forecasts */}
       {insights.forecasts.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-blue-600" />
-            Predictive Forecasts
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">📈 Predictive Forecasts</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {insights.forecasts.map((forecast) => (
-              <div key={forecast.id} className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-medium text-gray-900 capitalize">
+              <div key={forecast.id} className="card card-hover p-6 border border-primary-200/30 transition-all duration-300 hover:scale-105">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="font-display font-bold text-lg gradient-text capitalize">
                     {forecast.forecast_type} Forecast
                   </div>
-                  <span className="text-2xl">{getTrendIcon(forecast.trends.direction)}</span>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
+                    <span className="text-xl">{getTrendIcon(forecast.trends.direction)}</span>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 mb-3">
-                  Trend: {forecast.trends.direction} • {forecast.timeframe}
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 glass p-3 rounded-xl border border-primary-200/30">
+                  📊 Trend: {forecast.trends.direction} • ⏰ {forecast.timeframe}
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {forecast.recommendations.slice(0, 2).map((rec, index) => (
-                    <div key={index} className="text-sm text-gray-700">• {rec}</div>
+                    <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                      <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
+                      <span>{rec}</span>
+                    </div>
                   ))}
                 </div>
               </div>

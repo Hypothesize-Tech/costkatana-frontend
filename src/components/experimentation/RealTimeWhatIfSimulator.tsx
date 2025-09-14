@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExperimentationService } from '../../services/experimentation.service';
 import { AWS_BEDROCK_PRICING } from '../../utils/pricing';
+import { BeakerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 interface OptimizationOption {
     type: string;
@@ -203,51 +204,65 @@ const RealTimeWhatIfSimulator: React.FC = () => {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="max-w-7xl mx-auto p-6 space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
+            {/* Ambient glow effects */}
+            <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 right-10 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent-500/10 rounded-full blur-3xl animate-pulse"></div>
+
             {/* Header */}
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">
+            <div className="text-center mb-12 relative z-10">
+                <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                    <BeakerIcon className="h-10 w-10 text-white" />
+                </div>
+                <h1 className="text-4xl font-display font-bold gradient-text mb-4">
                     🚀 Real-Time What-If Cost Simulator
                 </h1>
-                <p className="text-gray-600 max-w-3xl mx-auto">
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto text-lg leading-relaxed">
                     See instant cost optimizations for your prompts using AWS Bedrock models. Compare models, trim context, optimize structure - all in real-time with confidence scores.
                 </p>
-                <div className="text-sm text-blue-600 bg-blue-50 rounded-lg p-3 mt-4 max-w-2xl mx-auto">
-                    💡 <strong>Bedrock Focus:</strong> All models shown have verified pricing data and are available through AWS Bedrock
+                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 mt-6 max-w-3xl mx-auto backdrop-blur-xl">
+                    <div className="font-body text-primary-700 dark:text-primary-300">
+                        💡 <span className="font-display font-bold">Bedrock Focus:</span> All models shown have verified pricing data and are available through AWS Bedrock
+                    </div>
                 </div>
             </div>
 
             {/* Input Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="card p-8 shadow-2xl backdrop-blur-xl relative z-10 animate-fade-in">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Prompt Input */}
                     <div className="lg:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="label mb-3">
                             Your Prompt
                         </label>
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder="Paste your prompt here to see instant cost analysis and optimization suggestions..."
-                            className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            className="input h-40 resize-none"
                             rows={6}
                         />
-                        <div className="mt-2 text-sm text-gray-500">
-                            Length: {prompt.length} characters (~{Math.ceil(prompt.length / 4)} tokens)
+                        <div className="mt-3 glass p-3 rounded-xl border border-primary-200/30">
+                            <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <span className="font-display font-semibold">Length:</span> {prompt.length} characters
+                                <span className="mx-2">•</span>
+                                <span className="font-display font-semibold gradient-text">~{Math.ceil(prompt.length / 4)}</span> tokens
+                            </div>
                         </div>
                     </div>
 
                     {/* Controls */}
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {/* Model Selection */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="label mb-3">
                                 Current Model
                             </label>
                             <select
                                 value={currentModel}
                                 onChange={(e) => setCurrentModel(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+                                className="input text-sm"
                             >
                                 {availableModels.map(model => {
                                     const displayInfo = getModelDisplayInfo(model);
@@ -258,41 +273,56 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                     );
                                 })}
                             </select>
-                            <div className="mt-1 text-xs text-gray-500">
-                                {(() => {
-                                    const displayInfo = getModelDisplayInfo(currentModel);
-                                    return `${displayInfo.name} • Input→Output tokens pricing`;
-                                })()}
+                            <div className="mt-2 glass p-2 rounded-lg border border-primary-200/30">
+                                <div className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                                    {(() => {
+                                        const displayInfo = getModelDisplayInfo(currentModel);
+                                        return (
+                                            <>
+                                                <span className="font-display font-semibold text-primary-600">{displayInfo.name}</span>
+                                                <span className="mx-2">•</span>
+                                                Input→Output tokens pricing
+                                            </>
+                                        );
+                                    })()}
+                                </div>
                             </div>
                         </div>
 
                         {/* Simulation Type */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="label mb-3">
                                 Analysis Type
                             </label>
                             <select
                                 value={simulationType}
                                 onChange={(e) => setSimulationType(e.target.value as 'real_time_analysis' | 'prompt_optimization' | 'context_trimming' | 'model_comparison')}
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="input"
                             >
                                 {simulationTypes.map(type => (
                                     <option key={type.value} value={type.value}>{type.label}</option>
                                 ))}
                             </select>
-                            <div className="mt-1 text-xs text-gray-500">
-                                {simulationTypes.find(t => t.value === simulationType)?.description}
+                            <div className="mt-2 glass p-2 rounded-lg border border-accent-200/30 bg-accent-500/5">
+                                <div className="text-xs font-body text-accent-700 dark:text-accent-300">
+                                    {simulationTypes.find(t => t.value === simulationType)?.description}
+                                </div>
                             </div>
                         </div>
 
                         {/* Advanced Parameters */}
-                        <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                            <h4 className="text-sm font-medium text-gray-900">🎛️ Advanced Parameters</h4>
+                        <div className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
+                            <h4 className="text-sm font-display font-bold gradient-text flex items-center">
+                                <div className="bg-gradient-primary p-2 rounded-lg glow-primary shadow-lg mr-3">
+                                    <span className="text-white text-lg">🎛️</span>
+                                </div>
+                                Advanced Parameters
+                            </h4>
 
                             {/* Temperature */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Temperature: {temperature}
+                                <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                                    Temperature: <span className="gradient-text">{temperature}</span>
                                 </label>
                                 <input
                                     type="range"
@@ -301,9 +331,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                     step="0.1"
                                     value={temperature}
                                     onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                                    className="w-full"
+                                    className="w-full h-2 bg-primary-200/30 rounded-lg appearance-none cursor-pointer slider"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                <div className="flex justify-between text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-2">
                                     <span>Conservative</span>
                                     <span>Creative</span>
                                 </div>
@@ -311,8 +341,8 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                             {/* Max Tokens */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Max Tokens: {maxTokens.toLocaleString()}
+                                <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                                    Max Tokens: <span className="gradient-text">{maxTokens.toLocaleString()}</span>
                                 </label>
                                 <input
                                     type="range"
@@ -321,9 +351,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                     step="100"
                                     value={maxTokens}
                                     onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-                                    className="w-full"
+                                    className="w-full h-2 bg-primary-200/30 rounded-lg appearance-none cursor-pointer slider"
                                 />
-                                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                <div className="flex justify-between text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-2">
                                     <span>100</span>
                                     <span>4,000</span>
                                 </div>
@@ -331,9 +361,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                             {/* Context Trim Percentage (only for context trimming) */}
                             {simulationType === 'context_trimming' && (
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Trim Percentage: {trimPercentage}%
+                                <div className="glass p-4 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                                    <label className="block text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-2">
+                                        Trim Percentage: <span className="gradient-text">{trimPercentage}%</span>
                                     </label>
                                     <input
                                         type="range"
@@ -342,9 +372,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                         step="5"
                                         value={trimPercentage}
                                         onChange={(e) => setTrimPercentage(parseInt(e.target.value))}
-                                        className="w-full"
+                                        className="w-full h-2 bg-accent-200/30 rounded-lg appearance-none cursor-pointer slider"
                                     />
-                                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                    <div className="flex justify-between text-xs font-body text-accent-600 dark:text-accent-400 mt-2">
                                         <span>10%</span>
                                         <span>80%</span>
                                     </div>
@@ -353,28 +383,30 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         </div>
 
                         {/* Auto-simulate toggle */}
-                        <div className="flex items-center">
-                            <input
-                                type="checkbox"
-                                id="auto-simulate"
-                                checked={autoSimulate}
-                                onChange={(e) => setAutoSimulate(e.target.checked)}
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                            />
-                            <label htmlFor="auto-simulate" className="ml-2 text-sm text-gray-700">
-                                Auto-simulate on changes
-                            </label>
+                        <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="auto-simulate"
+                                    checked={autoSimulate}
+                                    onChange={(e) => setAutoSimulate(e.target.checked)}
+                                    className="w-4 h-4 text-success-600 rounded border-success-300 focus:ring-success-500"
+                                />
+                                <label htmlFor="auto-simulate" className="ml-3 text-sm font-display font-semibold text-success-700 dark:text-success-300">
+                                    Auto-simulate on changes
+                                </label>
+                            </div>
                         </div>
 
                         {/* Simulate Button */}
                         <button
                             onClick={runSimulation}
                             disabled={isSimulating || !prompt.trim() || !currentModel}
-                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            className="btn-primary w-full py-4 font-display font-bold text-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-2xl glow-primary"
                         >
                             {isSimulating ? (
                                 <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    <div className="spinner mr-3"></div>
                                     Analyzing...
                                 </>
                             ) : (
@@ -385,8 +417,13 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 </div>
 
                 {error && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                        {error}
+                    <div className="mt-6 card p-4 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+                        <div className="flex items-center">
+                            <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
+                                <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+                            </div>
+                            <span className="font-body text-danger-700 dark:text-danger-300">{error}</span>
+                        </div>
                     </div>
                 )}
             </div>
@@ -396,7 +433,12 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 <div className="space-y-6">
                     {/* Current Cost Overview */}
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">📊 Current Cost Analysis</h3>
+                        <div className="flex items-center mb-6">
+                            <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
+                                <span className="text-white text-2xl">📊</span>
+                            </div>
+                            <h3 className="text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
+                        </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center p-3 bg-gray-50 rounded-lg">
                                 <div className="text-2xl font-bold text-gray-900">{formatCost(results.currentCost.totalCost)}</div>

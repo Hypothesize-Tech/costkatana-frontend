@@ -199,50 +199,54 @@ export const Moderation: React.FC = () => {
     const data = analytics?.data;
 
     return (
-        <div className="space-y-6 p-6">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Moderation Dashboard</h1>
-                    <p className="text-gray-600 mt-1">
-                        Monitor AI safety and content moderation across your system
-                    </p>
-                </div>
+        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+            <div className="max-w-7xl mx-auto space-y-6">
+                {/* Header */}
+                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-3xl font-display font-bold gradient-text-primary">Moderation Dashboard</h1>
+                            <p className="text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                Monitor AI safety and content moderation across your system
+                            </p>
+                        </div>
 
-                <div className="flex space-x-3">
-                    <select
-                        value={selectedTimeRange}
-                        onChange={(e) => setSelectedTimeRange(e.target.value as '24h' | '7d' | '30d')}
-                        className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                        <option value="24h">Last 24 Hours</option>
-                        <option value="7d">Last 7 Days</option>
-                        <option value="30d">Last 30 Days</option>
-                    </select>
+                        <div className="flex space-x-3">
+                            <select
+                                value={selectedTimeRange}
+                                onChange={(e) => setSelectedTimeRange(e.target.value as '24h' | '7d' | '30d')}
+                                className="input text-sm"
+                            >
+                                <option value="24h">Last 24 Hours</option>
+                                <option value="7d">Last 7 Days</option>
+                                <option value="30d">Last 30 Days</option>
+                            </select>
 
-                    <button
-                        onClick={handleRefresh}
-                        className="px-4 py-2 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600 flex items-center space-x-2"
-                    >
-                        <ArrowPathIcon className="w-4 h-4" />
-                        <span>Refresh</span>
-                    </button>
+                            <button
+                                onClick={handleRefresh}
+                                className="btn-primary px-4 py-2 text-sm rounded-xl flex items-center space-x-2"
+                            >
+                                <ArrowPathIcon className="w-4 h-4" />
+                                <span>Refresh</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-error-50/30 to-error-100/30 p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <ShieldExclamationIcon className="w-8 h-8 text-red-500" />
+                            <ShieldExclamationIcon className="w-8 h-8 text-error-600 dark:text-error-400" />
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-gray-500 truncate">
+                                <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary truncate">
                                     Total Threats Blocked
                                 </dt>
-                                <dd className="text-2xl font-bold text-gray-900">
+                                <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {data?.summary.totalThreats?.toLocaleString() || '0'}
                                 </dd>
                             </dl>
@@ -250,17 +254,17 @@ export const Moderation: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <ChartBarIcon className="w-8 h-8 text-blue-500" />
+                            <ChartBarIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-gray-500 truncate">
+                                <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary truncate">
                                     Overall Block Rate
                                 </dt>
-                                <dd className="text-2xl font-bold text-gray-900">
+                                <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {formatPercentage(data?.summary.overallBlockRate || 0)}
                                 </dd>
                             </dl>

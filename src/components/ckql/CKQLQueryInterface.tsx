@@ -133,11 +133,11 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
     };
 
     return (
-        <div className={`w-full max-w-4xl mx-auto ${className}`}>
+        <div className={`w-full max-w-4xl mx-auto animate-fade-in ${className}`}>
             {/* Query Input */}
-            <div className="relative mb-6">
+            <div className="relative mb-8">
                 <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary-500 w-5 h-5" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -146,13 +146,13 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                         onKeyDown={handleKeyDown}
                         onFocus={() => query.length > 2 && setShowSuggestions(suggestions.length > 0)}
                         placeholder="Ask anything about your costs and performance... (e.g., 'What are my most expensive AI operations today?')"
-                        className="w-full pl-12 pr-16 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                        className="input w-full pl-12 pr-16 py-4 text-lg rounded-2xl shadow-lg"
                         disabled={isLoading}
                     />
                     <button
                         onClick={() => executeQuery()}
                         disabled={isLoading || !query.trim()}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white p-2 rounded-lg transition-colors"
+                        className="btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-xl transition-all duration-300 hover:scale-105"
                     >
                         {isLoading ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
@@ -166,18 +166,18 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                 {showSuggestions && suggestions.length > 0 && (
                     <div
                         ref={suggestionsRef}
-                        className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto"
+                        className="absolute top-full left-0 right-0 mt-2 card shadow-2xl backdrop-blur-xl border border-primary-200/30 z-50 max-h-60 overflow-y-auto animate-scale-in"
                     >
                         {suggestions.map((suggestion, index) => (
                             <button
                                 key={index}
                                 onClick={() => selectSuggestion(suggestion)}
-                                className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${index === selectedSuggestionIndex ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                                className={`w-full text-left px-4 py-3 hover:bg-primary-500/5 transition-all duration-300 border-b border-primary-200/20 last:border-b-0 rounded-lg ${index === selectedSuggestionIndex ? 'bg-gradient-to-r from-primary-50/50 to-secondary-50/50 glow-primary' : 'text-light-text-primary dark:text-dark-text-primary'
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4 text-blue-500" />
-                                    <span>{suggestion}</span>
+                                    <Sparkles className="w-4 h-4 text-primary-500" />
+                                    <span className="font-medium">{suggestion}</span>
                                 </div>
                             </button>
                         ))}
@@ -187,32 +187,36 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
 
             {/* Error Display */}
             {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-red-700">
-                        <AlertCircle className="w-5 h-5" />
-                        <span className="font-medium">Query Error</span>
+                <div className="mb-8 p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                            <AlertCircle className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <span className="font-display font-bold text-danger-800 dark:text-danger-200">Query Error</span>
+                            <p className="text-sm font-medium text-danger-700 dark:text-danger-300 mt-1">{error}</p>
+                        </div>
                     </div>
-                    <p className="text-red-600 mt-1">{error}</p>
                 </div>
             )}
 
             {/* Results Display */}
             {results && (
-                <div className="mb-6 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Query Results</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                {results.execution_time_ms}ms
+                <div className="mb-8 card card-gradient p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-display font-bold gradient-text">Query Results</h3>
+                        <div className="flex items-center gap-4 text-sm">
+                            <span className="flex items-center gap-1 glass px-3 py-1 rounded-xl">
+                                <Clock className="w-4 h-4 text-primary-500" />
+                                <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.execution_time_ms}ms</span>
                             </span>
-                            <span>{results.total_count} results</span>
+                            <span className="glass px-3 py-1 rounded-xl font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.total_count} results</span>
                         </div>
                     </div>
 
                     {/* Query Explanation */}
-                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-blue-800">{results.explanation}</p>
+                    <div className="mb-6 p-4 glass border border-primary-200/30 rounded-2xl">
+                        <p className="font-medium text-light-text-primary dark:text-dark-text-primary">{results.explanation}</p>
                     </div>
 
                     {/* Insights */}
@@ -255,8 +259,8 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                                                     <span>{result.duration_ms}ms</span>
                                                 )}
                                                 <span className={`px-2 py-1 rounded-full text-xs ${result.status === 'success' ? 'bg-green-100 text-green-700' :
-                                                        result.status === 'error' ? 'bg-red-100 text-red-700' :
-                                                            'bg-gray-100 text-gray-700'
+                                                    result.status === 'error' ? 'bg-red-100 text-red-700' :
+                                                        'bg-gray-100 text-gray-700'
                                                     }`}>
                                                     {result.status}
                                                 </span>

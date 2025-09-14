@@ -42,10 +42,10 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-8 animate-fade-in" onSubmit={handleSubmit(onSubmit)}>
       {errors.root && (
-        <div className="rounded-md bg-danger-50 dark:bg-danger-900/50 p-4">
-          <p className="text-sm text-danger-800 dark:text-danger-200">
+        <div className="p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+          <p className="text-sm font-medium text-danger-800 dark:text-danger-200">
             {errors.root.message}
           </p>
         </div>
@@ -105,13 +105,13 @@ export const RegisterForm = () => {
           />
           <button
             type="button"
-            className="absolute inset-y-0 right-0 flex items-center pr-3"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 transition-colors duration-300"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? (
-              <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+              <EyeSlashIcon className="h-5 w-5" />
             ) : (
-              <EyeIcon className="h-5 w-5 text-gray-400" />
+              <EyeIcon className="h-5 w-5" />
             )}
           </button>
           {errors.password && (
@@ -120,7 +120,7 @@ export const RegisterForm = () => {
             </p>
           )}
         </div>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
           Must be at least 8 characters with uppercase, lowercase, and numbers
         </p>
       </div>
@@ -142,13 +142,13 @@ export const RegisterForm = () => {
           />
           <button
             type="button"
-            className="absolute inset-y-0 right-0 flex items-center pr-3"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 transition-colors duration-300"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
             {showConfirmPassword ? (
-              <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+              <EyeSlashIcon className="h-5 w-5" />
             ) : (
-              <EyeIcon className="h-5 w-5 text-gray-400" />
+              <EyeIcon className="h-5 w-5" />
             )}
           </button>
           {errors.confirmPassword && (
@@ -165,23 +165,23 @@ export const RegisterForm = () => {
           name="terms"
           type="checkbox"
           required
-          className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+          className="h-4 w-4 rounded border-primary-300 text-primary-600 focus:ring-primary-500 focus:ring-opacity-50 mt-1"
         />
         <label
           htmlFor="terms"
-          className="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-300"
+          className="ml-3 block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary"
         >
           I agree to the{" "}
           <a
             href="/terms"
-            className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400"
+            className="font-display font-semibold gradient-text hover:text-primary-400 transition-colors duration-300"
           >
             Terms and Conditions
           </a>{" "}
           and{" "}
           <a
             href="/privacy"
-            className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400"
+            className="font-display font-semibold gradient-text hover:text-primary-400 transition-colors duration-300"
           >
             Privacy Policy
           </a>
@@ -198,11 +198,11 @@ export const RegisterForm = () => {
         </button>
       </div>
 
-      <p className="text-center text-sm leading-6 text-gray-500 dark:text-gray-400">
+      <p className="text-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
         Already have an account?{" "}
         <Link
           to="/login"
-          className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+          className="font-display font-semibold gradient-text hover:text-primary-400 transition-colors duration-300"
         >
           Sign in
         </Link>

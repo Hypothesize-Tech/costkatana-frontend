@@ -4,7 +4,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <footer className="glass border-t border-primary-200/30 backdrop-blur-xl light:bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center space-x-6 md:order-2">
@@ -12,7 +12,7 @@ export const Footer = () => {
               href="https://github.com/Hypothesize-Tech/ai-cost-optimizer-core"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+              className="text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110"
             >
               <span className="sr-only">GitHub</span>
               <svg
@@ -30,21 +30,21 @@ export const Footer = () => {
             </a>
             <a
               href="/docs"
-              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+              className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-105"
             >
               Documentation
             </a>
             <a
               href="/api"
-              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+              className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-105"
             >
               API
             </a>
           </div>
           <div className="mt-8 md:order-1 md:mt-0">
-            <p className="text-center text-sm text-gray-400">
-              &copy; {currentYear} {APP_NAME}. All rights reserved. v
-              {APP_VERSION}
+            <p className="text-center text-sm font-body text-light-text-muted dark:text-dark-text-muted">
+              &copy; {currentYear} <span className="font-display font-semibold gradient-text">{APP_NAME}</span>. All rights reserved. v
+              <span className="font-mono text-primary-500">{APP_VERSION}</span>
             </p>
           </div>
         </div>

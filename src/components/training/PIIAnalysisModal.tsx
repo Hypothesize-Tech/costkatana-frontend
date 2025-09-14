@@ -88,31 +88,33 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-danger-200/30 backdrop-blur-xl">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b">
-                    <div className="flex items-center space-x-3">
-                        <ShieldExclamationIcon className="h-6 w-6 text-red-500" />
-                        <h2 className="text-xl font-semibold text-gray-900">
+                <div className="glass flex items-center justify-between p-8 border-b border-danger-200/30 backdrop-blur-xl rounded-t-3xl">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center glow-danger">
+                            <ShieldExclamationIcon className="h-6 w-6 text-white" />
+                        </div>
+                        <h2 className="text-2xl font-display font-bold gradient-text-danger">
                             PII Analysis - {dataset?.name}
                         </h2>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="btn-icon-secondary"
                     >
                         <XMarkIcon className="h-6 w-6" />
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
                     {loading ? (
                         <div className="text-center py-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                            <p className="mt-4 text-gray-600">Analyzing dataset for PII...</p>
-                            <p className="text-sm text-gray-500">This may take a moment for large datasets</p>
+                            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-500 border-t-transparent mx-auto"></div>
+                            <p className="mt-4 font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing dataset for PII...</p>
+                            <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">This may take a moment for large datasets</p>
                         </div>
                     ) : analysisResult ? (
                         <div className="space-y-6">
@@ -166,9 +168,9 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
 
                             {/* Sanitization Actions */}
                             {analysisResult.totalWithPII > 0 && (
-                                <div className="bg-white border border-gray-200 rounded-lg p-6">
-                                    <h4 className="font-medium text-gray-900 mb-4">Sanitization Options</h4>
-                                    <p className="text-gray-600 mb-4">
+                                <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl">
+                                    <h4 className="font-display font-bold gradient-text-warning mb-4">Sanitization Options</h4>
+                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
                                         Choose how to handle the detected PII in your dataset:
                                     </p>
 
@@ -184,7 +186,7 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
                                             <button
                                                 onClick={() => handleSanitize('mask')}
                                                 disabled={sanitizing}
-                                                className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                                                className="btn-primary w-full text-sm disabled:opacity-50"
                                             >
                                                 {sanitizing ? 'Processing...' : 'Mask PII'}
                                             </button>
@@ -201,7 +203,7 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
                                             <button
                                                 onClick={() => handleSanitize('remove')}
                                                 disabled={sanitizing}
-                                                className="w-full px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50"
+                                                className="btn-danger w-full text-sm disabled:opacity-50"
                                             >
                                                 {sanitizing ? 'Processing...' : 'Remove Items'}
                                             </button>

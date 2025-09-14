@@ -179,13 +179,13 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
     return (
         <form onSubmit={handleSubmit} className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-display font-bold gradient-text-primary">
                     {webhook ? 'Edit Webhook' : 'Create Webhook'}
                 </h2>
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-error-600 dark:hover:text-error-400 transition-colors duration-300"
                 >
                     <X className="w-6 h-6" />
                 </button>
@@ -194,39 +194,39 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             {/* Basic Information */}
             <div className="space-y-4 mb-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         Name *
                     </label>
                     <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         Description
                     </label>
                     <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300 resize-none"
                         rows={2}
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         URL *
                     </label>
                     <input
                         type="url"
                         value={formData.url}
                         onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300"
                         placeholder="https://example.com/webhook"
                         required
                     />
@@ -247,10 +247,10 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
 
             {/* Events Selection */}
             <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                     Events *
                 </label>
-                <div className="border border-gray-300 rounded-lg p-4 max-h-64 overflow-y-auto">
+                <div className="glass rounded-xl border border-accent-200/30 bg-light-bg-100/50 dark:bg-dark-bg-100/50 p-4 max-h-64 overflow-y-auto">
                     {eventCategories.map(category => (
                         <div key={category} className="mb-4">
                             <div className="flex items-center justify-between mb-2">
@@ -686,13 +686,13 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    className="btn-secondary"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="btn-primary"
                 >
                     {webhook ? 'Update Webhook' : 'Create Webhook'}
                 </button>

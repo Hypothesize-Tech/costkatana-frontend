@@ -98,57 +98,64 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={handleClose} />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
 
-        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div className="absolute top-0 right-0 pt-4 pr-4">
+        <div className="inline-block align-bottom card card-gradient rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl backdrop-blur-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-primary-200/30">
+          <div className="absolute top-4 right-4">
             <button
               type="button"
               onClick={handleClose}
-              className="bg-white rounded-md text-gray-400 hover:text-gray-600"
+              className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             >
-              <XMarkIcon className="h-6 w-6" />
+              <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
 
           <div className="sm:flex sm:items-start">
             <div className="w-full">
-              <div className="text-center sm:text-left">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Add Provider Key
-                </h3>
-                <p className="text-sm text-gray-500 mb-6">
+              <div className="text-center sm:text-left mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                    <span className="text-white text-xl">🔐</span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-display font-bold gradient-text">
+                      Add Provider Key
+                    </h3>
+                  </div>
+                </div>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Store your master API key from an AI provider securely in the vault.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block font-display font-semibold gradient-text mb-2">
                     Name *
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="input w-full"
                     placeholder="e.g., Production-OpenAI-Master-Key"
                   />
                   {errors.name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                    <p className="mt-2 text-sm gradient-text-danger">{errors.name}</p>
                   )}
                 </div>
 
                 {/* Provider */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block font-display font-semibold gradient-text mb-2">
                     Provider *
                   </label>
                   <select
                     value={formData.provider}
                     onChange={(e) => setFormData({ ...formData, provider: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="input w-full"
                   >
                     {providerOptions.map((provider) => (
                       <option key={provider.value} value={provider.value}>
@@ -160,7 +167,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* API Key */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block font-display font-semibold gradient-text mb-2">
                     API Key *
                   </label>
                   <div className="relative">
@@ -168,65 +175,83 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                       type={showApiKey ? 'text' : 'password'}
                       value={formData.apiKey}
                       onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-                      className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="input w-full pr-12"
                       placeholder={selectedProvider?.placeholder || 'Enter your API key'}
                     />
                     <button
                       type="button"
                       onClick={() => setShowApiKey(!showApiKey)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 transition-colors duration-300"
                     >
                       {showApiKey ? (
-                        <EyeSlashIcon className="h-4 w-4 text-gray-400" />
+                        <EyeSlashIcon className="h-5 w-5" />
                       ) : (
-                        <EyeIcon className="h-4 w-4 text-gray-400" />
+                        <EyeIcon className="h-5 w-5" />
                       )}
                     </button>
                   </div>
                   {errors.apiKey && (
-                    <p className="mt-1 text-sm text-red-600">{errors.apiKey}</p>
+                    <p className="mt-2 text-sm gradient-text-danger">{errors.apiKey}</p>
                   )}
-                  <p className="mt-1 text-xs text-gray-500">
-                    Your API key will be encrypted and stored securely.
-                  </p>
+                  <div className="glass p-3 rounded-xl border border-success-200/30 mt-2">
+                    <p className="text-xs font-body text-success-600 dark:text-success-400 flex items-center gap-2">
+                      <span className="text-sm">🔒</span>
+                      Your API key will be encrypted and stored securely.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block font-display font-semibold gradient-text mb-2">
                     Description (Optional)
                   </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="input w-full resize-none"
                     placeholder="Brief description of this provider key..."
                   />
                 </div>
 
                 {/* General Error */}
                 {errors.general && (
-                  <div className="rounded-md bg-red-50 p-4">
-                    <div className="text-sm text-red-700">{errors.general}</div>
+                  <div className="glass p-4 rounded-xl border border-danger-200/30 bg-gradient-danger/10">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center glow-danger">
+                        <span className="text-white text-xs">!</span>
+                      </div>
+                      <div className="font-body text-sm gradient-text-danger">{errors.general}</div>
+                    </div>
                   </div>
                 )}
 
                 {/* Actions */}
-                <div className="flex justify-end space-x-3 pt-4">
+                <div className="flex justify-end gap-3 pt-6 border-t border-primary-200/30">
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                    className="btn-ghost hover:scale-105 transition-transform duration-300"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createProviderKeyMutation.isPending}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-primary hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    {createProviderKeyMutation.isPending ? 'Creating...' : 'Create Provider Key'}
+                    {createProviderKeyMutation.isPending ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Creating...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <span>🔐</span>
+                        Create Provider Key
+                      </span>
+                    )}
                   </button>
                 </div>
               </form>

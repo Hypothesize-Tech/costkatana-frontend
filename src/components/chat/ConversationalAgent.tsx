@@ -756,45 +756,52 @@ export const ConversationalAgent: React.FC = () => {
       <>
         {/* Thinking Section */}
         {message?.thinking && (
-          <div className="thinking-section">
+          <div className="mb-4 glass rounded-xl border border-primary-200/30 overflow-hidden">
             <button
               onClick={() =>
                 setExpandedThinking(
                   expandedThinking === message.id ? null : message.id,
                 )
               }
-              className="thinking-header"
+              className="w-full flex items-center gap-3 p-4 hover:bg-primary-500/5 transition-all duration-300"
             >
-              <div className="thinking-icon">🤔</div>
-              <div className="thinking-title">
+              <div className="text-lg">🤔</div>
+              <div className="flex-1 text-left font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 {message.thinking.title || "Thinking..."}
               </div>
               <ChevronDownIcon
-                className={`thinking-chevron ${expandedThinking === message.id ? "expanded" : ""}`}
+                className={`w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary transition-transform duration-300 ${expandedThinking === message.id ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
             {expandedThinking === message.id && (
-              <div className="thinking-content">
+              <div className="p-4 border-t border-primary-200/30 animate-fade-in">
                 {message.thinking.summary && (
-                  <div className="thinking-summary">
-                    <strong>Summary:</strong> {message.thinking.summary}
+                  <div className="mb-4 p-3 glass rounded-lg border-l-3 border-l-primary-500">
+                    <strong className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Summary:</strong>{" "}
+                    <span className="text-light-text-secondary dark:text-dark-text-secondary">{message.thinking.summary}</span>
                   </div>
                 )}
 
-                <div className="thinking-steps">
+                <div className="space-y-3">
                   {message.thinking.steps.map((step, index) => (
-                    <div key={index} className="thinking-step">
-                      <div className="step-header">
-                        <span className="step-number">{step.step}</span>
-                        <span className="step-description">
+                    <div key={index} className="p-3 glass rounded-lg border border-primary-200/20">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-gradient-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-display font-bold">
+                          {step.step}
+                        </span>
+                        <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                           {step.description}
                         </span>
                       </div>
-                      <div className="step-reasoning">{step.reasoning}</div>
+                      <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2 ml-9">
+                        {step.reasoning}
+                      </div>
                       {step.outcome && (
-                        <div className="step-outcome">
-                          <strong>Outcome:</strong> {step.outcome}
+                        <div className="ml-9 p-2 bg-gradient-success/10 rounded-lg border border-success-200/30">
+                          <strong className="font-display font-semibold text-success-600">Outcome:</strong>{" "}
+                          <span className="text-success-700 dark:text-success-400">{step.outcome}</span>
                         </div>
                       )}
                     </div>
@@ -815,17 +822,19 @@ export const ConversationalAgent: React.FC = () => {
               const code = codeMatch?.[2] || part.slice(3, -3);
 
               return (
-                <div key={index} className="code-block-container">
-                  <div className="code-block-header">
-                    <span className="code-language">{language}</span>
+                <div key={index} className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
+                  <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
+                    <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                      {language}
+                    </span>
                     <button
                       onClick={() => copyToClipboard(code)}
-                      className="copy-button"
+                      className="btn-ghost text-xs font-display font-medium"
                     >
                       {copiedCode === code ? "✓ Copied!" : "📋 Copy"}
                     </button>
                   </div>
-                  <pre className="code-block">
+                  <pre className="p-4 bg-dark-bg-primary text-dark-text-primary font-mono text-sm leading-relaxed overflow-x-auto">
                     <code>{code}</code>
                   </pre>
                 </div>
@@ -838,7 +847,7 @@ export const ConversationalAgent: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className="text-content markdown-content"
+                  className="prose prose-sm max-w-none font-body text-light-text-primary dark:text-dark-text-primary"
                   dangerouslySetInnerHTML={{ __html: parsedContent }}
                 />
               );
@@ -850,95 +859,141 @@ export const ConversationalAgent: React.FC = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="flex h-full light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-[600px] w-full animate-fade-in">
       {/* Sidebar */}
       <div
-        className={`sidebar ${showConversations ? "expanded" : "collapsed"}`}
+        className={`${showConversations ? "w-80" : "w-16"} glass backdrop-blur-xl border-r border-primary-200/30 transition-all duration-300 flex flex-col shadow-2xl relative z-10`}
       >
         {/* Sidebar Header */}
-        <div className="sidebar-header">
+        <div className="p-3 border-b border-primary-200/30 flex items-center justify-center">
           <button
             onClick={() => setShowConversations(!showConversations)}
-            className="toggle-button"
+            className={`p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110 ${showConversations ? 'w-full flex items-center justify-between' : 'flex items-center justify-center'}`}
+            title={showConversations ? "Collapse sidebar" : "Expand conversations"}
           >
-            <ChevronDownIcon
-              className={`icon ${showConversations ? "rotated" : ""}`}
-            />
-            {showConversations && <span>Conversations</span>}
+            {showConversations ? (
+              <>
+                <span className="font-display font-semibold text-sm">Conversations</span>
+                <ChevronDownIcon className="h-4 w-4 rotate-90" />
+              </>
+            ) : (
+              <ChevronDownIcon className="h-5 w-5 -rotate-90" />
+            )}
           </button>
         </div>
 
         {/* New Chat Button */}
-        {showConversations && (
-          <div className="new-chat-container">
-            <button onClick={startNewConversation} className="new-chat-button">
-              <PlusIcon className="icon-small" />
+        {showConversations ? (
+          <div className="p-3">
+            <button
+              onClick={startNewConversation}
+              className="btn-primary w-full flex items-center justify-center text-sm py-2 font-display font-semibold"
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
               New Chat
+            </button>
+          </div>
+        ) : (
+          <div className="p-3 flex justify-center">
+            <button
+              onClick={startNewConversation}
+              className="p-2 rounded-xl bg-gradient-primary text-white hover:scale-110 transition-all duration-300 glow-primary shadow-lg"
+              title="New Chat"
+            >
+              <PlusIcon className="h-5 w-5" />
             </button>
           </div>
         )}
 
         {/* Conversations List */}
-        {showConversations && (
-          <div className="conversations-list">
-            {conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={`conversation-item ${currentConversationId === conversation.id ? "active" : ""}`}
-                onClick={() => loadConversationHistory(conversation.id)}
-              >
-                <div className="conversation-content">
-                  <h4 className="conversation-title">{conversation.title}</h4>
-                  <p className="conversation-info">
-                    {conversation.messageCount} messages •{" "}
-                    {formatTimestamp(conversation.updatedAt)}
-                  </p>
-                  {conversation.totalCost && (
-                    <p className="conversation-cost">
-                      ${conversation.totalCost.toFixed(4)} total cost
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteConversation(conversation.id);
-                  }}
-                  className="delete-button"
-                >
-                  <TrashIcon className="icon-small" />
-                </button>
+        {showConversations ? (
+          <div className="flex-1 overflow-y-auto scrollbar-hide">
+            {conversations.length === 0 ? (
+              <div className="p-4 text-center">
+                <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                  No conversations yet
+                </p>
               </div>
-            ))}
+            ) : (
+              conversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  className={`group p-3 mx-2 mb-2 rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
+                    ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
+                    : "hover:shadow-md"
+                    }`}
+                  onClick={() => loadConversationHistory(conversation.id)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-1">
+                        {conversation.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
+                        <span>{conversation.messageCount} msgs</span>
+                        <span>•</span>
+                        <span>{formatTimestamp(conversation.updatedAt)}</span>
+                      </div>
+                      {conversation.totalCost && (
+                        <p className="text-xs font-bold gradient-text mt-1 inline-block bg-gradient-success/10 px-2 py-0.5 rounded-lg">
+                          ${conversation.totalCost.toFixed(4)}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteConversation(conversation.id);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
+                      title="Delete conversation"
+                    >
+                      <TrashIcon className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : (
+          // Collapsed state - show conversation count indicator
+          <div className="flex-1 flex flex-col items-center justify-start pt-4">
+            {conversations.length > 0 && (
+              <div className="bg-gradient-primary/20 text-primary-600 dark:text-primary-400 rounded-full w-8 h-8 flex items-center justify-center text-xs font-display font-bold mb-2">
+                {conversations.length}
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Main Chat Area */}
-      <div className="main-chat">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="chat-header">
-          <div className="header-left">
-            <div className="model-selector">
+        <div className="glass backdrop-blur-xl border-b border-primary-200/30 shadow-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="relative">
               <button
                 onClick={() => setShowModelDropdown(!showModelDropdown)}
-                className="model-button"
+                className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-3 p-3 rounded-xl border border-primary-200/30 shadow-lg"
               >
-                <SparklesIcon className="icon-small" />
-                <div className="model-info">
-                  <div className="model-name">
+                <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                  <SparklesIcon className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
                     {selectedModel?.name || "Select Model"}
                   </div>
-                  <div className="model-provider">
+                  <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium">
                     {selectedModel?.provider}
                   </div>
                 </div>
-                <ChevronDownIcon className="icon-small" />
+                <ChevronDownIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
               </button>
 
               {/* Model Dropdown */}
               {showModelDropdown && (
-                <div className="model-dropdown">
+                <div className="absolute top-full left-0 mt-2 w-80 card shadow-2xl backdrop-blur-xl border border-primary-200/30 z-50 max-h-80 overflow-y-auto animate-scale-in">
                   {availableModels.map((model) => (
                     <button
                       key={model.id}
@@ -946,19 +1001,24 @@ export const ConversationalAgent: React.FC = () => {
                         setSelectedModel(model);
                         setShowModelDropdown(false);
                       }}
-                      className={`model-option ${selectedModel?.id === model.id ? "active" : ""}`}
+                      className={`w-full p-4 text-left hover:bg-primary-500/10 transition-all duration-300 flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-l-3 border-l-primary-500" : ""
+                        }`}
                     >
-                      <div className="model-details">
-                        <div className="model-name">{model.name}</div>
-                        <div className="model-provider">{model.provider}</div>
+                      <div className="flex-1">
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+                          {model.name}
+                        </div>
+                        <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                          {model.provider}
+                        </div>
                         {model.description && (
-                          <div className="model-description">
+                          <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1">
                             {model.description}
                           </div>
                         )}
                       </div>
                       {model.pricing && (
-                        <div className="model-pricing">
+                        <div className="text-xs gradient-text font-display font-semibold bg-gradient-success/10 px-2 py-1 rounded-lg">
                           ${model.pricing.input}/1M tokens
                         </div>
                       )}
@@ -969,13 +1029,13 @@ export const ConversationalAgent: React.FC = () => {
             </div>
 
             {/* Chat Mode Controls */}
-            <div className="chat-controls">
-              <div className="chat-mode-selector">
-                <label className="control-label">Chat Mode:</label>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <label className="label text-xs">Chat Mode:</label>
                 <select
                   value={chatMode}
                   onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
-                  className="chat-mode-select"
+                  className="input text-xs py-1 px-2 min-w-0"
                 >
                   <option value="fastest">⚡ Fastest</option>
                   <option value="balanced">⚖️ Balanced</option>
@@ -983,68 +1043,79 @@ export const ConversationalAgent: React.FC = () => {
                 </select>
               </div>
 
-              <div className="multi-agent-toggle">
-                <label className="control-label">
+              <div className="flex items-center gap-2">
+                <label className="label text-xs flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={useMultiAgent}
                     onChange={(e) => setUseMultiAgent(e.target.checked)}
-                    className="toggle-checkbox"
+                    className="w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
                   🤖 Multi-Agent
                 </label>
               </div>
 
-              <div className="optimizations-toggle">
-                <button
-                  onClick={() => setShowOptimizations(!showOptimizations)}
-                  className="optimizations-button"
-                >
-                  📊 Optimizations
-                </button>
-              </div>
+              <button
+                onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
+                className="btn-ghost text-xs font-display font-medium"
+              >
+                📊 Optimizations
+              </button>
 
-              <div className="memory-toggle">
-                <button
-                  onClick={() => navigate('/memory')}
-                  className="memory-button"
-                  title="Manage AI Memory & Personalization"
-                >
-                  <BoltIcon className="icon-small" />
-                  🧠 Memory
-                </button>
-              </div>
+              <button
+                onClick={() => navigate('/memory')}
+                className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
+                title="Manage AI Memory & Personalization"
+              >
+                <BoltIcon className="w-4 h-4" />
+                🧠 Memory
+              </button>
             </div>
           </div>
         </div>
 
         {/* Messages Area */}
-        <div className="messages-area">
-          {error && <div className="error-message">{error}</div>}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {error && (
+            <div className="card bg-gradient-danger/10 border border-danger-200/30 p-4 animate-scale-in">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-danger p-2 rounded-lg">
+                  <SparklesIcon className="w-4 h-4 text-white" />
+                </div>
+                <p className="font-display font-medium text-danger-600 dark:text-danger-400">{error}</p>
+              </div>
+            </div>
+          )}
 
           {messages.length === 0 && !isLoading && (
-            <div className="welcome-section">
-              <div className="welcome-content">
-                <SparklesIcon className="welcome-icon" />
-                <h3 className="welcome-title">Welcome to your AI Assistant</h3>
-                <p className="welcome-description">
+            <div className="text-center max-w-4xl mx-auto animate-fade-in">
+              <div className="mb-12">
+                <div className="bg-gradient-primary p-4 rounded-2xl w-16 h-16 mx-auto mb-4 glow-primary animate-pulse">
+                  <SparklesIcon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="font-display font-bold text-2xl gradient-text mb-3">
+                  Welcome to your AI Assistant
+                </h3>
+                <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-lg mx-auto leading-relaxed font-body">
                   I'm here to help you manage your AI costs, create projects,
                   analyze usage patterns, and optimize your AI operations. Ask
                   me anything!
                 </p>
               </div>
 
-              <div className="suggestions-section">
-                <h4 className="suggestions-title">
+              <div className="space-y-6">
+                <h4 className="font-display font-semibold text-lg text-light-text-primary dark:text-dark-text-primary">
                   {questionsLoading
                     ? "Loading personalized suggestions..."
                     : "Try these suggestions:"}
                 </h4>
-                <div className="suggestions-grid">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {questionsLoading ? (
-                    <div className="loading-suggestions">
-                      <div className="loading-spinner"></div>
-                      <p>Analyzing your usage data...</p>
+                    <div className="col-span-full flex flex-col items-center justify-center py-12">
+                      <div className="spinner mb-4"></div>
+                      <p className="text-light-text-secondary dark:text-dark-text-secondary font-display font-medium">
+                        Analyzing your usage data...
+                      </p>
                     </div>
                   ) : (
                     suggestedQuestions.map((question, index) => {
@@ -1053,16 +1124,22 @@ export const ConversationalAgent: React.FC = () => {
                         <button
                           key={index}
                           onClick={() => sendMessage(question.text)}
-                          className="suggestion-card"
+                          className="card card-hover p-4 text-left transition-all duration-300 hover:scale-105 group"
                         >
-                          <IconComponent className="suggestion-icon" />
-                          <div className="suggestion-content">
-                            <p className="suggestion-text">{question.text}</p>
-                            <p className="suggestion-category">
-                              {question.category}
-                            </p>
+                          <div className="flex items-start gap-3">
+                            <div className="bg-gradient-primary/10 p-2 rounded-lg group-hover:bg-gradient-primary group-hover:glow-primary transition-all duration-300">
+                              <IconComponent className="w-5 h-5 text-primary-500 group-hover:text-white transition-colors duration-300" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
+                                {question.text}
+                              </p>
+                              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium uppercase tracking-wider">
+                                {question.category}
+                              </p>
+                            </div>
+                            <ArrowUpIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary transform rotate-45 group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110" />
                           </div>
-                          <ArrowUpIcon className="suggestion-arrow" />
                         </button>
                       );
                     })
@@ -1073,111 +1150,33 @@ export const ConversationalAgent: React.FC = () => {
           )}
 
           {messages.map((message) => (
-            <div key={message.id} className={`message ${message.role}`}>
-              <div className="message-content">
+            <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+              <div className={`max-w-4xl ${message.role === 'user' ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'card'} p-4 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'}`}>
                 {renderMessageContent(message.content, message)}
-                <div className="message-footer">
-                  <div className="message-info">
-                    <span className="message-time">
+                <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-primary-200/20">
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className={`font-display font-medium ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
                       {formatTimestamp(message.timestamp)}
                     </span>
                     {message.metadata?.cost && (
-                      <span className="message-cost">
+                      <span className="gradient-text font-display font-semibold bg-gradient-success/10 px-2 py-1 rounded-lg">
                         ${message.metadata.cost.toFixed(4)}
                       </span>
                     )}
                     {message.cacheHit && (
-                      <span className="cache-hit-badge">
+                      <span className="bg-gradient-success text-white px-2 py-1 rounded-lg font-display font-semibold animate-pulse">
                         ⚡ Cached
                       </span>
                     )}
                     {message.riskLevel && message.riskLevel !== 'low' && (
-                      <span className={`risk-badge risk-${message.riskLevel}`}>
+                      <span className={`px-2 py-1 rounded-lg font-display font-semibold text-xs ${message.riskLevel === 'high'
+                        ? 'bg-gradient-danger text-white'
+                        : 'bg-gradient-warning text-white'
+                        }`}>
                         {message.riskLevel === 'high' ? '🔴' : '🟡'} {message.riskLevel.toUpperCase()} RISK
                       </span>
                     )}
                   </div>
-
-                  {/* Enhanced Multi-Agent Display */}
-                  {showOptimizations && message.role === "assistant" && (
-                    (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
-                    (message.agentPath && message.agentPath.length > 0) ||
-                    message.cacheHit ||
-                    message.riskLevel
-                  ) && (
-                      <div className="multi-agent-display">
-                        {/* Cache Hit Indicator */}
-                        {message.cacheHit && (
-                          <div className="cache-hit-indicator">
-                            <span className="cache-badge">⚡ Semantic Cache Hit - Instant Response</span>
-                          </div>
-                        )}
-
-                        {/* Optimizations Applied */}
-                        {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
-                          <div className="optimizations-section">
-                            <div className="section-header">
-                              <span className="section-title">🔧 Optimizations Applied:</span>
-                            </div>
-                            <div className="optimizations-grid">
-                              {message.optimizationsApplied.map((opt, idx) => (
-                                <span key={idx} className={`optimization-tag ${opt.replace(/_/g, '-')}`}>
-                                  {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Agent Processing Flow */}
-                        {message.agentPath && message.agentPath.length > 1 && (
-                          <div className="agent-flow-section">
-                            <div className="section-header">
-                              <span className="section-title">🤖 Agent Processing Flow:</span>
-                            </div>
-                            <div className="agent-flow-container">
-                              {message.agentPath.map((agent, idx) => (
-                                <div key={idx} className="agent-flow-item">
-                                  <span className={`agent-step ${agent.replace(/_/g, '-')}`}>
-                                    {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                  </span>
-                                  {idx < message.agentPath!.length - 1 && (
-                                    <span className="flow-arrow">→</span>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Performance Metrics */}
-                        <div className="performance-metrics">
-                          {message.riskLevel && (
-                            <div className="metric-item">
-                              <span className={`risk-badge risk-${message.riskLevel}`}>
-                                📊 Risk: {message.riskLevel.toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-
-                          {message.metadata?.qualityScore && (
-                            <div className="metric-item">
-                              <span className={`quality-badge quality-${getQualityLevel(message.metadata.qualityScore)}`}>
-                                ⭐ Quality: {message.metadata.qualityScore}/10
-                              </span>
-                            </div>
-                          )}
-
-                          {message.metadata?.processingTime && (
-                            <div className="metric-item">
-                              <span className="time-badge">
-                                ⏱️ {message.metadata.processingTime}ms
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
 
                   {message.role === "assistant" && message.requestId && (
                     <FeedbackButton
@@ -1188,16 +1187,115 @@ export const ConversationalAgent: React.FC = () => {
                     />
                   )}
                 </div>
+
+                {/* Enhanced Multi-Agent Display */}
+                {showOptimizations && message.role === "assistant" && (
+                  (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
+                  (message.agentPath && message.agentPath.length > 0) ||
+                  message.cacheHit ||
+                  message.riskLevel
+                ) && (
+                    <div className="mt-4 p-4 glass rounded-xl border border-primary-200/30 animate-fade-in">
+                      {/* Cache Hit Indicator */}
+                      {message.cacheHit && (
+                        <div className="mb-3">
+                          <span className="bg-gradient-success text-white px-3 py-1 rounded-full text-xs font-display font-semibold animate-pulse">
+                            ⚡ Semantic Cache Hit - Instant Response
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Optimizations Applied */}
+                      {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
+                        <div className="mb-3">
+                          <div className="mb-2">
+                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
+                              🔧 Optimizations Applied:
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {message.optimizationsApplied.map((opt, idx) => (
+                              <span key={idx} className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${opt.includes('cache') ? 'bg-gradient-success/20 text-success-600' :
+                                opt.includes('prompt') ? 'bg-gradient-warning/20 text-warning-600' :
+                                  'bg-gradient-primary/20 text-primary-600'
+                                }`}>
+                                {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Agent Processing Flow */}
+                      {message.agentPath && message.agentPath.length > 1 && (
+                        <div className="mb-3">
+                          <div className="mb-2">
+                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
+                              🤖 Agent Processing Flow:
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {message.agentPath.map((agent, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${agent.includes('master') ? 'bg-gradient-primary/20 text-primary-600' :
+                                  agent.includes('cost') ? 'bg-gradient-warning/20 text-warning-600' :
+                                    agent.includes('quality') ? 'bg-gradient-success/20 text-success-600' :
+                                      'bg-gradient-accent/20 text-accent-600'
+                                  }`}>
+                                  {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                                {idx < message.agentPath!.length - 1 && (
+                                  <span className="text-light-text-secondary dark:text-dark-text-secondary font-bold">→</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Performance Metrics */}
+                      <div className="flex flex-wrap gap-2 pt-3 border-t border-primary-200/20">
+                        {message.riskLevel && (
+                          <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${message.riskLevel === 'high' ? 'bg-gradient-danger/20 text-danger-600' :
+                            message.riskLevel === 'medium' ? 'bg-gradient-warning/20 text-warning-600' :
+                              'bg-gradient-success/20 text-success-600'
+                            }`}>
+                            📊 Risk: {message.riskLevel.toUpperCase()}
+                          </span>
+                        )}
+
+                        {message.metadata?.qualityScore && (
+                          <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${getQualityLevel(message.metadata.qualityScore) === 'excellent' ? 'bg-gradient-success/20 text-success-600' :
+                            getQualityLevel(message.metadata.qualityScore) === 'good' ? 'bg-gradient-primary/20 text-primary-600' :
+                              getQualityLevel(message.metadata.qualityScore) === 'fair' ? 'bg-gradient-warning/20 text-warning-600' :
+                                'bg-gradient-danger/20 text-danger-600'
+                            }`}>
+                            ⭐ Quality: {message.metadata.qualityScore}/10
+                          </span>
+                        )}
+
+                        {message.metadata?.processingTime && (
+                          <span className="px-2 py-1 rounded-lg text-xs font-display font-semibold bg-gradient-accent/20 text-accent-600">
+                            ⏱️ {message.metadata.processingTime}ms
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
           ))}
 
           {isLoading && (
-            <div className="message assistant">
-              <div className="message-content">
-                <div className="typing-indicator">
-                  <SparklesIcon className="typing-icon" />
-                  <span>AI Assistant is thinking...</span>
+            <div className="flex justify-start animate-fade-in">
+              <div className="card p-4 rounded-2xl rounded-bl-sm">
+                <div className="flex items-center gap-3">
+                  <div className="bg-gradient-primary p-2 rounded-lg animate-pulse glow-primary">
+                    <SparklesIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    AI Assistant is thinking...
+                  </span>
                 </div>
               </div>
             </div>
@@ -1207,1480 +1305,30 @@ export const ConversationalAgent: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="input-area">
-          <div className="input-container">
-            <textarea
-              ref={textareaRef}
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Ask me anything about your AI costs, projects, or optimizations..."
-              className="message-input"
-              rows={1}
-            />
+        <div className="glass backdrop-blur-xl border-t border-primary-200/30 shadow-lg p-4">
+          <div className="flex items-end gap-3 max-w-4xl mx-auto">
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Ask me anything about your AI costs, projects, or optimizations..."
+                className="input resize-none min-h-[48px] max-h-32 pr-12"
+                rows={1}
+              />
+            </div>
             <button
               onClick={() => sendMessage()}
               disabled={!currentMessage.trim() || isLoading}
-              className="send-button"
+              className="btn-primary min-w-[48px] h-12 flex items-center justify-center"
             >
-              <SparklesIcon className="icon-small" />
+              <SparklesIcon className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
 
-      <style>{`
-                .chat-container {
-                    display: flex;
-                    height: 100%;
-                    min-height: 600px;
-                    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
-                    color: #1e293b;
-                    letter-spacing: -0.01em;
-                }
-
-                /* Sidebar Styles */
-                .sidebar {
-                    background: white;
-                    border-right: 1px solid #e2e8f0;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-                }
-
-                .sidebar.expanded {
-                    width: 320px;
-                }
-
-                .sidebar.collapsed {
-                    width: 64px;
-                }
-
-                .sidebar-header {
-                    padding: 16px;
-                    border-bottom: 1px solid #e2e8f0;
-                }
-
-                .toggle-button {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: none;
-                    border: none;
-                    color: #64748b;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: color 0.2s;
-                }
-
-                .toggle-button:hover {
-                    color: #334155;
-                }
-
-                .icon {
-                    width: 20px;
-                    height: 20px;
-                    transition: transform 0.2s;
-                }
-
-                .icon.rotated {
-                    transform: rotate(180deg);
-                }
-
-                .icon-small {
-                    width: 16px;
-                    height: 16px;
-                }
-
-                .new-chat-container {
-                    padding: 16px;
-                }
-
-                .new-chat-button {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                    padding: 12px;
-                    background: #3b82f6;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    white-space: nowrap;
-                }
-
-                .sidebar.collapsed .new-chat-button {
-                    padding: 10px;
-                    justify-content: center;
-                    gap: 0;
-                    min-width: 40px;
-                    width: 40px;
-                    border-radius: 6px;
-                }
-
-                .new-chat-button:hover {
-                    background: #2563eb;
-                    transform: translateY(-1px);
-                    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-                }
-
-                .conversations-list {
-                    flex: 1;
-                    overflow-y: auto;
-                }
-
-                .conversation-item {
-                    padding: 16px;
-                    border-bottom: 1px solid #f1f5f9;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                    display: flex;
-                    align-items: start;
-                    gap: 12px;
-                }
-
-                .conversation-item:hover {
-                    background: #f8fafc;
-                }
-
-                .conversation-item.active {
-                    background: #eff6ff;
-                    border-left: 3px solid #3b82f6;
-                }
-
-                .conversation-content {
-                    flex: 1;
-                    min-width: 0;
-                }
-
-                .conversation-title {
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #0f172a;
-                    margin: 0 0 6px 0;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    letter-spacing: -0.01em;
-                }
-
-                .conversation-info {
-                    font-size: 12px;
-                    color: #64748b;
-                    margin: 0;
-                    font-weight: 500;
-                }
-
-                .conversation-cost {
-                    font-size: 11px;
-                    color: #059669;
-                    margin: 4px 0 0 0;
-                    font-weight: 600;
-                    background: #ecfdf5;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    display: inline-block;
-                }
-
-                .delete-button {
-                    background: none;
-                    border: none;
-                    color: #64748b;
-                    cursor: pointer;
-                    padding: 4px;
-                    border-radius: 4px;
-                    transition: color 0.2s;
-                }
-
-                .delete-button:hover {
-                    color: #dc2626;
-                }
-
-                /* Main Chat Styles */
-                .main-chat {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                }
-
-                .chat-header {
-                    background: white;
-                    border-bottom: 1px solid #e2e8f0;
-                    padding: 16px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                }
-
-                .header-left {
-                    display: flex;
-                    align-items: center;
-                    gap: 16px;
-                }
-
-                .model-selector {
-                    position: relative;
-                }
-
-                .model-button {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 8px 12px;
-                    background: #f1f5f9;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-
-                .model-button:hover {
-                    background: #e2e8f0;
-                }
-
-                .model-info {
-                    text-align: left;
-                }
-
-                .model-name {
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: #1e293b;
-                }
-
-                .model-provider {
-                    font-size: 12px;
-                    color: #64748b;
-                }
-
-                .model-dropdown {
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    margin-top: 4px;
-                    width: 320px;
-                    background: white;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                    z-index: 50;
-                    max-height: 300px;
-                    overflow-y: auto;
-                }
-
-                .model-option {
-                    width: 100%;
-                    padding: 12px;
-                    border: none;
-                    background: white;
-                    cursor: pointer;
-                    text-align: left;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    transition: background-color 0.2s;
-                }
-
-                .model-option:hover {
-                    background: #f8fafc;
-                }
-
-                .model-option.active {
-                    background: #eff6ff;
-                }
-
-                .model-details {
-                    flex: 1;
-                }
-
-                .model-description {
-                    font-size: 11px;
-                    color: #64748b;
-                    margin-top: 2px;
-                }
-
-                .model-pricing {
-                    font-size: 12px;
-                    color: #059669;
-                    font-weight: 600;
-                    background: #ecfdf5;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    border: 1px solid #d1fae5;
-                }
-
-                .header-right {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .nova-badge {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 6px 14px;
-                    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-                    color: #14532d;
-                    border-radius: 20px;
-                    font-size: 12px;
-                    font-weight: 700;
-                    border: 1px solid #a7f3d0;
-                    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
-                    letter-spacing: 0.01em;
-                }
-
-                .status-dot {
-                    width: 6px;
-                    height: 6px;
-                    background: #22c55e;
-                    border-radius: 50%;
-                    animation: pulse 2s infinite;
-                }
-
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.5; }
-                }
-
-                /* Messages Area */
-                .messages-area {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 24px;
-                    scroll-behavior: smooth;
-                }
-
-                .error-message {
-                    background: #fef2f2;
-                    border: 1px solid #fecaca;
-                    color: #dc2626;
-                    padding: 12px 16px;
-                    border-radius: 8px;
-                    margin-bottom: 16px;
-                    font-size: 14px;
-                }
-
-                /* Welcome Section */
-                .welcome-section {
-                    text-align: center;
-                    max-width: 800px;
-                    margin: 0 auto;
-                }
-
-                .welcome-content {
-                    margin-bottom: 48px;
-                }
-
-                .welcome-icon {
-                    width: 64px;
-                    height: 64px;
-                    color: #3b82f6;
-                    margin: 0 auto 16px;
-                }
-
-                .welcome-title {
-                    font-size: 28px;
-                    font-weight: 700;
-                    color: #0f172a;
-                    margin: 0 0 12px 0;
-                    letter-spacing: -0.02em;
-                }
-
-                .welcome-description {
-                    color: #475569;
-                    max-width: 520px;
-                    margin: 0 auto;
-                    line-height: 1.6;
-                    font-size: 16px;
-                }
-
-                .suggestions-section {
-                    margin-bottom: 16px;
-                }
-
-                .suggestions-title {
-                    font-size: 18px;
-                    font-weight: 600;
-                    color: #1e293b;
-                    margin: 0 0 24px 0;
-                }
-
-                .suggestions-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                    gap: 12px;
-                }
-
-                .suggestion-card {
-                    display: flex;
-                    align-items: center;
-                    gap: 14px;
-                    padding: 18px;
-                    background: white;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 12px;
-                    cursor: pointer;
-                    text-align: left;
-                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                }
-
-                .suggestion-card:hover {
-                    border-color: #3b82f6;
-                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05);
-                    transform: translateY(-2px);
-                    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-                }
-
-                .suggestion-icon {
-                    width: 22px;
-                    height: 22px;
-                    color: #3b82f6;
-                    flex-shrink: 0;
-                    opacity: 0.9;
-                }
-
-                .suggestion-content {
-                    flex: 1;
-                    min-width: 0;
-                }
-
-                .suggestion-text {
-                    font-weight: 600;
-                    color: #0f172a;
-                    margin: 0 0 4px 0;
-                    font-size: 14px;
-                    letter-spacing: -0.01em;
-                }
-
-                .suggestion-category {
-                    font-size: 12px;
-                    color: #64748b;
-                    margin: 0;
-                    font-weight: 500;
-                    text-transform: uppercase;
-                    letter-spacing: 0.02em;
-                }
-
-                .suggestion-arrow {
-                    width: 16px;
-                    height: 16px;
-                    color: #9ca3af;
-                    transform: rotate(45deg);
-                }
-
-                /* Message Styles */
-                .message {
-                    display: flex;
-                    margin-bottom: 24px;
-                    max-width: 100%;
-                }
-
-                .message.user {
-                    justify-content: flex-end;
-                }
-
-                .message.assistant {
-                    justify-content: flex-start;
-                }
-
-                .message-content {
-                    max-width: 70%;
-                    padding: 16px 20px;
-                    border-radius: 16px;
-                    line-height: 1.5;
-                    word-wrap: break-word;
-                    overflow-wrap: break-word;
-                }
-
-                .message.user .message-content {
-                    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-                    color: white;
-                    border-bottom-right-radius: 4px;
-                    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                }
-
-                .message.assistant .message-content {
-                    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-                    border: 1px solid #e2e8f0;
-                    color: #0f172a;
-                    border-bottom-left-radius: 4px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                }
-
-                .text-content {
-                    white-space: pre-wrap;
-                    word-break: break-word;
-                }
-
-                /* Code Block Styles */
-                .code-block-container {
-                    margin: 12px 0;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    background: #1e293b;
-                }
-
-                .code-block-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 8px 16px;
-                    background: #334155;
-                    color: #e2e8f0;
-                    font-size: 12px;
-                }
-
-                .code-language {
-                    text-transform: capitalize;
-                    font-weight: 500;
-                }
-
-                .copy-button {
-                    background: #475569;
-                    color: #e2e8f0;
-                    border: none;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 11px;
-                    transition: background-color 0.2s;
-                }
-
-                .copy-button:hover {
-                    background: #64748b;
-                }
-
-                .code-block {
-                    padding: 16px;
-                    margin: 0;
-                    background: #1e293b;
-                    color: #e2e8f0;
-                    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-                    font-size: 13px;
-                    line-height: 1.4;
-                    overflow-x: auto;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-
-                .code-block code {
-                    background: transparent;
-                    color: inherit;
-                    padding: 0;
-                }
-
-                .message-footer {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                    margin-top: 12px;
-                    padding-top: 8px;
-                    border-top: 1px solid rgba(0, 0, 0, 0.05);
-                    font-size: 11px;
-                }
-
-                .message.user .message-footer {
-                    border-top: 1px solid rgba(255, 255, 255, 0.15);
-                }
-
-                .message-time {
-                    font-weight: 500;
-                    opacity: 0.8;
-                }
-
-                .message.user .message-time {
-                    color: rgba(255, 255, 255, 0.8);
-                }
-
-                .message.assistant .message-time {
-                    color: #64748b;
-                }
-
-                .message-cost {
-                    color: #059669;
-                    font-weight: 600;
-                    background: #ecfdf5;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 10px;
-                }
-
-                .typing-indicator {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    color: #64748b;
-                }
-
-                .typing-icon {
-                    width: 16px;
-                    height: 16px;
-                    animation: pulse 1.5s infinite;
-                }
-
-                /* Input Area */
-                .input-area {
-                    background: white;
-                    border-top: 1px solid #e2e8f0;
-                    padding: 16px 24px;
-                    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
-                }
-
-                .input-container {
-                    display: flex;
-                    align-items: end;
-                    gap: 12px;
-                    max-width: 800px;
-                    margin: 0 auto;
-                }
-
-                .message-input {
-                    flex: 1;
-                    padding: 12px 16px;
-                    border: 1px solid #d1d5db;
-                    border-radius: 12px;
-                    resize: none;
-                    font-size: 14px;
-                    line-height: 1.5;
-                    min-height: 48px;
-                    max-height: 120px;
-                    font-family: inherit;
-                    transition: border-color 0.2s;
-                }
-
-                .message-input:focus {
-                    outline: none;
-                    border-color: #3b82f6;
-                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-                }
-
-                .send-button {
-                    padding: 12px;
-                    background: #3b82f6;
-                    color: white;
-                    border: none;
-                    border-radius: 12px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                    min-width: 48px;
-                    height: 48px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .send-button:hover:not(:disabled) {
-                    background: #2563eb;
-                }
-
-                .send-button:disabled {
-                    background: #d1d5db;
-                    cursor: not-allowed;
-                }
-
-                /* Scrollbar Styles */
-                .messages-area::-webkit-scrollbar,
-                .conversations-list::-webkit-scrollbar,
-                .model-dropdown::-webkit-scrollbar {
-                    width: 6px;
-                }
-
-                .messages-area::-webkit-scrollbar-track,
-                .conversations-list::-webkit-scrollbar-track,
-                .model-dropdown::-webkit-scrollbar-track {
-                    background: #f1f5f9;
-                }
-
-                .messages-area::-webkit-scrollbar-thumb,
-                .conversations-list::-webkit-scrollbar-thumb,
-                .model-dropdown::-webkit-scrollbar-thumb {
-                    background: #cbd5e1;
-                    border-radius: 3px;
-                }
-
-                .messages-area::-webkit-scrollbar-thumb:hover,
-                .conversations-list::-webkit-scrollbar-thumb:hover,
-                .model-dropdown::-webkit-scrollbar-thumb:hover {
-                    background: #94a3b8;
-                }
-
-                /* Thinking Section Styles */
-                .thinking-section {
-                    margin-bottom: 16px;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    background: #f8fafc;
-                }
-
-                .thinking-header {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    padding: 12px 16px;
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                    text-align: left;
-                }
-
-                .thinking-header:hover {
-                    background: #f1f5f9;
-                }
-
-                .thinking-icon {
-                    font-size: 18px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 24px;
-                    height: 24px;
-                }
-
-                .thinking-title {
-                    flex: 1;
-                    font-weight: 500;
-                    color: #475569;
-                    font-size: 14px;
-                }
-
-                .thinking-chevron {
-                    width: 16px;
-                    height: 16px;
-                    color: #94a3b8;
-                    transition: transform 0.2s ease;
-                }
-
-                .thinking-chevron.expanded {
-                    transform: rotate(180deg);
-                }
-
-                .thinking-content {
-                    padding: 16px;
-                    border-top: 1px solid #e2e8f0;
-                    background: white;
-                    animation: expandThinking 0.2s ease-out;
-                }
-
-                @keyframes expandThinking {
-                    from {
-                        opacity: 0;
-                        max-height: 0;
-                    }
-                    to {
-                        opacity: 1;
-                        max-height: 500px;
-                    }
-                }
-
-                .thinking-summary {
-                    margin-bottom: 16px;
-                    padding: 12px;
-                    background: #f0f9ff;
-                    border-left: 3px solid #0ea5e9;
-                    border-radius: 4px;
-                    font-size: 13px;
-                    line-height: 1.5;
-                }
-
-                .thinking-steps {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .thinking-step {
-                    padding: 12px;
-                    background: #fafafa;
-                    border-radius: 6px;
-                    border: 1px solid #e5e7eb;
-                }
-
-                .step-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    margin-bottom: 8px;
-                }
-
-                .step-number {
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 20px;
-                    height: 20px;
-                    background: #3b82f6;
-                    color: white;
-                    border-radius: 50%;
-                    font-size: 11px;
-                    font-weight: 600;
-                    flex-shrink: 0;
-                }
-
-                .step-description {
-                    font-weight: 500;
-                    color: #1e293b;
-                    font-size: 13px;
-                }
-
-                .step-reasoning {
-                    color: #64748b;
-                    font-size: 12px;
-                    line-height: 1.4;
-                    margin-bottom: 8px;
-                }
-
-                .step-outcome {
-                    font-size: 12px;
-                    color: #059669;
-                    background: #ecfdf5;
-                    padding: 6px 8px;
-                    border-radius: 4px;
-                    border: 1px solid #d1fae5;
-                }
-
-                .step-outcome strong {
-                    color: #047857;
-                }
-
-                .main-response {
-                    margin-top: 8px;
-                }
-
-                .message.assistant .thinking-section {
-                    margin-bottom: 12px;
-                }
-
-                /* Markdown Content Styles */
-                .markdown-content {
-                    line-height: 1.6;
-                }
-
-                .markdown-content h1, 
-                .markdown-content h2, 
-                .markdown-content h3, 
-                .markdown-content h4, 
-                .markdown-content h5, 
-                .markdown-content h6 {
-                    margin: 12px 0 6px 0;
-                    font-weight: 600;
-                    line-height: 1.3;
-                }
-
-                .message.user .markdown-content h1,
-                .message.user .markdown-content h2,
-                .message.user .markdown-content h3,
-                .message.user .markdown-content h4,
-                .message.user .markdown-content h5,
-                .message.user .markdown-content h6 {
-                    color: white;
-                }
-
-                .message.assistant .markdown-content h1,
-                .message.assistant .markdown-content h2,
-                .message.assistant .markdown-content h3,
-                .message.assistant .markdown-content h4,
-                .message.assistant .markdown-content h5,
-                .message.assistant .markdown-content h6 {
-                    color: #1e293b;
-                }
-
-                .markdown-content h1 { font-size: 1.4em; }
-                .markdown-content h2 { font-size: 1.25em; }
-                .markdown-content h3 { font-size: 1.1em; }
-
-                .markdown-content p {
-                    margin: 6px 0;
-                }
-
-                .message.user .markdown-content p {
-                    color: rgba(255, 255, 255, 0.95);
-                }
-
-                .message.assistant .markdown-content p {
-                    color: #374151;
-                }
-
-                .markdown-content strong {
-                    font-weight: 600;
-                }
-
-                .message.user .markdown-content strong {
-                    color: white;
-                }
-
-                .message.assistant .markdown-content strong {
-                    color: #1e293b;
-                }
-
-                .markdown-content em {
-                    font-style: italic;
-                }
-
-                .message.user .markdown-content em {
-                    color: rgba(255, 255, 255, 0.9);
-                }
-
-                .message.assistant .markdown-content em {
-                    color: #4b5563;
-                }
-
-                .markdown-content ul, 
-                .markdown-content ol {
-                    margin: 6px 0;
-                    padding-left: 20px;
-                }
-
-                .message.user .markdown-content ul,
-                .message.user .markdown-content ol {
-                    color: rgba(255, 255, 255, 0.95);
-                }
-
-                .message.assistant .markdown-content ul,
-                .message.assistant .markdown-content ol {
-                    color: #374151;
-                }
-
-                .markdown-content li {
-                    margin: 3px 0;
-                }
-
-                .markdown-content blockquote {
-                    margin: 8px 0;
-                    padding: 6px 12px;
-                    border-left: 4px solid #3b82f6;
-                    background: rgba(59, 130, 246, 0.1);
-                    font-style: italic;
-                }
-
-                .message.user .markdown-content blockquote {
-                    border-left-color: rgba(255, 255, 255, 0.5);
-                    background: rgba(255, 255, 255, 0.1);
-                    color: rgba(255, 255, 255, 0.9);
-                }
-
-                .message.assistant .markdown-content blockquote {
-                    color: #64748b;
-                }
-
-                .markdown-content a {
-                    text-decoration: none;
-                }
-
-                .message.user .markdown-content a {
-                    color: rgba(255, 255, 255, 0.9);
-                }
-
-                .message.assistant .markdown-content a {
-                    color: #3b82f6;
-                }
-
-                .markdown-content a:hover {
-                    text-decoration: underline;
-                }
-
-                .markdown-content code:not(pre code) {
-                    padding: 2px 4px;
-                    border-radius: 3px;
-                    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-                    font-size: 0.9em;
-                }
-
-                .message.user .markdown-content code:not(pre code) {
-                    background: rgba(255, 255, 255, 0.2);
-                    color: rgba(255, 255, 255, 0.95);
-                }
-
-                .message.assistant .markdown-content code:not(pre code) {
-                    background: #f1f5f9;
-                    color: #e11d48;
-                }
-
-                .markdown-content hr {
-                    border: none;
-                    border-top: 1px solid;
-                    margin: 12px 0;
-                }
-
-                .message.user .markdown-content hr {
-                    border-top-color: rgba(255, 255, 255, 0.3);
-                }
-
-                .message.assistant .markdown-content hr {
-                    border-top-color: #e2e8f0;
-                }
-
-                .markdown-content table {
-                    border-collapse: collapse;
-                    margin: 8px 0;
-                    width: 100%;
-                }
-
-                .markdown-content th,
-                .markdown-content td {
-                    border: 1px solid;
-                    padding: 6px 10px;
-                    text-align: left;
-                }
-
-                .message.user .markdown-content th,
-                .message.user .markdown-content td {
-                    border-color: rgba(255, 255, 255, 0.3);
-                }
-
-                .message.assistant .markdown-content th,
-                .message.assistant .markdown-content td {
-                    border-color: #e2e8f0;
-                }
-
-                .markdown-content th {
-                    font-weight: 600;
-                }
-
-                .message.user .markdown-content th {
-                    background: rgba(255, 255, 255, 0.1);
-                }
-
-                .message.assistant .markdown-content th {
-                    background: #f8fafc;
-                }
-
-                /* Multi-Agent Chat Controls */
-                .chat-controls {
-                    display: flex;
-                    align-items: center;
-                    gap: 16px;
-                    margin-left: 16px;
-                }
-
-                .chat-mode-selector {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .control-label {
-                    font-size: 12px;
-                    font-weight: 500;
-                    color: #64748b;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .chat-mode-select {
-                    padding: 4px 8px;
-                    border: 1px solid #d1d5db;
-                    border-radius: 6px;
-                    font-size: 12px;
-                    background: white;
-                    color: #374151;
-                    cursor: pointer;
-                    transition: border-color 0.2s;
-                }
-
-                .chat-mode-select:focus {
-                    outline: none;
-                    border-color: #3b82f6;
-                }
-
-                .multi-agent-toggle {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .toggle-checkbox {
-                    margin-right: 6px;
-                    cursor: pointer;
-                }
-
-                .optimizations-button {
-                    padding: 4px 12px;
-                    background: #f3f4f6;
-                    border: 1px solid #d1d5db;
-                    border-radius: 6px;
-                    font-size: 12px;
-                    color: #374151;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-
-                .optimizations-button:hover {
-                    background: #e5e7eb;
-                    border-color: #9ca3af;
-                }
-
-                .memory-button {
-                    padding: 4px 12px;
-                    background: #f0f9ff;
-                    border: 1px solid #0ea5e9;
-                    border-radius: 6px;
-                    font-size: 12px;
-                    color: #0369a1;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                }
-
-                .memory-button:hover {
-                    background: #e0f2fe;
-                    border-color: #0284c7;
-                    transform: translateY(-1px);
-                }
-
-                /* Multi-Agent Message Features */
-                .cache-hit-badge {
-                    background: #dcfce7;
-                    color: #166534;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 10px;
-                    font-weight: 600;
-                    margin-left: 8px;
-                }
-
-                .risk-badge {
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 10px;
-                    font-weight: 600;
-                    margin-left: 8px;
-                }
-
-                .risk-medium {
-                    background: #fef3c7;
-                    color: #92400e;
-                }
-
-                .risk-high {
-                    background: #fee2e2;
-                    color: #991b1b;
-                }
-
-                .optimizations-display {
-                    margin-top: 12px;
-                    padding: 12px;
-                    background: #f8fafc;
-                    border-radius: 8px;
-                    border: 1px solid #e2e8f0;
-                }
-
-                .optimizations-header {
-                    margin-bottom: 8px;
-                }
-
-                .optimizations-title {
-                    font-size: 12px;
-                    font-weight: 600;
-                    color: #374151;
-                }
-
-                .optimizations-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 6px;
-                    margin-bottom: 8px;
-                }
-
-                .optimization-tag {
-                    background: #dbeafe;
-                    color: #1e40af;
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    font-size: 11px;
-                    font-weight: 500;
-                }
-
-                .agent-path {
-                    margin-top: 8px;
-                }
-
-                .agent-path-title {
-                    font-size: 12px;
-                    font-weight: 600;
-                    color: #374151;
-                    display: block;
-                    margin-bottom: 4px;
-                }
-
-                .agent-path-flow {
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    gap: 4px;
-                }
-
-                .agent-step {
-                    background: #f1f5f9;
-                    color: #475569;
-                    padding: 2px 6px;
-                    border-radius: 6px;
-                    font-size: 10px;
-                    font-weight: 500;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                }
-
-                .arrow {
-                    color: #9ca3af;
-                    font-weight: normal;
-                }
-
-                /* Enhanced Multi-Agent Display Styles */
-                .multi-agent-display {
-                    margin-top: 14px;
-                    padding: 16px;
-                    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-                    border-radius: 12px;
-                    border: 1px solid #e2e8f0;
-                    font-size: 12px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-                }
-
-                .cache-hit-indicator {
-                    margin-bottom: 12px;
-                }
-
-                .cache-badge {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                    color: white;
-                    padding: 6px 12px;
-                    border-radius: 20px;
-                    font-size: 11px;
-                    font-weight: 600;
-                    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-                }
-
-                .optimizations-section, .agent-flow-section {
-                    margin-bottom: 12px;
-                }
-
-                .section-header {
-                    margin-bottom: 8px;
-                }
-
-                .section-title {
-                    font-weight: 600;
-                    color: #374151;
-                    font-size: 12px;
-                }
-
-                .optimizations-grid {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 6px;
-                }
-
-                .optimization-tag {
-                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-                    color: #1e40af;
-                    padding: 4px 10px;
-                    border-radius: 14px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    border: 1px solid #93c5fd;
-                    transition: all 0.2s;
-                }
-
-                .optimization-tag.prompt-refinement {
-                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                    color: #92400e;
-                    border-color: #f59e0b;
-                }
-
-                .optimization-tag.semantic-cache {
-                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-                    color: #065f46;
-                    border-color: #10b981;
-                }
-
-                .agent-flow-container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    gap: 4px;
-                }
-
-                .agent-flow-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .agent-step {
-                    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-                    color: #065f46;
-                    padding: 4px 8px;
-                    border-radius: 10px;
-                    font-size: 10px;
-                    font-weight: 500;
-                    border: 1px solid #a7f3d0;
-                }
-
-                .agent-step.master-agent {
-                    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-                    color: #5b21b6;
-                    border-color: #a78bfa;
-                }
-
-                .agent-step.cost-optimizer {
-                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                    color: #92400e;
-                    border-color: #f59e0b;
-                }
-
-                .agent-step.quality-analyst {
-                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-                    color: #1e40af;
-                    border-color: #3b82f6;
-                }
-
-                .flow-arrow {
-                    color: #6b7280;
-                    font-weight: bold;
-                    font-size: 12px;
-                }
-
-                .performance-metrics {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                    padding-top: 8px;
-                    border-top: 1px solid #e5e7eb;
-                }
-
-                .metric-item {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .risk-badge, .quality-badge, .time-badge {
-                    padding: 3px 8px;
-                    border-radius: 10px;
-                    font-size: 10px;
-                    font-weight: 600;
-                }
-
-                .risk-badge.risk-low {
-                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-                    color: #065f46;
-                    border: 1px solid #10b981;
-                }
-
-                .risk-badge.risk-medium {
-                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                    color: #92400e;
-                    border: 1px solid #f59e0b;
-                }
-
-                .risk-badge.risk-high {
-                    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
-                    color: #991b1b;
-                    border: 1px solid #ef4444;
-                }
-
-                .quality-badge.quality-excellent {
-                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-                    color: #065f46;
-                    border: 1px solid #10b981;
-                }
-
-                .quality-badge.quality-good {
-                    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-                    color: #1e40af;
-                    border: 1px solid #3b82f6;
-                }
-
-                .quality-badge.quality-fair {
-                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                    color: #92400e;
-                    border: 1px solid #f59e0b;
-                }
-
-                .quality-badge.quality-poor {
-                    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
-                    color: #991b1b;
-                    border: 1px solid #ef4444;
-                }
-
-                .time-badge {
-                    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-                    color: #374151;
-                    border: 1px solid #d1d5db;
-                }
-
-                /* Loading Suggestions Styles */
-                .loading-suggestions {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 40px 20px;
-                    text-align: center;
-                }
-
-                .loading-spinner {
-                    width: 32px;
-                    height: 32px;
-                    border: 3px solid #e2e8f0;
-                    border-top: 3px solid #3b82f6;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                    margin-bottom: 16px;
-                }
-
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-
-                .loading-suggestions p {
-                    color: #64748b;
-                    font-size: 14px;
-                    font-weight: 500;
-                    margin: 0;
-                }
-
-                /* Responsive adjustments */
-                @media (max-width: 768px) {
-                    .chat-controls {
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 8px;
-                        margin-left: 0;
-                        margin-top: 8px;
-                    }
-                    
-                    .optimizations-display {
-                        padding: 8px;
-                    }
-                    
-                    .agent-path-flow {
-                        flex-direction: column;
-                        align-items: flex-start;
-                    }
-                }
-            `}</style>
     </div>
   );
 };

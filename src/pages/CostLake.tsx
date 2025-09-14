@@ -69,17 +69,17 @@ export const CostLake: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6">
         <div className="px-6 py-8 mx-auto max-w-7xl">
           <div className="flex gap-4 items-center mb-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Database className="w-8 h-8 text-blue-600" />
+            <div className="p-3 glass rounded-xl border border-accent-200/30 bg-gradient-to-r from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50">
+              <Database className="w-8 h-8 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Cost Lake</h1>
-              <p className="mt-1 text-gray-600">
+              <h1 className="text-3xl font-display font-bold gradient-text-primary">Cost Lake</h1>
+              <p className="mt-1 text-light-text-secondary dark:text-dark-text-secondary">
                 Unified telemetry lake with semantic search and AI-powered cost analysis
               </p>
             </div>
@@ -87,25 +87,25 @@ export const CostLake: React.FC = () => {
 
           {/* Key Features */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="flex gap-3 items-center p-4 bg-blue-50 rounded-lg">
-              <Sparkles className="w-5 h-5 text-blue-600" />
+            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+              <Sparkles className="w-5 h-5 text-primary-600 dark:text-primary-400" />
               <div>
-                <div className="font-medium text-blue-900">Natural Language Queries</div>
-                <div className="text-sm text-blue-700">Ask "why did costs spike?" in plain English</div>
+                <div className="font-medium text-primary-900 dark:text-primary-100">Natural Language Queries</div>
+                <div className="text-sm text-primary-700 dark:text-primary-300">Ask "why did costs spike?" in plain English</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 bg-green-50 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+              <TrendingUp className="w-5 h-5 text-success-600 dark:text-success-400" />
               <div>
-                <div className="font-medium text-green-900">Semantic Search</div>
-                <div className="text-sm text-green-700">Find patterns and anomalies automatically</div>
+                <div className="font-medium text-success-900 dark:text-success-100">Semantic Search</div>
+                <div className="text-sm text-success-700 dark:text-success-300">Find patterns and anomalies automatically</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 bg-purple-50 rounded-lg">
-              <Brain className="w-5 h-5 text-purple-600" />
+            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+              <Brain className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               <div>
-                <div className="font-medium text-purple-900">AI-Powered Insights</div>
-                <div className="text-sm text-purple-700">Get intelligent cost narratives</div>
+                <div className="font-medium text-secondary-900 dark:text-secondary-100">AI-Powered Insights</div>
+                <div className="text-sm text-secondary-700 dark:text-secondary-300">Get intelligent cost narratives</div>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ export const CostLake: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6">
         <div className="px-6 mx-auto max-w-7xl">
           <nav className="flex space-x-8">
             {tabs.map((tab) => {
@@ -122,9 +122,9 @@ export const CostLake: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${activeTab === tab.id
+                    ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                    : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-300/50'
                     }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -141,8 +141,8 @@ export const CostLake: React.FC = () => {
         {activeTab === 'query' && (
           <div>
             <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-bold text-gray-900">Ask Anything About Your Costs</h2>
-              <p className="text-gray-600">
+              <h2 className="mb-2 text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Ask Anything About Your Costs</h2>
+              <p className="text-light-text-secondary dark:text-dark-text-secondary">
                 Use natural language to query your telemetry data. Ask questions like "What are my most expensive AI operations?"
                 or "Show me slow requests that cost more than $0.01"
               </p>
@@ -156,8 +156,8 @@ export const CostLake: React.FC = () => {
             {showNotebookGallery ? (
               <div>
                 <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold text-gray-900">Analysis Notebooks</h2>
-                  <p className="text-gray-600">
+                  <h2 className="mb-2 text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Analysis Notebooks</h2>
+                  <p className="text-light-text-secondary dark:text-dark-text-secondary">
                     Create and execute interactive cost analysis notebooks with embedded queries,
                     visualizations, and AI-generated insights.
                   </p>
@@ -172,7 +172,7 @@ export const CostLake: React.FC = () => {
                 <div className="mb-6">
                   <button
                     onClick={handleBackToGallery}
-                    className="font-medium text-blue-600 hover:text-blue-800"
+                    className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-300"
                   >
                     ← Back to Notebooks
                   </button>
@@ -189,8 +189,8 @@ export const CostLake: React.FC = () => {
         {activeTab === 'vectorization' && (
           <div>
             <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-bold text-gray-900">Vector Search Setup</h2>
-              <p className="text-gray-600">
+              <h2 className="mb-2 text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Vector Search Setup</h2>
+              <p className="text-light-text-secondary dark:text-dark-text-secondary">
                 Configure and manage semantic search capabilities for your telemetry data
               </p>
             </div>
@@ -207,8 +207,8 @@ export const CostLake: React.FC = () => {
         {activeTab === 'telemetry' && (
           <div>
             <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-bold text-gray-900">Telemetry Data Management</h2>
-              <p className="text-gray-600">
+              <h2 className="mb-2 text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Telemetry Data Management</h2>
+              <p className="text-light-text-secondary dark:text-dark-text-secondary">
                 View your telemetry records and vectorize them for semantic search capabilities.
                 Vectorized data enables natural language queries and AI-powered insights.
               </p>

@@ -36,11 +36,19 @@ const MetricCard: React.FC<MetricCardProps> = ({
     color = 'blue'
 }) => {
     const colorClasses = {
-        green: 'bg-green-50 text-green-700 border-green-200',
-        blue: 'bg-blue-50 text-blue-700 border-blue-200',
-        purple: 'bg-purple-50 text-purple-700 border-purple-200',
-        yellow: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-        red: 'bg-red-50 text-red-700 border-red-200',
+        green: 'bg-gradient-success/10 text-success-700 dark:text-success-300 border border-success-200/30',
+        blue: 'bg-gradient-primary/10 text-primary-700 dark:text-primary-300 border border-primary-200/30',
+        purple: 'bg-gradient-accent/10 text-accent-700 dark:text-accent-300 border border-accent-200/30',
+        yellow: 'bg-gradient-warning/10 text-warning-700 dark:text-warning-300 border border-warning-200/30',
+        red: 'bg-gradient-danger/10 text-danger-700 dark:text-danger-300 border border-danger-200/30',
+    };
+
+    const iconBgClasses = {
+        green: 'bg-gradient-success glow-success',
+        blue: 'bg-gradient-primary glow-primary',
+        purple: 'bg-gradient-accent glow-accent',
+        yellow: 'bg-gradient-warning glow-warning',
+        red: 'bg-gradient-danger glow-danger',
     };
 
     const trendIcons = {
@@ -50,21 +58,23 @@ const MetricCard: React.FC<MetricCardProps> = ({
     };
 
     return (
-        <div className={`p-4 rounded-lg border ${colorClasses[color]}`}>
+        <div className={`p-6 rounded-xl glass backdrop-blur-xl shadow-lg animate-fade-in hover:scale-105 transition-all duration-300 ${colorClasses[color]}`}>
             <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                    <Icon className="h-5 w-5" />
+                <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-lg ${iconBgClasses[color]}`}>
+                        <Icon className="h-5 w-5 text-white" />
+                    </div>
                     <div>
-                        <div className="text-sm font-medium">{title}</div>
+                        <div className="text-sm font-display font-semibold">{title}</div>
                         {subtitle && (
-                            <div className="text-xs opacity-75 mt-1">{subtitle}</div>
+                            <div className="text-xs font-body opacity-75 mt-1">{subtitle}</div>
                         )}
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-lg font-bold flex items-center space-x-1">
+                    <div className="text-xl font-display font-bold flex items-center space-x-2 gradient-text">
                         <span>{value}</span>
-                        <span className="text-sm">{trendIcons[trend]}</span>
+                        <span className="text-lg">{trendIcons[trend]}</span>
                     </div>
                 </div>
             </div>
@@ -79,12 +89,12 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 }) => {
     if (loading) {
         return (
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center space-x-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+            <div className="card p-6 animate-fade-in">
+                <div className="flex items-center space-x-4">
+                    <div className="spinner"></div>
                     <div>
-                        <div className="text-sm font-medium text-gray-900">Processing with Cortex...</div>
-                        <div className="text-xs text-gray-500">Optimizing semantic structure</div>
+                        <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Processing with Cortex...</div>
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Optimizing semantic structure</div>
                     </div>
                 </div>
             </div>
@@ -93,12 +103,14 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 
     if (error) {
         return (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2">
-                    <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
+            <div className="bg-gradient-danger/10 border border-danger-200/30 rounded-xl p-4 glass backdrop-blur-xl animate-scale-in">
+                <div className="flex items-center space-x-3">
+                    <div className="bg-gradient-danger p-2 rounded-lg glow-danger">
+                        <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+                    </div>
                     <div>
-                        <div className="text-sm font-medium text-red-800">Cortex Processing Error</div>
-                        <div className="text-xs text-red-600 mt-1">{error}</div>
+                        <div className="text-sm font-display font-semibold text-danger-700 dark:text-danger-300">Cortex Processing Error</div>
+                        <div className="text-xs font-body text-danger-600 dark:text-danger-400 mt-1">{error}</div>
                     </div>
                 </div>
             </div>
@@ -107,10 +119,12 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 
     if (!metadata?.cortex) {
         return (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2">
-                    <InformationCircleIcon className="h-5 w-5 text-gray-500" />
-                    <div className="text-sm text-gray-600">No Cortex optimization data available</div>
+            <div className="card p-4 animate-fade-in">
+                <div className="flex items-center space-x-3">
+                    <div className="bg-gradient-accent/20 p-2 rounded-lg">
+                        <InformationCircleIcon className="h-5 w-5 text-accent-600" />
+                    </div>
+                    <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">No Cortex optimization data available</div>
                 </div>
             </div>
         );
@@ -120,25 +134,27 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
     const hasError = cortex.error || cortex.fallbackUsed;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2">
-                        <SparklesIcon className="h-6 w-6 text-purple-600" />
-                        <h3 className="text-lg font-semibold text-gray-900">Cortex Results</h3>
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
+                        <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
+                            <SparklesIcon className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-display font-bold gradient-text">Cortex Results</h3>
                     </div>
                     {!hasError && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <CheckCircleIcon className="w-3 h-3 mr-1" />
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-display font-semibold bg-gradient-success text-white shadow-lg glow-success animate-pulse">
+                            <CheckCircleIcon className="w-4 h-4 mr-2" />
                             Success
                         </span>
                     )}
                 </div>
 
                 {hasError && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        <ExclamationTriangleIcon className="w-3 h-3 mr-1" />
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-display font-semibold bg-gradient-warning text-white shadow-lg glow-warning">
+                        <ExclamationTriangleIcon className="w-4 h-4 mr-2" />
                         Fallback Used
                     </span>
                 )}
@@ -146,9 +162,9 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 
             {/* Error Message */}
             {cortex.error && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <div className="text-sm text-yellow-800">
-                        <strong>Note:</strong> {cortex.error}
+                <div className="bg-gradient-warning/10 border border-warning-200/30 rounded-xl p-4 glass backdrop-blur-xl animate-scale-in">
+                    <div className="text-sm font-body text-warning-700 dark:text-warning-300 leading-relaxed">
+                        <strong className="font-display font-semibold">Note:</strong> {cortex.error}
                         {cortex.fallbackUsed && " - Traditional optimization was used as fallback."}
                     </div>
                 </div>
@@ -215,53 +231,55 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
             </div>
 
             {/* Model Information */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-3">
-                    <CpuChipIcon className="h-5 w-5 text-gray-600" />
-                    <h4 className="text-sm font-medium text-gray-900">Processing Pipeline</h4>
+            <div className="card p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                    <div className="bg-gradient-secondary/20 p-2 rounded-lg">
+                        <CpuChipIcon className="h-5 w-5 text-secondary-600" />
+                    </div>
+                    <h4 className="text-lg font-display font-semibold gradient-text">Processing Pipeline</h4>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                        <div className="text-gray-500">Encoder</div>
-                        <div className="font-medium text-gray-900">{cortex.cortexModel?.encoder || 'Claude Haiku'}</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div className="glass p-4 rounded-xl border border-primary-200/30">
+                        <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Encoder</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{cortex.cortexModel?.encoder || 'Claude Haiku'}</div>
                     </div>
-                    <div>
-                        <div className="text-gray-500">Core Processor</div>
-                        <div className="font-medium text-gray-900">{cortex.cortexModel?.core || 'Claude Haiku'}</div>
+                    <div className="glass p-4 rounded-xl border border-primary-200/30">
+                        <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Core Processor</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{cortex.cortexModel?.core || 'Claude Haiku'}</div>
                     </div>
-                    <div>
-                        <div className="text-gray-500">Decoder</div>
-                        <div className="font-medium text-gray-900">{cortex.cortexModel?.decoder || 'Claude Haiku'}</div>
+                    <div className="glass p-4 rounded-xl border border-primary-200/30">
+                        <div className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Decoder</div>
+                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{cortex.cortexModel?.decoder || 'Claude Haiku'}</div>
                     </div>
                 </div>
             </div>
 
             {/* Performance Summary */}
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
-                <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-700">
-                        {Math.round(cortex.reductionPercentage)}% Token Reduction
-                    </div>
-                    <div className="text-sm text-purple-600 mt-1">
-                        Cortex achieved {cortex.tokensSaved} token savings while maintaining{' '}
-                        {Math.round(cortex.semanticIntegrity * 100)}% semantic integrity
-                    </div>
-                    {!hasError && (
-                        <div className="text-xs text-purple-500 mt-2">
-                            ✨ Optimized using advanced semantic processing
-                        </div>
-                    )}
+            <div className="bg-gradient-primary/10 border border-primary-200/30 rounded-xl p-6 glass backdrop-blur-xl text-center animate-scale-in">
+                <div className="text-4xl font-display font-bold gradient-text mb-3">
+                    {Math.round(cortex.reductionPercentage)}% Token Reduction
                 </div>
+                <div className="text-lg font-body text-primary-600 dark:text-primary-400 mb-2">
+                    Cortex achieved <span className="font-display font-semibold gradient-text">{cortex.tokensSaved}</span> token savings while maintaining{' '}
+                    <span className="font-display font-semibold gradient-text">{Math.round(cortex.semanticIntegrity * 100)}%</span> semantic integrity
+                </div>
+                {!hasError && (
+                    <div className="text-sm font-body text-primary-500 dark:text-primary-400 mt-3 flex items-center justify-center space-x-2">
+                        <span>✨</span>
+                        <span>Optimized using advanced semantic processing</span>
+                        <span>✨</span>
+                    </div>
+                )}
             </div>
 
             {/* Debug Information (Development) */}
             {cortex.detailsForDebugging && import.meta.env?.DEV && (
-                <details className="bg-gray-100 rounded-lg">
-                    <summary className="px-4 py-2 cursor-pointer text-sm font-medium text-gray-700">
+                <details className="card">
+                    <summary className="px-4 py-3 cursor-pointer text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-primary-500 transition-colors duration-300">
                         Debug Information
                     </summary>
-                    <div className="px-4 pb-4 text-xs text-gray-600">
-                        <pre className="whitespace-pre-wrap">
+                    <div className="px-4 pb-4 text-xs font-mono text-light-text-secondary dark:text-dark-text-secondary">
+                        <pre className="whitespace-pre-wrap bg-dark-bg-primary text-dark-text-primary p-3 rounded-lg overflow-auto">
                             {JSON.stringify(cortex.detailsForDebugging, null, 2)}
                         </pre>
                     </div>

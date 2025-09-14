@@ -78,32 +78,35 @@ export const Settings: React.FC = () => {
   ];
 
   return (
-    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-2 text-gray-600">
-          Manage your account settings and preferences
-        </p>
-      </div>
-
-      <div className="bg-white rounded-lg shadow">
-        <div className="flex border-b border-gray-200">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-            >
-              <tab.icon className="mx-auto mb-1 w-5 h-5" />
-              {tab.name}
-            </button>
-          ))}
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 px-4 py-8">
+      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8 mb-8">
+          <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">Settings</h1>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+            Manage your account settings and preferences
+          </p>
         </div>
 
-        <div className="p-6">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2 mb-6">
+            <div className="flex">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-3 px-4 text-center font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === tab.id
+                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                    : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10'
+                    }`}
+                >
+                  <tab.icon className="mx-auto mb-1 w-5 h-5" />
+                  {tab.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-6">
           {activeTab === 'profile' && (
             <ProfileSettings
               profile={profile}
@@ -130,6 +133,7 @@ export const Settings: React.FC = () => {
               }}
             />
           )}
+          </div>
         </div>
       </div>
     </div>

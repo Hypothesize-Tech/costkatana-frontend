@@ -41,10 +41,10 @@ export const LoginForm = () => {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-8 animate-fade-in" onSubmit={handleSubmit(onSubmit)}>
       {errors.root && (
-        <div className="p-4 rounded-md bg-danger-50 dark:bg-danger-900/50">
-          <p className="text-sm text-danger-800 dark:text-danger-200">
+        <div className="p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+          <p className="text-sm font-medium text-danger-800 dark:text-danger-200">
             {errors.root.message}
           </p>
         </div>
@@ -84,13 +84,13 @@ export const LoginForm = () => {
           />
           <button
             type="button"
-            className="flex absolute inset-y-0 right-0 items-center pr-3"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 transition-colors duration-300"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? (
-              <EyeSlashIcon className="w-5 h-5 text-gray-400" />
+              <EyeSlashIcon className="w-5 h-5" />
             ) : (
-              <EyeIcon className="w-5 h-5 text-gray-400" />
+              <EyeIcon className="w-5 h-5" />
             )}
           </button>
           {errors.password && (
@@ -107,20 +107,20 @@ export const LoginForm = () => {
             id="remember-me"
             name="remember-me"
             type="checkbox"
-            className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+            className="w-4 h-4 rounded border-primary-300 text-primary-600 focus:ring-primary-500 focus:ring-opacity-50"
           />
           <label
             htmlFor="remember-me"
-            className="block ml-3 text-sm leading-6 text-gray-900 dark:text-gray-300"
+            className="block ml-3 text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary"
           >
             Remember me
           </label>
         </div>
 
-        <div className="text-sm leading-6">
+        <div className="text-sm">
           <Link
             to="/forgot-password"
-            className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+            className="font-display font-semibold gradient-text hover:text-primary-400 transition-colors duration-300"
           >
             Forgot password?
           </Link>
@@ -137,11 +137,11 @@ export const LoginForm = () => {
         </button>
       </div>
 
-      <p className="text-sm leading-6 text-center text-gray-500 dark:text-gray-400">
+      <p className="text-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
         Not a member?{" "}
         <Link
           to="/register"
-          className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+          className="font-display font-semibold gradient-text hover:text-primary-400 transition-colors duration-300"
         >
           Create an account
         </Link>

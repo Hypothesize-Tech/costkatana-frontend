@@ -186,79 +186,81 @@ const PromptTemplates: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
-            Prompt Templates
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Create, manage, and use reusable prompt templates
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex gap-2 items-center px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
-          >
-            <FiPlus className="w-5 h-5" />
-            New Template
-          </button>
-          <Link
-            to="/templates/use"
-            className="flex gap-2 items-center px-6 py-3 text-green-600 bg-green-50 rounded-xl border-2 border-green-200 transition-all dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-300 dark:hover:border-green-700"
-          >
-            <FiPlay className="w-5 h-5" />
-            Use Template
-          </Link>
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8 mb-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">
+              Prompt Templates
+            </h1>
+            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
+              Create, manage, and use reusable prompt templates
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="btn-primary flex gap-2 items-center px-6 py-3"
+            >
+              <FiPlus className="w-5 h-5" />
+              New Template
+            </button>
+            <Link
+              to="/templates/use"
+              className="btn-secondary flex gap-2 items-center px-6 py-3"
+            >
+              <FiPlay className="w-5 h-5" />
+              Use Template
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 transition-all hover:shadow-2xl">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-blue-100 rounded-xl dark:bg-blue-900/30">
-              <FiBookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-xl">
+              <FiBookOpen className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                 Total Templates
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                 {templates.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 transition-all hover:shadow-2xl">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-yellow-100 rounded-xl dark:bg-yellow-900/30">
-              <FiStar className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-accent-500/20 to-accent-600/20 rounded-xl">
+              <FiStar className="w-6 h-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                 Favorites
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                 {templates.filter((t) => t.isFavorite).length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 transition-all hover:shadow-2xl">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-green-100 rounded-xl dark:bg-green-900/30">
-              <FiTrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-success-500/20 to-success-600/20 rounded-xl">
+              <FiTrendingUp className="w-6 h-6 text-success-600 dark:text-success-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                 Most Used
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                 {templates.reduce(
                   (max, t) => Math.max(max, t.usage?.count || 0),
                   0,
@@ -268,16 +270,16 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 hover:shadow-xl">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 transition-all hover:shadow-2xl">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-purple-100 rounded-xl dark:bg-purple-900/30">
-              <FiTag className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-secondary-500/20 to-secondary-600/20 rounded-xl">
+              <FiTag className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                 Categories
               </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                 {new Set(templates.map((t) => t.category)).size}
               </p>
             </div>

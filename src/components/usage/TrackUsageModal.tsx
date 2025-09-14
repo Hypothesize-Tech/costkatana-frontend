@@ -295,19 +295,19 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
     <div className="overflow-y-auto fixed inset-0 z-50">
       <div className="flex justify-center items-center p-4 min-h-screen">
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         />
 
-        <div className="relative bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="sticky top-0 px-6 py-4 bg-white border-b border-gray-200">
+        <div className="relative glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+          <div className="sticky top-0 px-6 py-4 glass border-b border-accent-200/30 rounded-t-xl">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-display font-bold gradient-text-primary">
                 Track API Usage
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600"
+                className="btn-icon-secondary"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -318,13 +318,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Service and Model Selection */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   AI Service
                 </label>
                 <select
                   value={formData.provider}
                   onChange={(e) => handleChange("provider", e.target.value)}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50"
                   required
                 >
                   {aiServices.map((service) => (
@@ -336,13 +336,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Model
                 </label>
                 <select
                   value={formData.model}
                   onChange={(e) => handleChange("model", e.target.value)}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50"
                   required
                 >
                   {getModelsForService(formData.provider).map((model) => (
@@ -357,7 +357,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Prompt and Response */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Prompt
                 </label>
                 {formData.prompt && (
@@ -366,7 +366,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     onClick={() =>
                       setShowOptimizationWidget(!showOptimizationWidget)
                     }
-                    className="text-sm text-indigo-600 hover:text-indigo-500"
+                    className="text-sm font-display font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                   >
                     {showOptimizationWidget ? "Hide" : "Optimize"} Prompt
                   </button>
@@ -376,7 +376,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 value={formData.prompt}
                 onChange={(e) => handleChange("prompt", e.target.value)}
                 rows={3}
-                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400 resize-none"
                 placeholder="Enter the prompt you sent to the AI..."
                 required
               />
@@ -384,7 +384,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Optimization Widget */}
             {showOptimizationWidget && formData.prompt && (
-              <div className="p-4 mt-4 bg-gray-50 rounded-lg">
+              <div className="p-4 mt-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
                 <OptimizationWidget
                   prompt={formData.prompt}
                   model={formData.model}
@@ -395,14 +395,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Response (Optional)
               </label>
               <textarea
                 value={formData.response}
                 onChange={(e) => handleChange("response", e.target.value)}
                 rows={3}
-                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400 resize-none"
                 placeholder="Enter the AI's response..."
               />
             </div>
@@ -424,11 +424,11 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       setTimeout(triggerCalculation, 100);
                     }
                   }}
-                  className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                  className="w-4 h-4 text-primary-600 rounded border-accent-300 focus:ring-primary-500"
                 />
                 <label
                   htmlFor="autoCalculate"
-                  className="ml-2 text-sm text-gray-700"
+                  className="ml-2 text-sm font-body text-light-text-primary dark:text-dark-text-primary"
                 >
                   Auto-calculate tokens and cost
                 </label>
@@ -437,7 +437,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <button
                   type="button"
                   onClick={triggerCalculation}
-                  className="px-3 py-1 text-sm text-indigo-600 rounded-md border border-indigo-300 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="btn-secondary text-sm"
                 >
                   Calculate Now
                 </button>
@@ -447,7 +447,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Token Counts */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Prompt Tokens
                 </label>
                 <input
@@ -456,14 +456,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleChange("promptTokens", parseInt(e.target.value) || 0)
                   }
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Completion Tokens
                 </label>
                 <input
@@ -475,26 +475,26 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       parseInt(e.target.value) || 0,
                     )
                   }
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Total Tokens
                 </label>
                 <input
                   type="number"
                   value={formData.totalTokens}
-                  className="block mt-1 w-full bg-gray-50 rounded-md border-gray-300 shadow-sm sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 text-base font-body border-accent-200/50 disabled:opacity-50"
                   disabled
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Cost ($)
                 </label>
                 <input
@@ -507,7 +507,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     )
                   }
                   step="0.0001"
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
@@ -516,7 +516,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Response Time */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Response Time (ms)
               </label>
               <input
@@ -525,7 +525,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 onChange={(e) =>
                   handleChange("responseTime", parseInt(e.target.value) || 0)
                 }
-                className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
                 placeholder="Optional: Time taken for the API call"
               />
             </div>
@@ -533,7 +533,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Metadata */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Project (Optional)
                 </label>
                 <input
@@ -542,20 +542,20 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleMetadataChange("project", e.target.value)
                   }
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
                   placeholder="e.g., Customer Support Bot"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Tags (Optional)
                 </label>
                 <input
                   type="text"
                   value={formData.metadata.tags}
                   onChange={(e) => handleMetadataChange("tags", e.target.value)}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
                   placeholder="e.g., support, production"
                 />
               </div>
@@ -564,51 +564,51 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Email Fields */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   User Email (Optional)
                 </label>
                 <input
                   type="email"
                   value={formData.userEmail}
                   onChange={(e) => handleChange("userEmail", e.target.value)}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
                   placeholder="developer@company.com"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                   Email of the developer/integrator
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Customer Email (Optional)
                 </label>
                 <input
                   type="email"
                   value={formData.customerEmail}
                   onChange={(e) => handleChange("customerEmail", e.target.value)}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
                   placeholder="client@client.com"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                   Email of the end customer/client
                 </p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end pt-4 space-x-3 border-t border-gray-200">
+            <div className="flex justify-end pt-4 space-x-3 border-t border-accent-200/30">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={trackUsageMutation.isLoading}
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {trackUsageMutation.isLoading ? (
                   <>

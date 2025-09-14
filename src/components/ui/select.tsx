@@ -39,27 +39,27 @@ export const Select: React.FC<SelectProps> = ({ value, onValueChange, children }
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(child as React.ReactElement<any>, {
-              isOpen,
-              setIsOpen,
-              selectedValue,
-              handleSelect,
-            })
+            isOpen,
+            setIsOpen,
+            selectedValue,
+            handleSelect,
+          })
           : child
       )}
     </div>
   );
 };
 
-export const SelectTrigger: React.FC<SelectTriggerProps & any> = ({ 
-  children, 
-  className = '', 
-  isOpen, 
-  setIsOpen 
+export const SelectTrigger: React.FC<SelectTriggerProps & any> = ({
+  children,
+  className = '',
+  isOpen,
+  setIsOpen
 }) => {
   return (
     <button
       type="button"
-      className={`w-full px-3 py-2 text-left border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${className}`}
+      className={`w-full px-4 py-3 text-left glass border border-primary-200/30 rounded-xl backdrop-blur-xl text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-300 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary ${className}`}
       onClick={() => setIsOpen?.(!isOpen)}
     >
       <div className="flex items-center justify-between">
@@ -77,15 +77,15 @@ export const SelectTrigger: React.FC<SelectTriggerProps & any> = ({
   );
 };
 
-export const SelectContent: React.FC<SelectContentProps & any> = ({ 
-  children, 
-  isOpen, 
-  handleSelect 
+export const SelectContent: React.FC<SelectContentProps & any> = ({
+  children,
+  isOpen,
+  handleSelect
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+    <div className="absolute z-50 w-full mt-2 glass border border-primary-200/30 rounded-xl shadow-xl backdrop-blur-xl max-h-60 overflow-auto">
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(child as React.ReactElement<any>, { handleSelect })
@@ -95,14 +95,14 @@ export const SelectContent: React.FC<SelectContentProps & any> = ({
   );
 };
 
-export const SelectItem: React.FC<SelectItemProps & any> = ({ 
-  value, 
-  children, 
-  handleSelect 
+export const SelectItem: React.FC<SelectItemProps & any> = ({
+  value,
+  children,
+  handleSelect
 }) => {
   return (
     <div
-      className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 text-gray-900"
+      className="px-4 py-3 text-sm font-body cursor-pointer hover:bg-primary-50 dark:hover:bg-primary-900/20 text-light-text-primary dark:text-dark-text-primary transition-all duration-200 hover:scale-105"
       onClick={() => handleSelect?.(value)}
     >
       {children}
@@ -110,12 +110,12 @@ export const SelectItem: React.FC<SelectItemProps & any> = ({
   );
 };
 
-export const SelectValue: React.FC<SelectValueProps & any> = ({ 
-  placeholder, 
-  selectedValue 
+export const SelectValue: React.FC<SelectValueProps & any> = ({
+  placeholder,
+  selectedValue
 }) => {
   return (
-    <span className={selectedValue ? 'text-gray-900' : 'text-gray-500'}>
+    <span className={selectedValue ? 'text-light-text-primary dark:text-dark-text-primary' : 'text-light-text-tertiary dark:text-dark-text-tertiary'}>
       {selectedValue || placeholder}
     </span>
   );

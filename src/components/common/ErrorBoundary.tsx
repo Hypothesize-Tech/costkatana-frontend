@@ -33,11 +33,17 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-          <div className="max-w-md w-full text-center">
+        <div className="min-h-screen flex items-center justify-center light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient px-4 relative overflow-hidden">
+          {/* Ambient glow effects */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-danger-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="max-w-md w-full text-center relative z-10 animate-fade-in">
             <div className="mb-8">
-              <div className="mx-auto h-24 w-24 text-danger-500">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="mx-auto w-24 h-24 bg-gradient-danger p-4 rounded-2xl shadow-2xl glow-danger animate-pulse">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full text-white">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -48,20 +54,20 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-display font-bold gradient-text mb-4">
               Oops! Something went wrong
             </h1>
 
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
+            <p className="text-light-text-secondary dark:text-dark-text-secondary mb-8 font-body leading-relaxed">
               We're sorry for the inconvenience. Please try refreshing the page.
             </p>
 
             {this.state.error && import.meta.env.MODE === "development" && (
-              <details className="mb-8 text-left bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-                <summary className="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+              <details className="mb-8 text-left card p-4 animate-scale-in">
+                <summary className="cursor-pointer text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary hover:text-primary-500 transition-colors duration-300">
                   Error details (Development only)
                 </summary>
-                <pre className="mt-2 text-xs text-danger-600 dark:text-danger-400 overflow-auto">
+                <pre className="mt-3 text-xs text-danger-600 dark:text-danger-400 overflow-auto font-mono bg-dark-bg-primary text-dark-text-primary p-3 rounded-lg">
                   {this.state.error.stack}
                 </pre>
               </details>
@@ -69,7 +75,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <button
               onClick={() => window.location.reload()}
-              className="btn-primary"
+              className="btn-primary font-display font-semibold"
             >
               Refresh Page
             </button>

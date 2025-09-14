@@ -129,7 +129,7 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="btn-secondary inline-flex items-center"
       >
         <CloudArrowUpIcon className="h-5 w-5 mr-2" />
         Import Usage
@@ -139,19 +139,19 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
               onClick={() => setIsOpen(false)}
             />
 
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium text-gray-900">
+            <div className="inline-block align-bottom glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-display font-bold gradient-text-primary">
                     Import Usage Data
                   </h3>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="text-gray-400 hover:text-gray-500"
+                    className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
                   >
                     <XMarkIcon className="h-6 w-6" />
                   </button>
@@ -159,11 +159,10 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
 
                 {/* File Upload Area */}
                 <div
-                  className={`mt-4 border-2 border-dashed rounded-lg p-6 text-center ${
-                    isDragging
-                      ? "border-indigo-500 bg-indigo-50"
-                      : "border-gray-300"
-                  }`}
+                  className={`mt-4 border-2 border-dashed rounded-xl p-6 text-center transition-all duration-300 ${isDragging
+                    ? "border-primary-500 bg-gradient-to-r from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 shadow-lg"
+                    : "border-accent-300/50 glass"
+                    }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -178,36 +177,36 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
 
                   {!file ? (
                     <>
-                      <CloudArrowUpIcon className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">
+                      <CloudArrowUpIcon className="mx-auto h-12 w-12 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                      <p className="mt-2 text-sm text-light-text-primary dark:text-dark-text-primary">
                         Drag and drop your file here, or{" "}
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="text-indigo-600 hover:text-indigo-500"
+                          className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors duration-300"
                         >
                           browse
                         </button>
                       </p>
-                      <p className="mt-1 text-xs text-gray-500">
+                      <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">
                         CSV, JSON, or Excel files up to 10MB
                       </p>
                     </>
                   ) : (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between p-4 glass rounded-xl border border-accent-200/30">
                       <div className="flex items-center">
-                        <DocumentTextIcon className="h-8 w-8 text-gray-400" />
+                        <DocumentTextIcon className="h-8 w-8 text-primary-500" />
                         <div className="ml-3 text-left">
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             {file.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                             {formatFileSize(file.size)}
                           </p>
                         </div>
                       </div>
                       <button
                         onClick={() => setFile(null)}
-                        className="text-gray-400 hover:text-gray-500"
+                        className="p-1 rounded-lg text-light-text-tertiary dark:text-dark-text-tertiary hover:text-error-500 hover:bg-error-50/50 dark:hover:bg-error-900/20 transition-all duration-300"
                       >
                         <XMarkIcon className="h-5 w-5" />
                       </button>
@@ -216,10 +215,10 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                 </div>
 
                 {/* Template Download */}
-                <div className="mt-4 text-center">
+                <div className="mt-6 text-center">
                   <button
                     onClick={handleDownloadTemplate}
-                    className="text-sm text-indigo-600 hover:text-indigo-500"
+                    className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors duration-300"
                   >
                     Download CSV template
                   </button>
@@ -228,23 +227,23 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                 {/* Upload Result */}
                 {uploadResult && (
                   <div
-                    className={`mt-4 p-4 rounded-lg ${
-                      uploadResult.failed > 0 ? "bg-yellow-50" : "bg-green-50"
-                    }`}
+                    className={`mt-6 p-4 glass rounded-xl border ${uploadResult.failed > 0
+                      ? "border-warning-300/30 bg-gradient-to-r from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20"
+                      : "border-success-300/30 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20"
+                      }`}
                   >
                     <div className="flex">
                       {uploadResult.failed > 0 ? (
-                        <ExclamationCircleIcon className="h-5 w-5 text-yellow-400" />
+                        <ExclamationCircleIcon className="h-5 w-5 text-warning-500" />
                       ) : (
-                        <CheckCircleIcon className="h-5 w-5 text-green-400" />
+                        <CheckCircleIcon className="h-5 w-5 text-success-500" />
                       )}
                       <div className="ml-3 flex-1">
                         <h4
-                          className={`text-sm font-medium ${
-                            uploadResult.failed > 0
-                              ? "text-yellow-800"
-                              : "text-green-800"
-                          }`}
+                          className={`text-sm font-medium ${uploadResult.failed > 0
+                            ? "text-warning-700 dark:text-warning-300"
+                            : "text-success-700 dark:text-success-300"
+                            }`}
                         >
                           Upload Complete
                         </h4>
@@ -280,11 +279,11 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                 )}
               </div>
 
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="glass bg-gradient-to-r from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20 px-6 py-4 border-t border-accent-200/30 sm:flex sm:flex-row-reverse">
                 <button
                   onClick={handleUpload}
                   disabled={!file || isUploading}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploading ? (
                     <>
@@ -297,7 +296,7 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="btn-secondary mt-3 w-full sm:mt-0 sm:ml-3 sm:w-auto"
                 >
                   {uploadResult ? "Close" : "Cancel"}
                 </button>

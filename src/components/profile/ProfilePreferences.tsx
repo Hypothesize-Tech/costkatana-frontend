@@ -40,24 +40,34 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 className="text-lg font-medium text-gray-900 mb-6">Preferences</h2>
+    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+          <span className="text-white text-lg">⚙️</span>
+        </div>
+        <h2 className="text-2xl font-display font-bold gradient-text">Preferences</h2>
+      </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Display Preferences */}
-        <div>
-          <h3 className="text-sm font-medium text-gray-700 mb-4">
-            Display Settings
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="glass rounded-xl p-6 border border-primary-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-sm">🎨</span>
+            </div>
+            <h3 className="font-display font-semibold gradient-text text-lg">
+              Display Settings
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Language
               </label>
               <select
                 value={localPreferences.language}
                 onChange={(e) => handleChange("language", e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
               >
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -69,13 +79,13 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Timezone
               </label>
               <select
                 value={localPreferences.timezone}
                 onChange={(e) => handleChange("timezone", e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
               >
                 <option value="UTC">UTC</option>
                 <option value="America/New_York">Eastern Time</option>
@@ -89,13 +99,13 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Date Format
               </label>
               <select
                 value={localPreferences.dateFormat}
                 onChange={(e) => handleChange("dateFormat", e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
               >
                 <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                 <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -104,13 +114,13 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Currency
               </label>
               <select
                 value={localPreferences.currency}
                 onChange={(e) => handleChange("currency", e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
               >
                 <option value="USD">USD ($)</option>
                 <option value="EUR">EUR (€)</option>
@@ -123,23 +133,27 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Theme */}
-        <div>
-          <h3 className="text-sm font-medium text-gray-700 mb-4">Appearance</h3>
+        <div className="glass rounded-xl p-6 border border-secondary-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+              <span className="text-white text-sm">🌌</span>
+            </div>
+            <h3 className="font-display font-semibold gradient-text-secondary text-lg">Appearance</h3>
+          </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-4">
                 Theme
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-4">
                 {(["light", "dark", "system"] as const).map((theme) => (
                   <button
                     key={theme}
                     onClick={() => handleChange("theme", theme)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md border ${
-                      localPreferences.theme === theme
-                        ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
+                    className={`px-6 py-3 font-display font-medium rounded-xl border transition-all duration-200 ${localPreferences.theme === theme
+                      ? "border-primary-500 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 scale-105 glow-primary"
+                      : "glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:border-primary-300/50 hover:scale-105"
+                      }`}
                   >
                     {theme.charAt(0).toUpperCase() + theme.slice(1)}
                   </button>
@@ -150,18 +164,23 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Email Preferences */}
-        <div>
-          <h3 className="text-sm font-medium text-gray-700 mb-4">
-            Email Preferences
-          </h3>
+        <div className="glass rounded-xl p-6 border border-accent-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+              <span className="text-white text-sm">📧</span>
+            </div>
+            <h3 className="font-display font-semibold gradient-text-accent text-lg">
+              Email Preferences
+            </h3>
+          </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
               Email Digest Frequency
             </label>
             <select
               value={localPreferences.emailDigest}
               onChange={(e) => handleChange("emailDigest", e.target.value)}
-              className="block w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="input max-w-xs"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -172,44 +191,55 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Feature Toggles */}
-        <div>
-          <h3 className="text-sm font-medium text-gray-700 mb-4">Features</h3>
-          <div className="space-y-4">
-            <Switch
-              checked={localPreferences.autoOptimize}
-              onChange={(checked) => handleChange("autoOptimize", checked)}
-              label="Auto-optimize prompts"
-              description="Automatically apply optimizations to frequently used prompts"
-            />
-            <Switch
-              checked={localPreferences.showCostInHeader}
-              onChange={(checked) => handleChange("showCostInHeader", checked)}
-              label="Show current month cost in header"
-              description="Display your current month's spending in the navigation bar"
-            />
-            <Switch
-              checked={localPreferences.enableBetaFeatures}
-              onChange={(checked) =>
-                handleChange("enableBetaFeatures", checked)
-              }
-              label="Enable beta features"
-              description="Get early access to new features that are still in testing"
-            />
+        <div className="glass rounded-xl p-6 border border-success-200/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+              <span className="text-white text-sm">✨</span>
+            </div>
+            <h3 className="font-display font-semibold gradient-text-success text-lg">Features</h3>
+          </div>
+          <div className="space-y-6">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <Switch
+                checked={localPreferences.autoOptimize}
+                onChange={(checked) => handleChange("autoOptimize", checked)}
+                label="Auto-optimize prompts"
+                description="Automatically apply optimizations to frequently used prompts"
+              />
+            </div>
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <Switch
+                checked={localPreferences.showCostInHeader}
+                onChange={(checked) => handleChange("showCostInHeader", checked)}
+                label="Show current month cost in header"
+                description="Display your current month's spending in the navigation bar"
+              />
+            </div>
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <Switch
+                checked={localPreferences.enableBetaFeatures}
+                onChange={(checked) =>
+                  handleChange("enableBetaFeatures", checked)
+                }
+                label="Enable beta features"
+                description="Get early access to new features that are still in testing"
+              />
+            </div>
           </div>
         </div>
 
         {/* Save Button */}
         {hasChanges && (
-          <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-4 pt-8 border-t border-primary-200/30">
             <button
               onClick={handleReset}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              className="btn-secondary"
             >
               Reset
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700"
+              className="btn-primary"
             >
               Save Changes
             </button>

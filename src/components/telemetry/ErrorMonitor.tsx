@@ -56,63 +56,84 @@ export const ErrorMonitor: React.FC = () => {
     }, []);
 
     if (isLoading) return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200 animate-pulse">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl animate-pulse">
             {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-12 bg-gray-100 rounded-xl mb-2" />
+                <div key={i} className="h-12 bg-gradient-primary/20 rounded-xl mb-3" />
             ))}
         </div>
     );
 
     if (error) return (
-        <div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">
-            Error loading error monitor
-            <button onClick={() => refetch()} className="ml-4 bg-rose-100 px-3 py-1 rounded inline-flex items-center">
-                <ArrowPathIcon className="w-4 h-4 mr-1" /> Retry
-            </button>
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                        <span className="text-white text-sm">⚠️</span>
+                    </div>
+                    <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                        Error loading error monitor
+                    </span>
+                </div>
+                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
+                    <ArrowPathIcon className="w-4 h-4" /> Retry
+                </button>
+            </div>
         </div>
     );
 
     const errorList = errors || [];
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <ExclamationTriangleIcon className="w-5 h-5 text-rose-500 mr-2" />
-                    Error Monitor
-                </h2>
-                <button onClick={() => refetch()} className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center">
-                    <ArrowPathIcon className="w-4 h-4 mr-1" /> Refresh
+        <div className="glass rounded-xl p-8 border border-danger-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center glow-danger">
+                        <ExclamationTriangleIcon className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text-danger">
+                        Error Monitor
+                    </h2>
+                </div>
+                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
+                    <ArrowPathIcon className="w-4 h-4" /> Refresh
                 </button>
             </div>
 
             {errorList.length === 0 ? (
-                <div className="text-center text-gray-500 py-10">
-                    <ExclamationTriangleIcon className="w-10 h-10 mx-auto text-emerald-500 mb-3" />
-                    <p>No errors detected</p>
-                    <p className="text-sm">Your system is running smoothly</p>
+                <div className="glass rounded-xl p-8 border border-success-200/30 bg-gradient-success/10 text-center">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-4 glow-success">
+                        <ExclamationTriangleIcon className="w-8 h-8 text-white" />
+                    </div>
+                    <p className="font-display font-semibold gradient-text-success mb-2">No errors detected</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Your system is running smoothly</p>
                 </div>
             ) : (
-                <div className="space-y-2">
+                <div className="space-y-4">
                     {errorList.slice(0, 10).map((errorSpan) => (
-                        <div key={errorSpan.trace_id} className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center justify-between">
-                            <div className="min-w-0">
-                                <div className="flex items-center">
-                                    <ExclamationTriangleIcon className="w-4 h-4 text-rose-500 mr-2" />
-                                    <p className="font-medium text-rose-800 truncate max-w-[260px]">
+                        <div key={errorSpan.trace_id} className="glass rounded-xl p-4 border border-danger-200/30 bg-gradient-danger/10 flex items-center justify-between hover:bg-gradient-danger/20 transition-all duration-200">
+                            <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                                        <ExclamationTriangleIcon className="w-4 h-4 text-white" />
+                                    </div>
+                                    <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[260px]">
                                         {errorSpan.error_message}
                                     </p>
                                 </div>
-                                <div className="text-xs text-gray-600 mt-1 flex flex-wrap gap-2">
-                                    <span className="truncate max-w-[180px]">Route: {errorSpan.route}</span>
-                                    <span>• {formatTimeAgo(errorSpan.timestamp)}</span>
+                                <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm flex flex-wrap gap-3 ml-9">
+                                    <span className="glass px-2 py-1 rounded-full border border-accent-200/30 truncate max-w-[180px]">
+                                        Route: {errorSpan.route}
+                                    </span>
+                                    <span className="glass px-2 py-1 rounded-full border border-info-200/30">
+                                        {formatTimeAgo(errorSpan.timestamp)}
+                                    </span>
                                 </div>
                             </div>
                             <button
                                 onClick={() => handleCopyTraceId(errorSpan.trace_id)}
-                                className={`ml-4 px-3 py-2 rounded-lg transition-colors inline-flex items-center ${copiedTraceId === errorSpan.trace_id ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                className={`ml-4 px-4 py-2 rounded-lg transition-all duration-200 inline-flex items-center gap-2 ${copiedTraceId === errorSpan.trace_id ? 'btn-success' : 'btn-secondary'}`}
                             >
-                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><DocumentDuplicateIcon className="w-4 h-4 mr-1" /> Copy Trace ID</>)}
+                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><DocumentDuplicateIcon className="w-4 h-4" /> Copy Trace ID</>)}
                             </button>
                         </div>
                     ))}

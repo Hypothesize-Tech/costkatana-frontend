@@ -7,9 +7,9 @@ import {
   ArrowPathIcon,
   DocumentArrowDownIcon,
   ExclamationTriangleIcon,
+  BeakerIcon,
 } from "@heroicons/react/24/outline";
 import { ExperimentationService } from "../../services/experimentation.service";
-import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Modal } from "../common/Modal";
 import { useDebounce } from "../../hooks/useDebounce";
 
@@ -212,7 +212,7 @@ const ModelComparison: React.FC = () => {
         if (estimate.estimatedCost > 0) {
           setEstimatedCost(estimate.estimatedCost);
         }
-      } catch (backendError) {
+      } catch {
         console.log(
           "Backend cost estimation unavailable, using frontend calculation:",
           totalCost,
@@ -963,14 +963,19 @@ const ModelComparison: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Model Comparison</h2>
-        <div className="flex space-x-2">
+    <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center">
+          <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
+            <BeakerIcon className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-3xl font-display font-bold gradient-text">Model Comparison</h2>
+        </div>
+        <div className="flex space-x-3">
           {results.length > 0 && (
             <button
               onClick={exportResults}
-              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
             >
               <DocumentArrowDownIcon className="mr-2 w-4 h-4" />
               Export Results
@@ -981,7 +986,7 @@ const ModelComparison: React.FC = () => {
             disabled={
               isRunning || !prompt.trim() || selectedModels.length === 0
             }
-            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             {isRunning ? (
               <>
@@ -999,67 +1004,69 @@ const ModelComparison: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-4 mb-4 bg-red-50 rounded-lg border border-red-200">
+        <div className="card p-6 mb-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
           <div className="flex items-center">
-            <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-red-400" />
-            <span className="text-sm text-red-800">{error}</span>
+            <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
+              <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
           </div>
         </div>
       )}
 
       {/* Configuration Section */}
-      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 mb-8 lg:grid-cols-2">
         {/* Prompt Input */}
         <div className="lg:col-span-2">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+          <label className="label mb-3">
             Test Prompt
           </label>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt you want to test across different models..."
-            className="p-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="input min-h-[120px] resize-y"
             rows={3}
           />
         </div>
 
         {/* Real-time Comparison Settings */}
         <div className="lg:col-span-2">
-          <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+          <div className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-6">
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   checked={realTimeMode}
                   onChange={(e) => setRealTimeMode(e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                 />
-                <span className="text-sm font-medium">
+                <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                   🚀 Real-time Bedrock Execution
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
                   (Actually runs models for authentic comparison)
                 </span>
               </label>
             </div>
 
             {realTimeMode && (
-              <div className="space-y-3 pl-6 border-l-2 border-blue-200">
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
+              <div className="space-y-4 pl-6 border-l-4 border-primary-500/30 glass p-4 rounded-xl">
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={executeOnBedrock}
                       onChange={(e) => setExecuteOnBedrock(e.target.checked)}
-                      className="rounded border-gray-300"
+                      className="w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                     />
-                    <span className="text-sm">Execute on AWS Bedrock</span>
+                    <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Execute on AWS Bedrock</span>
                   </label>
 
                   <select
                     value={comparisonMode}
                     onChange={(e) => setComparisonMode(e.target.value as any)}
-                    className="text-sm border border-gray-300 rounded px-2 py-1"
+                    className="input text-sm"
                   >
                     <option value="comprehensive">
                       🎯 Comprehensive Analysis
@@ -1070,9 +1077,11 @@ const ModelComparison: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="text-xs text-orange-600">
-                  ⚠️ Real-time mode will take longer but provides authentic
-                  model responses and AI-driven evaluation
+                <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                  <div className="text-xs font-body text-accent-700 dark:text-accent-300">
+                    ⚠️ Real-time mode will take longer but provides authentic
+                    model responses and AI-driven evaluation
+                  </div>
                 </div>
               </div>
             )}
@@ -1080,22 +1089,26 @@ const ModelComparison: React.FC = () => {
 
           {/* Progress indicator for real-time mode */}
           {isRunning && realTimeMode && progressData && (
-            <div className="bg-blue-50 p-4 rounded-lg mt-4">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span className="text-sm font-medium text-blue-800">
+            <div className="card p-6 mt-6 shadow-lg backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="spinner"></div>
+                <span className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                   {progressData.message}
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-primary-200/30 rounded-full h-3 overflow-hidden shadow-inner">
                 <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-gradient-primary h-3 rounded-full transition-all duration-500 shadow-lg progress-bar"
                   style={{ width: `${progressData.progress || 0}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-blue-600 mt-1">
-                {progressData.stage} - {progressData.progress || 0}%
-                {progressData.currentModel && ` (${progressData.currentModel})`}
+              <div className="text-xs font-body text-primary-600 dark:text-primary-400 mt-2">
+                <span className="font-display font-semibold">{progressData.stage}</span> - {progressData.progress || 0}%
+                {progressData.currentModel && (
+                  <span className="ml-2 px-2 py-1 bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded-lg font-display font-medium border border-primary-200/30">
+                    {progressData.currentModel}
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -1103,26 +1116,26 @@ const ModelComparison: React.FC = () => {
 
         {/* Model Selection */}
         <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">
+          <div className="flex justify-between items-center mb-4">
+            <label className="label">
               Selected Models ({selectedModels.length})
             </label>
             <button
               onClick={addModel}
               disabled={selectedModels.length >= availableModels.length}
-              className="flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="btn-secondary text-sm font-display font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              <PlusIcon className="mr-1 w-4 h-4" />
+              <PlusIcon className="mr-2 w-4 h-4" />
               Add Model
             </button>
           </div>
-          <div className="overflow-y-auto space-y-3 max-h-64">
+          <div className="overflow-y-auto space-y-4 max-h-80">
             {selectedModels.map((model, index) => (
               <div
                 key={index}
-                className="p-3 rounded-lg border border-gray-200"
+                className="card p-4 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
               >
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
                     <select
                       value={`${model.provider}:${model.model}`}
@@ -1149,7 +1162,7 @@ const ModelComparison: React.FC = () => {
                         };
                         setSelectedModels(updated);
                       }}
-                      className="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="input text-sm"
                     >
                       {availableModels.map((m) => (
                         <option
@@ -1166,9 +1179,11 @@ const ModelComparison: React.FC = () => {
                         m.provider === model.provider &&
                         m.model === model.model,
                     ).length > 1 && (
-                        <div className="text-xs text-amber-600 mt-1 flex items-center">
-                          <ExclamationTriangleIcon className="h-3 w-3 mr-1" />
-                          Duplicate model selected
+                        <div className="glass p-2 rounded-lg border border-accent-200/30 bg-accent-500/10 mt-2">
+                          <div className="text-xs font-body text-accent-700 dark:text-accent-300 flex items-center">
+                            <ExclamationTriangleIcon className="h-3 w-3 mr-2" />
+                            Duplicate model selected
+                          </div>
                         </div>
                       )}
                     {(() => {
@@ -1178,9 +1193,11 @@ const ModelComparison: React.FC = () => {
                       );
                       return (
                         pricing && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            Input: ${pricing.input.toFixed(2)}/1M • Output: $
-                            {pricing.output.toFixed(2)}/1M
+                          <div className="glass p-2 rounded-lg border border-primary-200/30 mt-2">
+                            <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                              <span className="font-display font-semibold text-success-600">Input:</span> ${pricing.input.toFixed(2)}/1M •
+                              <span className="font-display font-semibold text-primary-600">Output:</span> ${pricing.output.toFixed(2)}/1M
+                            </div>
                           </div>
                         )
                       );
@@ -1188,15 +1205,15 @@ const ModelComparison: React.FC = () => {
                   </div>
                   <button
                     onClick={() => removeModel(index)}
-                    className="ml-2 text-red-500 hover:text-red-700"
+                    className="ml-3 p-2 rounded-xl text-danger-500 hover:text-white hover:bg-gradient-danger transition-all duration-300 hover:scale-110 shadow-lg"
                     title="Remove this model"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block mb-1 text-xs text-gray-600">
+                    <label className="block mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Temperature
                     </label>
                     <input
@@ -1212,11 +1229,11 @@ const ModelComparison: React.FC = () => {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="px-2 py-1 w-full text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="input text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block mb-1 text-xs text-gray-600">
+                    <label className="block mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Max Tokens
                     </label>
                     <input
@@ -1231,15 +1248,20 @@ const ModelComparison: React.FC = () => {
                           parseInt(e.target.value),
                         )
                       }
-                      className="px-2 py-1 w-full text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="input text-sm"
                     />
                   </div>
                 </div>
               </div>
             ))}
             {selectedModels.length === 0 && (
-              <div className="text-center py-4 text-gray-500 text-sm">
-                No models selected. Click "Add Model" to get started.
+              <div className="text-center py-8">
+                <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <BeakerIcon className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  No models selected. Click <span className="font-display font-semibold text-primary-500">"Add Model"</span> to get started.
+                </div>
               </div>
             )}
           </div>
@@ -1247,12 +1269,12 @@ const ModelComparison: React.FC = () => {
 
         {/* Evaluation Criteria */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+          <label className="label mb-4">
             Evaluation Criteria
           </label>
-          <div className="overflow-y-auto space-y-2 max-h-64">
+          <div className="overflow-y-auto space-y-3 max-h-80">
             {criteriaOptions.map((criterion) => (
-              <label key={criterion} className="flex items-center">
+              <label key={criterion} className="flex items-center glass p-3 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={evaluationCriteria.includes(criterion)}
@@ -1265,9 +1287,9 @@ const ModelComparison: React.FC = () => {
                       );
                     }
                   }}
-                  className="mr-2 w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  className="mr-3 w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                 />
-                <span className="text-sm text-gray-700 capitalize">
+                <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary capitalize">
                   {criterion.replace("_", " ")}
                 </span>
               </label>
@@ -1276,9 +1298,9 @@ const ModelComparison: React.FC = () => {
         </div>
 
         {/* Additional Settings */}
-        <div className="flex items-center space-x-6 lg:col-span-2">
+        <div className="flex items-center space-x-8 lg:col-span-2">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
+            <label className="label mb-2">
               Iterations
             </label>
             <input
@@ -1287,16 +1309,20 @@ const ModelComparison: React.FC = () => {
               max="10"
               value={iterations}
               onChange={(e) => setIterations(parseInt(e.target.value))}
-              className="px-2 py-1 w-20 text-sm rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="input w-24 text-sm"
             />
           </div>
           {estimatedCost !== null && (
-            <div className="flex items-center text-sm text-gray-600">
-              <CurrencyDollarIcon className="h-4 w-4 mr-1" />
-              Estimated Cost: $
-              {estimatedCost < 0.001
-                ? estimatedCost.toFixed(6)
-                : estimatedCost.toFixed(4)}
+            <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
+              <div className="flex items-center text-sm">
+                <CurrencyDollarIcon className="h-5 w-5 mr-2 text-success-500" />
+                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary mr-2">Estimated Cost:</span>
+                <span className="font-display font-bold gradient-text text-lg">
+                  ${estimatedCost < 0.001
+                    ? estimatedCost.toFixed(6)
+                    : estimatedCost.toFixed(4)}
+                </span>
+              </div>
             </div>
           )}
         </div>
@@ -1304,36 +1330,40 @@ const ModelComparison: React.FC = () => {
 
       {/* Results Section */}
       {(isRunning || results.length > 0) && (
-        <div className="pt-6 border-t">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Results</h3>
+        <div className="pt-8 border-t border-primary-200/30">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-display font-bold gradient-text">Results</h3>
             {currentExperiment && (
-              <div className="text-sm text-gray-500">
-                Experiment ID: {currentExperiment.id}
+              <div className="glass p-3 rounded-xl border border-primary-200/30">
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <span className="font-display font-semibold">Experiment ID:</span> {currentExperiment.id}
+                </div>
               </div>
             )}
           </div>
 
           {isRunning && (
-            <div className="flex justify-center items-center py-8">
-              <LoadingSpinner />
-              <span className="ml-2 text-gray-600">Running comparison...</span>
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <div className="spinner-lg mb-4"></div>
+                <span className="font-display font-semibold text-primary-600 dark:text-primary-400">Running comparison...</span>
+              </div>
             </div>
           )}
 
           {results.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {results.map((result, index) => (
                 <div
                   key={index}
-                  className="border border-gray-200 rounded-lg p-4"
+                  className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
                 >
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h4 className="text-lg font-medium text-gray-900">
+                      <h4 className="text-xl font-display font-bold gradient-text">
                         {result.provider} - {result.model}
                       </h4>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
                         {result.recommendation}
                       </p>
                     </div>
@@ -1342,7 +1372,7 @@ const ModelComparison: React.FC = () => {
                         setSelectedResult(result);
                         setShowResultsModal(true);
                       }}
-                      className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                      className="btn-secondary text-sm font-display font-medium hover:scale-105 transition-all duration-300"
                     >
                       View Details
                     </button>
@@ -1350,35 +1380,35 @@ const ModelComparison: React.FC = () => {
 
                   {result.actualUsage ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-blue-50 rounded-lg p-3">
-                        <div className="text-sm font-medium text-blue-900">
+                      <div className="card card-hover p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                        <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                           Total Calls
                         </div>
-                        <div className="text-lg font-bold text-blue-700">
+                        <div className="text-2xl font-display font-bold gradient-text">
                           {result.actualUsage.totalCalls.toLocaleString()}
                         </div>
                       </div>
-                      <div className="bg-green-50 rounded-lg p-3">
-                        <div className="text-sm font-medium text-green-900">
+                      <div className="card card-hover p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                        <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
                           Avg Cost
                         </div>
-                        <div className="text-lg font-bold text-green-700">
+                        <div className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
                           ${result.actualUsage.avgCost.toFixed(4)}
                         </div>
                       </div>
-                      <div className="bg-yellow-50 rounded-lg p-3">
-                        <div className="text-sm font-medium text-yellow-900">
+                      <div className="card card-hover p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                        <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
                           Avg Response Time
                         </div>
-                        <div className="text-lg font-bold text-yellow-700">
+                        <div className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
                           {result.actualUsage.avgResponseTime.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="bg-red-50 rounded-lg p-3">
-                        <div className="text-sm font-medium text-red-900">
+                      <div className="card card-hover p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
+                        <div className="text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
                           Error Rate
                         </div>
-                        <div className="text-lg font-bold text-red-700">
+                        <div className="text-2xl font-display font-bold text-danger-600 dark:text-danger-400">
                           {result.actualUsage.errorRate.toFixed(2)}%
                         </div>
                       </div>
@@ -1387,11 +1417,11 @@ const ModelComparison: React.FC = () => {
                     <div className="space-y-3">
                       {/* Pricing Information */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-blue-50 rounded-lg p-3">
-                          <div className="text-sm font-medium text-blue-900">
+                        <div className="card card-hover p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                          <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                             Input Cost
                           </div>
-                          <div className="text-sm font-bold text-blue-700">
+                          <div className="text-lg font-display font-bold gradient-text">
                             $
                             {(() => {
                               const pricing = result.pricing?.inputCost
@@ -1407,14 +1437,14 @@ const ModelComparison: React.FC = () => {
                                 ? pricing.input.toFixed(2)
                                 : "N/A";
                             })()}
-                            /1M tokens
+                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
                           </div>
                         </div>
-                        <div className="bg-green-50 rounded-lg p-3">
-                          <div className="text-sm font-medium text-green-900">
+                        <div className="card card-hover p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                          <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
                             Output Cost
                           </div>
-                          <div className="text-sm font-bold text-green-700">
+                          <div className="text-lg font-display font-bold text-success-600 dark:text-success-400">
                             $
                             {(() => {
                               const pricing = result.pricing?.outputCost
@@ -1430,25 +1460,25 @@ const ModelComparison: React.FC = () => {
                                 ? pricing.output.toFixed(2)
                                 : "N/A";
                             })()}
-                            /1M tokens
+                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
                           </div>
                         </div>
-                        <div className="bg-yellow-50 rounded-lg p-3">
-                          <div className="text-sm font-medium text-yellow-900">
+                        <div className="card card-hover p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                          <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
                             Est. Cost/1K
                           </div>
-                          <div className="text-sm font-bold text-yellow-700">
+                          <div className="text-lg font-display font-bold text-accent-600 dark:text-accent-400">
                             ${result.estimatedCostPer1K?.toFixed(4) || "N/A"}
                           </div>
                         </div>
-                        <div className="bg-purple-50 rounded-lg p-3">
-                          <div className="text-sm font-medium text-purple-900">
+                        <div className="card card-hover p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                          <div className="text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
                             Context Window
                           </div>
-                          <div className="text-sm font-bold text-purple-700">
+                          <div className="text-lg font-display font-bold text-secondary-600 dark:text-secondary-400">
                             {result.pricing?.contextWindow?.toLocaleString() ||
                               "N/A"}{" "}
-                            tokens
+                            <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">tokens</span>
                           </div>
                         </div>
                       </div>
@@ -1459,28 +1489,34 @@ const ModelComparison: React.FC = () => {
                           result.analysis.considerations?.length > 0) && (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {result.analysis.strengths?.length > 0 && (
-                              <div className="bg-green-50 rounded-lg p-3">
-                                <div className="text-sm font-medium text-green-900 mb-2">
+                              <div className="card p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                                <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300 mb-3">
                                   Strengths
                                 </div>
-                                <ul className="text-xs text-green-800 space-y-1">
+                                <ul className="text-sm font-body text-success-600 dark:text-success-400 space-y-2">
                                   {result.analysis.strengths.map(
                                     (strength: string, i: number) => (
-                                      <li key={i}>• {strength}</li>
+                                      <li key={i} className="flex items-start">
+                                        <span className="text-success-500 mr-2">✓</span>
+                                        {strength}
+                                      </li>
                                     ),
                                   )}
                                 </ul>
                               </div>
                             )}
                             {result.analysis.considerations?.length > 0 && (
-                              <div className="bg-amber-50 rounded-lg p-3">
-                                <div className="text-sm font-medium text-amber-900 mb-2">
+                              <div className="card p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                                <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-3">
                                   Considerations
                                 </div>
-                                <ul className="text-xs text-amber-800 space-y-1">
+                                <ul className="text-sm font-body text-accent-600 dark:text-accent-400 space-y-2">
                                   {result.analysis.considerations.map(
                                     (consideration: string, i: number) => (
-                                      <li key={i}>• {consideration}</li>
+                                      <li key={i} className="flex items-start">
+                                        <span className="text-accent-500 mr-2">⚠</span>
+                                        {consideration}
+                                      </li>
                                     ),
                                   )}
                                 </ul>
@@ -1494,36 +1530,46 @@ const ModelComparison: React.FC = () => {
               ))}
 
               {currentExperiment && currentExperiment.results && (
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">
+                <div className="mt-8 card p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+                  <h4 className="text-lg font-display font-bold gradient-text mb-4">
                     Overall Analysis
                   </h4>
-                  <p className="text-sm text-blue-800 mb-2">
+                  <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary mb-4 leading-relaxed">
                     {currentExperiment.results.recommendation}
                   </p>
 
                   {currentExperiment.results.costComparison && (
-                    <div className="text-sm text-blue-800 mb-2">
-                      <strong>Cost Comparison:</strong>{" "}
-                      {currentExperiment.results.costComparison}
+                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-success-500/5 mb-3">
+                      <div className="text-sm font-body text-success-700 dark:text-success-300">
+                        <span className="font-display font-semibold">Cost Comparison:</span>{" "}
+                        {currentExperiment.results.costComparison}
+                      </div>
                     </div>
                   )}
 
                   {currentExperiment.results.useCaseAnalysis && (
-                    <div className="text-sm text-blue-800 mb-2">
-                      <strong>Use Case Analysis:</strong>{" "}
-                      {currentExperiment.results.useCaseAnalysis}
+                    <div className="glass p-3 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-3">
+                      <div className="text-sm font-body text-primary-700 dark:text-primary-300">
+                        <span className="font-display font-semibold">Use Case Analysis:</span>{" "}
+                        {currentExperiment.results.useCaseAnalysis}
+                      </div>
                     </div>
                   )}
 
-                  <div className="mt-2 text-xs text-blue-600">
-                    Confidence:{" "}
-                    {(
-                      (currentExperiment.metadata.confidence || 0) * 100
-                    ).toFixed(1)}
-                    % • Based on{" "}
-                    {currentExperiment.results.basedOnActualUsage || 0} models
-                    with usage data
+                  <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5">
+                    <div className="text-xs font-body text-accent-700 dark:text-accent-300">
+                      <span className="font-display font-semibold">Confidence:</span>{" "}
+                      <span className="gradient-text font-display font-bold">
+                        {(
+                          (currentExperiment.metadata.confidence || 0) * 100
+                        ).toFixed(1)}%
+                      </span>
+                      {" "} • Based on{" "}
+                      <span className="font-display font-semibold">
+                        {currentExperiment.results.basedOnActualUsage || 0}
+                      </span>{" "}
+                      models with usage data
+                    </div>
                   </div>
                 </div>
               )}

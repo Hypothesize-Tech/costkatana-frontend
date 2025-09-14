@@ -213,27 +213,27 @@ export const PriceComparison: React.FC = () => {
   }
 
   return (
-    <div className="price-comparison">
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
       {/* Modern Header with Gradient */}
-      <div className="modern-header">
-        <div className="header-content">
-          <div className="title-section">
-            <h1 className="main-title">AI Pricing Dashboard</h1>
-            <p className="subtitle">
-              Compare costs across leading AI providers in real-time
-            </p>
-          </div>
-          <div className="status-section">
-            {lastUpdate && (
-              <div className="last-update">
-                <span>Updated {lastUpdate.toLocaleTimeString()}</span>
-              </div>
-            )}
-            <div className="action-buttons">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center">
+            <div className="title-section">
+              <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">AI Pricing Dashboard</h1>
+              <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+                Compare costs across leading AI providers in real-time
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              {lastUpdate && (
+                <div className="glass rounded-lg border border-accent-200/30 px-4 py-2">
+                  <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Updated {lastUpdate.toLocaleTimeString()}</span>
+                </div>
+              )}
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="refresh-button"
+                className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"
                 title="Refresh pricing data"
               >
                 <svg viewBox="0 0 24 24" width="16" height="16">
@@ -249,8 +249,8 @@ export const PriceComparison: React.FC = () => {
         </div>
 
         {error && (
-          <div className="error-banner">
-            <div className="error-content">
+          <div className="mt-4 glass rounded-xl border border-error-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 p-4">
+            <div className="flex items-center gap-3 text-error-600 dark:text-error-400">
               <svg viewBox="0 0 24 24" width="20" height="20">
                 <path
                   fill="currentColor"
@@ -264,103 +264,105 @@ export const PriceComparison: React.FC = () => {
       </div>
 
       {/* Enhanced Comparison Form */}
-      <div className="modern-comparison-form">
-        <div className="form-header">
-          <h2>Compare Pricing</h2>
-          <p>
-            Enter your task details to see cost comparisons across providers
-          </p>
-        </div>
-
-        <div className="form-container">
-          <div className="input-group">
-            <label htmlFor="task" className="form-label">
-              <svg viewBox="0 0 24 24" width="16" height="16">
-                <path
-                  fill="currentColor"
-                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-                />
-              </svg>
-              Task Description
-            </label>
-            <input
-              type="text"
-              id="task"
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-              placeholder="e.g., Generate a 500-word article, Summarize documents, Code review"
-              className="form-input"
-            />
+      <div className="max-w-7xl mx-auto mt-8 mb-8 px-6">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-display font-bold gradient-text-primary mb-4">Compare Pricing</h2>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+              Enter your task details to see cost comparisons across providers
+            </p>
           </div>
 
-          <div className="input-row">
-            <div className="input-group">
-              <label htmlFor="tokens" className="form-label">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+              <label htmlFor="task" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
                 <svg viewBox="0 0 24 24" width="16" height="16">
                   <path
                     fill="currentColor"
-                    d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19Z"
+                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
                   />
                 </svg>
-                Estimated Tokens
+                Task Description
               </label>
               <input
-                type="number"
-                id="tokens"
-                value={estimatedTokens}
-                onChange={(e) => setEstimatedTokens(Number(e.target.value))}
-                min="1"
-                className="form-input"
+                type="text"
+                id="task"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                placeholder="e.g., Generate a 500-word article, Summarize documents, Code review"
+                className="input w-full"
               />
             </div>
 
-            <div className="input-group">
-              <label htmlFor="category" className="form-label">
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path
-                    fill="currentColor"
-                    d="M12,2A2,2 0 0,1 14,4A2,2 0 0,1 12,6A2,2 0 0,1 10,4A2,2 0 0,1 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V19A2,2 0 0,0 5,21H11V19H5V3H13V9H21Z"
-                  />
-                </svg>
-                Category
-              </label>
-              <select
-                id="category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="form-select"
-              >
-                <option value="all">All Categories</option>
-                <option value="text">Text Generation</option>
-                <option value="multimodal">Multimodal</option>
-                <option value="embedding">Embeddings</option>
-                <option value="code">Code Generation</option>
-              </select>
-            </div>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <label htmlFor="tokens" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path
+                      fill="currentColor"
+                      d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19Z"
+                    />
+                  </svg>
+                  Estimated Tokens
+                </label>
+                <input
+                  type="number"
+                  id="tokens"
+                  value={estimatedTokens}
+                  onChange={(e) => setEstimatedTokens(Number(e.target.value))}
+                  min="1"
+                  className="input w-full"
+                />
+              </div>
 
-          <button
-            onClick={handleComparePrice}
-            disabled={comparing}
-            className="compare-button"
-          >
-            {comparing ? (
-              <>
-                <div className="spinner"></div>
-                Comparing...
-              </>
-            ) : (
-              <>
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path
-                    fill="currentColor"
-                    d="M9,5V9H21V7H11V5H9M9,19H11V17H21V15H9V19M3,17H7V15H3V17M3,7V9H7V7H3M15,11V13H21V11H15M3,13H13V11H3V13Z"
-                  />
-                </svg>
-                Compare Prices
-              </>
-            )}
-          </button>
+              <div>
+                <label htmlFor="category" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path
+                      fill="currentColor"
+                      d="M12,2A2,2 0 0,1 14,4A2,2 0 0,1 12,6A2,2 0 0,1 10,4A2,2 0 0,1 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V19A2,2 0 0,0 5,21H11V19H5V3H13V9H21Z"
+                    />
+                  </svg>
+                  Category
+                </label>
+                <select
+                  id="category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="input w-full"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="text">Text Generation</option>
+                  <option value="multimodal">Multimodal</option>
+                  <option value="embedding">Embeddings</option>
+                  <option value="code">Code Generation</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              onClick={handleComparePrice}
+              disabled={comparing}
+              className="btn-primary w-full py-4 text-lg font-display font-bold rounded-xl flex items-center justify-center gap-3"
+            >
+              {comparing ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Comparing...
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path
+                      fill="currentColor"
+                      d="M9,5V9H21V7H11V5H9M9,19H11V17H21V15H9V19M3,17H7V15H3V17M3,7V9H7V7H3M15,11V13H21V11H15M3,13H13V11H3V13Z"
+                    />
+                  </svg>
+                  Compare Prices
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -550,7 +552,7 @@ export const PriceComparison: React.FC = () => {
                             </svg>
                             <span>
                               {model.contextWindow !== null &&
-                              model.contextWindow > 0
+                                model.contextWindow > 0
                                 ? `${(model.contextWindow / 1000).toFixed(0)}K tokens`
                                 : "Variable"}
                             </span>

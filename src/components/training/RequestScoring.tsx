@@ -86,18 +86,17 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
   const classes = sizeClasses[size];
 
   return (
-    <div className={`${classes.container}`}>
+    <div className={`glass rounded-xl p-4 border border-warning-200/30 shadow-lg backdrop-blur-xl ${classes.container}`}>
       {/* Star Rating */}
       <div className="flex items-center space-x-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             onClick={() => handleScoreClick(star)}
-            className={`transition-colors ${
-              star <= score
-                ? "text-yellow-400 hover:text-yellow-500"
-                : "text-gray-300 hover:text-gray-400"
-            }`}
+            className={`transition-all hover:scale-110 ${star <= score
+                ? "text-warning-400 hover:text-warning-500 glow-warning"
+                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-warning-300"
+              }`}
             disabled={isSubmitting}
           >
             {star <= score ? (
@@ -108,11 +107,11 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
           </button>
         ))}
         {score > 0 && (
-          <span className={`ml-2 font-medium ${classes.text}`}>
+          <span className={`ml-3 font-display font-bold gradient-text-warning ${classes.text}`}>
             {score}/5
             {score >= 4 && (
-              <span className="ml-1 text-green-600 text-xs">
-                (Training Candidate)
+              <span className="ml-2 badge-success text-xs">
+                Training Candidate
               </span>
             )}
           </span>
@@ -121,12 +120,12 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
 
       {/* Expanded Options */}
       {isExpanded && score > 0 && (
-        <div className={`border-t pt-3 ${classes.container}`}>
+        <div className={`border-t border-warning-200/30 pt-4 ${classes.container}`}>
           {/* Training Tags */}
           {showTags && (
             <div>
               <label
-                className={`block font-medium text-gray-700 mb-2 ${classes.text}`}
+                className={`form-label ${classes.text}`}
               >
                 Quality Tags (Optional)
               </label>
@@ -135,11 +134,10 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
                   <button
                     key={tag}
                     onClick={() => handleTagToggle(tag)}
-                    className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                      selectedTags.includes(tag)
-                        ? "bg-blue-100 text-blue-800 border border-blue-200"
-                        : "bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all hover:scale-105 ${selectedTags.includes(tag)
+                        ? "badge-primary glow-primary"
+                        : "badge-secondary hover:badge-primary"
+                      }`}
                     disabled={isSubmitting}
                   >
                     {tag}

@@ -1,4 +1,3 @@
-// src/components/common/LoadingSpinner.tsx
 import React from "react";
 
 interface LoadingSpinnerProps {
@@ -20,7 +19,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div className={`flex items-center justify-center ${className}`}>
       <div className={`${sizeClasses[size]} animate-spin`}>
         <svg
-          className="w-full h-full text-indigo-600"
+          className="w-full h-full text-primary-500"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

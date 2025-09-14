@@ -1,4 +1,3 @@
-// src/components/optimization/QuickOptimize.tsx
 import React, { useState } from "react";
 import {
   SparklesIcon,
@@ -11,7 +10,6 @@ import { useNotifications } from "../../contexts/NotificationContext";
 import { renderFormattedContent, formatSmartNumber } from "../../utils/formatters";
 import { processFormattedText } from "../../utils/codeFormatter";
 
-// Import code block styling
 import "../../styles/codeBlocks.css";
 import { CortexToggle, CortexResultsDisplay, CortexConfigPanel } from "../cortex";
 import { DEFAULT_CORTEX_CONFIG } from "../../types/cortex.types";
@@ -30,16 +28,13 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
   const [showResult, setShowResult] = useState(false);
   const { showNotification } = useNotifications();
 
-  // Direct API call state
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizationError, setOptimizationError] = useState<string | null>(null);
 
-  // Cortex state
   const [cortexEnabled, setCortexEnabled] = useState(false);
   const [showCortexAdvanced, setShowCortexAdvanced] = useState(false);
   const [cortexConfig, setCortexConfig] = useState<Partial<CortexConfig>>(DEFAULT_CORTEX_CONFIG);
 
-  // Direct API call for optimization
   const createOptimization = async () => {
     console.log("🚀 QUICK OPTIMIZE: Starting direct API call", {
       prompt: prompt.substring(0, 100) + "...",
@@ -136,41 +131,48 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+      className={`card shadow-2xl backdrop-blur-xl border border-primary-200/30 ${className}`}
     >
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            <SparklesIcon className="w-5 h-5 text-indigo-600 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">
+      <div className="p-8">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <SparklesIcon className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-2xl font-display font-bold gradient-text">
               Quick Optimize
             </h3>
           </div>
           {cortexEnabled && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-              <SparklesIcon className="w-3 h-3 mr-1" />
+            <span className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border border-secondary-200/30 font-display font-medium">
+              <SparklesIcon className="w-4 h-4 mr-2" />
               Cortex Enhanced
             </span>
           )}
         </div>
 
         {!showResult ? (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter your AI query
-              </label>
+          <div className="space-y-6">
+            <div className="glass rounded-xl p-6 border border-success-200/30">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                  <span className="text-white text-sm">📝</span>
+                </div>
+                <label className="font-display font-semibold gradient-text-success text-lg">
+                  Enter your AI query
+                </label>
+              </div>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={6}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="input"
                 placeholder="Paste your AI query here for instant usage optimization..."
               />
             </div>
 
             {/* Cortex Toggle for Quick Optimize */}
-            <div className="border-t border-gray-100 pt-4">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30">
               <CortexToggle
                 enabled={cortexEnabled}
                 onChange={setCortexEnabled}
@@ -182,7 +184,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
             {/* Cortex Advanced Configuration */}
             {cortexEnabled && showCortexAdvanced && (
-              <div className="mt-4">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30">
                 <CortexConfigPanel
                   config={cortexConfig}
                   onChange={setCortexConfig}
@@ -194,7 +196,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <button
               onClick={handleOptimize}
               disabled={isOptimizing || !prompt.trim()}
-              className="w-full flex items-center justify-center px-4 py-3 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="btn-primary w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isOptimizing ? (
                 <>
@@ -203,7 +205,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </>
               ) : (
                 <>
-                  <SparklesIcon className="w-4 h-4 mr-2" />
+                  <SparklesIcon className="w-5 h-5 mr-2" />
                   Optimize Now
                 </>
               )}
@@ -211,63 +213,83 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
             {/* Show error if optimization fails */}
             {optimizationError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-sm text-red-800">
-                  <strong>Error:</strong> {optimizationError}
+              <div className="glass rounded-xl p-6 border border-danger-200/30">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                    <span className="text-white text-xs">⚠️</span>
+                  </div>
+                  <span className="font-display font-semibold gradient-text-danger">Optimization Error</span>
+                </div>
+                <p className="font-body text-light-text-primary dark:text-dark-text-primary">
+                  {optimizationError}
                 </p>
               </div>
             )}
 
-            <p className="text-xs text-gray-500 text-center">
-              ✨ AI-powered optimization • {cortexEnabled ? (showCortexAdvanced ? 'Cortex configured' : 'Cortex with defaults') : 'Standard optimization'} • Instant results
-            </p>
+            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                ✨ AI-powered optimization • {cortexEnabled ? (showCortexAdvanced ? 'Cortex configured' : 'Cortex with defaults') : 'Standard optimization'} • Instant results
+              </p>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Success Header */}
-            <div className={`flex items-center justify-between p-3 rounded-lg border ${cortexEnabled && optimizationResult?.metadata?.cortex
-              ? 'bg-purple-50 border-purple-200'
-              : 'bg-green-50 border-green-200'
+            <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl ${cortexEnabled && optimizationResult?.metadata?.cortex
+              ? 'border-secondary-200/30'
+              : 'border-success-200/30'
               }`}>
-              <div className="flex items-center">
-                <CheckIcon className={`w-5 h-5 mr-2 ${cortexEnabled && optimizationResult?.metadata?.cortex
-                  ? 'text-purple-600'
-                  : 'text-green-600'
-                  }`} />
-                <div className="flex items-center space-x-2">
-                  <span className={`text-sm font-medium ${cortexEnabled && optimizationResult?.metadata?.cortex
-                    ? 'text-purple-900'
-                    : 'text-green-900'
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    ? 'bg-gradient-secondary glow-secondary'
+                    : 'bg-gradient-success glow-success'
                     }`}>
-                    {cortexEnabled && optimizationResult?.metadata?.cortex
-                      ? 'Cortex Optimization Complete!'
-                      : 'Optimization Complete!'}
-                  </span>
-                  {cortexEnabled && optimizationResult?.metadata?.cortex && (
-                    <SparklesIcon className="w-4 h-4 text-purple-600" />
-                  )}
+                    <CheckIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      ? 'gradient-text-secondary'
+                      : 'gradient-text-success'
+                      }`}>
+                      {cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'Cortex Optimization Complete!'
+                        : 'Optimization Complete!'}
+                    </span>
+                    {cortexEnabled && optimizationResult?.metadata?.cortex && (
+                      <SparklesIcon className="w-5 h-5 text-secondary-500" />
+                    )}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className={`text-3xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    ? 'gradient-text-secondary'
+                    : 'gradient-text-success'
+                    }`}>
+                    ${formatSmartNumber(optimizationResult?.costSaved || 0)}
+                  </div>
+                  <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">saved</div>
                 </div>
               </div>
-              <span className={`text-lg font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex
-                ? 'text-purple-600'
-                : 'text-green-600'
-                }`}>
-                ${formatSmartNumber(optimizationResult?.costSaved || 0)} saved
-              </span>
             </div>
 
             {/* Prompt Comparison */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Original vs Optimized Prompts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* User Query */}
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      User Query
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                <div className="glass rounded-xl p-6 border border-primary-200/30">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
+                        <span className="text-white text-xs">📝</span>
+                      </div>
+                      <label className="font-display font-semibold gradient-text">
+                        User Query
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30 font-display font-medium text-xs">
                         {(() => {
                           const originalTokens = optimizationResult?.metadata?.cortexTokenReduction?.originalTokens
                             || optimizationResult?.originalTokens
@@ -277,16 +299,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       </span>
                       <button
                         onClick={() => handleCopy(prompt)}
-                        className="flex items-center px-2 py-1 text-xs text-gray-600 hover:text-gray-800 font-medium"
+                        className="btn-secondary text-xs"
                       >
                         <ClipboardDocumentIcon className="w-3 h-3 mr-1" />
                         Copy
                       </button>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-3 max-h-48 overflow-y-auto">
+                  <div className="glass rounded-lg p-4 border border-primary-200/30 max-h-48 overflow-y-auto">
                     <div
-                      className="text-sm text-gray-700"
+                      className="font-body text-light-text-primary dark:text-dark-text-primary"
                       dangerouslySetInnerHTML={{
                         __html: processFormattedText(prompt)
                       }}
@@ -295,18 +317,29 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </div>
 
                 {/* Generated Answer */}
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className={`text-sm font-medium ${cortexEnabled && optimizationResult?.metadata?.cortex
-                      ? 'text-purple-700'
-                      : 'text-gray-700'
-                      }`}>
-                      Generated Answer
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <span className={`text-xs px-2 py-1 rounded ${cortexEnabled && optimizationResult?.metadata?.cortex
-                        ? 'text-purple-600 bg-purple-100'
-                        : 'text-green-600 bg-green-100'
+                <div className={`glass rounded-xl p-6 border ${cortexEnabled && optimizationResult?.metadata?.cortex
+                  ? 'border-secondary-200/30'
+                  : 'border-success-200/30'
+                  }`}>
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'bg-gradient-secondary glow-secondary'
+                        : 'bg-gradient-success glow-success'
+                        }`}>
+                        <span className="text-white text-xs">✨</span>
+                      </div>
+                      <label className={`font-display font-semibold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'gradient-text-secondary'
+                        : 'gradient-text-success'
+                        }`}>
+                        Generated Answer
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className={`px-3 py-1 rounded-full border font-display font-medium text-xs ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30'
+                        : 'bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30'
                         }`}>
                         {(() => {
                           const optimizedTokens = optimizationResult?.metadata?.cortexTokenReduction?.cortexTokens
@@ -317,21 +350,19 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       </span>
                       <button
                         onClick={() => handleCopy(optimizationResult?.generatedAnswer || "")}
-                        className={`flex items-center px-2 py-1 text-xs font-medium ${cortexEnabled && optimizationResult?.metadata?.cortex
-                          ? 'text-purple-600 hover:text-purple-800'
-                          : 'text-indigo-600 hover:text-indigo-800'
-                          }`}>
+                        className="btn-secondary text-xs"
+                      >
                         <ClipboardDocumentIcon className="w-3 h-3 mr-1" />
                         Copy
                       </button>
                     </div>
                   </div>
-                  <div className={`rounded-lg p-3 max-h-48 overflow-y-auto ${cortexEnabled && optimizationResult?.metadata?.cortex
-                    ? 'bg-purple-50 border border-purple-200'
-                    : 'bg-green-50 border border-green-200'
+                  <div className={`glass rounded-lg p-4 border max-h-48 overflow-y-auto ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    ? 'border-secondary-200/30'
+                    : 'border-success-200/30'
                     }`}>
                     <div
-                      className="text-sm text-gray-700"
+                      className="font-body text-light-text-primary dark:text-dark-text-primary"
                       dangerouslySetInnerHTML={{
                         __html: processFormattedText(optimizationResult?.generatedAnswer || '')
                       }}
@@ -341,36 +372,40 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               </div>
 
               {/* Token Comparison Stats */}
-              <div className={`p-3 rounded-lg border ${cortexEnabled && optimizationResult?.metadata?.cortex
-                ? 'bg-purple-50 border-purple-200'
-                : 'bg-blue-50 border-blue-200'
+              <div className={`glass rounded-xl p-6 border shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                ? 'border-secondary-200/30'
+                : 'border-primary-200/30'
                 }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-sm">
-                      <span className="text-gray-600">Token Reduction:</span>
-                      <span className={`ml-2 font-semibold ${cortexEnabled && optimizationResult?.metadata?.cortex
-                        ? 'text-purple-700'
-                        : 'text-blue-700'
-                        }`}>
-                        {optimizationResult?.tokensSaved || 0} tokens
-                      </span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      ? 'gradient-text-secondary'
+                      : 'gradient-text'
+                      }`}>
+                      {optimizationResult ? formatSmartNumber(optimizationResult.tokensSaved) : '0'}
                     </div>
-                    <div className="text-sm">
-                      <span className="text-gray-600">Improvement:</span>
-                      <span className={`ml-2 font-semibold ${cortexEnabled && optimizationResult?.metadata?.cortex
-                        ? 'text-purple-700'
-                        : 'text-blue-700'
-                        }`}>
-                        {formatSmartNumber(optimizationResult?.improvementPercentage || 0)}%
-                      </span>
+                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                      Tokens Saved
                     </div>
                   </div>
-                  <div className="text-sm">
-                    <span className="text-gray-600">Cost Saved:</span>
-                    <span className="ml-2 font-semibold text-green-700">
-                      ${formatSmartNumber(optimizationResult?.costSaved || 0)}
-                    </span>
+                  <div className="text-center">
+                    <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      ? 'gradient-text-secondary'
+                      : 'gradient-text'
+                      }`}>
+                      {optimizationResult ? `${optimizationResult.improvementPercentage.toFixed(1)}%` : '0%'}
+                    </div>
+                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                      {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-display font-bold gradient-text-success mb-1">
+                      {optimizationResult ? `$${optimizationResult.costSaved.toFixed(6)}` : '$0'}
+                    </div>
+                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                      Cost Saved
+                    </div>
                   </div>
                 </div>
               </div>
@@ -381,59 +416,63 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               const hasCortex = optimizationResult?.metadata?.cortex;
 
               return (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className={`p-3 rounded border ${cortexEnabled && hasCortex
-                      ? 'bg-purple-50 border-purple-200'
-                      : 'bg-blue-50 border-blue-200'
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className={`glass rounded-xl p-6 border text-center hover:scale-105 transition-transform duration-300 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      ? 'border-secondary-200/30'
+                      : 'border-primary-200/30'
                       }`}>
-                      <div className={`text-lg font-bold ${cortexEnabled && hasCortex
-                        ? 'text-purple-600'
-                        : 'text-blue-600'
+                      <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'bg-gradient-secondary glow-secondary'
+                        : 'bg-gradient-primary glow-primary'
                         }`}>
-                        {cortexEnabled && hasCortex
-                          ? `${Math.round(optimizationResult?.metadata?.cortex?.reductionPercentage || 0)}%`
-                          : `${formatSmartNumber(optimizationResult?.improvementPercentage || 0)}%`
-                        }
+                        <span className="text-white text-lg">📈</span>
                       </div>
-                      <div className={`text-xs ${cortexEnabled && hasCortex
-                        ? 'text-purple-700'
-                        : 'text-blue-700'
+                      <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'gradient-text-secondary'
+                        : 'gradient-text'
                         }`}>
-                        {cortexEnabled && hasCortex ? 'Token Reduction' : 'Improvement'}
+                        {optimizationResult ? `${optimizationResult.improvementPercentage.toFixed(1)}%` : '0%'}
+                      </div>
+                      <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
                       </div>
                     </div>
-                    <div className="p-3 bg-green-50 rounded border border-green-200">
-                      <div className="text-lg font-bold text-green-600">
-                        {cortexEnabled && hasCortex
-                          ? (optimizationResult?.metadata?.cortex?.tokensSaved || 0)
-                          : (optimizationResult?.tokensSaved || 0)
-                        }
+                    <div className="glass rounded-xl p-6 border border-success-200/30 text-center hover:scale-105 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-3 glow-success">
+                        <span className="text-white text-lg">🎯</span>
                       </div>
-                      <div className="text-xs text-green-700">Tokens Saved</div>
+                      <div className="text-2xl font-display font-bold gradient-text-success mb-1">
+                        {optimizationResult ? formatSmartNumber(optimizationResult.tokensSaved) : '0'}
+                      </div>
+                      <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens Saved</div>
                     </div>
-                    <div className="p-3 bg-orange-50 rounded border border-orange-200">
-                      <div className="text-lg font-bold text-orange-600">
-                        {cortexEnabled && hasCortex
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 text-center hover:scale-105 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-3 glow-accent">
+                        <span className="text-white text-lg">{cortexEnabled && optimizationResult?.metadata?.cortex ? '🔍' : '⚙️'}</span>
+                      </div>
+                      <div className="text-2xl font-display font-bold gradient-text-accent mb-1">
+                        {cortexEnabled && optimizationResult?.metadata?.cortex
                           ? `${Math.round((optimizationResult?.metadata?.cortex?.semanticIntegrity || 0) * 100)}%`
                           : (optimizationResult?.suggestions?.length || 0)
                         }
                       </div>
-                      <div className="text-xs text-orange-700">
-                        {cortexEnabled && hasCortex ? 'Integrity' : 'Techniques'}
+                      <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                        {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Integrity' : 'Techniques'}
                       </div>
                     </div>
                   </div>
 
                   {/* Cortex Results Display */}
                   {cortexEnabled && hasCortex && (
-                    <div className="mt-4">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30">
                       <CortexResultsDisplay
                         metadata={optimizationResult?.metadata}
                         loading={false}
                       />
                     </div>
                   )}
+
                 </div>
               );
             })()}
@@ -442,11 +481,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             {optimizationResult?.suggestions &&
               Array.isArray(optimizationResult.suggestions) &&
               optimizationResult.suggestions.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-3">
-                    Applied Techniques
-                  </h4>
-                  <div className="space-y-2">
+                <div className="glass rounded-xl p-6 border border-accent-200/30">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                      <span className="text-white text-sm">⚙️</span>
+                    </div>
+                    <h4 className="font-display font-semibold gradient-text-accent text-lg">
+                      Applied Techniques
+                    </h4>
+                  </div>
+                  <div className="space-y-4">
                     {optimizationResult.suggestions.map(
                       (suggestion: { type?: string; implemented?: boolean; description?: string; explanation?: string }, index: number) => {
                         // Safe access to suggestion properties with fallbacks
@@ -459,23 +503,27 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                         return (
                           <div
                             key={`suggestion-${index}`}
-                            className="flex items-start p-3 bg-gray-50 rounded-lg border"
+                            className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                           >
-                            <div className="w-2 h-2 bg-indigo-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                            <div className="flex-1">
-                              <div className="flex justify-between items-start mb-1">
-                                <span className="text-sm font-medium text-gray-900 capitalize">
-                                  {suggestionType.replace(/_/g, " ")}
-                                </span>
-                                {isImplemented && (
-                                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                                    Applied
-                                  </span>
-                                )}
+                            <div className="flex items-start gap-4">
+                              <div className="w-5 h-5 bg-gradient-primary rounded-full mt-1 flex-shrink-0 glow-primary flex items-center justify-center">
+                                <span className="text-white text-xs">✓</span>
                               </div>
-                              <p className="text-sm text-gray-600">
-                                {renderFormattedContent(description)}
-                              </p>
+                              <div className="flex-1">
+                                <div className="flex justify-between items-start mb-2">
+                                  <span className="font-display font-semibold gradient-text capitalize">
+                                    {suggestionType.replace(/_/g, " ")}
+                                  </span>
+                                  {isImplemented && (
+                                    <span className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30 font-display font-medium text-xs">
+                                      Applied
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="font-body text-light-text-primary dark:text-dark-text-primary">
+                                  {renderFormattedContent(description)}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         );
@@ -486,16 +534,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               )}
 
             {/* Action Buttons */}
-            <div className="flex space-x-3">
+            <div className="flex space-x-4 pt-6 border-t border-primary-200/30">
               <button
                 onClick={handleReset}
-                className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="btn-secondary flex-1"
               >
                 Optimize Another
               </button>
               <button
                 onClick={() => handleCopy(optimizationResult?.generatedAnswer || "")}
-                className="flex-1 px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="btn-primary flex-1"
               >
                 Copy Result
               </button>

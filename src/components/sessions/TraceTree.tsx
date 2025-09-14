@@ -95,9 +95,9 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
         return (
             <div key={node.id} className="select-none">
                 <div
-                    className={`flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded ${isSelected ? 'bg-blue-50 border-l-2 border-blue-500' : ''
+                    className={`flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg transition-all duration-200 hover:scale-102 ${isSelected ? 'glass border border-primary-300/50 bg-gradient-primary/10 shadow-lg glow-primary' : 'hover:bg-gradient-primary/5'
                         }`}
-                    style={{ paddingLeft: `${level * 20 + 8}px` }}
+                    style={{ paddingLeft: `${level * 20 + 12}px` }}
                     onClick={() => onNodeSelect?.(node.id)}
                     onKeyDown={(e) => handleKeyDown(e, node.id)}
                     tabIndex={0}
@@ -107,7 +107,7 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
                 >
                     {hasChildren && (
                         <button
-                            className="p-0.5 hover:bg-gray-200 rounded"
+                            className="glass p-1 rounded-lg border border-primary-200/30 hover:bg-gradient-primary/20 transition-all duration-200 hover:scale-110"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 toggleExpand(node.id);
@@ -115,36 +115,36 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
                             aria-label={isExpanded ? 'Collapse' : 'Expand'}
                         >
                             {isExpanded ? (
-                                <ChevronDown className="w-4 h-4" />
+                                <ChevronDown className="w-4 h-4 text-primary-600" />
                             ) : (
-                                <ChevronRight className="w-4 h-4" />
+                                <ChevronRight className="w-4 h-4 text-primary-600" />
                             )}
                         </button>
                     )}
-                    {!hasChildren && <div className="w-5" />}
+                    {!hasChildren && <div className="w-6" />}
 
-                    {isError && <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />}
+                    {isError && <AlertCircle className="w-4 h-4 text-danger-500 flex-shrink-0" />}
 
-                    <span className={`flex-1 text-sm truncate ${isError ? 'text-red-600' : ''}`}>
+                    <span className={`flex-1 font-body truncate ${isError ? 'text-danger-600' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
                         {node.label}
                     </span>
 
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                         {node.duration !== undefined && (
-                            <span className="flex items-center gap-0.5">
-                                <Clock className="w-3 h-3" />
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-accent-200/30 bg-gradient-accent/10">
+                                <Clock className="w-3 h-3 text-accent-500" />
                                 {node.duration}ms
                             </span>
                         )}
                         {node.aiModel && (
-                            <span className="flex items-center gap-0.5">
-                                <Cpu className="w-3 h-3" />
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-primary-200/30 bg-gradient-primary/10">
+                                <Cpu className="w-3 h-3 text-primary-500" />
                                 {node.aiModel.split('/').pop()?.split('-').slice(0, 2).join('-')}
                             </span>
                         )}
                         {node.costUSD !== undefined && (
-                            <span className="flex items-center gap-0.5">
-                                <DollarSign className="w-3 h-3" />
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-success-200/30 bg-gradient-success/10">
+                                <DollarSign className="w-3 h-3 text-success-500" />
                                 ${node.costUSD.toFixed(4)}
                             </span>
                         )}
@@ -162,15 +162,25 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
 
     if (treeData.length === 0) {
         return (
-            <div className="p-4 text-gray-500 text-center">
-                No trace data available
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
+                <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">🌳</span>
+                </div>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    No trace data available
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-lg font-semibold mb-4">Trace Tree</h3>
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <span className="text-white text-lg">🌳</span>
+                </div>
+                <h3 className="text-xl font-display font-bold gradient-text-secondary">Trace Tree</h3>
+            </div>
             <div className="overflow-auto" role="tree" aria-label="Trace Tree">
                 {treeData.map(root => renderNode(root))}
             </div>

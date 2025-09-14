@@ -18,7 +18,12 @@ export const CostDebuggerPanel: React.FC<CostDebuggerPanelProps> = ({
     return (
         <div className="cost-debugger-panel">
             <div className="panel-header">
-                <h3>📊 Cost Analysis</h3>
+                <div className="flex items-center gap-3">
+                    <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                        <span className="text-lg">📊</span>
+                    </div>
+                    <h3>Cost Analysis</h3>
+                </div>
             </div>
 
             <div className="panel-content">
@@ -39,7 +44,10 @@ export const CostDebuggerPanel: React.FC<CostDebuggerPanelProps> = ({
 
                 {deadWeight && (
                     <div className="dead-weight-panel">
-                        <h4>💀 Dead Weight</h4>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-lg">💀</span>
+                            <h4>Dead Weight</h4>
+                        </div>
                         <div className="dead-weight-item">
                             <span>Redundant: {deadWeight.redundantInstructions?.length || 0}</span>
                         </div>

@@ -115,42 +115,47 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
 
       {/* Comment Input Modal */}
       {showComment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">
-              {rating ? 'What made this response helpful?' : 'How can we improve this response?'}
-            </h3>
+        <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 max-w-md w-full mx-4 animate-scale-in">
+            <div className="flex items-center mb-6">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-lg ${rating ? 'bg-gradient-success glow-success' : 'bg-gradient-danger glow-danger'}`}>
+                {rating ? (
+                  <HandThumbUpIcon className="h-5 w-5 text-white" />
+                ) : (
+                  <HandThumbDownIcon className="h-5 w-5 text-white" />
+                )}
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text">
+                {rating ? 'What made this response helpful?' : 'How can we improve this response?'}
+              </h3>
+            </div>
 
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Your feedback helps us improve..."
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input w-full resize-none"
               rows={4}
               autoFocus
             />
 
-            <div className="flex justify-end space-x-3 mt-4">
+            <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={handleCancel}
                 disabled={isSubmitting}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                className="btn-ghost px-4 py-2 font-display font-semibold disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCommentSubmit}
                 disabled={isSubmitting}
-                className={`
-                                    px-4 py-2 rounded-md text-white font-medium
-                                    ${rating
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-red-600 hover:bg-red-700'
-                  }
-                                    disabled:opacity-50 disabled:cursor-not-allowed
-                                `}
+                className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${rating
+                  ? 'bg-gradient-success text-white glow-success'
+                  : 'bg-gradient-danger text-white glow-danger'
+                  }`}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+                {isSubmitting ? '⏳ Submitting...' : '✨ Submit Feedback'}
               </button>
             </div>
           </div>
@@ -159,8 +164,8 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
 
       {/* Feedback Status */}
       {rating !== null && !showComment && (
-        <span className="text-xs text-gray-500">
-          Thank you for your feedback!
+        <span className="text-xs font-display font-medium gradient-text-success">
+          ✨ Thank you for your feedback!
         </span>
       )}
     </div>

@@ -29,24 +29,24 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-      <div className="flex items-center space-x-6">
+    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+      <div className="flex items-center space-x-8">
         {/* Avatar */}
         <div className="relative">
-          <div className="flex justify-center items-center w-24 h-24 text-2xl font-bold text-white bg-indigo-600 rounded-full">
+          <div className="flex justify-center items-center w-28 h-28 text-3xl font-display font-bold text-white bg-gradient-primary rounded-2xl glow-primary">
             {user.avatar ? (
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="object-cover w-full h-full rounded-full"
+                className="object-cover w-full h-full rounded-2xl"
               />
             ) : (
               initials
             )}
           </div>
           {editable && (
-            <label className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-lg cursor-pointer hover:bg-gray-50">
-              <CameraIcon className="w-5 h-5 text-gray-600" />
+            <label className="absolute -bottom-2 -right-2 glass rounded-full p-3 shadow-xl cursor-pointer hover:scale-110 transition-all duration-200 border border-primary-200/30">
+              <CameraIcon className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary" />
               <input
                 type="file"
                 accept="image/*"
@@ -59,91 +59,74 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
         {/* User Info */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-3xl font-display font-bold gradient-text mb-2">
             {user.name || "User"}
           </h1>
-          <p className="text-gray-600">{user.email}</p>
-          <div className="flex items-center mt-2 space-x-4 text-sm text-gray-500">
+          <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg mb-4">{user.email}</p>
+          <div className="flex items-center flex-wrap gap-4">
             {user.company && (
-              <span className="flex items-center">
-                <svg
-                  className="mr-1 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
-                {user.company}
-              </span>
+              <div className="glass rounded-lg px-4 py-2 border border-primary-200/30">
+                <span className="flex items-center gap-2 font-body text-light-text-primary dark:text-dark-text-primary">
+                  <div className="w-4 h-4 rounded bg-gradient-primary flex items-center justify-center">
+                    <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H7a1 1 0 00-1 1v6a1 1 0 01-1 1H2a1 1 0 110-2V4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  {user.company}
+                </span>
+              </div>
             )}
             {user.role && (
-              <span className="flex items-center">
-                <svg
-                  className="mr-1 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                {user.role}
-              </span>
+              <div className="glass rounded-lg px-4 py-2 border border-secondary-200/30">
+                <span className="flex items-center gap-2 font-body text-light-text-primary dark:text-dark-text-primary">
+                  <div className="w-4 h-4 rounded bg-gradient-secondary flex items-center justify-center">
+                    <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  {user.role}
+                </span>
+              </div>
             )}
-            <span className="flex items-center">
-              <svg
-                className="mr-1 w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              Joined{" "}
-              {user.createdAt
-                ? new Date(user.createdAt).toLocaleDateString()
-                : "Recently"}
-            </span>
+            <div className="glass rounded-lg px-4 py-2 border border-accent-200/30">
+              <span className="flex items-center gap-2 font-body text-light-text-primary dark:text-dark-text-primary">
+                <div className="w-4 h-4 rounded bg-gradient-accent flex items-center justify-center">
+                  <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                Joined{" "}
+                {user.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : "Recently"}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Subscription Badge */}
         <div className="text-right">
-          <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              user.subscription?.plan === "pro"
-                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                : user.subscription?.plan === "enterprise"
-                  ? "bg-gradient-to-r from-yellow-600 to-orange-600 text-white"
-                  : "bg-gray-100 text-gray-800"
-            }`}
-          >
-            {user.subscription?.plan || "Free"} Plan
-          </span>
-          {user.subscription?.status === "active" &&
-            user.subscription?.currentPeriodEnd && (
-              <p className="mt-1 text-xs text-gray-500">
-                Renews{" "}
-                {new Date(
-                  user.subscription.currentPeriodEnd,
-                ).toLocaleDateString()}
-              </p>
-            )}
+          <div className="glass rounded-xl p-4 border border-success-200/30">
+            <span
+              className={`inline-flex items-center px-4 py-2 rounded-xl font-display font-bold text-white shadow-lg ${user.subscription?.plan === "pro"
+                  ? "bg-gradient-secondary glow-secondary"
+                  : user.subscription?.plan === "enterprise"
+                    ? "bg-gradient-warning glow-warning"
+                    : "bg-gradient-primary glow-primary"
+                }`}
+            >
+              {user.subscription?.plan || "Free"} Plan
+            </span>
+            {user.subscription?.status === "active" &&
+              user.subscription?.currentPeriodEnd && (
+                <p className="mt-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                  Renews{" "}
+                  {new Date(
+                    user.subscription.currentPeriodEnd,
+                  ).toLocaleDateString()}
+                </p>
+              )}
+          </div>
         </div>
       </div>
     </div>

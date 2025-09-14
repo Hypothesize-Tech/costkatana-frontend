@@ -237,47 +237,55 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                     leaderboard.map((entry, index) => (
                         <div
                             key={entry.userId}
-                            className={`p-4 hover:bg-gray-50 transition-colors ${entry.userId === currentUserId ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                            className={`p-6 hover:bg-primary-500/5 transition-all duration-300 hover:scale-105 ${entry.userId === currentUserId ? 'glass bg-primary-500/10 border-l-4 border-primary-500 shadow-lg' : ''
                                 }`}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center flex-1">
-                                    <div className="mr-4">
+                                    <div className="mr-6">
                                         {getRankIcon(entry.rank || index + 1)}
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex items-center">
-                                            <h4 className="font-medium text-gray-900">
+                                            <h4 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary text-lg">
                                                 {entry.userName || `User ${entry.userId.slice(-6)}`}
                                             </h4>
                                             {entry.userId === currentUserId && (
-                                                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                                <span className="ml-3 px-3 py-1 bg-gradient-primary text-white text-xs rounded-xl font-display font-bold shadow-lg animate-pulse">
                                                     You
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="flex items-center mt-1 space-x-4 text-sm text-gray-600">
-                                            <div className="flex items-center">
-                                                <CurrencyDollarIcon className="h-4 w-4 mr-1 text-green-500" />
-                                                {formatCurrency(entry.totalSavings)} saved
+                                        <div className="flex items-center mt-2 space-x-6 text-sm">
+                                            <div className="flex items-center glass p-2 rounded-lg border border-success-200/30">
+                                                <CurrencyDollarIcon className="h-4 w-4 mr-2 text-success-500" />
+                                                <span className="font-display font-semibold text-success-600 dark:text-success-400">
+                                                    {formatCurrency(entry.totalSavings)}
+                                                </span>
+                                                <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted ml-1">saved</span>
                                             </div>
-                                            <div className="flex items-center">
-                                                <ChartBarIcon className="h-4 w-4 mr-1 text-blue-500" />
-                                                {entry.optimizationsApplied} optimizations
+                                            <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
+                                                <ChartBarIcon className="h-4 w-4 mr-2 text-primary-500" />
+                                                <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
+                                                    {entry.optimizationsApplied}
+                                                </span>
+                                                <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted ml-1">optimizations</span>
                                             </div>
-                                            <div className="flex items-center">
-                                                <span className="mr-1">{getOptimizationTypeIcon(entry.topOptimizationType)}</span>
-                                                {entry.topOptimizationType.replace('_', ' ')}
+                                            <div className="flex items-center glass p-2 rounded-lg border border-accent-200/30">
+                                                <span className="mr-2 text-lg">{getOptimizationTypeIcon(entry.topOptimizationType)}</span>
+                                                <span className="font-display font-medium text-accent-600 dark:text-accent-400 capitalize">
+                                                    {entry.topOptimizationType.replace('_', ' ')}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-lg font-bold text-green-600">
+                                    <div className="text-2xl font-display font-bold gradient-text">
                                         {formatCurrency(entry.totalSavings)}
                                     </div>
-                                    <div className="text-sm text-gray-500">
-                                        ~{formatCurrency(entry.averageSavings)}/opt
+                                    <div className="text-sm font-body text-light-text-muted dark:text-dark-text-muted">
+                                        <span className="font-display font-semibold">~{formatCurrency(entry.averageSavings)}</span>/opt
                                     </div>
                                 </div>
                             </div>

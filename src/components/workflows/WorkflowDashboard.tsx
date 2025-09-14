@@ -307,18 +307,18 @@ const WorkflowDashboard: React.FC = () => {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
       {/* Header */}
-      <div className="p-6 bg-white rounded-lg shadow">
+      <div className="p-6 glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="mb-2 text-2xl font-bold text-gray-900">AI Workflow Observatory</h1>
-            <p className="text-gray-600">Monitor, trace, and optimize your AI workflow executions</p>
+            <h1 className="mb-2 text-2xl font-display font-bold gradient-text-primary">AI Workflow Observatory</h1>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary">Monitor, trace, and optimize your AI workflow executions</p>
           </div>
           <button
             onClick={fetchDashboardData}
             disabled={refreshing}
-            className={`px-4 py-2 rounded-md flex items-center ${refreshing ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+            className={`px-4 py-2 glass rounded-xl border border-accent-200/30 flex items-center transition-all duration-300 ${refreshing ? 'bg-light-bg-300 dark:bg-dark-bg-300 cursor-not-allowed text-light-text-tertiary dark:text-dark-text-tertiary' : 'btn-primary'
               }`}
           >
             <ArrowPathIcon className={`w-5 h-5 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -328,16 +328,16 @@ const WorkflowDashboard: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b border-gray-200">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="border-b border-accent-200/30">
           <nav className="flex px-6 space-x-8" aria-label="Tabs">
             {['overview', 'executions', 'analytics', 'traces'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as 'overview' | 'executions' | 'analytics' | 'traces')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${activeTab === tab
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-all duration-300 ${activeTab === tab
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-300/50'
                   }`}
               >
                 {tab}
@@ -351,56 +351,56 @@ const WorkflowDashboard: React.FC = () => {
             <div className="space-y-6">
               {/* Overview Metrics */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
-                <div className="p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                   <div className="flex items-center">
-                    <ChartBarIcon className="w-8 h-8 text-blue-600" />
+                    <ChartBarIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-blue-600">Total Executions</p>
-                      <p className="text-2xl font-bold text-blue-900">
+                      <p className="text-sm font-medium text-primary-600 dark:text-primary-400">Total Executions</p>
+                      <p className="text-2xl font-bold text-primary-900 dark:text-primary-100">
                         {dashboardData.overview.totalExecutions}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                   <div className="flex items-center">
-                    <CheckCircleIcon className="w-8 h-8 text-green-600" />
+                    <CheckCircleIcon className="w-8 h-8 text-success-600 dark:text-success-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-green-600">Success Rate</p>
-                      <p className="text-2xl font-bold text-green-900">
+                      <p className="text-sm font-medium text-success-600 dark:text-success-400">Success Rate</p>
+                      <p className="text-2xl font-bold text-success-900 dark:text-success-100">
                         {dashboardData.overview.successRate}%
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
                   <div className="flex items-center">
-                    <ClockIcon className="w-8 h-8 text-purple-600" />
+                    <ClockIcon className="w-8 h-8 text-secondary-600 dark:text-secondary-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-purple-600">Avg Duration</p>
-                      <p className="text-2xl font-bold text-purple-900">{formatDuration(dashboardData.overview.averageDuration)}</p>
+                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-400">Avg Duration</p>
+                      <p className="text-2xl font-bold text-secondary-900 dark:text-secondary-100">{formatDuration(dashboardData.overview.averageDuration)}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg">
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
                   <div className="flex items-center">
-                    <CurrencyDollarIcon className="w-8 h-8 text-yellow-600" />
+                    <CurrencyDollarIcon className="w-8 h-8 text-warning-600 dark:text-warning-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-yellow-600">Total Cost</p>
-                      <p className="text-2xl font-bold text-yellow-900">{formatCost(dashboardData.overview.totalCost)}</p>
+                      <p className="text-sm font-medium text-warning-600 dark:text-warning-400">Total Cost</p>
+                      <p className="text-2xl font-bold text-warning-900 dark:text-warning-100">{formatCost(dashboardData.overview.totalCost)}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg">
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
                   <div className="flex items-center">
-                    <PlayIcon className="w-8 h-8 text-indigo-600" />
+                    <PlayIcon className="w-8 h-8 text-accent-600 dark:text-accent-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-indigo-600">Active Workflows</p>
-                      <p className="text-2xl font-bold text-indigo-900">{dashboardData.overview.activeWorkflows}</p>
+                      <p className="text-sm font-medium text-accent-600 dark:text-accent-400">Active Workflows</p>
+                      <p className="text-2xl font-bold text-accent-900 dark:text-accent-100">{dashboardData.overview.activeWorkflows}</p>
                     </div>
                   </div>
                 </div>
@@ -409,8 +409,8 @@ const WorkflowDashboard: React.FC = () => {
               {/* Workflow Distribution */}
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Cost Analysis by Workflow Type */}
-                <div className="p-6 bg-white rounded-lg border border-gray-200">
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Cost Distribution by Workflow</h3>
+                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50">
+                  <h3 className="mb-4 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Cost Distribution by Workflow</h3>
                   <div className="space-y-4">
                     {dashboardData.costAnalysis.breakdown && dashboardData.costAnalysis.breakdown.map((item, index) => (
                       <div key={index} className="relative">

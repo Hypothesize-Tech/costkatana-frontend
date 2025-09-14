@@ -113,26 +113,42 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
   const getActivityIcon = (service: string) => {
     if (service === "openai")
-      return <CpuChipIcon className="w-5 h-5 text-green-600" />;
+      return (
+        <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+          <CpuChipIcon className="w-4 h-4 text-white" />
+        </div>
+      );
     if (service === "aws-bedrock")
-      return <BoltIcon className="w-5 h-5 text-orange-600" />;
+      return (
+        <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
+          <BoltIcon className="w-4 h-4 text-white" />
+        </div>
+      );
     if (service === "anthropic")
-      return <CodeBracketIcon className="w-5 h-5 text-purple-600" />;
-    return <PlayIcon className="w-5 h-5 text-blue-600" />;
+      return (
+        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+          <CodeBracketIcon className="w-4 h-4 text-white" />
+        </div>
+      );
+    return (
+      <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+        <PlayIcon className="w-4 h-4 text-white" />
+      </div>
+    );
   };
 
   const getServiceColor = (service: string) => {
     switch (service) {
       case "openai":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
+        return "bg-gradient-success/10 text-success-700 dark:text-success-300 border border-success-200/30";
       case "aws-bedrock":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400";
+        return "bg-gradient-warning/10 text-warning-700 dark:text-warning-300 border border-warning-200/30";
       case "anthropic":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400";
+        return "bg-gradient-primary/10 text-primary-700 dark:text-primary-300 border border-primary-200/30";
       case "google-ai":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400";
+        return "bg-gradient-secondary/10 text-secondary-700 dark:text-secondary-300 border border-secondary-200/30";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+        return "bg-gradient-accent/10 text-accent-700 dark:text-accent-300 border border-accent-200/30";
     }
   };
 
@@ -155,39 +171,44 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
   }
 
   return (
-    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Integration Dashboard
-        </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Monitor your AI usage and manage integrations
-        </p>
+    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-8">
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
+            <CogIcon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-display font-bold gradient-text">
+              🔗 Integration Dashboard
+            </h1>
+            <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
+              Monitor your AI usage and manage integrations
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-8">
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <nav className="-mb-px flex space-x-8">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'overview'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-                }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('projects')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'projects'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-                }`}
-            >
-              Project IDs & Integration
-            </button>
-          </nav>
+      <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'overview'
+              ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+              : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+              }`}
+          >
+            📊 Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('projects')}
+            className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'projects'
+              ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+              : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+              }`}
+          >
+            🗂️ Project IDs & Integration
+          </button>
         </div>
       </div>
 
@@ -195,61 +216,64 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       {activeTab === 'overview' && (
         <>
           {/* Integration Health - Simplified */}
-          <div className="mb-8">
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Quick Overview
+          <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg glow-secondary">
+                  <ChartBarIcon className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-2xl font-display font-bold gradient-text">
+                  📊 Quick Overview
                 </h2>
-                <div
-                  className={`flex items-center px-3 py-1 rounded-full text-sm font-medium ${health.color === "green"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                      : health.color === "yellow"
-                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
-                        : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                    }`}
-                >
-                  {health.color === "green" ? (
-                    <CheckCircleIcon className="mr-1 w-4 h-4" />
-                  ) : (
-                    <ExclamationTriangleIcon className="mr-1 w-4 h-4" />
-                  )}
-                  {health.label}
+              </div>
+              <div
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-display font-bold shadow-lg ${health.color === "green"
+                  ? "bg-gradient-success text-white glow-success"
+                  : health.color === "yellow"
+                    ? "bg-gradient-warning text-white glow-warning"
+                    : "bg-gradient-danger text-white glow-danger"
+                  }`}
+              >
+                {health.color === "green" ? (
+                  <CheckCircleIcon className="mr-2 w-4 h-4" />
+                ) : (
+                  <ExclamationTriangleIcon className="mr-2 w-4 h-4" />
+                )}
+                {health.label}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+              <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+                <div className="text-3xl font-display font-bold gradient-text mb-2">
+                  {integrationStatus.apiKeysConfigured}
+                </div>
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                  🔑 API Keys
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {integrationStatus.apiKeysConfigured}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    API Keys
-                  </div>
+              <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+                <div className="text-3xl font-display font-bold gradient-text-success mb-2">
+                  {integrationStatus.projectsWithUsage}
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {integrationStatus.projectsWithUsage}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Active Projects
-                  </div>
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                  🚀 Active Projects
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {analytics?.summary?.totalRequests || 0}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    API Calls
-                  </div>
+              </div>
+              <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 text-center">
+                <div className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400 mb-2">
+                  {analytics?.summary?.totalRequests || 0}
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {formatCurrency(analytics?.summary?.totalCost || 0)}
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    Total Spent
-                  </div>
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                  ⚡ API Calls
+                </div>
+              </div>
+              <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+                <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
+                  {formatCurrency(analytics?.summary?.totalCost || 0)}
+                </div>
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                  💰 Total Spent
                 </div>
               </div>
             </div>
@@ -258,104 +282,127 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left Column - Quick Actions */}
             <div className="lg:col-span-1">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                Quick Actions
-              </h2>
-              <div className="space-y-3">
-                {integrationStatus.apiKeysConfigured === 0 && (
-                  <button
-                    onClick={() => setShowIntegrationModal(true)}
-                    className="w-full flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200 transition-colors dark:bg-blue-900/20 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30"
+              <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center mr-3 shadow-lg">
+                    <BoltIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <h2 className="text-xl font-display font-bold gradient-text">⚡ Quick Actions</h2>
+                </div>
+                <div className="space-y-4">
+                  {integrationStatus.apiKeysConfigured === 0 && (
+                    <button
+                      onClick={() => setShowIntegrationModal(true)}
+                      className="w-full card card-hover p-4 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 transition-all duration-300 hover:scale-105"
+                    >
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+                          <CogIcon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="text-left">
+                          <div className="font-display font-bold gradient-text">
+                            Setup Integration
+                          </div>
+                          <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            Add your first API key
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+
+                  <a
+                    href="/settings"
+                    className="w-full card card-hover p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 transition-all duration-300 hover:scale-105 block"
                   >
-                    <CogIcon className="mr-3 w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    <div className="text-left">
-                      <div className="font-medium text-blue-900 dark:text-blue-100">
-                        Setup Integration
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
+                        <KeyIcon className="w-5 h-5 text-white" />
                       </div>
-                      <div className="text-sm text-blue-700 dark:text-blue-300">
-                        Add your first API key
+                      <div className="text-left">
+                        <div className="font-display font-bold gradient-text-success">
+                          Manage API Keys
+                        </div>
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                          {integrationStatus.apiKeysConfigured} configured
+                        </div>
                       </div>
                     </div>
-                  </button>
-                )}
+                  </a>
 
-                <a
-                  href="/settings"
-                  className="w-full flex items-center p-4 bg-green-50 rounded-lg border border-green-200 transition-colors dark:bg-green-900/20 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30"
-                >
-                  <KeyIcon className="mr-3 w-6 h-6 text-green-600 dark:text-green-400" />
-                  <div className="text-left">
-                    <div className="font-medium text-green-900 dark:text-green-100">
-                      Manage API Keys
+                  <a
+                    href="/projects"
+                    className="w-full card card-hover p-4 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 transition-all duration-300 hover:scale-105 block"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg">
+                        <DocumentTextIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-display font-bold text-secondary-600 dark:text-secondary-400">
+                          View Projects
+                        </div>
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                          {integrationStatus.totalProjects} total projects
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-green-700 dark:text-green-300">
-                      {integrationStatus.apiKeysConfigured} configured
-                    </div>
-                  </div>
-                </a>
+                  </a>
 
-                <a
-                  href="/projects"
-                  className="w-full flex items-center p-4 bg-purple-50 rounded-lg border border-purple-200 transition-colors dark:bg-purple-900/20 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30"
-                >
-                  <DocumentTextIcon className="mr-3 w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  <div className="text-left">
-                    <div className="font-medium text-purple-900 dark:text-purple-100">
-                      View Projects
+                  <a
+                    href="/analytics"
+                    className="w-full card card-hover p-4 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30 transition-all duration-300 hover:scale-105 block"
+                  >
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
+                        <ChartBarIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-display font-bold gradient-text-warning">
+                          Detailed Analytics
+                        </div>
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                          View comprehensive reports
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-purple-700 dark:text-purple-300">
-                      {integrationStatus.totalProjects} total projects
-                    </div>
-                  </div>
-                </a>
-
-                <a
-                  href="/analytics"
-                  className="w-full flex items-center p-4 bg-orange-50 rounded-lg border border-orange-200 transition-colors dark:bg-orange-900/20 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/30"
-                >
-                  <ChartBarIcon className="mr-3 w-6 h-6 text-orange-600 dark:text-orange-400" />
-                  <div className="text-left">
-                    <div className="font-medium text-orange-900 dark:text-orange-100">
-                      Detailed Analytics
-                    </div>
-                    <div className="text-sm text-orange-700 dark:text-orange-300">
-                      View comprehensive reports
-                    </div>
-                  </div>
-                </a>
+                  </a>
+                </div>
               </div>
             </div>
 
             {/* Right Column - Recent Activity */}
             <div className="lg:col-span-2">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                Recent AI Activity
-              </h2>
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+              <div className="card card-gradient shadow-2xl backdrop-blur-xl">
+                <div className="p-6 border-b border-primary-200/30">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+                      <ClockIcon className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text">🕒 Recent AI Activity</h2>
+                  </div>
+                </div>
                 {loadingUsage ? (
                   <div className="p-8 text-center">
-                    <LoadingSpinner />
+                    <div className="spinner-lg text-primary-500 mb-4"></div>
+                    <div className="font-display font-semibold gradient-text">Loading activity...</div>
                   </div>
                 ) : recentUsage && recentUsage.length > 0 ? (
-                  <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+                  <div className="divide-y divide-primary-200/30 max-h-96 overflow-y-auto">
                     {recentUsage.map((usage: any, index: number) => (
                       <div
                         key={index}
-                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="p-6 hover:bg-primary-500/5 transition-all duration-300"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div
-                              className={`p-2 rounded-lg ${getServiceColor(usage.service)} bg-opacity-10`}
-                            >
-                              {getActivityIcon(usage.service)}
-                            </div>
+                          <div className="flex items-center space-x-4">
+                            {getActivityIcon(usage.service)}
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-lg font-display font-bold gradient-text truncate">
                                   {usage.service} API Call
                                 </h4>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                <span className={`px-2 py-1 rounded-full text-xs font-display font-bold ${getServiceColor(usage.service)}`}>
                                   {usage.createdAt
                                     ? (() => {
                                       const date = new Date(usage.createdAt);
@@ -365,46 +412,49 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                                         (1000 * 60 * 60);
 
                                       if (diffInHours < 1) {
-                                        return "Just now";
+                                        return "⚡ Just now";
                                       } else if (diffInHours < 24) {
-                                        return `${Math.floor(diffInHours)}h ago`;
+                                        return `🕒 ${Math.floor(diffInHours)}h ago`;
                                       } else if (diffInHours < 168) {
-                                        return `${Math.floor(diffInHours / 24)}d ago`;
+                                        return `📅 ${Math.floor(diffInHours / 24)}d ago`;
                                       } else {
-                                        return date.toLocaleDateString();
+                                        return `📆 ${date.toLocaleDateString()}`;
                                       }
                                     })()
                                     : "N/A"}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                                <span className="font-medium">{usage.model}</span>
-                                {usage.projectName && (
-                                  <span className="text-gray-500 dark:text-gray-400 ml-2">
-                                    • {usage.projectName}
-                                  </span>
-                                )}
-                              </p>
-                              {usage.prompt && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                                  {truncateText(usage.prompt, 120)}
+                              <div className="glass p-3 rounded-xl border border-primary-200/30 mb-3">
+                                <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
+                                  <span className="font-display font-bold">🤖 {usage.model}</span>
+                                  {usage.projectName && (
+                                    <span className="text-light-text-secondary dark:text-dark-text-secondary ml-2">
+                                      • 📁 {usage.projectName}
+                                    </span>
+                                  )}
                                 </p>
-                              )}
-                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                <span>
-                                  {usage.totalTokens?.toLocaleString() || "0"}{" "}
-                                  tokens
+                                {usage.prompt && (
+                                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-2 line-clamp-2">
+                                    💬 {truncateText(usage.prompt, 120)}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-4 text-xs font-display font-semibold">
+                                <span className="glass px-2 py-1 rounded-lg border border-primary-200/30 gradient-text">
+                                  🪙 {usage.totalTokens?.toLocaleString() || "0"} tokens
                                 </span>
-                                <span>{formatCurrency(usage.cost)}</span>
+                                <span className="glass px-2 py-1 rounded-lg border border-success-200/30 gradient-text-success">
+                                  💰 {formatCurrency(usage.cost)}
+                                </span>
                               </div>
                             </div>
                           </div>
                           {usage.prompt && (
                             <button
                               onClick={() => handleViewActivity(usage)}
-                              className="ml-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                              className="ml-4 p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                             >
-                              <EyeIcon className="w-4 h-4" />
+                              <EyeIcon className="w-4 h-4 gradient-text" />
                             </button>
                           )}
                         </div>
@@ -413,19 +463,21 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <ClockIcon className="mx-auto mb-4 w-12 h-12 text-gray-400" />
-                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+                      <ClockIcon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="mb-2 text-xl font-display font-bold gradient-text">
                       No Recent Activity
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400">
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
                       Start using the API to see activity here
                     </p>
                     {integrationStatus.apiKeysConfigured === 0 && (
                       <button
                         onClick={() => setShowIntegrationModal(true)}
-                        className="mt-4 inline-flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
+                        className="btn-primary px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
                       >
-                        Setup Integration
+                        🚀 Setup Integration
                         <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
                       </button>
                     )}
@@ -438,25 +490,30 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       )}
 
       {activeTab === 'projects' && (
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700 p-6">
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
           <ProjectIdGuide />
         </div>
       )}
 
       {/* Activity Detail Modal */}
       {selectedActivity && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Activity Details
-                </h3>
+        <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-scale-in">
+            <div className="p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                    <EyeIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-display font-bold gradient-text">
+                    🔍 Activity Details
+                  </h3>
+                </div>
                 <button
                   onClick={() => setSelectedActivity(null)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                 >
-                  ✕
+                  <span className="text-lg gradient-text">✕</span>
                 </button>
               </div>
 

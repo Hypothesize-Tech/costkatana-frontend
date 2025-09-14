@@ -17,19 +17,19 @@ export interface TipData {
     title: string;
     message: string;
     type:
-      | "optimization"
-      | "feature"
-      | "cost_saving"
-      | "quality"
-      | "best_practice";
+    | "optimization"
+    | "feature"
+    | "cost_saving"
+    | "quality"
+    | "best_practice";
     priority: "low" | "medium" | "high";
     action?: {
       type:
-        | "enable_feature"
-        | "optimize_prompt"
-        | "change_model"
-        | "view_guide"
-        | "run_wizard";
+      | "enable_feature"
+      | "optimize_prompt"
+      | "change_model"
+      | "view_guide"
+      | "run_wizard";
       feature?: string;
       targetModel?: string;
       guideUrl?: string;
@@ -102,28 +102,48 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
   const getIcon = () => {
     switch (tipData.tip.type) {
       case "cost_saving":
-        return <FiDollarSign className="text-green-600" />;
+        return (
+          <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+            <FiDollarSign className="w-5 h-5 text-white" />
+          </div>
+        );
       case "optimization":
-        return <FiZap className="text-blue-600" />;
+        return (
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <FiZap className="w-5 h-5 text-white" />
+          </div>
+        );
       case "feature":
-        return <FiSettings className="text-purple-600" />;
+        return (
+          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+            <FiSettings className="w-5 h-5 text-white" />
+          </div>
+        );
       case "best_practice":
-        return <FiBookOpen className="text-orange-600" />;
+        return (
+          <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+            <FiBookOpen className="w-5 h-5 text-white" />
+          </div>
+        );
       default:
-        return <FiInfo className="text-gray-600" />;
+        return (
+          <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <FiInfo className="w-5 h-5 text-white" />
+          </div>
+        );
     }
   };
 
   const getPriorityColor = () => {
     switch (tipData.tip.priority) {
       case "high":
-        return "border-red-200 bg-red-50";
+        return "border-danger-200/30 bg-gradient-danger/10 shadow-2xl backdrop-blur-xl";
       case "medium":
-        return "border-yellow-200 bg-yellow-50";
+        return "border-warning-200/30 bg-gradient-warning/10 shadow-2xl backdrop-blur-xl";
       case "low":
-        return "border-blue-200 bg-blue-50";
+        return "border-primary-200/30 bg-gradient-primary/10 shadow-2xl backdrop-blur-xl";
       default:
-        return "border-gray-200 bg-gray-50";
+        return "border-secondary-200/30 bg-gradient-secondary/10 shadow-2xl backdrop-blur-xl";
     }
   };
 
@@ -142,80 +162,88 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
 
   const renderContent = () => (
     <>
-      <div className="flex items-start space-x-3">
-        <div className="flex-shrink-0 mt-0.5">{getIcon()}</div>
+      <div className="flex items-start space-x-4">
+        <div className="flex-shrink-0">{getIcon()}</div>
         <div className="flex-1">
-          <h4 className="mb-1 text-sm font-semibold text-gray-900">
+          <h4 className="mb-2 text-lg font-display font-bold gradient-text">
             {tipData.tip.title}
           </h4>
-          <p className="text-sm text-gray-600">{tipData.tip.message}</p>
+          <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{tipData.tip.message}</p>
 
           {isExpanded && tipData.context && (
-            <div className="mt-3 space-y-2 text-sm text-gray-500">
-              {tipData.context.currentTokens && (
-                <div>
-                  Current tokens:{" "}
-                  <span className="font-medium">
-                    {tipData.context.currentTokens.toLocaleString()}
-                  </span>
-                  {tipData.context.threshold && (
-                    <span>
-                      {" "}
-                      (threshold: {tipData.context.threshold.toLocaleString()})
-                    </span>
-                  )}
-                </div>
-              )}
-              {tipData.context.currentModel &&
-                tipData.context.suggestedModel && (
-                  <div>
-                    Switch from{" "}
-                    <span className="font-medium">
-                      {tipData.context.currentModel}
-                    </span>{" "}
-                    to{" "}
-                    <span className="font-medium">
-                      {tipData.context.suggestedModel}
-                    </span>
+            <div className="glass p-4 rounded-xl border border-primary-200/30 mb-4">
+              <div className="space-y-3">
+                {tipData.context.currentTokens && (
+                  <div className="flex justify-between items-center">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Current tokens:</span>
+                    <div className="text-right">
+                      <span className="font-display font-semibold gradient-text">
+                        {tipData.context.currentTokens.toLocaleString()}
+                      </span>
+                      {tipData.context.threshold && (
+                        <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                          threshold: {tipData.context.threshold.toLocaleString()}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
+                {tipData.context.currentModel &&
+                  tipData.context.suggestedModel && (
+                    <div className="flex justify-between items-center">
+                      <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Model switch:</span>
+                      <div className="text-right">
+                        <div className="font-display font-semibold gradient-text">
+                          {tipData.context.currentModel}
+                        </div>
+                        <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                          → {tipData.context.suggestedModel}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+              </div>
             </div>
           )}
 
           {tipData.tip.potentialSavings && (
-            <div className="flex items-center mt-3 space-x-4">
-              <div className="flex items-center space-x-1">
-                <FiTrendingUp className="text-green-500" size={16} />
-                <span className="text-sm font-medium text-green-600">
-                  Save {formatSavings()}
-                </span>
+            <div className="glass p-4 rounded-xl border border-success-200/30 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                  <FiTrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-display font-semibold gradient-text-success">
+                    Save {formatSavings()}
+                  </div>
+                  <div className="text-xs font-body text-success-600 dark:text-success-400">
+                    {tipData.tip.potentialSavings.description}
+                  </div>
+                </div>
               </div>
-              <span className="text-xs text-gray-500">
-                {tipData.tip.potentialSavings.description}
-              </span>
             </div>
           )}
 
           {tipData.tip.action && (
-            <div className="flex items-center mt-3 space-x-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <button
                 onClick={handleAction}
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="btn-primary flex items-center gap-2 hover:scale-105 transition-transform duration-300"
               >
                 {tipData.tip.action.type === "enable_feature" &&
-                  "Enable Feature"}
+                  "✨ Enable Feature"}
                 {tipData.tip.action.type === "optimize_prompt" &&
-                  "Optimize Now"}
-                {tipData.tip.action.type === "change_model" && "Switch Model"}
-                {tipData.tip.action.type === "view_guide" && "View Guide"}
-                {tipData.tip.action.type === "run_wizard" && "Run Wizard"}
-                <FiChevronRight className="ml-1" size={16} />
+                  "⚡ Optimize Now"}
+                {tipData.tip.action.type === "change_model" && "🔄 Switch Model"}
+                {tipData.tip.action.type === "view_guide" && "📖 View Guide"}
+                {tipData.tip.action.type === "run_wizard" && "🧙‍♂️ Run Wizard"}
+                <FiChevronRight size={16} />
               </button>
 
               {!isExpanded && tipData.context && (
                 <button
                   onClick={() => setIsExpanded(true)}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="btn-ghost text-sm hover:scale-105 transition-transform duration-300"
                 >
                   More details
                 </button>
@@ -224,7 +252,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
               {isExpanded && (
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="btn-ghost text-sm hover:scale-105 transition-transform duration-300"
                 >
                   Less details
                 </button>
@@ -234,7 +262,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
         </div>
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 text-gray-400 hover:text-gray-600"
+          className="flex-shrink-0 w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
         >
           <FiX size={16} />
         </button>
@@ -244,9 +272,9 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
 
   if (position === "floating") {
     return (
-      <div className="fixed right-4 bottom-4 z-50 max-w-md animate-slide-up">
+      <div className="fixed right-6 bottom-6 z-50 max-w-md animate-slide-up">
         <div
-          className={`p-4 rounded-lg border-2 shadow-lg ${getPriorityColor()}`}
+          className={`card p-6 border-2 shadow-2xl backdrop-blur-xl animate-scale-in ${getPriorityColor()}`}
         >
           {renderContent()}
         </div>
@@ -256,7 +284,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
 
   if (position === "banner") {
     return (
-      <div className={`p-4 w-full border-b-2 ${getPriorityColor()}`}>
+      <div className={`p-6 w-full border-b-2 ${getPriorityColor()}`}>
         <div className="mx-auto max-w-7xl">{renderContent()}</div>
       </div>
     );
@@ -264,7 +292,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
 
   // Default: inline
   return (
-    <div className={`p-4 rounded-lg border ${getPriorityColor()}`}>
+    <div className={`card p-6 border ${getPriorityColor()} hover:scale-[1.02] transition-transform duration-300`}>
       {renderContent()}
     </div>
   );

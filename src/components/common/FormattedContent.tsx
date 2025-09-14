@@ -16,7 +16,7 @@ export const FormattedContent: React.FC<FormattedContentProps> = ({
 
   return (
     <div className={`prose prose-sm max-w-none ${className}`}>
-      <div className="whitespace-pre-wrap leading-relaxed text-gray-700">
+      <div className="whitespace-pre-wrap leading-relaxed font-body text-light-text-primary dark:text-dark-text-primary">
         {formattedContent}
       </div>
     </div>
@@ -87,11 +87,13 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
           const codeContent = match[2].trim();
 
           return (
-            <div key={index} className="my-3">
-              <div className="bg-gray-800 text-gray-100 rounded-t-md px-3 py-1 text-xs font-medium">
-                {language || "code"}
+            <div key={index} className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
+              <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
+                <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                  {language || "code"}
+                </span>
               </div>
-              <pre className="bg-gray-900 text-gray-100 p-3 rounded-b-md overflow-x-auto text-sm">
+              <pre className="p-4 bg-dark-bg-primary text-dark-text-primary font-mono text-sm leading-relaxed overflow-x-auto">
                 <code>{codeContent}</code>
               </pre>
             </div>
@@ -108,7 +110,7 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
                 return (
                   <code
                     key={inlineIndex}
-                    className="bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono"
+                    className="bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 px-2 py-1 rounded-lg text-sm font-mono border border-primary-200/30"
                   >
                     {code}
                   </code>
@@ -126,7 +128,7 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
       } else {
         // Regular text with proper formatting
         return (
-          <span key={index} className="whitespace-pre-wrap leading-relaxed">
+          <span key={index} className="whitespace-pre-wrap leading-relaxed font-body text-light-text-primary dark:text-dark-text-primary">
             {part}
           </span>
         );
@@ -136,9 +138,9 @@ export const OptimizedPromptDisplay: React.FC<OptimizedPromptDisplayProps> = ({
 
   return (
     <div
-      className={`bg-gray-50 rounded-md border p-3 ${maxHeight} overflow-y-auto ${className}`}
+      className={`card p-4 ${maxHeight} overflow-y-auto ${className}`}
     >
-      <div className="text-sm text-gray-700 leading-relaxed">
+      <div className="text-sm leading-relaxed">
         {formatCodeBlocks(content)}
       </div>
     </div>
@@ -163,34 +165,34 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   progressValue = 0,
 }) => {
   const colorClasses = {
-    blue: "bg-blue-50 border-blue-200 text-blue-600",
-    green: "bg-green-50 border-green-200 text-green-600",
-    red: "bg-red-50 border-red-200 text-red-600",
-    purple: "bg-purple-50 border-purple-200 text-purple-600",
-    orange: "bg-orange-50 border-orange-200 text-orange-600",
+    blue: "bg-gradient-primary/10 border border-primary-200/30 text-primary-600 dark:text-primary-400",
+    green: "bg-gradient-success/10 border border-success-200/30 text-success-600 dark:text-success-400",
+    red: "bg-gradient-danger/10 border border-danger-200/30 text-danger-600 dark:text-danger-400",
+    purple: "bg-gradient-accent/10 border border-accent-200/30 text-accent-600 dark:text-accent-400",
+    orange: "bg-gradient-warning/10 border border-warning-200/30 text-warning-600 dark:text-warning-400",
   };
 
   const progressColors = {
-    blue: "bg-blue-500",
-    green: "bg-green-500",
-    red: "bg-red-500",
-    purple: "bg-purple-500",
-    orange: "bg-orange-500",
+    blue: "bg-gradient-primary",
+    green: "bg-gradient-success",
+    red: "bg-gradient-danger",
+    purple: "bg-gradient-accent",
+    orange: "bg-gradient-warning",
   };
 
   return (
-    <div className={`p-4 rounded-lg border ${colorClasses[color]}`}>
+    <div className={`p-6 rounded-xl glass backdrop-blur-xl shadow-lg animate-fade-in ${colorClasses[color]}`}>
       <div className="text-center">
-        <div className="text-2xl font-bold mb-1">
+        <div className="text-3xl font-display font-bold mb-2 gradient-text">
           {typeof value === "number" ? value.toFixed(1) : value}
         </div>
-        <div className="text-sm font-medium mb-2">{title}</div>
-        {subtitle && <div className="text-xs opacity-75">{subtitle}</div>}
+        <div className="text-sm font-display font-semibold mb-2">{title}</div>
+        {subtitle && <div className="text-xs font-body opacity-75">{subtitle}</div>}
         {showProgress && (
-          <div className="mt-2">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="mt-3">
+            <div className="w-full bg-primary-200/30 rounded-full h-2 shadow-inner">
               <div
-                className={`h-2 rounded-full ${progressColors[color]}`}
+                className={`h-2 rounded-full shadow-lg transition-all duration-500 ${progressColors[color]}`}
                 style={{ width: `${Math.min(progressValue, 100)}%` }}
               ></div>
             </div>
@@ -213,22 +215,22 @@ export const RecommendationItem: React.FC<RecommendationItemProps> = ({
   targetGroup,
 }) => {
   const priorityColors = {
-    high: "bg-red-100 text-red-800 border-red-200",
-    medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    low: "bg-blue-100 text-blue-800 border-blue-200",
+    high: "bg-gradient-danger/10 text-danger-600 dark:text-danger-400 border border-danger-200/30",
+    medium: "bg-gradient-warning/10 text-warning-600 dark:text-warning-400 border border-warning-200/30",
+    low: "bg-gradient-primary/10 text-primary-600 dark:text-primary-400 border border-primary-200/30",
   };
 
   return (
-    <div className={`p-3 rounded-lg border ${priorityColors[priority]}`}>
-      <div className="flex items-start justify-between mb-2">
-        <span className="text-xs font-medium uppercase tracking-wide">
+    <div className={`p-4 rounded-xl glass backdrop-blur-xl shadow-lg animate-fade-in ${priorityColors[priority]}`}>
+      <div className="flex items-start justify-between mb-3">
+        <span className="text-xs font-display font-bold uppercase tracking-wider">
           {priority} Priority
         </span>
         {targetGroup && (
-          <span className="text-xs opacity-75">{targetGroup}</span>
+          <span className="text-xs font-body opacity-75">{targetGroup}</span>
         )}
       </div>
-      <p className="text-sm leading-relaxed">
+      <p className="text-sm font-body leading-relaxed">
         {renderFormattedContent(recommendation)}
       </p>
     </div>

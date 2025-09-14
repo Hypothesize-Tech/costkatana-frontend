@@ -79,9 +79,9 @@ const SastDashboard: React.FC = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-96">
-                <div className="text-center">
-                    <Cpu className="w-12 h-12 animate-spin mx-auto mb-4 text-blue-500" />
-                    <p className="text-gray-600">Loading SAST Dashboard...</p>
+                <div className="glass rounded-xl p-8 border border-primary-200/30 text-center">
+                    <Cpu className="w-16 h-16 animate-spin mx-auto mb-4 text-primary-500" />
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Loading SAST Dashboard...</p>
                 </div>
             </div>
         );
@@ -90,13 +90,13 @@ const SastDashboard: React.FC = () => {
     if (error) {
         return (
             <div className="flex items-center justify-center h-96">
-                <div className="text-center">
-                    <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-red-500" />
-                    <p className="text-red-600 mb-4">{error}</p>
-                    <Button onClick={loadDashboardData} variant="outline">
+                <div className="glass rounded-xl p-8 border border-danger-200/30 text-center">
+                    <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-danger-500" />
+                    <p className="font-body text-danger-600 dark:text-danger-400 mb-4">{error}</p>
+                    <button className="btn-primary">
                         <Zap className="w-4 h-4 mr-2" />
                         Retry
-                    </Button>
+                    </button>
                 </div>
             </div>
         );
@@ -105,198 +105,204 @@ const SastDashboard: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                        <Brain className="w-8 h-8 mr-3 text-blue-600" />
-                        SAST Dashboard
-                    </h1>
-                    <p className="text-gray-600 mt-2">
-                        Semantic Abstract Syntax Tree - Next-generation language understanding
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    <Badge variant="outline" className="text-green-700 border-green-300">
-                        <CheckCircle2 className="w-3 h-3 mr-1" />
-                        Active
-                    </Badge>
-                    <Badge variant="secondary">
-                        v2.0 SAST
-                    </Badge>
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                <Brain className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-4xl font-display font-bold gradient-text">
+                                    SAST Dashboard
+                                </h1>
+                                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                    Semantic Abstract Syntax Tree - Next-generation language understanding
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <span className="glass px-4 py-2 rounded-full border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-semibold flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Active
+                        </span>
+                        <span className="glass px-4 py-2 rounded-full border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-semibold">
+                            v2.0 SAST
+                        </span>
+                    </div>
                 </div>
             </div>
 
             {/* Stats Overview */}
             {vocabularyStats && sastStats && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Semantic Primitives</CardTitle>
-                            <Network className="h-4 w-4 text-blue-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(vocabularyStats.totalPrimitives)}</div>
-                            <p className="text-xs text-gray-600">
-                                Across {Object.keys(vocabularyStats.primitivesByCategory).length} categories
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                <Network className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                        <div className="text-3xl font-display font-bold gradient-text mb-2">{formatNumber(vocabularyStats.totalPrimitives)}</div>
+                        <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Semantic Primitives</h3>
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                            Across {Object.keys(vocabularyStats.primitivesByCategory).length} categories
+                        </p>
+                    </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Cross-Lingual Support</CardTitle>
-                            <Languages className="h-4 w-4 text-green-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{Object.keys(vocabularyStats.coverageByLanguage).length}</div>
-                            <p className="text-xs text-gray-600">
-                                Supported languages
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                                <Languages className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                        <div className="text-3xl font-display font-bold gradient-text-success mb-2">{Object.keys(vocabularyStats.coverageByLanguage).length}</div>
+                        <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Cross-Lingual Support</h3>
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                            Supported languages
+                        </p>
+                    </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">SAST Win Rate</CardTitle>
-                            <TrendingUp className="h-4 w-4 text-purple-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{formatPercentage(sastStats.comparison.sastWinRate)}</div>
-                            <p className="text-xs text-gray-600">
-                                vs Traditional Cortex
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                                <TrendingUp className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                        <div className="text-3xl font-display font-bold gradient-text-secondary mb-2">{formatPercentage(sastStats.comparison.sastWinRate)}</div>
+                        <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">SAST Win Rate</h3>
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                            vs Traditional Cortex
+                        </p>
+                    </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Ambiguity Resolution</CardTitle>
-                            <Telescope className="h-4 w-4 text-orange-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(sastStats.encoding.ambiguitiesResolved)}</div>
-                            <p className="text-xs text-gray-600">
-                                Total ambiguities resolved
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+                                <Telescope className="w-6 h-6 text-white" />
+                            </div>
+                        </div>
+                        <div className="text-3xl font-display font-bold gradient-text-accent mb-2">{formatNumber(sastStats.encoding.ambiguitiesResolved)}</div>
+                        <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Ambiguity Resolution</h3>
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                            Total ambiguities resolved
+                        </p>
+                    </div>
                 </div>
             )}
 
             {/* Main Content Tabs */}
-            <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
-                    <TabsTrigger value="overview" className="flex items-center gap-2">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden">
+                <div className="flex flex-wrap border-b border-primary-200/30">
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-primary-700 dark:text-primary-300 bg-gradient-primary/10 border-b-2 border-primary-500">
                         <BarChart3 className="w-4 h-4" />
                         Overview
-                    </TabsTrigger>
-                    <TabsTrigger value="explorer" className="flex items-center gap-2">
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Search className="w-4 h-4" />
                         Explorer
-                    </TabsTrigger>
-                    <TabsTrigger value="comparator" className="flex items-center gap-2">
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Zap className="w-4 h-4" />
                         Comparator
-                    </TabsTrigger>
-                    <TabsTrigger value="telescope" className="flex items-center gap-2">
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Telescope className="w-4 h-4" />
                         Demo
-                    </TabsTrigger>
-                    <TabsTrigger value="universal" className="flex items-center gap-2">
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Globe className="w-4 h-4" />
                         Universal
-                    </TabsTrigger>
-                    <TabsTrigger value="showcase" className="flex items-center gap-2">
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <FileText className="w-4 h-4" />
                         Showcase
-                    </TabsTrigger>
-                </TabsList>
+                    </button>
+                </div>
 
-                <TabsContent value="overview" className="space-y-6">
+                <div className="p-8 space-y-8">
                     {vocabularyStats && sastStats && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/* Vocabulary Breakdown */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <Network className="w-5 h-5 mr-2 text-blue-500" />
-                                        Vocabulary Breakdown
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-3">
-                                        {Object.entries(vocabularyStats.primitivesByCategory).map(([category, count]) => (
-                                            <div key={category} className="flex items-center justify-between">
-                                                <span className="capitalize text-sm font-medium">{category}</span>
-                                                <div className="flex items-center gap-2">
-                                                    <div
-                                                        className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden"
-                                                    >
-                                                        <div
-                                                            className="h-full bg-blue-500"
-                                                            style={{
-                                                                width: `${vocabularyStats.totalPrimitives > 0 ? (count / vocabularyStats.totalPrimitives) * 100 : 0}%`
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <span className="text-sm text-gray-600 w-8 text-right">{count}</span>
-                                                </div>
-                                            </div>
-                                        ))}
+                            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                        <Network className="w-5 h-5 text-white" />
                                     </div>
-                                </CardContent>
-                            </Card>
+                                    <h3 className="text-xl font-display font-bold gradient-text">
+                                        Vocabulary Breakdown
+                                    </h3>
+                                </div>
+                                <div className="space-y-4">
+                                    {Object.entries(vocabularyStats.primitivesByCategory).map(([category, count]) => (
+                                        <div key={category} className="flex items-center justify-between">
+                                            <span className="capitalize font-display font-medium text-light-text-primary dark:text-dark-text-primary">{category}</span>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-24 h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-gradient-primary rounded-full transition-all duration-500"
+                                                        style={{
+                                                            width: `${vocabularyStats.totalPrimitives > 0 ? (count / vocabularyStats.totalPrimitives) * 100 : 0}%`
+                                                        }}
+                                                    />
+                                                </div>
+                                                <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary w-8 text-right">{count}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
 
                             {/* Performance Metrics */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <TrendingUp className="w-5 h-5 mr-2 text-green-500" />
+                            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                                        <TrendingUp className="w-5 h-5 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-display font-bold gradient-text-success">
                                         Performance Metrics
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <div className="flex justify-between text-sm">
-                                                <span>Semantic Accuracy</span>
-                                                <span>{formatPercentage((sastStats.encoding.semanticAccuracy || 0) * 100)}</span>
-                                            </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                                                <div
-                                                    className="bg-green-500 h-2 rounded-full"
-                                                    style={{ width: `${(sastStats.encoding.semanticAccuracy || 0) * 100}%` }}
-                                                />
-                                            </div>
+                                    </h3>
+                                </div>
+                                <div className="space-y-6">
+                                    <div>
+                                        <div className="flex justify-between mb-2">
+                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Accuracy</span>
+                                            <span className="font-display font-semibold gradient-text-success">{formatPercentage((sastStats.encoding.semanticAccuracy || 0) * 100)}</span>
                                         </div>
-
-                                        <div>
-                                            <div className="flex justify-between text-sm">
-                                                <span>Ambiguity Resolution Rate</span>
-                                                <span>{formatPercentage(sastStats.comparison.ambiguityResolutionRate)}</span>
-                                            </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                                                <div
-                                                    className="bg-purple-500 h-2 rounded-full"
-                                                    style={{ width: `${sastStats.comparison.ambiguityResolutionRate || 0}%` }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="pt-2 border-t">
-                                            <div className="text-xs text-gray-600 space-y-1">
-                                                <p>Average Processing Time: {sastStats.encoding.averageProcessingTime?.toFixed(2) || '0.00'}ms</p>
-                                                <p>Total Comparisons: {formatNumber(sastStats.comparison.totalComparisons)}</p>
-                                                <p>Success Rate: {formatPercentage(
-                                                    sastStats.encoding.totalEncodings > 0
-                                                        ? (sastStats.encoding.successfulEncodings / sastStats.encoding.totalEncodings) * 100
-                                                        : 0
-                                                )}</p>
-                                            </div>
+                                        <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
+                                            <div
+                                                className="bg-gradient-success h-3 rounded-full transition-all duration-500"
+                                                style={{ width: `${(sastStats.encoding.semanticAccuracy || 0) * 100}%` }}
+                                            />
                                         </div>
                                     </div>
-                                </CardContent>
-                            </Card>
+
+                                    <div>
+                                        <div className="flex justify-between mb-2">
+                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">Ambiguity Resolution Rate</span>
+                                            <span className="font-display font-semibold gradient-text-secondary">{formatPercentage(sastStats.comparison.ambiguityResolutionRate)}</span>
+                                        </div>
+                                        <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
+                                            <div
+                                                className="bg-gradient-secondary h-3 rounded-full transition-all duration-500"
+                                                style={{ width: `${sastStats.comparison.ambiguityResolutionRate || 0}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-primary-200/30">
+                                        <div className="glass rounded-lg p-4 border border-primary-200/30 space-y-2">
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Average Processing Time: <span className="font-display font-semibold gradient-text">{sastStats.encoding.averageProcessingTime?.toFixed(2) || '0.00'}ms</span></p>
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Total Comparisons: <span className="font-display font-semibold gradient-text">{formatNumber(sastStats.comparison.totalComparisons)}</span></p>
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Success Rate: <span className="font-display font-semibold gradient-text">{formatPercentage(
+                                                sastStats.encoding.totalEncodings > 0
+                                                    ? (sastStats.encoding.successfulEncodings / sastStats.encoding.totalEncodings) * 100
+                                                    : 0
+                                            )}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -321,7 +327,7 @@ const SastDashboard: React.FC = () => {
                             </CardContent>
                         </Card>
                     )}
-                </TabsContent>
+                    </div>
 
                 <TabsContent value="explorer">
                     <SemanticPrimitivesExplorer />
@@ -342,7 +348,7 @@ const SastDashboard: React.FC = () => {
                 <TabsContent value="showcase">
                     <SastShowcase />
                 </TabsContent>
-            </Tabs>
+            </div>
         </div>
     );
 };

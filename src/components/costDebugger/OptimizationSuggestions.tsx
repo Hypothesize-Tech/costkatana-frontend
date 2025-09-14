@@ -66,7 +66,12 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
     return (
         <div className="optimization-suggestions">
             <div className="suggestions-header">
-                <h2>💡 Optimization Suggestions</h2>
+                <div className="flex items-center gap-3">
+                    <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                        <span className="text-lg">💡</span>
+                    </div>
+                    <h2>Optimization Suggestions</h2>
+                </div>
                 <div className="suggestions-summary">
                     <span className="savings-potential">
                         Potential Savings: ${analysis?.optimizationOpportunities?.estimatedSavings?.toFixed(6) || '0.000000'}
@@ -81,7 +86,10 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
                 {/* High Impact Suggestions */}
                 {analysis?.optimizationOpportunities?.highImpact?.length > 0 && (
                     <div className="suggestion-category high-impact">
-                        <h3>🔥 High Impact ({analysis.optimizationOpportunities.highImpact.length})</h3>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">🔥</span>
+                            <h3>High Impact ({analysis.optimizationOpportunities.highImpact.length})</h3>
+                        </div>
                         <ul>
                             {analysis.optimizationOpportunities.highImpact.map((suggestion: string, index: number) => (
                                 <li key={index} className="suggestion-item">
@@ -95,7 +103,10 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
                 {/* Medium Impact Suggestions */}
                 {analysis?.optimizationOpportunities?.mediumImpact?.length > 0 && (
                     <div className="suggestion-category medium-impact">
-                        <h3>⚡ Medium Impact ({analysis.optimizationOpportunities.mediumImpact.length})</h3>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">⚡</span>
+                            <h3>Medium Impact ({analysis.optimizationOpportunities.mediumImpact.length})</h3>
+                        </div>
                         <ul>
                             {analysis.optimizationOpportunities.mediumImpact.map((suggestion: string, index: number) => (
                                 <li key={index} className="suggestion-item">
@@ -109,7 +120,10 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
                 {/* Low Impact Suggestions */}
                 {analysis?.optimizationOpportunities?.lowImpact?.length > 0 && (
                     <div className="suggestion-category low-impact">
-                        <h3>💡 Low Impact ({analysis.optimizationOpportunities.lowImpact.length})</h3>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">💡</span>
+                            <h3>Low Impact ({analysis.optimizationOpportunities.lowImpact.length})</h3>
+                        </div>
                         <ul>
                             {analysis.optimizationOpportunities.lowImpact.map((suggestion: string, index: number) => (
                                 <li key={index} className="suggestion-item">
@@ -124,11 +138,19 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
             {/* Dead Weight Analysis */}
             {deadWeight && (
                 <div className="dead-weight-section">
-                    <h3>💀 Dead Weight Analysis</h3>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="bg-gradient-danger p-2 rounded-lg glow-danger">
+                            <span className="text-lg text-white">💀</span>
+                        </div>
+                        <h3>Dead Weight Analysis</h3>
+                    </div>
                     <div className="dead-weight-grid">
                         {deadWeight.redundantInstructions?.length > 0 && (
                             <div className="dead-weight-category">
-                                <h4>🔄 Redundant Instructions ({deadWeight.redundantInstructions.length})</h4>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="text-lg">🔄</span>
+                                    <h4>Redundant Instructions ({deadWeight.redundantInstructions.length})</h4>
+                                </div>
                                 <ul>
                                     {deadWeight.redundantInstructions.slice(0, 3).map((item: string, index: number) => (
                                         <li key={index}>{item}</li>
@@ -139,7 +161,10 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
 
                         {deadWeight.verbosePhrasing?.length > 0 && (
                             <div className="dead-weight-category">
-                                <h4>📝 Verbose Language ({deadWeight.verbosePhrasing.length})</h4>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="text-lg">📝</span>
+                                    <h4>Verbose Language ({deadWeight.verbosePhrasing.length})</h4>
+                                </div>
                                 <ul>
                                     {deadWeight.verbosePhrasing.slice(0, 3).map((item: string, index: number) => (
                                         <li key={index}>{item}</li>

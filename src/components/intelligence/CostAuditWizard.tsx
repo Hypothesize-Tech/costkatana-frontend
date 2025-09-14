@@ -99,17 +99,17 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       const totalCost =
         usageData.length > 0
           ? usageData.reduce(
-              (sum: number, usage: any) => sum + (usage.cost || 0),
-              0,
-            )
+            (sum: number, usage: any) => sum + (usage.cost || 0),
+            0,
+          )
           : 0;
 
       const totalTokens =
         usageData.length > 0
           ? usageData.reduce(
-              (sum: number, usage: any) => sum + (usage.totalTokens || 0),
-              0,
-            )
+            (sum: number, usage: any) => sum + (usage.totalTokens || 0),
+            0,
+          )
           : 0;
 
       const avgTokens =
@@ -344,68 +344,97 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
         return (
           <div className="space-y-6">
             {loading ? (
-              <div className="flex flex-col justify-center items-center py-12">
-                <LoadingSpinner size="large" />
-                <p className="mt-4 text-gray-600">
-                  Analyzing your usage patterns...
+              <div className="card card-gradient p-12 shadow-2xl backdrop-blur-xl text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center animate-pulse glow-primary">
+                  <LoadingSpinner size="large" />
+                </div>
+                <p className="text-xl font-display font-semibold gradient-text mb-2">
+                  🧠 Analyzing Usage Patterns
+                </p>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  Generating intelligent cost optimization recommendations...
                 </p>
               </div>
             ) : analysisResults ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="p-4 bg-white rounded-lg border border-gray-200">
-                    <div className="text-sm text-gray-600">
-                      Total Cost (30 days)
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                        <span className="text-white text-lg">💰</span>
+                      </div>
+                      <div className="font-body text-sm text-success-600 dark:text-success-400">
+                        Total Cost (30 days)
+                      </div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">
+                    <div className="text-3xl font-display font-bold gradient-text-success">
                       ${(analysisResults.totalCost || 0).toFixed(2)}
                     </div>
                   </div>
-                  <div className="p-4 bg-white rounded-lg border border-gray-200">
-                    <div className="text-sm text-gray-600">Average Tokens</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <span className="text-white text-lg">🔤</span>
+                      </div>
+                      <div className="font-body text-sm text-primary-600 dark:text-primary-400">Average Tokens</div>
+                    </div>
+                    <div className="text-3xl font-display font-bold gradient-text">
                       {isNaN(analysisResults.avgTokens) ||
-                      !analysisResults.avgTokens
+                        !analysisResults.avgTokens
                         ? "0"
                         : Math.round(
-                            analysisResults.avgTokens,
-                          ).toLocaleString()}
+                          analysisResults.avgTokens,
+                        ).toLocaleString()}
                     </div>
                   </div>
-                  <div className="p-4 bg-white rounded-lg border border-gray-200">
-                    <div className="text-sm text-gray-600">API Calls</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border border-secondary-200/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <span className="text-white text-lg">📊</span>
+                      </div>
+                      <div className="font-body text-sm text-secondary-600 dark:text-secondary-400">API Calls</div>
+                    </div>
+                    <div className="text-3xl font-display font-bold gradient-text-secondary">
                       {(analysisResults.usageCount || 0).toLocaleString()}
                     </div>
                   </div>
                 </div>
 
                 {analysisResults.usageCount === 0 ? (
-                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <h4 className="mb-2 font-medium text-yellow-900">
-                      No Usage Data Found
-                    </h4>
-                    <p className="text-sm text-yellow-700">
+                  <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                        <span className="text-white text-xl">📊</span>
+                      </div>
+                      <h4 className="text-xl font-display font-bold gradient-text-warning">
+                        No Usage Data Found
+                      </h4>
+                    </div>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
                       We couldn't find any AI usage data in the last 30 days. To
                       get optimization recommendations, start using the AI Cost
                       Tracker to track your API calls, or upload your existing
                       usage data.
                     </p>
-                    <div className="mt-3">
-                      <a
-                        href="/usage"
-                        className="text-sm font-medium text-yellow-800 hover:text-yellow-900"
-                      >
-                        Go to Usage Tracking →
-                      </a>
-                    </div>
+                    <a
+                      href="/usage"
+                      className="btn-warning inline-flex items-center gap-2 hover:scale-105 transition-transform duration-300"
+                    >
+                      <span>Go to Usage Tracking</span>
+                      <span>→</span>
+                    </a>
                   </div>
                 ) : (
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="mb-2 font-medium text-blue-900">
-                      Analysis Complete
-                    </h4>
-                    <p className="text-sm text-blue-700">
+                  <div className="card p-6 bg-gradient-success/10 border border-success-200/30 shadow-2xl backdrop-blur-xl">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success animate-pulse">
+                        <span className="text-white text-xl">✅</span>
+                      </div>
+                      <h4 className="text-xl font-display font-bold gradient-text-success">
+                        Analysis Complete
+                      </h4>
+                    </div>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                       We've analyzed your usage patterns and identified several
                       opportunities to reduce costs. Click "Next" to see our
                       recommendations.
@@ -419,13 +448,21 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
 
       case 1: // Identify
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Optimization Opportunities Found
-            </h3>
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
+                <span className="text-white text-2xl">🎯</span>
+              </div>
+              <h3 className="text-2xl font-display font-bold gradient-text mb-2">
+                Optimization Opportunities Found
+              </h3>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                AI-powered recommendations to reduce your costs
+              </p>
+            </div>
 
             {Array.isArray(analysisResults?.tips) &&
-            analysisResults.tips.length > 0 ? (
+              analysisResults.tips.length > 0 ? (
               analysisResults.tips
                 .slice(0, 3)
                 .map((tipData: any, index: number) => (
@@ -442,76 +479,100 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                 .map((suggestion: any, index: number) => (
                   <div
                     key={index}
-                    className="p-4 bg-blue-50 rounded-lg border border-blue-200"
+                    className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl"
                   >
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0">
-                        <FiZap className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <FiZap className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-medium text-blue-900">
-                          Optimization Available
+                        <h4 className="text-lg font-display font-bold gradient-text mb-2">
+                          ⚡ Optimization Available
                         </h4>
-                        <p className="mt-1 text-sm text-blue-700">
-                          {suggestion.applied ? "Applied: " : "Available: "}
-                          Save ${(suggestion.costSaved || 0).toFixed(2)}(
-                          {(suggestion.improvementPercentage || 0).toFixed(1)}%
-                          improvement)
+                        <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-3">
+                          {suggestion.applied ? "✅ Applied: " : "💡 Available: "}
+                          Save <span className="font-semibold gradient-text-success">${(suggestion.costSaved || 0).toFixed(2)}</span>
+                          <span className="ml-2 px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 text-sm font-medium">
+                            {(suggestion.improvementPercentage || 0).toFixed(1)}% improvement
+                          </span>
                         </p>
-                        <div className="mt-2 text-xs text-blue-600">
-                          {suggestion.service} • {suggestion.model} •{" "}
-                          {suggestion.category}
+                        <div className="flex gap-2 flex-wrap">
+                          <span className="px-3 py-1 rounded-full bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 text-xs font-medium">
+                            {suggestion.service}
+                          </span>
+                          <span className="px-3 py-1 rounded-full bg-gradient-accent/20 text-accent-700 dark:text-accent-300 text-xs font-medium">
+                            {suggestion.model}
+                          </span>
+                          <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 text-xs font-medium">
+                            {suggestion.category}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 ))
             ) : (
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-600">
-                  No optimization opportunities found. Start using AI services
-                  to get personalized recommendations.
+              <div className="card p-8 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border border-secondary-200/30 shadow-2xl backdrop-blur-xl text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-secondary mx-auto mb-4 flex items-center justify-center glow-secondary">
+                  <span className="text-white text-2xl">🔍</span>
+                </div>
+                <h4 className="text-xl font-display font-bold gradient-text-secondary mb-2">
+                  No Opportunities Found
+                </h4>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  Start using AI services to get personalized recommendations.
                 </p>
               </div>
             )}
 
-            <div className="p-4 mt-6 bg-green-50 rounded-lg border border-green-200">
-              <div className="flex items-center space-x-2">
-                <FiDollarSign className="text-green-600" />
-                <span className="font-medium text-green-900">
-                  Potential Monthly Savings: $
-                  {(() => {
-                    if (
-                      Array.isArray(analysisResults?.suggestions) &&
-                      analysisResults.suggestions.length > 0
-                    ) {
-                      const totalSavings = analysisResults.suggestions
-                        .filter((s: any) => !s.applied)
-                        .reduce(
-                          (sum: number, s: any) => sum + (s.costSaved || 0),
-                          0,
-                        );
-                      return totalSavings.toFixed(2);
-                    }
-                    return potentialSavings.toFixed(2);
-                  })()}
-                </span>
+            <div className="card p-6 bg-gradient-success/10 border border-success-200/30 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                  <FiDollarSign className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-display font-bold gradient-text-success">
+                    Potential Monthly Savings
+                  </h4>
+                  <div className="text-3xl font-display font-bold gradient-text-success">
+                    $
+                    {(() => {
+                      if (
+                        Array.isArray(analysisResults?.suggestions) &&
+                        analysisResults.suggestions.length > 0
+                      ) {
+                        const totalSavings = analysisResults.suggestions
+                          .filter((s: any) => !s.applied)
+                          .reduce(
+                            (sum: number, s: any) => sum + (s.costSaved || 0),
+                            0,
+                          );
+                        return totalSavings.toFixed(2);
+                      }
+                      return potentialSavings.toFixed(2);
+                    })()}
+                  </div>
+                </div>
               </div>
               {Array.isArray(analysisResults?.suggestions) &&
                 analysisResults.suggestions.filter((s: any) => !s.applied)
                   .length > 0 && (
-                  <p className="mt-1 text-sm text-green-700">
-                    From{" "}
-                    {
-                      analysisResults.suggestions.filter((s: any) => !s.applied)
-                        .length
-                    }{" "}
-                    available optimization
-                    {analysisResults.suggestions.filter((s: any) => !s.applied)
-                      .length > 1
-                      ? "s"
-                      : ""}
-                  </p>
+                  <div className="glass p-4 rounded-xl border border-success-200/30">
+                    <p className="font-body text-success-700 dark:text-success-300">
+                      💡 From{" "}
+                      <span className="font-semibold">
+                        {
+                          analysisResults.suggestions.filter((s: any) => !s.applied)
+                            .length
+                        }
+                      </span>{" "}
+                      available optimization
+                      {analysisResults.suggestions.filter((s: any) => !s.applied)
+                        .length > 1
+                        ? "s"
+                        : ""}
+                    </p>
+                  </div>
                 )}
             </div>
           </div>
@@ -519,36 +580,47 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
 
       case 2: // Configure
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Select Optimizations to Apply
-            </h3>
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
+                <span className="text-white text-2xl">⚙️</span>
+              </div>
+              <h3 className="text-2xl font-display font-bold gradient-text mb-2">
+                Select Optimizations to Apply
+              </h3>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                Choose which optimizations you'd like to implement
+              </p>
+            </div>
 
             {recommendations.map((rec) => (
               <div
                 key={rec.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                  selectedOptimizations.has(rec.id)
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
+                className={`card p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${selectedOptimizations.has(rec.id)
+                  ? "border-primary-500 bg-gradient-to-br from-primary-50/50 to-primary-100/50 shadow-2xl backdrop-blur-xl glow-primary"
+                  : "card-hover border-primary-200/30 hover:border-primary-300/50"
+                  }`}
                 onClick={() => toggleOptimization(rec.id)}
               >
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedOptimizations.has(rec.id)}
-                    onChange={() => {}}
-                    className="mt-1"
-                  />
+                <div className="flex items-start space-x-4">
+                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${selectedOptimizations.has(rec.id)
+                    ? "bg-gradient-primary border-primary-500 glow-primary"
+                    : "border-primary-200 hover:border-primary-400"
+                    }`}>
+                    {selectedOptimizations.has(rec.id) && (
+                      <span className="text-white text-sm">✓</span>
+                    )}
+                  </div>
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{rec.title}</h4>
-                    <p className="mt-1 text-sm text-gray-600">
+                    <h4 className="text-lg font-display font-bold gradient-text mb-2">{rec.title}</h4>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
                       {rec.description}
                     </p>
-                    <div className="flex items-center mt-2 space-x-1 text-green-600">
-                      <FiTrendingUp size={16} />
-                      <span className="text-sm font-medium">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                        <FiTrendingUp className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-display font-semibold gradient-text-success">
                         Save ${rec.savings.toFixed(2)}/month
                       </span>
                     </div>
@@ -557,11 +629,14 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
               </div>
             ))}
 
-            <div className="p-4 mt-6 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600">
+            <div className="card p-6 bg-gradient-success/10 border border-success-200/30 shadow-2xl backdrop-blur-xl text-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-success mx-auto mb-4 flex items-center justify-center glow-success">
+                <span className="text-white text-2xl">💰</span>
+              </div>
+              <div className="font-body text-success-600 dark:text-success-400 mb-2">
                 Total Estimated Savings
               </div>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-4xl font-display font-bold gradient-text-success">
                 ${potentialSavings.toFixed(2)}/month
               </div>
             </div>
@@ -571,36 +646,58 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       case 3: // Review
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Review Your Selections
-            </h3>
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 rounded-full bg-gradient-success mx-auto mb-4 flex items-center justify-center glow-success">
+                <span className="text-white text-2xl">📋</span>
+              </div>
+              <h3 className="text-2xl font-display font-bold gradient-text mb-2">
+                Review Your Selections
+              </h3>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                Confirm the optimizations you want to apply
+              </p>
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {recommendations
                 .filter((rec) => selectedOptimizations.has(rec.id))
                 .map((rec) => (
-                  <div key={rec.id} className="flex items-center space-x-2">
-                    <FiCheck className="text-green-500" />
-                    <span className="text-gray-700">{rec.title}</span>
+                  <div key={rec.id} className="glass p-4 rounded-xl border border-success-200/30 flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                      <FiCheck className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="font-display font-semibold gradient-text">{rec.title}</span>
                   </div>
                 ))}
             </div>
 
-            <div className="p-6 text-center bg-green-50 rounded-lg border border-green-200">
-              <FiZap className="mx-auto mb-3 text-green-600" size={32} />
-              <h4 className="mb-2 text-lg font-semibold text-green-900">
-                Ready to Optimize!
+            <div className="card p-8 bg-gradient-success/10 border border-success-200/30 shadow-2xl backdrop-blur-xl text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-success mx-auto mb-6 flex items-center justify-center glow-success animate-pulse">
+                <FiZap className="w-10 h-10 text-white" />
+              </div>
+              <h4 className="text-2xl font-display font-bold gradient-text-success mb-4">
+                🚀 Ready to Optimize!
               </h4>
-              <p className="mb-4 text-sm text-green-700">
-                You'll save approximately ${potentialSavings.toFixed(2)} per
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
+                You'll save approximately <span className="font-semibold gradient-text-success">${potentialSavings.toFixed(2)}</span> per
                 month with these optimizations.
               </p>
               <button
                 onClick={applyOptimizations}
                 disabled={loading}
-                className="px-6 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                className="btn-success px-8 py-4 text-lg font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Applying..." : "Apply Optimizations"}
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Applying...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <span>⚡</span>
+                    Apply Optimizations
+                  </span>
+                )}
               </button>
             </div>
           </div>
@@ -609,7 +706,22 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
   };
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-6xl">
+      {/* Header */}
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl mb-8">
+        <div className="text-center">
+          <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
+            <span className="text-white text-3xl">🧙‍♂️</span>
+          </div>
+          <h1 className="text-3xl font-display font-bold gradient-text mb-2">
+            Cost Audit Wizard
+          </h1>
+          <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+            AI-powered cost optimization recommendations
+          </p>
+        </div>
+      </div>
+
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex justify-between items-center">
@@ -620,31 +732,30 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
             >
               <div className="relative">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    index <= currentStep
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-400"
-                  }`}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${index <= currentStep
+                    ? "bg-gradient-primary text-white glow-primary shadow-2xl"
+                    : "bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-tertiary dark:text-dark-text-tertiary border border-primary-200/30"
+                    }`}
                 >
                   {index < currentStep ? (
                     <FiCheck size={20} />
                   ) : (
-                    <span>{index + 1}</span>
+                    <span className="font-display font-bold">{index + 1}</span>
                   )}
                 </div>
                 {index < wizardSteps.length - 1 && (
                   <div
-                    className={`absolute top-5 left-10 w-full h-0.5 ${
-                      index < currentStep ? "bg-blue-600" : "bg-gray-200"
-                    }`}
+                    className={`absolute top-6 left-12 w-full h-1 rounded-full transition-all duration-300 ${index < currentStep ? "bg-gradient-primary glow-primary" : "bg-light-bg-secondary dark:bg-dark-bg-secondary"
+                      }`}
                   />
                 )}
               </div>
-              <div className="mt-2">
-                <div className="text-sm font-medium text-gray-900">
+              <div className="mt-3">
+                <div className={`font-display font-semibold ${index <= currentStep ? "gradient-text" : "text-light-text-secondary dark:text-dark-text-secondary"
+                  }`}>
                   {step.title}
                 </div>
-                <div className="text-xs text-gray-500">{step.description}</div>
+                <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">{step.description}</div>
               </div>
             </div>
           ))}
@@ -652,16 +763,16 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       </div>
 
       {/* Step Content */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 min-h-[400px]">
+      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl min-h-[500px]">
         {renderStepContent()}
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between mt-8">
         <button
           onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
           disabled={currentStep === 0 || loading}
-          className="flex items-center px-4 py-2 space-x-2 text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-ghost flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300"
         >
           <FiChevronLeft />
           <span>Previous</span>
@@ -673,7 +784,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
               setCurrentStep(Math.min(wizardSteps.length - 1, currentStep + 1))
             }
             disabled={loading || (currentStep === 0 && !analysisResults)}
-            className="flex items-center px-4 py-2 space-x-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300"
           >
             <span>Next</span>
             <FiChevronRight />

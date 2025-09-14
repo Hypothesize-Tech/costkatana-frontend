@@ -193,52 +193,59 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     >
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Create New Template
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Create a reusable prompt template with variables
-            </p>
+        <div className="flex items-center justify-between p-8 border-b border-primary-200/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-xl">✨</span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-display font-bold gradient-text">
+                Create New Template
+              </h2>
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                Create a reusable prompt template with variables
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-8 overflow-y-auto">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <FiInfo className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                  <FiInfo className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-xl font-display font-bold gradient-text">
                   Basic Information
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="form-label">
                     Template Name *
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="input"
                     placeholder="e.g., Email Writer, Code Reviewer"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="form-label">
                     Category
                   </label>
                   <select
                     value={formData.category}
                     onChange={(e) => handleInputChange("category", e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="input"
                   >
                     {categories.map((category) => (
                       <option key={category.value} value={category.value}>
@@ -250,24 +257,26 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="form-label">
                   Description
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => handleInputChange("description", e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="input"
                   placeholder="Describe what this template does and when to use it"
                 />
               </div>
             </div>
 
             {/* Template Content */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <FiCode className="w-5 h-5 text-green-600" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                  <FiCode className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="text-xl font-display font-bold gradient-text-success">
                   Template Content *
                 </h3>
               </div>
@@ -277,7 +286,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                   value={formData.content}
                   onChange={(e) => handleInputChange("content", e.target.value)}
                   rows={8}
-                  className="w-full px-4 py-3 font-mono text-sm rounded-xl border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="input font-mono text-sm"
                   placeholder="Write your prompt template here. Use {{variable_name}} for dynamic content.
 
 Example:
@@ -291,8 +300,8 @@ Please provide a detailed response that is {{response_length}}."
                   required
                 />
                 <div className="absolute bottom-4 right-4">
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 max-w-xs">
-                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <div className="glass rounded-lg p-3 border border-info-200/30 bg-gradient-info/10 max-w-xs">
+                    <p className="text-xs font-body text-light-text-primary dark:text-dark-text-primary">
                       💡 Use {"{{variable_name}}"} for dynamic content
                     </p>
                   </div>
@@ -302,10 +311,12 @@ Please provide a detailed response that is {{response_length}}."
 
             {/* Variables Section */}
             {formData.variables.length > 0 && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <FiTag className="w-5 h-5 text-purple-600" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <FiTag className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-secondary">
                     Variables ({formData.variables.length})
                   </h3>
                 </div>
@@ -314,19 +325,19 @@ Please provide a detailed response that is {{response_length}}."
                   {formData.variables.map((variable, index) => (
                     <div
                       key={index}
-                      className="p-4 space-y-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"
+                      className="glass p-4 space-y-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl"
                     >
                       <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                          <span className="font-medium text-gray-900 dark:text-white">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 bg-gradient-secondary rounded-full glow-secondary"></div>
+                          <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                             {variable.name}
                           </span>
                         </div>
                         <button
                           type="button"
                           onClick={() => removeVariable(index)}
-                          className="text-red-600 hover:text-red-700 p-1"
+                          className="btn-icon-danger"
                         >
                           <FiMinus className="w-4 h-4" />
                         </button>
@@ -337,7 +348,7 @@ Please provide a detailed response that is {{response_length}}."
                         onChange={(e) =>
                           handleVariableChange(index, "description", e.target.value)
                         }
-                        className="w-full px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="input text-sm"
                         placeholder="Describe what this variable is for (optional)"
                       />
                     </div>
@@ -347,55 +358,57 @@ Please provide a detailed response that is {{response_length}}."
             )}
 
             {/* Advanced Options */}
-            <div className="space-y-4">
+            <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
               <button
                 type="button"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                className="flex items-center gap-3 font-display font-semibold gradient-text-accent hover:scale-105 transition-all duration-200"
               >
-                <FiPlus className={`transform transition-transform ${showAdvanced ? 'rotate-45' : ''}`} />
+                <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                  <FiPlus className={`w-3 h-3 text-white transform transition-transform ${showAdvanced ? 'rotate-45' : ''}`} />
+                </div>
                 Advanced Options
               </button>
 
               {showAdvanced && (
-                <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                <div className="space-y-6 glass p-6 rounded-xl border border-primary-200/30 bg-gradient-primary/5">
                   {/* Tags */}
                   <div>
-                    <label className="block mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label className="form-label">
                       Tags
                     </label>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {formData.metadata.tags.map((tag, index) => (
-                        <div key={index} className="flex gap-2">
+                        <div key={index} className="flex gap-3">
                           <input
                             type="text"
                             value={tag}
                             onChange={(e) => handleTagChange(index, e.target.value)}
-                            className="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            className="input flex-1 text-sm"
                             placeholder="Enter tag"
                           />
                           <button
                             type="button"
                             onClick={() => removeTag(index)}
-                            className="px-3 py-2 text-red-600 hover:text-red-700"
+                            className="btn-icon-danger"
                           >
-                            <FiMinus />
+                            <FiMinus className="w-4 h-4" />
                           </button>
                         </div>
                       ))}
                       <button
                         type="button"
                         onClick={addTag}
-                        className="flex gap-2 items-center text-sm text-blue-600 hover:text-blue-700"
+                        className="btn-secondary inline-flex items-center gap-2"
                       >
-                        <FiPlus /> Add Tag
+                        <FiPlus className="w-4 h-4" /> Add Tag
                       </button>
                     </div>
                   </div>
 
                   {/* Visibility */}
                   <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label className="form-label">
                       Visibility
                     </label>
                     <select
@@ -403,7 +416,7 @@ Please provide a detailed response that is {{response_length}}."
                       onChange={(e) =>
                         handleNestedInputChange(["sharing", "visibility"], e.target.value)
                       }
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      className="input"
                     >
                       <option value="private">Private - Only you can see this</option>
                       <option value="project">Project - Team members can see this</option>
@@ -417,32 +430,33 @@ Please provide a detailed response that is {{response_length}}."
 
             {/* Preview Section */}
             {(formData.name || formData.content) && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <FiEye className="w-5 h-5 text-indigo-600" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                    <FiEye className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-info">
                     Preview
                   </h3>
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="glass p-6 rounded-xl border border-primary-200/30 bg-gradient-primary/5">
                   {formData.name && (
-                    <div className="mb-4">
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                    <div className="mb-6">
+                      <h4 className="font-display font-bold gradient-text text-lg mb-2">
                         {formData.name}
                       </h4>
                       {formData.description && (
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                           {formData.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className={`px-2 py-1 text-xs rounded-full ${categories.find(c => c.value === formData.category)?.color || 'bg-gray-100 text-gray-800'
-                          }`}>
+                      <div className="flex items-center gap-3 mt-3">
+                        <span className="glass px-3 py-1 rounded-full border border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300 font-display font-semibold text-sm">
                           {categories.find(c => c.value === formData.category)?.label}
                         </span>
                         {formData.variables.length > 0 && (
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <span className="glass px-3 py-1 rounded-full border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-semibold text-sm">
                             {formData.variables.length} variable{formData.variables.length !== 1 ? 's' : ''}
                           </span>
                         )}
@@ -452,26 +466,26 @@ Please provide a detailed response that is {{response_length}}."
 
                   {formData.content && (
                     <div>
-                      <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                      <h5 className="font-display font-semibold gradient-text mb-3">
                         Template Content:
                       </h5>
-                      <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-mono bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <pre className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary whitespace-pre-wrap glass p-4 rounded-lg border border-primary-200/30 bg-gradient-primary/10">
                         {formData.content}
                       </pre>
                     </div>
                   )}
 
                   {formData.variables.length > 0 && (
-                    <div className="mt-4">
-                      <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                    <div className="mt-6">
+                      <h5 className="font-display font-semibold gradient-text mb-3">
                         Variables:
                       </h5>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-3">
                         {formData.variables.map((variable, index) => (
-                          <div key={index} className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
-                            <span className="font-mono">{variable.name}</span>
+                          <div key={index} className="glass rounded-lg p-3 border border-secondary-200/30 bg-gradient-secondary/10">
+                            <span className="font-mono font-semibold text-secondary-700 dark:text-secondary-300">{variable.name}</span>
                             {variable.description && (
-                              <span className="text-xs opacity-75">- {variable.description}</span>
+                              <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm block mt-1">- {variable.description}</span>
                             )}
                           </div>
                         ))}
@@ -485,11 +499,11 @@ Please provide a detailed response that is {{response_length}}."
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center p-8 border-t border-primary-200/30">
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-3 text-gray-700 rounded-xl transition-colors dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+            className="btn-secondary"
           >
             Cancel
           </button>
@@ -498,7 +512,7 @@ Please provide a detailed response that is {{response_length}}."
             type="submit"
             onClick={handleSubmit}
             disabled={loading || !formData.name || !formData.content}
-            className="flex items-center gap-2 px-8 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl transition-all hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="btn-primary inline-flex items-center gap-2"
           >
             {loading ? (
               <>

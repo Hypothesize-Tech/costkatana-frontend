@@ -53,13 +53,13 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="text-center space-y-8">
           <div className="space-y-4">
-            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto glow-primary animate-pulse">
               <FiZap className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-4xl font-display font-bold gradient-text-primary">
               Master Template Creation
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed">
               In the next 10 minutes, you'll learn how to create templates that
               save time, reduce costs, and improve consistency in your AI
               interactions.
@@ -67,36 +67,36 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl border border-green-200 dark:border-green-800">
-              <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mb-4">
+            <div className="glass p-6 rounded-2xl border border-success-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center mb-4 glow-success">
                 <FiDollarSign className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h4 className="text-lg font-display font-semibold gradient-text-success mb-2">
                 Save Money
               </h4>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Reduce AI costs by up to 75% with optimized prompts
               </p>
             </div>
-            <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+            <div className="glass p-6 rounded-2xl border border-info-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-info rounded-xl flex items-center justify-center mb-4 glow-info">
                 <FiClock className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h4 className="text-lg font-display font-semibold gradient-text-info mb-2">
                 Save Time
               </h4>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Reuse proven prompts instead of writing from scratch
               </p>
             </div>
-            <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl border border-purple-200 dark:border-purple-800">
-              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mb-4">
+            <div className="glass p-6 rounded-2xl border border-purple-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-purple rounded-xl flex items-center justify-center mb-4 glow-purple">
                 <FiTarget className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h4 className="text-lg font-display font-semibold gradient-text-purple mb-2">
                 Better Results
               </h4>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Get consistent, high-quality outputs every time
               </p>
             </div>
@@ -113,80 +113,80 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border-2 border-red-200 dark:border-red-800">
-              <h4 className="text-xl font-semibold text-red-800 dark:text-red-200 mb-4 flex items-center gap-2">
+            <div className="glass p-6 rounded-2xl border-2 border-danger-200/50 shadow-lg backdrop-blur-xl">
+              <h4 className="text-xl font-display font-semibold gradient-text-danger mb-4 flex items-center gap-2">
                 ❌ Without Templates
               </h4>
               <div className="space-y-3 mb-4">
-                <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border-l-4 border-red-500 font-mono text-sm">
-                  <p>Write a blog post about React hooks for developers</p>
+                <div className="p-3 glass rounded-lg border-l-4 border-danger-500 font-mono text-sm shadow-md">
+                  <p className="text-light-text-primary dark:text-dark-text-primary">Write a blog post about React hooks for developers</p>
                 </div>
-                <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border-l-4 border-red-500 font-mono text-sm">
-                  <p>Write a blog post about Vue composition API for developers</p>
+                <div className="p-3 glass rounded-lg border-l-4 border-danger-500 font-mono text-sm shadow-md">
+                  <p className="text-light-text-primary dark:text-dark-text-primary">Write a blog post about Vue composition API for developers</p>
                 </div>
-                <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border-l-4 border-red-500 font-mono text-sm">
-                  <p>Write a blog post about Angular signals for developers</p>
+                <div className="p-3 glass rounded-lg border-l-4 border-danger-500 font-mono text-sm shadow-md">
+                  <p className="text-light-text-primary dark:text-dark-text-primary">Write a blog post about Angular signals for developers</p>
                 </div>
               </div>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                <div className="flex items-center gap-2 text-danger-700 dark:text-danger-300 font-body">
                   <span>• Repetitive writing</span>
                 </div>
-                <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                <div className="flex items-center gap-2 text-danger-700 dark:text-danger-300 font-body">
                   <span>• Inconsistent quality</span>
                 </div>
-                <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                <div className="flex items-center gap-2 text-danger-700 dark:text-danger-300 font-body">
                   <span>• More tokens = Higher cost</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 bg-green-50 dark:bg-green-900/20 rounded-2xl border-2 border-green-200 dark:border-green-800">
-              <h4 className="text-xl font-semibold text-green-800 dark:text-green-200 mb-4 flex items-center gap-2">
+            <div className="glass p-6 rounded-2xl border-2 border-success-200/50 shadow-lg backdrop-blur-xl">
+              <h4 className="text-xl font-display font-semibold gradient-text-success mb-4 flex items-center gap-2">
                 ✅ With Templates
               </h4>
-              <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border-l-4 border-green-500 font-mono text-sm mb-4">
-                <p>
+              <div className="p-3 glass rounded-lg border-l-4 border-success-500 font-mono text-sm mb-4 shadow-md">
+                <p className="text-light-text-primary dark:text-dark-text-primary">
                   Write a blog post about{" "}
-                  <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded font-semibold">
+                  <span className="bg-gradient-info text-white px-2 py-1 rounded font-semibold glow-info">
                     {"{{topic}}"}
                   </span>{" "}
                   for{" "}
-                  <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded font-semibold">
+                  <span className="bg-gradient-info text-white px-2 py-1 rounded font-semibold glow-info">
                     {"{{audience}}"}
                   </span>
                 </p>
               </div>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                <div className="flex items-center gap-2 text-success-700 dark:text-success-300 font-body">
                   <span>• Write once, use many times</span>
                 </div>
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                <div className="flex items-center gap-2 text-success-700 dark:text-success-300 font-body">
                   <span>• Consistent structure</span>
                 </div>
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                <div className="flex items-center gap-2 text-success-700 dark:text-success-300 font-body">
                   <span>• Optimized for efficiency</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl border border-yellow-200 dark:border-yellow-800">
+          <div className="glass p-6 rounded-2xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-warning rounded-lg flex items-center justify-center flex-shrink-0 glow-warning">
                 <FiArrowRight className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <h4 className="text-lg font-display font-semibold gradient-text-warning mb-2">
                   Key Concept: Variables
                 </h4>
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="font-body text-light-text-primary dark:text-dark-text-primary">
                   Templates use variables like{" "}
-                  <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono text-sm">
+                  <code className="bg-gradient-secondary text-white px-2 py-1 rounded font-mono text-sm glow-secondary">
                     {"{{topic}}"}
                   </code>{" "}
                   and{" "}
-                  <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded font-mono text-sm">
+                  <code className="bg-gradient-secondary text-white px-2 py-1 rounded font-mono text-sm glow-secondary">
                     {"{{audience}}"}
                   </code>{" "}
                   that can be filled in with different values each time you use
@@ -207,10 +207,10 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-3xl font-display font-bold gradient-text-primary mb-2">
               What do you want to create templates for?
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Select the use case that best matches your needs:
             </p>
           </div>
@@ -262,26 +262,26 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
               return (
                 <div
                   key={useCase.id}
-                  className={`p-6 rounded-2xl border-2 cursor-pointer transition-all hover:scale-105 ${userInput.useCase === useCase.id
-                    ? `bg-gradient-to-br ${useCase.bgColor} ${useCase.borderColor} dark:from-gray-800 dark:to-gray-700 dark:border-gray-600`
-                    : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                  className={`glass p-6 rounded-2xl border-2 cursor-pointer transition-all hover:scale-105 hover:shadow-xl ${userInput.useCase === useCase.id
+                    ? `border-primary-300/50 shadow-lg glow-primary`
+                    : "border-accent-200/30 hover:border-accent-300/50"
                     }`}
                   onClick={() =>
                     setUserInput((prev) => ({ ...prev, useCase: useCase.id }))
                   }
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${useCase.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <div className={`w-12 h-12 bg-gradient-to-r ${useCase.color} rounded-xl flex items-center justify-center flex-shrink-0 glow-primary`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <h4 className="text-lg font-display font-semibold gradient-text-primary mb-2">
                         {useCase.title}
                       </h4>
-                      <p className="text-gray-600 dark:text-gray-400 mb-2">
+                      <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
                         {useCase.description}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-500 italic">
+                      <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary italic">
                         Examples: {useCase.example}
                       </p>
                     </div>
@@ -302,21 +302,21 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-3xl font-display font-bold gradient-text-primary mb-2">
               Let's create your first template
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Write a prompt that you use often, but replace specific values with
               variables.
             </p>
           </div>
 
           <div className="space-y-4">
-            <label className="block text-lg font-semibold text-gray-900 dark:text-white">
+            <label className="form-label text-lg">
               Your Template Content:
             </label>
             <textarea
-              className="w-full p-4 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+              className="input font-mono text-sm resize-none"
               value={userInput.samplePrompt}
               onChange={(e) =>
                 setUserInput((prev) => ({
@@ -327,15 +327,15 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
               placeholder="Example: Write a professional email to {{recipient}} about {{subject}} with a {{tone}} tone..."
               rows={6}
             />
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3">
+            <div className="glass p-4 rounded-xl border border-info-200/30 shadow-lg backdrop-blur-xl">
+              <h4 className="font-display font-semibold gradient-text-info mb-3">
                 💡 Tips for great templates:
               </h4>
-              <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+              <ul className="space-y-2 text-sm font-body text-info-700 dark:text-info-300">
                 <li className="flex items-start gap-2">
                   <span>•</span>
                   <span>
-                    Use <code className="bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5 rounded">{"{{variable_name}}"}</code> for values that change
+                    Use <code className="bg-gradient-secondary text-white px-1 py-0.5 rounded glow-secondary">{"{{variable_name}}"}</code> for values that change
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -355,15 +355,15 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
           </div>
 
           {userInput.samplePrompt && (
-            <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="glass p-6 rounded-2xl border border-accent-200/30 shadow-lg backdrop-blur-xl">
+              <h4 className="font-display font-semibold gradient-text-accent mb-4">
                 Live Preview:
               </h4>
-              <div className="p-4 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 font-mono text-sm mb-4">
-                {userInput.samplePrompt}
+              <div className="p-4 glass rounded-lg border border-accent-200/30 font-mono text-sm mb-4 shadow-md">
+                <span className="text-light-text-primary dark:text-dark-text-primary">{userInput.samplePrompt}</span>
               </div>
               <div>
-                <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                <h5 className="font-display font-medium gradient-text-secondary mb-2">
                   Detected Variables:
                 </h5>
                 <div className="flex flex-wrap gap-2">
@@ -371,7 +371,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                     (variable, index) => (
                       <span
                         key={index}
-                        className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-mono"
+                        className="bg-gradient-info text-white px-3 py-1 rounded-full text-sm font-mono glow-info"
                       >
                         {variable}
                       </span>
@@ -561,17 +561,17 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="text-center space-y-8">
           <div className="space-y-4">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-20 h-20 bg-gradient-success rounded-full flex items-center justify-center mx-auto glow-success animate-pulse">
               <FiCheck className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-4xl font-display font-bold gradient-text-success">
               You're Now a Template Master! 🎉
             </h2>
           </div>
 
           <div className="text-left space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-display font-semibold gradient-text-primary mb-4">
                 What you've learned:
               </h3>
               <div className="space-y-3">
@@ -582,9 +582,9 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                   "Testing and validating template functionality",
                   "Best practices for organizing templates",
                 ].map((achievement, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <FiCheck className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                    <span className="text-green-800 dark:text-green-200 font-medium">
+                  <div key={index} className="flex items-center gap-3 p-3 glass rounded-lg border border-success-200/30 shadow-md">
+                    <FiCheck className="w-5 h-5 text-success-600 dark:text-success-400 flex-shrink-0" />
+                    <span className="font-body text-success-800 dark:text-success-200 font-medium">
                       {achievement}
                     </span>
                   </div>
@@ -593,19 +593,19 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-display font-semibold gradient-text-secondary mb-4">
                 What's Next?
               </h3>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
+                  className="btn-primary inline-flex items-center justify-center gap-3 px-8 py-4"
                   onClick={onCreateTemplate}
                 >
                   <FiZap className="w-5 h-5" />
                   Create Your First Real Template
                 </button>
                 <button
-                  className="flex items-center justify-center gap-3 px-8 py-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all border border-gray-200 dark:border-gray-600"
+                  className="btn-secondary inline-flex items-center justify-center gap-3 px-8 py-4"
                   onClick={onViewMarketplace}
                 >
                   <FiEye className="w-5 h-5" />
@@ -615,32 +615,32 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-2xl font-display font-semibold gradient-text-accent mb-4">
                 Your Potential Savings:
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
+                  <div className="w-12 h-12 bg-gradient-success rounded-full flex items-center justify-center flex-shrink-0 glow-success">
                     <FiDollarSign className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-green-800 dark:text-green-200 text-lg">
+                    <div className="font-display font-bold gradient-text-success text-lg">
                       $50-200/month
                     </div>
-                    <div className="text-green-700 dark:text-green-300 text-sm">
+                    <div className="font-body text-success-700 dark:text-success-300 text-sm">
                       Typical cost savings with templates
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-info-200/30 shadow-lg backdrop-blur-xl">
+                  <div className="w-12 h-12 bg-gradient-info rounded-full flex items-center justify-center flex-shrink-0 glow-info">
                     <FiClock className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-blue-800 dark:text-blue-200 text-lg">
+                    <div className="font-display font-bold gradient-text-info text-lg">
                       5-15 hours/week
                     </div>
-                    <div className="text-blue-700 dark:text-blue-300 text-sm">
+                    <div className="font-body text-info-700 dark:text-info-300 text-sm">
                       Time saved on prompt writing
                     </div>
                   </div>
@@ -691,22 +691,22 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <div className="glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-primary-200/30 backdrop-blur-xl">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 relative">
+        <div className="bg-gradient-primary text-white p-8 relative rounded-t-3xl glow-primary">
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all"
+            className="btn-icon-secondary absolute top-6 right-6 bg-white/20 hover:bg-white/30 text-white"
           >
             <FiX className="w-5 h-5" />
           </button>
 
           <div className="mb-6">
-            <h1 className="text-2xl font-bold mb-2">{currentStepData.title}</h1>
-            <p className="text-blue-100">{currentStepData.description}</p>
+            <h1 className="text-3xl font-display font-bold mb-2 text-white">{currentStepData.title}</h1>
+            <p className="font-body text-primary-100">{currentStepData.description}</p>
           </div>
 
-          <div className="flex justify-between items-center text-sm text-blue-100 mb-4">
+          <div className="flex justify-between items-center text-sm font-body text-primary-100 mb-4">
             <span>
               Step {currentStep + 1} of {tutorialSteps.length}
             </span>
@@ -719,10 +719,10 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
             {tutorialSteps.map((_, index) => (
               <div
                 key={index}
-                className={`w-3 h-3 rounded-full transition-all ${completedSteps.has(index)
-                  ? "bg-green-400 scale-125"
+                className={`w-3 h-3 rounded-full transition-all animate-pulse ${completedSteps.has(index)
+                  ? "bg-success-400 scale-125 glow-success"
                   : index === currentStep
-                    ? "bg-white scale-150"
+                    ? "bg-white scale-150 glow-white"
                     : "bg-white/30"
                   }`}
               />
@@ -731,24 +731,24 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
 
           <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
             <div
-              className="h-full bg-white rounded-full transition-all duration-300"
+              className="h-full bg-gradient-accent rounded-full transition-all duration-300 glow-accent"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto max-h-[60vh]">
+        <div className="p-8 overflow-y-auto max-h-[60vh] bg-light-bg-primary dark:bg-dark-bg-primary">
           {currentStepData.content}
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 dark:bg-gray-800 p-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="glass p-6 border-t border-primary-200/30 backdrop-blur-xl rounded-b-3xl">
           <div className="flex justify-between items-center">
             <button
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="flex items-center gap-2 px-6 py-3 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 dark:border-gray-600"
+              className="btn-secondary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FiSkipBack className="w-4 h-4" />
               Previous
@@ -758,7 +758,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
               {currentStep === tutorialSteps.length - 1 ? (
                 <button
                   onClick={onClose}
-                  className="flex items-center gap-2 px-6 py-3 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all border border-gray-200 dark:border-gray-600"
+                  className="btn-secondary inline-flex items-center gap-2"
                 >
                   <FiHome className="w-4 h-4" />
                   Finish Tutorial
@@ -767,7 +767,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                 <button
                   onClick={handleNext}
                   disabled={!canProceed()}
-                  className="flex items-center gap-2 px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                   <FiSkipForward className="w-4 h-4" />

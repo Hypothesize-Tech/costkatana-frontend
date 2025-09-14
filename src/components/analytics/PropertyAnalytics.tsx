@@ -82,11 +82,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
 
     if (!availableProperties.length) {
         return (
-            <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-center py-8">
-                    <ChartBarIcon className="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">No Custom Properties</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="text-center py-12">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+                        <ChartBarIcon className="h-10 w-10 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-display font-bold gradient-text mb-2">No Custom Properties</h3>
+                    <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
                         Start using custom properties in your API calls to see analytics here.
                     </p>
                 </div>
@@ -95,17 +97,22 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Property Selector */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">Property Analytics</h3>
+                    <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                            <ChartBarIcon className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-display font-bold gradient-text">Property Analytics</h3>
+                    </div>
                     <div className="flex items-center space-x-4">
-                        <label className="text-sm font-medium text-gray-700">Group by:</label>
+                        <label className="label">Group by:</label>
                         <select
                             value={selectedProperty}
                             onChange={(e) => setSelectedProperty(e.target.value)}
-                            className="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            className="input"
                         >
                             {availableProperties.map((prop) => (
                                 <option key={prop.property} value={prop.property}>
@@ -121,56 +128,56 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
             {analytics && (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="bg-white rounded-lg shadow p-6">
+                        <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0">
-                                    <HashtagIcon className="h-8 w-8 text-blue-600" />
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                                    <HashtagIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Unique Values</p>
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Unique Values</p>
+                                    <p className="text-3xl font-display font-bold gradient-text">
                                         {analytics.summary.uniqueValues}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg shadow p-6">
+                        <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0">
-                                    <CurrencyDollarIcon className="h-8 w-8 text-green-600" />
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+                                    <CurrencyDollarIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Total Cost</p>
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</p>
+                                    <p className="text-3xl font-display font-bold gradient-text-success">
                                         {formatCurrency(analytics.summary.totalCost)}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg shadow p-6">
+                        <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0">
-                                    <HashtagIcon className="h-8 w-8 text-purple-600" />
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center shadow-lg">
+                                    <HashtagIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Total Tokens</p>
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Tokens</p>
+                                    <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
                                         {formatNumber(analytics.summary.totalTokens)}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg shadow p-6">
+                        <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0">
-                                    <ClockIcon className="h-8 w-8 text-orange-600" />
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
+                                    <ClockIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-500">Total Requests</p>
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</p>
+                                    <p className="text-3xl font-display font-bold gradient-text-accent">
                                         {formatNumber(analytics.summary.totalRequests)}
                                     </p>
                                 </div>
@@ -179,44 +186,54 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                     </div>
 
                     {/* Detailed Breakdown */}
-                    <div className="bg-white rounded-lg shadow">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Breakdown by {selectedProperty}
-                            </h3>
+                    <div className="card card-gradient shadow-2xl backdrop-blur-xl">
+                        <div className="px-8 py-6 border-b border-primary-200/30">
+                            <div className="flex items-center">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-xl font-display font-bold gradient-text">
+                                    Breakdown by {selectedProperty}
+                                </h3>
+                            </div>
                         </div>
                         <div className="overflow-hidden">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
+                            <table className="min-w-full divide-y divide-primary-200/20">
+                                <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             {selectedProperty}
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Requests
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Total Cost
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Avg Cost
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Total Tokens
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Avg Response Time
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
                                             Cost Share
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="divide-y divide-primary-200/20">
                                     {analyticsLoading ? (
                                         <tr>
-                                            <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
-                                                Loading analytics...
+                                            <td colSpan={7} className="px-6 py-8 text-center">
+                                                <div className="flex justify-center items-center space-x-2">
+                                                    <div className="spinner w-5 h-5"></div>
+                                                    <span className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Loading analytics...</span>
+                                                </div>
                                             </td>
                                         </tr>
                                     ) : (
@@ -226,36 +243,38 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                                                 : 0;
 
                                             return (
-                                                <tr key={index} className="hover:bg-gray-50">
+                                                <tr key={index} className="hover:bg-primary-500/5 transition-colors duration-200">
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm font-medium text-gray-900">
+                                                        <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                             {renderPropertyValue(selectedProperty, item.propertyValue)}
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                                                         {formatNumber(item.totalRequests)}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        {formatCurrency(item.totalCost)}
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <span className="text-sm font-bold gradient-text">
+                                                            {formatCurrency(item.totalCost)}
+                                                        </span>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                                                         {formatCurrency(item.averageCost)}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                                                         {formatNumber(item.totalTokens)}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                                                         {item.averageResponseTime}ms
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
-                                                            <div className="flex-1 bg-gray-200 rounded-full h-2 mr-2">
+                                                            <div className="flex-1 bg-primary-200/30 rounded-full h-3 mr-3">
                                                                 <div
-                                                                    className="bg-blue-600 h-2 rounded-full"
+                                                                    className="progress-bar h-3"
                                                                     style={{ width: `${costShare}%` }}
                                                                 ></div>
                                                             </div>
-                                                            <span className="text-sm text-gray-900">
+                                                            <span className="text-sm font-display font-bold gradient-text min-w-[3rem]">
                                                                 {costShare.toFixed(1)}%
                                                             </span>
                                                         </div>

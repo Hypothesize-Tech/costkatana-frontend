@@ -286,24 +286,24 @@ const Experimentation: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="flex items-center text-3xl font-bold text-gray-900">
-                <BeakerIcon className="mr-3 w-8 h-8 text-blue-600" />
+              <h1 className="flex items-center text-3xl font-display font-bold gradient-text-primary">
+                <BeakerIcon className="mr-3 w-8 h-8 text-primary-600 dark:text-primary-400" />
                 Experimentation & A/B Testing
               </h1>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                 Discover the most cost-effective solutions for your unique use
                 cases using real data
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <SparklesIcon className="w-5 h-5 text-yellow-600" />
-              <span className="text-sm font-medium text-gray-700">
+              <SparklesIcon className="w-5 h-5 text-warning-600 dark:text-warning-400" />
+              <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                 {recommendations.length > 0
                   ? `${recommendations.length} ${recommendations.length === 1 ? "recommendation" : "recommendations"} available`
                   : "Start experimenting to get recommendations"}
@@ -317,8 +317,8 @@ const Experimentation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            <span className="ml-2 text-light-text-secondary dark:text-dark-text-secondary">
               Loading experimentation data...
             </span>
           </div>
@@ -328,14 +328,14 @@ const Experimentation: React.FC = () => {
               {generateStatCards().map((card, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                  className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
+                      <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                         {card.title}
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 mt-1">
+                      <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mt-1">
                         {card.value}
                       </p>
                       <div className="flex items-center mt-2">
@@ -344,13 +344,13 @@ const Experimentation: React.FC = () => {
                         >
                           {card.change.text}
                         </span>
-                        <span className="text-xs text-gray-500 ml-1">
+                        <span className="text-xs text-light-text-muted dark:text-dark-text-muted ml-1">
                           vs previous period
                         </span>
                       </div>
                     </div>
                     <div
-                      className={`flex-shrink-0 ${card.color} rounded-lg p-3`}
+                      className={`flex-shrink-0 glass rounded-lg p-3 border border-accent-200/30`}
                     >
                       {card.icon}
                     </div>

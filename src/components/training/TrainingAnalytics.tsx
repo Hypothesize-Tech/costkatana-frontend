@@ -36,19 +36,19 @@ export const TrainingAnalytics: React.FC = () => {
     return (
       <div className="flex justify-center items-center py-12">
         <LoadingSpinner />
-        <span className="ml-3 text-gray-600">Loading analytics...</span>
+        <span className="ml-3 font-body text-light-text-secondary dark:text-dark-text-secondary">Loading analytics...</span>
       </div>
     );
   }
 
   if (!analytics || analytics.totalScored === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-lg">
-        <ChartBarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="text-center py-12 glass rounded-xl border border-accent-200/30">
+        <ChartBarIcon className="h-12 w-12 text-accent-400 mx-auto mb-4 animate-pulse" />
+        <h3 className="text-lg font-display font-bold gradient-text-accent mb-2">
           No Scoring Data Yet
         </h3>
-        <p className="text-gray-600 mb-4">
+        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
           Start scoring your AI requests to see training analytics here.
         </p>
       </div>
@@ -75,47 +75,53 @@ export const TrainingAnalytics: React.FC = () => {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="glass rounded-xl border border-info-200/30 shadow-lg backdrop-blur-xl p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <DocumentTextIcon className="h-8 w-8 text-blue-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
+                <DocumentTextIcon className="h-6 w-6 text-white" />
+              </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Scored</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Total Scored</p>
+              <p className="text-2xl font-display font-bold gradient-text-info">
                 {analytics.totalScored.toLocaleString()}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <StarIcon className="h-8 w-8 text-yellow-500" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                <StarIcon className="h-6 w-6 text-white" />
+              </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Average Score</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Average Score</p>
+              <p className="text-2xl font-display font-bold gradient-text-warning">
                 {analytics.averageScore.toFixed(1)}★
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-green-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                <TrophyIcon className="h-6 w-6 text-white" />
+              </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Training Candidates
               </p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-2xl font-display font-bold gradient-text-success">
                 {analytics.trainingCandidates.toLocaleString()}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                 {(
                   (analytics.trainingCandidates / analytics.totalScored) *
                   100
@@ -221,9 +227,8 @@ export const TrainingAnalytics: React.FC = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                        index < 3 ? "bg-yellow-500" : "bg-gray-400"
-                      }`}
+                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${index < 3 ? "bg-yellow-500" : "bg-gray-400"
+                        }`}
                     >
                       {index + 1}
                     </div>
@@ -255,11 +260,10 @@ export const TrainingAnalytics: React.FC = () => {
                           {[...Array(5)].map((_, i) => (
                             <StarIcon
                               key={i}
-                              className={`h-3 w-3 ${
-                                i < request.score
+                              className={`h-3 w-3 ${i < request.score
                                   ? "text-yellow-400"
                                   : "text-gray-300"
-                              }`}
+                                }`}
                             />
                           ))}
                         </div>

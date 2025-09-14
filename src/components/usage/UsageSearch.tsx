@@ -49,8 +49,8 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
   return (
     <div className={`relative ${className}`}>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <MagnifyingGlassIcon className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
         </div>
         <input
           type="text"
@@ -58,13 +58,13 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full pl-12 pr-12 py-3 glass rounded-xl border border-accent-200/30 leading-5 text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300"
         />
         {query && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
             <button
               onClick={handleClear}
-              className="text-gray-400 hover:text-gray-600 focus:outline-none"
+              className="p-1 rounded-lg text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-accent-100/50 dark:hover:bg-accent-800/50 focus:outline-none transition-all duration-300"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -73,11 +73,11 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
       </div>
 
       {isSearching && (
-        <div className="absolute left-0 right-0 top-full mt-1">
-          <div className="bg-white rounded-md shadow-sm border border-gray-200 p-2">
-            <div className="flex items-center text-sm text-gray-500">
+        <div className="absolute left-0 right-0 top-full mt-2 z-10">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-3">
+            <div className="flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary">
               <svg
-                className="animate-spin h-4 w-4 mr-2"
+                className="animate-spin h-4 w-4 mr-2 text-primary-500"
                 fill="none"
                 viewBox="0 0 24 24"
               >

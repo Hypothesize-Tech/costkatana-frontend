@@ -75,21 +75,21 @@ export const Security: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md mx-auto">
-                    <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                        <div className="text-red-600 text-sm">{error}</div>
+                    <div className="glass rounded-xl border border-error-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 p-6">
+                        <div className="text-error-600 dark:text-error-400 text-sm mb-4">{error}</div>
                         <button
                             onClick={loadSecurityData}
-                            className="mt-4 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="btn-primary"
                         >
                             Retry
                         </button>
@@ -100,24 +100,24 @@ export const Security: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">LLM Security Dashboard</h1>
-                    <p className="mt-2 text-gray-600">
+                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8 mb-8">
+                    <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">LLM Security Dashboard</h1>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
                         Monitor and manage your AI security with comprehensive threat detection and analysis
                     </p>
-                    <div className="mt-4 flex gap-4">
+                    <div className="flex gap-4">
                         <button
                             onClick={() => exportSecurityReport('json')}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded hover:bg-gray-50"
+                            className="btn-secondary"
                         >
                             Export JSON Report
                         </button>
                         <button
                             onClick={() => exportSecurityReport('csv')}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded hover:bg-gray-50"
+                            className="btn-secondary"
                         >
                             Export CSV Report
                         </button>

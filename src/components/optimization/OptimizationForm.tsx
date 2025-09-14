@@ -159,32 +159,42 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
   };
 
   return (
-    <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            AI Usage Optimization
-          </h2>
+    <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="card shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden backdrop-blur-xl border border-primary-200/30">
+        <div className="flex justify-between items-center p-8 border-b border-primary-200/30 bg-gradient-primary/10">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <SparklesIcon className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-2xl font-display font-bold gradient-text">
+              AI Usage Optimization
+            </h2>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-400 transition-colors hover:text-gray-600"
+            className="glass rounded-lg p-3 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
           >
-            <XMarkIcon className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6 text-light-text-primary dark:text-dark-text-primary" />
           </button>
         </div>
 
-        <div className="flex h-[calc(90vh-theme(spacing.20))]">
+        <div className="flex h-[calc(90vh-theme(spacing.24))]">
           {/* Form Section */}
           <div
-            className={`overflow-y-auto p-6 ${showPreview ? "w-1/2" : "w-full"}`}
+            className={`overflow-y-auto p-8 ${showPreview ? "w-1/2" : "w-full"}`}
           >
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Quick Setup */}
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">
-                  Quick Start
-                </h3>
-                <p className="text-sm text-blue-700">
+              <div className="glass rounded-xl p-6 border border-primary-200/30">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                    <span className="text-white text-sm">⚡</span>
+                  </div>
+                  <h3 className="font-display font-semibold gradient-text text-lg">
+                    Quick Start
+                  </h3>
+                </div>
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Simply paste your AI query below and we'll automatically
                   optimize your AI usage for cost and performance. No API keys or complex
                   configuration required.
@@ -192,58 +202,79 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Provider & Model Selection */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
-                    AI Provider
-                  </label>
-                  <select
-                    value={formData.service}
-                    onChange={(e) => handleChange("service", e.target.value)}
-                    className="block py-2 pr-10 pl-3 mt-1 w-full text-base rounded-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    {getAIServices().map((service) => (
-                      <option key={service.value} value={service.value}>
-                        {service.label}
-                      </option>
-                    ))}
-                  </select>
+              <div className="glass rounded-xl p-6 border border-accent-200/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                    <span className="text-white text-sm">🤖</span>
+                  </div>
+                  <h3 className="font-display font-semibold gradient-text-accent text-lg">
+                    AI Configuration
+                  </h3>
                 </div>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <label className="block mb-3 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                      AI Provider
+                    </label>
+                    <select
+                      value={formData.service}
+                      onChange={(e) => handleChange("service", e.target.value)}
+                      className="input"
+                    >
+                      {getAIServices().map((service) => (
+                        <option key={service.value} value={service.value}>
+                          {service.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
-                    Model
-                  </label>
-                  <select
-                    value={formData.model}
-                    onChange={(e) => handleChange("model", e.target.value)}
-                    className="block py-2 pr-10 pl-3 mt-1 w-full text-base rounded-md border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    {getModelsForService(formData.service).map((model) => (
-                      <option key={model} value={model}>
-                        {model}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <label className="block mb-3 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Model
+                    </label>
+                    <select
+                      value={formData.model}
+                      onChange={(e) => handleChange("model", e.target.value)}
+                      className="input"
+                    >
+                      {getModelsForService(formData.service).map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
               {/* Prompt Input */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Your AI Query
-                </label>
+              <div className="glass rounded-xl p-6 border border-success-200/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                    <span className="text-white text-sm">📝</span>
+                  </div>
+                  <h3 className="font-display font-semibold gradient-text-success text-lg">
+                    Your AI Query
+                  </h3>
+                </div>
                 <textarea
                   value={formData.prompt}
                   onChange={(e) => handleChange("prompt", e.target.value)}
                   rows={12}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="input mb-4"
                   placeholder="Paste your AI query here. We'll analyze your usage patterns and suggest optimizations to reduce costs while maintaining quality..."
                 />
-                <p className="mt-2 text-sm text-gray-500">
-                  Our AI will automatically apply usage optimization, context
-                  trimming, and other efficiency techniques.
-                </p>
+                <div className="glass rounded-lg p-4 border border-success-200/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded bg-gradient-success"></div>
+                    <span className="font-display font-medium gradient-text-success text-sm">Smart Optimization</span>
+                  </div>
+                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    Our AI will automatically apply usage optimization, context
+                    trimming, and other efficiency techniques.
+                  </p>
+                </div>
               </div>
 
               {/* Cortex Configuration */}
@@ -266,14 +297,14 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex pt-6 space-x-4 border-t border-gray-200">
+              <div className="flex pt-8 space-x-4 border-t border-primary-200/30">
                 <button
                   type="button"
                   onClick={handlePreview}
                   disabled={
                     previewMutation.isPending || !formData.prompt.trim()
                   }
-                  className="flex-1 flex items-center justify-center px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-secondary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {previewMutation.isPending ? (
                     <>
@@ -292,7 +323,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   type="button"
                   onClick={handleCreate}
                   disabled={createMutation.isPending || !formData.prompt.trim()}
-                  className="flex-1 flex items-center justify-center px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {createMutation.isPending ? (
                     <>
@@ -312,65 +343,87 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
 
           {/* Preview Section */}
           {showPreview && previewData && previewData.suggestions && (
-            <div className="w-1/2 p-6 bg-gray-50 border-l border-gray-200 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Optimization Preview
-                </h3>
+            <div className="w-1/2 p-8 bg-gradient-primary/5 border-l border-primary-200/30 overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                    <EyeIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text">
+                    Optimization Preview
+                  </h3>
+                </div>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="glass rounded-lg p-2 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
                 >
-                  <XMarkIcon className="w-5 h-5" />
+                  <XMarkIcon className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary" />
                 </button>
               </div>
 
               {/* Savings Summary */}
-              <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <p className="text-sm font-medium text-green-900">
-                      Estimated Savings
-                    </p>
-                    <p className="text-2xl font-bold text-green-600">
+              <div className="glass rounded-xl p-6 border border-success-200/30 mb-8 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                        <span className="text-white text-xs">💰</span>
+                      </div>
+                      <p className="font-display font-semibold gradient-text-success">
+                        Estimated Savings
+                      </p>
+                    </div>
+                    <p className="text-3xl font-display font-bold gradient-text-success">
                       ${formatSmartNumber(previewData.totalSavings || 0)}
                     </p>
                   </div>
-                  <SparklesIcon className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center glow-success">
+                    <SparklesIcon className="w-8 h-8 text-white" />
+                  </div>
                 </div>
                 {previewData.improvementPercentage && (
-                  <div className="flex justify-between text-sm text-green-700">
-                    <span>
-                      Improvement:{" "}
-                      {formatSmartNumber(previewData.improvementPercentage)}%
-                    </span>
-                    {previewData.originalTokens &&
-                      previewData.optimizedTokens && (
-                        <span>
-                          Tokens: {previewData.originalTokens} →{" "}
-                          {previewData.optimizedTokens}
-                        </span>
-                      )}
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-success-200/30">
+                    <div className="text-center">
+                      <div className="font-display font-bold gradient-text text-lg">
+                        {formatSmartNumber(previewData.improvementPercentage)}%
+                      </div>
+                      <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Improvement</div>
+                    </div>
+                    {previewData.originalTokens && previewData.optimizedTokens && (
+                      <div className="text-center">
+                        <div className="font-display font-bold gradient-text text-lg">
+                          {previewData.originalTokens} → {previewData.optimizedTokens}
+                        </div>
+                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens</div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Optimization Techniques */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
-                  Applied Techniques
-                </h4>
-                <div className="space-y-2">
+              <div className="glass rounded-xl p-6 border border-accent-200/30 mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                    <span className="text-white text-xs">⚙️</span>
+                  </div>
+                  <h4 className="font-display font-semibold gradient-text-accent">
+                    Applied Techniques
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
                   {(previewData.techniques || []).map(
                     (technique: string, index: number) => (
                       <div
                         key={index}
-                        className="flex items-center p-2 bg-white rounded border"
+                        className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                       >
-                        <div className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></div>
-                        <span className="text-sm text-gray-700 capitalize">
-                          {technique.replace(/_/g, " ")}
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 bg-gradient-primary rounded-full glow-primary"></div>
+                          <span className="font-body text-light-text-primary dark:text-dark-text-primary capitalize">
+                            {technique.replace(/_/g, " ")}
+                          </span>
+                        </div>
                       </div>
                     ),
                   )}
@@ -388,10 +441,15 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               )}
 
               {/* Suggestions */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
-                  Optimization Suggestions
-                </h4>
+              <div className="glass rounded-xl p-6 border border-secondary-200/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <span className="text-white text-xs">💡</span>
+                  </div>
+                  <h4 className="font-display font-semibold gradient-text-secondary">
+                    Optimization Suggestions
+                  </h4>
+                </div>
                 {previewData.suggestions &&
                   previewData.suggestions.length > 0 ? (
                   <div className="space-y-4">
@@ -399,13 +457,18 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                       (suggestion: any, index: number) => (
                         <div
                           key={index}
-                          className="p-4 bg-white rounded-lg border"
+                          className="glass rounded-lg p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                         >
-                          <div className="flex justify-between items-start mb-2">
-                            <h5 className="text-sm font-medium text-gray-900 capitalize">
+                          <div className="flex justify-between items-start mb-3">
+                            <h5 className="font-display font-semibold gradient-text capitalize">
                               {suggestion.type || "Optimization"}
                             </h5>
-                            <span className="text-xs text-green-600 font-medium">
+                            <span className={`px-3 py-1 rounded-full text-xs font-display font-medium ${suggestion.estimatedSavings
+                                ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
+                                : suggestion.implemented
+                                  ? "bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30"
+                                  : "bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border border-accent-200/30"
+                              }`}>
                               {suggestion.estimatedSavings
                                 ? `$${formatSmartNumber(suggestion.estimatedSavings)} saved`
                                 : suggestion.implemented
@@ -413,35 +476,37 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                                   : "Available"}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">
+                          <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-4">
                             {suggestion.description}
                           </p>
                           {suggestion.confidence && (
-                            <div className="flex items-center">
-                              <span className="text-xs text-gray-500 mr-2">
-                                Confidence:
-                              </span>
-                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div className="mb-3">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                                  Confidence:
+                                </span>
+                                <span className="font-display font-bold gradient-text text-sm">
+                                  {Math.round(suggestion.confidence * 100)}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-light-background-secondary dark:bg-dark-background-secondary rounded-full h-2">
                                 <div
-                                  className="bg-indigo-500 h-2 rounded-full"
+                                  className="bg-gradient-primary h-2 rounded-full glow-primary transition-all duration-300"
                                   style={{
                                     width: `${suggestion.confidence * 100}%`,
                                   }}
                                 ></div>
                               </div>
-                              <span className="text-xs text-gray-500 ml-2">
-                                {Math.round(suggestion.confidence * 100)}%
-                              </span>
                             </div>
                           )}
                           {suggestion.impact && (
-                            <div className="mt-2">
+                            <div>
                               <span
-                                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${suggestion.impact === "high"
-                                  ? "bg-red-100 text-red-800"
-                                  : suggestion.impact === "medium"
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : "bg-green-100 text-green-800"
+                                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-display font-medium ${suggestion.impact === "high"
+                                    ? "bg-gradient-danger/20 text-danger-700 dark:text-danger-300 border border-danger-200/30"
+                                    : suggestion.impact === "medium"
+                                      ? "bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border border-warning-200/30"
+                                      : "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
                                   }`}
                               >
                                 {suggestion.impact} impact
@@ -453,8 +518,14 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                     )}
                   </div>
                 ) : (
-                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <p className="text-sm text-yellow-800">
+                  <div className="glass rounded-lg p-6 border border-warning-200/30">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-5 h-5 rounded-full bg-gradient-warning flex items-center justify-center">
+                        <span className="text-white text-xs">⚠️</span>
+                      </div>
+                      <span className="font-display font-medium gradient-text-warning">No Specific Suggestions</span>
+                    </div>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                       No specific suggestions available, but optimization has
                       been applied to reduce costs.
                     </p>

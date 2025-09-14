@@ -14,9 +14,9 @@ export const Progress: React.FC<ProgressProps> = ({
     const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
     return (
-        <div className={`w-full bg-gray-200 rounded-full overflow-hidden ${className}`}>
+        <div className={`w-full bg-primary-200/30 rounded-full overflow-hidden shadow-inner ${className}`}>
             <div
-                className="h-full transition-all duration-300 ease-out"
+                className="h-full bg-gradient-primary shadow-lg transition-all duration-500 ease-out progress-bar"
                 style={{ width: `${percentage}%` }}
             />
         </div>

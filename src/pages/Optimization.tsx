@@ -184,309 +184,313 @@ export const Optimization: React.FC = () => {
   if (optimizationsLoading || summaryLoading) return <LoadingSpinner />;
 
   return (
-    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            AI Usage Optimization
-          </h1>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => navigate("/optimizations/wizard")}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <AcademicCapIcon className="mr-2 w-5 h-5" />
-              Cost Audit Wizard
-            </button>
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <PlusIcon className="mr-2 w-5 h-5" />
-              Advanced Optimization
-            </button>
-          </div>
-        </div>
-        <p className="text-gray-600">
-          AI-powered usage optimization to reduce costs while maintaining
-          quality
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      {calculatedStats && (
-        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Saved</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {formatCurrency(calculatedStats.totalSaved)}
-                </p>
-              </div>
-              <ChartBarIcon className="w-12 h-12 text-green-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Optimizations
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {calculatedStats.total}
-                </p>
-              </div>
-              <SparklesIcon className="w-12 h-12 text-indigo-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Applied</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {calculatedStats.applied}
-                </p>
-              </div>
-              <CheckCircleIcon className="w-12 h-12 text-blue-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Avg Improvement
-                </p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {formatSmartNumber(calculatedStats.avgImprovement)}%
-                </p>
-              </div>
-              <ArrowTrendingUpIcon className="w-12 h-12 text-purple-600 opacity-20" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Show stats even when no optimizations exist */}
-      {!calculatedStats && !optimizationsLoading && !summaryLoading && (
-        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Saved</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {formatCurrency(0)}
-                </p>
-              </div>
-              <ChartBarIcon className="w-12 h-12 text-green-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Optimizations
-                </p>
-                <p className="text-2xl font-bold text-gray-900">0</p>
-              </div>
-              <SparklesIcon className="w-12 h-12 text-indigo-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Applied</p>
-                <p className="text-2xl font-bold text-blue-600">0</p>
-              </div>
-              <CheckCircleIcon className="w-12 h-12 text-blue-600 opacity-20" />
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Avg Improvement
-                </p>
-                <p className="text-2xl font-bold text-purple-600">0.0%</p>
-              </div>
-              <ArrowTrendingUpIcon className="w-12 h-12 text-purple-600 opacity-20" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Optimize Section */}
-      <div className="mb-8">
-        <QuickOptimize />
-      </div>
-
-      {/* Latest Optimization Preview */}
-      {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
-        <div className="mb-8 p-6 bg-white rounded-lg border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Latest Optimization
-            </h3>
-            <span className="text-sm text-gray-500">
-              {new Date(
-                getAllOptimizations()[0]?.createdAt ||
-                getAllOptimizations()[0]?.updatedAt,
-              ).toLocaleDateString()}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-4 gap-4 mb-4">
-            <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
-              <div className="text-lg font-bold text-green-600">
-                ${formatSmartNumber(getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0)}
-              </div>
-              <div className="text-xs text-green-700">Savings</div>
-            </div>
-            <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
-              <div className="text-lg font-bold text-orange-600">
-                ${formatSmartNumber(getAllOptimizations()[0]?.originalCost || 0)}
-              </div>
-              <div className="text-xs text-orange-700">Original Cost</div>
-            </div>
-            <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
-              <div className="text-lg font-bold text-blue-600">
-                {formatSmartNumber(getAllOptimizations()[0]?.improvementPercentage || 0)}%
-              </div>
-              <div className="text-xs text-blue-700">Improvement</div>
-            </div>
-            <div className="p-3 bg-purple-50 rounded border border-purple-200 text-center">
-              <div className="text-lg font-bold text-purple-600">
-                {getAllOptimizations()[0]?.tokensSaved || 0}
-              </div>
-              <div className="text-xs text-purple-700">Tokens Saved</div>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1">
-                User Query
-              </label>
-              <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
-                {getAllOptimizations()[0]?.userQuery || getAllOptimizations()[0]?.originalPrompt || 'No query available'}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1">
-                Generated Answer
-              </label>
-              <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: processFormattedText(getAllOptimizations()[0]?.generatedAnswer || getAllOptimizations()[0]?.optimizedPrompt || 'No answer generated')
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Advanced Optimization Form */}
-      {showForm && (
+    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="mb-8">
-          <OptimizationForm onClose={() => setShowForm(false)} />
-        </div>
-      )}
-
-      {/* Bulk Optimizer */}
-      <div className="mb-8">
-        <BulkOptimizer />
-      </div>
-
-      {/* No filter tabs needed - all answers are simply generated */}
-
-      {/* Optimizations List */}
-      <div className="space-y-4">
-        {getAllOptimizations()
-          .sort((a: any, b: any) => {
-            // Sort by createdAt date in descending order (most recent first)
-            const dateA = new Date(a.createdAt || a.updatedAt || 0);
-            const dateB = new Date(b.createdAt || b.updatedAt || 0);
-            return dateB.getTime() - dateA.getTime();
-          })
-          .map((optimization: any) => (
-            <OptimizationCard
-              key={optimization._id}
-              optimization={optimization}
-              onFeedback={handleFeedback}
-            />
-          ))}
-      </div>
-
-      {/* Pagination Controls */}
-      {optimizations?.pagination && optimizations.pagination.pages > 1 && (
-        <div className="flex items-center justify-between mt-8">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-700">
-              Showing {((optimizations.pagination.page - 1) * optimizations.pagination.limit) + 1} to{" "}
-              {Math.min(optimizations.pagination.page * optimizations.pagination.limit, optimizations.pagination.total)} of{" "}
-              {optimizations.pagination.total} results
-            </span>
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-3xl font-display font-bold gradient-text-primary">
+                AI Usage Optimization
+              </h1>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => navigate("/optimizations/wizard")}
+                  className="btn-secondary inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl"
+                >
+                  <AcademicCapIcon className="mr-2 w-5 h-5" />
+                  Cost Audit Wizard
+                </button>
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="btn-primary inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl"
+                >
+                  <PlusIcon className="mr-2 w-5 h-5" />
+                  Advanced Optimization
+                </button>
+              </div>
+            </div>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary">
+              AI-powered usage optimization to reduce costs while maintaining
+              quality
+            </p>
           </div>
+        </div>
 
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage <= 1}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: Math.min(5, optimizations.pagination.pages) }, (_, i) => {
-                const page = i + 1;
-                return (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page
-                      ? "bg-indigo-600 text-white"
-                      : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                      }`}
-                  >
-                    {page}
-                  </button>
-                );
-              })}
+        {/* Stats Cards */}
+        {calculatedStats && (
+          <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Total Saved</p>
+                  <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
+                    {formatCurrency(calculatedStats.totalSaved)}
+                  </p>
+                </div>
+                <ChartBarIcon className="w-12 h-12 text-success-600 dark:text-success-400 opacity-20" />
+              </div>
             </div>
 
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage >= optimizations.pagination.pages}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRightIcon className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                    Optimizations
+                  </p>
+                  <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                    {calculatedStats.total}
+                  </p>
+                </div>
+                <SparklesIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 opacity-20" />
+              </div>
+            </div>
 
-      {getAllOptimizations().length === 0 && (
-        <div className="py-12 text-center">
-          <SparklesIcon className="mx-auto w-12 h-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
-            No answer generations yet
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Use the Quick Optimize tool above to get started.
-          </p>
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Applied</p>
+                  <p className="text-2xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                    {calculatedStats.applied}
+                  </p>
+                </div>
+                <CheckCircleIcon className="w-12 h-12 text-secondary-600 dark:text-secondary-400 opacity-20" />
+              </div>
+            </div>
+
+            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                    Avg Improvement
+                  </p>
+                  <p className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
+                    {formatSmartNumber(calculatedStats.avgImprovement)}%
+                  </p>
+                </div>
+                <ArrowTrendingUpIcon className="w-12 h-12 text-accent-600 dark:text-accent-400 opacity-20" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Show stats even when no optimizations exist */}
+        {!calculatedStats && !optimizationsLoading && !summaryLoading && (
+          <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Saved</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {formatCurrency(0)}
+                  </p>
+                </div>
+                <ChartBarIcon className="w-12 h-12 text-green-600 opacity-20" />
+              </div>
+            </div>
+
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">
+                    Optimizations
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
+                </div>
+                <SparklesIcon className="w-12 h-12 text-indigo-600 opacity-20" />
+              </div>
+            </div>
+
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Applied</p>
+                  <p className="text-2xl font-bold text-blue-600">0</p>
+                </div>
+                <CheckCircleIcon className="w-12 h-12 text-blue-600 opacity-20" />
+              </div>
+            </div>
+
+            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">
+                    Avg Improvement
+                  </p>
+                  <p className="text-2xl font-bold text-purple-600">0.0%</p>
+                </div>
+                <ArrowTrendingUpIcon className="w-12 h-12 text-purple-600 opacity-20" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Optimize Section */}
+        <div className="mb-8">
+          <QuickOptimize />
         </div>
-      )}
+
+        {/* Latest Optimization Preview */}
+        {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
+          <div className="mb-8 p-6 bg-white rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Latest Optimization
+              </h3>
+              <span className="text-sm text-gray-500">
+                {new Date(
+                  getAllOptimizations()[0]?.createdAt ||
+                  getAllOptimizations()[0]?.updatedAt,
+                ).toLocaleDateString()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-4 gap-4 mb-4">
+              <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
+                <div className="text-lg font-bold text-green-600">
+                  ${formatSmartNumber(getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0)}
+                </div>
+                <div className="text-xs text-green-700">Savings</div>
+              </div>
+              <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
+                <div className="text-lg font-bold text-orange-600">
+                  ${formatSmartNumber(getAllOptimizations()[0]?.originalCost || 0)}
+                </div>
+                <div className="text-xs text-orange-700">Original Cost</div>
+              </div>
+              <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
+                <div className="text-lg font-bold text-blue-600">
+                  {formatSmartNumber(getAllOptimizations()[0]?.improvementPercentage || 0)}%
+                </div>
+                <div className="text-xs text-blue-700">Improvement</div>
+              </div>
+              <div className="p-3 bg-purple-50 rounded border border-purple-200 text-center">
+                <div className="text-lg font-bold text-purple-600">
+                  {getAllOptimizations()[0]?.tokensSaved || 0}
+                </div>
+                <div className="text-xs text-purple-700">Tokens Saved</div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  User Query
+                </label>
+                <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
+                  {getAllOptimizations()[0]?.userQuery || getAllOptimizations()[0]?.originalPrompt || 'No query available'}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Generated Answer
+                </label>
+                <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: processFormattedText(getAllOptimizations()[0]?.generatedAnswer || getAllOptimizations()[0]?.optimizedPrompt || 'No answer generated')
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Advanced Optimization Form */}
+        {showForm && (
+          <div className="mb-8">
+            <OptimizationForm onClose={() => setShowForm(false)} />
+          </div>
+        )}
+
+        {/* Bulk Optimizer */}
+        <div className="mb-8">
+          <BulkOptimizer />
+        </div>
+
+        {/* No filter tabs needed - all answers are simply generated */}
+
+        {/* Optimizations List */}
+        <div className="space-y-4">
+          {getAllOptimizations()
+            .sort((a: any, b: any) => {
+              // Sort by createdAt date in descending order (most recent first)
+              const dateA = new Date(a.createdAt || a.updatedAt || 0);
+              const dateB = new Date(b.createdAt || b.updatedAt || 0);
+              return dateB.getTime() - dateA.getTime();
+            })
+            .map((optimization: any) => (
+              <OptimizationCard
+                key={optimization._id}
+                optimization={optimization}
+                onFeedback={handleFeedback}
+              />
+            ))}
+        </div>
+
+        {/* Pagination Controls */}
+        {optimizations?.pagination && optimizations.pagination.pages > 1 && (
+          <div className="flex items-center justify-between mt-8">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-700">
+                Showing {((optimizations.pagination.page - 1) * optimizations.pagination.limit) + 1} to{" "}
+                {Math.min(optimizations.pagination.page * optimizations.pagination.limit, optimizations.pagination.total)} of{" "}
+                {optimizations.pagination.total} results
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1}
+                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: Math.min(5, optimizations.pagination.pages) }, (_, i) => {
+                  const page = i + 1;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page
+                        ? "bg-indigo-600 text-white"
+                        : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
+                        }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= optimizations.pagination.pages}
+                className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {getAllOptimizations().length === 0 && (
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 py-12 text-center">
+            <SparklesIcon className="mx-auto w-12 h-12 text-primary-400 dark:text-primary-500" />
+            <h3 className="mt-2 text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+              No answer generations yet
+            </h3>
+            <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              Use the Quick Optimize tool above to get started.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

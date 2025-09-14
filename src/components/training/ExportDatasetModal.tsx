@@ -111,45 +111,54 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
   if (!isOpen || !dataset) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Export Dataset
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Export "{dataset.name}" for fine-tuning (
-              {dataset.requestIds.length} requests)
-            </p>
+        <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+              <span className="text-white text-xl">📤</span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-display font-bold gradient-text-success">
+                Export Dataset
+              </h2>
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                Export "{dataset.name}" for fine-tuning (
+                {dataset.requestIds.length} requests)
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="btn-icon-secondary"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
           {!showPreview ? (
             <>
               {/* Format Selection */}
-              <div className="space-y-4 mb-6">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Select Export Format
-                </h3>
+              <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                    <span className="text-white text-sm">📝</span>
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-info">
+                    Select Export Format
+                  </h3>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {EXPORT_FORMATS.map((format) => (
                     <div
                       key={format.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                        selectedFormat === format.id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
+                      className={`glass border rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg ${selectedFormat === format.id
+                          ? "border-primary-300/50 shadow-lg glow-primary"
+                          : "border-accent-200/30 hover:border-accent-300/50"
+                        }`}
                       onClick={() => setSelectedFormat(format.id)}
                     >
                       <div className="flex items-center space-x-3">
@@ -159,19 +168,19 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
                           value={format.id}
                           checked={selectedFormat === format.id}
                           onChange={() => setSelectedFormat(format.id)}
-                          className="text-blue-600"
+                          className="radio"
                         />
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">
+                          <h4 className="font-display font-medium gradient-text-primary">
                             {format.name}
                           </h4>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                             {format.description}
                           </p>
                         </div>
                       </div>
 
-                      <div className="mt-3 p-2 bg-gray-100 rounded text-xs font-mono text-gray-700 overflow-x-auto">
+                      <div className="mt-3 p-3 glass rounded-lg text-xs font-mono text-light-text-primary dark:text-dark-text-primary overflow-x-auto border border-secondary-200/30">
                         {format.example}
                       </div>
                     </div>

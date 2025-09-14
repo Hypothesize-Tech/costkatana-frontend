@@ -100,24 +100,24 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
 
   return (
     <Modal isOpen={true} onClose={onClose} title="" size="xl">
-      <div className="flex flex-col h-full max-h-[90vh] bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
-        <div className="flex justify-between items-start p-8 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-t-lg">
+        <div className="flex justify-between items-start p-8 border-b border-primary-200/30 glass rounded-t-xl">
           <div className="flex-1 min-w-0">
-            <div className="flex gap-3 items-center mb-3">
-              <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
-                <span className="text-white font-bold text-lg">
+            <div className="flex gap-4 items-center mb-4">
+              <div className="flex justify-center items-center w-16 h-16 bg-gradient-primary rounded-2xl glow-primary">
+                <span className="text-white font-display font-bold text-2xl">
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-4xl font-display font-bold gradient-text">
                   {project.name}
                 </h2>
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${project.isActive
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                  className={`glass px-4 py-2 rounded-full font-display font-semibold border ${project.isActive
+                    ? "border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300"
+                    : "border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300"
                     }`}
                 >
                   {project.isActive ? "Active" : "Inactive"}
@@ -204,14 +204,14 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <div className="flex border-b border-primary-200/30 bg-gradient-primary/5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-8 py-4 text-sm font-medium transition-all ${activeTab === tab.id
-                  ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className={`flex items-center gap-2 px-8 py-4 font-display font-medium transition-all duration-200 ${activeTab === tab.id
+                ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
+                : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
                 }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -221,57 +221,57 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 p-8">
+        <div className="overflow-y-auto flex-1 p-8 bg-gradient-primary/5">
           {activeTab === "overview" && (
             <div className="space-y-8">
               {/* Key Metrics */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 dark:from-blue-900/20 dark:to-blue-800/20 dark:border-blue-700">
-                  <div className="flex gap-3 items-center text-blue-800 dark:text-blue-200">
-                    <div className="p-2 bg-blue-200 rounded-lg dark:bg-blue-800">
-                      <FiDollarSign className="w-5 h-5" />
+                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                  <div className="flex gap-3 items-center mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                      <FiDollarSign className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-sm font-medium">Total Budget</span>
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Total Budget</span>
                   </div>
-                  <p className="mt-3 text-3xl font-bold text-blue-900 dark:text-blue-100">
+                  <p className="text-3xl font-display font-bold gradient-text mb-2">
                     {formatCurrency(project.budget?.amount || 0)}
                   </p>
-                  <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                     {project.budget?.period || "monthly"}
                   </p>
                 </div>
 
-                <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 dark:from-green-900/20 dark:to-green-800/20 dark:border-green-700">
-                  <div className="flex gap-3 items-center text-green-800 dark:text-green-200">
-                    <div className="p-2 bg-green-200 rounded-lg dark:bg-green-800">
-                      <FiTrendingUp className="w-5 h-5" />
+                <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                  <div className="flex gap-3 items-center mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                      <FiTrendingUp className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-sm font-medium">Spent</span>
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Spent</span>
                   </div>
-                  <p className="mt-3 text-3xl font-bold text-green-900 dark:text-green-100">
+                  <p className="text-3xl font-display font-bold gradient-text-success mb-2">
                     {formatCurrency(project.spending?.current || 0)}
                   </p>
-                  <p className="mt-2 text-sm text-green-700 dark:text-green-300">
+                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                     {project.budget?.amount > 0
                       ? `${Math.round(percentage)}% used`
                       : "0% used"}
                   </p>
                 </div>
 
-                <div className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200 dark:from-purple-900/20 dark:to-purple-800/20 dark:border-purple-700">
-                  <div className="flex gap-3 items-center text-purple-800 dark:text-purple-200">
-                    <div className="p-2 bg-purple-200 rounded-lg dark:bg-purple-800">
-                      <FiTarget className="w-5 h-5" />
+                <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                  <div className="flex gap-3 items-center mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                      <FiTarget className="w-6 h-6 text-white" />
                     </div>
-                    <span className="text-sm font-medium">Remaining</span>
+                    <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Remaining</span>
                   </div>
-                  <p className="mt-3 text-3xl font-bold text-purple-900 dark:text-purple-100">
+                  <p className="text-3xl font-display font-bold gradient-text-secondary mb-2">
                     {formatCurrency(
                       (project.budget?.amount || 0) -
                       (project.spending?.current || 0),
                     )}
                   </p>
-                  <p className="mt-2 text-sm text-purple-700 dark:text-purple-300">
+                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                     Available budget
                   </p>
                 </div>
@@ -294,10 +294,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   <div className="w-full h-4 bg-gray-200 rounded-full dark:bg-gray-700 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${percentage >= 90
-                          ? "bg-red-500"
-                          : percentage >= 75
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
+                        ? "bg-red-500"
+                        : percentage >= 75
+                          ? "bg-yellow-500"
+                          : "bg-green-500"
                         }`}
                       style={{
                         width: `${Math.min(percentage, 100)}%`,
@@ -359,8 +359,8 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                       </div>
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${member.role === "admin"
-                            ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                           }`}
                       >
                         {member.role}
@@ -469,10 +469,10 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   <div className="w-full h-3 bg-gray-200 rounded-full dark:bg-gray-700">
                     <div
                       className={`h-2 rounded-full transition-all duration-300 ${percentage >= 90
-                          ? "bg-red-500"
-                          : percentage >= 75
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
+                        ? "bg-red-500"
+                        : percentage >= 75
+                          ? "bg-yellow-500"
+                          : "bg-green-500"
                         }`}
                       style={{
                         width: `${Math.min(percentage, 100)}%`,
@@ -506,8 +506,8 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                       </span>
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.costOptimization?.enabled
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                           }`}
                       >
                         {project.settings?.costOptimization?.enabled
@@ -538,8 +538,8 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                       </span>
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.notifications?.budgetAlerts
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                           }`}
                       >
                         {project.settings?.notifications?.budgetAlerts
@@ -553,8 +553,8 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                       </span>
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${project.settings?.notifications?.usageReports
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                           }`}
                       >
                         {project.settings?.notifications?.usageReports
@@ -573,8 +573,8 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   <div className="flex gap-3 items-center">
                     <span
                       className={`px-3 py-1 text-sm font-medium rounded-full ${project.isActive
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                         }`}
                     >
                       {project.isActive ? "Active" : "Inactive"}

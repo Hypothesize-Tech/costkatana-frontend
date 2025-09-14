@@ -45,35 +45,41 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start space-x-3">
-          <div className="text-2xl">
-            {providerIcons[providerKey.provider] || '🔑'}
+    <div className="card card-hover p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <span className="text-white text-xl">
+              {providerIcons[providerKey.provider] || '🔑'}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium text-gray-900 truncate">
+            <h3 className="text-lg font-display font-bold gradient-text truncate mb-1">
               {providerKey.name}
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               {providerNames[providerKey.provider] || providerKey.provider}
             </p>
             {providerKey.description && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="font-body text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
                 {providerKey.description}
               </p>
             )}
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {providerKey.isActive ? (
-            <CheckCircleIcon className="h-5 w-5 text-green-500" title="Active" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success" title="Active">
+              <CheckCircleIcon className="h-4 w-4 text-white" />
+            </div>
           ) : (
-            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" title="Inactive" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning" title="Inactive">
+              <ExclamationTriangleIcon className="h-4 w-4 text-white" />
+            </div>
           )}
           <button
             onClick={onDelete}
-            className="text-gray-400 hover:text-red-500 transition-colors"
+            className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             title="Delete provider key"
           >
             <TrashIcon className="h-4 w-4" />
@@ -81,43 +87,56 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
         </div>
       </div>
 
-      <div className="mt-4 space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-500">API Key:</span>
-          <code className="bg-gray-100 px-2 py-1 rounded text-gray-700 font-mono">
-            {providerKey.maskedKey}
-          </code>
+      <div className="space-y-3">
+        <div className="glass p-3 rounded-xl border border-primary-200/30">
+          <div className="flex items-center justify-between">
+            <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">API Key:</span>
+            <code className="bg-primary-100/50 dark:bg-primary-900/50 px-3 py-1 rounded-lg font-mono text-sm gradient-text">
+              {providerKey.maskedKey}
+            </code>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-500">Created:</span>
-          <span className="text-gray-700">
-            {formatDate(providerKey.createdAt)}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-500">Last Used:</span>
-          <div className="flex items-center space-x-1">
-            <ClockIcon className="h-3 w-3 text-gray-400" />
-            <span className="text-gray-700">
-              {formatDate(providerKey.lastUsed)}
+        <div className="glass p-3 rounded-xl border border-primary-200/30">
+          <div className="flex items-center justify-between">
+            <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Created:</span>
+            <span className="font-display font-semibold gradient-text text-sm">
+              {formatDate(providerKey.createdAt)}
             </span>
+          </div>
+        </div>
+
+        <div className="glass p-3 rounded-xl border border-primary-200/30">
+          <div className="flex items-center justify-between">
+            <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Last Used:</span>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-gradient-accent flex items-center justify-center">
+                <ClockIcon className="h-2 w-2 text-white" />
+              </div>
+              <span className="font-display font-semibold gradient-text text-sm">
+                {formatDate(providerKey.lastUsed)}
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-gray-100">
+      <div className="mt-6 pt-4 border-t border-primary-200/30">
         <div className="flex items-center justify-between">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${providerKey.isActive
-            ? 'bg-green-100 text-green-800'
-            : 'bg-yellow-100 text-yellow-800'
+          <span className={`inline-flex items-center px-3 py-1 rounded-full font-display font-semibold text-sm ${providerKey.isActive
+            ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
+            : 'bg-gradient-warning/20 text-warning-700 dark:text-warning-300'
             }`}>
-            {providerKey.isActive ? 'Active' : 'Inactive'}
+            {providerKey.isActive ? '✅ Active' : '⚠️ Inactive'}
           </span>
-          <span className="text-xs text-gray-500">
-            Master Key
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center">
+              <span className="text-white text-xs">🔐</span>
+            </div>
+            <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              Master Key
+            </span>
+          </div>
         </div>
       </div>
     </div>

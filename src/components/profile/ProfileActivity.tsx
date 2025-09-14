@@ -25,9 +25,9 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
     switch (type) {
       case "usage":
         return (
-          <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-primary rounded-xl glow-primary">
             <svg
-              className="w-5 h-5 text-blue-600"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -43,9 +43,9 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "optimization":
         return (
-          <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-success rounded-xl glow-success">
             <svg
-              className="w-5 h-5 text-green-600"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -61,9 +61,9 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "settings":
         return (
-          <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-secondary rounded-xl glow-secondary">
             <svg
-              className="w-5 h-5 text-purple-600"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -85,9 +85,9 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "api_key":
         return (
-          <div className="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-full">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-warning rounded-xl glow-warning">
             <svg
-              className="w-5 h-5 text-yellow-600"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -103,9 +103,9 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "login":
         return (
-          <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-accent rounded-xl glow-accent">
             <svg
-              className="w-5 h-5 text-gray-600"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -124,14 +124,14 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
 
   if (loading) {
     return (
-      <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-        <div className="space-y-4 animate-pulse">
+      <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+        <div className="space-y-6 animate-pulse">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="flex-1 space-y-2">
-                <div className="w-3/4 h-4 bg-gray-200 rounded"></div>
-                <div className="w-1/2 h-3 bg-gray-200 rounded"></div>
+            <div key={i} className="flex items-start space-x-6">
+              <div className="w-12 h-12 bg-gradient-primary/20 rounded-xl"></div>
+              <div className="flex-1 space-y-3">
+                <div className="w-3/4 h-4 bg-gradient-primary/20 rounded-lg"></div>
+                <div className="w-1/2 h-3 bg-gradient-primary/10 rounded-lg"></div>
               </div>
             </div>
           ))}
@@ -141,17 +141,22 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-      <div className="p-6">
-        <h2 className="mb-6 text-lg font-semibold text-gray-900">
-          Recent Activity
-        </h2>
+    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30">
+      <div className="p-8">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <span className="text-white text-lg">📈</span>
+          </div>
+          <h2 className="text-2xl font-display font-bold gradient-text">
+            Recent Activity
+          </h2>
+        </div>
 
         {activities.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <div className="py-16 text-center">
+            <div className="mx-auto w-20 h-20 bg-gradient-primary/20 rounded-2xl flex items-center justify-center mb-6">
               <svg
-                className="w-8 h-8 text-gray-400"
+                className="w-10 h-10 text-primary-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -164,8 +169,8 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
                 />
               </svg>
             </div>
-            <p className="text-gray-500">No recent activity</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <h3 className="font-display font-semibold gradient-text text-lg mb-2">No recent activity</h3>
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Your activity will appear here
             </p>
           </div>
@@ -174,38 +179,42 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
             {activities.map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-start space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors"
+                className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-[1.01]"
               >
-                {getActivityIcon(activity.type)}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-sm font-medium text-gray-900 truncate">
-                      {activity.action}
-                    </h3>
-                    <span className="text-xs text-gray-400 ml-2 flex-shrink-0">
-                      {formatRelativeTime(activity.timestamp)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 line-clamp-2">
-                    {activity.description}
-                  </p>
-                  {activity.metadata && (
-                    <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
-                      {activity.metadata.cost && (
-                        <span>Cost: ${activity.metadata.cost.toFixed(4)}</span>
-                      )}
-                      {activity.metadata.tokens && (
-                        <span>
-                          Tokens: {activity.metadata.tokens.toLocaleString()}
-                        </span>
-                      )}
-                      {activity.metadata.service && (
-                        <span className="px-2 py-1 bg-gray-100 rounded-full">
-                          {activity.metadata.service}
-                        </span>
-                      )}
+                <div className="flex items-start space-x-6">
+                  {getActivityIcon(activity.type)}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-display font-semibold gradient-text truncate">
+                        {activity.action}
+                      </h3>
+                      <span className="glass rounded-lg px-3 py-1 border border-primary-200/30 font-body text-light-text-secondary dark:text-dark-text-secondary text-xs ml-4 flex-shrink-0">
+                        {formatRelativeTime(activity.timestamp)}
+                      </span>
                     </div>
-                  )}
+                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-4 line-clamp-2">
+                      {activity.description}
+                    </p>
+                    {activity.metadata && (
+                      <div className="flex items-center flex-wrap gap-3">
+                        {activity.metadata.cost && (
+                          <span className="glass rounded-lg px-3 py-1 border border-success-200/30 font-body text-light-text-primary dark:text-dark-text-primary text-xs">
+                            Cost: ${activity.metadata.cost.toFixed(4)}
+                          </span>
+                        )}
+                        {activity.metadata.tokens && (
+                          <span className="glass rounded-lg px-3 py-1 border border-primary-200/30 font-body text-light-text-primary dark:text-dark-text-primary text-xs">
+                            Tokens: {activity.metadata.tokens.toLocaleString()}
+                          </span>
+                        )}
+                        {activity.metadata.service && (
+                          <span className="px-3 py-1 bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border border-accent-200/30 rounded-lg font-display font-medium text-xs">
+                            {activity.metadata.service}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

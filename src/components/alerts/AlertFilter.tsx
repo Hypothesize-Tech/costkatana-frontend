@@ -18,21 +18,23 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
   onReset,
 }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-      <div className="flex items-center mb-4">
-        <FunnelIcon className="h-5 w-5 text-gray-400 mr-2" />
-        <h3 className="text-sm font-medium text-gray-900">Filters</h3>
+    <div className="card card-gradient p-6 shadow-lg backdrop-blur-xl">
+      <div className="flex items-center mb-6">
+        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+          <FunnelIcon className="h-5 w-5 text-white" />
+        </div>
+        <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Filters</h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="label mb-2">
             Type
           </label>
           <select
             value={filters.type}
             onChange={(e) => onFilterChange("type", e.target.value)}
-            className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="input"
           >
             <option value="">All Types</option>
             <option value="cost_alert">Cost Alert</option>
@@ -46,13 +48,13 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="label mb-2">
             Severity
           </label>
           <select
             value={filters.severity}
             onChange={(e) => onFilterChange("severity", e.target.value)}
-            className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="input"
           >
             <option value="">All Severities</option>
             <option value="critical">Critical</option>
@@ -63,13 +65,13 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="label mb-2">
             Status
           </label>
           <select
             value={filters.read}
             onChange={(e) => onFilterChange("read", e.target.value)}
-            className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="input"
           >
             <option value="">All</option>
             <option value="unread">Unread</option>
@@ -78,10 +80,10 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
       </div>
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-6 flex justify-end">
         <button
           onClick={onReset}
-          className="text-sm text-gray-600 hover:text-gray-900"
+          className="btn-ghost text-sm font-display font-medium"
         >
           Reset filters
         </button>

@@ -98,19 +98,19 @@ export const TrackingConfiguration: React.FC = () => {
 
     return (
         <div className="fixed bottom-4 right-4 z-50">
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-w-sm">
+            <div className="card card-gradient shadow-2xl backdrop-blur-xl border border-primary-200/30 max-w-sm animate-slide-up">
                 {/* Header */}
-                <div className="p-4 border-b border-gray-200">
+                <div className="p-4 border-b border-primary-200/30">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <div className={`w-3 h-3 rounded-full ${isTrackingEnabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                            <h3 className="text-sm font-semibold text-gray-900">
+                        <div className="flex items-center space-x-3">
+                            <div className={`w-4 h-4 rounded-full shadow-lg ${isTrackingEnabled ? 'bg-gradient-success animate-pulse' : 'bg-gradient-danger'}`}></div>
+                            <h3 className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                                 Analytics Tracking
                             </h3>
                         </div>
                         <button
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="w-8 h-8 rounded-lg glass hover:bg-primary-500/20 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110 flex items-center justify-center"
                         >
                             {isExpanded ? '−' : '+'}
                         </button>
@@ -119,85 +119,87 @@ export const TrackingConfiguration: React.FC = () => {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                    <div className="p-4 space-y-4">
+                    <div className="p-4 space-y-4 animate-fade-in">
                         {/* Status */}
-                        <div className="text-xs text-gray-600">
-                            <p>Status: {isTrackingEnabled ? 'Active' : 'Disabled'}</p>
-                            <p>Session: {sessionId}</p>
-                            <p>Duration: {sessionDuration}s</p>
+                        <div className="p-3 rounded-xl glass border border-primary-200/20">
+                            <div className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary space-y-1">
+                                <p>Status: <span className={`font-bold ${isTrackingEnabled ? 'gradient-text-success' : 'text-danger-500'}`}>{isTrackingEnabled ? 'Active' : 'Disabled'}</span></p>
+                                <p>Session: <span className="font-mono text-primary-600 dark:text-primary-400">{sessionId}</span></p>
+                                <p>Duration: <span className="gradient-text">{sessionDuration}s</span></p>
+                            </div>
                         </div>
 
                         {/* Tracking Stats */}
-                        <div className="space-y-2">
-                            <h4 className="text-xs font-semibold text-gray-700">Session Stats</h4>
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-display font-bold text-light-text-primary dark:text-dark-text-primary">Session Stats</h4>
                             <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.totalClicks}</div>
-                                    <div className="text-gray-500">Total Clicks</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.totalClicks}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Total Clicks</div>
                                 </div>
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.buttonClicks}</div>
-                                    <div className="text-gray-500">Button Clicks</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.buttonClicks}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Button Clicks</div>
                                 </div>
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.linkClicks}</div>
-                                    <div className="text-gray-500">Link Clicks</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.linkClicks}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Link Clicks</div>
                                 </div>
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.formSubmissions}</div>
-                                    <div className="text-gray-500">Form Submissions</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.formSubmissions}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Form Submissions</div>
                                 </div>
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.pageViews}</div>
-                                    <div className="text-gray-500">Page Views</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.pageViews}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Page Views</div>
                                 </div>
-                                <div className="bg-gray-50 p-2 rounded">
-                                    <div className="font-medium">{trackingStats.scrollEvents}</div>
-                                    <div className="text-gray-500">Scroll Events</div>
+                                <div className="glass p-3 rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-colors duration-200">
+                                    <div className="font-display font-bold gradient-text">{trackingStats.scrollEvents}</div>
+                                    <div className="text-light-text-muted dark:text-dark-text-muted">Scroll Events</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* What's Being Tracked */}
-                        <div className="space-y-2">
-                            <h4 className="text-xs font-semibold text-gray-700">What's Tracked</h4>
-                            <div className="text-xs text-gray-600 space-y-1">
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-display font-bold text-light-text-primary dark:text-dark-text-primary">What's Tracked</h4>
+                            <div className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary space-y-2">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-gradient-primary rounded-full shadow-lg"></div>
                                     <span>Button clicks and interactions</span>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-gradient-success rounded-full shadow-lg"></div>
                                     <span>Link clicks and navigation</span>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-full shadow-lg"></div>
                                     <span>Form submissions</span>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-gradient-accent rounded-full shadow-lg"></div>
                                     <span>Page views and scroll depth</span>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-gradient-danger rounded-full shadow-lg"></div>
                                     <span>Element positions and viewport</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Privacy Notice */}
-                        <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                            <p className="font-medium mb-1">Privacy Notice</p>
-                            <p>We track interactions to improve user experience. No personal data is collected. You can disable tracking at any time.</p>
+                        <div className="text-xs glass p-3 rounded-xl border border-primary-200/20">
+                            <p className="font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">🔒 Privacy Notice</p>
+                            <p className="text-light-text-secondary dark:text-dark-text-secondary">We track interactions to improve user experience. No personal data is collected. You can disable tracking at any time.</p>
                         </div>
 
                         {/* Actions */}
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <button
                                 onClick={handleToggleTracking}
-                                className={`w-full px-3 py-2 text-xs rounded ${isTrackingEnabled
-                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                className={`w-full px-4 py-2 text-xs font-display font-semibold rounded-xl transition-all duration-300 hover:scale-105 ${isTrackingEnabled
+                                    ? 'bg-gradient-danger text-white shadow-lg hover:shadow-xl'
+                                    : 'bg-gradient-success text-white shadow-lg hover:shadow-xl'
                                     }`}
                             >
                                 {isTrackingEnabled ? 'Disable Tracking' : 'Enable Tracking'}
@@ -205,7 +207,7 @@ export const TrackingConfiguration: React.FC = () => {
 
                             <button
                                 onClick={handleExportTrackingData}
-                                className="w-full px-3 py-2 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                                className="w-full px-4 py-2 text-xs font-display font-semibold bg-gradient-primary text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                             >
                                 Export Session Data
                             </button>

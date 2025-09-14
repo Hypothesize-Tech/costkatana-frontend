@@ -144,26 +144,26 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
     const getPriorityColor = (priority: string) => {
         switch (priority) {
             case 'high':
-                return 'border-red-200 bg-red-50';
+                return 'border-l-4 border-danger-500 glass backdrop-blur-xl';
             case 'medium':
-                return 'border-yellow-200 bg-yellow-50';
+                return 'border-l-4 border-accent-500 glass backdrop-blur-xl';
             case 'low':
-                return 'border-blue-200 bg-blue-50';
+                return 'border-l-4 border-success-500 glass backdrop-blur-xl';
             default:
-                return 'border-gray-200 bg-gray-50';
+                return 'border-l-4 border-primary-200/30 glass backdrop-blur-xl';
         }
     };
 
     const getPriorityIconColor = (priority: string) => {
         switch (priority) {
             case 'high':
-                return 'text-red-500';
+                return 'text-danger-500';
             case 'medium':
-                return 'text-yellow-500';
+                return 'text-accent-500';
             case 'low':
-                return 'text-blue-500';
+                return 'text-success-500';
             default:
-                return 'text-gray-500';
+                return 'text-primary-500';
         }
     };
 
@@ -174,25 +174,27 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
 
     return (
         <>
-            <div className={`space-y-3 ${className}`} id="cost-opportunities">
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4 mb-4">
+            <div className={`space-y-6 ${className}`} id="cost-opportunities">
+                <div className="card p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <ExclamationTriangleIcon className="h-6 w-6 text-orange-600 mr-3" />
+                            <div className="bg-gradient-danger p-3 rounded-xl glow-danger shadow-lg mr-4">
+                                <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+                            </div>
                             <div>
-                                <h3 className="text-lg font-semibold text-orange-900">
+                                <h3 className="text-xl font-display font-bold gradient-text">
                                     🚨 High-Cost Optimization Opportunities
                                 </h3>
-                                <p className="text-sm text-orange-700 mt-1">
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                     We found {suggestions.length} expensive requests that could save you money
                                 </p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-2xl font-bold text-orange-600">
+                        <div className="text-center">
+                            <div className="text-4xl font-display font-bold gradient-text">
                                 {suggestions.length}
                             </div>
-                            <div className="text-xs text-orange-600">Opportunities</div>
+                            <div className="text-sm font-display font-semibold text-danger-500">Opportunities</div>
                         </div>
                     </div>
                 </div>
@@ -200,54 +202,61 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                 {suggestions.map((suggestion) => (
                     <div
                         key={suggestion.usage._id}
-                        className={`border rounded-lg p-4 ${getPriorityColor(suggestion.priority)} transition-all hover:shadow-md`}
+                        className={`card p-6 shadow-lg ${getPriorityColor(suggestion.priority)} hover:scale-105 transition-all duration-300 animate-fade-in`}
                     >
                         <div className="flex items-start justify-between">
                             <div className="flex-1">
-                                <div className="flex items-center mb-2">
+                                <div className="flex items-center mb-3">
                                     <ExclamationTriangleIcon
-                                        className={`h-4 w-4 mr-2 ${getPriorityIconColor(suggestion.priority)}`}
+                                        className={`h-5 w-5 mr-3 ${getPriorityIconColor(suggestion.priority)}`}
                                     />
-                                    <span className="text-sm font-medium text-gray-900 capitalize">
+                                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
                                         {suggestion.priority} Priority
                                     </span>
-                                    <span className="ml-2 text-xs text-gray-500">
+                                    <span className="ml-3 px-2 py-1 bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded-lg text-xs font-display font-medium border border-primary-200/30">
                                         {suggestion.usage.model}
                                     </span>
                                 </div>
 
-                                <p className="text-sm text-gray-700 mb-2">
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 leading-relaxed">
                                     {suggestion.reason}
                                 </p>
 
-                                <div className="flex items-center space-x-4 text-xs text-gray-600 mb-3">
-                                    <div className="flex items-center">
-                                        <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                                        {formatCurrency(suggestion.usage.cost)}
+                                <div className="flex items-center space-x-6 text-sm mb-4">
+                                    <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
+                                        <CurrencyDollarIcon className="h-4 w-4 mr-2 text-success-500" />
+                                        <span className="font-display font-semibold gradient-text">
+                                            {formatCurrency(suggestion.usage.cost)}
+                                        </span>
                                     </div>
-                                    <div className="flex items-center">
-                                        <ChartBarIcon className="h-3 w-3 mr-1" />
-                                        {suggestion.usage.totalTokens.toLocaleString()} tokens
+                                    <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
+                                        <ChartBarIcon className="h-4 w-4 mr-2 text-primary-500" />
+                                        <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                            {suggestion.usage.totalTokens.toLocaleString()}
+                                        </span>
+                                        <span className="text-xs text-light-text-muted dark:text-dark-text-muted ml-1">tokens</span>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium text-green-600">
-                                        💰 {suggestion.potentialSavings}
-                                    </span>
-                                    <div className="flex space-x-2">
+                                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-gradient-success/10">
+                                        <span className="text-sm font-display font-bold text-success-600 dark:text-success-400">
+                                            💰 {suggestion.potentialSavings}
+                                        </span>
+                                    </div>
+                                    <div className="flex space-x-3">
                                         <button
                                             onClick={() => onSimulate(suggestion.usage)}
-                                            className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                            className="btn-primary text-sm font-display font-semibold hover:scale-105 transition-all duration-300"
                                         >
-                                            <BeakerIcon className="h-3 w-3 mr-1" />
+                                            <BeakerIcon className="h-4 w-4 mr-2" />
                                             Simulate
                                         </button>
                                         <button
                                             onClick={() => handleDismiss(suggestion.usage._id)}
-                                            className="inline-flex items-center px-2 py-1 text-xs text-gray-500 hover:text-gray-700"
+                                            className="p-2 rounded-xl text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
                                         >
-                                            <XMarkIcon className="h-3 w-3" />
+                                            <XMarkIcon className="h-4 w-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -257,10 +266,12 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                 ))}
 
                 {suggestions.length > 0 && (
-                    <div className="text-center pt-2">
-                        <p className="text-xs text-gray-500">
-                            💡 Tip: Run simulations to see exact savings potential for your specific use case
-                        </p>
+                    <div className="text-center pt-4">
+                        <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5">
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                💡 <span className="font-display font-semibold">Tip:</span> Run simulations to see exact savings potential for your specific use case
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>
@@ -270,14 +281,14 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                 <div className="fixed bottom-6 right-6 z-50">
                     <button
                         onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="flex items-center px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                        className="flex items-center px-6 py-4 bg-gradient-primary text-white rounded-2xl shadow-2xl glow-primary hover:scale-110 transition-all duration-300 backdrop-blur-xl"
                         title="View cost optimization opportunities"
                     >
-                        <SparklesIcon className="h-5 w-5 mr-2" />
-                        <span className="font-medium">
+                        <SparklesIcon className="h-6 w-6 mr-3" />
+                        <span className="font-display font-bold text-lg">
                             {suggestions.length} Savings
                         </span>
-                        <div className="ml-2 px-2 py-1 bg-white bg-opacity-20 rounded-full text-xs">
+                        <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl text-sm font-display font-semibold animate-pulse">
                             {highPriorityCount > 0 ? '🚨' : '💰'}
                         </div>
                     </button>

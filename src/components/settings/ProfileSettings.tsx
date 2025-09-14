@@ -46,17 +46,24 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
   if (!profile) return <LoadingSpinner />;
 
   return (
-    <div>
-      <h2 className="text-lg font-medium text-gray-900 mb-6">
-        Profile Information
-      </h2>
+    <div className="space-y-8">
+      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+            <span className="text-white text-lg">👤</span>
+          </div>
+          <h2 className="text-xl font-display font-bold gradient-text">
+            Profile Information
+          </h2>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+      <form onSubmit={handleSubmit} className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-display font-medium gradient-text mb-2"
             >
               Full Name
             </label>
@@ -66,14 +73,14 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
               disabled={!isEditing}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50"
+              className={`input ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
             />
           </div>
 
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-display font-medium gradient-text mb-2"
             >
               Email Address
             </label>
@@ -82,9 +89,9 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               id="email"
               value={formData.email}
               disabled
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 sm:text-sm"
+              className="input opacity-60 cursor-not-allowed"
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
               Email cannot be changed
             </p>
           </div>
@@ -92,7 +99,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           <div>
             <label
               htmlFor="company"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-display font-medium gradient-text mb-2"
             >
               Company
             </label>
@@ -102,14 +109,14 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               value={formData.company}
               onChange={(e) => handleChange("company", e.target.value)}
               disabled={!isEditing}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50"
+              className={`input ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
             />
           </div>
 
           <div>
             <label
               htmlFor="role"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-display font-medium gradient-text mb-2"
             >
               Role
             </label>
@@ -119,14 +126,14 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               value={formData.role}
               onChange={(e) => handleChange("role", e.target.value)}
               disabled={!isEditing}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50"
+              className={`input ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
             />
           </div>
 
           <div>
             <label
               htmlFor="timezone"
-              className="block text-sm font-medium text-gray-700"
+              className="block font-display font-medium gradient-text mb-2"
             >
               Timezone
             </label>
@@ -135,7 +142,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               value={formData.timezone}
               onChange={(e) => handleChange("timezone", e.target.value)}
               disabled={!isEditing}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50"
+              className={`input ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <option value="UTC">UTC</option>
               <option value="America/New_York">Eastern Time</option>
@@ -151,48 +158,52 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </div>
         </div>
 
-        <div className="pt-5">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">
-            Account Information
-          </h3>
-          <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">
+        <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+              <span className="text-white text-sm">📊</span>
+            </div>
+            <h3 className="font-display font-semibold gradient-text text-lg">
+              Account Information
+            </h3>
+          </div>
+          <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <dt className="font-display font-medium gradient-text mb-2">
                 Account Created
               </dt>
-              <dd className="mt-1 text-sm text-gray-900">
+              <dd className="font-body text-light-text-primary dark:text-dark-text-primary">
                 {new Date(profile.createdAt).toLocaleDateString()}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <dt className="font-display font-medium gradient-text mb-2">
                 Subscription Status
               </dt>
-              <dd className="mt-1 text-sm text-gray-900">
+              <dd>
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    profile.subscription?.status === "active"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
+                  className={`glass px-3 py-1 rounded-full font-display font-semibold border ${profile.subscription?.status === "active"
+                      ? "border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300"
+                      : "border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300"
+                    }`}
                 >
                   {profile.subscription?.status || "Free"}
                 </span>
               </dd>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <dt className="font-display font-medium gradient-text mb-2">
                 Monthly Usage
               </dt>
-              <dd className="mt-1 text-sm text-gray-900">
+              <dd className="font-display font-semibold gradient-text-success">
                 ${profile.usage?.currentMonth.totalCost.toFixed(2) || "0.00"}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">
+            <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <dt className="font-display font-medium gradient-text mb-2">
                 Total Optimizations
               </dt>
-              <dd className="mt-1 text-sm text-gray-900">
+              <dd className="font-display font-semibold gradient-text-secondary">
                 {profile.usage?.currentMonth.optimizationsSaved.toFixed(2) ||
                   "0.00"}
               </dd>
@@ -200,19 +211,19 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </dl>
         </div>
 
-        <div className="flex justify-end space-x-3">
+        <div className="flex justify-end gap-3 pt-6 border-t border-primary-200/30">
           {isEditing ? (
             <>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-primary"
               >
                 Save Changes
               </button>
@@ -221,7 +232,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="btn-primary"
             >
               Edit Profile
             </button>

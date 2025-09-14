@@ -136,13 +136,13 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
         <div className="text-center">
           <LoadingSpinner />
-          <h2 className="mt-4 text-xl font-semibold text-gray-900">
+          <h2 className="mt-4 text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
             Connecting to Cost Katana...
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-light-text-secondary dark:text-dark-text-secondary">
             Please wait while we set up your account
           </p>
         </div>
@@ -152,17 +152,17 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "expired") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
         <div className="text-center max-w-md mx-auto p-6">
           <div className="text-6xl mb-4">⏰</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
             Magic Link Expired
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
             This magic link has expired. Please generate a new one from ChatGPT.
           </p>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-4">
+            <p className="text-sm text-primary-800 dark:text-primary-200">
               <strong>How to get a new link:</strong>
               <br />
               Go back to ChatGPT and ask to "connect to Cost Katana" again.
@@ -175,20 +175,20 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
         <div className="text-center max-w-md mx-auto p-6">
           <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
             Connection Failed
           </h2>
-          <p className="text-gray-600 mb-2">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-2">
             We couldn't process your magic link.
           </p>
           {errorMessage && (
-            <p className="text-sm text-red-600 mb-6">Error: {errorMessage}</p>
+            <p className="text-sm text-error-600 dark:text-error-400 mb-6">Error: {errorMessage}</p>
           )}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-4">
+            <p className="text-sm text-primary-800 dark:text-primary-200">
               <strong>Try again:</strong>
               <br />
               Go back to ChatGPT and generate a new magic link.

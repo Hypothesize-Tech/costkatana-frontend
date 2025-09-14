@@ -75,24 +75,24 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-sm">
-            <div className="p-6 border-b">
-                <h3 className="text-lg font-semibold">Recent Deliveries</h3>
-                <p className="text-sm text-gray-600 mt-1">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+            <div className="p-6 border-b border-accent-200/30">
+                <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Recent Deliveries</h3>
+                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                     Showing the last {deliveries.length} webhook deliveries
                 </p>
             </div>
 
-            <div className="divide-y">
+            <div className="divide-y divide-accent-200/30">
                 {deliveries.length === 0 ? (
-                    <div className="p-8 text-center text-gray-600">
+                    <div className="p-8 text-center text-light-text-secondary dark:text-dark-text-secondary">
                         No deliveries yet. Send a test webhook to get started.
                     </div>
                 ) : (
                     deliveries.map((delivery) => (
                         <div
                             key={delivery.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${selectedDelivery?.id === delivery.id ? 'bg-blue-50' : ''
+                            className={`p-4 hover:bg-light-bg-100/30 dark:hover:bg-dark-bg-100/30 cursor-pointer transition-all duration-300 ${selectedDelivery?.id === delivery.id ? 'bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30' : ''
                                 }`}
                             onClick={() => setSelectedDelivery(delivery)}
                         >
@@ -141,13 +141,13 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
 
             {/* Delivery Details Modal */}
             {selectedDelivery && detailedDelivery && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-                        <div className="p-6 border-b">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                        <div className="p-6 border-b border-accent-200/30">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="text-xl font-semibold">Delivery Details</h3>
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <h3 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">Delivery Details</h3>
+                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                         Event ID: {detailedDelivery.eventId}
                                     </p>
                                 </div>
@@ -156,7 +156,7 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
                                         setSelectedDelivery(null);
                                         setDetailedDelivery(null);
                                     }}
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-error-600 dark:hover:text-error-400 transition-colors duration-300"
                                 >
                                     <XCircle className="w-6 h-6" />
                                 </button>

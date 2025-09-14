@@ -23,14 +23,59 @@ const POPULAR_USE_CASES = [
 ];
 
 const POPULAR_MODELS = [
-  "gpt-3.5-turbo",
-  "gpt-4",
-  "claude-3-haiku",
-  "claude-3-sonnet",
-  "claude-3-opus",
-  "gemini-pro",
-  "llama-2-7b",
-  "llama-2-13b",
+  // GPT-5 Models (Latest)
+  "gpt-5",
+  "gpt-5-mini",
+  "gpt-5-nano",
+  "gpt-5-chat-latest",
+  // GPT-4.1 Series (Latest)
+  "gpt-4.1-2025-04-14",
+  "gpt-4.1-mini-2025-04-14",
+  "gpt-4.1-nano-2025-04-14",
+  "gpt-4.5-preview-2025-02-27",
+  // GPT-4o Series
+  "gpt-4o-2024-08-06",
+  "gpt-4o-audio-preview-2024-12-17",
+  "gpt-4o-realtime-preview-2025-06-03",
+  "gpt-4o-mini-2024-07-18",
+  "gpt-4o-mini-audio-preview-2024-12-17",
+  "gpt-4o-mini-realtime-preview-2024-12-17",
+  // Claude Models
+  "claude-3.5-sonnet-20241022",
+  "claude-3.5-haiku-20241022",
+  "claude-3-opus-20240229",
+  "claude-3-sonnet-20240229",
+  "claude-3-haiku-20240307",
+  // Gemini Models
+  "gemini-2.5-pro",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-pro",
+  "gemini-1.5-flash",
+  "gemini-1.0-pro",
+  // DeepSeek Models
+  "deepseek-chat",
+  "deepseek-chat-cached",
+  "deepseek-reasoner",
+  "deepseek-reasoner-cached",
+  // Mistral Models
+  "mistral-medium-2508",
+  "mistral-medium-latest",
+  "codestral-2508",
+  "codestral-latest",
+  "mistral-large-2411",
+  // Cohere Models
+  "command-r-plus-08-2024",
+  "command-r-08-2024",
+  "command-r7b-12-2024",
+  "command-light",
+  // Meta Llama Models
+  "llama-3.3-70b-instruct",
+  "llama-3.2-90b-text-preview",
+  "llama-3.2-11b-vision-instruct",
+  "llama-3.1-405b-instruct",
+  "llama-3.1-70b-instruct",
+  "llama-3.1-8b-instruct",
 ];
 
 export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
@@ -93,31 +138,41 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Create Training Dataset
-          </h2>
+        <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <span className="text-white text-xl">📊</span>
+            </div>
+            <h2 className="text-2xl font-display font-bold gradient-text-primary">
+              Create Training Dataset
+            </h2>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="btn-icon-secondary"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
           {/* Basic Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Basic Information
-            </h3>
+          <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                <span className="text-white text-sm">ℹ️</span>
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text-info">
+                Basic Information
+              </h3>
+            </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="form-label">
                 Dataset Name *
               </label>
               <input
@@ -125,13 +180,13 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="e.g., Support-Classifier-V1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="form-label">
                 Description
               </label>
               <textarea
@@ -141,13 +196,13 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                 }
                 placeholder="Describe what this dataset will be used for..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="form-label">
                   Target Use Case *
                 </label>
                 <select
@@ -155,7 +210,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                   onChange={(e) =>
                     handleInputChange("targetUseCase", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="select"
                   required
                 >
                   <option value="">Select use case...</option>
@@ -173,7 +228,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                   <input
                     type="text"
                     placeholder="Enter custom use case"
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input mt-3"
                     onChange={(e) =>
                       handleInputChange("targetUseCase", e.target.value)
                     }
@@ -182,7 +237,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="form-label">
                   Target Model *
                 </label>
                 <select
@@ -190,7 +245,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                   onChange={(e) =>
                     handleInputChange("targetModel", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="select"
                   required
                 >
                   <option value="">Select model...</option>
@@ -206,7 +261,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                   <input
                     type="text"
                     placeholder="Enter custom model name"
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input mt-3"
                     onChange={(e) =>
                       handleInputChange("targetModel", e.target.value)
                     }
@@ -217,14 +272,19 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
           </div>
 
           {/* Quality Criteria */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Quality Criteria
-            </h3>
+          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                <span className="text-white text-sm">⭐</span>
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text-success">
+                Quality Criteria
+              </h3>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="form-label">
                   Minimum Score
                 </label>
                 <select
@@ -232,7 +292,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                   onChange={(e) =>
                     handleInputChange("minScore", parseInt(e.target.value))
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="select"
                 >
                   <option value={4}>4+ Stars (Good)</option>
                   <option value={5}>5 Stars (Excellent)</option>
@@ -240,7 +300,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="form-label">
                   Max Tokens (Optional)
                 </label>
                 <input
@@ -253,12 +313,12 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                     )
                   }
                   placeholder="No limit"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="form-label">
                   Max Cost $ (Optional)
                 </label>
                 <input
@@ -272,7 +332,7 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                     )
                   }
                   placeholder="No limit"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                 />
               </div>
             </div>
@@ -283,28 +343,33 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              className="btn-secondary text-sm inline-flex items-center gap-2"
             >
-              {showAdvanced ? "Hide" : "Show"} Advanced Filters
+              <span>{showAdvanced ? "Hide" : "Show"} Advanced Filters</span>
             </button>
           </div>
 
           {/* Advanced Filters */}
           {showAdvanced && (
-            <div className="space-y-4 border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                Advanced Filters
-              </h3>
+            <div className="glass rounded-xl p-6 border border-purple-200/30 shadow-lg backdrop-blur-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-purple flex items-center justify-center glow-purple">
+                  <span className="text-white text-sm">🔍</span>
+                </div>
+                <h3 className="text-xl font-display font-bold gradient-text-purple">
+                  Advanced Filters
+                </h3>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="form-label">
                     Providers (comma-separated)
                   </label>
                   <input
                     type="text"
                     placeholder="e.g., OpenAI, Anthropic"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input"
                     onChange={(e) => {
                       const providers = e.target.value
                         .split(",")
@@ -319,13 +384,13 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="form-label">
                     Features (comma-separated)
                   </label>
                   <input
                     type="text"
                     placeholder="e.g., support-bot, content-gen"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input"
                     onChange={(e) => {
                       const features = e.target.value
                         .split(",")
@@ -343,27 +408,39 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
           )}
 
           {/* Actions */}
-          <div className="flex justify-end space-x-3 pt-6 border-t">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={
-                isSubmitting ||
-                !formData.name ||
-                !formData.targetUseCase ||
-                !formData.targetModel
-              }
-            >
-              {isSubmitting ? "Creating..." : "Create Dataset"}
-            </button>
+          <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn-secondary"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isSubmitting ||
+                  !formData.name ||
+                  !formData.targetUseCase ||
+                  !formData.targetModel
+                }
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <span className="text-white text-sm">📊</span>
+                    Create Dataset
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

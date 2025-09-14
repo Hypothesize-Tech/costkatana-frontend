@@ -151,17 +151,17 @@ const EnhancedTelemetryContent: React.FC = () => {
     };
 
     return (
-        <div className="p-6 min-h-screen bg-gray-50">
+        <div className="p-6 min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
             <header className="mb-6">
                 <div className="flex gap-3 items-center mb-2">
-                    <Brain className="w-8 h-8 text-blue-600" />
-                    <h1 className="text-3xl font-bold text-gray-900">Enhanced Telemetry Dashboard</h1>
+                    <Brain className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                    <h1 className="text-3xl font-display font-bold gradient-text-primary">Enhanced Telemetry Dashboard</h1>
                 </div>
-                <p className="text-gray-600">AI-powered observability with intelligent insights and cost optimization</p>
+                <p className="text-light-text-secondary dark:text-dark-text-secondary">AI-powered observability with intelligent insights and cost optimization</p>
                 <div className="mt-4">
                     <Link
                         to="/cost-lake"
-                        className="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-900/30"
+                        className="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium glass rounded-xl border border-accent-200/30 bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30 text-primary-700 dark:text-primary-300 hover:shadow-md transition-all duration-300"
                     >
                         <CircleStackIcon className="w-4 h-4" />
                         Cost Lake
@@ -171,12 +171,12 @@ const EnhancedTelemetryContent: React.FC = () => {
 
             {/* Navigation Tabs */}
             <div className="mb-6">
-                <nav className="flex space-x-8 border-b border-gray-200">
+                <nav className="flex space-x-8 glass rounded-xl border border-accent-200/30 bg-gradient-to-r from-light-bg-200/50 to-light-bg-300/50 dark:from-dark-bg-200/50 dark:to-dark-bg-300/50 p-2">
                     <button
                         onClick={() => setActiveTab('overview')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'overview'
-                            ? 'border-blue-500 text-blue-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300 ${activeTab === 'overview'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-100/50 dark:hover:bg-dark-bg-100/50'
                             }`}
                     >
                         <Activity className="w-4 h-4" />
@@ -184,9 +184,9 @@ const EnhancedTelemetryContent: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('ai-insights')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'ai-insights'
-                            ? 'border-blue-500 text-blue-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300 ${activeTab === 'ai-insights'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-100/50 dark:hover:bg-dark-bg-100/50'
                             }`}
                     >
                         <Brain className="w-4 h-4" />
@@ -194,9 +194,9 @@ const EnhancedTelemetryContent: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('explorer')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'explorer'
-                            ? 'border-blue-500 text-blue-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300 ${activeTab === 'explorer'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-100/50 dark:hover:bg-dark-bg-100/50'
                             }`}
                     >
                         <Eye className="w-4 h-4" />
@@ -204,9 +204,9 @@ const EnhancedTelemetryContent: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('traces')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'traces'
-                            ? 'border-blue-500 text-blue-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        className={`py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300 ${activeTab === 'traces'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-100/50 dark:hover:bg-dark-bg-100/50'
                             }`}
                     >
                         <Sparkles className="w-4 h-4" />
@@ -220,12 +220,12 @@ const EnhancedTelemetryContent: React.FC = () => {
                 <div className="space-y-6">
                     {/* Header with actions */}
                     <div className="flex justify-between items-center">
-                        <h2 className="text-2xl font-bold text-gray-900">System Overview</h2>
+                        <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">System Overview</h2>
                         <div className="flex gap-2">
                             <button
                                 onClick={fetchEnhancedData}
                                 disabled={loading}
-                                className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                className="btn-primary flex gap-2 items-center disabled:opacity-50"
                             >
                                 <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                                 Refresh
@@ -239,63 +239,63 @@ const EnhancedTelemetryContent: React.FC = () => {
                     {/* Enhanced Metrics Row */}
                     {enhancedData && (
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                            <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-light-bg-200/50 to-light-bg-300/50 dark:from-dark-bg-200/50 dark:to-dark-bg-300/50 shadow-xl">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">Total Spans</p>
-                                        <p className="text-2xl font-bold text-gray-900">
+                                        <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Total Spans</p>
+                                        <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                             {formatNumber(enhancedData.enrichment.stats.total_spans)}
                                         </p>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             Last {enhancedData.enrichment.stats.timeframe || '1h'}
                                         </p>
                                     </div>
-                                    <Eye className="w-8 h-8 text-blue-500" />
+                                    <Eye className="w-8 h-8 text-primary-500" />
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                            <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 shadow-xl">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">AI Enriched</p>
-                                        <p className="text-2xl font-bold text-green-600">
+                                        <p className="text-sm font-medium text-success-700 dark:text-success-300">AI Enriched</p>
+                                        <p className="text-2xl font-bold text-success-600 dark:text-success-400">
                                             {formatNumber(enhancedData.enrichment.stats.enriched_spans)}
                                         </p>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             {enhancedData.enrichment.stats.enrichment_rate.toFixed(1)}% enriched
                                         </p>
                                     </div>
-                                    <Brain className="w-8 h-8 text-green-500" />
+                                    <Brain className="w-8 h-8 text-success-500" />
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                            <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20 shadow-xl">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">AI Recommendations</p>
-                                        <p className="text-2xl font-bold text-orange-600">
+                                        <p className="text-sm font-medium text-warning-700 dark:text-warning-300">AI Recommendations</p>
+                                        <p className="text-2xl font-bold text-warning-600 dark:text-warning-400">
                                             {enhancedData.enrichment.ai_recommendations.length}
                                         </p>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             {enhancedData.enrichment.ai_recommendations.length > 0 ? 'Available' : 'Processing...'}
                                         </p>
                                     </div>
-                                    <Activity className="w-8 h-8 text-orange-500" />
+                                    <Activity className="w-8 h-8 text-warning-500" />
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-white rounded-lg border shadow-sm">
+                            <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 shadow-xl">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <p className="text-sm font-medium text-gray-600">Processing Types</p>
-                                        <p className="text-2xl font-bold text-purple-600">
+                                        <p className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Processing Types</p>
+                                        <p className="text-2xl font-bold text-secondary-600 dark:text-secondary-400">
                                             {enhancedData.enrichment.stats.processing_types.length}
                                         </p>
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             {enhancedData.enrichment.stats.processing_types.length > 0 ? 'Identified' : 'Analyzing...'}
                                         </p>
                                     </div>
-                                    <Sparkles className="w-8 h-8 text-purple-500" />
+                                    <Sparkles className="w-8 h-8 text-secondary-500" />
                                 </div>
                             </div>
                         </div>

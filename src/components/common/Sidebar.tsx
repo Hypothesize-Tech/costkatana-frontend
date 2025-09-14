@@ -177,12 +177,12 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
           ref={setPopperElement}
           style={styles.popper}
           {...attributes.popper}
-          className="z-[99999] px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md shadow-lg pointer-events-none min-w-[200px] max-w-[300px]"
+          className="z-[99999] px-4 py-3 text-sm font-medium text-white bg-gradient-dark-panel rounded-xl shadow-2xl pointer-events-none min-w-[200px] max-w-[300px] border border-primary-500/20 backdrop-blur-xl"
         >
           {content}
           <div
             data-popper-arrow
-            className="absolute w-2 h-2 bg-gray-900 transform rotate-45"
+            className="absolute w-2 h-2 bg-gradient-to-br from-primary-500 to-secondary-500 transform rotate-45"
             style={{
               ...(placement === 'right' && { left: '-4px' }),
               ...(placement === 'left' && { right: '-4px' }),
@@ -259,18 +259,18 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             onClick={onClose}
             className={cn(
               isActive
-                ? 'bg-gray-100 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700',
-              'flex items-center gap-x-3 p-2 text-sm font-semibold leading-6 rounded-md group transition-all duration-200',
+                ? 'bg-gradient-primary text-white shadow-lg glow-primary nav-item active'
+                : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 nav-item',
+              'flex items-center p-3 text-sm font-display font-semibold leading-6 rounded-xl group transition-all duration-300',
               collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
             )}
           >
             <item.icon
               className={cn(
                 isActive
-                  ? 'text-primary-600 dark:text-primary-400'
-                  : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-white',
-                'w-6 h-6 shrink-0'
+                  ? 'text-white'
+                  : 'text-light-text-muted dark:text-dark-text-muted group-hover:text-primary-500',
+                'w-6 h-6 shrink-0 transition-all duration-300'
               )}
               aria-hidden="true"
             />
@@ -286,9 +286,9 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       type="button"
       onClick={() => toggleCat(id)}
       className={cn(
-        'w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wide',
-        'text-gray-500 dark:text-gray-400 px-2.5 select-none',
-        'hover:text-gray-900 dark:hover:text-gray-100'
+        'w-full flex items-center justify-between text-xs font-display font-bold uppercase tracking-wider',
+        'text-light-text-muted dark:text-dark-text-muted px-3 py-2 select-none rounded-lg',
+        'hover:text-primary-500 hover:bg-primary-500/5 transition-all duration-300'
       )}
       aria-expanded={!!expanded[id]}
     >
@@ -308,11 +308,11 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             <button
               onClick={onToggleCollapse}
               className={cn(
-                'p-2 text-gray-600 rounded-lg hover:text-gray-900 hover:bg-gray-100',
-                'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700',
-                'flex-shrink-0 transition-all duration-200',
+                'p-3 text-light-text-secondary dark:text-dark-text-secondary rounded-xl hover:text-primary-500 glass',
+                'hover:bg-primary-500/20 hover:scale-110',
+                'flex-shrink-0 transition-all duration-300',
                 'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50',
-                'bg-white border border-gray-200 shadow-sm dark:border-gray-600 dark:bg-gray-800'
+                'shadow-lg border border-primary-200/30'
               )}
               aria-label="Expand sidebar"
             >
@@ -350,7 +350,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
             {/* Divider between categories */}
             {collapsed ? (
-              <div className="mx-2 my-3 border-t border-gray-200 dark:border-gray-700" />
+              <div className="mx-2 my-4 border-t border-gradient-primary opacity-30" />
             ) : null}
           </li>
         ))}
@@ -372,7 +372,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-900/80" />
+            <div className="fixed inset-0 bg-dark-bg/90 backdrop-blur-sm" />
           </Transition.Child>
 
           <div className="flex fixed inset-0">
@@ -403,10 +403,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                   </div>
                 </Transition.Child>
 
-                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 pb-2 bg-white grow dark:bg-gray-800">
+                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 pb-2 glass grow light:bg-gradient-light-panel dark:bg-gradient-dark-panel">
                   <div className="flex items-center h-16 shrink-0">
-                    <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-primary-600">
-                      <span className="text-lg font-bold text-white">AI</span>
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-primary shadow-lg glow-primary">
+                      <span className="text-lg font-display font-bold text-white">CK</span>
                     </div>
                   </div>
                   {sidebarContent(false)}
@@ -426,7 +426,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       >
         <div
           className={cn(
-            'flex relative flex-col gap-y-5 bg-white border-r border-gray-200 transition-all duration-300 grow dark:border-gray-700 dark:bg-gray-800',
+            'flex relative flex-col gap-y-5 glass border-r border-primary-200/30 transition-all duration-300 grow light:bg-gradient-light-panel dark:bg-gradient-dark-panel backdrop-blur-xl',
             isCollapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-6'
           )}
         >
@@ -436,9 +436,9 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               <button
                 onClick={onToggleCollapse}
                 className={cn(
-                  'p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100',
-                  'dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700',
-                  'transition-all duration-200 flex-shrink-0',
+                  'p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 glass',
+                  'hover:bg-primary-500/20 hover:scale-110',
+                  'transition-all duration-300 flex-shrink-0',
                   'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50'
                 )}
                 aria-label="Collapse sidebar"

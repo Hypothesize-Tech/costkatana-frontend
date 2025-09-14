@@ -44,41 +44,41 @@ export const StatsCard = ({
   const isNegative = change?.trend === "down";
 
   return (
-    <div className={`p-6 card ${className || ""}`}>
+    <div className={`card p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 ${className || ""}`}>
       <div className="flex justify-between items-center">
         <div className="flex-1">
-          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <dt className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-3">
             {title}
           </dt>
-          <dd className="mt-2">
+          <dd>
             {loading ? (
-              <div className="w-24 h-8 skeleton" />
+              <div className="w-32 h-10 skeleton" />
             ) : (
-              <div className="flex gap-2 items-baseline">
-                <span className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="flex gap-3 items-baseline">
+                <span className="text-3xl font-display font-bold gradient-text">
                   {formatValue()}
                 </span>
                 {change && change.trend !== "stable" && (
                   <span
                     className={cn(
-                      "inline-flex items-baseline text-sm font-semibold",
+                      "inline-flex items-center gap-1 text-sm font-display font-bold px-2 py-1 rounded-lg",
                       isPositive && format === "currency"
-                        ? "text-danger-600"
-                        : "text-success-600",
+                        ? "text-danger-600 bg-danger-100/50"
+                        : "text-success-600 bg-success-100/50",
                       isNegative && format === "currency"
-                        ? "text-success-600"
-                        : "text-danger-600",
+                        ? "text-success-600 bg-success-100/50"
+                        : "text-danger-600 bg-danger-100/50",
                       !format || format === "number"
                         ? isPositive
-                          ? "text-success-600"
-                          : "text-danger-600"
+                          ? "text-success-600 bg-success-100/50"
+                          : "text-danger-600 bg-danger-100/50"
                         : "",
                     )}
                   >
                     {isPositive ? (
-                      <ArrowUpIcon className="flex-shrink-0 self-center w-4 h-4" />
+                      <ArrowUpIcon className="flex-shrink-0 w-4 h-4" />
                     ) : (
-                      <ArrowDownIcon className="flex-shrink-0 self-center w-4 h-4" />
+                      <ArrowDownIcon className="flex-shrink-0 w-4 h-4" />
                     )}
                     <span className="sr-only">
                       {isPositive ? "Increased" : "Decreased"} by
@@ -91,8 +91,10 @@ export const StatsCard = ({
           </dd>
         </div>
         {Icon && (
-          <div className="ml-4">
-            <Icon className="w-8 h-8 text-gray-400" />
+          <div className="ml-6">
+            <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
+              <Icon className="w-8 h-8 text-white" />
+            </div>
           </div>
         )}
       </div>

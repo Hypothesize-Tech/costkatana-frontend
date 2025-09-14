@@ -38,12 +38,12 @@ export const AlertBadge: React.FC<AlertBadgeProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`relative ${classes.container} text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg`}
+      className={`relative ${classes.container} text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-xl glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-110`}
     >
       {showIcon && <BellIcon className={classes.icon} />}
       {count > 0 && (
         <span
-          className={`absolute -top-1 -right-1 inline-flex items-center justify-center ${classes.badge} rounded-full bg-red-500 text-white font-bold`}
+          className={`absolute -top-1 -right-1 inline-flex items-center justify-center ${classes.badge} rounded-full bg-gradient-danger text-white font-display font-bold shadow-lg animate-pulse`}
         >
           {count > 99 ? "99+" : count}
         </span>

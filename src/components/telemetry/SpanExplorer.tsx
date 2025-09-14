@@ -134,43 +134,53 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
         <div className="space-y-6">
             {/* Header with Stats */}
             {enrichmentStats && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded-lg shadow-sm border">
-                        <div className="flex items-center justify-between">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                        <div className="flex items-center justify-between mb-4">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Total Spans</p>
-                                <p className="text-2xl font-bold text-gray-900">{enrichmentStats.total_spans}</p>
+                                <p className="font-display font-medium gradient-text text-sm uppercase tracking-wide">Total Spans</p>
+                                <p className="text-3xl font-display font-bold gradient-text mt-2">{enrichmentStats.total_spans}</p>
                             </div>
-                            <Eye className="w-8 h-8 text-blue-500" />
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-4 rounded-lg shadow-sm border">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-gray-600">Enriched</p>
-                                <p className="text-2xl font-bold text-green-600">{enrichmentStats.enriched_spans}</p>
-                            </div>
-                            <div className="text-sm text-gray-500">
-                                {enrichmentStats.enrichment_rate.toFixed(1)}%
+                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                <Eye className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-lg shadow-sm border">
-                        <div className="flex items-center justify-between">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                        <div className="flex items-center justify-between mb-4">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Cache Hits</p>
-                                <p className="text-2xl font-bold text-purple-600">{enrichmentStats.cache_hit_spans}</p>
+                                <p className="font-display font-medium gradient-text-success text-sm uppercase tracking-wide">Enriched</p>
+                                <p className="text-3xl font-display font-bold gradient-text-success mt-2">{enrichmentStats.enriched_spans}</p>
+                            </div>
+                            <div className="glass px-3 py-1 rounded-full border border-success-200/30 bg-gradient-success/20">
+                                <span className="font-display font-semibold text-success-700 dark:text-success-300 text-sm">
+                                    {enrichmentStats.enrichment_rate.toFixed(1)}%
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-lg shadow-sm border">
-                        <div className="flex items-center justify-between">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                        <div className="flex items-center justify-between mb-4">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Routing Decisions</p>
-                                <p className="text-2xl font-bold text-orange-600">{enrichmentStats.routing_decisions}</p>
+                                <p className="font-display font-medium gradient-text-secondary text-sm uppercase tracking-wide">Cache Hits</p>
+                                <p className="text-3xl font-display font-bold gradient-text-secondary mt-2">{enrichmentStats.cache_hit_spans}</p>
+                            </div>
+                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                                <span className="text-white text-lg">⚡</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <p className="font-display font-medium gradient-text-warning text-sm uppercase tracking-wide">Routing Decisions</p>
+                                <p className="text-3xl font-display font-bold gradient-text-warning mt-2">{enrichmentStats.routing_decisions}</p>
+                            </div>
+                            <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                                <span className="text-white text-lg">🎯</span>
                             </div>
                         </div>
                     </div>
@@ -178,26 +188,32 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             )}
 
             {/* Search and Filters */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border">
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                        <Search className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="font-display font-semibold gradient-text">Search & Filter</h3>
+                </div>
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary w-4 h-4" />
                             <input
                                 type="text"
                                 placeholder="Search spans, traces, or insights..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="input pl-12"
                             />
                         </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                            className="input"
                         >
                             <option value="all">All Status</option>
                             <option value="success">Success</option>
@@ -208,7 +224,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         <select
                             value={timeframe}
                             onChange={(e) => setTimeframe(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                            className="input"
                         >
                             <option value="5m">Last 5 minutes</option>
                             <option value="15m">Last 15 minutes</option>
@@ -221,31 +237,41 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             </div>
 
             {/* Spans List */}
-            <div className="bg-white rounded-lg shadow-sm border">
-                <div className="px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">
-                        Enriched Spans ({filteredSpans.length})
-                    </h3>
+            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="px-6 py-4 border-b border-primary-200/30">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                            <span className="text-white text-sm">📊</span>
+                        </div>
+                        <h3 className="text-xl font-display font-bold gradient-text">
+                            Enriched Spans ({filteredSpans.length})
+                        </h3>
+                    </div>
                 </div>
 
                 {loading ? (
                     <div className="p-8 text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                        <p className="mt-2 text-gray-500">Loading spans...</p>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
+                        <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary">Loading spans...</p>
                     </div>
                 ) : filteredSpans.length === 0 ? (
-                    <div className="p-8 text-center text-gray-500">
-                        No enriched spans found for the selected criteria.
+                    <div className="p-8 text-center">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-4">
+                            <span className="text-2xl">🔍</span>
+                        </div>
+                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            No enriched spans found for the selected criteria.
+                        </p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-200">
+                    <div className="divide-y divide-primary-200/20">
                         {filteredSpans.map((span) => (
-                            <div key={span.span_id} className="p-4">
+                            <div key={span.span_id} className="p-6 hover:bg-gradient-primary/5 transition-all duration-200">
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-4">
                                         <button
                                             onClick={() => toggleSpanExpansion(span.span_id)}
-                                            className="text-gray-400 hover:text-gray-600"
+                                            className="btn-icon-secondary"
                                         >
                                             {expandedSpans.has(span.span_id) ? (
                                                 <ChevronDown className="w-4 h-4" />
@@ -254,37 +280,39 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                             )}
                                         </button>
 
-                                        {getStatusIcon(span.status)}
+                                        <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                                            {getStatusIcon(span.status)}
+                                        </div>
 
                                         <div>
-                                            <h4 className="font-medium text-gray-900">{span.operation_name}</h4>
-                                            <p className="text-sm text-gray-500">
+                                            <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{span.operation_name}</h4>
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                                                 {span.service_name} • {new Date(span.timestamp).toLocaleTimeString()}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center space-x-4 text-sm">
-                                        <div className="flex items-center space-x-1">
-                                            <Clock className="w-4 h-4 text-gray-400" />
-                                            <span>{formatDuration(span.duration_ms)}</span>
+                                    <div className="flex items-center space-x-4">
+                                        <div className="glass rounded-lg px-3 py-2 border border-warning-200/30 flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-warning-500" />
+                                            <span className="font-display font-semibold gradient-text-warning text-sm">{formatDuration(span.duration_ms)}</span>
                                         </div>
 
                                         {span.cost_usd && (
-                                            <div className="flex items-center space-x-1">
-                                                <DollarSign className="w-4 h-4 text-green-500" />
-                                                <span>{formatCost(span.cost_usd)}</span>
+                                            <div className="glass rounded-lg px-3 py-2 border border-success-200/30 flex items-center gap-2">
+                                                <DollarSign className="w-4 h-4 text-success-500" />
+                                                <span className="font-display font-semibold gradient-text-success text-sm">{formatCost(span.cost_usd)}</span>
                                             </div>
                                         )}
 
                                         {span.request_priority && (
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(span.request_priority)}`}>
+                                            <span className={`glass px-3 py-1 rounded-full font-display font-semibold border text-sm ${getPriorityColor(span.request_priority)}`}>
                                                 {span.request_priority}
                                             </span>
                                         )}
 
                                         {span.cache_hit && (
-                                            <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                            <span className="glass px-3 py-1 border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 rounded-full font-display font-semibold text-sm">
                                                 Cache Hit
                                             </span>
                                         )}
@@ -292,44 +320,49 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                 </div>
 
                                 {expandedSpans.has(span.span_id) && (
-                                    <div className="mt-4 pl-7 space-y-3">
-                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                                            <div>
-                                                <span className="font-medium text-gray-600">Trace ID:</span>
-                                                <p className="font-mono text-xs text-gray-900 break-all">{span.trace_id}</p>
+                                    <div className="mt-6 pl-12 space-y-4">
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                            <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                                <span className="font-display font-medium gradient-text text-sm">Trace ID:</span>
+                                                <p className="font-mono text-xs text-light-text-primary dark:text-dark-text-primary break-all mt-1">{span.trace_id}</p>
                                             </div>
 
-                                            <div>
-                                                <span className="font-medium text-gray-600">Span ID:</span>
-                                                <p className="font-mono text-xs text-gray-900">{span.span_id}</p>
+                                            <div className="glass rounded-lg p-3 border border-primary-200/30">
+                                                <span className="font-display font-medium gradient-text text-sm">Span ID:</span>
+                                                <p className="font-mono text-xs text-light-text-primary dark:text-dark-text-primary mt-1">{span.span_id}</p>
                                             </div>
 
                                             {span.processing_type && (
-                                                <div>
-                                                    <span className="font-medium text-gray-600">Processing Type:</span>
-                                                    <p className="text-gray-900">{span.processing_type}</p>
+                                                <div className="glass rounded-lg p-3 border border-accent-200/30">
+                                                    <span className="font-display font-medium gradient-text-accent text-sm">Processing Type:</span>
+                                                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mt-1">{span.processing_type}</p>
                                                 </div>
                                             )}
 
                                             {span.http_method && span.http_route && (
-                                                <div>
-                                                    <span className="font-medium text-gray-600">HTTP:</span>
-                                                    <p className="text-gray-900">{span.http_method} {span.http_route}</p>
+                                                <div className="glass rounded-lg p-3 border border-info-200/30">
+                                                    <span className="font-display font-medium gradient-text-info text-sm">HTTP:</span>
+                                                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mt-1">{span.http_method} {span.http_route}</p>
                                                 </div>
                                             )}
 
                                             {span.routing_decision && (
-                                                <div>
-                                                    <span className="font-medium text-gray-600">Routing:</span>
-                                                    <p className="text-gray-900">{span.routing_decision}</p>
+                                                <div className="glass rounded-lg p-3 border border-warning-200/30">
+                                                    <span className="font-display font-medium gradient-text-warning text-sm">Routing:</span>
+                                                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mt-1">{span.routing_decision}</p>
                                                 </div>
                                             )}
                                         </div>
 
                                         {span.insights && (
-                                            <div className="bg-blue-50 p-3 rounded-md">
-                                                <h5 className="font-medium text-blue-900 mb-1">AI Insights</h5>
-                                                <p className="text-blue-800 text-sm">{span.insights}</p>
+                                            <div className="glass rounded-xl p-4 border border-info-200/30 bg-gradient-info/10 shadow-lg">
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <div className="w-6 h-6 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                                                        <span className="text-white text-sm">🧠</span>
+                                                    </div>
+                                                    <h5 className="font-display font-semibold gradient-text-info">AI Insights</h5>
+                                                </div>
+                                                <p className="font-body text-light-text-primary dark:text-dark-text-primary">{span.insights}</p>
                                             </div>
                                         )}
                                     </div>

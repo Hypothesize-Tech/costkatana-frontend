@@ -98,70 +98,76 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
     };
 
     return (
-        <div className={`bg-white border border-gray-200 rounded-xl p-6 ${className}`}>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                    <Database className="w-6 h-6 text-blue-600" />
-                    <h2 className="text-xl font-semibold text-gray-900">Vector Search Setup</h2>
+        <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl animate-fade-in ${className}`}>
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-2xl glow-primary">
+                        <Database className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold gradient-text">Vector Search Setup</h2>
                 </div>
                 <button
                     onClick={() => loadStatus()}
-                    className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="p-3 text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 rounded-xl glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                 >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-5 h-5" />
                 </button>
             </div>
 
             {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-red-700">
-                        <AlertCircle className="w-5 h-5" />
-                        <span className="font-medium">Error</span>
+                <div className="mb-8 p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                            <AlertCircle className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <span className="font-display font-bold text-danger-800 dark:text-danger-200">Error</span>
+                            <p className="text-sm font-medium text-danger-700 dark:text-danger-300 mt-1">{error}</p>
+                        </div>
                     </div>
-                    <p className="text-red-600 mt-1">{error}</p>
                 </div>
             )}
 
             {/* Statistics */}
             {stats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-gray-900">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                    <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                        <div className="text-3xl font-display font-bold gradient-text">
                             {stats.total_records.toLocaleString()}
                         </div>
-                        <div className="text-sm text-gray-600">Total Records</div>
+                        <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Total Records</div>
                     </div>
-                    <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-green-700">
+                    <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                        <div className="text-3xl font-display font-bold gradient-text-success">
                             {stats.vectorized_records.toLocaleString()}
                         </div>
-                        <div className="text-sm text-gray-600">Vectorized</div>
+                        <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Vectorized</div>
                     </div>
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-700">
+                    <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                        <div className="text-3xl font-display font-bold gradient-text-accent">
                             {stats.vectorization_rate.toFixed(1)}%
                         </div>
-                        <div className="text-sm text-gray-600">Coverage</div>
+                        <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Coverage</div>
                     </div>
-                    <div className="bg-purple-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-purple-700">
+                    <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
+                        <div className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
                             {stats.avg_embedding_dimensions}
                         </div>
-                        <div className="text-sm text-gray-600">Dimensions</div>
+                        <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Dimensions</div>
                     </div>
                 </div>
             )}
 
             {/* Progress Bar */}
             {stats && stats.total_records > 0 && (
-                <div className="mb-6">
-                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <div className="mb-8">
+                    <div className="flex justify-between text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-3">
                         <span>Vectorization Progress</span>
-                        <span>{stats.vectorization_rate.toFixed(1)}% Complete</span>
+                        <span className="gradient-text font-bold">{stats.vectorization_rate.toFixed(1)}% Complete</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-primary-200/30 rounded-full h-3 shadow-inner">
                         <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            className="progress-bar h-3 rounded-full transition-all duration-500"
                             style={{ width: `${stats.vectorization_rate}%` }}
                         />
                     </div>
@@ -211,7 +217,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                         <button
                             onClick={() => startVectorization({ timeframe: '24h' })}
                             disabled={isLoading}
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors"
+                            className="btn-primary flex items-center gap-2"
                         >
                             <Play className="w-4 h-4" />
                             Vectorize Last 24h
@@ -219,7 +225,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                         <button
                             onClick={() => startVectorization({ timeframe: '7d' })}
                             disabled={isLoading}
-                            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors"
+                            className="btn-secondary flex items-center gap-2"
                         >
                             <TrendingUp className="w-4 h-4" />
                             Vectorize Last 7d
@@ -227,7 +233,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                         <button
                             onClick={() => startVectorization({ forceReprocess: true })}
                             disabled={isLoading}
-                            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors"
+                            className="flex items-center gap-2 bg-gradient-accent text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <RefreshCw className="w-4 h-4" />
                             Reprocess All
@@ -239,7 +245,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                     <button
                         onClick={cancelVectorization}
                         disabled={isLoading}
-                        className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors"
+                        className="flex items-center gap-2 bg-gradient-danger text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Square className="w-4 h-4" />
                         Cancel
@@ -248,9 +254,14 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             </div>
 
             {/* Info */}
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">About Vector Search</h3>
-                <p className="text-sm text-blue-800">
+            <div className="mt-8 p-6 glass border border-primary-200/30 rounded-2xl">
+                <h3 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
+                        <span className="text-white text-xs">💡</span>
+                    </span>
+                    About Vector Search
+                </h3>
+                <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
                     Vector search enables semantic queries like "find operations similar to high-cost AI calls"
                     or "show me patterns like yesterday's spike". Vectorization processes your telemetry data
                     to create embeddings that power intelligent cost analysis and anomaly detection.

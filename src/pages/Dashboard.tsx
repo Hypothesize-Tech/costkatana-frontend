@@ -23,7 +23,7 @@ import { DashboardService, DashboardData } from "../services/dashboard.service";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { useNotification } from "../contexts/NotificationContext";
 import { formatTimestamp } from "../utils/formatters";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpg";
 import { useProject } from "@/contexts/ProjectContext";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -201,10 +201,10 @@ export const Dashboard: React.FC = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex justify-center items-center">
+      <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex justify-center items-center">
         <div className="text-center">
           <LoadingSpinner />
-          <p className="mt-4 text-lg font-medium text-slate-600 dark:text-slate-300">
+          <p className="mt-4 text-lg font-medium text-light-text-secondary dark:text-dark-text-secondary">
             Loading dashboard...
           </p>
         </div>
@@ -215,15 +215,15 @@ export const Dashboard: React.FC = () => {
   // No data state
   if (!data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex justify-center items-center">
-        <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
-          <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ChartBarIcon className="w-8 h-8 text-slate-400" />
+      <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex justify-center items-center">
+        <div className="text-center glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+          <div className="w-16 h-16 glass rounded-full flex items-center justify-center mx-auto mb-4 bg-gradient-to-r from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50">
+            <ChartBarIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
             No Data Available
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
             Unable to load dashboard data at this time.
           </p>
           <button
@@ -232,7 +232,7 @@ export const Dashboard: React.FC = () => {
                 selectedProject === "all" ? undefined : selectedProject,
               )
             }
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="btn-primary inline-flex items-center px-6 py-3 font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <ArrowPathIcon className="w-5 h-5 mr-2" />
             Try Again
@@ -243,22 +243,22 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 ">
+    <div className="min-h-screen relative bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
       {/* Professional Header */}
-      <header className=" dark:bg-slate-900/80 backdrop-blur-xl  sticky top-0 z-20">
+      <header className="glass backdrop-blur-xl sticky top-0 z-20 border-b border-accent-200/30 bg-gradient-to-r from-light-bg-200/80 to-light-bg-300/80 dark:from-dark-bg-200/80 dark:to-dark-bg-300/80">
         <div className="px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Brand & Project Info */}
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
-                  <img src={logo} alt="logo" className="w-14 h-14" />
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center shadow-2xl">
+                  <img src={logo} alt="logo" className="w-10 h-10 rounded-xl" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-display font-bold gradient-text-primary">
                     Cost Katana
                   </h1>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                     {getSelectedProjectName()}
                   </p>
                 </div>
@@ -268,12 +268,12 @@ export const Dashboard: React.FC = () => {
             {/* Controls */}
             <div className="flex items-center space-x-4">
               {/* View Mode Toggle */}
-              <div className="hidden md:flex items-center bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-1 shadow-inner">
+              <div className="hidden md:flex items-center glass rounded-2xl p-1 shadow-lg border border-accent-200/30">
                 <button
                   onClick={() => setViewMode("chat")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "chat"
-                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                  className={`flex items-center px-4 py-3 text-sm font-display font-semibold rounded-xl transition-all duration-300 ${viewMode === "chat"
+                    ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10"
                     }`}
                 >
                   <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
@@ -281,9 +281,9 @@ export const Dashboard: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setViewMode("split")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "split"
-                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                  className={`flex items-center px-4 py-3 text-sm font-display font-semibold rounded-xl transition-all duration-300 ${viewMode === "split"
+                    ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10"
                     }`}
                 >
                   <Squares2X2Icon className="w-4 h-4 mr-2" />
@@ -291,9 +291,9 @@ export const Dashboard: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setViewMode("dashboard")}
-                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${viewMode === "dashboard"
-                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-md"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                  className={`flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ${viewMode === "dashboard"
+                    ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10"
                     }`}
                 >
                   <ChartBarIcon className="w-4 h-4 mr-2" />
@@ -546,72 +546,6 @@ export const Dashboard: React.FC = () => {
                 {/* Dashboard Content */}
                 {!dashboardPanelCollapsed && (
                   <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                    {/* Quick Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-xl border border-green-200/50 dark:border-green-700/50">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
-                            <CurrencyDollarIcon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-green-600 dark:text-green-400 uppercase tracking-wide">
-                              Total Cost
-                            </p>
-                            <p className="text-lg font-bold text-green-900 dark:text-green-100">
-                              ${data.stats.totalCost.toFixed(2)}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-xl border border-blue-200/50 dark:border-blue-700/50">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
-                            <ChartBarIcon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">
-                              Requests
-                            </p>
-                            <p className="text-lg font-bold text-blue-900 dark:text-blue-100">
-                              {data.stats.totalRequests.toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 p-4 rounded-xl border border-amber-200/50 dark:border-amber-700/50">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
-                            <ClockIcon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wide">
-                              Avg Cost
-                            </p>
-                            <p className="text-lg font-bold text-amber-900 dark:text-amber-100">
-                              ${data.stats.averageCostPerRequest.toFixed(4)}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 p-4 rounded-xl border border-purple-200/50 dark:border-purple-700/50">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-violet-600 rounded-lg flex items-center justify-center mr-3">
-                            <CpuChipIcon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">
-                              Services
-                            </p>
-                            <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
-                              {data.serviceBreakdown?.length || 0}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
                     {/* Charts and Analytics */}
                     {viewMode === "dashboard" ? (

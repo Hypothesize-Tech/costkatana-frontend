@@ -60,19 +60,19 @@ export const UsageTable: React.FC<UsageTableProps> = ({
 
   const getSortIcon = (field: string) => {
     if (sortField !== field) {
-      return <ArrowsUpDownIcon className="h-4 w-4 text-gray-400" />;
+      return <ArrowsUpDownIcon className="h-4 w-4 text-light-text-tertiary dark:text-dark-text-tertiary" />;
     }
 
     return sortOrder === "asc" ? (
-      <ChevronUpIcon className="h-4 w-4 text-gray-700" />
+      <ChevronUpIcon className="h-4 w-4 text-primary-500" />
     ) : (
-      <ChevronDownIcon className="h-4 w-4 text-gray-700" />
+      <ChevronDownIcon className="h-4 w-4 text-primary-500" />
     );
   };
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
         <div className="flex justify-center">
           <LoadingSpinner />
         </div>
@@ -93,27 +93,27 @@ export const UsageTable: React.FC<UsageTableProps> = ({
   }
 
   return (
-    <div className="overflow-hidden bg-white shadow-sm ring-1 ring-black ring-opacity-5 md:rounded-lg">
-      <table className="min-w-full divide-y divide-gray-300">
-        <thead className="bg-gray-50">
+    <div className="overflow-hidden glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+      <table className="min-w-full divide-y divide-accent-200/30">
+        <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.key}
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.sortable && onSort ? "cursor-pointer select-none" : ""
+                className={`px-6 py-4 text-left text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider ${column.sortable && onSort ? "cursor-pointer select-none hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors duration-300" : ""
                   }`}
                 onClick={() => column.sortable && handleSort(column.key)}
                 onMouseEnter={() => setHoveredColumn(column.key)}
                 onMouseLeave={() => setHoveredColumn(null)}
               >
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-2">
                   <span>{column.label}</span>
                   {column.sortable && onSort && (
                     <span
-                      className={`transition-opacity ${hoveredColumn === column.key || sortField === column.key
-                          ? "opacity-100"
-                          : "opacity-0"
+                      className={`transition-all duration-300 ${hoveredColumn === column.key || sortField === column.key
+                        ? "opacity-100 scale-110"
+                        : "opacity-0 scale-95"
                         }`}
                     >
                       {getSortIcon(column.key)}
@@ -122,12 +122,12 @@ export const UsageTable: React.FC<UsageTableProps> = ({
                 </div>
               </th>
             ))}
-            <th scope="col" className="relative px-6 py-3">
+            <th scope="col" className="relative px-6 py-4">
               <span className="sr-only">Actions</span>
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="glass divide-y divide-accent-200/30">
           {usages.map((usage) => (
             <UsageItem
               key={usage._id}

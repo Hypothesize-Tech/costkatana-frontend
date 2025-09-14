@@ -67,20 +67,27 @@ export const CostDebugger: React.FC = () => {
     }, []);
 
     const tabs = [
-        { id: 'analyzer', label: '🔍 Prompt Analyzer', icon: '🔍' },
-        { id: 'suggestions', label: '💡 Optimizations', icon: '💡' },
-        { id: 'comparison', label: '⚖️ A/B Compare', icon: '⚖️' },
-        { id: 'metrics', label: '📊 Cost Metrics', icon: '📊' }
+        { id: 'analyzer', label: 'Prompt Analyzer', icon: '🔍' },
+        { id: 'suggestions', label: 'Optimizations', icon: '💡' },
+        { id: 'comparison', label: 'A/B Compare', icon: '⚖️' },
+        { id: 'metrics', label: 'Cost Metrics', icon: '📊' }
     ];
 
     return (
         <div className="cost-debugger">
             {/* Header */}
             <div className="cost-debugger-header">
-                <h1 className="cost-debugger-title">
-                    🚀 Cost Debugger
-                    <span className="cost-debugger-subtitle">DevTools for AI Prompts</span>
-                </h1>
+                <div className="flex items-center gap-4">
+                    <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
+                        <span className="text-2xl">🚀</span>
+                    </div>
+                    <div>
+                        <h1 className="cost-debugger-title">
+                            Cost Debugger
+                        </h1>
+                        <span className="cost-debugger-subtitle">DevTools for AI Prompts</span>
+                    </div>
+                </div>
                 <div className="cost-debugger-status">
                     {isAnalyzing && <span className="analyzing-indicator">🔍 Analyzing...</span>}
                 </div>

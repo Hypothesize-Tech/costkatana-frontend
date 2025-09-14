@@ -160,54 +160,47 @@ const SastShowcase: React.FC = () => {
                         Example Comparisons ({showcaseData.examples.length})
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
+                <div>
+                    <div className="space-y-6">
                         {showcaseData.examples.map((example, index) => (
-                            <Card
+                            <div
                                 key={index}
-                                className={`cursor-pointer transition-all hover:shadow-md ${selectedExample === index
-                                    ? 'ring-2 ring-blue-500 border-blue-300'
-                                    : 'border-gray-200'
+                                className={`glass rounded-xl p-6 border cursor-pointer transition-all duration-300 hover:scale-102 ${selectedExample === index
+                                    ? 'border-primary-300/50 shadow-xl glow-primary'
+                                    : 'border-primary-200/30 hover:border-primary-300/50'
                                     }`}
                                 onClick={() => setSelectedExample(selectedExample === index ? null : index)}
                             >
-                                <CardContent className="p-4">
-                                    <div className="space-y-3">
+                                <div>
+                                    <div className="space-y-4">
                                         {/* Example Header */}
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
-                                                <div className="font-medium text-gray-900 mb-2">
+                                                <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 text-lg">
                                                     "{example.inputText}"
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge
-                                                        variant="outline"
-                                                        className={getComplexityBadge(example.metadata.complexityLevel)}
-                                                    >
+                                                <div className="flex items-center gap-3">
+                                                    <span className={`glass px-3 py-1 rounded-full border font-display font-semibold ${getComplexityBadge(example.metadata.complexityLevel)}`}>
                                                         {example.metadata.complexityLevel}
-                                                    </Badge>
-                                                    <Badge variant="outline" className="text-blue-700 border-blue-300">
+                                                    </span>
+                                                    <span className="glass px-3 py-1 rounded-full border border-primary-200/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-semibold">
                                                         {example.language.toUpperCase()}
-                                                    </Badge>
-                                                    <Badge
-                                                        variant={example.metadata.recommendedApproach === 'sast' ? 'default' : 'outline'}
-                                                        className={
-                                                            example.metadata.recommendedApproach === 'sast'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : ''
-                                                        }
-                                                    >
+                                                    </span>
+                                                    <span className={`glass px-3 py-1 rounded-full border font-display font-semibold ${example.metadata.recommendedApproach === 'sast'
+                                                        ? 'border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300'
+                                                        : 'border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300'
+                                                        }`}>
                                                         {example.metadata.recommendedApproach}
-                                                    </Badge>
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <Button variant="ghost" size="sm">
+                                            <button className="glass p-2 rounded-lg border border-primary-200/30 hover:scale-110 transition-all duration-200">
                                                 {selectedExample === index ? (
-                                                    <Eye className="w-4 h-4" />
+                                                    <Eye className="w-5 h-5 text-primary-600" />
                                                 ) : (
-                                                    <Eye className="w-4 h-4 text-gray-400" />
+                                                    <Eye className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                                                 )}
-                                            </Button>
+                                            </button>
                                         </div>
 
                                         {/* Quick Metrics */}
@@ -310,11 +303,11 @@ const SastShowcase: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+                            </div>
                         ))}
                     </div>
-                </CardContent>
+                </div>
             </Card>
 
             {/* Performance Insights */}

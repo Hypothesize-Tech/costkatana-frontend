@@ -41,7 +41,7 @@ export const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -57,17 +57,17 @@ export const Modal = ({
             >
               <Dialog.Panel
                 className={cn(
-                  "w-full transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all",
+                  "w-full transform overflow-hidden rounded-2xl card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 text-left align-middle transition-all animate-scale-in",
                   sizeClasses[size],
                   className,
                 )}
               >
                 {(title || showCloseButton) && (
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-primary-200/20">
                     {title && (
                       <Dialog.Title
                         as="h3"
-                        className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
+                        className="text-xl font-display font-bold gradient-text"
                       >
                         {title}
                       </Dialog.Title>
@@ -75,7 +75,7 @@ export const Modal = ({
                     {showCloseButton && (
                       <button
                         type="button"
-                        className="ml-auto rounded-md p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="ml-auto rounded-xl p-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-danger-500 hover:bg-danger-500/10 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300 hover:scale-110"
                         onClick={onClose}
                       >
                         <span className="sr-only">Close</span>

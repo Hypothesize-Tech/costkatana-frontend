@@ -85,10 +85,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-                    <p className="font-semibold text-sm mb-2">{formatDate(label)}</p>
+                <div className="card p-4 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in">
+                    <p className="font-display font-bold text-sm text-light-text-primary dark:text-dark-text-primary mb-3">{formatDate(label)}</p>
                     {payload.map((entry: any, index: number) => (
-                        <p key={index} className="text-xs" style={{ color: entry.color }}>
+                        <p key={index} className="text-sm font-body mb-1" style={{ color: entry.color }}>
                             {entry.name}: {entry.name === 'Cost'
                                 ? `$${entry.value.toFixed(2)}`
                                 : formatNumber(entry.value)}
@@ -102,16 +102,19 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
 
     if (loading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Usage Trend</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="text-2xl font-display font-bold gradient-text">📈 Usage Trend</h3>
+                </div>
+                <div className="flex items-center justify-center h-64">
+                    <div className="spinner-lg text-primary-500"></div>
+                </div>
+            </div>
         );
     }
 
@@ -129,9 +132,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="requests"
                         type="monotone"
                         dataKey="requests"
-                        stroke="#3B82F6"
-                        strokeWidth={2}
-                        dot={{ r: 3 }}
+                        stroke="#9B5DE5"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "#9B5DE5", strokeWidth: 2, stroke: "#fff" }}
                         name="Requests"
                     />
                 );
@@ -142,9 +145,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="tokens"
                         type="monotone"
                         dataKey="tokens"
-                        stroke="#10B981"
-                        strokeWidth={2}
-                        dot={{ r: 3 }}
+                        stroke="#00F5D4"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "#00F5D4", strokeWidth: 2, stroke: "#fff" }}
                         name="Tokens"
                     />
                 );
@@ -155,9 +158,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="cost"
                         type="monotone"
                         dataKey="cost"
-                        stroke="#F59E0B"
-                        strokeWidth={2}
-                        dot={{ r: 3 }}
+                        stroke="#FF9500"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "#FF9500", strokeWidth: 2, stroke: "#fff" }}
                         name="Cost"
                     />
                 );
@@ -173,10 +176,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="requests"
                         type="monotone"
                         dataKey="requests"
-                        stroke="#3B82F6"
-                        fill="#3B82F6"
-                        fillOpacity={0.3}
-                        strokeWidth={2}
+                        stroke="#9B5DE5"
+                        fill="#9B5DE5"
+                        fillOpacity={0.2}
+                        strokeWidth={3}
                         name="Requests"
                     />
                 );
@@ -187,10 +190,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="tokens"
                         type="monotone"
                         dataKey="tokens"
-                        stroke="#10B981"
-                        fill="#10B981"
-                        fillOpacity={0.3}
-                        strokeWidth={2}
+                        stroke="#00F5D4"
+                        fill="#00F5D4"
+                        fillOpacity={0.2}
+                        strokeWidth={3}
                         name="Tokens"
                     />
                 );
@@ -201,10 +204,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         key="cost"
                         type="monotone"
                         dataKey="cost"
-                        stroke="#F59E0B"
-                        fill="#F59E0B"
-                        fillOpacity={0.3}
-                        strokeWidth={2}
+                        stroke="#FF9500"
+                        fill="#FF9500"
+                        fillOpacity={0.2}
+                        strokeWidth={3}
                         name="Cost"
                     />
                 );
@@ -219,8 +222,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                     <Bar
                         key="requests"
                         dataKey="requests"
-                        fill="#3B82F6"
+                        fill="#9B5DE5"
                         name="Requests"
+                        radius={[4, 4, 0, 0]}
                     />
                 );
             }
@@ -229,8 +233,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                     <Bar
                         key="tokens"
                         dataKey="tokens"
-                        fill="#10B981"
+                        fill="#00F5D4"
                         name="Tokens"
+                        radius={[4, 4, 0, 0]}
                     />
                 );
             }
@@ -239,8 +244,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                     <Bar
                         key="cost"
                         dataKey="cost"
-                        fill="#F59E0B"
+                        fill="#FF9500"
                         name="Cost"
+                        radius={[4, 4, 0, 0]}
                     />
                 );
             }
@@ -315,123 +321,128 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <CardTitle>Usage Trend</CardTitle>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setSelectedMetric('all')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedMetric === 'all'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                All
-                            </button>
-                            <button
-                                onClick={() => setSelectedMetric('requests')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedMetric === 'requests'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                Requests
-                            </button>
-                            <button
-                                onClick={() => setSelectedMetric('tokens')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedMetric === 'tokens'
-                                    ? 'bg-green-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                Tokens
-                            </button>
-                            <button
-                                onClick={() => setSelectedMetric('cost')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedMetric === 'cost'
-                                    ? 'bg-yellow-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                Cost
-                            </button>
+        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
                         </div>
+                        <h3 className="text-2xl font-display font-bold gradient-text">📈 Usage Trend</h3>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setSelectedRange('7d')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedRange === '7d'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                7 Days
-                            </button>
-                            <button
-                                onClick={() => setSelectedRange('30d')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedRange === '30d'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                30 Days
-                            </button>
-                            <button
-                                onClick={() => setSelectedRange('60d')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedRange === '60d'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                60 Days
-                            </button>
-                            <button
-                                onClick={() => setSelectedRange('90d')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedRange === '90d'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                90 Days
-                            </button>
-                            <button
-                                onClick={() => setSelectedRange('custom')}
-                                className={`px-3 py-1 text-xs rounded-full transition-colors ${selectedRange === 'custom'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                Custom
-                            </button>
-                        </div>
-                        {selectedRange === 'custom' && (
-                            <div className="flex gap-2">
-                                <input
-                                    type="date"
-                                    value={customStartDate?.toISOString().split('T')[0] || ''}
-                                    onChange={(e) => setCustomStartDate(e.target.value ? new Date(e.target.value) : null)}
-                                    className="px-2 py-1 text-xs border rounded"
-                                />
-                                <span className="text-xs text-gray-500 self-center">to</span>
-                                <input
-                                    type="date"
-                                    value={customEndDate?.toISOString().split('T')[0] || ''}
-                                    onChange={(e) => setCustomEndDate(e.target.value ? new Date(e.target.value) : null)}
-                                    className="px-2 py-1 text-xs border rounded"
-                                />
-                            </div>
-                        )}
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setSelectedMetric('all')}
+                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
+                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                }`}
+                        >
+                            All
+                        </button>
+                        <button
+                            onClick={() => setSelectedMetric('requests')}
+                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'requests'
+                                ? 'bg-gradient-secondary text-white shadow-lg glow-secondary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
+                                }`}
+                        >
+                            ⚡ Requests
+                        </button>
+                        <button
+                            onClick={() => setSelectedMetric('tokens')}
+                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'tokens'
+                                ? 'bg-gradient-success text-white shadow-lg glow-success'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
+                                }`}
+                        >
+                            🪙 Tokens
+                        </button>
+                        <button
+                            onClick={() => setSelectedMetric('cost')}
+                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'cost'
+                                ? 'bg-gradient-warning text-white shadow-lg glow-warning'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
+                                }`}
+                        >
+                            💰 Cost
+                        </button>
                     </div>
                 </div>
-            </CardHeader>
-            <CardContent>
+                <div className="flex items-center justify-between">
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setSelectedRange('7d')}
+                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
+                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                }`}
+                        >
+                            7 Days
+                        </button>
+                        <button
+                            onClick={() => setSelectedRange('30d')}
+                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
+                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                }`}
+                        >
+                            30 Days
+                        </button>
+                        <button
+                            onClick={() => setSelectedRange('60d')}
+                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
+                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                }`}
+                        >
+                            60 Days
+                        </button>
+                        <button
+                            onClick={() => setSelectedRange('90d')}
+                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
+                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                }`}
+                        >
+                            90 Days
+                        </button>
+                        <button
+                            onClick={() => setSelectedRange('custom')}
+                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === 'custom'
+                                ? 'bg-gradient-accent text-white shadow-lg glow-accent'
+                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
+                                }`}
+                        >
+                            📅 Custom
+                        </button>
+                    </div>
+                    {selectedRange === 'custom' && (
+                        <div className="flex items-center gap-3 glass p-3 rounded-xl border border-primary-200/30">
+                            <input
+                                type="date"
+                                value={customStartDate?.toISOString().split('T')[0] || ''}
+                                onChange={(e) => setCustomStartDate(e.target.value ? new Date(e.target.value) : null)}
+                                className="input text-sm"
+                            />
+                            <span className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">to</span>
+                            <input
+                                type="date"
+                                value={customEndDate?.toISOString().split('T')[0] || ''}
+                                onChange={(e) => setCustomEndDate(e.target.value ? new Date(e.target.value) : null)}
+                                className="input text-sm"
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="mt-6">
                 <ResponsiveContainer width="100%" height={300}>
                     {renderChart()}
                 </ResponsiveContainer>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 };

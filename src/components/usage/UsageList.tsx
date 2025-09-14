@@ -55,16 +55,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   if (usage.length === 0) {
     return (
-      <div className="p-12 text-center card">
-        <div className="mx-auto w-24 h-24 text-gray-400">
+      <div className="p-12 text-center glass rounded-xl border border-accent-200/30">
+        <div className="mx-auto w-24 h-24 text-light-text-tertiary dark:text-dark-text-tertiary">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
-        <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="mt-4 text-lg font-display font-bold gradient-text-primary">
           No usage data yet
         </h3>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
           Start tracking your AI API usage to see it here.
         </p>
       </div>
@@ -73,15 +73,15 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   return (
     <>
-      <div className="overflow-hidden card">
-        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+      <div className="overflow-hidden glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="px-6 py-4 border-b border-accent-200/30">
           <div className="flex justify-between items-center">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+            <h3 className="text-lg font-display font-bold gradient-text-primary">
               Usage History
             </h3>
             <button
               onClick={onRefresh}
-              className="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+              className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
             >
               <ArrowPathIcon className="w-5 h-5" />
             </button>
@@ -89,52 +89,52 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
+          <table className="min-w-full divide-y divide-accent-200/30">
+            <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
               <tr>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Service / Model
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Project
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Workflow
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Email Information
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Request/Response
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Properties
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Token Breakdown
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Cost
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-400">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
                   Time
                 </th>
-                <th className="relative px-6 py-3">
+                <th className="relative px-6 py-4">
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+            <tbody className="glass divide-y divide-accent-200/30">
               {usage.map((item) => {
                 const service = AI_SERVICES[item.service as keyof typeof AI_SERVICES];
 
                 return (
                   <tr
                     key={item._id}
-                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
                     onClick={() => setSelectedUsage(item)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -148,39 +148,39 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             {formatServiceName(item.service)}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                             {item.model}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                      <div className="text-sm text-light-text-primary dark:text-dark-text-primary">
                         {getProjectName(item.projectId)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.workflowId ? (
                         <div>
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             {item.workflowName || 'Unnamed Workflow'}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                             {item.workflowStep && (
                               <span className="mr-2">{item.workflowStep}</span>
                             )}
                             {item.workflowSequence && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                              <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium glass border border-blue-300/30 bg-gradient-to-r from-blue-400/20 to-blue-500/20 text-blue-600 dark:text-blue-400">
                                 #{item.workflowSequence}
                               </span>
                             )}
                           </div>
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-400 dark:text-gray-500">
+                        <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                           No workflow
                         </div>
                       )}
@@ -206,7 +206,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           )}
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-400 dark:text-gray-500">
+                        <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                           No email data
                         </div>
                       )}
@@ -449,13 +449,13 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                               e.stopPropagation();
                               handleSimulate(item);
                             }}
-                            className="text-purple-600 hover:text-purple-900"
+                            className="p-2 rounded-xl glass border border-accent-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
                             title="Try What-If Simulation"
                           >
                             <BeakerIcon className="w-4 h-4" />
                           </button>
                         )}
-                        <ChevronRightIcon className="w-5 h-5 text-gray-400" />
+                        <ChevronRightIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
                       </div>
                     </td>
                   </tr>
@@ -466,7 +466,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         </div>
 
         {pagination && (
-          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="px-6 py-4 border-t border-accent-200/30">
             <Pagination
               currentPage={pagination.currentPage}
               totalPages={pagination.totalPages}
@@ -487,16 +487,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
       {selectedUsage && (
         <div className="overflow-y-auto fixed inset-0 z-50">
           <div className="flex justify-center items-center px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setSelectedUsage(null)} />
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUsage(null)} />
 
-            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle bg-white rounded-lg shadow-xl transition-all transform dark:bg-gray-800">
+            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 transition-all transform">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <h3 className="text-lg font-display font-bold gradient-text-primary">
                   Usage Details
                 </h3>
                 <button
                   onClick={() => setSelectedUsage(null)}
-                  className="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                  className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>

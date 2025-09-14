@@ -12,38 +12,54 @@ export const TopOperations: React.FC = () => {
         refetchInterval: 60000
     });
 
-    if (isLoading) return <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200 animate-pulse h-40" />;
-    if (error) return <div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">Failed to load top operations</div>;
+    if (isLoading) return <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl animate-pulse h-40" />;
+    if (error) return (
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                    <span className="text-white text-sm">⚠️</span>
+                </div>
+                <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                    Failed to load top operations
+                </span>
+            </div>
+        </div>
+    );
 
     const ops = data?.top_operations || [];
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Top Operations</h2>
-                <div className="inline-flex rounded-lg bg-gray-100 p-1">
+        <div className="glass rounded-xl p-8 border border-success-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                        <span className="text-white text-lg">🚀</span>
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text-success">Top Operations</h2>
+                </div>
+                <div className="glass rounded-lg border border-primary-200/30 p-1">
                     {['1h', '24h', '7d'].map((frame) => (
-                        <button key={frame} onClick={() => setTimeframe(frame)} className={`px-3 py-1.5 text-sm rounded-md transition ${timeframe === frame ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}>{frame}</button>
+                        <button key={frame} onClick={() => setTimeframe(frame)} className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-success text-white shadow-lg glow-success' : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-success/10'}`}>{frame}</button>
                     ))}
                 </div>
             </div>
             <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full">
                     <thead>
-                        <tr className="text-left text-gray-600 border-b">
-                            <th className="px-3 py-2">Operation</th>
-                            <th className="px-3 py-2">Count</th>
-                            <th className="px-3 py-2">Avg Latency (ms)</th>
-                            <th className="px-3 py-2">Error Rate</th>
+                        <tr className="border-b border-primary-200/30">
+                            <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Operation</th>
+                            <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Count</th>
+                            <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Avg Latency (ms)</th>
+                            <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Error Rate</th>
                         </tr>
                     </thead>
                     <tbody>
                         {ops.map((op, i) => (
-                            <tr key={`${op.name}-${i}`} className="border-b hover:bg-gray-50">
-                                <td className="px-3 py-2">{op.name}</td>
-                                <td className="px-3 py-2">{op.count}</td>
-                                <td className="px-3 py-2">{Number(op.avg_duration_ms || 0).toFixed(1)}</td>
-                                <td className="px-3 py-2">{Number(op.error_rate || 0).toFixed(1)}%</td>
+                            <tr key={`${op.name}-${i}`} className="border-b border-primary-200/20 hover:bg-gradient-success/5 transition-all duration-200">
+                                <td className="px-4 py-3 font-body text-light-text-primary dark:text-dark-text-primary">{op.name}</td>
+                                <td className="px-4 py-3 font-display font-semibold gradient-text-success">{op.count}</td>
+                                <td className="px-4 py-3 font-display font-semibold gradient-text-warning">{Number(op.avg_duration_ms || 0).toFixed(1)}</td>
+                                <td className="px-4 py-3 font-display font-semibold gradient-text-danger">{Number(op.error_rate || 0).toFixed(1)}%</td>
                             </tr>
                         ))}
                     </tbody>

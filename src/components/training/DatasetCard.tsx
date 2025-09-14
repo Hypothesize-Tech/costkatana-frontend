@@ -92,37 +92,35 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all hover:scale-[1.02]">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
+            <div className="flex items-center space-x-3 mb-2">
+              <h3 className="text-xl font-display font-bold gradient-text-primary truncate">
                 {dataset.name}
               </h3>
-              <div
-                className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(dataset.status)}`}
-              >
+              <div className={`badge-${dataset.status === 'ready' ? 'success' : dataset.status === 'draft' ? 'warning' : dataset.status === 'training' ? 'info' : 'secondary'} inline-flex items-center gap-1`}>
                 {getStatusIcon(dataset.status)}
                 <span className="capitalize">{dataset.status}</span>
               </div>
             </div>
 
             {dataset.description && (
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 line-clamp-2">
                 {dataset.description}
               </p>
             )}
 
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <div className="flex items-center space-x-1">
-                <span className="font-medium">Use Case:</span>
-                <span>{dataset.targetUseCase.replace(/-/g, " ")}</span>
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="font-display font-medium gradient-text-secondary">Use Case:</span>
+                <span className="badge-secondary text-xs">{dataset.targetUseCase.replace(/-/g, " ")}</span>
               </div>
-              <div className="flex items-center space-x-1">
-                <span className="font-medium">Model:</span>
-                <span>{dataset.targetModel}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-display font-medium gradient-text-secondary">Model:</span>
+                <span className="font-mono text-light-text-primary dark:text-dark-text-primary text-xs">{dataset.targetModel}</span>
               </div>
             </div>
           </div>
@@ -132,7 +130,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             {dataset.requestIds.length > 0 && onPreview && (
               <button
                 onClick={() => onPreview(dataset)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100"
+                className="btn-icon-secondary"
                 title="Preview Dataset"
               >
                 <EyeIcon className="h-4 w-4" />
@@ -142,7 +140,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             {onEdit && (
               <button
                 onClick={() => onEdit(dataset)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100"
+                className="btn-icon-secondary"
                 title="Edit Dataset"
               >
                 <PencilIcon className="h-4 w-4" />
@@ -152,7 +150,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(dataset._id)}
-                className="p-2 text-gray-400 hover:text-red-600 rounded-md hover:bg-gray-100"
+                className="btn-icon-secondary hover:text-danger-600 hover:bg-danger-50"
                 title="Delete Dataset"
               >
                 <TrashIcon className="h-4 w-4" />
@@ -165,42 +163,42 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
       {/* Stats */}
       <div className="px-6 pb-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-1 text-gray-500 mb-1">
+          <div className="text-center glass rounded-lg p-3 border border-info-200/30">
+            <div className="flex items-center justify-center gap-2 text-info-600 dark:text-info-400 mb-2">
               <DocumentTextIcon className="h-4 w-4" />
-              <span className="text-xs">Requests</span>
+              <span className="text-xs font-display font-medium">Requests</span>
             </div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className="text-lg font-display font-bold gradient-text-info">
               {dataset.stats.totalRequests}
             </div>
           </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-1 text-gray-500 mb-1">
+          <div className="text-center glass rounded-lg p-3 border border-warning-200/30">
+            <div className="flex items-center justify-center gap-2 text-warning-600 dark:text-warning-400 mb-2">
               <StarIcon className="h-4 w-4" />
-              <span className="text-xs">Avg Score</span>
+              <span className="text-xs font-display font-medium">Avg Score</span>
             </div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className="text-lg font-display font-bold gradient-text-warning">
               {dataset.stats.averageScore.toFixed(1)}
             </div>
           </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-1 text-gray-500 mb-1">
+          <div className="text-center glass rounded-lg p-3 border border-secondary-200/30">
+            <div className="flex items-center justify-center gap-2 text-secondary-600 dark:text-secondary-400 mb-2">
               <DocumentTextIcon className="h-4 w-4" />
-              <span className="text-xs">Tokens</span>
+              <span className="text-xs font-display font-medium">Tokens</span>
             </div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className="text-lg font-display font-bold gradient-text-secondary">
               {formatTokens(dataset.stats.totalTokens)}
             </div>
           </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-1 text-gray-500 mb-1">
+          <div className="text-center glass rounded-lg p-3 border border-success-200/30">
+            <div className="flex items-center justify-center gap-2 text-success-600 dark:text-success-400 mb-2">
               <CurrencyDollarIcon className="h-4 w-4" />
-              <span className="text-xs">Cost</span>
+              <span className="text-xs font-display font-medium">Cost</span>
             </div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className="text-lg font-display font-bold gradient-text-success">
               {formatCost(dataset.stats.totalCost)}
             </div>
           </div>
@@ -210,54 +208,54 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
       {/* Provider/Model Breakdown */}
       {(Object.keys(dataset.stats.providerBreakdown).length > 0 ||
         Object.keys(dataset.stats.modelBreakdown).length > 0) && (
-        <div className="px-6 pb-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            {Object.keys(dataset.stats.providerBreakdown).length > 0 && (
-              <div>
-                <h4 className="font-medium text-gray-700 mb-2">Providers</h4>
-                <div className="space-y-1">
-                  {Object.entries(dataset.stats.providerBreakdown).map(
-                    ([provider, count]) => (
-                      <div key={provider} className="flex justify-between">
-                        <span className="text-gray-600">{provider}</span>
-                        <span className="font-medium">{count}</span>
-                      </div>
-                    ),
-                  )}
+          <div className="px-6 pb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              {Object.keys(dataset.stats.providerBreakdown).length > 0 && (
+                <div className="glass rounded-lg p-4 border border-purple-200/30">
+                  <h4 className="font-display font-medium gradient-text-purple mb-3">Providers</h4>
+                  <div className="space-y-2">
+                    {Object.entries(dataset.stats.providerBreakdown).map(
+                      ([provider, count]) => (
+                        <div key={provider} className="flex justify-between items-center">
+                          <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">{provider}</span>
+                          <span className="badge-primary text-xs">{count}</span>
+                        </div>
+                      ),
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {Object.keys(dataset.stats.modelBreakdown).length > 0 && (
-              <div>
-                <h4 className="font-medium text-gray-700 mb-2">Models</h4>
-                <div className="space-y-1">
-                  {Object.entries(dataset.stats.modelBreakdown)
-                    .slice(0, 3)
-                    .map(([model, count]) => (
-                      <div key={model} className="flex justify-between">
-                        <span className="text-gray-600 truncate">{model}</span>
-                        <span className="font-medium">{count}</span>
+              {Object.keys(dataset.stats.modelBreakdown).length > 0 && (
+                <div className="glass rounded-lg p-4 border border-accent-200/30">
+                  <h4 className="font-display font-medium gradient-text-accent mb-3">Models</h4>
+                  <div className="space-y-2">
+                    {Object.entries(dataset.stats.modelBreakdown)
+                      .slice(0, 3)
+                      .map(([model, count]) => (
+                        <div key={model} className="flex justify-between items-center">
+                          <span className="font-mono text-light-text-secondary dark:text-dark-text-secondary truncate text-xs">{model}</span>
+                          <span className="badge-secondary text-xs">{count}</span>
+                        </div>
+                      ))}
+                    {Object.keys(dataset.stats.modelBreakdown).length > 3 && (
+                      <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        +{Object.keys(dataset.stats.modelBreakdown).length - 3}{" "}
+                        more
                       </div>
-                    ))}
-                  {Object.keys(dataset.stats.modelBreakdown).length > 3 && (
-                    <div className="text-xs text-gray-500">
-                      +{Object.keys(dataset.stats.modelBreakdown).length - 3}{" "}
-                      more
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+      <div className="px-6 py-4 glass border-t border-primary-200/30 rounded-b-xl backdrop-blur-xl">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4 text-xs text-gray-500">
-            <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-4 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+            <div className="flex items-center gap-1">
               <CalendarIcon className="h-3 w-3" />
               <span>
                 Created {new Date(dataset.createdAt).toLocaleDateString()}
@@ -265,7 +263,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             </div>
 
             {dataset.lastExportedAt && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-1">
                 <ArrowDownTrayIcon className="h-3 w-3" />
                 <span>
                   Exported{" "}
@@ -274,8 +272,9 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
               </div>
             )}
 
-            <div>
-              <span>Min Score: {dataset.minScore}★</span>
+            <div className="flex items-center gap-1">
+              <span>Min Score:</span>
+              <span className="badge-warning text-xs">{dataset.minScore}★</span>
             </div>
           </div>
 
@@ -285,9 +284,19 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
               <button
                 onClick={handlePopulate}
                 disabled={isPopulating}
-                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary text-sm inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isPopulating ? "Populating..." : "Auto-Populate"}
+                {isPopulating ? (
+                  <>
+                    <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full"></div>
+                    Populating...
+                  </>
+                ) : (
+                  <>
+                    <span>🔄</span>
+                    Auto-Populate
+                  </>
+                )}
               </button>
             )}
 
@@ -295,7 +304,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             {dataset.requestIds.length > 0 && onExport && (
               <button
                 onClick={() => onExport(dataset)}
-                className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center space-x-1"
+                className="btn-success text-sm inline-flex items-center gap-2"
               >
                 <ArrowDownTrayIcon className="h-4 w-4" />
                 <span>Export</span>

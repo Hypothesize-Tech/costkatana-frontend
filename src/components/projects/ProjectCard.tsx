@@ -32,10 +32,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const getBudgetColor = () => {
     if (isOverBudget)
-      return "text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-200";
+      return "text-danger-700 dark:text-danger-300 bg-gradient-danger/20 border-danger-200/30";
     if (isNearLimit)
-      return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-200";
-    return "text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-200";
+      return "text-warning-700 dark:text-warning-300 bg-gradient-warning/20 border-warning-200/30";
+    return "text-success-700 dark:text-success-300 bg-gradient-success/20 border-success-200/30";
   };
 
   const formatCurrency = (amount: number) => {
@@ -46,49 +46,55 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow transition-shadow dark:bg-gray-800 hover:shadow-lg dark:border-gray-700">
+    <div className="glass rounded-xl shadow-lg border border-primary-200/30 backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-primary-300/50 overflow-hidden">
       <div className="p-6">
         {/* Header */}
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start mb-6">
           <div className="flex-1 min-w-0">
-            <div className="flex gap-2 items-center mb-2">
-              <h3 className="text-lg font-semibold text-gray-900 truncate dark:text-white">
-                {project.name}
-              </h3>
-              <span
-                className={`px-2 py-1 text-xs font-medium rounded-full ${
-                  project.isActive
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200"
-                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                }`}
-              >
-                {project.isActive ? "Active" : "Inactive"}
-              </span>
+            <div className="flex gap-3 items-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                <span className="text-white font-display font-bold text-lg">
+                  {project.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-display font-bold gradient-text truncate mb-1">
+                  {project.name}
+                </h3>
+                <span
+                  className={`px-3 py-1 text-xs font-display font-bold rounded-full border ${project.isActive
+                      ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30"
+                      : "bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30"
+                    }`}
+                >
+                  {project.isActive ? "Active" : "Inactive"}
+                </span>
+              </div>
             </div>
             {project.description && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
                 {project.description}
               </p>
             )}
           </div>
-          <div className="flex gap-1 ml-4">
+          <div className="flex gap-2 ml-4">
             <button
               onClick={onView}
-              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
+              className="glass p-2 rounded-lg border border-primary-200/30 text-primary-600 dark:text-primary-400 hover:scale-110 transition-all duration-200"
               title="View project"
             >
               <FiEye className="w-4 h-4" />
             </button>
             <button
               onClick={onEdit}
-              className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition-colors"
+              className="glass p-2 rounded-lg border border-success-200/30 text-success-600 dark:text-success-400 hover:scale-110 transition-all duration-200"
               title="Edit project"
             >
               <FiEdit3 className="w-4 h-4" />
             </button>
             <button
               onClick={onDelete}
-              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+              className="glass p-2 rounded-lg border border-danger-200/30 text-danger-600 dark:text-danger-400 hover:scale-110 transition-all duration-200"
               title="Delete project"
             >
               <FiTrash2 className="w-4 h-4" />
@@ -97,13 +103,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         {/* Budget Progress */}
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
               Budget Usage
             </span>
             <span
-              className={`px-2 py-1 text-xs font-medium rounded-full ${getBudgetColor()}`}
+              className={`px-3 py-1 text-xs font-display font-bold rounded-full border ${getBudgetColor()}`}
             >
               {budgetUsagePercentage.toFixed(0)}%
               {isOverBudget && (
@@ -111,64 +117,63 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               )}
             </span>
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700">
+          <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
             <div
-              className={`h-2 rounded-full transition-all ${
-                isOverBudget
-                  ? "bg-red-600"
+              className={`h-3 rounded-full transition-all duration-500 ${isOverBudget
+                  ? "bg-gradient-danger"
                   : isNearLimit
-                    ? "bg-yellow-500"
-                    : "bg-green-500"
-              }`}
+                    ? "bg-gradient-warning"
+                    : "bg-gradient-success"
+                }`}
               style={{ width: `${Math.min(budgetUsagePercentage, 100)}%` }}
             />
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="flex justify-center items-center mb-1 text-gray-400">
-              <FiUsers className="w-4 h-4" />
+        <div className="grid grid-cols-3 gap-4">
+          <div className="glass rounded-lg p-4 border border-secondary-200/30 text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary mx-auto mb-2">
+              <FiUsers className="w-4 h-4 text-white" />
             </div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
+            <p className="text-lg font-display font-bold gradient-text-secondary">
               {project.members?.length || 0}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Members</p>
+            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Members</p>
           </div>
-          <div>
-            <div className="flex justify-center items-center mb-1 text-gray-400">
-              <FiDollarSign className="w-4 h-4" />
+          <div className="glass rounded-lg p-4 border border-success-200/30 text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success mx-auto mb-2">
+              <FiDollarSign className="w-4 h-4 text-white" />
             </div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
+            <p className="text-lg font-display font-bold gradient-text-success">
               {formatCurrency(budgetAmount)}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Budget</p>
+            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Budget</p>
           </div>
-          <div>
-            <div className="flex justify-center items-center mb-1 text-gray-400">
-              <FiTrendingUp className="w-4 h-4" />
+          <div className="glass rounded-lg p-4 border border-accent-200/30 text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent mx-auto mb-2">
+              <FiTrendingUp className="w-4 h-4 text-white" />
             </div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
+            <p className="text-lg font-display font-bold gradient-text-accent">
               {formatCurrency(budgetSpent)}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Spent</p>
+            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Spent</p>
           </div>
         </div>
 
         {/* Tags */}
         {project.tags && project.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-6">
             {project.tags.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
-                className="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-400"
+                className="px-3 py-1 text-xs font-display font-medium bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30 rounded-full"
               >
                 {tag}
               </span>
             ))}
             {project.tags.length > 3 && (
-              <span className="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-400">
+              <span className="px-3 py-1 text-xs font-display font-medium bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border border-secondary-200/30 rounded-full">
                 +{project.tags.length - 3} more
               </span>
             )}
@@ -177,10 +182,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
         {/* Period indicator */}
         {project.budget?.period && (
-          <div className="pt-3 mt-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-              Budget period: {project.budget.period}
-            </p>
+          <div className="pt-4 mt-6 border-t border-primary-200/30">
+            <div className="glass rounded-lg p-3 border border-primary-200/30 text-center">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                Budget period: <span className="font-display font-semibold gradient-text">{project.budget.period}</span>
+              </p>
+            </div>
           </div>
         )}
       </div>

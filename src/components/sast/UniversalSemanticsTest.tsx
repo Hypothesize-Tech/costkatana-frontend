@@ -7,10 +7,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import {
     Globe,
     Languages,
@@ -104,96 +101,95 @@ const UniversalSemanticsTest: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Input Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <Globe className="w-5 h-5 mr-2 text-indigo-500" />
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <Globe className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold gradient-text">
                         Universal Semantics Test
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                Concept to Test
-                            </label>
-                            <Input
-                                placeholder="Enter a concept or sentence..."
-                                value={concept}
-                                onChange={(e) => setConcept(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleTest()}
-                            />
-                        </div>
+                    </h2>
+                </div>
+                <div className="space-y-6">
+                    <div>
+                        <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                            Concept to Test
+                        </label>
+                        <input
+                            placeholder="Enter a concept or sentence..."
+                            value={concept}
+                            onChange={(e) => setConcept(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleTest()}
+                            className="input"
+                        />
+                    </div>
 
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                Languages to Compare ({selectedLanguages.length} selected)
-                            </label>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                {availableLanguages.map((language) => (
-                                    <Button
-                                        key={language.code}
-                                        variant={selectedLanguages.includes(language.code) ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => handleLanguageToggle(language.code)}
-                                        className="justify-start"
-                                    >
-                                        <span className="mr-2">{language.flag}</span>
-                                        {language.name}
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex gap-2">
-                            <Button onClick={handleTest} disabled={loading}>
-                                {loading ? (
-                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                ) : (
-                                    <Target className="w-4 h-4 mr-2" />
-                                )}
-                                Test Universality
-                            </Button>
+                    <div>
+                        <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                            Languages to Compare ({selectedLanguages.length} selected)
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {availableLanguages.map((language) => (
+                                <button
+                                    key={language.code}
+                                    onClick={() => handleLanguageToggle(language.code)}
+                                    className={`glass rounded-lg p-3 border transition-all duration-200 hover:scale-105 flex items-center gap-3 ${selectedLanguages.includes(language.code)
+                                        ? 'border-primary-300/50 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 glow-primary'
+                                        : 'border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:border-primary-300/50'
+                                        }`}
+                                >
+                                    <span className="text-xl">{language.flag}</span>
+                                    <span className="font-display font-medium">{language.name}</span>
+                                </button>
+                            ))}
                         </div>
                     </div>
-                </CardContent>
-            </Card>
+
+                    <div className="flex gap-3">
+                        <button onClick={handleTest} disabled={loading} className="btn-primary">
+                            {loading ? (
+                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            ) : (
+                                <Target className="w-4 h-4 mr-2" />
+                            )}
+                            Test Universality
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             {/* Example Concepts */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-sm">Try These Concepts</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                        {conceptExamples.map((example, index) => (
-                            <Button
-                                key={index}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setConcept(example)}
-                                className="text-xs"
-                            >
-                                <Lightbulb className="w-3 h-3 mr-1" />
-                                {example}
-                            </Button>
-                        ))}
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <Lightbulb className="w-4 h-4 text-white" />
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="font-display font-semibold gradient-text-secondary">Try These Concepts</h3>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                    {conceptExamples.map((example, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setConcept(example)}
+                            className="glass px-4 py-2 rounded-lg border border-primary-200/30 font-body text-sm text-light-text-primary dark:text-dark-text-primary hover:scale-105 transition-all duration-200 hover:border-primary-300/50 flex items-center gap-2"
+                        >
+                            <Lightbulb className="w-3 h-3" />
+                            {example}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             {/* Error Display */}
             {error && (
-                <Card className="border-red-200">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-red-600">
-                            <AlertTriangle className="w-4 h-4" />
-                            <span>{error}</span>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
+                        <AlertTriangle className="w-5 h-5" />
+                        <span className="font-body">{error}</span>
+                    </div>
+                </div>
             )}
 
             {/* Test Results */}

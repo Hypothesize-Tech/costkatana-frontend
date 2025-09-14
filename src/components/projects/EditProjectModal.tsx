@@ -54,14 +54,14 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       formData.budget.amount !== (project.budget?.amount || 0) ||
       formData.budget.period !== (project.budget?.period || "monthly") ||
       JSON.stringify(formData.budget.alerts) !==
-        JSON.stringify([
-          { threshold: 50, enabled: true },
-          { threshold: 80, enabled: true },
-          { threshold: 100, enabled: true },
-        ]) ||
+      JSON.stringify([
+        { threshold: 50, enabled: true },
+        { threshold: 80, enabled: true },
+        { threshold: 100, enabled: true },
+      ]) ||
       JSON.stringify(formData.tags) !== JSON.stringify(project.tags || []) ||
       JSON.stringify(formData.settings) !==
-        JSON.stringify(project.settings || {});
+      JSON.stringify(project.settings || {});
 
     setHasChanges(hasChanged);
   }, [formData, project]);
@@ -192,85 +192,97 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         onSubmit={handleSubmit}
         className="flex flex-col h-full max-h-[90vh]"
       >
-        <div className="overflow-y-auto flex-1 p-6 space-y-6">
+        <div className="overflow-y-auto flex-1 p-8 space-y-8">
           {/* Basic Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Basic Information
-            </h3>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                Project Name *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Enter project name"
-                required
-              />
+          <div className="glass rounded-xl p-6 border border-primary-200/30">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                <span className="text-white text-lg">📋</span>
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text">
+                Basic Information
+              </h3>
             </div>
+            <div className="space-y-6">
+              <div>
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Project Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  className="input"
+                  placeholder="Enter project name"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                Description
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
-                rows={3}
-                className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Describe your project"
-              />
-            </div>
+              <div>
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
+                  rows={3}
+                  className="input"
+                  placeholder="Describe your project"
+                />
+              </div>
 
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                Tags
-              </label>
-              <div className="space-y-2">
-                {formData.tags.map((tag, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={tag}
-                      onChange={(e) => handleTagChange(index, e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="Enter tag"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeTag(index)}
-                      className="p-2 text-red-600 rounded-lg transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addTag}
-                  className="flex gap-2 items-center px-3 py-1 text-sm text-blue-600 rounded-lg transition-colors dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Add Tag
-                </button>
+              <div>
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Tags
+                </label>
+                <div className="space-y-3">
+                  {formData.tags.map((tag, index) => (
+                    <div key={index} className="flex gap-3">
+                      <input
+                        type="text"
+                        value={tag}
+                        onChange={(e) => handleTagChange(index, e.target.value)}
+                        className="flex-1 input"
+                        placeholder="Enter tag"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeTag(index)}
+                        className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                      >
+                        <FiMinus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addTag}
+                    className="flex gap-2 items-center font-display font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                  >
+                    <FiPlus className="w-4 h-4" />
+                    Add Tag
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Budget Configuration */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Budget Configuration
-            </h3>
+          <div className="glass rounded-xl p-6 border border-success-200/30">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                <span className="text-white text-lg">💰</span>
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text-success">
+                Budget Configuration
+              </h3>
+            </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Amount ($) *
                 </label>
                 <input
@@ -282,7 +294,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       parseFloat(e.target.value) || 0,
                     )
                   }
-                  className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="input"
                   placeholder="0.00"
                   min="0"
                   step="0.01"
@@ -291,7 +303,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Period
                 </label>
                 <select
@@ -302,7 +314,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       e.target.value,
                     )
                   }
-                  className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="input"
                 >
                   <option value="monthly">Monthly</option>
                   <option value="quarterly">Quarterly</option>
@@ -313,55 +325,57 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="block mb-4 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Alerts
               </label>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {formData.budget.alerts.map((alert, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <input
-                      type="number"
-                      value={alert.threshold}
-                      onChange={(e) =>
-                        handleAlertChange(
-                          index,
-                          "threshold",
-                          parseInt(e.target.value) || 0,
-                        )
-                      }
-                      className="px-3 py-2 w-20 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      min="1"
-                      max="100"
-                    />
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      % of budget
-                    </span>
-                    <label className="flex gap-2 items-center">
+                  <div key={index} className="glass rounded-lg p-4 border border-warning-200/30">
+                    <div className="flex gap-4 items-center">
                       <input
-                        type="checkbox"
-                        checked={alert.enabled}
+                        type="number"
+                        value={alert.threshold}
                         onChange={(e) =>
-                          handleAlertChange(index, "enabled", e.target.checked)
+                          handleAlertChange(
+                            index,
+                            "threshold",
+                            parseInt(e.target.value) || 0,
+                          )
                         }
-                        className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        className="w-20 input"
+                        min="1"
+                        max="100"
                       />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
-                        Enabled
+                      <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        % of budget
                       </span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => removeAlert(index)}
-                      className="p-1 text-red-600 rounded transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
+                      <label className="flex gap-3 items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={alert.enabled}
+                          onChange={(e) =>
+                            handleAlertChange(index, "enabled", e.target.checked)
+                          }
+                          className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                        />
+                        <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                          Enabled
+                        </span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => removeAlert(index)}
+                        className="glass p-2 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                      >
+                        <FiMinus className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
                 <button
                   type="button"
                   onClick={addAlert}
-                  className="flex gap-2 items-center px-3 py-1 text-sm text-blue-600 rounded-lg transition-colors dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  className="flex gap-2 items-center font-display font-medium text-success-600 dark:text-success-400 hover:text-success-700 dark:hover:text-success-300 transition-colors"
                 >
                   <FiPlus className="w-4 h-4" />
                   Add Alert
@@ -371,129 +385,142 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Project Settings */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Project Settings
-            </h3>
+          <div className="glass rounded-xl p-6 border border-warning-200/30">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                <span className="text-white text-lg">⚙️</span>
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text-warning">
+                Project Settings
+              </h3>
+            </div>
 
-            <div className="space-y-3">
-              <label className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.settings.costOptimization.enabled}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["settings", "costOptimization", "enabled"],
-                      e.target.checked,
-                    )
-                  }
-                  className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Enable cost optimization
-                </span>
-              </label>
-
-              {formData.settings.costOptimization.enabled && (
-                <div className="ml-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Optimization Level
-                  </label>
-                  <select
-                    value={formData.settings.costOptimization.level}
+            <div className="space-y-6">
+              <div className="glass rounded-lg p-4 border border-primary-200/30">
+                <label className="flex gap-3 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.settings.costOptimization.enabled}
                     onChange={(e) =>
                       handleNestedInputChange(
-                        ["settings", "costOptimization", "level"],
-                        e.target.value,
+                        ["settings", "costOptimization", "enabled"],
+                        e.target.checked,
                       )
                     }
-                    className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="aggressive">Aggressive</option>
-                  </select>
-                </div>
-              )}
+                    className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  />
+                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    Enable cost optimization
+                  </span>
+                </label>
 
-              <label className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.settings.notifications.budgetAlerts}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["settings", "notifications", "budgetAlerts"],
-                      e.target.checked,
-                    )
-                  }
-                  className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Budget alerts
-                </span>
-              </label>
+                {formData.settings.costOptimization.enabled && (
+                  <div className="mt-4 ml-8">
+                    <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Optimization Level
+                    </label>
+                    <select
+                      value={formData.settings.costOptimization.level}
+                      onChange={(e) =>
+                        handleNestedInputChange(
+                          ["settings", "costOptimization", "level"],
+                          e.target.value,
+                        )
+                      }
+                      className="input"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="aggressive">Aggressive</option>
+                    </select>
+                  </div>
+                )}
+              </div>
 
-              <label className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.settings.notifications.weeklyReports}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["settings", "notifications", "weeklyReports"],
-                      e.target.checked,
-                    )
-                  }
-                  className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Weekly reports
-                </span>
-              </label>
+              <div className="glass rounded-lg p-4 border border-primary-200/30">
+                <label className="flex gap-3 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.settings.notifications.budgetAlerts}
+                    onChange={(e) =>
+                      handleNestedInputChange(
+                        ["settings", "notifications", "budgetAlerts"],
+                        e.target.checked,
+                      )
+                    }
+                    className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  />
+                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    Budget alerts
+                  </span>
+                </label>
+              </div>
 
-              <label className="flex gap-2 items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.settings.notifications.monthlyReports}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["settings", "notifications", "monthlyReports"],
-                      e.target.checked,
-                    )
-                  }
-                  className="text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Monthly reports
-                </span>
-              </label>
+              <div className="glass rounded-lg p-4 border border-primary-200/30">
+                <label className="flex gap-3 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.settings.notifications.weeklyReports}
+                    onChange={(e) =>
+                      handleNestedInputChange(
+                        ["settings", "notifications", "weeklyReports"],
+                        e.target.checked,
+                      )
+                    }
+                    className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  />
+                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    Weekly reports
+                  </span>
+                </label>
+              </div>
+
+              <div className="glass rounded-lg p-4 border border-primary-200/30">
+                <label className="flex gap-3 items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.settings.notifications.monthlyReports}
+                    onChange={(e) =>
+                      handleNestedInputChange(
+                        ["settings", "notifications", "monthlyReports"],
+                        e.target.checked,
+                      )
+                    }
+                    className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  />
+                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    Monthly reports
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex gap-2 items-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex justify-between items-center p-8 border-t border-primary-200/30">
+          <div className="flex gap-2 items-center font-body text-light-text-secondary dark:text-dark-text-secondary">
             {hasChanges ? (
-              <span className="text-amber-600 dark:text-amber-400">
+              <span className="text-warning-600 dark:text-warning-400">
                 You have unsaved changes
               </span>
             ) : (
               <span>No changes made</span>
             )}
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 rounded-lg transition-colors dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              className="btn-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !hasChanges}
-              className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary"
             >
               {loading ? (
                 <>

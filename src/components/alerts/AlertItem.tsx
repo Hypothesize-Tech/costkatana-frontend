@@ -28,38 +28,38 @@ export const AlertItem: React.FC<AlertItemProps> = ({
   const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
 
   const getIcon = () => {
-    const iconProps = "h-5 w-5";
+    const iconProps = "h-6 w-6";
 
     switch (alert.severity) {
       case "critical":
-        return <XCircleIcon className={`${iconProps} text-red-500`} />;
+        return <XCircleIcon className={`${iconProps} text-danger-500`} />;
       case "high":
         return (
-          <ExclamationTriangleIcon className={`${iconProps} text-orange-500`} />
+          <ExclamationTriangleIcon className={`${iconProps} text-accent-500`} />
         );
       case "medium":
         return (
-          <InformationCircleIcon className={`${iconProps} text-yellow-500`} />
+          <InformationCircleIcon className={`${iconProps} text-highlight-500`} />
         );
       case "low":
-        return <CheckCircleIcon className={`${iconProps} text-blue-500`} />;
+        return <CheckCircleIcon className={`${iconProps} text-success-500`} />;
       default:
-        return <BellIcon className={`${iconProps} text-gray-500`} />;
+        return <BellIcon className={`${iconProps} text-primary-500`} />;
     }
   };
 
   const getSeverityColor = () => {
     switch (alert.severity) {
       case "critical":
-        return "border-red-200 bg-red-50";
+        return "border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger";
       case "high":
-        return "border-orange-200 bg-orange-50";
+        return "border-accent-200/50 bg-gradient-to-br from-accent-50 to-accent-100/50";
       case "medium":
-        return "border-yellow-200 bg-yellow-50";
+        return "border-highlight-200/50 bg-gradient-to-br from-highlight-50 to-highlight-100/50";
       case "low":
-        return "border-blue-200 bg-blue-50";
+        return "border-success-200/50 bg-gradient-to-br from-success-50 to-success-100/50";
       default:
-        return "border-gray-200 bg-gray-50";
+        return "border-primary-200/50 bg-gradient-to-br from-primary-50 to-primary-100/50";
     }
   };
 
@@ -72,93 +72,98 @@ export const AlertItem: React.FC<AlertItemProps> = ({
 
   return (
     <div
-      className={`p-4 rounded-lg border ${getSeverityColor()} ${
-        !alert.read ? "ring-2 ring-indigo-500 ring-opacity-50" : ""
-      }`}
+      className={`p-6 rounded-2xl border backdrop-blur-xl ${getSeverityColor()} ${!alert.read ? "ring-2 ring-primary-500 ring-opacity-50 shadow-lg" : "shadow-md"
+        } transition-all duration-300 hover:shadow-xl hover:scale-[1.02] animate-fade-in`}
     >
       <div className="flex items-start">
-        <div className="flex-shrink-0 mt-0.5">{getIcon()}</div>
-        <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium text-gray-900">{alert.title}</h3>
-          <p className="mt-1 text-sm text-gray-600">{alert.message}</p>
+        <div className="flex-shrink-0 mt-1 w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+          {getIcon()}
+        </div>
+        <div className="ml-4 flex-1">
+          <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{alert.title}</h3>
+          <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{alert.message}</p>
 
           {/* Metadata */}
           {alert.data && (
-            <div className="mt-2 text-xs text-gray-500">
-              {alert.type === "cost_threshold" && alert.data.amount && (
-                <span>Amount: {formatCurrency(alert.data.amount)}</span>
-              )}
-              {alert.type === "optimization_available" &&
-                alert.data.savings && (
-                  <span>
-                    Potential savings: {formatCurrency(alert.data.savings)}
-                  </span>
+            <div className="mt-3 p-3 rounded-xl glass border border-white/20">
+              <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                {alert.type === "cost_threshold" && alert.data.amount && (
+                  <span className="gradient-text-accent">Amount: {formatCurrency(alert.data.amount)}</span>
                 )}
-              {alert.type === "usage_spike" && alert.data.deviation && (
-                <span>Deviation: {alert.data.deviation.toFixed(1)}%</span>
-              )}
+                {alert.type === "optimization_available" &&
+                  alert.data.savings && (
+                    <span className="gradient-text-success">
+                      Potential savings: {formatCurrency(alert.data.savings)}
+                    </span>
+                  )}
+                {alert.type === "usage_spike" && alert.data.deviation && (
+                  <span className="gradient-text">Deviation: {alert.data.deviation.toFixed(1)}%</span>
+                )}
+              </div>
             </div>
           )}
 
-          <div className="mt-3 flex items-center space-x-4 text-xs">
-            <span className="text-gray-500">
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
               {formatDate(alert.createdAt, "relative")}
             </span>
 
-            {!alert.read && (
-              <button
-                onClick={() => onMarkAsRead(alert._id)}
-                className="text-indigo-600 hover:text-indigo-500"
-              >
-                Mark as read
-              </button>
-            )}
-
-            <div className="relative">
-              <button
-                onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
-                className="text-gray-600 hover:text-gray-500"
-              >
-                <BellSlashIcon className="h-4 w-4 inline mr-1" />
-                Snooze
-              </button>
-
-              {showSnoozeMenu && (
-                <div className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                  <button
-                    onClick={() => handleSnooze(1)}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    1 hour
-                  </button>
-                  <button
-                    onClick={() => handleSnooze(4)}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    4 hours
-                  </button>
-                  <button
-                    onClick={() => handleSnooze(24)}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    1 day
-                  </button>
-                  <button
-                    onClick={() => handleSnooze(168)}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    1 week
-                  </button>
-                </div>
+            <div className="flex items-center space-x-3">
+              {!alert.read && (
+                <button
+                  onClick={() => onMarkAsRead(alert._id)}
+                  className="btn-ghost text-xs px-3 py-1"
+                >
+                  Mark as read
+                </button>
               )}
-            </div>
 
-            <button
-              onClick={() => onDelete(alert._id)}
-              className="text-red-600 hover:text-red-500"
-            >
-              <TrashIcon className="h-4 w-4" />
-            </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
+                  className="btn-ghost text-xs px-3 py-1 flex items-center"
+                >
+                  <BellSlashIcon className="h-4 w-4 mr-1" />
+                  Snooze
+                </button>
+
+                {showSnoozeMenu && (
+                  <div className="absolute right-0 mt-2 w-48 card shadow-2xl py-2 z-20 animate-scale-in">
+                    <button
+                      onClick={() => handleSnooze(1)}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
+                    >
+                      1 hour
+                    </button>
+                    <button
+                      onClick={() => handleSnooze(4)}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
+                    >
+                      4 hours
+                    </button>
+                    <button
+                      onClick={() => handleSnooze(24)}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
+                    >
+                      1 day
+                    </button>
+                    <button
+                      onClick={() => handleSnooze(168)}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
+                    >
+                      1 week
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => onDelete(alert._id)}
+                className="p-2 rounded-lg text-danger-500 hover:bg-danger-500/10 transition-all duration-200 hover:scale-110"
+              >
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

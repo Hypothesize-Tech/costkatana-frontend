@@ -98,29 +98,34 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
     if (loading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <CogIcon className="h-8 w-8 animate-spin text-blue-500" />
-                <span className="ml-3 text-gray-600">Loading pipeline...</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-500 border-t-transparent"></div>
+                <span className="ml-3 font-body text-light-text-secondary dark:text-dark-text-secondary">Loading pipeline...</span>
             </div>
         );
     }
 
     return (
         <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                    Fine-Tuning Pipeline Overview
-                </h2>
+            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-8">
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-purple flex items-center justify-center glow-purple">
+                        <span className="text-white text-xl">🔧</span>
+                    </div>
+                    <h2 className="text-2xl font-display font-bold gradient-text-purple">
+                        Fine-Tuning Pipeline Overview
+                    </h2>
+                </div>
 
                 {/* Pipeline Visualization */}
                 <div className="flex items-center space-x-8 mb-8">
                     {/* Dataset Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <ChartBarIcon className="h-8 w-8 text-blue-600" />
+                            <div className="w-16 h-16 bg-gradient-info rounded-full flex items-center justify-center mx-auto mb-3 glow-info">
+                                <ChartBarIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-medium text-gray-900 mb-1">Dataset</h3>
-                            <p className="text-sm text-gray-500">Training data preparation</p>
+                            <h3 className="font-display font-medium gradient-text-info mb-1">Dataset</h3>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Training data preparation</p>
                             {dataset && (
                                 <div className="mt-2 text-xs text-gray-600">
                                     <div>{dataset.items.length} items</div>
@@ -145,11 +150,11 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
                     {/* Fine-Tuning Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <CogIcon className="h-8 w-8 text-purple-600" />
+                            <div className="w-16 h-16 bg-gradient-purple rounded-full flex items-center justify-center mx-auto mb-3 glow-purple">
+                                <CogIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-medium text-gray-900 mb-1">Fine-Tuning</h3>
-                            <p className="text-sm text-gray-500">Model training</p>
+                            <h3 className="font-display font-medium gradient-text-purple mb-1">Fine-Tuning</h3>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Model training</p>
                             <div className="mt-2 text-xs text-gray-600">
                                 <div>{fineTuneJobs.length} jobs</div>
                                 <div className="flex justify-center space-x-1 mt-1">
@@ -174,11 +179,11 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
                     {/* Evaluation Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <EyeIcon className="h-8 w-8 text-green-600" />
+                            <div className="w-16 h-16 bg-gradient-success rounded-full flex items-center justify-center mx-auto mb-3 glow-success">
+                                <EyeIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-medium text-gray-900 mb-1">Evaluation</h3>
-                            <p className="text-sm text-gray-500">Performance analysis</p>
+                            <h3 className="font-display font-medium gradient-text-success mb-1">Evaluation</h3>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Performance analysis</p>
                             <div className="mt-2 text-xs text-gray-600">
                                 <div>{evaluations.length} evaluations</div>
                                 {evaluations.length > 0 && (

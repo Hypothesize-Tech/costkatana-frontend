@@ -218,79 +218,110 @@ export const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full bg-gray-50 min-h-[600px] w-full">
+    <div className="flex h-full light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-[600px] w-full animate-fade-in">
       {/* Sidebar */}
       <div
-        className={`${showConversations ? "w-80" : "w-16"} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}
+        className={`${showConversations ? "w-80" : "w-16"} glass backdrop-blur-xl border-r border-primary-200/30 transition-all duration-300 flex flex-col shadow-2xl relative z-10`}
       >
         {/* Sidebar Header */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-3 border-b border-primary-200/30 flex items-center justify-center">
           <button
             onClick={() => setShowConversations(!showConversations)}
-            className="flex items-center text-gray-600 hover:text-gray-900"
+            className={`p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110 ${showConversations ? 'w-full flex items-center justify-between' : 'flex items-center justify-center'}`}
+            title={showConversations ? "Collapse sidebar" : "Expand conversations"}
           >
-            <ChevronDownIcon
-              className={`h-5 w-5 transition-transform ${showConversations ? "rotate-180" : ""}`}
-            />
-            {showConversations && (
-              <span className="ml-2 font-medium">Conversations</span>
+            {showConversations ? (
+              <>
+                <span className="font-display font-semibold text-sm">Conversations</span>
+                <ChevronDownIcon className="h-4 w-4 rotate-90" />
+              </>
+            ) : (
+              <ChevronDownIcon className="h-5 w-5 -rotate-90" />
             )}
           </button>
         </div>
 
         {/* New Chat Button */}
-        {showConversations && (
-          <div className="p-4">
+        {showConversations ? (
+          <div className="p-3">
             <button
               onClick={startNewConversation}
-              className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="btn-primary w-full flex items-center justify-center text-sm py-2"
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               New Chat
             </button>
           </div>
+        ) : (
+          <div className="p-3 flex justify-center">
+            <button
+              onClick={startNewConversation}
+              className="p-2 rounded-xl bg-gradient-primary text-white hover:scale-110 transition-all duration-300 glow-primary shadow-lg"
+              title="New Chat"
+            >
+              <PlusIcon className="h-5 w-5" />
+            </button>
+          </div>
         )}
 
         {/* Conversations List */}
-        {showConversations && (
+        {showConversations ? (
           <div className="flex-1 overflow-y-auto scrollbar-hide">
-            {conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-                  currentConversationId === conversation.id
-                    ? "bg-blue-50 border-blue-200"
-                    : ""
-                }`}
-                onClick={() => loadConversationHistory(conversation.id)}
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium text-gray-900 truncate">
-                      {conversation.title}
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {conversation.messageCount} messages •{" "}
-                      {formatTimestamp(conversation.updatedAt)}
-                    </p>
-                    {conversation.totalCost && (
-                      <p className="text-xs text-green-600 mt-1">
-                        ${conversation.totalCost.toFixed(4)} total cost
-                      </p>
-                    )}
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteConversation(conversation.id);
-                    }}
-                    className="ml-2 p-1 text-gray-400 hover:text-red-500"
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                  </button>
-                </div>
+            {conversations.length === 0 ? (
+              <div className="p-4 text-center">
+                <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                  No conversations yet
+                </p>
               </div>
-            ))}
+            ) : (
+              conversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  className={`group p-3 mx-2 mb-2 rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
+                    ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
+                    : "hover:shadow-md"
+                    }`}
+                  onClick={() => loadConversationHistory(conversation.id)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-1">
+                        {conversation.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
+                        <span>{conversation.messageCount} msgs</span>
+                        <span>•</span>
+                        <span>{formatTimestamp(conversation.updatedAt)}</span>
+                      </div>
+                      {conversation.totalCost && (
+                        <p className="text-xs font-bold gradient-text mt-1 inline-block bg-gradient-success/10 px-2 py-0.5 rounded-lg">
+                          ${conversation.totalCost.toFixed(4)}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteConversation(conversation.id);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
+                      title="Delete conversation"
+                    >
+                      <TrashIcon className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : (
+          // Collapsed state - show conversation count indicator
+          <div className="flex-1 flex flex-col items-center justify-start pt-4">
+            {conversations.length > 0 && (
+              <div className="bg-gradient-primary/20 text-primary-600 dark:text-primary-400 rounded-full w-8 h-8 flex items-center justify-center text-xs font-display font-bold mb-2">
+                {conversations.length}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -298,30 +329,30 @@ export const ChatInterface: React.FC = () => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-4">
+        <div className="glass backdrop-blur-xl border-b border-primary-200/30 p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <button
                   onClick={() => setShowModelDropdown(!showModelDropdown)}
-                  className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="flex items-center px-4 py-2 glass hover:bg-primary-500/10 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
                 >
-                  <SparklesIcon className="h-5 w-5 mr-2 text-purple-500" />
+                  <SparklesIcon className="h-5 w-5 mr-2 text-primary-500" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       {selectedModel?.name || "Select Model"}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
                       {selectedModel?.provider}
                     </div>
                   </div>
-                  <ChevronDownIcon className="h-4 w-4 ml-2 text-gray-500" />
+                  <ChevronDownIcon className="h-4 w-4 ml-2 text-light-text-muted dark:text-dark-text-muted" />
                 </button>
 
                 {/* Model Dropdown */}
                 {showModelDropdown && (
                   <div
-                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-10 scrollbar-hide"
+                    className="absolute top-full left-0 mt-2 w-80 card shadow-2xl backdrop-blur-xl border border-primary-200/30 z-10 scrollbar-hide animate-scale-in"
                     style={{ maxHeight: "400px", overflowY: "auto" }}
                   >
                     <div className="p-2">
@@ -333,26 +364,25 @@ export const ChatInterface: React.FC = () => {
                             setShowModelDropdown(false);
                             startNewConversation();
                           }}
-                          className={`w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors ${
-                            selectedModel?.id === model.id
-                              ? "bg-blue-50 border border-blue-200"
-                              : ""
-                          }`}
+                          className={`w-full text-left p-3 rounded-xl hover:bg-primary-500/5 transition-all duration-300 hover:scale-[1.02] ${selectedModel?.id === model.id
+                            ? "bg-gradient-to-r from-primary-50/50 to-secondary-50/50 border border-primary-200/50 glow-primary"
+                            : ""
+                            }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <div className="font-medium text-gray-900">
+                              <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                 {model.name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
                                 {model.provider}
                               </div>
-                              <div className="text-xs text-gray-400 mt-1">
+                              <div className="text-xs text-light-text-muted dark:text-dark-text-muted mt-1">
                                 {model.description}
                               </div>
                             </div>
                             {model.pricing && (
-                              <div className="text-xs text-green-600 text-right">
+                              <div className="text-xs gradient-text-success text-right font-bold">
                                 <div>${model.pricing.input}/1M in</div>
                                 <div>${model.pricing.output}/1M out</div>
                               </div>
@@ -366,7 +396,7 @@ export const ChatInterface: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-sm text-gray-500">
+            <div className="text-sm font-display font-medium gradient-text">
               Chat with AWS Bedrock Models
             </div>
           </div>
@@ -375,13 +405,15 @@ export const ChatInterface: React.FC = () => {
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 w-full mx-auto scrollbar-hide">
           {messages.length === 0 && !isLoading && (
-            <div className="text-center py-16">
+            <div className="text-center py-16 animate-fade-in">
               <div className="mb-8">
-                <SparklesIcon className="h-16 w-16 mx-auto text-blue-500 mb-6" />
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+                  <SparklesIcon className="h-10 w-10 text-white" />
+                </div>
+                <h1 className="text-4xl font-display font-bold gradient-text mb-4">
                   Welcome to Cost Katana
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                <p className="text-xl font-body text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl mx-auto">
                   Chat with 23+ AWS Bedrock AI models while tracking costs,
                   optimizing performance, and managing your AI infrastructure
                   all in one place.
@@ -389,49 +421,55 @@ export const ChatInterface: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
-                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                  <CurrencyDollarIcon className="h-8 w-8 text-green-600 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <CurrencyDollarIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
                     Cost Tracking
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                     Monitor real-time costs across all AI models and providers
                   </p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                  <SparklesIcon className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <SparklesIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
                     Smart Optimization
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                     Get AI-powered suggestions to reduce costs and improve
                     performance
                   </p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                  <ClockIcon className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <ClockIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
                     Real-time Analytics
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                     Track usage patterns, performance metrics, and cost trends
                   </p>
                 </div>
               </div>
 
               {selectedModel ? (
-                <p className="text-lg text-gray-700 font-medium">
+                <p className="text-lg font-body text-light-text-primary dark:text-dark-text-primary font-medium">
                   Ready to chat with{" "}
-                  <span className="text-blue-600">{selectedModel.name}</span> •
-                  <span className="text-green-600 ml-1">
+                  <span className="gradient-text font-display font-bold">{selectedModel.name}</span> •
+                  <span className="gradient-text-success ml-1 font-bold">
                     ${selectedModel.pricing?.input}/$
                     {selectedModel.pricing?.output} per 1M tokens
                   </span>
                 </p>
               ) : (
-                <p className="text-gray-500 text-lg">
+                <p className="text-light-text-muted dark:text-dark-text-muted text-lg font-body">
                   👆 Select a model above to start chatting
                 </p>
               )}
@@ -444,37 +482,36 @@ export const ChatInterface: React.FC = () => {
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-4xl px-6 py-4 rounded-xl text-base leading-relaxed ${
-                  message.role === "user"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white border border-gray-200"
-                }`}
+                className={`max-w-4xl px-6 py-4 rounded-2xl text-base leading-relaxed shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] ${message.role === "user"
+                  ? "bg-gradient-primary text-white glow-primary"
+                  : "card border border-primary-200/30"
+                  }`}
               >
                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
                   {message.content}
                 </div>
 
                 {message.role === "assistant" && message.metadata && (
-                  <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                  <div className="flex items-center space-x-4 mt-3 pt-3 border-t border-primary-200/20 text-xs">
                     {message.metadata.cost && (
-                      <div className="flex items-center">
+                      <div className="flex items-center gradient-text-success font-bold">
                         <CurrencyDollarIcon className="h-3 w-3 mr-1" />$
                         {message.metadata.cost.toFixed(6)}
                       </div>
                     )}
                     {message.metadata.latency && (
-                      <div className="flex items-center">
+                      <div className="flex items-center text-light-text-muted dark:text-dark-text-muted font-medium">
                         <ClockIcon className="h-3 w-3 mr-1" />
                         {message.metadata.latency}ms
                       </div>
                     )}
                     {message.metadata.tokenCount && (
-                      <div>{message.metadata.tokenCount} tokens</div>
+                      <div className="text-light-text-muted dark:text-dark-text-muted font-medium">{message.metadata.tokenCount} tokens</div>
                     )}
                   </div>
                 )}
 
-                <div className="text-xs opacity-70 mt-2">
+                <div className="text-xs font-medium text-light-text-muted dark:text-dark-text-muted mt-2">
                   {formatTimestamp(message.timestamp)}
                 </div>
               </div>
@@ -482,11 +519,11 @@ export const ChatInterface: React.FC = () => {
           ))}
 
           {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2 text-gray-500">
+            <div className="flex justify-start animate-fade-in">
+              <div className="card p-4 shadow-lg backdrop-blur-xl border border-primary-200/30">
+                <div className="flex items-center space-x-2 text-light-text-secondary dark:text-dark-text-secondary">
                   <LoadingSpinner size="small" />
-                  <span className="text-sm">Thinking...</span>
+                  <span className="text-sm font-medium">Thinking...</span>
                 </div>
               </div>
             </div>
@@ -497,13 +534,13 @@ export const ChatInterface: React.FC = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="px-4 py-2 bg-red-50 border-t border-red-100">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="px-4 py-3 bg-gradient-to-br from-danger-50 to-danger-100/50 border-t border-danger-200/50 animate-scale-in">
+            <p className="text-sm font-medium text-danger-700">{error}</p>
           </div>
         )}
 
         {/* Input Area */}
-        <div className="bg-white border-t border-gray-200 p-6">
+        <div className="glass backdrop-blur-xl border-t border-primary-200/30 p-6 shadow-lg">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-end space-x-4">
               <div className="flex-1">
@@ -518,7 +555,7 @@ export const ChatInterface: React.FC = () => {
                       : "Select a model to start chatting"
                   }
                   disabled={!selectedModel || isLoading}
-                  className="w-full resize-none border border-gray-300 rounded-lg px-6 py-4 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed shadow-sm scrollbar-hide"
+                  className="input w-full resize-none rounded-2xl px-6 py-4 text-base scrollbar-hide"
                   rows={1}
                   style={{ minHeight: "56px", maxHeight: "160px" }}
                 />
@@ -526,7 +563,7 @@ export const ChatInterface: React.FC = () => {
               <button
                 onClick={sendMessage}
                 disabled={!currentMessage.trim() || !selectedModel || isLoading}
-                className="px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                className="btn-primary px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105"
               >
                 <PaperAirplaneIcon className="h-5 w-5" />
               </button>

@@ -30,40 +30,56 @@ export const ServiceDependencyGraph: React.FC = () => {
     }, [dependencyData]);
 
     if (isLoading) return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200 animate-pulse">
-            <div className="h-64 bg-gray-100 rounded-xl" />
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl animate-pulse">
+            <div className="h-64 bg-gradient-primary/20 rounded-xl" />
         </div>
     );
 
     if (error) return (
-        <div className="bg-rose-50 text-rose-800 p-4 rounded-xl ring-1 ring-rose-200">
-            Error loading service dependencies
-            <button onClick={() => refetch()} className="ml-4 bg-rose-100 px-3 py-1 rounded inline-flex items-center">
-                <ArrowPathIcon className="w-4 h-4 mr-1" /> Retry
-            </button>
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                        <span className="text-white text-sm">⚠️</span>
+                    </div>
+                    <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                        Error loading service dependencies
+                    </span>
+                </div>
+                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
+                    <ArrowPathIcon className="w-4 h-4" /> Retry
+                </button>
+            </div>
         </div>
     );
 
     if (processedData.services.length === 0) return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200 text-center">
-            <p className="text-gray-600">No service dependencies found</p>
-            <button onClick={() => refetch()} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Refresh</button>
+        <div className="glass rounded-xl p-8 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="w-16 h-16 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-4">
+                <ServerIcon className="w-8 h-8 text-accent-500" />
+            </div>
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">No service dependencies found</p>
+            <button onClick={() => refetch()} className="btn-primary">Refresh</button>
         </div>
     );
 
     return (
-        <div className="bg-white shadow-sm rounded-2xl p-6 ring-1 ring-gray-200">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <ServerIcon className="w-5 h-5 mr-2 text-blue-600" />
-                    Service Dependency Graph
-                </h2>
-                <button onClick={() => refetch()} className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center">
-                    <ArrowPathIcon className="w-4 h-4 mr-1" /> Refresh
+        <div className="glass rounded-xl p-8 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <ServerIcon className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-xl font-display font-bold gradient-text-secondary">
+                        Service Dependency Graph
+                    </h2>
+                </div>
+                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
+                    <ArrowPathIcon className="w-4 h-4" /> Refresh
                 </button>
             </div>
 
-            <div className="w-full h-[500px] border rounded-xl overflow-auto">
+            <div className="w-full h-[500px] glass rounded-xl border border-primary-200/30 overflow-auto">
                 <svg viewBox="0 0 1000 500" className="w-full h-full">
                     <defs>
                         <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">

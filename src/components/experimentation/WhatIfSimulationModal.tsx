@@ -95,26 +95,26 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
     const getRiskColor = (risk: string) => {
         switch (risk) {
             case 'low':
-                return 'text-green-600 bg-green-100';
+                return 'text-success-600 bg-gradient-success/10 border-success-200/30';
             case 'medium':
-                return 'text-yellow-600 bg-yellow-100';
+                return 'text-accent-600 bg-gradient-accent/10 border-accent-200/30';
             case 'high':
-                return 'text-red-600 bg-red-100';
+                return 'text-danger-600 bg-gradient-danger/10 border-danger-200/30';
             default:
-                return 'text-gray-600 bg-gray-100';
+                return 'text-light-text-secondary dark:text-dark-text-secondary bg-primary-100/50 border-primary-200/30';
         }
     };
 
     const getImplementationColor = (implementation: string) => {
         switch (implementation) {
             case 'easy':
-                return 'text-green-600 bg-green-100';
+                return 'text-success-600 bg-gradient-success/10 border-success-200/30';
             case 'moderate':
-                return 'text-yellow-600 bg-yellow-100';
+                return 'text-accent-600 bg-gradient-accent/10 border-accent-200/30';
             case 'complex':
-                return 'text-red-600 bg-red-100';
+                return 'text-danger-600 bg-gradient-danger/10 border-danger-200/30';
             default:
-                return 'text-gray-600 bg-gray-100';
+                return 'text-light-text-secondary dark:text-dark-text-secondary bg-primary-100/50 border-primary-200/30';
         }
     };
 
@@ -132,7 +132,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
@@ -146,69 +146,71 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                <div className="flex items-center justify-between mb-6">
+                            <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 text-left align-middle transition-all animate-scale-in">
+                                <div className="flex items-center justify-between mb-8">
                                     <div className="flex items-center">
-                                        <BeakerIcon className="h-6 w-6 text-purple-600 mr-2" />
-                                        <Dialog.Title as="h3" className="text-lg font-medium text-gray-900">
+                                        <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
+                                            <BeakerIcon className="h-6 w-6 text-white" />
+                                        </div>
+                                        <Dialog.Title as="h3" className="text-2xl font-display font-bold gradient-text">
                                             What-If Cost Simulation
                                         </Dialog.Title>
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="text-gray-400 hover:text-gray-600"
+                                        className="p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
                                     >
                                         <XMarkIcon className="h-6 w-6" />
                                     </button>
                                 </div>
 
                                 {/* Original Usage Info */}
-                                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                                    <h4 className="font-medium text-gray-900 mb-2">Original Request</h4>
+                                <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-6">
+                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Original Request</h4>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                         <div>
-                                            <span className="text-gray-500">Model:</span>
-                                            <p className="font-medium">{usage?.model || 'Unknown'}</p>
+                                            <span className="font-body text-light-text-muted dark:text-dark-text-muted">Model:</span>
+                                            <p className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{usage?.model || 'Unknown'}</p>
                                         </div>
                                         <div>
-                                            <span className="text-gray-500">Cost:</span>
-                                            <p className="font-medium">{formatCurrency(usage?.cost || 0)}</p>
+                                            <span className="font-body text-light-text-muted dark:text-dark-text-muted">Cost:</span>
+                                            <p className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{formatCurrency(usage?.cost || 0)}</p>
                                         </div>
                                         <div>
-                                            <span className="text-gray-500">Tokens:</span>
-                                            <p className="font-medium">{(usage?.totalTokens || 0).toLocaleString()}</p>
+                                            <span className="font-body text-light-text-muted dark:text-dark-text-muted">Tokens:</span>
+                                            <p className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{(usage?.totalTokens || 0).toLocaleString()}</p>
                                         </div>
                                         <div>
-                                            <span className="text-gray-500">Response Time:</span>
-                                            <p className="font-medium">{usage?.responseTime || 0}ms</p>
+                                            <span className="font-body text-light-text-muted dark:text-dark-text-muted">Response Time:</span>
+                                            <p className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{usage?.responseTime || 0}ms</p>
                                         </div>
                                     </div>
-                                    <div className="mt-3">
-                                        <span className="text-gray-500">Prompt:</span>
-                                        <p className="text-sm mt-1 p-2 bg-white rounded border">
+                                    <div className="mt-4">
+                                        <span className="font-body text-light-text-muted dark:text-dark-text-muted">Prompt:</span>
+                                        <div className="glass p-3 rounded-xl border border-primary-200/30 bg-primary-500/5 text-sm font-body text-light-text-primary dark:text-dark-text-primary mt-2">
                                             {usage?.prompt && usage.prompt.length > 200
                                                 ? `${usage.prompt.substring(0, 200)}...`
                                                 : usage?.prompt || 'No prompt available'}
-                                        </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Loading State */}
                                 {isLoading && (
                                     <div className="flex items-center justify-center py-12">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-                                        <span className="ml-3 text-gray-600">Running simulation...</span>
+                                        <div className="spinner-lg text-primary-500"></div>
+                                        <span className="ml-3 font-body text-light-text-secondary dark:text-dark-text-secondary">Running simulation...</span>
                                     </div>
                                 )}
 
                                 {/* Error State */}
                                 {error && (
-                                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                                    <div className="card p-6 bg-danger-500/10 border border-danger-200/30 rounded-xl text-danger-700 dark:text-danger-300 animate-fade-in mb-6">
                                         <div className="flex">
-                                            <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
+                                            <ExclamationTriangleIcon className="h-6 w-6 text-danger-500 mr-3 glow-danger" />
                                             <div>
-                                                <h4 className="text-red-800 font-medium">Simulation Failed</h4>
-                                                <p className="text-red-700 text-sm mt-1">{error}</p>
+                                                <h4 className="font-display font-semibold text-danger-800 dark:text-danger-200">Simulation Failed</h4>
+                                                <p className="font-body text-danger-700 dark:text-danger-300 text-sm mt-1">{error}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -218,38 +220,38 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 {simulationResult && (
                                     <div className="space-y-6">
                                         {/* Summary */}
-                                        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6">
+                                        <div className="card p-8 bg-gradient-primary/10 border border-primary-200/30 rounded-xl shadow-lg animate-fade-in">
                                             <div className="flex items-center justify-between mb-4">
-                                                <h4 className="text-lg font-semibold text-gray-900">Optimization Opportunities</h4>
+                                                <h4 className="text-xl font-display font-bold gradient-text">Optimization Opportunities</h4>
                                                 <div className="text-right">
-                                                    <p className="text-2xl font-bold text-purple-600">
+                                                    <p className="text-4xl font-display font-bold gradient-text">
                                                         {formatCurrency(simulationResult.potentialSavings || 0)}
                                                     </p>
-                                                    <p className="text-sm text-gray-600">Potential Savings</p>
+                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Potential Savings</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center">
-                                                <ChartBarIcon className="h-5 w-5 text-blue-500 mr-2" />
-                                                <span className="text-sm text-gray-600">
-                                                    Confidence: {Math.round(simulationResult.confidence || 0)}%
+                                                <ChartBarIcon className="h-5 w-5 text-primary-500 mr-3 glow-primary" />
+                                                <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                    Confidence: <span className="font-display font-semibold gradient-text">{Math.round(simulationResult.confidence || 0)}%</span>
                                                 </span>
                                             </div>
                                         </div>
 
                                         {/* Optimization Options */}
-                                        <div>
-                                            <h4 className="text-lg font-semibold text-gray-900 mb-4">Optimization Options</h4>
-                                            <div className="space-y-3">
+                                        <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                            <h4 className="text-xl font-display font-bold gradient-text mb-6">Optimization Options</h4>
+                                            <div className="space-y-4">
                                                 {(simulationResult.optimizedOptions || []).map((option, index) => (
                                                     <div
                                                         key={index}
-                                                        className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                                                        className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 hover:bg-primary-500/10 transition-all duration-300"
                                                     >
                                                         <div className="flex items-start justify-between">
                                                             <div className="flex-1">
-                                                                <div className="flex items-center mb-2">
-                                                                    <SparklesIcon className="h-5 w-5 text-purple-500 mr-2" />
-                                                                    <h5 className="font-medium text-gray-900">
+                                                                <div className="flex items-center mb-3">
+                                                                    <SparklesIcon className="h-5 w-5 text-accent-500 mr-3 glow-accent" />
+                                                                    <h5 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                                         {typeof option.description === 'string' ? option.description :
                                                                             typeof option.description === 'object' && option.description !== null ?
                                                                                 JSON.stringify(option.description) :
@@ -257,8 +259,8 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                     </h5>
                                                                 </div>
                                                                 {option.newModel && (
-                                                                    <p className="text-sm text-gray-600 mb-2">
-                                                                        Switch to: <span className="font-medium">{option.newModel}</span>
+                                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
+                                                                        Switch to: <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{option.newModel}</span>
                                                                     </p>
                                                                 )}
                                                                 <div className="flex items-center space-x-4 text-sm">
@@ -273,8 +275,8 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                                 : (option.savingsPercentage || 0);
 
                                                                             const isIncrease = cost < 0 || percentage < 0;
-                                                                            const iconClass = isIncrease ? "h-4 w-4 text-red-500 mr-1" : "h-4 w-4 text-green-500 mr-1";
-                                                                            const textClass = isIncrease ? "text-red-600 font-medium" : "text-green-600 font-medium";
+                                                                            const iconClass = isIncrease ? "h-4 w-4 text-danger-500 mr-2 glow-danger" : "h-4 w-4 text-success-500 mr-2 glow-success";
+                                                                            const textClass = isIncrease ? "font-display font-bold text-danger-600" : "font-display font-bold text-success-600 gradient-text";
                                                                             const actionText = isIncrease ? "Cost increase" : "Save";
 
                                                                             return (
@@ -287,10 +289,10 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                             );
                                                                         })()}
                                                                     </div>
-                                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(option.risk || 'medium')}`}>
+                                                                    <span className={`px-3 py-1 rounded-xl text-xs font-display font-bold shadow-lg border ${getRiskColor(option.risk || 'medium')}`}>
                                                                         {option.risk || 'medium'} risk
                                                                     </span>
-                                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getImplementationColor(option.implementation || 'moderate')}`}>
+                                                                    <span className={`px-3 py-1 rounded-xl text-xs font-display font-bold shadow-lg border ${getImplementationColor(option.implementation || 'moderate')}`}>
                                                                         {option.implementation || 'moderate'}
                                                                     </span>
                                                                 </div>
@@ -303,29 +305,29 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
 
                                         {/* Recommendations */}
                                         {(simulationResult.recommendations || []).length > 0 && (
-                                            <div>
-                                                <h4 className="text-lg font-semibold text-gray-900 mb-4">AI Recommendations</h4>
-                                                <div className="bg-blue-50 rounded-lg p-4">
-                                                    <ul className="space-y-2">
+                                            <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                                <h4 className="text-xl font-display font-bold gradient-text mb-6">AI Recommendations</h4>
+                                                <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5">
+                                                    <ul className="space-y-4">
                                                         {(simulationResult.recommendations || []).map((rec, index) => {
                                                             const recommendation = typeof rec === 'string' ? { title: rec } : rec;
                                                             return (
                                                                 <li key={index} className="flex items-start">
-                                                                    <div className="flex-shrink-0 h-1.5 w-1.5 bg-blue-600 rounded-full mt-2 mr-3"></div>
+                                                                    <div className="w-2.5 h-2.5 bg-primary-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                                                                     <div className="flex-1">
-                                                                        <span className="text-sm text-blue-800 font-medium">
+                                                                        <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                                                                             {recommendation.title || recommendation.description || recommendation.message || recommendation.action || 'Optimization recommendation'}
                                                                         </span>
                                                                         {recommendation.priority && (
-                                                                            <span className={`ml-2 px-2 py-0.5 rounded text-xs font-medium ${recommendation.priority === 'high' ? 'bg-red-100 text-red-800' :
-                                                                                recommendation.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                                                                    'bg-green-100 text-green-800'
+                                                                            <span className={`ml-3 px-3 py-1 rounded-xl text-xs font-display font-bold shadow-lg ${recommendation.priority === 'high' ? 'bg-gradient-danger text-white' :
+                                                                                recommendation.priority === 'medium' ? 'bg-gradient-accent text-white' :
+                                                                                    'bg-gradient-success text-white'
                                                                                 }`}>
                                                                                 {recommendation.priority} priority
                                                                             </span>
                                                                         )}
                                                                         {recommendation.savings && (
-                                                                            <div className="text-xs text-green-600 mt-1">
+                                                                            <div className="font-body text-success-600 mt-1">
                                                                                 💰 Potential savings: {(() => {
                                                                                     if (typeof recommendation.savings === 'number') {
                                                                                         return `$${recommendation.savings.toFixed(4)}`;
@@ -356,17 +358,17 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 )}
 
                                 {/* Actions */}
-                                <div className="flex justify-end space-x-3 mt-8 pt-6 border-t">
+                                <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-primary-200/30">
                                     <button
                                         onClick={onClose}
-                                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                        className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
                                     >
                                         Close
                                     </button>
                                     {simulationResult && (
                                         <button
                                             onClick={runSimulation}
-                                            className="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
                                         >
                                             <BeakerIcon className="h-4 w-4 mr-2 inline" />
                                             Rerun Simulation

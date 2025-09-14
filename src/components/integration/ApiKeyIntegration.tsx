@@ -246,85 +246,110 @@ app.listen(3000, () => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Dashboard API Integration">
+    <Modal isOpen={isOpen} onClose={onClose} title="🔗 Dashboard API Integration">
       <div className="mx-auto max-w-4xl">
         {/* Tab Navigation */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="flex -mb-px space-x-8">
+        <div className="mb-8 card p-6 shadow-2xl backdrop-blur-xl">
+          <div className="flex space-x-4">
             {[
-              { id: "setup", name: "Setup", icon: CogIcon },
-              { id: "usage", name: "Usage Guide", icon: BookOpenIcon },
-              { id: "examples", name: "Code Examples", icon: CodeBracketIcon },
+              { id: "setup", name: "Setup", icon: CogIcon, emoji: "⚙️" },
+              { id: "usage", name: "Usage Guide", icon: BookOpenIcon, emoji: "📖" },
+              { id: "examples", name: "Code Examples", icon: CodeBracketIcon, emoji: "💻" },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === tab.id
+                  ? "bg-gradient-primary text-white shadow-lg glow-primary"
+                  : "glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
+                  }`}
               >
-                <tab.icon className="mr-2 w-5 h-5" />
-                {tab.name}
+                <div className="flex items-center">
+                  <span className="mr-2">{tab.emoji}</span>
+                  {tab.name}
+                </div>
               </button>
             ))}
-          </nav>
+          </div>
         </div>
 
         {/* Setup Tab */}
         {activeTab === "setup" && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* API Key Status */}
-            <div className="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/20">
-              <div className="flex items-center">
-                <InformationCircleIcon className="mr-2 w-5 h-5 text-blue-500" />
-                <h3 className="font-medium text-blue-900 dark:text-blue-100">
-                  Dashboard API Key Integration
+            <div className="card p-6 bg-gradient-primary/10 border border-primary-200/30 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+                  <InformationCircleIcon className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-display font-bold gradient-text">
+                  🔑 Dashboard API Key Integration
                 </h3>
               </div>
-              <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
+              <p className="font-body text-primary-700 dark:text-primary-300">
                 Your dashboard API keys provide secure access to your project
                 data, usage tracking, and analytics.
               </p>
             </div>
 
             {/* API Keys List */}
-            <div>
-              <h4 className="mb-3 font-medium text-gray-900 dark:text-white">
-                Available Dashboard API Keys
-              </h4>
-              <div className="space-y-2">
+            <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
+                  <KeyIcon className="w-4 h-4 text-white" />
+                </div>
+                <h4 className="text-xl font-display font-bold gradient-text">
+                  🔐 Available Dashboard API Keys
+                </h4>
+              </div>
+              <div className="space-y-4">
                 {apiKeys?.map((apiKey) => (
                   <div
                     key={apiKey.keyId}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded-lg dark:bg-gray-800"
+                    className="card card-hover p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 transition-all duration-300 hover:scale-105"
                   >
-                    <div className="flex items-center">
-                      <KeyIcon className="mr-3 w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
-                          {apiKey.name}
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {apiKey.maskedKey} • Permissions:{" "}
-                          {apiKey.permissions.join(", ")}
-                        </p>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
+                          <KeyIcon className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-display font-bold text-lg gradient-text-success">
+                            {apiKey.name}
+                          </p>
+                          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            🔑 {apiKey.maskedKey} • 🛡️ Permissions: {apiKey.permissions.join(", ")}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center text-green-600 dark:text-green-400">
-                      <CheckIcon className="mr-1 w-4 h-4" />
-                      <span className="text-sm">
-                        {apiKey.isExpired ? "Expired" : "Active"}
-                      </span>
+                      <div className={`flex items-center px-3 py-1 rounded-full text-sm font-display font-bold shadow-lg ${apiKey.isExpired
+                        ? "bg-gradient-danger text-white"
+                        : "bg-gradient-success text-white"
+                        }`}>
+                        {apiKey.isExpired ? (
+                          <>
+                            <svg className="mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            Expired
+                          </>
+                        ) : (
+                          <>
+                            <CheckIcon className="mr-1 w-4 h-4" />
+                            Active
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
                 {(!apiKeys || apiKeys.length === 0) && (
-                  <div className="py-6 text-center text-gray-500 dark:text-gray-400">
-                    <KeyIcon className="mx-auto mb-2 w-12 h-12 opacity-50" />
-                    <p>No dashboard API keys configured</p>
-                    <p className="text-sm">
+                  <div className="py-8 text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+                      <KeyIcon className="w-8 h-8 text-white" />
+                    </div>
+                    <p className="text-lg font-display font-bold gradient-text mb-2">No dashboard API keys configured</p>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       Create API keys in Settings to enable integration
                     </p>
                   </div>
@@ -333,31 +358,37 @@ app.listen(3000, () => {
             </div>
 
             {/* Project Selection */}
-            <div>
-              <h4 className="mb-3 font-medium text-gray-900 dark:text-white">
-                Select Project for Integration
-              </h4>
+            <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center mr-3 shadow-lg">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <h4 className="text-xl font-display font-bold gradient-text">
+                  📁 Select Project for Integration
+                </h4>
+              </div>
               <select
                 value={selectedProject}
                 onChange={(e) => setSelectedProject(e.target.value)}
-                className="px-3 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="input w-full font-display font-semibold"
               >
-                <option value="">Select a project...</option>
+                <option value="">🔍 Select a project...</option>
                 {projects?.map((project) => (
                   <option key={project._id} value={project._id}>
-                    {project.name}
+                    📁 {project.name}
                   </option>
                 ))}
               </select>
               {selectedProject && (
-                <div className="p-3 mt-2 bg-green-50 rounded-lg dark:bg-green-900/20">
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    ✓ Project selected:{" "}
-                    {projects?.find((p) => p._id === selectedProject)?.name}
+                <div className="card p-4 bg-gradient-success/10 border border-success-200/30 mt-4">
+                  <p className="text-sm font-display font-bold gradient-text-success mb-2">
+                    ✅ Project selected: {projects?.find((p) => p._id === selectedProject)?.name}
                   </p>
-                  <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Project ID:{" "}
-                    <code className="px-1 bg-green-100 rounded dark:bg-green-800">
+                  <p className="text-xs font-body text-success-600 dark:text-success-400">
+                    🆔 Project ID:{" "}
+                    <code className="px-2 py-1 bg-success-100 dark:bg-success-800 rounded font-mono text-xs">
                       {selectedProject}
                     </code>
                   </p>
@@ -367,16 +398,17 @@ app.listen(3000, () => {
 
             {/* Integration Warning */}
             {(!apiKeys || apiKeys.length === 0) && (
-              <div className="p-4 bg-yellow-50 rounded-lg dark:bg-yellow-900/20">
-                <div className="flex items-center">
-                  <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-yellow-500" />
-                  <h3 className="font-medium text-yellow-900 dark:text-yellow-100">
-                    Setup Required
+              <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
+                    <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-warning">
+                    ⚠️ Setup Required
                   </h3>
                 </div>
-                <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
-                  Create dashboard API keys in Settings to enable integration
-                  features.
+                <p className="font-body text-warning-700 dark:text-warning-300">
+                  Create dashboard API keys in Settings to enable integration features.
                 </p>
               </div>
             )}

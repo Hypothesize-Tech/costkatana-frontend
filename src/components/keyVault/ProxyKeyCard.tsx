@@ -79,33 +79,33 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
   const budgetStatus = getBudgetStatus();
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+    <div className="card card-hover p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.01]">
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0">
-            <KeyIcon className="h-6 w-6 text-blue-600" />
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <KeyIcon className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-medium text-gray-900 truncate">
+            <h3 className="text-xl font-display font-bold gradient-text truncate mb-2">
               {proxyKey.name}
             </h3>
-            <p className="text-sm text-gray-500">
-              Linked to {proxyKey.providerKeyId.name} ({proxyKey.providerKeyId.provider})
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">
+              Linked to <span className="font-semibold gradient-text">{proxyKey.providerKeyId.name}</span> ({proxyKey.providerKeyId.provider})
             </p>
             {proxyKey.description && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="font-body text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
                 {proxyKey.description}
               </p>
             )}
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={onToggle}
-            className={`p-2 rounded-md transition-colors ${proxyKey.isActive
-              ? 'text-green-600 hover:bg-green-50'
-              : 'text-gray-400 hover:bg-gray-50'
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${proxyKey.isActive
+              ? 'bg-gradient-success text-white glow-success'
+              : 'glass border border-primary-200/30 text-light-text-tertiary dark:text-dark-text-tertiary hover:border-success-200/50'
               }`}
             title={proxyKey.isActive ? 'Deactivate' : 'Activate'}
           >
@@ -117,7 +117,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
           </button>
           <button
             onClick={onDelete}
-            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+            className="w-10 h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             title="Delete proxy key"
           >
             <TrashIcon className="h-5 w-5" />
@@ -126,13 +126,16 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
       </div>
 
       {/* Proxy Key ID */}
-      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-gray-700">Proxy Key ID:</span>
+      <div className="mb-6 glass p-4 rounded-xl border border-primary-200/30">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center">
+              <span className="text-white text-xs">🔑</span>
+            </div>
+            <span className="font-display font-semibold gradient-text">Proxy Key ID:</span>
             <button
               onClick={() => setShowKeyId(!showKeyId)}
-              className="text-blue-600 hover:text-blue-700"
+              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-300"
             >
               {showKeyId ? (
                 <EyeSlashIcon className="h-4 w-4" />
@@ -143,76 +146,98 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
           </div>
           <button
             onClick={() => copyToClipboard(proxyKey.keyId)}
-            className="text-gray-500 hover:text-gray-700"
+            className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 hover:border-primary-200/50 transition-all duration-300 hover:scale-110"
             title="Copy to clipboard"
           >
             <ClipboardIcon className="h-4 w-4" />
           </button>
         </div>
-        <code className="text-sm font-mono text-gray-800 break-all">
+        <code className="font-mono text-sm bg-primary-100/50 dark:bg-primary-900/50 p-3 rounded-lg block break-all gradient-text">
           {showKeyId ? proxyKey.keyId : proxyKey.keyId.replace(/(.{10}).*(.{10})/, '$1...***...$2')}
         </code>
         {copied && (
-          <p className="text-xs text-green-600 mt-1">Copied to clipboard!</p>
+          <div className="mt-2 flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-gradient-success flex items-center justify-center">
+              <span className="text-white text-xs">✓</span>
+            </div>
+            <p className="text-sm font-body gradient-text-success">Copied to clipboard!</p>
+          </div>
         )}
       </div>
 
       {/* Usage Statistics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="glass p-4 rounded-xl border border-primary-200/30 text-center">
+          <div className="text-3xl font-display font-bold gradient-text mb-1">
             {proxyKey.usageStats.totalRequests.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-500">Total Requests</div>
+          <div className="font-body text-xs text-primary-600 dark:text-primary-400">Total Requests</div>
         </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">
+        <div className="glass p-4 rounded-xl border border-success-200/30 text-center">
+          <div className="text-3xl font-display font-bold gradient-text-success mb-1">
             {formatCurrency(proxyKey.usageStats.totalCost)}
           </div>
-          <div className="text-xs text-gray-500">Total Cost</div>
+          <div className="font-body text-xs text-success-600 dark:text-success-400">Total Cost</div>
         </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-yellow-600">
+        <div className="glass p-4 rounded-xl border border-warning-200/30 text-center">
+          <div className="text-3xl font-display font-bold gradient-text-warning mb-1">
             {formatCurrency(proxyKey.usageStats.dailyCost)}
           </div>
-          <div className="text-xs text-gray-500">Daily Cost</div>
+          <div className="font-body text-xs text-warning-600 dark:text-warning-400">Daily Cost</div>
         </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-purple-600">
+        <div className="glass p-4 rounded-xl border border-accent-200/30 text-center">
+          <div className="text-3xl font-display font-bold gradient-text-accent mb-1">
             {formatCurrency(proxyKey.usageStats.monthlyCost)}
           </div>
-          <div className="text-xs text-gray-500">Monthly Cost</div>
+          <div className="font-body text-xs text-accent-600 dark:text-accent-400">Monthly Cost</div>
         </div>
       </div>
 
       {/* Budget Status */}
       {(proxyKey.budgetLimit || proxyKey.dailyBudgetLimit || proxyKey.monthlyBudgetLimit) && (
-        <div className="mb-4">
-          <div className={`p-3 rounded-lg ${budgetStatus.status === 'over' ? 'bg-red-50 border border-red-200' :
-            budgetStatus.status === 'warning' ? 'bg-yellow-50 border border-yellow-200' :
-              'bg-green-50 border border-green-200'
+        <div className="mb-6">
+          <div className={`glass p-4 rounded-xl border ${budgetStatus.status === 'over'
+            ? 'border-danger-200/30 bg-gradient-danger/10'
+            : budgetStatus.status === 'warning'
+              ? 'border-warning-200/30 bg-gradient-warning/10'
+              : 'border-success-200/30 bg-gradient-success/10'
             }`}>
-            <div className="flex items-center space-x-2">
-              <CurrencyDollarIcon className={`h-4 w-4 ${budgetStatus.status === 'over' ? 'text-red-600' :
-                budgetStatus.status === 'warning' ? 'text-yellow-600' :
-                  'text-green-600'
-                }`} />
-              <span className={`text-sm font-medium ${budgetStatus.status === 'over' ? 'text-red-800' :
-                budgetStatus.status === 'warning' ? 'text-yellow-800' :
-                  'text-green-800'
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${budgetStatus.status === 'over'
+                ? 'bg-gradient-danger glow-danger'
+                : budgetStatus.status === 'warning'
+                  ? 'bg-gradient-warning glow-warning'
+                  : 'bg-gradient-success glow-success'
+                }`}>
+                <CurrencyDollarIcon className="h-4 w-4 text-white" />
+              </div>
+              <span className={`font-display font-semibold ${budgetStatus.status === 'over'
+                ? 'gradient-text-danger'
+                : budgetStatus.status === 'warning'
+                  ? 'gradient-text-warning'
+                  : 'gradient-text-success'
                 }`}>
                 {budgetStatus.message}
               </span>
             </div>
-            <div className="mt-2 text-xs text-gray-600 space-y-1">
+            <div className="space-y-2">
               {proxyKey.budgetLimit && (
-                <div>Total Budget: {formatCurrency(proxyKey.budgetLimit)}</div>
+                <div className="flex justify-between items-center">
+                  <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Total Budget:</span>
+                  <span className="font-display font-semibold gradient-text">{formatCurrency(proxyKey.budgetLimit)}</span>
+                </div>
               )}
               {proxyKey.dailyBudgetLimit && (
-                <div>Daily Budget: {formatCurrency(proxyKey.dailyBudgetLimit)}</div>
+                <div className="flex justify-between items-center">
+                  <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Daily Budget:</span>
+                  <span className="font-display font-semibold gradient-text">{formatCurrency(proxyKey.dailyBudgetLimit)}</span>
+                </div>
               )}
               {proxyKey.monthlyBudgetLimit && (
-                <div>Monthly Budget: {formatCurrency(proxyKey.monthlyBudgetLimit)}</div>
+                <div className="flex justify-between items-center">
+                  <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Monthly Budget:</span>
+                  <span className="font-display font-semibold gradient-text">{formatCurrency(proxyKey.monthlyBudgetLimit)}</span>
+                </div>
               )}
             </div>
           </div>
@@ -220,17 +245,19 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
       )}
 
       {/* Configuration Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-        <div>
-          <div className="flex items-center space-x-2 mb-2">
-            <ShieldCheckIcon className="h-4 w-4 text-gray-500" />
-            <span className="font-medium text-gray-700">Permissions</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="glass p-4 rounded-xl border border-primary-200/30">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center">
+              <ShieldCheckIcon className="h-3 w-3 text-white" />
+            </div>
+            <span className="font-display font-semibold gradient-text">Permissions</span>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-2">
             {proxyKey.permissions.map((permission) => (
               <span
                 key={permission}
-                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                className="inline-flex items-center px-3 py-1 rounded-full font-display font-medium text-sm bg-gradient-primary/20 text-primary-700 dark:text-primary-300 capitalize"
               >
                 {permission}
               </span>
@@ -238,12 +265,14 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center space-x-2 mb-2">
-            <ClockIcon className="h-4 w-4 text-gray-500" />
-            <span className="font-medium text-gray-700">Last Used</span>
+        <div className="glass p-4 rounded-xl border border-primary-200/30">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center">
+              <ClockIcon className="h-3 w-3 text-white" />
+            </div>
+            <span className="font-display font-semibold gradient-text">Last Used</span>
           </div>
-          <div className="text-gray-600">
+          <div className="font-body text-light-text-primary dark:text-dark-text-primary">
             {formatDate(proxyKey.lastUsed)}
           </div>
         </div>
@@ -251,30 +280,50 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
 
       {/* Security Restrictions */}
       {(proxyKey.allowedIPs?.length || proxyKey.allowedDomains?.length || proxyKey.rateLimit) && (
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Security Restrictions</h4>
-          <div className="space-y-2 text-sm">
+        <div className="border-t border-primary-200/30 pt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+              <span className="text-white text-sm">🔒</span>
+            </div>
+            <h4 className="text-lg font-display font-bold gradient-text">Security Restrictions</h4>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {proxyKey.rateLimit && (
-              <div className="flex items-center space-x-2">
-                <ChartBarIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">
-                  Rate limit: {proxyKey.rateLimit.toLocaleString()}/min
+              <div className="glass p-4 rounded-xl border border-warning-200/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded-full bg-gradient-warning flex items-center justify-center">
+                    <ChartBarIcon className="h-2 w-2 text-white" />
+                  </div>
+                  <span className="font-body text-sm text-warning-600 dark:text-warning-400">Rate Limit</span>
+                </div>
+                <span className="font-display font-semibold gradient-text">
+                  {proxyKey.rateLimit.toLocaleString()}/min
                 </span>
               </div>
             )}
             {proxyKey.allowedIPs?.length && (
-              <div className="flex items-center space-x-2">
-                <GlobeAltIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">
-                  IP whitelist: {proxyKey.allowedIPs.length} address(es)
+              <div className="glass p-4 rounded-xl border border-primary-200/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded-full bg-gradient-primary flex items-center justify-center">
+                    <GlobeAltIcon className="h-2 w-2 text-white" />
+                  </div>
+                  <span className="font-body text-sm text-primary-600 dark:text-primary-400">IP Whitelist</span>
+                </div>
+                <span className="font-display font-semibold gradient-text">
+                  {proxyKey.allowedIPs.length} address(es)
                 </span>
               </div>
             )}
             {proxyKey.allowedDomains?.length && (
-              <div className="flex items-center space-x-2">
-                <UserGroupIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">
-                  Domain whitelist: {proxyKey.allowedDomains.length} domain(s)
+              <div className="glass p-4 rounded-xl border border-success-200/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded-full bg-gradient-success flex items-center justify-center">
+                    <UserGroupIcon className="h-2 w-2 text-white" />
+                  </div>
+                  <span className="font-body text-sm text-success-600 dark:text-success-400">Domain Whitelist</span>
+                </div>
+                <span className="font-display font-semibold gradient-text">
+                  {proxyKey.allowedDomains.length} domain(s)
                 </span>
               </div>
             )}
@@ -283,15 +332,20 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
       )}
 
       {/* Status Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${proxyKey.isActive
-          ? 'bg-green-100 text-green-800'
-          : 'bg-gray-100 text-gray-800'
+      <div className="flex items-center justify-between pt-6 border-t border-primary-200/30">
+        <span className={`inline-flex items-center px-4 py-2 rounded-full font-display font-semibold text-sm ${proxyKey.isActive
+          ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
+          : 'bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300'
           }`}>
-          {proxyKey.isActive ? 'Active' : 'Inactive'}
+          {proxyKey.isActive ? '✅ Active' : '⏸️ Inactive'}
         </span>
-        <div className="text-xs text-gray-500">
-          Created {formatDate(proxyKey.createdAt)}
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full bg-gradient-accent flex items-center justify-center">
+            <span className="text-white text-xs">📅</span>
+          </div>
+          <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
+            Created {formatDate(proxyKey.createdAt)}
+          </span>
         </div>
       </div>
     </div>

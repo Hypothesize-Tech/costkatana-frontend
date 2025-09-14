@@ -16,12 +16,12 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
 
     const getSeverityColor = (severity: string) => {
         const colors: Record<string, string> = {
-            low: 'bg-blue-50 border-blue-200 text-blue-800',
-            medium: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-            high: 'bg-orange-50 border-orange-200 text-orange-800',
-            critical: 'bg-red-50 border-red-200 text-red-800'
+            low: 'glass border-info-200/30 text-info-800 dark:text-info-300 bg-gradient-to-br from-info-50/50 to-info-100/50 dark:from-info-900/20 dark:to-info-800/20',
+            medium: 'glass border-warning-200/30 text-warning-800 dark:text-warning-300 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20',
+            high: 'glass border-secondary-200/30 text-secondary-800 dark:text-secondary-300 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20',
+            critical: 'glass border-danger-200/30 text-danger-800 dark:text-danger-300 bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20'
         };
-        return colors[severity] || 'bg-gray-50 border-gray-200 text-gray-800';
+        return colors[severity] || 'glass border-accent-200/30 text-light-text-primary dark:text-dark-text-primary';
     };
 
     const getSeverityIcon = (severity: string) => {
@@ -36,12 +36,12 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
 
     const getSeverityBadgeColor = (severity: string) => {
         const colors: Record<string, string> = {
-            low: 'bg-blue-100 text-blue-800',
-            medium: 'bg-yellow-100 text-yellow-800',
-            high: 'bg-orange-100 text-orange-800',
-            critical: 'bg-red-100 text-red-800'
+            low: 'badge-info',
+            medium: 'badge-warning',
+            high: 'badge-secondary',
+            critical: 'badge-danger'
         };
-        return colors[severity] || 'bg-gray-100 text-gray-800';
+        return colors[severity] || 'badge-secondary';
     };
 
     const getAnomalyTypeIcon = (type: string) => {
@@ -72,15 +72,15 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
 
     if (anomalies.length === 0) {
         return (
-            <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
+            <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
                 <div className="text-center">
-                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                        <svg className="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gradient-success glow-success mb-4">
+                        <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Anomalies Detected</h3>
-                    <p className="text-gray-600">Your cost patterns are within normal ranges. Great job!</p>
+                    <h3 className="text-lg font-display font-bold gradient-text-success mb-2">No Anomalies Detected</h3>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary">Your cost patterns are within normal ranges. Great job!</p>
                 </div>
             </div>
         );
@@ -92,49 +92,49 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
     const lowAnomalies = anomalies.filter(a => a.severity === 'low');
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900">Cost Anomaly Alerts</h2>
-                    <p className="text-gray-600 mt-1">Unusual patterns that need attention</p>
+                    <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Anomaly Alerts</h2>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary mt-1">Unusual patterns that need attention</p>
                 </div>
 
                 <div className="text-right">
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-2xl font-display font-bold gradient-text-danger">
                         {anomalies.length}
                     </div>
-                    <div className="text-sm text-gray-500">Active Alerts</div>
+                    <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Active Alerts</div>
                 </div>
             </div>
 
             {/* Severity Summary */}
             <div className="grid grid-cols-4 gap-3 mb-6">
-                <div className="text-center p-3 bg-red-50 rounded-lg border border-red-200">
-                    <div className="text-lg font-bold text-red-700">
+                <div className="text-center p-3 glass rounded-xl border border-danger-200/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
+                    <div className="text-lg font-display font-bold text-danger-700 dark:text-danger-300">
                         {criticalAnomalies.length}
                     </div>
-                    <div className="text-xs text-red-600">Critical</div>
+                    <div className="text-xs text-danger-600 dark:text-danger-400">Critical</div>
                 </div>
 
-                <div className="text-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                    <div className="text-lg font-bold text-orange-700">
+                <div className="text-center p-3 glass rounded-xl border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                    <div className="text-lg font-display font-bold text-secondary-700 dark:text-secondary-300">
                         {highAnomalies.length}
                     </div>
-                    <div className="text-xs text-orange-600">High</div>
+                    <div className="text-xs text-secondary-600 dark:text-secondary-400">High</div>
                 </div>
 
-                <div className="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <div className="text-lg font-bold text-yellow-700">
+                <div className="text-center p-3 glass rounded-xl border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
+                    <div className="text-lg font-display font-bold text-warning-700 dark:text-warning-300">
                         {mediumAnomalies.length}
                     </div>
-                    <div className="text-xs text-yellow-600">Medium</div>
+                    <div className="text-xs text-warning-600 dark:text-warning-400">Medium</div>
                 </div>
 
-                <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="text-lg font-bold text-blue-700">
+                <div className="text-center p-3 glass rounded-xl border border-info-200/30 backdrop-blur-xl bg-gradient-to-br from-info-50/50 to-info-100/50 dark:from-info-900/20 dark:to-info-800/20">
+                    <div className="text-lg font-display font-bold text-info-700 dark:text-info-300">
                         {lowAnomalies.length}
                     </div>
-                    <div className="text-xs text-blue-600">Low</div>
+                    <div className="text-xs text-info-600 dark:text-info-400">Low</div>
                 </div>
             </div>
 
@@ -154,55 +154,55 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-2">
                                         <span className="text-xl">{getAnomalyTypeIcon(anomaly.type)}</span>
-                                        <h3 className="text-sm font-medium capitalize">
+                                        <h3 className="text-sm font-display font-medium capitalize gradient-text-primary">
                                             {getAnomalyTypeDescription(anomaly.type)}
                                         </h3>
                                     </div>
 
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSeverityBadgeColor(anomaly.severity)}`}>
+                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-display font-medium ${getSeverityBadgeColor(anomaly.severity)}`}>
                                         {anomaly.severity}
                                     </span>
                                 </div>
 
-                                <p className="text-sm mb-3">
+                                <p className="text-sm mb-3 text-light-text-secondary dark:text-dark-text-secondary">
                                     {anomaly.description}
                                 </p>
 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4 text-xs">
                                         <span className="flex items-center">
-                                            <svg className="h-4 w-4 mr-1 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="h-4 w-4 mr-1 text-danger-600 dark:text-danger-400" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
-                                            <span className="font-medium">
+                                            <span className="font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 Cost Impact: {formatCurrency(anomaly.cost_impact)}
                                             </span>
                                         </span>
 
                                         <span className="flex items-center">
-                                            <svg className="h-4 w-4 mr-1 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="h-4 w-4 mr-1 text-success-600 dark:text-success-400" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
-                                            <span className="font-medium">
+                                            <span className="font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 Save: {formatCurrency(anomaly.optimization_potential)}
                                             </span>
                                         </span>
                                     </div>
 
                                     <div className="flex space-x-2">
-                                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
+                                        <button className="btn-icon-secondary">
                                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                                             </svg>
                                         </button>
 
-                                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
+                                        <button className="btn-icon-secondary">
                                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </button>
 
-                                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100">
+                                        <button className="btn-icon-secondary">
                                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                                             </svg>
@@ -216,13 +216,13 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-accent-200/30">
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={() => {
                             alert(`Acknowledging ${anomalies.length} anomalies.\n\nThis will mark all current anomalies as reviewed and will stop showing them in the alerts.`);
                         }}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        className="btn-danger inline-flex items-center"
                     >
                         <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -237,7 +237,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                             ).join('\n\n');
                             alert(`Anomaly Details:\n\n${details}`);
                         }}
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="btn-secondary inline-flex items-center"
                     >
                         <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
@@ -255,7 +255,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                             };
                             alert(`Setting up anomaly alerts:\n\nAlert Thresholds:\n• Critical: ${severityCounts.critical} anomalies\n• High: ${severityCounts.high} anomalies\n• Medium: ${severityCounts.medium} anomalies\n• Low: ${severityCounts.low} anomalies\n\nYou will be notified when new anomalies are detected.`);
                         }}
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="btn-secondary inline-flex items-center"
                     >
                         <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

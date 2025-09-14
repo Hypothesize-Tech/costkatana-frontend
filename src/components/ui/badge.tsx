@@ -12,17 +12,17 @@ export const Badge: React.FC<BadgeProps> = ({
   children,
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center font-medium rounded-full';
+  const baseClasses = 'inline-flex items-center font-display font-medium rounded-full transition-all duration-300 hover:scale-105';
 
   const variantClasses = {
-    default: 'bg-indigo-100 text-indigo-800',
-    secondary: 'bg-gray-100 text-gray-800',
-    outline: 'border border-gray-200 text-gray-700 bg-white',
-    destructive: 'bg-red-100 text-red-800',
+    default: 'bg-gradient-primary text-white glow-primary',
+    secondary: 'glass border border-secondary-200/30 text-light-text-secondary dark:text-dark-text-secondary backdrop-blur-xl',
+    outline: 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary backdrop-blur-xl',
+    destructive: 'bg-gradient-danger text-white glow-danger',
   };
 
   const sizeClasses = {
-    default: 'px-2.5 py-0.5 text-xs',
+    default: 'px-3 py-1 text-xs',
     sm: 'px-2 py-0.5 text-xs',
   };
 
