@@ -55,10 +55,6 @@ export const CortexImpactDisplay: React.FC<CortexImpactDisplayProps> = ({
         return num.toFixed(0);
     };
 
-    const formatPercentage = (num: number): string => {
-        return `${num.toFixed(1)}%`;
-    };
-
     const formatCurrency = (num: number): string => {
         if (num >= 1) return `$${num.toFixed(2)}`;
         if (num >= 0.01) return `$${num.toFixed(3)}`;

@@ -137,8 +137,52 @@ export const Optimization: React.FC = () => {
 
   // Removed filter count - no longer needed
 
+  // Get all optimizations (no filtering needed)
+  const getAllOptimizations = () => {
+    if (!optimizations?.data) return [];
+    return optimizations.data;
+  };
+
   // Use summary data for accurate statistics
   const calculateStats = () => {
+    // Calculate from actual optimizations if available (more accurate with cortex metrics)
+    if (optimizations?.data && optimizations.data.length > 0) {
+      const allOpts = getAllOptimizations();
+
+      const totalSaved = allOpts.reduce((total: number, opt: any) => {
+        const saved = opt.cortexImpactMetrics
+          ? Math.abs(opt.cortexImpactMetrics.costImpact.costSavings)
+          : opt.costSaved || opt.savings || 0;
+        return total + saved;
+      }, 0);
+
+      const totalTokensSaved = allOpts.reduce((total: number, opt: any) => {
+        const tokensSaved = opt.cortexImpactMetrics
+          ? Math.abs(opt.cortexImpactMetrics.tokenReduction.absoluteSavings)
+          : opt.tokensSaved || 0;
+        return total + tokensSaved;
+      }, 0);
+
+      const avgImprovement = allOpts.length > 0
+        ? allOpts.reduce((sum: number, opt: any) => {
+          const improvement = opt.cortexImpactMetrics
+            ? Math.abs(opt.cortexImpactMetrics.tokenReduction.percentageSavings)
+            : opt.improvementPercentage || 0;
+          return sum + improvement;
+        }, 0) / allOpts.length
+        : 0;
+
+      return {
+        total: allOpts.length,
+        applied: summary?.applied || 0,
+        totalSaved,
+        totalTokensSaved,
+        avgImprovement,
+        applicationRate: summary?.applicationRate || 0,
+      };
+    }
+
+    // Fallback to summary if no optimizations
     if (!summary) return null;
 
     return {
@@ -149,12 +193,6 @@ export const Optimization: React.FC = () => {
       avgImprovement: summary.avgImprovement,
       applicationRate: summary.applicationRate,
     };
-  };
-
-  // Get all optimizations (no filtering needed)
-  const getAllOptimizations = () => {
-    if (!optimizations?.data) return [];
-    return optimizations.data;
   };
 
   // Handle page change
@@ -219,22 +257,22 @@ export const Optimization: React.FC = () => {
 
         {/* Stats Cards */}
         {calculatedStats && (
-          <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
             <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 p-6">
               <div className="flex justify-between items-center">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Total Saved</p>
                   <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
                     {formatCurrency(calculatedStats.totalSaved)}
                   </p>
                 </div>
-                <ChartBarIcon className="w-12 h-12 text-success-600 dark:text-success-400 opacity-20" />
+                <ChartBarIcon className="w-12 h-12 text-success-600 dark:text-success-400 opacity-20 flex-shrink-0" />
               </div>
             </div>
 
             <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 p-6">
               <div className="flex justify-between items-center">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                     Optimizations
                   </p>
@@ -242,25 +280,13 @@ export const Optimization: React.FC = () => {
                     {calculatedStats.total}
                   </p>
                 </div>
-                <SparklesIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 opacity-20" />
-              </div>
-            </div>
-
-            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 p-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Applied</p>
-                  <p className="text-2xl font-display font-bold text-secondary-600 dark:text-secondary-400">
-                    {calculatedStats.applied}
-                  </p>
-                </div>
-                <CheckCircleIcon className="w-12 h-12 text-secondary-600 dark:text-secondary-400 opacity-20" />
+                <SparklesIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 opacity-20 flex-shrink-0" />
               </div>
             </div>
 
             <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 p-6">
               <div className="flex justify-between items-center">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                     Avg Improvement
                   </p>
@@ -268,7 +294,7 @@ export const Optimization: React.FC = () => {
                     {formatSmartNumber(calculatedStats.avgImprovement)}%
                   </p>
                 </div>
-                <ArrowTrendingUpIcon className="w-12 h-12 text-accent-600 dark:text-accent-400 opacity-20" />
+                <ArrowTrendingUpIcon className="w-12 h-12 text-accent-600 dark:text-accent-400 opacity-20 flex-shrink-0" />
               </div>
             </div>
           </div>
@@ -327,17 +353,46 @@ export const Optimization: React.FC = () => {
 
         {/* Quick Optimize Section */}
         <div className="mb-8">
-          <QuickOptimize />
+          <QuickOptimize onOptimizationCreated={(newOptimization) => {
+            // Add the new optimization to the list
+            setOptimizations((prev: any) => {
+              if (!prev) return { data: [newOptimization], pagination: { page: 1, limit: 10, total: 1, pages: 1 } };
+              return {
+                ...prev,
+                data: [newOptimization, ...prev.data],
+                pagination: {
+                  ...prev.pagination,
+                  total: prev.pagination.total + 1
+                }
+              };
+            });
+
+            // Update summary if it exists
+            if (summary) {
+              setSummary((prev: any) => ({
+                ...prev,
+                total: prev.total + 1,
+                totalSaved: prev.totalSaved + (newOptimization.costSaved || 0),
+                totalTokensSaved: prev.totalTokensSaved + (newOptimization.tokensSaved || 0),
+                avgImprovement: ((prev.avgImprovement * prev.total) + (newOptimization.improvementPercentage || 0)) / (prev.total + 1)
+              }));
+            }
+          }} />
         </div>
 
         {/* Latest Optimization Preview */}
         {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
-          <div className="mb-8 p-6 bg-white rounded-lg border border-gray-200">
+          <div className="mb-8 p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-surface/80 to-light-surface-secondary/60 dark:from-dark-surface/80 dark:to-dark-surface-secondary/60">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-display font-semibold gradient-text">
                 Latest Optimization
+                {getAllOptimizations()[0]?.cortexImpactMetrics && (
+                  <span className="ml-2 px-2 py-1 text-xs  from-accent-500 to-secondary-500 dark:from-accent-400 dark:to-secondary-400 text-white dark:text-white rounded-full border border-accent-300/50 dark:border-accent-500/50 shadow-sm font-medium">
+                    ✨ Cortex Optimized
+                  </span>
+                )}
               </h3>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 {new Date(
                   getAllOptimizations()[0]?.createdAt ||
                   getAllOptimizations()[0]?.updatedAt,
@@ -345,48 +400,124 @@ export const Optimization: React.FC = () => {
               </span>
             </div>
 
+            {/* With/Without Cortex Comparison */}
+            {getAllOptimizations()[0]?.cortexImpactMetrics && (
+              <div className="mb-4 p-4 glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/80 to-accent-50/60 dark:from-secondary-900/20 dark:to-accent-900/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <span className="text-white text-xs">✨</span>
+                  </div>
+                  <h4 className="font-display font-semibold gradient-text-secondary">Cortex Impact Analysis</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="glass rounded-lg p-4 border border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-4 h-4 rounded-full bg-gradient-danger glow-danger"></div>
+                      <h5 className="font-display font-semibold gradient-text-danger">Without Cortex</h5>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens:</span>
+                        <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withoutCortex.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Cost:</span>
+                        <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="glass rounded-lg p-4 border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-4 h-4 rounded-full bg-gradient-success glow-success"></div>
+                      <h5 className="font-display font-semibold gradient-text-success">With Cortex</h5>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens:</span>
+                        <span className="font-display font-bold gradient-text-success">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withCortex.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Cost:</span>
+                        <span className="font-display font-bold gradient-text-success">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.actualCostWithCortex)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 glass rounded-lg border border-primary-200/30 bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gradient-primary glow-primary"></div>
+                      <span className="font-display font-semibold gradient-text">Net Savings</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-display font-bold gradient-text text-lg">
+                        {formatCurrency(Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings))}
+                        <span className="text-sm ml-1">
+                          ({Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.savingsPercentage).toFixed(1)}%)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-4 gap-4 mb-4">
-              <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
-                <div className="text-lg font-bold text-green-600">
-                  ${formatSmartNumber(getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0)}
+              <div className="p-3 glass rounded-lg border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-center">
+                <div className="text-lg font-display font-bold gradient-text-success">
+                  ${formatSmartNumber(
+                    getAllOptimizations()[0]?.cortexImpactMetrics
+                      ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings)
+                      : getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0
+                  )}
                 </div>
-                <div className="text-xs text-green-700">Savings</div>
+                <div className="text-xs font-body text-success-700 dark:text-success-300">Savings</div>
               </div>
-              <div className="p-3 bg-orange-50 rounded border border-orange-200 text-center">
-                <div className="text-lg font-bold text-orange-600">
-                  ${formatSmartNumber(getAllOptimizations()[0]?.originalCost || 0)}
+              <div className="p-3 glass rounded-lg border border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 text-center">
+                <div className="text-lg font-display font-bold gradient-text-danger">
+                  ${formatSmartNumber(
+                    getAllOptimizations()[0]?.cortexImpactMetrics
+                      ? getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex
+                      : getAllOptimizations()[0]?.originalCost || 0
+                  )}
                 </div>
-                <div className="text-xs text-orange-700">Original Cost</div>
+                <div className="text-xs font-body text-danger-700 dark:text-danger-300">Original Cost</div>
               </div>
-              <div className="p-3 bg-blue-50 rounded border border-blue-200 text-center">
-                <div className="text-lg font-bold text-blue-600">
-                  {formatSmartNumber(getAllOptimizations()[0]?.improvementPercentage || 0)}%
+              <div className="p-3 glass rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 text-center">
+                <div className="text-lg font-display font-bold gradient-text">
+                  {formatSmartNumber(
+                    getAllOptimizations()[0]?.cortexImpactMetrics
+                      ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.percentageSavings)
+                      : getAllOptimizations()[0]?.improvementPercentage || 0
+                  )}%
                 </div>
-                <div className="text-xs text-blue-700">Improvement</div>
+                <div className="text-xs font-body text-primary-700 dark:text-primary-300">Improvement</div>
               </div>
-              <div className="p-3 bg-purple-50 rounded border border-purple-200 text-center">
-                <div className="text-lg font-bold text-purple-600">
-                  {getAllOptimizations()[0]?.tokensSaved || 0}
+              <div className="p-3 glass rounded-lg border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 text-center">
+                <div className="text-lg font-display font-bold gradient-text-secondary">
+                  {getAllOptimizations()[0]?.cortexImpactMetrics
+                    ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()
+                    : getAllOptimizations()[0]?.tokensSaved || 0}
                 </div>
-                <div className="text-xs text-purple-700">Tokens Saved</div>
+                <div className="text-xs font-body text-secondary-700 dark:text-secondary-300">Tokens Saved</div>
               </div>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1">
+                <label className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
                   User Query
                 </label>
-                <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
+                <div className="p-3 glass rounded-lg border border-primary-200/30 text-sm font-body text-light-text-primary dark:text-dark-text-primary max-h-32 overflow-y-auto">
                   {getAllOptimizations()[0]?.userQuery || getAllOptimizations()[0]?.originalPrompt || 'No query available'}
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1">
+                <label className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
                   Generated Answer
                 </label>
-                <div className="p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
+                <div className="p-3 glass rounded-lg border border-success-200/30 text-sm font-body text-light-text-primary dark:text-dark-text-primary max-h-32 overflow-y-auto">
                   <div
                     dangerouslySetInnerHTML={{
                       __html: processFormattedText(getAllOptimizations()[0]?.generatedAnswer || getAllOptimizations()[0]?.optimizedPrompt || 'No answer generated')

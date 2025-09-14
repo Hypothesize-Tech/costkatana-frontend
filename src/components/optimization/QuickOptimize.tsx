@@ -9,7 +9,6 @@ import { optimizationService } from "../../services/optimization.service";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { renderFormattedContent, formatSmartNumber } from "../../utils/formatters";
 import { processFormattedText } from "../../utils/codeFormatter";
-
 import "../../styles/codeBlocks.css";
 import { CortexToggle, CortexResultsDisplay, CortexConfigPanel } from "../cortex";
 import { DEFAULT_CORTEX_CONFIG } from "../../types/cortex.types";
@@ -18,10 +17,12 @@ import type { Optimization } from "../../types/optimization.types";
 
 interface QuickOptimizeProps {
   className?: string;
+  onOptimizationCreated?: (optimization: Optimization) => void;
 }
 
 export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
   className = "",
+  onOptimizationCreated,
 }) => {
   const [prompt, setPrompt] = useState("");
   const [optimizationResult, setOptimizationResult] = useState<Optimization | null>(null);
@@ -92,6 +93,11 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
       setOptimizationResult(safeResult);
       setShowResult(true);
       showNotification("Prompt optimized successfully!", "success");
+
+      // Call the callback to update the parent component
+      if (onOptimizationCreated) {
+        onOptimizationCreated(safeResult);
+      }
     } catch (error) {
       console.error("❌ QUICK OPTIMIZE: Error", error);
       setOptimizationError(error instanceof Error ? error.message : 'Optimization failed');
@@ -382,7 +388,13 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       ? 'gradient-text-secondary'
                       : 'gradient-text'
                       }`}>
-                      {optimizationResult ? formatSmartNumber(optimizationResult.tokensSaved) : '0'}
+                      {optimizationResult
+                        ? formatSmartNumber(
+                          optimizationResult.cortexImpactMetrics
+                            ? Math.abs(optimizationResult.cortexImpactMetrics.tokenReduction.absoluteSavings)
+                            : optimizationResult.tokensSaved
+                        )
+                        : '0'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                       Tokens Saved
@@ -393,7 +405,11 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       ? 'gradient-text-secondary'
                       : 'gradient-text'
                       }`}>
-                      {optimizationResult ? `${optimizationResult.improvementPercentage.toFixed(1)}%` : '0%'}
+                      {optimizationResult
+                        ? `${optimizationResult.cortexImpactMetrics
+                          ? Math.abs(optimizationResult.cortexImpactMetrics.tokenReduction.percentageSavings).toFixed(1)
+                          : optimizationResult.improvementPercentage.toFixed(1)}%`
+                        : '0%'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                       {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
@@ -401,7 +417,11 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-display font-bold gradient-text-success mb-1">
-                      {optimizationResult ? `$${optimizationResult.costSaved.toFixed(6)}` : '$0'}
+                      {optimizationResult
+                        ? `$${optimizationResult.cortexImpactMetrics
+                          ? Math.abs(optimizationResult.cortexImpactMetrics.costImpact.costSavings).toFixed(6)
+                          : optimizationResult.costSaved.toFixed(6)}`
+                        : '$0'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                       Cost Saved
