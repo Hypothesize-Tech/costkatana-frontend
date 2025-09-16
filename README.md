@@ -36,8 +36,8 @@ A modern React-based dashboard for tracking, analyzing, and optimizing AI API co
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-org/ai-cost-optimizer-frontend.git
-cd ai-cost-optimizer-frontend
+git clone https://github.com/your-org/costkatana-frontend.git
+cd costkatana-frontend
 ```
 
 2. Install dependencies:
@@ -344,4 +344,4 @@ MIT License - see LICENSE file for details
 ## Support
 
 For support, email <support@aicostoptimizer.com> or create an issue in the repository.
-# ai-cost-optimizer-frontend
+# costkatana-frontend
