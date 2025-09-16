@@ -9,7 +9,7 @@ export const Footer = () => {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center space-x-6 md:order-2">
             <a
-              href="https://github.com/Hypothesize-Tech/aicostkatana-core"
+              href="https://github.com/Hypothesize-Tech/costkatana-core"
               target="_blank"
               rel="noopener noreferrer"
               className="text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 transition-all duration-300 hover:scale-110"
