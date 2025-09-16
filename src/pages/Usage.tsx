@@ -308,21 +308,21 @@ export default function Usage() {
                 <>
                   <Link
                     to="/requests"
-                    className="btn-secondary inline-flex items-center"
+                    className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-light-text-primary dark:text-dark-text-primary bg-gradient-to-r from-light-bg-300/80 to-light-bg-400/80 dark:from-dark-bg-300/80 dark:to-dark-bg-400/80 border border-accent-200/30 rounded-xl shadow-lg backdrop-blur-sm hover:from-accent-500/10 hover:to-warning-500/10 hover:border-accent-400/50 transition-all duration-300"
                   >
                     <ClockIcon className="mr-2 w-5 h-5" />
                     Request
                   </Link>
                   <button
                     onClick={() => setShowTrackModal(true)}
-                    className="btn-primary inline-flex items-center"
+                    className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-600 hover:to-secondary-700 border border-secondary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                   >
                     <PlusIcon className="mr-2 w-5 h-5" />
                     Track Usage
                   </button>
                   <button
                     onClick={() => handleExport('csv')}
-                    className="btn-outline inline-flex items-center"
+                    className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 border border-primary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                   >
                     <ArrowDownTrayIcon className="mr-2 w-5 h-5" />
                     Export
@@ -468,7 +468,7 @@ export default function Usage() {
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="inline-flex items-center btn-outline"
+                  className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-light-text-primary dark:text-dark-text-primary bg-gradient-to-r from-light-bg-300/80 to-light-bg-400/80 dark:from-dark-bg-300/80 dark:to-dark-bg-400/80 border border-accent-200/30 rounded-xl shadow-lg backdrop-blur-sm hover:from-primary-500/10 hover:to-secondary-500/10 hover:border-primary-400/50 transition-all duration-300"
                 >
                   <FunnelIcon className="mr-2 w-5 h-5" />
                   Filters
@@ -511,7 +511,7 @@ export default function Usage() {
                     </div>
                     <button
                       onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="btn-primary"
+                      className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 border border-primary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                     >
                       View Opportunities
                     </button>
@@ -533,7 +533,7 @@ export default function Usage() {
                 </div>
                 <button
                   onClick={() => refetch()}
-                  className="btn-primary"
+                  className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 border border-primary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   Try Again
                 </button>
@@ -658,7 +658,7 @@ export default function Usage() {
 
                 <button
                   onClick={handleSessionsSearch}
-                  className="btn-primary"
+                  className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 border border-primary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   Search
                 </button>
@@ -678,7 +678,7 @@ export default function Usage() {
                 </div>
                 <button
                   onClick={() => refetchSessions()}
-                  className="btn-primary"
+                  className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 border border-primary-400/30 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   Try Again
                 </button>
@@ -770,7 +770,7 @@ export default function Usage() {
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Link
                                 to={`/sessions/${session.sessionId}`}
-                                className="btn-outline text-sm"
+                                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-light-text-primary dark:text-dark-text-primary bg-gradient-to-r from-light-bg-300/80 to-light-bg-400/80 dark:from-dark-bg-300/80 dark:to-dark-bg-400/80 border border-accent-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-secondary-500/10 hover:border-primary-400/50 transition-all duration-300"
                               >
                                 View Details
                               </Link>
@@ -786,7 +786,7 @@ export default function Usage() {
                         <button
                           onClick={() => handleSessionsPageChange(sessionsFilters.page - 1)}
                           disabled={sessionsFilters.page === 1}
-                          className="btn-outline text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary bg-gradient-to-r from-light-bg-300/80 to-light-bg-400/80 dark:from-dark-bg-300/80 dark:to-dark-bg-400/80 border border-accent-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-secondary-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-light-bg-300/80 disabled:hover:to-light-bg-400/80 disabled:hover:border-accent-200/30"
                         >
                           Previous
                         </button>
@@ -796,7 +796,7 @@ export default function Usage() {
                         <button
                           onClick={() => handleSessionsPageChange(sessionsFilters.page + 1)}
                           disabled={sessionsFilters.page === sessionsTotalPages}
-                          className="btn-outline text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="inline-flex items-center px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary bg-gradient-to-r from-light-bg-300/80 to-light-bg-400/80 dark:from-dark-bg-300/80 dark:to-dark-bg-400/80 border border-accent-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-secondary-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-light-bg-300/80 disabled:hover:to-light-bg-400/80 disabled:hover:border-accent-200/30"
                         >
                           Next
                         </button>
