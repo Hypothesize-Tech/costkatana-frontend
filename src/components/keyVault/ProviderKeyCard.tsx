@@ -45,16 +45,16 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
   };
 
   return (
-    <div className="card card-hover p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
             <span className="text-white text-xl">
               {providerIcons[providerKey.provider] || '🔑'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-display font-bold gradient-text truncate mb-1">
+            <h3 className="text-lg font-display font-bold gradient-text-primary truncate mb-1">
               {providerKey.name}
             </h3>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -69,17 +69,17 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
         </div>
         <div className="flex items-center gap-2">
           {providerKey.isActive ? (
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success" title="Active">
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg" title="Active">
               <CheckCircleIcon className="h-4 w-4 text-white" />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning" title="Inactive">
+            <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg" title="Inactive">
               <ExclamationTriangleIcon className="h-4 w-4 text-white" />
             </div>
           )}
           <button
             onClick={onDelete}
-            className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+            className="w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             title="Delete provider key"
           >
             <TrashIcon className="h-4 w-4" />
@@ -88,32 +88,32 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
       </div>
 
       <div className="space-y-3">
-        <div className="glass p-3 rounded-xl border border-primary-200/30">
+        <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">API Key:</span>
-            <code className="bg-primary-100/50 dark:bg-primary-900/50 px-3 py-1 rounded-lg font-mono text-sm gradient-text">
+            <code className="bg-primary-100/50 dark:bg-primary-900/50 px-3 py-1 rounded-lg font-mono text-sm gradient-text-primary">
               {providerKey.maskedKey}
             </code>
           </div>
         </div>
 
-        <div className="glass p-3 rounded-xl border border-primary-200/30">
+        <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Created:</span>
-            <span className="font-display font-semibold gradient-text text-sm">
+            <span className="font-display font-semibold gradient-text-primary text-sm">
               {formatDate(providerKey.createdAt)}
             </span>
           </div>
         </div>
 
-        <div className="glass p-3 rounded-xl border border-primary-200/30">
+        <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Last Used:</span>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gradient-accent flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg">
                 <ClockIcon className="h-2 w-2 text-white" />
               </div>
-              <span className="font-display font-semibold gradient-text text-sm">
+              <span className="font-display font-semibold gradient-text-primary text-sm">
                 {formatDate(providerKey.lastUsed)}
               </span>
             </div>
@@ -130,7 +130,7 @@ export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, o
             {providerKey.isActive ? '✅ Active' : '⚠️ Inactive'}
           </span>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center">
+            <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center shadow-lg">
               <span className="text-white text-xs">🔐</span>
             </div>
             <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">

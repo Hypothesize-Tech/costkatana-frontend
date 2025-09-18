@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Bell, AlertTriangle, Info, XCircle, CheckCircle, X } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { guardrailsService, UsageAlert } from '../../services/guardrails.service';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -97,12 +96,12 @@ export const UsageAlerts: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                         <Bell className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary">🔔 Usage Alerts</h3>
                 </div>
                 <div className="flex items-center justify-center h-32">
                     <div className="spinner-lg text-primary-500"></div>
@@ -113,15 +112,15 @@ export const UsageAlerts: React.FC = () => {
 
     if (alerts.length === 0) {
         return (
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                         <Bell className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary">🔔 Usage Alerts</h3>
                 </div>
                 <div className="flex flex-col items-center justify-center h-32 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mb-4 shadow-2xl glow-success animate-pulse">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mb-4 shadow-2xl animate-pulse">
                         <CheckCircle className="w-8 w-8 text-white" />
                     </div>
                     <p className="text-lg font-display font-bold gradient-text-success mb-2">No Active Alerts</p>
@@ -132,13 +131,13 @@ export const UsageAlerts: React.FC = () => {
     }
 
     return (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                         <Bell className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">🔔 Usage Alerts</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary">🔔 Usage Alerts</h3>
                 </div>
                 {alerts.length > 0 && (
                     <span className="text-sm font-display font-bold bg-gradient-danger text-white px-3 py-1 rounded-full shadow-lg">
@@ -150,7 +149,7 @@ export const UsageAlerts: React.FC = () => {
                 {alerts.map(alert => (
                     <div
                         key={alert._id}
-                        className={`card card-hover p-6 rounded-xl border ${getSeverityColor(alert.severity)} transition-all duration-300 hover:scale-105`}
+                        className={`glass rounded-xl p-6 border ${getSeverityColor(alert.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}
                     >
                         <div className="flex items-start justify-between">
                             <div className="flex items-start gap-4 flex-1">
@@ -164,8 +163,8 @@ export const UsageAlerts: React.FC = () => {
                                     </p>
 
                                     {alert.metadata?.suggestions && alert.metadata.suggestions.length > 0 && (
-                                        <div className="mt-4 glass p-4 rounded-xl border border-primary-200/30">
-                                            <p className="text-sm font-display font-bold gradient-text mb-3">
+                                        <div className="mt-4 glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                                            <p className="text-sm font-display font-bold gradient-text-primary mb-3">
                                                 💡 Recommendations:
                                             </p>
                                             <ul className="space-y-2">
@@ -195,10 +194,10 @@ export const UsageAlerts: React.FC = () => {
                                             <div className="w-full bg-primary-200/30 rounded-full h-3 overflow-hidden">
                                                 <div
                                                     className={`h-3 rounded-full transition-all duration-500 ${alert.metadata.percentage >= 90
-                                                        ? 'bg-gradient-danger glow-danger'
+                                                        ? 'bg-gradient-danger'
                                                         : alert.metadata.percentage >= 75
-                                                            ? 'bg-gradient-warning glow-warning'
-                                                            : 'bg-gradient-success glow-success'
+                                                            ? 'bg-gradient-warning'
+                                                            : 'bg-gradient-success'
                                                         }`}
                                                     style={{ width: `${Math.min(alert.metadata.percentage, 100)}%` }}
                                                 />
@@ -224,9 +223,9 @@ export const UsageAlerts: React.FC = () => {
             </div>
 
             {alerts.some(alert => alert.severity === 'high') && (
-                <div className="mt-6 card p-6 bg-gradient-primary shadow-2xl backdrop-blur-xl border border-primary-200/30">
+                <div className="mt-6 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary p-6">
                     <div className="flex items-center mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3">
+                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3 shadow-lg">
                             <AlertTriangle className="w-4 h-4 text-white" />
                         </div>
                         <p className="text-lg font-display font-bold text-white">
@@ -237,7 +236,7 @@ export const UsageAlerts: React.FC = () => {
                         Upgrade your plan for increased limits and access to all features.
                     </p>
                     <a
-                        href="https://costkatana.com/pricing"
+                        href="https://www.costkatana.com/#pricing"
                         className="inline-flex items-center text-sm font-display font-semibold bg-white text-primary-600 px-4 py-2 rounded-xl hover:bg-primary-50 transition-all duration-300 hover:scale-105 shadow-lg"
                     >
                         ✨ View Plans →

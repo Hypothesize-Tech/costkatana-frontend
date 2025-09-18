@@ -118,11 +118,11 @@ export const TrainingCandidatesList: React.FC<TrainingCandidatesListProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-between items-center">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">🏆</span>
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-primary">
@@ -158,7 +158,7 @@ export const TrainingCandidatesList: React.FC<TrainingCandidatesListProps> = ({
 
         {/* Filters Panel */}
         {showFilters && (
-          <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
+          <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="form-label">
@@ -225,10 +225,10 @@ export const TrainingCandidatesList: React.FC<TrainingCandidatesListProps> = ({
 
         {/* Selection Summary */}
         {selectionMode && selectedIds.size > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="glass rounded-lg p-3 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
             <div className="flex items-center space-x-2">
-              <CheckIcon className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-blue-900">
+              <CheckIcon className="h-5 w-5 text-success-600" />
+              <span className="text-sm font-display font-medium text-success-900 dark:text-success-100">
                 {selectedIds.size} request{selectedIds.size !== 1 ? "s" : ""}{" "}
                 selected for training dataset
               </span>
@@ -238,12 +238,12 @@ export const TrainingCandidatesList: React.FC<TrainingCandidatesListProps> = ({
 
         {/* Candidates List */}
         {candidates.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <DocumentTextIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-12 glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <DocumentTextIcon className="h-12 w-12 text-accent-400 mx-auto mb-4 animate-pulse" />
+            <h3 className="text-lg font-display font-bold gradient-text-accent mb-2">
               No Training Candidates Found
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
               Start scoring your requests with 4+ stars to see training candidates
               here.
             </p>

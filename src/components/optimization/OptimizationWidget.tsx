@@ -97,10 +97,10 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
       {optimizationResult && (
         <div className="space-y-6">
           {/* Savings Summary */}
-          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
+          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">💰</span>
                 </div>
                 <span className="font-display font-semibold gradient-text-success">
@@ -124,9 +124,9 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
           </div>
 
           {/* Optimization Suggestions */}
-          <div className="glass rounded-xl p-6 border border-accent-200/30">
+          <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">💡</span>
               </div>
               <h4 className="font-display font-semibold gradient-text-accent text-lg">
@@ -141,7 +141,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
                     className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <h5 className="font-display font-semibold gradient-text capitalize">
+                      <h5 className="font-display font-semibold gradient-text-primary capitalize">
                         {suggestion.type.replace(/_/g, " ")}
                       </h5>
                       <span className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30 font-display font-medium text-xs">
@@ -157,7 +157,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
                       <div className="glass rounded-lg p-4 border border-success-200/30">
                         <div className="flex justify-between items-center mb-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded bg-gradient-success"></div>
+                            <div className="w-4 h-4 rounded bg-gradient-success shadow-lg"></div>
                             <span className="font-display font-medium gradient-text-success text-sm">
                               Optimized Version:
                             </span>
@@ -213,7 +213,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
                         </div>
                         <div className="w-full bg-light-background-secondary dark:bg-dark-background-secondary rounded-full h-2">
                           <div
-                            className="bg-gradient-primary h-2 rounded-full glow-primary transition-all duration-300"
+                            className="bg-gradient-primary h-2 rounded-full shadow-lg transition-all duration-300"
                             style={{ width: `${suggestion.confidence * 100}%` }}
                           ></div>
                         </div>
@@ -228,9 +228,9 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
           {/* Applied Techniques */}
           {optimizationResult.techniques &&
             optimizationResult.techniques.length > 0 && (
-              <div className="glass rounded-xl p-6 border border-secondary-200/30">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">⚙️</span>
                   </div>
                   <h4 className="font-display font-semibold gradient-text-secondary text-lg">
@@ -256,11 +256,11 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
 
       {/* Empty State */}
       {!optimizationResult && !optimizeMutation.isPending && (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 text-center">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
           <div className="w-16 h-16 rounded-2xl bg-gradient-primary/20 flex items-center justify-center mx-auto mb-4">
             <SparklesIcon className="w-8 h-8 text-primary-500" />
           </div>
-          <h3 className="font-display font-semibold gradient-text mb-2">Ready to Optimize</h3>
+          <h3 className="font-display font-semibold gradient-text-primary mb-2">Ready to Optimize</h3>
           <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Click "Optimize Prompt" to get started with AI-powered optimization</p>
         </div>
       )}

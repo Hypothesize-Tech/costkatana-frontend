@@ -56,24 +56,24 @@ export const AlertSummary: React.FC<AlertSummaryProps> = ({ summary }) => {
   ];
 
   return (
-    <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
       <div className="flex items-center mb-6">
         <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         </div>
-        <h2 className="text-2xl font-display font-bold gradient-text">Alert Summary</h2>
+        <h2 className="text-2xl font-display font-bold gradient-text">📊 Alert Summary</h2>
       </div>
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 gap-6 mb-8">
-        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300">
-          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">Total Alerts</p>
+        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">📋 Total Alerts</p>
           <p className="text-3xl font-display font-bold gradient-text">{summary.total}</p>
         </div>
-        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-primary-50/50 to-primary-100/50">
-          <p className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400 mb-2">Unread</p>
+        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105">
+          <p className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400 mb-2">🔔 Unread</p>
           <p className="text-3xl font-display font-bold text-primary-700 dark:text-primary-300">{summary.unread}</p>
         </div>
       </div>
@@ -85,10 +85,10 @@ export const AlertSummary: React.FC<AlertSummaryProps> = ({ summary }) => {
           {severityCards.map((card) => (
             <div
               key={card.label}
-              className={`rounded-2xl p-4 ${card.bgColor} border border-white/20 backdrop-blur-sm hover:scale-105 transition-all duration-300 shadow-lg`}
+              className={`glass rounded-2xl p-4 ${card.bgColor} border border-primary-200/30 backdrop-blur-xl hover:scale-105 transition-all duration-300 shadow-lg`}
             >
               <div className="flex flex-col items-center text-center">
-                <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center mb-3 shadow-lg`}>
+                <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center mb-3 shadow-lg glow-${card.label.toLowerCase()}`}>
                   <card.icon className="h-6 w-6 text-white" />
                 </div>
                 <p className="text-xs font-display font-bold uppercase tracking-wider text-light-text-muted dark:text-dark-text-muted mb-1">
@@ -106,10 +106,10 @@ export const AlertSummary: React.FC<AlertSummaryProps> = ({ summary }) => {
       {/* Type Breakdown */}
       {Object.keys(summary.byType).length > 0 && (
         <div className="mt-8">
-          <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">By Type</h3>
+          <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">📋 By Type</h3>
           <div className="space-y-3">
             {Object.entries(summary.byType).map(([type, count]) => (
-              <div key={type} className="flex items-center justify-between p-3 glass rounded-xl border border-primary-200/20 hover:bg-primary-500/5 transition-all duration-200">
+              <div key={type} className="flex items-center justify-between p-3 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-200 shadow-sm backdrop-blur-xl">
                 <span className="text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">
                   {type
                     .split("_")

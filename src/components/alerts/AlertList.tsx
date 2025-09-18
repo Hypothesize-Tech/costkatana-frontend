@@ -45,7 +45,7 @@ export const AlertList: React.FC<AlertListProps> = ({
             />
           </svg>
         </div>
-        <h3 className="text-2xl font-display font-bold gradient-text mb-2">No alerts</h3>
+        <h3 className="text-2xl font-display font-bold gradient-text mb-2">🔔 No alerts</h3>
         <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">You're all caught up! 🎉</p>
       </div>
     );
@@ -68,9 +68,9 @@ export const AlertList: React.FC<AlertListProps> = ({
       {Object.entries(groupedAlerts).map(([date, dateAlerts]) => (
         <div key={date} className="animate-fade-in">
           <div className="flex items-center mb-4">
-            <div className="w-3 h-3 rounded-full bg-gradient-primary mr-3 shadow-lg"></div>
+            <div className="w-3 h-3 rounded-full bg-gradient-primary mr-3 shadow-lg glow-primary"></div>
             <h3 className="text-lg font-display font-semibold gradient-text">
-              {date === new Date().toLocaleDateString() ? "Today" : date}
+              {date === new Date().toLocaleDateString() ? "📅 Today" : `📅 ${date}`}
             </h3>
           </div>
           <div className="space-y-4">

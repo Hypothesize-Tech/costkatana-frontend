@@ -10,45 +10,47 @@ const Guardrails: React.FC = () => {
     const [trendDays, setTrendDays] = useState(7);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
-                                <Shield className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                                Usage Guardrails
-                            </h1>
-                            <p className="text-light-text-secondary dark:text-dark-text-secondary mt-2">
-                                Monitor and manage your resource usage to stay within limits
-                            </p>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => window.location.href = 'https://costkatana.com/pricing'}
-                                className="btn-primary px-4 py-2 rounded-lg transition-all flex items-center gap-2"
-                            >
-                                <TrendingUp className="w-4 h-4" />
-                                Upgrade Plan
-                            </button>
-                            <button className="btn-secondary px-4 py-2 rounded-lg transition-all flex items-center gap-2">
-                                <Settings className="w-4 h-4" />
-                                Settings
-                            </button>
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
+                                    <Shield className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                                    Usage Guardrails
+                                </h1>
+                                <p className="text-secondary-600 dark:text-secondary-300 mt-2">
+                                    Monitor and manage your resource usage to stay within limits
+                                </p>
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => window.location.href = 'https://www.costkatana.com/#pricing'}
+                                    className="btn-primary px-4 py-2 rounded-lg transition-all flex items-center gap-2"
+                                >
+                                    <TrendingUp className="w-4 h-4" />
+                                    Upgrade Plan
+                                </button>
+                                <button className="btn-secondary px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                                    <Settings className="w-4 h-4" />
+                                    Settings
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Navigation Tabs */}
                 <div className="mb-6">
-                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2">
                         <nav className="flex space-x-2">
                             <button
                                 onClick={() => setActiveTab('overview')}
                                 className={`py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === 'overview'
                                     ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                                    : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10'
+                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
@@ -58,9 +60,9 @@ const Guardrails: React.FC = () => {
                             </button>
                             <button
                                 onClick={() => setActiveTab('trends')}
-                                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'trends'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                className={`py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === 'trends'
+                                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
@@ -70,9 +72,9 @@ const Guardrails: React.FC = () => {
                             </button>
                             <button
                                 onClick={() => setActiveTab('alerts')}
-                                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'alerts'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                className={`py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 ${activeTab === 'alerts'
+                                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
@@ -99,18 +101,18 @@ const Guardrails: React.FC = () => {
                     {activeTab === 'trends' && (
                         <>
                             {/* Trend Controls */}
-                            <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
-                                        <span className="text-sm font-medium text-gray-700">Time Range:</span>
+                                        <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Time Range:</span>
                                         <div className="flex gap-2">
                                             {[7, 14, 30].map(days => (
                                                 <button
                                                     key={days}
                                                     onClick={() => setTrendDays(days)}
                                                     className={`px-3 py-1 text-sm rounded-lg transition-colors ${trendDays === days
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                        ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                                                        : 'bg-light-bg-300 dark:bg-dark-bg-300 text-secondary-700 dark:text-secondary-300 hover:bg-primary-500/10'
                                                         }`}
                                                 >
                                                     {days} Days
@@ -119,15 +121,15 @@ const Guardrails: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <span className="text-sm font-medium text-gray-700">Chart Type:</span>
+                                        <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Chart Type:</span>
                                         <div className="flex gap-2">
                                             {(['line', 'area', 'bar'] as const).map(type => (
                                                 <button
                                                     key={type}
                                                     onClick={() => setChartType(type)}
                                                     className={`px-3 py-1 text-sm rounded-lg transition-colors capitalize ${chartType === type
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                        ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                                                        : 'bg-light-bg-300 dark:bg-dark-bg-300 text-secondary-700 dark:text-secondary-300 hover:bg-primary-500/10'
                                                         }`}
                                                 >
                                                     {type}
@@ -142,65 +144,71 @@ const Guardrails: React.FC = () => {
 
                             {/* Additional Stats */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg font-semibold text-gray-900">Daily Average</h3>
-                                        <TrendingUp className="w-5 h-5 text-blue-600" />
+                                        <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">Daily Average</h3>
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 flex items-center justify-center">
+                                            <TrendingUp className="w-5 h-5 text-highlight-600 dark:text-highlight-400" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Tokens</span>
-                                            <span className="text-sm font-medium">32.5K</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Tokens</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">32.5K</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Requests</span>
-                                            <span className="text-sm font-medium">245</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Requests</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">245</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Cost</span>
-                                            <span className="text-sm font-medium">$4.85</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Cost</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">$4.85</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg font-semibold text-gray-900">Peak Usage</h3>
-                                        <BarChart3 className="w-5 h-5 text-yellow-600" />
+                                        <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">Peak Usage</h3>
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 flex items-center justify-center">
+                                            <BarChart3 className="w-5 h-5 text-accent-600 dark:text-accent-400" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Highest Day</span>
-                                            <span className="text-sm font-medium">Monday</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Highest Day</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">Monday</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Peak Hour</span>
-                                            <span className="text-sm font-medium">2-3 PM</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Peak Hour</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">2-3 PM</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Max Requests</span>
-                                            <span className="text-sm font-medium">487</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Max Requests</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">487</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg font-semibold text-gray-900">Efficiency</h3>
-                                        <Shield className="w-5 h-5 text-green-600" />
+                                        <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">Efficiency</h3>
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 flex items-center justify-center">
+                                            <Shield className="w-5 h-5 text-success-600 dark:text-success-400" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Cache Hit Rate</span>
-                                            <span className="text-sm font-medium">68%</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Cache Hit Rate</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">68%</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Optimized</span>
-                                            <span className="text-sm font-medium">$127 saved</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Optimized</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">$127 saved</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Efficiency Score</span>
-                                            <span className="text-sm font-medium">85/100</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Efficiency Score</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">85/100</span>
                                         </div>
                                     </div>
                                 </div>
@@ -215,40 +223,40 @@ const Guardrails: React.FC = () => {
                             </div>
                             <div className="space-y-6">
                                 {/* Alert Settings */}
-                                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Alert Settings</h3>
+                                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4">Alert Settings</h3>
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-700">Email Alerts</span>
+                                            <span className="text-sm text-secondary-700 dark:text-secondary-300">Email Alerts</span>
                                             <label className="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" className="sr-only peer" defaultChecked />
-                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                <div className="w-11 h-6 bg-light-bg-300 dark:bg-dark-bg-300 peer-focus:outline-none peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                                             </label>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-700">Push Notifications</span>
+                                            <span className="text-sm text-secondary-700 dark:text-secondary-300">Push Notifications</span>
                                             <label className="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" className="sr-only peer" />
-                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                <div className="w-11 h-6 bg-light-bg-300 dark:bg-dark-bg-300 peer-focus:outline-none peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                                             </label>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-700">Weekly Digest</span>
+                                            <span className="text-sm text-secondary-700 dark:text-secondary-300">Weekly Digest</span>
                                             <label className="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" className="sr-only peer" defaultChecked />
-                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                <div className="w-11 h-6 bg-light-bg-300 dark:bg-dark-bg-300 peer-focus:outline-none peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Alert Thresholds */}
-                                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Alert Thresholds</h3>
+                                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4">Alert Thresholds</h3>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="text-sm text-gray-700">Warning at</label>
-                                            <select className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                            <label className="text-sm text-secondary-700 dark:text-secondary-300">Warning at</label>
+                                            <select className="select mt-1 w-full text-sm">
                                                 <option>75% usage</option>
                                                 <option>80% usage</option>
                                                 <option>85% usage</option>
@@ -256,8 +264,8 @@ const Guardrails: React.FC = () => {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-sm text-gray-700">Critical at</label>
-                                            <select className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                            <label className="text-sm text-secondary-700 dark:text-secondary-300">Critical at</label>
+                                            <select className="select mt-1 w-full text-sm">
                                                 <option>90% usage</option>
                                                 <option>95% usage</option>
                                                 <option>100% usage</option>

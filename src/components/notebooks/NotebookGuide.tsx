@@ -116,16 +116,16 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
     ];
 
     return (
-        <div className={`card shadow-2xl backdrop-blur-xl border border-primary-200/30 ${className}`}>
+        <div className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}>
             {/* Header */}
             <div className="p-6 border-b border-primary-200/30">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <BookOpen className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-display font-bold gradient-text">Notebook Guide</h2>
+                            <h2 className="text-2xl font-display font-bold gradient-text-primary">Notebook Guide</h2>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                 Learn how to create powerful cost analysis notebooks
                             </p>
@@ -152,7 +152,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={`px-6 py-3 font-display font-semibold border-b-2 transition-all duration-300 ${activeTab === tab.id
-                                ? 'border-primary-500 gradient-text'
+                                ? 'border-primary-500 gradient-text-primary'
                                 : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary'
                                 }`}
                         >
@@ -167,18 +167,18 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'overview' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">What are Analysis Notebooks?</h3>
+                            <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">What are Analysis Notebooks?</h3>
                             <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-6 text-lg">
                                 Notebooks are interactive documents that combine queries, visualizations, and AI insights
                                 to help you investigate cost issues and discover optimization opportunities.
                             </p>
-                            <div className="glass p-6 rounded-xl border border-primary-200/30">
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                         <Sparkles className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-display font-bold gradient-text mb-3">Key Benefits</h4>
+                                        <h4 className="text-lg font-display font-bold gradient-text-primary mb-3">Key Benefits</h4>
                                         <ul className="font-body text-light-text-primary dark:text-dark-text-primary space-y-2">
                                             <li className="flex items-start gap-2">
                                                 <span className="text-primary-500 mt-1">•</span>
@@ -203,26 +203,26 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                         </div>
 
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">How to Get Started</h3>
+                            <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">How to Get Started</h3>
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">1</div>
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold shadow-lg">1</div>
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Choose a Template</h4>
+                                        <h4 className="text-lg font-display font-semibold gradient-text-primary mb-2">Choose a Template</h4>
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Start with a pre-built template for common scenarios like cost spikes or performance analysis</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">2</div>
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold shadow-lg">2</div>
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Run the Analysis</h4>
+                                        <h4 className="text-lg font-display font-semibold gradient-text-primary mb-2">Run the Analysis</h4>
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Click "Run All" to execute all cells and see your data come to life</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold glow-primary">3</div>
+                                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center font-display font-bold shadow-lg">3</div>
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-display font-semibold gradient-text mb-2">Customize & Explore</h4>
+                                        <h4 className="text-lg font-display font-semibold gradient-text-primary mb-2">Customize & Explore</h4>
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Modify queries, add new cells, and dive deeper into your findings</p>
                                     </div>
                                 </div>
@@ -234,17 +234,17 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'examples' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">Common Use Cases</h3>
+                            <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Common Use Cases</h3>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6 text-lg">
                                 Here are some real-world scenarios where notebooks can help you solve problems:
                             </p>
                         </div>
 
                         {examples.map((example, index) => (
-                            <div key={index} className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
+                            <div key={index} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-display font-bold gradient-text mb-2">{example.title}</h4>
+                                        <h4 className="text-lg font-display font-bold gradient-text-primary mb-2">{example.title}</h4>
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">{example.description}</p>
                                     </div>
                                     <button
@@ -256,10 +256,10 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                                     </button>
                                 </div>
                                 <div className="space-y-3">
-                                    <div className="font-display font-semibold gradient-text">Typical workflow:</div>
+                                    <div className="font-display font-semibold gradient-text-primary">Typical workflow:</div>
                                     {example.steps.map((step, stepIndex) => (
                                         <div key={stepIndex} className="flex items-start gap-3">
-                                            <div className="w-5 h-5 rounded-full bg-gradient-primary/20 flex items-center justify-center mt-0.5">
+                                            <div className="w-5 h-5 rounded-full bg-gradient-primary/20 flex items-center justify-center shadow-lg mt-0.5">
                                                 <ChevronRight className="w-3 h-3 text-primary-600" />
                                             </div>
                                             <span className="font-body text-light-text-primary dark:text-dark-text-primary flex-1">{step}</span>
@@ -269,9 +269,9 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             </div>
                         ))}
 
-                        <div className="glass p-6 rounded-xl border border-success-200/30">
+                        <div className="glass p-6 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                                     <span className="text-white text-sm">💡</span>
                                 </div>
                                 <h4 className="text-lg font-display font-bold gradient-text-success">Sample Query Ideas</h4>
@@ -279,10 +279,10 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {queryExamples.map((category, index) => (
                                     <div key={index}>
-                                        <h5 className="font-display font-semibold gradient-text mb-3">{category.category}</h5>
+                                        <h5 className="font-display font-semibold gradient-text-primary mb-3">{category.category}</h5>
                                         <ul className="space-y-2">
                                             {category.queries.map((query, qIndex) => (
-                                                <li key={qIndex} className="glass p-3 rounded-lg border border-success-200/30 font-body text-sm text-light-text-primary dark:text-dark-text-primary">
+                                                <li key={qIndex} className="glass p-3 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl font-body text-sm text-light-text-primary dark:text-dark-text-primary">
                                                     "{query}"
                                                 </li>
                                             ))}
@@ -297,7 +297,7 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                 {activeTab === 'cells' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text mb-4">Cell Types Explained</h3>
+                            <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Cell Types Explained</h3>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6 text-lg">
                                 Notebooks are made up of different types of cells. Each cell type serves a specific purpose:
                             </p>
@@ -307,19 +307,19 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             {cellTypes.map((cellType) => {
                                 const Icon = cellType.icon;
                                 return (
-                                    <div key={cellType.type} className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
+                                    <div key={cellType.type} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300">
                                         <div className="flex items-center gap-4 mb-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${cellType.color}`}>
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${cellType.color}`}>
                                                 <Icon className="w-6 h-6" />
                                             </div>
                                             <div className="flex-1">
-                                                <h4 className="text-lg font-display font-bold gradient-text mb-1">{cellType.name}</h4>
+                                                <h4 className="text-lg font-display font-bold gradient-text-primary mb-1">{cellType.name}</h4>
                                                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">{cellType.description}</p>
                                             </div>
                                         </div>
-                                        <div className="glass p-4 rounded-lg border border-primary-200/30">
-                                            <div className="font-display font-semibold gradient-text text-sm mb-2">Example:</div>
-                                            <code className="font-mono text-sm gradient-text block">
+                                        <div className="glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                                            <div className="font-display font-semibold gradient-text-primary text-sm mb-2">Example:</div>
+                                            <code className="font-mono text-sm gradient-text-primary block">
                                                 {cellType.example}
                                             </code>
                                         </div>
@@ -328,9 +328,9 @@ export const NotebookGuide: React.FC<NotebookGuideProps> = ({
                             })}
                         </div>
 
-                        <div className="glass p-6 rounded-xl border border-accent-200/30">
+                        <div className="glass p-6 rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                                     <span className="text-white text-sm">🏆</span>
                                 </div>
                                 <h4 className="text-lg font-display font-bold gradient-text-accent">Pro Tips</h4>

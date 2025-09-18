@@ -31,9 +31,9 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       subValue: `${formatCurrency(stats.currentMonthSpent || 0)} this month`,
       icon: CurrencyDollarIcon,
       gradient: "bg-gradient-primary",
-      textGradient: "gradient-text",
+      textGradient: "gradient-text-primary",
       borderColor: "border-primary-200/30",
-      glowClass: "glow-primary",
+      glowClass: "shadow-lg",
     },
     {
       title: "Total Saved",
@@ -43,7 +43,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       gradient: "bg-gradient-success",
       textGradient: "gradient-text-success",
       borderColor: "border-success-200/30",
-      glowClass: "glow-success",
+      glowClass: "shadow-lg",
     },
     {
       title: "API Calls",
@@ -53,7 +53,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       gradient: "bg-gradient-secondary",
       textGradient: "gradient-text-secondary",
       borderColor: "border-secondary-200/30",
-      glowClass: "glow-secondary",
+      glowClass: "shadow-lg",
     },
     {
       title: "Optimizations",
@@ -63,7 +63,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       gradient: "bg-gradient-accent",
       textGradient: "gradient-text-accent",
       borderColor: "border-accent-200/30",
-      glowClass: "glow-accent",
+      glowClass: "shadow-lg",
     },
   ];
 
@@ -72,7 +72,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       {cards.map((card, index) => (
         <div
           key={index}
-          className={`glass rounded-xl shadow-lg border ${card.borderColor} backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-opacity-50 p-6`}
+          className={`glass rounded-xl shadow-lg border ${card.borderColor} backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 hover:border-opacity-50 p-6`}
         >
           <div className="flex items-center gap-4">
             <div className={`w-14 h-14 rounded-xl ${card.gradient} flex items-center justify-center ${card.glowClass}`}>
@@ -95,20 +95,20 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
 
       {/* Additional Stats */}
       <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="glass rounded-xl p-6 border border-primary-200/30 hover:scale-105 transition-all duration-300">
+        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">🏢</span>
             </div>
-            <p className="font-display font-semibold gradient-text">Most Used Service</p>
+            <p className="font-display font-semibold gradient-text-primary">Most Used Service</p>
           </div>
           <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary capitalize">
             {stats.mostUsedService || 'N/A'}
           </p>
         </div>
-        <div className="glass rounded-xl p-6 border border-secondary-200/30 hover:scale-105 transition-all duration-300">
+        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">🤖</span>
             </div>
             <p className="font-display font-semibold gradient-text-secondary">Most Used Model</p>
@@ -117,9 +117,9 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
             {stats.mostUsedModel || 'N/A'}
           </p>
         </div>
-        <div className="glass rounded-xl p-6 border border-accent-200/30 hover:scale-105 transition-all duration-300">
+        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">📅</span>
             </div>
             <p className="font-display font-semibold gradient-text-accent">Account Age</p>

@@ -29,7 +29,7 @@ export const CortexToggle: React.FC<CortexToggleProps> = ({
     return (
         <div className="space-y-4">
             {/* Main Cortex Toggle */}
-            <div className="flex items-center justify-between p-6 card shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+            <div className="flex items-center justify-between p-6 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                 <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-3">
                         <div className="bg-gradient-primary p-3 rounded-xl glow-primary">

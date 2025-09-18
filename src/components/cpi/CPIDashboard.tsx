@@ -187,10 +187,10 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
 
     if (error && !providerComparison.length && !analytics) {
         return (
-            <div className="p-6 border border-danger-200/30 rounded-xl glass backdrop-blur-xl shadow-lg animate-scale-in" style={{ background: 'linear-gradient(90deg, rgba(255, 79, 100, 0.1), rgba(233, 78, 78, 0.1))' }}>
+            <div className="p-6 glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10 animate-scale-in">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="bg-gradient-danger p-2 rounded-lg glow-danger">
+                        <div className="bg-gradient-danger p-2 rounded-lg shadow-lg">
                             <span className="text-lg text-white">⚠️</span>
                         </div>
                         <p className="font-body text-danger-700 dark:text-danger-300">{error}</p>
@@ -207,21 +207,21 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
     }
 
     return (
-        <div className="space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen relative overflow-hidden">
+        <div className="space-y-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
             {/* Ambient Glow Effects */}
-            <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute top-40 right-20 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/8 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-96 h-96 bg-secondary-500/8 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-accent-500/8 rounded-full blur-3xl animate-pulse"></div>
 
             {/* Header */}
-            <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 animate-fade-in relative z-10">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 animate-fade-in relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="bg-gradient-primary p-4 rounded-xl glow-primary">
+                        <div className="bg-gradient-primary p-4 rounded-xl shadow-lg">
                             <span className="text-3xl">📊</span>
                         </div>
                         <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text mb-2">
+                            <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">
                                 Cost-Performance Index (CPI) Dashboard
                             </h1>
                             <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -240,7 +240,7 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
             </div>
 
             {/* Navigation Tabs */}
-            <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 relative z-10">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel relative z-10">
                 <nav className="flex space-x-2 px-6">
                     {[
                         { id: 'overview', label: 'Overview', icon: '📊' },
@@ -265,14 +265,14 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
             </div>
 
             {/* Tab Content */}
-            <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 relative z-10">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 relative z-10">
                 {activeTab === 'overview' && (
                     <div className="space-y-8">
                         <div className="flex items-center gap-3">
-                            <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                            <div className="bg-gradient-primary p-2 rounded-lg shadow-lg">
                                 <span className="text-lg">📊</span>
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text">CPI Overview</h2>
+                            <h2 className="text-2xl font-display font-bold gradient-text-primary">CPI Overview</h2>
                         </div>
 
                         {loading ? (
@@ -283,27 +283,27 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
                             <>
                                 {/* Key Metrics */}
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    <div className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg border-l-4 border-primary-500" style={{ background: 'linear-gradient(135deg, rgba(155, 93, 229, 0.1), rgba(241, 91, 181, 0.05))' }}>
+                                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 hover:scale-105 transition-all duration-300 bg-gradient-to-br from-primary-50/50 to-primary-100/50">
                                         <div className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400 mb-2">Average CPI Score</div>
-                                        <div className="text-3xl font-display font-bold gradient-text">
+                                        <div className="text-3xl font-display font-bold gradient-text-primary">
                                             {analytics ? (analytics.providerComparison.reduce((sum, p) => sum + p.averageCPI, 0) / analytics.providerComparison.length).toFixed(1) : 'N/A'}
                                         </div>
                                     </div>
-                                    <div className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg border-l-4 border-success-500" style={{ background: 'linear-gradient(135deg, rgba(0, 245, 212, 0.1), rgba(61, 190, 139, 0.05))' }}>
+                                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 hover:scale-105 transition-all duration-300 bg-gradient-to-br from-success-50/50 to-success-100/50">
                                         <div className="text-sm font-display font-semibold text-success-600 dark:text-success-400 mb-2">Cost Savings</div>
-                                        <div className="text-3xl font-display font-bold gradient-text">
+                                        <div className="text-3xl font-display font-bold gradient-text-success">
                                             {analytics ? formatCurrency(analytics.costSavings.totalSaved) : 'N/A'}
                                         </div>
                                     </div>
-                                    <div className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg border-l-4 border-accent-500" style={{ background: 'linear-gradient(135deg, rgba(254, 228, 64, 0.1), rgba(255, 149, 0, 0.05))' }}>
+                                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 hover:scale-105 transition-all duration-300 bg-gradient-to-br from-accent-50/50 to-accent-100/50">
                                         <div className="text-sm font-display font-semibold text-accent-600 dark:text-accent-400 mb-2">Total Requests</div>
-                                        <div className="text-3xl font-display font-bold gradient-text">
+                                        <div className="text-3xl font-display font-bold gradient-text-accent">
                                             {analytics ? analytics.providerComparison.reduce((sum, p) => sum + p.totalRequests, 0).toLocaleString() : 'N/A'}
                                         </div>
                                     </div>
-                                    <div className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg border-l-4 border-highlight-500" style={{ background: 'linear-gradient(135deg, rgba(241, 91, 181, 0.1), rgba(255, 149, 0, 0.05))' }}>
+                                    <div className="glass rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl p-6 hover:scale-105 transition-all duration-300 bg-gradient-to-br from-highlight-50/50 to-highlight-100/50">
                                         <div className="text-sm font-display font-semibold text-highlight-600 dark:text-highlight-400 mb-2">Providers</div>
-                                        <div className="text-3xl font-display font-bold gradient-text">
+                                        <div className="text-3xl font-display font-bold gradient-text-highlight">
                                             {analytics ? analytics.providerComparison.length : 'N/A'}
                                         </div>
                                     </div>
@@ -312,10 +312,10 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
                                 {/* Top Performing Models */}
                                 <div>
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className="bg-gradient-success p-2 rounded-lg glow-success">
+                                        <div className="bg-gradient-success p-2 rounded-lg shadow-lg">
                                             <span className="text-lg text-white">🏆</span>
                                         </div>
-                                        <h3 className="text-xl font-display font-bold gradient-text">Top Performing Models</h3>
+                                        <h3 className="text-xl font-display font-bold gradient-text-primary">Top Performing Models</h3>
                                     </div>
                                     {providerComparison.length > 0 ? (
                                         <div className="space-y-4">
@@ -323,17 +323,17 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
                                                 .sort((a, b) => b.cpiScore - a.cpiScore)
                                                 .slice(0, 3)
                                                 .map((model, index) => (
-                                                    <div key={`${model.provider}-${model.modelId}`} className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg">
+                                                    <div key={`${model.provider}-${model.modelId}`} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 hover:scale-105 transition-all duration-300">
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center space-x-4">
-                                                                <div className="bg-gradient-primary p-3 rounded-xl text-white font-display font-bold text-xl glow-primary">#{index + 1}</div>
+                                                                <div className="bg-gradient-primary p-3 rounded-xl text-white font-display font-bold text-xl shadow-lg">#{index + 1}</div>
                                                                 <div>
                                                                     <div className="font-display font-semibold text-lg text-light-text-primary dark:text-dark-text-primary">{model.modelName}</div>
                                                                     <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{model.provider}</div>
                                                                 </div>
                                                             </div>
                                                             <div className="text-right">
-                                                                <div className="text-2xl font-display font-bold gradient-text">
+                                                                <div className="text-2xl font-display font-bold gradient-text-primary">
                                                                     {model.cpiScore}
                                                                 </div>
                                                                 <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">CPI Score</div>
@@ -343,7 +343,7 @@ export const CPIDashboard: React.FC<CPIDashboardProps> = ({ userId, projectId })
                                                 ))}
                                         </div>
                                     ) : (
-                                        <div className="card p-8 text-center">
+                                        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-8 text-center">
                                             <div className="text-6xl mb-4">📊</div>
                                             <p className="text-lg font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">No provider comparison data available</p>
                                             <p className="text-sm font-body text-light-text-muted dark:text-dark-text-muted mt-2">Start using AI services to see performance metrics</p>

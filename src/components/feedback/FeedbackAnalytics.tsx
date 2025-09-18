@@ -93,12 +93,12 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (!isAuthenticated) {
     return (
-      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+      <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 ${className}`}>
         <div className="text-center py-12">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl animate-pulse">
             <InformationCircleIcon className="h-8 w-8 text-white" />
           </div>
-          <h3 className="text-2xl font-display font-bold gradient-text mb-4">Authentication Required</h3>
+          <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Authentication Required</h3>
           <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
             Please log in to view your Return on AI Spend analytics.
           </p>
@@ -109,12 +109,12 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (loading) {
     return (
-      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+      <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 ${className}`}>
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-gradient-primary/20 rounded-xl w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 bg-gradient-primary/10 rounded-xl border border-primary-200/30"></div>
+              <div key={i} className="h-24 bg-gradient-primary/10 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl"></div>
             ))}
           </div>
         </div>
@@ -124,7 +124,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (error) {
     return (
-      <div className={`card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl ${className}`}>
+      <div className={`glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8 ${className}`}>
         <div className="flex items-center text-danger-600 dark:text-danger-400 mb-6">
           <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
             <ExclamationTriangleIcon className="h-5 w-5 text-white" />
@@ -143,12 +143,12 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
   if (!analytics || analytics.totalRequests === 0) {
     return (
-      <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl ${className}`}>
+      <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 ${className}`}>
         <div className="text-center py-12">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl animate-pulse">
             <InformationCircleIcon className="h-10 w-10 text-white" />
           </div>
-          <h3 className="text-2xl font-display font-bold gradient-text mb-4">No Feedback Data</h3>
+          <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">No Feedback Data</h3>
           <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
             Start collecting user feedback to see Return on AI Spend analytics here.
           </p>
@@ -163,38 +163,38 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Header */}
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
             <ChartBarIcon className="h-7 w-7 text-white" />
           </div>
-          <h2 className="text-3xl font-display font-bold gradient-text">💰 Return on AI Spend Analytics</h2>
+          <h2 className="text-3xl font-display font-bold gradient-text-primary">💰 Return on AI Spend Analytics</h2>
         </div>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
-            <div className="text-4xl font-display font-bold gradient-text mb-2">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 text-center hover:scale-105 transition-transform duration-300">
+            <div className="text-4xl font-display font-bold gradient-text-primary mb-2">
               {analytics.totalRequests}
             </div>
             <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+          <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 text-center hover:scale-105 transition-transform duration-300">
             <div className="text-4xl font-display font-bold gradient-text-success mb-2">
               {(analytics.averageRating * 100).toFixed(1)}%
             </div>
             <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Satisfaction Rate</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 text-center">
-            <div className="text-4xl font-display font-bold text-secondary-600 dark:text-secondary-400 mb-2">
+          <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 text-center hover:scale-105 transition-transform duration-300">
+            <div className="text-4xl font-display font-bold gradient-text-secondary mb-2">
               ${analytics.totalCost.toFixed(4)}
             </div>
             <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Spend</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
             <div className={`text-4xl font-display font-bold mb-2 ${wastedPercentage > 20 ? 'gradient-text-danger' : wastedPercentage > 10 ? 'gradient-text-warning' : 'gradient-text-success'}`}>
               {wastedPercentage.toFixed(1)}%
             </div>
@@ -204,18 +204,18 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
       </div>
 
       {/* Cost Breakdown */}
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+          <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
             <CurrencyDollarIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-2xl font-display font-bold gradient-text">
+          <h3 className="text-2xl font-display font-bold gradient-text-primary">
             💸 Cost vs Value Breakdown
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+          <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
@@ -237,7 +237,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
             </div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30">
+          <div className="glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 hover:scale-105 transition-transform duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
@@ -263,21 +263,21 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
       {/* Insights & Recommendations */}
       {analytics.insights && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">
               💡 AI-Powered Insights & Recommendations
             </h3>
           </div>
 
           <div className="space-y-4">
             {analytics.insights.recommendations.map((recommendation, index) => (
-              <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+              <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/5 transition-all duration-300">
                 <div className="flex items-start space-x-4">
                   <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0 mt-1">
                     <InformationCircleIcon className="h-4 w-4 text-white" />
@@ -292,14 +292,14 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
 
       {/* Feature Performance */}
       {Object.keys(analytics.ratingsByFeature).length > 0 && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg glow-secondary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">🎯 Feature Performance</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">🎯 Feature Performance</h3>
           </div>
 
           <div className="space-y-4">
@@ -309,7 +309,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
               const avgCost = total > 0 ? (stats.cost / total) : 0;
 
               return (
-                <div key={feature} className="card card-hover p-6 border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                <div key={feature} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 hover:bg-primary-500/5 transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-display font-bold text-light-text-primary dark:text-dark-text-primary text-lg capitalize">
@@ -336,18 +336,18 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
       )}
 
       {/* Behavioral Insights */}
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg glow-accent">
+          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-display font-bold gradient-text">👥 User Behavior Analysis</h3>
+          <h3 className="text-2xl font-display font-bold gradient-text-primary">👥 User Behavior Analysis</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+          <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 text-center hover:scale-105 transition-transform duration-300">
             <div className="text-3xl font-display font-bold gradient-text-success mb-2">
               {(analytics.implicitSignalsAnalysis.copyRate * 100).toFixed(1)}%
             </div>
@@ -355,15 +355,15 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
             <div className="text-xs font-body text-success-600 dark:text-success-400 mt-1">High value indicator</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
-            <div className="text-3xl font-display font-bold gradient-text mb-2">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 text-center hover:scale-105 transition-transform duration-300">
+            <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
               {(analytics.implicitSignalsAnalysis.continuationRate * 100).toFixed(1)}%
             </div>
             <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Continuation Rate</div>
             <div className="text-xs font-body text-primary-600 dark:text-primary-400 mt-1">Engagement indicator</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30 text-center">
+          <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 text-center hover:scale-105 transition-transform duration-300">
             <div className="text-3xl font-display font-bold gradient-text-warning mb-2">
               {(analytics.implicitSignalsAnalysis.rephraseRate * 100).toFixed(1)}%
             </div>
@@ -371,7 +371,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
             <div className="text-xs font-body text-warning-600 dark:text-warning-400 mt-1">Confusion indicator</div>
           </div>
 
-          <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+          <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
             <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
               {(analytics.implicitSignalsAnalysis.averageSessionDuration / 1000).toFixed(1)}s
             </div>

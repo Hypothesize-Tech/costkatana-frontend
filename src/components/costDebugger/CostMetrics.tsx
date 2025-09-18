@@ -21,12 +21,12 @@ export const CostMetrics: React.FC<CostMetricsProps> = ({
     return (
         <div className="cost-metrics">
             <div className="metrics-header">
-                <button onClick={onBack} className="back-btn">← Back</button>
+                <button onClick={onBack} className="btn-secondary font-display font-semibold hover:scale-105">← Back</button>
                 <div className="flex items-center gap-3">
                     <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
                         <span className="text-lg">📊</span>
                     </div>
-                    <h2>Cost Metrics</h2>
+                    <h2 className="font-display font-bold gradient-text">Cost Metrics</h2>
                 </div>
             </div>
 

@@ -172,13 +172,13 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
   return (
     <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-8">
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
             <CogIcon className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-display font-bold gradient-text">
+            <h1 className="text-3xl font-display font-bold gradient-text-primary">
               🔗 Integration Dashboard
             </h1>
             <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -189,13 +189,13 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       </div>
 
       {/* Tab Navigation */}
-      <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
         <div className="flex space-x-4">
           <button
             onClick={() => setActiveTab('overview')}
             className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'overview'
-              ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-              : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+              ? 'bg-gradient-primary text-white shadow-lg'
+              : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
               }`}
           >
             📊 Overview
@@ -203,8 +203,8 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
           <button
             onClick={() => setActiveTab('projects')}
             className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'projects'
-              ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-              : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+              ? 'bg-gradient-primary text-white shadow-lg'
+              : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
               }`}
           >
             🗂️ Project IDs & Integration
@@ -216,22 +216,23 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       {activeTab === 'overview' && (
         <>
           {/* Integration Health - Simplified */}
-          <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg glow-secondary">
+                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                   <ChartBarIcon className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl font-display font-bold gradient-text">
-                  📊 Quick Overview
+                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                  <ChartBarIcon className="w-5 h-5 inline mr-2" />
+                  Quick Overview
                 </h2>
               </div>
               <div
                 className={`flex items-center px-4 py-2 rounded-full text-sm font-display font-bold shadow-lg ${health.color === "green"
-                  ? "bg-gradient-success text-white glow-success"
+                  ? "bg-gradient-success text-white"
                   : health.color === "yellow"
-                    ? "bg-gradient-warning text-white glow-warning"
-                    : "bg-gradient-danger text-white glow-danger"
+                    ? "bg-gradient-warning text-white"
+                    : "bg-gradient-danger text-white"
                   }`}
               >
                 {health.color === "green" ? (
@@ -244,15 +245,15 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
-                <div className="text-3xl font-display font-bold gradient-text mb-2">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 text-center hover:scale-105 transition-transform duration-300">
+                <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
                   {integrationStatus.apiKeysConfigured}
                 </div>
                 <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                   🔑 API Keys
                 </div>
               </div>
-              <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 text-center hover:scale-105 transition-transform duration-300">
                 <div className="text-3xl font-display font-bold gradient-text-success mb-2">
                   {integrationStatus.projectsWithUsage}
                 </div>
@@ -260,15 +261,15 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                   🚀 Active Projects
                 </div>
               </div>
-              <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 text-center">
-                <div className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400 mb-2">
+              <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 text-center hover:scale-105 transition-transform duration-300">
+                <div className="text-3xl font-display font-bold gradient-text-secondary mb-2">
                   {analytics?.summary?.totalRequests || 0}
                 </div>
                 <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                   ⚡ API Calls
                 </div>
               </div>
-              <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
                 <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
                   {formatCurrency(analytics?.summary?.totalCost || 0)}
                 </div>
@@ -282,25 +283,25 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left Column - Quick Actions */}
             <div className="lg:col-span-1">
-              <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                 <div className="flex items-center mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center mr-3 shadow-lg">
                     <BoltIcon className="w-4 h-4 text-white" />
                   </div>
-                  <h2 className="text-xl font-display font-bold gradient-text">⚡ Quick Actions</h2>
+                  <h2 className="text-xl font-display font-bold gradient-text-primary">⚡ Quick Actions</h2>
                 </div>
                 <div className="space-y-4">
                   {integrationStatus.apiKeysConfigured === 0 && (
                     <button
                       onClick={() => setShowIntegrationModal(true)}
-                      className="w-full card card-hover p-4 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 transition-all duration-300 hover:scale-105"
+                      className="w-full glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-primary-50/50 to-primary-100/50 transition-all duration-300 hover:scale-105"
                     >
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                           <CogIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="text-left">
-                          <div className="font-display font-bold gradient-text">
+                          <div className="font-display font-bold gradient-text-primary">
                             Setup Integration
                           </div>
                           <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -313,7 +314,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
                   <a
                     href="/settings"
-                    className="w-full card card-hover p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 transition-all duration-300 hover:scale-105 block"
+                    className="w-full glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 transition-all duration-300 hover:scale-105 block"
                   >
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
@@ -332,14 +333,14 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
                   <a
                     href="/projects"
-                    className="w-full card card-hover p-4 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 transition-all duration-300 hover:scale-105 block"
+                    className="w-full glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 transition-all duration-300 hover:scale-105 block"
                   >
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg">
                         <DocumentTextIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="text-left">
-                        <div className="font-display font-bold text-secondary-600 dark:text-secondary-400">
+                        <div className="font-display font-bold gradient-text-secondary">
                           View Projects
                         </div>
                         <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -351,7 +352,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
                   <a
                     href="/analytics"
-                    className="w-full card card-hover p-4 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30 transition-all duration-300 hover:scale-105 block"
+                    className="w-full glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-warning-50/50 to-warning-100/50 transition-all duration-300 hover:scale-105 block"
                   >
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
@@ -373,19 +374,19 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
             {/* Right Column - Recent Activity */}
             <div className="lg:col-span-2">
-              <div className="card card-gradient shadow-2xl backdrop-blur-xl">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="p-6 border-b border-primary-200/30">
                   <div className="flex items-center">
                     <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
                       <ClockIcon className="w-4 h-4 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text">🕒 Recent AI Activity</h2>
+                    <h2 className="text-xl font-display font-bold gradient-text-primary">🕒 Recent AI Activity</h2>
                   </div>
                 </div>
                 {loadingUsage ? (
                   <div className="p-8 text-center">
                     <div className="spinner-lg text-primary-500 mb-4"></div>
-                    <div className="font-display font-semibold gradient-text">Loading activity...</div>
+                    <div className="font-display font-semibold gradient-text-primary">Loading activity...</div>
                   </div>
                 ) : recentUsage && recentUsage.length > 0 ? (
                   <div className="divide-y divide-primary-200/30 max-h-96 overflow-y-auto">
@@ -399,7 +400,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                             {getActivityIcon(usage.service)}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-2">
-                                <h4 className="text-lg font-display font-bold gradient-text truncate">
+                                <h4 className="text-lg font-display font-bold gradient-text-primary truncate">
                                   {usage.service} API Call
                                 </h4>
                                 <span className={`px-2 py-1 rounded-full text-xs font-display font-bold ${getServiceColor(usage.service)}`}>
@@ -424,7 +425,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                                     : "N/A"}
                                 </span>
                               </div>
-                              <div className="glass p-3 rounded-xl border border-primary-200/30 mb-3">
+                              <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mb-3">
                                 <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                                   <span className="font-display font-bold">🤖 {usage.model}</span>
                                   {usage.projectName && (
@@ -440,10 +441,10 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                                 )}
                               </div>
                               <div className="flex items-center gap-4 text-xs font-display font-semibold">
-                                <span className="glass px-2 py-1 rounded-lg border border-primary-200/30 gradient-text">
+                                <span className="glass px-2 py-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 dark:text-primary-400">
                                   🪙 {usage.totalTokens?.toLocaleString() || "0"} tokens
                                 </span>
-                                <span className="glass px-2 py-1 rounded-lg border border-success-200/30 gradient-text-success">
+                                <span className="glass px-2 py-1 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 dark:text-success-400">
                                   💰 {formatCurrency(usage.cost)}
                                 </span>
                               </div>
@@ -452,9 +453,9 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                           {usage.prompt && (
                             <button
                               onClick={() => handleViewActivity(usage)}
-                              className="ml-4 p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                              className="ml-4 p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                             >
-                              <EyeIcon className="w-4 h-4 gradient-text" />
+                              <EyeIcon className="w-4 h-4 gradient-text-primary" />
                             </button>
                           )}
                         </div>
@@ -463,10 +464,10 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
                       <ClockIcon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="mb-2 text-xl font-display font-bold gradient-text">
+                    <h3 className="mb-2 text-xl font-display font-bold gradient-text-primary">
                       No Recent Activity
                     </h3>
                     <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
@@ -490,7 +491,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       )}
 
       {activeTab === 'projects' && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <ProjectIdGuide />
         </div>
       )}
@@ -498,22 +499,22 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       {/* Activity Detail Modal */}
       {selectedActivity && (
         <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-scale-in">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-scale-in">
             <div className="p-8">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                     <EyeIcon className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold gradient-text">
+                  <h3 className="text-2xl font-display font-bold gradient-text-primary">
                     🔍 Activity Details
                   </h3>
                 </div>
                 <button
                   onClick={() => setSelectedActivity(null)}
-                  className="p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                  className="p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                 >
-                  <span className="text-lg gradient-text">✕</span>
+                  <span className="text-lg gradient-text-primary">✕</span>
                 </button>
               </div>
 

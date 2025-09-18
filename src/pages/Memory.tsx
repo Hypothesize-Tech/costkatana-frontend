@@ -18,14 +18,14 @@ const TabNavigation: React.FC<TabProps> = ({ activeTab, setActiveTab }) => {
     ];
 
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2 mb-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2 mb-6">
             <div className="flex flex-wrap gap-2">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         className={`flex items-center gap-2 px-4 py-3 rounded-xl font-display font-semibold text-sm transition-all duration-300 ${activeTab === tab.id
                             ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10'
+                            : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                             }`}
                         onClick={() => setActiveTab(tab.id)}
                     >
@@ -75,8 +75,8 @@ const MemoryInsightsTab: React.FC<{ userId: string }> = ({ userId }) => {
         return '#ef4444'; // red
     };
 
-    if (loading) return <div className="flex items-center justify-center py-12"><div className="text-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div><p className="text-light-text-secondary dark:text-dark-text-secondary">🧠 Loading memory insights...</p></div></div>;
-    if (error) return <div className="glass rounded-xl border border-error-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 p-6 text-center"><p className="text-error-600 dark:text-error-400">❌ Error: {error}</p></div>;
+    if (loading) return <div className="flex items-center justify-center py-12"><div className="text-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div><p className="text-secondary-600 dark:text-secondary-300">🧠 Loading memory insights...</p></div></div>;
+    if (error) return <div className="glass rounded-xl border border-danger-200/30 bg-gradient-to-br from-danger-50/30 to-danger-100/30 p-6 text-center"><p className="text-danger-600 dark:text-danger-400">❌ Error: {error}</p></div>;
 
     return (
         <div className="memory-insights">
@@ -88,8 +88,8 @@ const MemoryInsightsTab: React.FC<{ userId: string }> = ({ userId }) => {
             {insights.length === 0 ? (
                 <div className="text-center py-12">
                     <div className="text-6xl mb-4">🤔</div>
-                    <h3 className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">No insights yet</h3>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary">Start chatting with the AI to build your memory profile!</p>
+                    <h3 className="text-xl font-display font-bold text-secondary-900 dark:text-white mb-2">No insights yet</h3>
+                    <p className="text-secondary-600 dark:text-secondary-300">Start chatting with the AI to build your memory profile!</p>
                 </div>
             ) : (
                 <div className="insights-grid">
@@ -813,18 +813,18 @@ const Memory: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
-                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                         <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">🧠 AI Memory & Personalization</h1>
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">Manage your AI assistant's memory, preferences, and personalization settings</p>
+                        <p className="text-secondary-600 dark:text-secondary-300 text-lg">Manage your AI assistant's memory, preferences, and personalization settings</p>
                     </div>
                 </div>
 
                 <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                     {renderActiveTab()}
                 </div>
             </div>

@@ -199,14 +199,14 @@ export const Moderation: React.FC = () => {
     const data = analytics?.data;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                     <div className="flex justify-between items-center">
                         <div>
                             <h1 className="text-3xl font-display font-bold gradient-text-primary">Moderation Dashboard</h1>
-                            <p className="text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                            <p className="text-secondary-600 dark:text-secondary-300 mt-2">
                                 Monitor AI safety and content moderation across your system
                             </p>
                         </div>
@@ -236,17 +236,19 @@ export const Moderation: React.FC = () => {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-error-50/30 to-error-100/30 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <ShieldExclamationIcon className="w-8 h-8 text-error-600 dark:text-error-400" />
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-danger-500/20 to-danger-600/20 flex items-center justify-center">
+                                <ShieldExclamationIcon className="w-6 h-6 text-danger-600 dark:text-danger-400" />
+                            </div>
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary truncate">
+                                <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                                     Total Threats Blocked
                                 </dt>
-                                <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                                     {data?.summary.totalThreats?.toLocaleString() || '0'}
                                 </dd>
                             </dl>
@@ -254,17 +256,19 @@ export const Moderation: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <ChartBarIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
+                                <ChartBarIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                            </div>
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary truncate">
+                                <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                                     Overall Block Rate
                                 </dt>
-                                <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                                     {formatPercentage(data?.summary.overallBlockRate || 0)}
                                 </dd>
                             </dl>
@@ -272,17 +276,19 @@ export const Moderation: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <DocumentTextIcon className="w-8 h-8 text-green-500" />
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 flex items-center justify-center">
+                                <DocumentTextIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
+                            </div>
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-gray-500 truncate">
+                                <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                                     Cost Saved
                                 </dt>
-                                <dd className="text-2xl font-bold text-gray-900">
+                                <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                                     {formatCurrency(data?.summary.totalCostSaved || 0)}
                                 </dd>
                             </dl>
@@ -290,17 +296,19 @@ export const Moderation: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <ClockIcon className="w-8 h-8 text-purple-500" />
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 flex items-center justify-center">
+                                <ClockIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
+                            </div>
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
-                                <dt className="text-sm font-medium text-gray-500 truncate">
+                                <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                                     Last Updated
                                 </dt>
-                                <dd className="text-sm font-medium text-gray-900">
+                                <dd className="text-sm font-medium text-secondary-900 dark:text-white">
                                     {data?.summary.lastUpdated ?
                                         new Date(data.summary.lastUpdated).toLocaleTimeString() :
                                         'Never'
@@ -315,31 +323,31 @@ export const Moderation: React.FC = () => {
             {/* Moderation Breakdown */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Input Moderation */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                        <ShieldCheckIcon className="w-5 h-5 mr-2 text-blue-500" />
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white mb-4 flex items-center">
+                        <ShieldCheckIcon className="w-5 h-5 mr-2 text-highlight-500" />
                         Pre-LLM Moderation (Input)
                     </h3>
 
                     <div className="space-y-4">
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Total Requests Processed</span>
-                            <span className="font-medium">{data?.input?.totalRequests?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Total Requests Processed</span>
+                            <span className="font-medium text-secondary-900 dark:text-white">{data?.input?.totalRequests?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Blocked Requests</span>
-                            <span className="font-medium text-red-600">{data?.input?.blockedRequests?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Blocked Requests</span>
+                            <span className="font-medium text-danger-600 dark:text-danger-400">{data?.input?.blockedRequests?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Cost Saved</span>
-                            <span className="font-medium text-green-600">{formatCurrency(data?.input?.costSaved || 0)}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Cost Saved</span>
+                            <span className="font-medium text-success-600 dark:text-success-400">{formatCurrency(data?.input?.costSaved || 0)}</span>
                         </div>
 
                         {/* Top Threat Categories */}
-                        <div className="pt-4 border-t border-gray-200">
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Top Threat Categories</h4>
+                        <div className="pt-4 border-t border-primary-200/30">
+                            <h4 className="text-sm font-medium text-secondary-900 dark:text-white mb-2">Top Threat Categories</h4>
                             <div className="space-y-2">
                                 {Object.entries(data?.input?.threatsByCategory || {})
                                     .sort(([, a], [, b]) => b - a)
@@ -349,7 +357,7 @@ export const Moderation: React.FC = () => {
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getThreatCategoryColor(category)}`}>
                                                 {category.replace(/_/g, ' ')}
                                             </span>
-                                            <span className="text-sm text-gray-600">{count}</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">{count}</span>
                                         </div>
                                     ))
                                 }
@@ -359,44 +367,44 @@ export const Moderation: React.FC = () => {
                 </div>
 
                 {/* Output Moderation */}
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                        <EyeIcon className="w-5 h-5 mr-2 text-green-500" />
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white mb-4 flex items-center">
+                        <EyeIcon className="w-5 h-5 mr-2 text-success-500" />
                         Post-LLM Moderation (Output)
                     </h3>
 
                     <div className="space-y-4">
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Total Responses Processed</span>
-                            <span className="font-medium">{data?.output?.totalResponses?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Total Responses Processed</span>
+                            <span className="font-medium text-secondary-900 dark:text-white">{data?.output?.totalResponses?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Blocked Responses</span>
-                            <span className="font-medium text-red-600">{data?.output?.blockedResponses?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Blocked Responses</span>
+                            <span className="font-medium text-danger-600 dark:text-danger-400">{data?.output?.blockedResponses?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Redacted Responses</span>
-                            <span className="font-medium text-yellow-600">{data?.output?.redactedResponses?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Redacted Responses</span>
+                            <span className="font-medium text-warning-600 dark:text-warning-400">{data?.output?.redactedResponses?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Annotated Responses</span>
-                            <span className="font-medium text-blue-600">{data?.output?.annotatedResponses?.toLocaleString() || '0'}</span>
+                            <span className="text-sm text-secondary-600 dark:text-secondary-300">Annotated Responses</span>
+                            <span className="font-medium text-highlight-600 dark:text-highlight-400">{data?.output?.annotatedResponses?.toLocaleString() || '0'}</span>
                         </div>
 
                         {/* Block Rate by Model */}
-                        <div className="pt-4 border-t border-gray-200">
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Block Rate by Model</h4>
+                        <div className="pt-4 border-t border-primary-200/30">
+                            <h4 className="text-sm font-medium text-secondary-900 dark:text-white mb-2">Block Rate by Model</h4>
                             <div className="space-y-2">
                                 {Object.entries(data?.output?.blockRateByModel || {})
                                     .sort(([, a], [, b]) => b - a)
                                     .slice(0, 5)
                                     .map(([model, rate]) => (
                                         <div key={model} className="flex justify-between items-center">
-                                            <span className="text-sm text-gray-600">{model}</span>
-                                            <span className="text-sm font-medium">{formatPercentage(rate)}</span>
+                                            <span className="text-sm text-secondary-600 dark:text-secondary-300">{model}</span>
+                                            <span className="text-sm font-medium text-secondary-900 dark:text-white">{formatPercentage(rate)}</span>
                                         </div>
                                     ))
                                 }
@@ -407,16 +415,16 @@ export const Moderation: React.FC = () => {
             </div>
 
             {/* Threat Log */}
-            <div className="bg-white rounded-lg border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="px-6 py-4 border-b border-primary-200/30">
                     <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-medium text-gray-900">Recent Threats</h3>
+                        <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Recent Threats</h3>
 
                         <div className="flex space-x-3">
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="px-3 py-1 text-sm border border-gray-300 rounded-md"
+                                className="select text-sm"
                             >
                                 <option value="all">All Categories</option>
                                 <option value="violence_and_hate">Violence & Hate</option>
@@ -429,7 +437,7 @@ export const Moderation: React.FC = () => {
                             <select
                                 value={selectedStage}
                                 onChange={(e) => setSelectedStage(e.target.value)}
-                                className="px-3 py-1 text-sm border border-gray-300 rounded-md"
+                                className="select text-sm"
                             >
                                 <option value="all">All Stages</option>
                                 <option value="prompt-guard">Prompt Guard</option>
@@ -441,33 +449,33 @@ export const Moderation: React.FC = () => {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-primary-200/20">
+                        <thead className="glass rounded-lg border border-primary-200/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Timestamp
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Stage
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Category
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Confidence
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Cost Saved
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Prompt Preview
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider">
                                     Reason
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20">
                             {threatsLoading ? (
                                 <tr>
                                     <td colSpan={7} className="px-6 py-4 text-center">
@@ -477,14 +485,14 @@ export const Moderation: React.FC = () => {
                                 </tr>
                             ) : (threats?.data?.threats?.length ?? 0) > 0 ? (
                                 threats!.data!.threats!.map((threat) => (
-                                    <tr key={threat.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <tr key={threat.id} className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-secondary-500/5">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-900 dark:text-white">
                                             {new Date(threat.timestamp).toLocaleString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 {getStageIcon(threat.stage)}
-                                                <span className="ml-2 text-sm text-gray-600">{threat.stage}</span>
+                                                <span className="ml-2 text-sm text-secondary-600 dark:text-secondary-300">{threat.stage}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -492,36 +500,36 @@ export const Moderation: React.FC = () => {
                                                 {threat.threatCategory.replace(/_/g, ' ')}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-900 dark:text-white">
                                             {formatPercentage(threat.confidence * 100)}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-success-600 dark:text-success-400">
                                             {formatCurrency(threat.costSaved)}
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 max-w-sm">
+                                        <td className="px-6 py-4 text-sm text-secondary-600 dark:text-secondary-300 max-w-sm">
                                             {threat.promptPreview ? (
                                                 <div className="group relative">
-                                                    <p className="truncate text-gray-800 bg-gray-50 px-2 py-1 rounded font-mono text-xs">
+                                                    <p className="truncate text-secondary-800 dark:text-secondary-200 bg-light-bg-300 dark:bg-dark-bg-300 px-2 py-1 rounded font-mono text-xs">
                                                         {threat.promptPreview}
                                                     </p>
                                                     {threat.promptHash && (
-                                                        <p className="text-xs text-gray-500 mt-1">
+                                                        <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
                                                             Hash: {threat.promptHash}
                                                         </p>
                                                     )}
                                                 </div>
                                             ) : (
-                                                <span className="text-gray-400 text-xs italic">No prompt preview</span>
+                                                <span className="text-secondary-400 dark:text-secondary-500 text-xs italic">No prompt preview</span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                                        <td className="px-6 py-4 text-sm text-secondary-600 dark:text-secondary-300 max-w-xs truncate">
                                             {threat.reason}
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-4 text-center text-secondary-500 dark:text-secondary-400">
                                         No threats found for the selected criteria
                                     </td>
                                 </tr>
@@ -532,22 +540,22 @@ export const Moderation: React.FC = () => {
 
                 {/* Pagination */}
                 {threats?.data?.pagination && threats.data.pagination.totalPages > 1 && (
-                    <div className="px-6 py-3 border-t border-gray-200 flex justify-between items-center">
-                        <div className="text-sm text-gray-700">
+                    <div className="px-6 py-3 border-t border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel flex justify-between items-center">
+                        <div className="text-sm text-secondary-600 dark:text-secondary-300">
                             Page {threats.data.pagination.currentPage} of {threats.data.pagination.totalPages}
                         </div>
                         <div className="flex space-x-2">
                             <button
                                 onClick={() => setThreatPage(prev => Math.max(1, prev - 1))}
                                 disabled={!threats.data.pagination.hasPrev}
-                                className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                                className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Previous
                             </button>
                             <button
                                 onClick={() => setThreatPage(prev => prev + 1)}
                                 disabled={!threats.data.pagination.hasNext}
-                                className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                                className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Next
                             </button>

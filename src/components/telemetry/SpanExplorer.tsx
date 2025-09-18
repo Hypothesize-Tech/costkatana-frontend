@@ -135,25 +135,25 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             {/* Header with Stats */}
             {enrichmentStats && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <div>
-                                <p className="font-display font-medium gradient-text text-sm uppercase tracking-wide">Total Spans</p>
-                                <p className="text-3xl font-display font-bold gradient-text mt-2">{enrichmentStats.total_spans}</p>
+                                <p className="font-display font-medium gradient-text-primary text-sm uppercase tracking-wide">Total Spans</p>
+                                <p className="text-3xl font-display font-bold gradient-text-primary mt-2">{enrichmentStats.total_spans}</p>
                             </div>
-                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                 <Eye className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <p className="font-display font-medium gradient-text-success text-sm uppercase tracking-wide">Enriched</p>
                                 <p className="text-3xl font-display font-bold gradient-text-success mt-2">{enrichmentStats.enriched_spans}</p>
                             </div>
-                            <div className="glass px-3 py-1 rounded-full border border-success-200/30 bg-gradient-success/20">
+                            <div className="glass px-3 py-1 rounded-full border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                                 <span className="font-display font-semibold text-success-700 dark:text-success-300 text-sm">
                                     {enrichmentStats.enrichment_rate.toFixed(1)}%
                                 </span>
@@ -161,25 +161,25 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <p className="font-display font-medium gradient-text-secondary text-sm uppercase tracking-wide">Cache Hits</p>
                                 <p className="text-3xl font-display font-bold gradient-text-secondary mt-2">{enrichmentStats.cache_hit_spans}</p>
                             </div>
-                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                                 <span className="text-white text-lg">⚡</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-200">
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <div>
-                                <p className="font-display font-medium gradient-text-warning text-sm uppercase tracking-wide">Routing Decisions</p>
-                                <p className="text-3xl font-display font-bold gradient-text-warning mt-2">{enrichmentStats.routing_decisions}</p>
+                                <p className="font-display font-medium gradient-text-accent text-sm uppercase tracking-wide">Routing Decisions</p>
+                                <p className="text-3xl font-display font-bold gradient-text-accent mt-2">{enrichmentStats.routing_decisions}</p>
                             </div>
-                            <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                                 <span className="text-white text-lg">🎯</span>
                             </div>
                         </div>
@@ -188,12 +188,12 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             )}
 
             {/* Search and Filters */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
                         <Search className="w-4 h-4 text-white" />
                     </div>
-                    <h3 className="font-display font-semibold gradient-text">Search & Filter</h3>
+                    <h3 className="font-display font-semibold gradient-text-highlight">Search & Filter</h3>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
@@ -293,13 +293,13 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                     </div>
 
                                     <div className="flex items-center space-x-4">
-                                        <div className="glass rounded-lg px-3 py-2 border border-warning-200/30 flex items-center gap-2">
-                                            <Clock className="w-4 h-4 text-warning-500" />
-                                            <span className="font-display font-semibold gradient-text-warning text-sm">{formatDuration(span.duration_ms)}</span>
+                                        <div className="glass rounded-lg px-3 py-2 border border-accent-200/30 shadow-lg backdrop-blur-xl flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-accent-500" />
+                                            <span className="font-display font-semibold gradient-text-accent text-sm">{formatDuration(span.duration_ms)}</span>
                                         </div>
 
                                         {span.cost_usd && (
-                                            <div className="glass rounded-lg px-3 py-2 border border-success-200/30 flex items-center gap-2">
+                                            <div className="glass rounded-lg px-3 py-2 border border-success-200/30 shadow-lg backdrop-blur-xl flex items-center gap-2">
                                                 <DollarSign className="w-4 h-4 text-success-500" />
                                                 <span className="font-display font-semibold gradient-text-success text-sm">{formatCost(span.cost_usd)}</span>
                                             </div>
@@ -312,7 +312,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                         )}
 
                                         {span.cache_hit && (
-                                            <span className="glass px-3 py-1 border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 rounded-full font-display font-semibold text-sm">
+                                            <span className="glass px-3 py-1 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-success-700 dark:text-success-300 rounded-full font-display font-semibold text-sm">
                                                 Cache Hit
                                             </span>
                                         )}

@@ -291,7 +291,7 @@ const WorkflowDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="w-8 h-8 rounded-full border-b-2 border-blue-600 animate-spin"></div>
+        <div className="w-8 h-8 rounded-full border-b-2 border-primary-600 animate-spin"></div>
       </div>
     );
   }
@@ -299,7 +299,7 @@ const WorkflowDashboard: React.FC = () => {
   if (!dashboardData) {
     return (
       <div className="py-12 text-center">
-        <p className="text-gray-500">Failed to load dashboard data</p>
+        <p className="text-secondary-500 dark:text-secondary-400">Failed to load dashboard data</p>
       </div>
     );
   }
@@ -307,18 +307,18 @@ const WorkflowDashboard: React.FC = () => {
 
 
   return (
-    <div className="space-y-6 min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+    <div className="space-y-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
       {/* Header */}
-      <div className="p-6 glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+      <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="mb-2 text-2xl font-display font-bold gradient-text-primary">AI Workflow Observatory</h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary">Monitor, trace, and optimize your AI workflow executions</p>
+            <p className="text-secondary-600 dark:text-secondary-300">Monitor, trace, and optimize your AI workflow executions</p>
           </div>
           <button
             onClick={fetchDashboardData}
             disabled={refreshing}
-            className={`px-4 py-2 glass rounded-xl border border-accent-200/30 flex items-center transition-all duration-300 ${refreshing ? 'bg-light-bg-300 dark:bg-dark-bg-300 cursor-not-allowed text-light-text-tertiary dark:text-dark-text-tertiary' : 'btn-primary'
+            className={`px-4 py-2 glass rounded-xl border border-primary-200/30 flex items-center transition-all duration-300 ${refreshing ? 'bg-secondary-200 dark:bg-secondary-700 cursor-not-allowed text-secondary-500 dark:text-secondary-400' : 'btn-primary'
               }`}
           >
             <ArrowPathIcon className={`w-5 h-5 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -328,8 +328,8 @@ const WorkflowDashboard: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
-        <div className="border-b border-accent-200/30">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="border-b border-primary-200/30">
           <nav className="flex px-6 space-x-8" aria-label="Tabs">
             {['overview', 'executions', 'analytics', 'traces'].map((tab) => (
               <button
@@ -337,7 +337,7 @@ const WorkflowDashboard: React.FC = () => {
                 onClick={() => setActiveTab(tab as 'overview' | 'executions' | 'analytics' | 'traces')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-all duration-300 ${activeTab === tab
                   ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                  : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-300/50'
+                  : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:border-primary-300/50'
                   }`}
               >
                 {tab}
@@ -351,7 +351,7 @@ const WorkflowDashboard: React.FC = () => {
             <div className="space-y-6">
               {/* Overview Metrics */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                   <div className="flex items-center">
                     <ChartBarIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     <div className="ml-4">
@@ -363,7 +363,7 @@ const WorkflowDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                   <div className="flex items-center">
                     <CheckCircleIcon className="w-8 h-8 text-success-600 dark:text-success-400" />
                     <div className="ml-4">
@@ -375,7 +375,7 @@ const WorkflowDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
                   <div className="flex items-center">
                     <ClockIcon className="w-8 h-8 text-secondary-600 dark:text-secondary-400" />
                     <div className="ml-4">
@@ -385,22 +385,22 @@ const WorkflowDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
                   <div className="flex items-center">
-                    <CurrencyDollarIcon className="w-8 h-8 text-warning-600 dark:text-warning-400" />
+                    <CurrencyDollarIcon className="w-8 h-8 text-accent-600 dark:text-accent-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-warning-600 dark:text-warning-400">Total Cost</p>
-                      <p className="text-2xl font-bold text-warning-900 dark:text-warning-100">{formatCost(dashboardData.overview.totalCost)}</p>
+                      <p className="text-sm font-medium text-accent-600 dark:text-accent-400">Total Cost</p>
+                      <p className="text-2xl font-bold text-accent-900 dark:text-accent-100">{formatCost(dashboardData.overview.totalCost)}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
                   <div className="flex items-center">
-                    <PlayIcon className="w-8 h-8 text-accent-600 dark:text-accent-400" />
+                    <PlayIcon className="w-8 h-8 text-highlight-600 dark:text-highlight-400" />
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-accent-600 dark:text-accent-400">Active Workflows</p>
-                      <p className="text-2xl font-bold text-accent-900 dark:text-accent-100">{dashboardData.overview.activeWorkflows}</p>
+                      <p className="text-sm font-medium text-highlight-600 dark:text-highlight-400">Active Workflows</p>
+                      <p className="text-2xl font-bold text-highlight-900 dark:text-highlight-100">{dashboardData.overview.activeWorkflows}</p>
                     </div>
                   </div>
                 </div>
@@ -409,22 +409,22 @@ const WorkflowDashboard: React.FC = () => {
               {/* Workflow Distribution */}
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Cost Analysis by Workflow Type */}
-                <div className="p-6 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50">
-                  <h3 className="mb-4 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Cost Distribution by Workflow</h3>
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-4 text-lg font-semibold text-secondary-900 dark:text-white">Cost Distribution by Workflow</h3>
                   <div className="space-y-4">
                     {dashboardData.costAnalysis.breakdown && dashboardData.costAnalysis.breakdown.map((item, index) => (
                       <div key={index} className="relative">
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm font-medium text-gray-700">{item.category}</span>
-                          <span className="text-sm font-medium text-gray-700">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
+                          <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">{item.category}</span>
+                          <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div className="w-full bg-secondary-200 dark:bg-secondary-700 rounded-full h-2.5">
                           <div
-                            className={`h-2.5 rounded-full ${index % 5 === 0 ? 'bg-blue-600' :
-                              index % 5 === 1 ? 'bg-green-600' :
-                                index % 5 === 2 ? 'bg-yellow-600' :
-                                  index % 5 === 3 ? 'bg-purple-600' :
-                                    'bg-indigo-600'
+                            className={`h-2.5 rounded-full ${index % 5 === 0 ? 'bg-primary-600' :
+                              index % 5 === 1 ? 'bg-success-600' :
+                                index % 5 === 2 ? 'bg-accent-600' :
+                                  index % 5 === 3 ? 'bg-highlight-600' :
+                                    'bg-secondary-600'
                               }`}
                             style={{ width: `${item.percentage}%` }}
                           ></div>
@@ -435,18 +435,18 @@ const WorkflowDashboard: React.FC = () => {
                 </div>
 
                 {/* Daily Cost Trend */}
-                <div className="p-6 bg-white rounded-lg border border-gray-200">
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Daily Cost Trend</h3>
+                <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-4 text-lg font-semibold text-secondary-900 dark:text-white">Daily Cost Trend</h3>
                   <div className="space-y-4">
                     {dashboardData.costAnalysis.trend.daily && dashboardData.costAnalysis.trend.daily.map((day, index) => (
                       <div key={index} className="relative">
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm font-medium text-gray-700">{day.date}</span>
-                          <span className="text-sm font-medium text-gray-700">{formatCost(day.amount)}</span>
+                          <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">{day.date}</span>
+                          <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">{formatCost(day.amount)}</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div className="w-full bg-secondary-200 dark:bg-secondary-700 rounded-full h-2.5">
                           <div
-                            className="h-2.5 rounded-full bg-blue-600"
+                            className="h-2.5 rounded-full bg-primary-600"
                             style={{ width: `${(day.amount / Math.max(...dashboardData.costAnalysis.trend.daily.map(d => d.amount))) * 100}%` }}
                           ></div>
                         </div>
@@ -457,29 +457,29 @@ const WorkflowDashboard: React.FC = () => {
               </div>
 
               {/* Recent Workflow Activity */}
-              <div className="p-6 bg-white rounded-lg border border-gray-200">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">Recent Workflow Activity</h3>
-                <div className="overflow-hidden ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-gray-50">
+              <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <h3 className="mb-4 text-lg font-semibold text-secondary-900 dark:text-white">Recent Workflow Activity</h3>
+                <div className="overflow-hidden glass rounded-lg border border-primary-200/30">
+                  <table className="min-w-full divide-y divide-primary-200/20">
+                    <thead className="glass rounded-lg border border-primary-200/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Workflow</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Steps</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Workflow</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Steps</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Duration</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Cost</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Tokens</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Date</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20">
                       {dashboardData.recentExecutions.slice(0, 5).map((execution) => (
-                        <tr key={execution.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{execution.workflowName}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{execution.steps?.length || 0}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDuration(execution.duration)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCost(execution.cost)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{execution.totalTokens?.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <tr key={execution.id} className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-secondary-500/5">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-900 dark:text-white">{execution.workflowName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-600 dark:text-secondary-300">{execution.steps?.length || 0}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-600 dark:text-secondary-300">{formatDuration(execution.duration)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-600 dark:text-secondary-300">{formatCost(execution.cost)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-600 dark:text-secondary-300">{execution.totalTokens?.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-600 dark:text-secondary-300">
                             {new Date(execution.startTime).toLocaleDateString()}
                           </td>
                         </tr>

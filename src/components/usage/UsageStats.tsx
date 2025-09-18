@@ -70,20 +70,20 @@ export const UsageStats: React.FC<{
       {cards.map((card, index) => (
         <div
           key={index}
-          className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
+          className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
         >
           <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-xl glass border border-accent-200/30 ${card.bgColor}`}>
+            <div className={`p-3 rounded-xl glass border border-primary-200/30 ${card.bgColor}`}>
               <card.icon
                 className={`h-6 w-6 ${card.color}`}
               />
             </div>
             {card.change !== undefined && card.change !== 0 && (
               <div
-                className={`flex items-center text-sm font-medium px-2 py-1 rounded-xl glass border border-accent-200/30 ${(card.change > 0 && !card.inverse) ||
-                    (card.change < 0 && card.inverse)
-                    ? "text-success-600 dark:text-success-400 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20"
-                    : "text-error-600 dark:text-error-400 bg-gradient-to-r from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20"
+                className={`flex items-center text-sm font-medium px-2 py-1 rounded-xl glass border border-primary-200/30 ${(card.change > 0 && !card.inverse) ||
+                  (card.change < 0 && card.inverse)
+                  ? "text-success-600 dark:text-success-400 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20"
+                  : "text-error-600 dark:text-error-400 bg-gradient-to-r from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20"
                   }`}
               >
                 {card.change > 0 ? "+" : ""}

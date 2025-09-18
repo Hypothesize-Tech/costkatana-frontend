@@ -185,7 +185,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-error-600 dark:hover:text-error-400 transition-colors duration-300"
+                    className="text-secondary-600 dark:text-secondary-300 hover:text-danger-600 dark:hover:text-danger-400 transition-colors duration-300"
                 >
                     <X className="w-6 h-6" />
                 </button>
@@ -194,39 +194,39 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             {/* Basic Information */}
             <div className="space-y-4 mb-6">
                 <div>
-                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
                         Name *
                     </label>
                     <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300"
+                        className="input"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
                         Description
                     </label>
                     <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300 resize-none"
+                        className="input resize-none"
                         rows={2}
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
                         URL *
                     </label>
                     <input
                         type="url"
                         value={formData.url}
                         onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                        className="w-full px-4 py-3 glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 transition-all duration-300"
+                        className="input"
                         placeholder="https://example.com/webhook"
                         required
                     />
@@ -240,7 +240,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                             onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
                             className="rounded text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-sm font-medium text-gray-700">Active</span>
+                        <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Active</span>
                     </label>
                 </div>
             </div>

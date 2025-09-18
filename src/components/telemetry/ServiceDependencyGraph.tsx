@@ -30,16 +30,16 @@ export const ServiceDependencyGraph: React.FC = () => {
     }, [dependencyData]);
 
     if (isLoading) return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl animate-pulse">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel animate-pulse">
             <div className="h-64 bg-gradient-primary/20 rounded-xl" />
         </div>
     );
 
     if (error) return (
-        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                         <span className="text-white text-sm">⚠️</span>
                     </div>
                     <span className="font-body text-light-text-primary dark:text-dark-text-primary">
@@ -54,7 +54,7 @@ export const ServiceDependencyGraph: React.FC = () => {
     );
 
     if (processedData.services.length === 0) return (
-        <div className="glass rounded-xl p-8 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
+        <div className="glass rounded-xl p-8 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
             <div className="w-16 h-16 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-4">
                 <ServerIcon className="w-8 h-8 text-accent-500" />
             </div>
@@ -64,10 +64,10 @@ export const ServiceDependencyGraph: React.FC = () => {
     );
 
     return (
-        <div className="glass rounded-xl p-8 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+        <div className="glass rounded-xl p-8 border border-secondary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                         <ServerIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-display font-bold gradient-text-secondary">
@@ -79,7 +79,7 @@ export const ServiceDependencyGraph: React.FC = () => {
                 </button>
             </div>
 
-            <div className="w-full h-[500px] glass rounded-xl border border-primary-200/30 overflow-auto">
+            <div className="w-full h-[500px] glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-auto">
                 <svg viewBox="0 0 1000 500" className="w-full h-full">
                     <defs>
                         <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">

@@ -380,7 +380,7 @@ const WhatIfScenarios: React.FC = () => {
   };
 
   return (
-    <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+    <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
@@ -407,7 +407,7 @@ const WhatIfScenarios: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-6 card p-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+        <div className="mb-6 glass p-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
           <div className="flex items-center">
             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
               <ExclamationTriangleIcon className="h-5 w-5 text-white" />
@@ -441,7 +441,7 @@ const WhatIfScenarios: React.FC = () => {
           scenarios.map((scenario) => (
             <div
               key={scenario.name}
-              className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
+              className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
@@ -534,7 +534,7 @@ const WhatIfScenarios: React.FC = () => {
                     </button>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="card card-hover p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
+                    <div className="glass rounded-xl p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
                       <div className="flex items-center justify-center space-x-2 mb-2">
                         {scenarioResults[scenario.name].projectedImpact
                           .costChange >= 0 ? (
@@ -559,7 +559,7 @@ const WhatIfScenarios: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="card card-hover p-6 text-center bg-gradient-accent/10 border-l-4 border-accent-500">
+                    <div className="glass rounded-xl p-6 text-center bg-gradient-accent/10 border-l-4 border-accent-500">
                       <div className="flex items-center justify-center space-x-2 mb-2">
                         <LightBulbIcon className="h-4 w-4 text-accent-500 glow-accent" />
                         <span className="text-sm font-display font-semibold text-accent-600 dark:text-accent-400">Confidence</span>
@@ -571,7 +571,7 @@ const WhatIfScenarios: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="card card-hover p-6 text-center bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                    <div className="glass rounded-xl p-6 text-center bg-gradient-secondary/10 border-l-4 border-secondary-500">
                       <div className="flex items-center justify-center space-x-2 mb-2">
                         {getRiskIcon(
                           scenarioResults[scenario.name].projectedImpact
@@ -699,7 +699,7 @@ const WhatIfScenarios: React.FC = () => {
             {scenarioTemplates.map((template, index) => (
               <div
                 key={index}
-                className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
+                className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
@@ -997,7 +997,7 @@ const WhatIfScenarios: React.FC = () => {
                 <div className="space-y-6">
                   {/* Impact Summary */}
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="card card-hover p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
+                    <div className="glass rounded-xl p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
                       <div className="flex items-center justify-center space-x-2 mb-3">
                         <ArrowTrendingUpIcon className="h-5 w-5 text-primary-500 glow-primary" />
                         <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
@@ -1020,7 +1020,7 @@ const WhatIfScenarios: React.FC = () => {
                         change
                       </div>
                     </div>
-                    <div className="card card-hover p-6 text-center bg-gradient-success/10 border-l-4 border-success-500">
+                    <div className="glass rounded-xl p-6 text-center bg-gradient-success/10 border-l-4 border-success-500">
                       <div className="flex items-center justify-center space-x-2 mb-3">
                         <LightBulbIcon className="h-5 w-5 text-success-500 glow-success" />
                         <span className="font-display font-semibold text-success-600 dark:text-success-400">

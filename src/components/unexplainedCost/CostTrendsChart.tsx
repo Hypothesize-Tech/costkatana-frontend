@@ -59,11 +59,11 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
     };
 
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Trends & Predictions</h2>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary mt-1">Historical patterns and future projections</p>
+                    <p className="text-secondary-600 dark:text-secondary-300 mt-1">Historical patterns and future projections</p>
                 </div>
 
                 <div className="text-right">
@@ -76,7 +76,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
 
             {/* Growth Metrics */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+                <div className="p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-sm font-medium text-primary-700 dark:text-primary-300">Weekly Growth</div>
@@ -90,7 +90,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                     </div>
                 </div>
 
-                <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                <div className="p-4 glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Monthly Growth</div>
@@ -110,7 +110,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                 <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Cost Driver Trends</h3>
                 <div className="space-y-3">
                     {trends.trends.cost_drivers_trend.map((driver, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 glass rounded-xl border border-accent-200/30 hover:shadow-md transition-all duration-300">
+                        <div key={index} className="flex items-center justify-between p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-md transition-all duration-300">
                             <div className="flex items-center">
                                 <div className="w-3 h-3 rounded-full bg-gradient-to-r from-primary-400 to-primary-500 mr-3"></div>
                                 <div>
@@ -140,7 +140,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             <div className="mb-6">
                 <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Cost Predictions</h3>
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                    <div className="p-4 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                         <div className="text-center">
                             <div className="text-sm font-medium text-success-700 dark:text-success-300 mb-1">Next Week</div>
                             <div className="text-xl font-bold text-success-900 dark:text-success-100">
@@ -152,7 +152,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                         </div>
                     </div>
 
-                    <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
+                    <div className="p-4 glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
                         <div className="text-center">
                             <div className="text-sm font-medium text-accent-700 dark:text-accent-300 mb-1">Next Month</div>
                             <div className="text-xl font-bold text-accent-900 dark:text-accent-100">
@@ -166,7 +166,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                 </div>
 
                 {/* Confidence Level */}
-                <div className="mt-4 p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
+                <div className="mt-4 p-4 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <svg className="h-4 w-4 text-warning-600 dark:text-warning-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -193,7 +193,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             </div>
 
             {/* Trend Analysis */}
-            <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-accent-50/20 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
+            <div className="p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-accent-50/20 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
                 <h4 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Trend Analysis</h4>
                 <div className="space-y-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     {trends.trends.weekly_growth > 0.1 && (
@@ -227,7 +227,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-6 pt-6 border-t border-accent-200/30">
+            <div className="mt-6 pt-6 border-t border-primary-200/30">
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={() => {

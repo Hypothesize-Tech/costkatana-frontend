@@ -60,25 +60,25 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               </span>
             </div>
 
-            <h3 className="text-2xl font-display font-bold gradient-text mb-6">
+            <h3 className="text-2xl font-display font-bold gradient-text-primary mb-6">
               {optimization.cortexImpactMetrics
                 ? `${Math.abs(optimization.cortexImpactMetrics.tokenReduction.percentageSavings).toFixed(1)}% Token ${optimization.cortexImpactMetrics.tokenReduction.percentageSavings >= 0 ? 'Reduction' : 'Increase'}`
                 : `${optimization.improvementPercentage.toFixed(1)}% Token Reduction`}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-4 h-4 rounded bg-gradient-primary"></div>
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens Saved</span>
                 </div>
-                <span className="font-display font-bold gradient-text text-lg">
+                <span className="font-display font-bold gradient-text-primary text-lg">
                   {optimization.cortexImpactMetrics
                     ? Math.abs(optimization.cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()
                     : optimization.tokensSaved.toLocaleString()}
                 </span>
               </div>
-              <div className="glass rounded-lg p-4 border border-success-200/30">
+              <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-4 h-4 rounded bg-gradient-success"></div>
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Cost Saved</span>
@@ -89,21 +89,21 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                     : optimization.costSaved)}
                 </span>
               </div>
-              <div className="glass rounded-lg p-4 border border-accent-200/30">
+              <div className="glass rounded-lg p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-4 h-4 rounded bg-gradient-accent"></div>
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Service</span>
                 </div>
-                <span className="font-display font-bold gradient-text text-lg">
+                <span className="font-display font-bold gradient-text-accent text-lg">
                   {optimization.service || optimization.parameters?.model?.split('.')[0] || 'Unknown'}
                 </span>
               </div>
-              <div className="glass rounded-lg p-4 border border-secondary-200/30">
+              <div className="glass rounded-lg p-4 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-4 h-4 rounded bg-gradient-secondary"></div>
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Model</span>
                 </div>
-                <span className="font-display font-bold gradient-text text-lg">
+                <span className="font-display font-bold gradient-text-secondary text-lg">
                   {optimization.model || optimization.parameters?.model || 'Unknown'}
                 </span>
               </div>
@@ -131,7 +131,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
                     <span className="text-white text-xs">📝</span>
                   </div>
-                  <h4 className="font-display font-semibold gradient-text">
+                  <h4 className="font-display font-semibold gradient-text-primary">
                     User Query
                   </h4>
                 </div>
@@ -152,9 +152,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </div>
               </div>
 
-              <div className="glass rounded-xl p-6 border border-success-200/30">
+              <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">✨</span>
                   </div>
                   <h4 className="font-display font-semibold gradient-text-success">
@@ -345,13 +345,13 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   </div>
                   <ul className="space-y-3">
                     {optimization.suggestions.map((suggestion, index) => (
-                      <li key={index} className="glass rounded-lg p-4 border border-primary-200/30">
+                      <li key={index} className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                         <div className="flex items-start gap-3">
-                          <div className="w-5 h-5 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 flex-shrink-0 glow-success">
+                          <div className="w-5 h-5 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 flex-shrink-0 shadow-lg">
                             <CheckCircleIcon className="w-3 h-3 text-white" />
                           </div>
                           <div>
-                            <span className="font-display font-semibold gradient-text">
+                            <span className="font-display font-semibold gradient-text-primary">
                               {suggestion.type}:
                             </span>
                             <p className="font-body text-light-text-primary dark:text-dark-text-primary mt-1">
@@ -395,12 +395,12 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
             {/* Feedback Form */}
             {showFeedback && (
-              <div className="glass rounded-xl p-6 border border-primary-200/30 mt-6">
+              <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl mt-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">💬</span>
                   </div>
-                  <h4 className="font-display font-semibold gradient-text">
+                  <h4 className="font-display font-semibold gradient-text-primary">
                     Was this optimization helpful?
                   </h4>
                 </div>
@@ -415,14 +415,14 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   <div className="flex items-center space-x-3">
                     <button
                       onClick={() => handleFeedback(true)}
-                      className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-success text-white font-display font-medium hover:scale-105 transition-transform duration-200 glow-success"
+                      className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-success text-white font-display font-medium hover:scale-105 transition-transform duration-200 shadow-lg"
                     >
                       <HandThumbUpIcon className="h-4 w-4 mr-2" />
                       Helpful
                     </button>
                     <button
                       onClick={() => handleFeedback(false)}
-                      className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-danger text-white font-display font-medium hover:scale-105 transition-transform duration-200 glow-danger"
+                      className="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-danger text-white font-display font-medium hover:scale-105 transition-transform duration-200 shadow-lg"
                     >
                       <HandThumbDownIcon className="h-4 w-4 mr-2" />
                       Not Helpful

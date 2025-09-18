@@ -105,7 +105,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     <>
       <tr
         onClick={() => onClick(usage)}
-        className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 border-b border-accent-200/30"
+        className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 border-b border-primary-200/30"
       >
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="flex items-center">
@@ -166,7 +166,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {tipData && (
               <button
                 onClick={handleTipClick}
-                className="p-2 rounded-xl glass border border-accent-200/30 text-warning-500 hover:text-warning-600 hover:border-warning-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl glass border border-primary-200/30 text-warning-500 hover:text-warning-600 hover:border-warning-300/50 hover:shadow-md transition-all duration-300"
                 title="Optimization tip available"
               >
                 <ExclamationCircleIcon className="w-4 h-4" />
@@ -175,7 +175,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {onOptimize && usage.totalTokens > 100 && (
               <button
                 onClick={handleOptimizeClick}
-                className="p-2 rounded-xl glass border border-accent-200/30 text-primary-500 hover:text-primary-600 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl glass border border-primary-200/30 text-primary-500 hover:text-primary-600 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
                 title="Optimize this prompt"
               >
                 <SparklesIcon className="w-4 h-4" />
@@ -184,7 +184,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {onSimulate && (usage.cost > 0.01 || usage.totalTokens > 500) && (
               <button
                 onClick={handleSimulateClick}
-                className="p-2 rounded-xl glass border border-accent-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl glass border border-primary-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
                 title="Try What-If Simulation"
               >
                 <BeakerIcon className="w-4 h-4" />
@@ -203,7 +203,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                   e.stopPropagation();
                   setShowScoring(!showScoring);
                 }}
-                className="p-2 rounded-xl glass border border-accent-200/30 text-blue-500 hover:text-blue-600 hover:border-blue-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl glass border border-primary-200/30 text-blue-500 hover:text-blue-600 hover:border-blue-300/50 hover:shadow-md transition-all duration-300"
                 title="Score this request for training"
               >
                 <StarIcon className="w-4 h-4" />

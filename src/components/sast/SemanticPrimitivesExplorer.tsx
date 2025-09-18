@@ -107,50 +107,50 @@ const SemanticPrimitivesExplorer: React.FC = () => {
         const { primitive, relevanceScore, matchType } = result;
 
         return (
-            <Card className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
+                <div>
                     <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-2">
-                            <Badge variant="outline" className={getCategoryColor(primitive.category)}>
+                            <span className={`glass px-3 py-1 rounded-full border font-display font-semibold text-xs ${getCategoryColor(primitive.category)}`}>
                                 {primitive.category}
-                            </Badge>
-                            <Badge variant="secondary" className="flex items-center gap-1">
+                            </span>
+                            <span className="glass px-3 py-1 rounded-full border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-semibold text-xs flex items-center gap-1">
                                 {getMatchTypeIcon(matchType)}
                                 {matchType}
-                            </Badge>
+                            </span>
                         </div>
                         <div className="text-right">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="font-display font-semibold gradient-text-primary">
                                 {(relevanceScore * 100).toFixed(0)}%
                             </div>
-                            <div className="text-xs text-gray-500">relevance</div>
+                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">relevance</div>
                         </div>
                     </div>
 
                     <div className="space-y-3">
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-lg font-bold text-gray-900">{primitive.baseForm}</span>
-                                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded text-gray-600">
+                                <span className="text-lg font-display font-bold gradient-text-primary">{primitive.baseForm}</span>
+                                <code className="text-xs glass px-2 py-1 rounded border border-primary-200/30 bg-gradient-primary/10 text-primary-600 dark:text-primary-400">
                                     {primitive.id}
                                 </code>
                             </div>
-                            <p className="text-sm text-gray-600">{primitive.definition}</p>
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">{primitive.definition}</p>
                         </div>
 
                         {primitive.synonyms.length > 0 && (
                             <div>
-                                <h4 className="text-xs font-medium text-gray-700 mb-1">Synonyms:</h4>
+                                <h4 className="font-display font-medium text-light-text-primary dark:text-dark-text-primary text-xs mb-1">Synonyms:</h4>
                                 <div className="flex flex-wrap gap-1">
                                     {primitive.synonyms.slice(0, 5).map((synonym, index) => (
-                                        <Badge key={index} variant="outline" className="text-xs">
+                                        <span key={index} className="glass px-2 py-1 rounded border border-success-200/30 bg-gradient-success/10 text-success-700 dark:text-success-300 font-body text-xs">
                                             {synonym}
-                                        </Badge>
+                                        </span>
                                     ))}
                                     {primitive.synonyms.length > 5 && (
-                                        <Badge variant="outline" className="text-xs">
+                                        <span className="glass px-2 py-1 rounded border border-secondary-200/30 bg-gradient-secondary/10 text-secondary-700 dark:text-secondary-300 font-body text-xs">
                                             +{primitive.synonyms.length - 5} more
-                                        </Badge>
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -158,14 +158,14 @@ const SemanticPrimitivesExplorer: React.FC = () => {
 
                         {Object.keys(primitive.translations).length > 0 && (
                             <div>
-                                <h4 className="text-xs font-medium text-gray-700 mb-1">Translations:</h4>
+                                <h4 className="font-display font-medium text-light-text-primary dark:text-dark-text-primary text-xs mb-1">Translations:</h4>
                                 <div className="grid grid-cols-2 gap-1 text-xs">
                                     {Object.entries(primitive.translations).slice(0, 4).map(([lang, terms]) => (
                                         <div key={lang} className="flex items-center gap-1">
-                                            <span className="font-medium text-gray-600">{lang.toUpperCase()}:</span>
-                                            <span className="text-gray-500">{terms[0]}</span>
+                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{lang.toUpperCase()}:</span>
+                                            <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">{terms[0]}</span>
                                             {terms.length > 1 && (
-                                                <span className="text-gray-400">+{terms.length - 1}</span>
+                                                <span className="font-body text-light-text-tertiary dark:text-dark-text-tertiary">+{terms.length - 1}</span>
                                             )}
                                         </div>
                                     ))}
@@ -173,7 +173,7 @@ const SemanticPrimitivesExplorer: React.FC = () => {
                             </div>
                         )}
 
-                        <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t">
+                        <div className="flex items-center justify-between font-body text-light-text-secondary dark:text-dark-text-secondary text-xs pt-2 border-t border-primary-200/30">
                             <div className="flex items-center gap-3">
                                 <span>Frequency: {primitive.frequency}</span>
                                 <span>Abstract: {(primitive.abstractness * 100).toFixed(0)}%</span>
@@ -186,120 +186,107 @@ const SemanticPrimitivesExplorer: React.FC = () => {
                             )}
                         </div>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     };
 
     return (
         <div className="space-y-6">
             {/* Search Controls */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <Search className="w-5 h-5 mr-2 text-blue-500" />
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <Search className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold gradient-text-primary">
                         Semantic Primitives Explorer
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
+                    </h2>
+                </div>
+                <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1 block">
+                            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Search Term
                             </label>
-                            <Input
+                            <input
                                 placeholder="Enter word or concept..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                className="input"
                             />
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1 block">
+                            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Category
                             </label>
-                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="All categories" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="">All categories</SelectItem>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category} value={category}>
-                                            <span className="capitalize">{category}</span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="input">
+                                <option value="">All categories</option>
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>
+                                        <span className="capitalize">{category}</span>
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1 block">
+                            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Language
                             </label>
-                            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="All languages" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="">All languages</SelectItem>
-                                    {languages.map((lang) => (
-                                        <SelectItem key={lang} value={lang}>
-                                            {lang.toUpperCase()}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)} className="input">
+                                <option value="">All languages</option>
+                                {languages.map((lang) => (
+                                    <option key={lang} value={lang}>
+                                        {lang.toUpperCase()}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1 block">
+                            <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Results
                             </label>
-                            <Select
+                            <select
                                 value={resultLimit.toString()}
-                                onValueChange={(value) => setResultLimit(parseInt(value))}
+                                onChange={(e) => setResultLimit(parseInt(e.target.value))}
+                                className="input"
                             >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="5">5 results</SelectItem>
-                                    <SelectItem value="10">10 results</SelectItem>
-                                    <SelectItem value="20">20 results</SelectItem>
-                                    <SelectItem value="50">50 results</SelectItem>
-                                </SelectContent>
-                            </Select>
+                                <option value="5">5 results</option>
+                                <option value="10">10 results</option>
+                                <option value="20">20 results</option>
+                                <option value="50">50 results</option>
+                            </select>
                         </div>
                     </div>
 
                     <div className="flex gap-2">
-                        <Button onClick={handleSearch} disabled={loading}>
+                        <button onClick={handleSearch} disabled={loading} className="btn-primary">
                             {loading ? (
                                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                             ) : (
                                 <Search className="w-4 h-4 mr-2" />
                             )}
                             Search
-                        </Button>
-                        <Button variant="outline" onClick={handleClearSearch}>
+                        </button>
+                        <button onClick={handleClearSearch} className="btn-secondary">
                             Clear
-                        </Button>
+                        </button>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {/* Error Display */}
             {error && (
-                <Card className="border-red-200">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-2 text-red-600">
-                            <AlertCircle className="w-4 h-4" />
-                            <span>{error}</span>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
+                        <AlertCircle className="w-5 h-5" />
+                        <span className="font-body">{error}</span>
+                    </div>
+                </div>
             )}
 
             {/* Search Results */}
@@ -310,11 +297,11 @@ const SemanticPrimitivesExplorer: React.FC = () => {
                             Search Results ({searchResults.length})
                         </h3>
                         {Object.keys(searchQuery).length > 0 && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <div className="flex items-center gap-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                                 <Filter className="w-4 h-4" />
-                                {searchQuery.term && <Badge variant="outline">"{searchQuery.term}"</Badge>}
-                                {searchQuery.category && <Badge variant="outline">{searchQuery.category}</Badge>}
-                                {searchQuery.language && <Badge variant="outline">{searchQuery.language?.toUpperCase()}</Badge>}
+                                {searchQuery.term && <span className="glass px-2 py-1 rounded border border-primary-200/30 bg-gradient-primary/10 text-primary-700 dark:text-primary-300 font-display font-medium text-xs">"{searchQuery.term}"</span>}
+                                {searchQuery.category && <span className="glass px-2 py-1 rounded border border-secondary-200/30 bg-gradient-secondary/10 text-secondary-700 dark:text-secondary-300 font-display font-medium text-xs">{searchQuery.category}</span>}
+                                {searchQuery.language && <span className="glass px-2 py-1 rounded border border-accent-200/30 bg-gradient-accent/10 text-accent-700 dark:text-accent-300 font-display font-medium text-xs">{searchQuery.language?.toUpperCase()}</span>}
                             </div>
                         )}
                     </div>
@@ -329,18 +316,16 @@ const SemanticPrimitivesExplorer: React.FC = () => {
 
             {/* Empty State */}
             {searchResults.length === 0 && !loading && !error && Object.keys(searchQuery).length > 0 && (
-                <Card className="text-center py-8">
-                    <CardContent>
-                        <Search className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Results Found</h3>
-                        <p className="text-gray-600 mb-4">
-                            Try adjusting your search terms or filters to find semantic primitives.
-                        </p>
-                        <Button variant="outline" onClick={handleClearSearch}>
-                            Clear Search
-                        </Button>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-xl p-12 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+                    <Search className="w-12 h-12 mx-auto mb-4 text-primary-400" />
+                    <h3 className="text-lg font-display font-semibold gradient-text-primary mb-2">No Results Found</h3>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                        Try adjusting your search terms or filters to find semantic primitives.
+                    </p>
+                    <button onClick={handleClearSearch} className="btn-secondary">
+                        Clear Search
+                    </button>
+                </div>
             )}
         </div>
     );

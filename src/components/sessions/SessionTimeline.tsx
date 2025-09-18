@@ -14,7 +14,7 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
 }) => {
     if (!nodes || nodes.length === 0) {
         return (
-            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                 <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">📊</span>
                 </div>
@@ -51,12 +51,12 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
     const maxDepth = Math.max(...Array.from(nodesByDepth.keys()));
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-x-auto">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-x-auto">
             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                     <span className="text-white text-lg">⏱️</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text">Session Timeline</h3>
+                <h3 className="text-xl font-display font-bold gradient-text-primary">Session Timeline</h3>
             </div>
 
             <div className="relative" style={{ minHeight: `${(maxDepth + 1) * 60}px` }}>
@@ -87,14 +87,14 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
                                 <div
                                     key={node.id}
                                     className={`absolute h-8 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg ${isError
-                                        ? 'bg-gradient-danger glow-danger'
+                                        ? 'bg-gradient-danger shadow-lg'
                                         : node.type === 'llm'
-                                            ? 'bg-gradient-primary glow-primary'
+                                            ? 'bg-gradient-primary shadow-lg'
                                             : node.type === 'http'
-                                                ? 'bg-gradient-success glow-success'
+                                                ? 'bg-gradient-success shadow-lg'
                                                 : node.type === 'tool'
-                                                    ? 'bg-gradient-secondary glow-secondary'
-                                                    : 'bg-gradient-accent glow-accent'
+                                                    ? 'bg-gradient-secondary shadow-lg'
+                                                    : 'bg-gradient-accent shadow-lg'
                                         } ${isSelected ? 'ring-2 ring-offset-2 ring-primary-500 shadow-xl' : ''}`}
                                     style={{
                                         left: `${leftPercent}%`,
@@ -116,26 +116,26 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
 
             {/* Legend */}
             <div className="mt-8 pt-6 border-t border-primary-200/30">
-                <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Legend</h4>
+                <h4 className="font-display font-semibold gradient-text-secondary mb-4">Legend</h4>
                 <div className="flex flex-wrap gap-4">
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-success rounded-lg glow-success"></div>
+                        <div className="w-4 h-4 bg-gradient-success rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">HTTP</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-primary rounded-lg glow-primary"></div>
+                        <div className="w-4 h-4 bg-gradient-primary rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">LLM</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-secondary rounded-lg glow-secondary"></div>
+                        <div className="w-4 h-4 bg-gradient-secondary rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">Tool</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-accent rounded-lg glow-accent"></div>
+                        <div className="w-4 h-4 bg-gradient-accent rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">Other</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-danger rounded-lg glow-danger"></div>
+                        <div className="w-4 h-4 bg-gradient-danger rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">Error</span>
                     </div>
                 </div>

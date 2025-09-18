@@ -146,7 +146,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
         {/* Email Code Section */}
         {selectedMethod === 'email' && (
-          <div className="p-4 glass border border-primary-200/30 rounded-2xl">
+          <div className="p-4 glass border border-primary-200/30 rounded-2xl shadow-lg backdrop-blur-xl">
             <div className="flex items-center mb-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
                 <EnvelopeIcon className="w-5 h-5 text-white" />
@@ -186,7 +186,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
         {/* TOTP Section */}
         {selectedMethod === 'totp' && (
-          <div className="p-4 glass border border-success-200/30 rounded-2xl bg-gradient-to-br from-success-50/50 to-success-100/50">
+          <div className="p-4 glass border border-success-200/30 rounded-2xl bg-gradient-to-br from-success-50/50 to-success-100/50 shadow-lg backdrop-blur-xl">
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
                 <DevicePhoneMobileIcon className="w-5 h-5 text-white" />

@@ -43,9 +43,9 @@ export const TrainingAnalytics: React.FC = () => {
 
   if (!analytics || analytics.totalScored === 0) {
     return (
-      <div className="text-center py-12 glass rounded-xl border border-accent-200/30">
-        <ChartBarIcon className="h-12 w-12 text-accent-400 mx-auto mb-4 animate-pulse" />
-        <h3 className="text-lg font-display font-bold gradient-text-accent mb-2">
+      <div className="text-center py-12 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <ChartBarIcon className="h-12 w-12 text-primary-400 mx-auto mb-4 animate-pulse" />
+        <h3 className="text-lg font-display font-bold gradient-text-primary mb-2">
           No Scoring Data Yet
         </h3>
         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
@@ -75,42 +75,42 @@ export const TrainingAnalytics: React.FC = () => {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="glass rounded-xl border border-info-200/30 shadow-lg backdrop-blur-xl p-6">
+        <div className="glass rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
+              <div className="w-12 h-12 rounded-xl bg-gradient-highlight flex items-center justify-center shadow-lg">
                 <DocumentTextIcon className="h-6 w-6 text-white" />
               </div>
             </div>
             <div className="ml-4">
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Total Scored</p>
-              <p className="text-2xl font-display font-bold gradient-text-info">
+              <p className="text-2xl font-display font-bold gradient-text-highlight">
                 {analytics.totalScored.toLocaleString()}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6">
+        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+              <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                 <StarIcon className="h-6 w-6 text-white" />
               </div>
             </div>
             <div className="ml-4">
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Average Score</p>
-              <p className="text-2xl font-display font-bold gradient-text-warning">
+              <p className="text-2xl font-display font-bold gradient-text-accent">
                 {analytics.averageScore.toFixed(1)}★
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6">
+        <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+              <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                 <TrophyIcon className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -132,21 +132,23 @@ export const TrainingAnalytics: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <SparklesIcon className="h-8 w-8 text-purple-600" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
+                <SparklesIcon className="h-6 w-6 text-white" />
+              </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Quality Rate</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Quality Rate</p>
+              <p className="text-2xl font-display font-bold gradient-text-secondary">
                 {(
                   (analytics.trainingCandidates / analytics.totalScored) *
                   100
                 ).toFixed(0)}
                 %
               </p>
-              <p className="text-xs text-gray-500">4+ star requests</p>
+              <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">4+ star requests</p>
             </div>
           </div>
         </div>
@@ -261,8 +263,8 @@ export const TrainingAnalytics: React.FC = () => {
                             <StarIcon
                               key={i}
                               className={`h-3 w-3 ${i < request.score
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
+                                ? "text-yellow-400"
+                                : "text-gray-300"
                                 }`}
                             />
                           ))}

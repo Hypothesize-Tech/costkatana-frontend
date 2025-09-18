@@ -24,10 +24,10 @@ interface ModernHeatmapProps {
 
 export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick }) => {
     return (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-8">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h3 className="text-3xl font-display font-bold gradient-text">Usage Pattern Heatmap</h3>
+                    <h3 className="text-3xl font-display font-bold gradient-text-primary">Usage Pattern Heatmap</h3>
                     <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">Interactive visualization of request patterns across time</p>
                 </div>
                 <div className="text-right">
@@ -39,25 +39,25 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
             {/* Summary Dashboard */}
             {data.summary && (
                 <div className="grid grid-cols-4 gap-6 mb-8">
-                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-primary-200/30 bg-gradient-primary/10">
+                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-primary/10">
                         <div className="text-4xl font-display font-bold gradient-text-primary mb-2">
                             {data.summary.totalRequests?.toLocaleString() || '0'}
                         </div>
                         <div className="font-display font-semibold text-primary-700 dark:text-primary-300">Total Requests</div>
                     </div>
-                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-success-200/30 bg-gradient-success/10">
+                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-success-200/30 backdrop-blur-xl bg-gradient-success/10">
                         <div className="text-4xl font-display font-bold gradient-text-success mb-2">
                             ${data.summary.totalCost?.toFixed(2) || '0.00'}
                         </div>
                         <div className="font-display font-semibold text-success-700 dark:text-success-300">Total Cost</div>
                     </div>
-                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-danger-200/30 bg-gradient-danger/10">
+                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-danger-200/30 backdrop-blur-xl bg-gradient-danger/10">
                         <div className="text-4xl font-display font-bold gradient-text-danger mb-2">
                             {data.summary.totalErrors || '0'}
                         </div>
                         <div className="font-display font-semibold text-danger-700 dark:text-danger-300">Total Errors</div>
                     </div>
-                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-accent-200/30 bg-gradient-accent/10">
+                    <div className="glass rounded-xl p-6 text-center shadow-lg border border-accent-200/30 backdrop-blur-xl bg-gradient-accent/10">
                         <div className="text-4xl font-display font-bold gradient-text-accent mb-2">
                             {data.summary.peakTime || 'N/A'}
                         </div>
@@ -67,14 +67,14 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
             )}
 
             {/* Modern Heatmap Grid */}
-            <div className="glass rounded-xl p-6 shadow-lg border border-primary-200/30">
+            <div className="glass rounded-xl p-6 shadow-lg border border-primary-200/30 backdrop-blur-xl">
                 {/* Day Headers */}
                 <div className="grid grid-cols-8 gap-3 mb-4">
                     <div className="h-12"></div>
                     {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
                         <div key={day} className="h-12 flex items-center justify-center">
                             <div className="text-center">
-                                <div className="font-display font-bold gradient-text">{day.slice(0, 3)}</div>
+                                <div className="font-display font-bold gradient-text-primary">{day.slice(0, 3)}</div>
                                 <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">{day.slice(3)}</div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
                     <div key={timeSlot.key} className="grid grid-cols-8 gap-3 mb-3">
                         <div className="h-20 flex items-center">
                             <div className="text-right pr-4">
-                                <div className="font-display font-bold gradient-text">{timeSlot.label}</div>
+                                <div className="font-display font-bold gradient-text-primary">{timeSlot.label}</div>
                                 <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">{timeSlot.sublabel}</div>
                             </div>
                         </div>
@@ -172,14 +172,14 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
                                     </div>
 
                                     {/* Enhanced Hover Tooltip */}
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 card shadow-2xl text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20 min-w-64">
-                                        <div className="font-display font-bold text-center mb-3 gradient-text">
+                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20 min-w-64">
+                                        <div className="font-display font-bold text-center mb-3 gradient-text-primary">
                                             {day.charAt(0).toUpperCase() + day.slice(1)} {timeSlot.label}
                                         </div>
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-light-text-secondary dark:text-dark-text-secondary">📊 Requests:</span>
-                                                <span className="font-display font-semibold gradient-text">{cellData.requests.toLocaleString()}</span>
+                                                <span className="font-display font-semibold gradient-text-primary">{cellData.requests.toLocaleString()}</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-light-text-secondary dark:text-dark-text-secondary">💰 Cost:</span>
@@ -193,7 +193,7 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-light-text-secondary dark:text-dark-text-secondary">⏱️ Avg Duration:</span>
-                                                <span className="font-display font-semibold gradient-text">{cellData.avgDuration?.toLocaleString() || '0'}ms</span>
+                                                <span className="font-display font-semibold gradient-text-primary">{cellData.avgDuration?.toLocaleString() || '0'}ms</span>
                                             </div>
                                             <div className="border-t border-primary-200/30 pt-2 mt-3">
                                                 <div className="text-center text-light-text-secondary dark:text-dark-text-secondary text-xs mb-1">Top Operation</div>
@@ -213,10 +213,10 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
 
                 {/* Modern Legend */}
                 <div className="mt-8 flex items-center justify-center gap-8">
-                    <div className="font-display font-semibold gradient-text">Activity Intensity:</div>
+                    <div className="font-display font-semibold gradient-text-primary">Activity Intensity:</div>
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-lg glass border border-primary-200/30"></div>
+                            <div className="w-6 h-6 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl"></div>
                             <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">None</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export const ModernHeatmap: React.FC<ModernHeatmapProps> = ({ data, onCellClick 
                 </div>
 
                 <div className="mt-6 text-center">
-                    <div className="inline-flex items-center gap-4 glass rounded-full px-6 py-3 border border-primary-200/30">
+                    <div className="inline-flex items-center gap-4 glass rounded-full px-6 py-3 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                         <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">🖱️ Hover for detailed metrics</span>
                         <span className="text-light-text-tertiary dark:text-dark-text-tertiary">•</span>
                         <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">🎯 Click to drill down</span>

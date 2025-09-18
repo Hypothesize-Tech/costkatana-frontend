@@ -44,7 +44,7 @@ export const Tabs: React.FC<TabsProps> = ({ defaultValue, children, className = 
 
 export const TabsList: React.FC<TabsListProps> = ({ children, className = '' }) => {
   return (
-    <div className={`flex space-x-1 rounded-xl glass border border-primary-200/30 backdrop-blur-xl p-1 ${className}`}>
+    <div className={`flex space-x-1 rounded-xl glass border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-1 ${className}`}>
       {children}
     </div>
   );
@@ -59,9 +59,9 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, class
 
   return (
     <button
-      className={`px-4 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 hover:scale-105 ${isActive
-          ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-          : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary'
+      className={`px-4 py-2 text-sm font-display font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 hover:scale-105 ${isActive
+        ? 'bg-gradient-primary text-white shadow-lg'
+        : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
         } ${className}`}
       onClick={() => setActiveTab(value)}
     >

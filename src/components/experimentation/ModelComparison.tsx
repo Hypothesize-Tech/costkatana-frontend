@@ -963,7 +963,7 @@ const ModelComparison: React.FC = () => {
   };
 
   return (
-    <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+    <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
@@ -1004,7 +1004,7 @@ const ModelComparison: React.FC = () => {
       </div>
 
       {error && (
-        <div className="card p-6 mb-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+        <div className="glass p-6 mb-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
           <div className="flex items-center">
             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
               <ExclamationTriangleIcon className="w-5 h-5 text-white" />
@@ -1032,7 +1032,7 @@ const ModelComparison: React.FC = () => {
 
         {/* Real-time Comparison Settings */}
         <div className="lg:col-span-2">
-          <div className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-6">
+          <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-6">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-3">
                 <input
@@ -1089,7 +1089,7 @@ const ModelComparison: React.FC = () => {
 
           {/* Progress indicator for real-time mode */}
           {isRunning && realTimeMode && progressData && (
-            <div className="card p-6 mt-6 shadow-lg backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+            <div className="glass p-6 mt-6 shadow-lg backdrop-blur-xl border border-primary-200/30 animate-fade-in">
               <div className="flex items-center gap-3 mb-4">
                 <div className="spinner"></div>
                 <span className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
@@ -1133,7 +1133,7 @@ const ModelComparison: React.FC = () => {
             {selectedModels.map((model, index) => (
               <div
                 key={index}
-                className="card p-4 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
+                className="glass p-4 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
@@ -1356,7 +1356,7 @@ const ModelComparison: React.FC = () => {
               {results.map((result, index) => (
                 <div
                   key={index}
-                  className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
+                  className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -1380,7 +1380,7 @@ const ModelComparison: React.FC = () => {
 
                   {result.actualUsage ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="card card-hover p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                      <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
                         <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                           Total Calls
                         </div>
@@ -1388,7 +1388,7 @@ const ModelComparison: React.FC = () => {
                           {result.actualUsage.totalCalls.toLocaleString()}
                         </div>
                       </div>
-                      <div className="card card-hover p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                      <div className="glass rounded-xl p-4 bg-gradient-success/10 border-l-4 border-success-500">
                         <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
                           Avg Cost
                         </div>
@@ -1396,7 +1396,7 @@ const ModelComparison: React.FC = () => {
                           ${result.actualUsage.avgCost.toFixed(4)}
                         </div>
                       </div>
-                      <div className="card card-hover p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                      <div className="glass rounded-xl p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
                         <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
                           Avg Response Time
                         </div>
@@ -1404,7 +1404,7 @@ const ModelComparison: React.FC = () => {
                           {result.actualUsage.avgResponseTime.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="card card-hover p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
+                      <div className="glass rounded-xl p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
                         <div className="text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
                           Error Rate
                         </div>
@@ -1417,7 +1417,7 @@ const ModelComparison: React.FC = () => {
                     <div className="space-y-3">
                       {/* Pricing Information */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="card card-hover p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                        <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
                           <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                             Input Cost
                           </div>
@@ -1440,7 +1440,7 @@ const ModelComparison: React.FC = () => {
                             <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
                           </div>
                         </div>
-                        <div className="card card-hover p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                        <div className="glass rounded-xl p-4 bg-gradient-success/10 border-l-4 border-success-500">
                           <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
                             Output Cost
                           </div>
@@ -1463,7 +1463,7 @@ const ModelComparison: React.FC = () => {
                             <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">/1M tokens</span>
                           </div>
                         </div>
-                        <div className="card card-hover p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                        <div className="glass rounded-xl p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
                           <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
                             Est. Cost/1K
                           </div>
@@ -1471,7 +1471,7 @@ const ModelComparison: React.FC = () => {
                             ${result.estimatedCostPer1K?.toFixed(4) || "N/A"}
                           </div>
                         </div>
-                        <div className="card card-hover p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
+                        <div className="glass rounded-xl p-4 bg-gradient-secondary/10 border-l-4 border-secondary-500">
                           <div className="text-sm font-display font-semibold text-secondary-700 dark:text-secondary-300">
                             Context Window
                           </div>
@@ -1489,7 +1489,7 @@ const ModelComparison: React.FC = () => {
                           result.analysis.considerations?.length > 0) && (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {result.analysis.strengths?.length > 0 && (
-                              <div className="card p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                              <div className="glass p-4 bg-gradient-success/10 border-l-4 border-success-500">
                                 <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300 mb-3">
                                   Strengths
                                 </div>
@@ -1506,7 +1506,7 @@ const ModelComparison: React.FC = () => {
                               </div>
                             )}
                             {result.analysis.considerations?.length > 0 && (
-                              <div className="card p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                              <div className="glass p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
                                 <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300 mb-3">
                                   Considerations
                                 </div>
@@ -1530,7 +1530,7 @@ const ModelComparison: React.FC = () => {
               ))}
 
               {currentExperiment && currentExperiment.results && (
-                <div className="mt-8 card p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+                <div className="mt-8 glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                   <h4 className="text-lg font-display font-bold gradient-text mb-4">
                     Overall Analysis
                   </h4>

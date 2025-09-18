@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'secondary' | 'outline' | 'destructive';
+  variant?: 'default' | 'secondary' | 'outline' | 'destructive' | 'success' | 'warning' | 'highlight';
   size?: 'default' | 'sm';
 }
 
@@ -12,13 +12,16 @@ export const Badge: React.FC<BadgeProps> = ({
   children,
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center font-display font-medium rounded-full transition-all duration-300 hover:scale-105';
+  const baseClasses = 'inline-flex items-center font-display font-semibold rounded-full transition-all duration-300 hover:scale-105 uppercase letter-spacing-wide';
 
   const variantClasses = {
-    default: 'bg-gradient-primary text-white glow-primary',
-    secondary: 'glass border border-secondary-200/30 text-light-text-secondary dark:text-dark-text-secondary backdrop-blur-xl',
-    outline: 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary backdrop-blur-xl',
-    destructive: 'bg-gradient-danger text-white glow-danger',
+    default: 'bg-gradient-primary text-white shadow-lg',
+    secondary: 'bg-gradient-secondary text-white shadow-lg',
+    outline: 'glass border border-primary-200/30 text-primary-600 dark:text-primary-400 backdrop-blur-xl',
+    destructive: 'bg-gradient-danger text-white shadow-lg',
+    success: 'bg-gradient-success text-white shadow-lg',
+    warning: 'bg-gradient-accent text-white shadow-lg',
+    highlight: 'bg-gradient-highlight text-white shadow-lg',
   };
 
   const sizeClasses = {

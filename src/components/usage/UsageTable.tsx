@@ -72,7 +72,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
 
   if (isLoading) {
     return (
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex justify-center">
           <LoadingSpinner />
         </div>
@@ -82,7 +82,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
 
   if (usages.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <UsageEmpty
           hasFilters={hasFilters}
           onClearFilters={onClearFilters}
@@ -93,8 +93,8 @@ export const UsageTable: React.FC<UsageTableProps> = ({
   }
 
   return (
-    <div className="overflow-hidden glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
-      <table className="min-w-full divide-y divide-accent-200/30">
+    <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <table className="min-w-full divide-y divide-primary-200/30">
         <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
           <tr>
             {columns.map((column) => (
@@ -127,7 +127,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
             </th>
           </tr>
         </thead>
-        <tbody className="glass divide-y divide-accent-200/30">
+        <tbody className="glass divide-y divide-primary-200/30">
           {usages.map((usage) => (
             <UsageItem
               key={usage._id}

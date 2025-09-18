@@ -244,26 +244,26 @@ const AdvancedCostMonitoring: React.FC = () => {
   const getTrendColor = (trend: "up" | "down" | "stable") => {
     switch (trend) {
       case "up":
-        return "text-red-500";
+        return "text-danger-500";
       case "down":
-        return "text-green-500";
+        return "text-success-500";
       default:
-        return "text-gray-500";
+        return "text-light-text-secondary dark:text-dark-text-secondary";
     }
   };
 
   const getPerformanceRatingColor = (rating: string) => {
     switch (rating) {
       case "excellent":
-        return "bg-green-100 text-green-800";
+        return "bg-success-100/50 text-success-700 dark:text-success-300";
       case "good":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary-100/50 text-primary-700 dark:text-primary-300";
       case "fair":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-accent-100/50 text-accent-700 dark:text-accent-300";
       case "poor":
-        return "bg-red-100 text-red-800";
+        return "bg-danger-100/50 text-danger-700 dark:text-danger-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-secondary-100/50 text-secondary-700 dark:text-secondary-300";
     }
   };
 
@@ -426,7 +426,7 @@ const AdvancedCostMonitoring: React.FC = () => {
         <>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {realTimeData.map((metric) => (
-              <div key={metric.tag} className="card p-6 hover:scale-105 transition-all duration-300 shadow-lg">
+              <div key={metric.tag} className="glass p-6 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl border border-primary-200/30">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-lg font-display font-semibold gradient-text">
                     {metric.tag}
@@ -467,7 +467,7 @@ const AdvancedCostMonitoring: React.FC = () => {
             ))}
           </div>
 
-          <div className="card p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+          <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
             <div className="flex items-center gap-3 mb-6">
               <div className="bg-gradient-accent p-2 rounded-lg glow-accent">
                 <span className="text-lg text-white">🍰</span>
@@ -512,7 +512,7 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="card p-12 text-center shadow-2xl backdrop-blur-xl border border-primary-200/30">
+        <div className="glass p-12 text-center shadow-2xl backdrop-blur-xl border border-primary-200/30">
           <div className="text-8xl mb-6">🔴</div>
           <p className="text-2xl font-display font-bold gradient-text mb-4">No real-time data available</p>
           <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -537,7 +537,7 @@ const AdvancedCostMonitoring: React.FC = () => {
         </div>
       )}
 
-      <div className="p-6 bg-white rounded-lg shadow">
+      <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
             Cost Forecast (30 Days)
@@ -718,7 +718,7 @@ const AdvancedCostMonitoring: React.FC = () => {
     <div className="space-y-6">
       {performanceData.length > 0 ? (
         <>
-          <div className="p-6 bg-white rounded-lg shadow">
+          <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
             <h3 className="mb-4 text-lg font-semibold">
               Cost vs Performance Correlation
             </h3>
@@ -772,7 +772,7 @@ const AdvancedCostMonitoring: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {performanceData.map((corr, index) => (
-              <div key={index} className="p-4 bg-white rounded-lg shadow">
+              <div key={index} className="p-4 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-900">
                     {corr.service} - {corr.model}
@@ -816,7 +816,7 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
+        <div className="flex justify-center items-center h-64 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
           <div className="text-center">
             <p className="text-gray-500 text-lg">
               No performance data available
@@ -833,7 +833,7 @@ const AdvancedCostMonitoring: React.FC = () => {
   const renderTagsTab = () => (
     <div className="space-y-6">
       {/* Tag Management Section */}
-      <div className="p-6 bg-white rounded-lg shadow">
+      <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
         <h3 className="mb-4 text-lg font-semibold">Tag Management</h3>
 
         {/* Available Tags */}
@@ -948,7 +948,7 @@ const AdvancedCostMonitoring: React.FC = () => {
       {tagAnalytics.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {tagAnalytics.map((tag) => (
-            <div key={tag.tag} className="p-4 bg-white rounded-lg shadow">
+            <div key={tag.tag} className="p-4 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-gray-900">
                   {tag.tag}
@@ -979,7 +979,7 @@ const AdvancedCostMonitoring: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow">
+        <div className="flex justify-center items-center h-64 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
           <div className="text-center">
             <p className="text-gray-500 text-lg">
               No tag analytics data available
@@ -1024,7 +1024,7 @@ const AdvancedCostMonitoring: React.FC = () => {
             Retry
           </button>
         </div>
-        <div className={`card p-6 shadow-2xl backdrop-blur-xl border animate-scale-in relative z-10 ${authError
+        <div className={`glass p-6 shadow-2xl backdrop-blur-xl border animate-scale-in relative z-10 ${authError
           ? "border-warning-200/30"
           : "border-danger-200/30"
           }`} style={{
@@ -1096,7 +1096,7 @@ const AdvancedCostMonitoring: React.FC = () => {
         </div>
       </div>
 
-      <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 relative z-10">
+      <div className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30 relative z-10">
         <nav className="flex space-x-2 px-6">
           {[
             { key: "realtime", label: "Real-time", icon: "🔴" },

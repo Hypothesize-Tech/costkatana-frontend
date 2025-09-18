@@ -75,7 +75,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
               onClick={() => setShowModal(false)}
             />
 
-            <div className="relative p-6 w-full max-w-md glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+            <div className="relative p-6 w-full max-w-md glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">
                 Export Usage Data
               </h3>
@@ -96,8 +96,8 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                           })
                         }
                         className={`px-3 py-2 text-sm font-medium rounded-xl transition-all duration-300 ${exportConfig.format === format
-                            ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
-                            : "glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-primary-300/50 hover:shadow-md"
+                          ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
+                          : "glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-primary-300/50 hover:shadow-md"
                           }`}
                       >
                         {format.toUpperCase()}
@@ -111,7 +111,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                     Options
                   </label>
                   <div className="space-y-3">
-                    <label className="flex items-center p-3 glass rounded-xl border border-accent-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
+                    <label className="flex items-center p-3 glass rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={exportConfig.includeMetadata}
@@ -121,13 +121,13 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                             includeMetadata: e.target.checked,
                           })
                         }
-                        className="w-4 h-4 text-primary-500 rounded border-accent-300 focus:ring-primary-500 focus:ring-2"
+                        className="w-4 h-4 text-primary-500 rounded border-primary-300 focus:ring-primary-500 focus:ring-2"
                       />
                       <span className="ml-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                         Include metadata
                       </span>
                     </label>
-                    <label className="flex items-center p-3 glass rounded-xl border border-accent-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
+                    <label className="flex items-center p-3 glass rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={exportConfig.includePrompts}
@@ -137,7 +137,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                             includePrompts: e.target.checked,
                           })
                         }
-                        className="w-4 h-4 text-primary-500 rounded border-accent-300 focus:ring-primary-500 focus:ring-2"
+                        className="w-4 h-4 text-primary-500 rounded border-primary-300 focus:ring-primary-500 focus:ring-2"
                       />
                       <span className="ml-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                         Include prompts & responses
@@ -159,7 +159,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                           groupBy: e.target.value as any,
                         })
                       }
-                      className="block py-3 pr-10 pl-4 mt-1 w-full text-sm rounded-xl glass border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                      className="select"
                     >
                       <option value="none">No grouping</option>
                       <option value="day">By day</option>
@@ -169,7 +169,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                   </div>
                 )}
 
-                <div className="p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-r from-primary-50/20 to-secondary-50/20 dark:from-primary-900/20 dark:to-secondary-900/20">
+                <div className="p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
                   <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Export includes:</p>
                   <ul className="text-xs space-y-1 text-light-text-secondary dark:text-dark-text-secondary">
                     <li className="flex items-center">

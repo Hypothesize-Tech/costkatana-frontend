@@ -229,7 +229,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
             </div>
 
             {/* Input Section */}
-            <div className="card p-8 shadow-2xl backdrop-blur-xl relative z-10 animate-fade-in">
+            <div className="glass p-8 shadow-2xl backdrop-blur-xl relative z-10 animate-fade-in">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Prompt Input */}
                     <div className="lg:col-span-2">
@@ -311,7 +311,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         </div>
 
                         {/* Advanced Parameters */}
-                        <div className="card p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
+                        <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
                             <h4 className="text-sm font-display font-bold gradient-text flex items-center">
                                 <div className="bg-gradient-primary p-2 rounded-lg glow-primary shadow-lg mr-3">
                                     <span className="text-white text-lg">🎛️</span>
@@ -417,7 +417,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 </div>
 
                 {error && (
-                    <div className="mt-6 card p-4 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+                    <div className="mt-6 glass p-4 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
                         <div className="flex items-center">
                             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
                                 <ExclamationTriangleIcon className="h-5 w-5 text-white" />
@@ -432,7 +432,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
             {results && (
                 <div className="space-y-6">
                     {/* Current Cost Overview */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                         <div className="flex items-center mb-6">
                             <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
                                 <span className="text-white text-2xl">📊</span>
@@ -440,11 +440,11 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                             <h3 className="text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg">
                                 <div className="text-2xl font-bold text-gray-900">{formatCost(results.currentCost.totalCost)}</div>
                                 <div className="text-sm text-gray-600">Total Cost</div>
                             </div>
-                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg">
                                 <div className="text-2xl font-bold text-blue-600">{formatTokens(results.currentCost.totalTokens)}</div>
                                 <div className="text-sm text-gray-600">Total Tokens</div>
                             </div>
@@ -461,11 +461,11 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                     {/* Top Recommendations */}
                     {results.recommendations.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Top Recommendations</h3>
                             <div className="space-y-3">
                                 {results.recommendations.map((rec, index) => (
-                                    <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
                                         <div className={`w-3 h-3 rounded-full mt-1 ${getPriorityColor(rec.priority)}`}></div>
                                         <div className="flex-1">
                                             <div className="font-medium text-gray-900">{rec.title}</div>
@@ -488,11 +488,11 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                     {/* Detailed Optimization Options */}
                     {results.optimizedOptions.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">⚡ Optimization Options</h3>
                             <div className="grid gap-4 md:grid-cols-2">
                                 {results.optimizedOptions.map((option, index) => (
-                                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
                                         <div className="flex items-center justify-between mb-2">
                                             <h4 className="font-medium text-gray-900">{option.description}</h4>
                                             <span className={`px-2 py-1 text-xs rounded-full border ${getRiskColor(option.risk)}`}>
@@ -550,13 +550,15 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
             {/* No results state */}
             {!results && !isSimulating && !error && (
-                <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <div className="text-4xl mb-4">🎯</div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Ready to Optimize Your Costs?</h3>
-                    <p className="text-gray-600 mb-4">
+                <div className="glass p-12 rounded-xl border-2 border-dashed border-primary-200/30 text-center shadow-lg backdrop-blur-xl">
+                    <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <span className="text-white text-2xl">🎯</span>
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">Ready to Optimize Your Costs?</h3>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-4">
                         Enter your prompt above and see instant cost analysis with actionable optimization recommendations.
                     </p>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-light-text-muted dark:text-dark-text-muted font-body">
                         ✨ See savings up to 95% • 🚀 Instant results • 💡 AI-powered recommendations
                     </div>
                 </div>

@@ -50,11 +50,11 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
   };
 
   return (
-    <div className="p-6 glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+    <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-2xl font-display font-bold gradient-text-primary">Daily Cost Story</h2>
-          <p className="mt-1 text-light-text-secondary dark:text-dark-text-secondary">Why your costs changed on {report.date}</p>
+          <p className="mt-1 text-secondary-600 dark:text-secondary-300">Why your costs changed on {report.date}</p>
         </div>
 
         <div className="text-right">
@@ -69,7 +69,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       </div>
 
       {/* Cost Story */}
-      <div className="p-4 mb-6 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-r from-primary-50/50 to-info-50/50 dark:from-primary-900/20 dark:to-info-900/20">
+      <div className="p-4 mb-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/50 to-highlight-50/50 dark:from-primary-900/20 dark:to-highlight-900/20">
         <div className="flex items-start">
           <div className="flex-shrink-0 mt-1">
             <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="currentColor" viewBox="0 0 20 20">
@@ -102,7 +102,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
           <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">Top Cost Drivers</h3>
           <div className="space-y-3">
             {report.top_cost_drivers.map((driver, index) => (
-              <div key={index} className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+              <div key={index} className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center">
                   <div className="mr-3 w-3 h-3 bg-gradient-primary rounded-full glow-primary"></div>
                   <div>
@@ -129,24 +129,24 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
         <div>
           <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">Cost Summary</h3>
           <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <span className="text-light-text-secondary dark:text-dark-text-secondary">Total Cost</span>
               <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.total_cost)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <span className="text-light-text-secondary dark:text-dark-text-secondary">Baseline Cost</span>
               <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.baseline_cost)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <span className="text-light-text-secondary dark:text-dark-text-secondary">Cost Increase</span>
               <span className={`font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
                 {formatCurrency(report.cost_increase)}
               </span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <span className="text-light-text-secondary dark:text-dark-text-secondary">Percentage Change</span>
               <span className={`font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
                 {formatPercentage(report.cost_increase_percentage)}
@@ -157,7 +157,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="pt-6 mt-6 border-t border-accent-200/30">
+      <div className="pt-6 mt-6 border-t border-primary-200/30">
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
@@ -194,7 +194,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       {/* Detailed Analysis Modal */}
       {showDetailedAnalysis && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-display font-bold gradient-text-primary">Detailed Cost Analysis for {report.date}</h3>
               <button
@@ -209,7 +209,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                <div className="p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
                   <h4 className="font-display font-bold text-primary-900 dark:text-primary-300 mb-2">Cost Overview</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -231,7 +231,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
                   </div>
                 </div>
 
-                <div className="p-4 glass rounded-lg border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
+                <div className="p-4 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                   <h4 className="font-display font-bold text-success-900 dark:text-success-300 mb-2">Top Cost Drivers</h4>
                   <div className="space-y-2 text-sm">
                     {report.top_cost_drivers.map((driver, index) => (
@@ -244,7 +244,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
                 </div>
               </div>
 
-              <div className="p-4 glass rounded-lg border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+              <div className="p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <h4 className="font-display font-bold gradient-text-primary mb-2">Full Cost Story</h4>
                 <div className="prose prose-sm max-w-none text-light-text-primary dark:text-dark-text-primary">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -260,7 +260,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       {/* Help Modal */}
       {showHelp && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-display font-bold gradient-text-primary">Cost Analysis Help</h3>
               <button
@@ -302,7 +302,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
                 </ul>
               </div>
 
-              <div className="p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+              <div className="p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
                 <p className="text-primary-800 dark:text-primary-300 text-sm">
                   <strong>Need more help?</strong> Contact our support team for personalized assistance
                   with cost optimization strategies.

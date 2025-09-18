@@ -213,9 +213,9 @@ export const PriceComparison: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Modern Header with Gradient */}
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 mx-6 mt-6 p-8">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mx-6 mt-6 p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center">
             <div className="title-section">
@@ -226,7 +226,7 @@ export const PriceComparison: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               {lastUpdate && (
-                <div className="glass rounded-lg border border-accent-200/30 px-4 py-2">
+                <div className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl px-4 py-2">
                   <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Updated {lastUpdate.toLocaleTimeString()}</span>
                 </div>
               )}
@@ -249,8 +249,8 @@ export const PriceComparison: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mt-4 glass rounded-xl border border-error-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 p-4">
-            <div className="flex items-center gap-3 text-error-600 dark:text-error-400">
+          <div className="mt-4 glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-4">
+            <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
               <svg viewBox="0 0 24 24" width="20" height="20">
                 <path
                   fill="currentColor"
@@ -265,7 +265,7 @@ export const PriceComparison: React.FC = () => {
 
       {/* Enhanced Comparison Form */}
       <div className="max-w-7xl mx-auto mt-8 mb-8 px-6">
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-display font-bold gradient-text-primary mb-4">Compare Pricing</h2>
             <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
@@ -343,7 +343,7 @@ export const PriceComparison: React.FC = () => {
             <button
               onClick={handleComparePrice}
               disabled={comparing}
-              className="btn-primary w-full py-4 text-lg font-display font-bold rounded-xl flex items-center justify-center gap-3"
+              className="btn-primary w-full py-4 text-lg font-display font-bold rounded-xl flex items-center justify-center gap-3 shadow-lg"
             >
               {comparing ? (
                 <>

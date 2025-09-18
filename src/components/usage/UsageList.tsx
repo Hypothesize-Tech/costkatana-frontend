@@ -55,7 +55,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   if (usage.length === 0) {
     return (
-      <div className="p-12 text-center glass rounded-xl border border-accent-200/30">
+      <div className="p-12 text-center glass rounded-xl border border-primary-200/30">
         <div className="mx-auto w-24 h-24 text-light-text-tertiary dark:text-dark-text-tertiary">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -73,15 +73,15 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   return (
     <>
-      <div className="overflow-hidden glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
-        <div className="px-6 py-4 border-b border-accent-200/30">
+      <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="px-6 py-4 border-b border-primary-200/30">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-display font-bold gradient-text-primary">
               Usage History
             </h3>
             <button
               onClick={onRefresh}
-              className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
+              className="p-2 rounded-xl glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
             >
               <ArrowPathIcon className="w-5 h-5" />
             </button>
@@ -89,7 +89,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-accent-200/30">
+          <table className="min-w-full divide-y divide-primary-200/30">
             <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
               <tr>
                 <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
@@ -127,7 +127,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 </th>
               </tr>
             </thead>
-            <tbody className="glass divide-y divide-accent-200/30">
+            <tbody className="glass divide-y divide-primary-200/30">
               {usage.map((item) => {
                 const service = AI_SERVICES[item.service as keyof typeof AI_SERVICES];
 
@@ -449,7 +449,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                               e.stopPropagation();
                               handleSimulate(item);
                             }}
-                            className="p-2 rounded-xl glass border border-accent-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
+                            className="p-2 rounded-xl glass border border-primary-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
                             title="Try What-If Simulation"
                           >
                             <BeakerIcon className="w-4 h-4" />
@@ -466,7 +466,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         </div>
 
         {pagination && (
-          <div className="px-6 py-4 border-t border-accent-200/30">
+          <div className="px-6 py-4 border-t border-primary-200/30">
             <Pagination
               currentPage={pagination.currentPage}
               totalPages={pagination.totalPages}
@@ -489,14 +489,14 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
           <div className="flex justify-center items-center px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUsage(null)} />
 
-            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 transition-all transform">
+            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel transition-all transform">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-display font-bold gradient-text-primary">
                   Usage Details
                 </h3>
                 <button
                   onClick={() => setSelectedUsage(null)}
-                  className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
+                  className="p-2 rounded-xl glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>

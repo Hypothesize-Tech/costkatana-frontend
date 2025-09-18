@@ -24,7 +24,7 @@ interface CardTitleProps {
 export const Card: React.FC<CardProps> = ({ children, className = '', onClick }) => {
   return (
     <div
-      className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''} ${className}`}
+      className={`glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel transition-all duration-300 hover:shadow-2xl hover:border-primary-300/40 ${onClick ? 'cursor-pointer hover:scale-[1.02] hover:shadow-primary/10' : ''} ${className}`}
       onClick={onClick}
     >
       {children}
@@ -42,7 +42,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ children, className = ''
 
 export const CardContent: React.FC<CardContentProps> = ({ children, className = '' }) => {
   return (
-    <div className={`px-6 py-4 bg-light-bg-primary dark:bg-dark-bg-primary ${className}`}>
+    <div className={`px-6 py-4 ${className}`}>
       {children}
     </div>
   );

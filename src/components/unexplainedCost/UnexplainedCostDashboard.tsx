@@ -101,15 +101,15 @@ export const UnexplainedCostDashboard: React.FC = () => {
 
     if (loading && !costAnalysis && !dailyReport && !anomalies.length && !trends) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="animate-pulse">
-                        <div className="h-8 glass rounded-xl w-1/4 mb-6"></div>
+                        <div className="h-8 glass rounded-xl w-1/4 mb-6 bg-light-bg-300 dark:bg-dark-bg-300"></div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className="h-64 glass rounded-xl"></div>
-                            <div className="h-64 glass rounded-xl"></div>
-                            <div className="h-64 glass rounded-xl"></div>
-                            <div className="h-64 glass rounded-xl"></div>
+                            <div className="h-64 glass rounded-xl bg-light-bg-300 dark:bg-dark-bg-300"></div>
+                            <div className="h-64 glass rounded-xl bg-light-bg-300 dark:bg-dark-bg-300"></div>
+                            <div className="h-64 glass rounded-xl bg-light-bg-300 dark:bg-dark-bg-300"></div>
+                            <div className="h-64 glass rounded-xl bg-light-bg-300 dark:bg-dark-bg-300"></div>
                         </div>
                     </div>
                 </div>
@@ -119,9 +119,9 @@ export const UnexplainedCostDashboard: React.FC = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="glass rounded-xl border border-error-300/30 bg-gradient-to-br from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20 p-6">
+                    <div className="glass rounded-xl border border-error-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20 p-6">
                         <div className="flex items-center">
                             <div className="flex-shrink-0">
                                 <svg className="h-5 w-5 text-error-500" viewBox="0 0 20 20" fill="currentColor">
@@ -133,7 +133,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                                 <div className="mt-2 text-sm text-error-700 dark:text-error-300">{error}</div>
                                 <button
                                     onClick={loadDashboardData}
-                                    className="mt-3 inline-flex items-center px-3 py-2 glass rounded-xl border border-error-300/30 text-sm leading-4 font-medium text-error-700 dark:text-error-300 bg-gradient-to-r from-error-100/50 to-error-200/50 dark:from-error-800/50 dark:to-error-700/50 hover:shadow-md transition-all duration-300"
+                                    className="btn-primary mt-3"
                                 >
                                     Retry
                                 </button>
@@ -146,14 +146,14 @@ export const UnexplainedCostDashboard: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-8">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-3xl font-display font-bold gradient-text-primary">Unexplained Cost Analyzer</h1>
-                            <p className="mt-2 text-lg text-light-text-secondary dark:text-dark-text-secondary">
+                            <p className="mt-2 text-lg text-secondary-600 dark:text-secondary-300">
                                 Understand why your AI costs changed and get actionable optimization insights
                             </p>
                         </div>
@@ -163,7 +163,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                             <select
                                 value={timeframe}
                                 onChange={(e) => handleTimeframeChange(e.target.value)}
-                                className="px-4 py-3 glass rounded-xl border border-accent-200/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                                className="select"
                             >
                                 <option value="1h">Last Hour</option>
                                 <option value="24h">Last 24 Hours</option>
@@ -174,7 +174,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                             <select
                                 value={workspaceId}
                                 onChange={(e) => handleWorkspaceChange(e.target.value)}
-                                className="px-4 py-3 glass rounded-xl border border-accent-200/30 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                                className="select"
                             >
                                 <option value="default">Default Workspace</option>
                                 <option value="development">Development</option>
@@ -192,7 +192,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                         {dailyReport ? (
                             <CostStoryCard report={dailyReport} />
                         ) : loadingStates.dailyReport ? (
-                            <div className="h-64 glass rounded-xl animate-pulse"></div>
+                            <div className="h-64 glass rounded-xl animate-pulse bg-light-bg-300 dark:bg-dark-bg-300"></div>
                         ) : null}
                     </div>
 

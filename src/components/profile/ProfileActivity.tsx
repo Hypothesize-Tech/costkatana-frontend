@@ -25,7 +25,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
     switch (type) {
       case "usage":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-primary rounded-xl glow-primary">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-primary rounded-xl shadow-lg">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -43,7 +43,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "optimization":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-success rounded-xl glow-success">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-success rounded-xl shadow-lg">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -61,7 +61,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "settings":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-secondary rounded-xl glow-secondary">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-secondary rounded-xl shadow-lg">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -85,7 +85,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "api_key":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-warning rounded-xl glow-warning">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-warning rounded-xl shadow-lg">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -103,7 +103,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "login":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-accent rounded-xl glow-accent">
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-accent rounded-xl shadow-lg">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -124,7 +124,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
 
   if (loading) {
     return (
-      <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+      <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="space-y-6 animate-pulse">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-start space-x-6">
@@ -141,13 +141,13 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
   }
 
   return (
-    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="p-8">
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
             <span className="text-white text-lg">📈</span>
           </div>
-          <h2 className="text-2xl font-display font-bold gradient-text">
+          <h2 className="text-2xl font-display font-bold gradient-text-primary">
             Recent Activity
           </h2>
         </div>
@@ -169,7 +169,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
                 />
               </svg>
             </div>
-            <h3 className="font-display font-semibold gradient-text text-lg mb-2">No recent activity</h3>
+            <h3 className="font-display font-semibold gradient-text-primary text-lg mb-2">No recent activity</h3>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Your activity will appear here
             </p>
@@ -185,7 +185,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
                   {getActivityIcon(activity.type)}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-display font-semibold gradient-text truncate">
+                      <h3 className="font-display font-semibold gradient-text-primary truncate">
                         {activity.action}
                       </h3>
                       <span className="glass rounded-lg px-3 py-1 border border-primary-200/30 font-body text-light-text-secondary dark:text-dark-text-secondary text-xs ml-4 flex-shrink-0">

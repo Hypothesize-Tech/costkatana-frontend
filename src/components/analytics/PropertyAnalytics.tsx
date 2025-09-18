@@ -82,12 +82,12 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
 
     if (!availableProperties.length) {
         return (
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="text-center py-12">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
                         <ChartBarIcon className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text mb-2">No Custom Properties</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text mb-2">📊 No Custom Properties</h3>
                     <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
                         Start using custom properties in your API calls to see analytics here.
                     </p>
@@ -99,20 +99,20 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     return (
         <div className="space-y-8">
             {/* Property Selector */}
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
                             <ChartBarIcon className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">Property Analytics</h3>
+                        <h3 className="text-2xl font-display font-bold gradient-text">📊 Property Analytics</h3>
                     </div>
                     <div className="flex items-center space-x-4">
                         <label className="label">Group by:</label>
                         <select
                             value={selectedProperty}
                             onChange={(e) => setSelectedProperty(e.target.value)}
-                            className="input"
+                            className="select"
                         >
                             {availableProperties.map((prop) => (
                                 <option key={prop.property} value={prop.property}>
@@ -128,13 +128,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
             {analytics && (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                        <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
                                     <HashtagIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Unique Values</p>
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🔢 Unique Values</p>
                                     <p className="text-3xl font-display font-bold gradient-text">
                                         {analytics.summary.uniqueValues}
                                     </p>
@@ -142,13 +142,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                             </div>
                         </div>
 
-                        <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                        <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg glow-success">
                                     <CurrencyDollarIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</p>
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">💰 Total Cost</p>
                                     <p className="text-3xl font-display font-bold gradient-text-success">
                                         {formatCurrency(analytics.summary.totalCost)}
                                     </p>
@@ -156,13 +156,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                             </div>
                         </div>
 
-                        <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
+                        <div className="glass p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center shadow-lg">
                                     <HashtagIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Tokens</p>
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🔤 Total Tokens</p>
                                     <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
                                         {formatNumber(analytics.summary.totalTokens)}
                                     </p>
@@ -170,13 +170,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                             </div>
                         </div>
 
-                        <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                        <div className="glass p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg glow-accent">
                                     <ClockIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</p>
+                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📊 Total Requests</p>
                                     <p className="text-3xl font-display font-bold gradient-text-accent">
                                         {formatNumber(analytics.summary.totalRequests)}
                                     </p>
@@ -186,7 +186,7 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                     </div>
 
                     {/* Detailed Breakdown */}
-                    <div className="card card-gradient shadow-2xl backdrop-blur-xl">
+                    <div className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30">
                         <div className="px-8 py-6 border-b border-primary-200/30">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">

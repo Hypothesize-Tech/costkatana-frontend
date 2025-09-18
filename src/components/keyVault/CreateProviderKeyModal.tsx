@@ -100,12 +100,12 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
 
-        <div className="inline-block align-bottom card card-gradient rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl backdrop-blur-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-primary-200/30">
+        <div className="inline-block align-bottom glass rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel px-6 pt-6 pb-6 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="absolute top-4 right-4">
             <button
               type="button"
               onClick={handleClose}
-              className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+              className="w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -115,11 +115,11 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
             <div className="w-full">
               <div className="text-center sm:text-left mb-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                     <span className="text-white text-xl">🔐</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary">
                       Add Provider Key
                     </h3>
                   </div>
@@ -132,7 +132,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block font-display font-semibold gradient-text mb-2">
+                  <label className="block font-display font-semibold gradient-text-primary mb-2">
                     Name *
                   </label>
                   <input
@@ -149,7 +149,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* Provider */}
                 <div>
-                  <label className="block font-display font-semibold gradient-text mb-2">
+                  <label className="block font-display font-semibold gradient-text-primary mb-2">
                     Provider *
                   </label>
                   <select
@@ -167,7 +167,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* API Key */}
                 <div>
-                  <label className="block font-display font-semibold gradient-text mb-2">
+                  <label className="block font-display font-semibold gradient-text-primary mb-2">
                     API Key *
                   </label>
                   <div className="relative">
@@ -193,7 +193,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                   {errors.apiKey && (
                     <p className="mt-2 text-sm gradient-text-danger">{errors.apiKey}</p>
                   )}
-                  <div className="glass p-3 rounded-xl border border-success-200/30 mt-2">
+                  <div className="glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl mt-2">
                     <p className="text-xs font-body text-success-600 dark:text-success-400 flex items-center gap-2">
                       <span className="text-sm">🔒</span>
                       Your API key will be encrypted and stored securely.
@@ -203,7 +203,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* Description */}
                 <div>
-                  <label className="block font-display font-semibold gradient-text mb-2">
+                  <label className="block font-display font-semibold gradient-text-primary mb-2">
                     Description (Optional)
                   </label>
                   <textarea
@@ -217,9 +217,9 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* General Error */}
                 {errors.general && (
-                  <div className="glass p-4 rounded-xl border border-danger-200/30 bg-gradient-danger/10">
+                  <div className="glass p-4 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center glow-danger">
+                      <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center shadow-lg">
                         <span className="text-white text-xs">!</span>
                       </div>
                       <div className="font-body text-sm gradient-text-danger">{errors.general}</div>

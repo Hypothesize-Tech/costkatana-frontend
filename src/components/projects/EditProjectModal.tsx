@@ -194,12 +194,12 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       >
         <div className="overflow-y-auto flex-1 p-8 space-y-8">
           {/* Basic Information */}
-          <div className="glass rounded-xl p-6 border border-primary-200/30">
+          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                 <span className="text-white text-lg">📋</span>
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text">
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
                 Basic Information
               </h3>
             </div>
@@ -250,7 +250,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       <button
                         type="button"
                         onClick={() => removeTag(index)}
-                        className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                        className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
                       >
                         <FiMinus className="w-4 h-4" />
                       </button>
@@ -270,9 +270,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Budget Configuration */}
-          <div className="glass rounded-xl p-6 border border-success-200/30">
+          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+              <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                 <span className="text-white text-lg">💰</span>
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-success">
@@ -330,7 +330,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
               </label>
               <div className="space-y-4">
                 {formData.budget.alerts.map((alert, index) => (
-                  <div key={index} className="glass rounded-lg p-4 border border-warning-200/30">
+                  <div key={index} className="glass rounded-lg p-4 border border-warning-200/30 shadow-lg backdrop-blur-xl">
                     <div className="flex gap-4 items-center">
                       <input
                         type="number"
@@ -365,7 +365,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       <button
                         type="button"
                         onClick={() => removeAlert(index)}
-                        className="glass p-2 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                        className="glass p-2 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
                       >
                         <FiMinus className="w-4 h-4" />
                       </button>
@@ -385,9 +385,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Project Settings */}
-          <div className="glass rounded-xl p-6 border border-warning-200/30">
+          <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+              <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
                 <span className="text-white text-lg">⚙️</span>
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-warning">
@@ -396,7 +396,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div className="space-y-6">
-              <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <label className="flex gap-3 items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -438,7 +438,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 )}
               </div>
 
-              <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <label className="flex gap-3 items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -457,7 +457,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 </label>
               </div>
 
-              <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <label className="flex gap-3 items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -476,7 +476,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 </label>
               </div>
 
-              <div className="glass rounded-lg p-4 border border-primary-200/30">
+              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <label className="flex gap-3 items-center cursor-pointer">
                   <input
                     type="checkbox"

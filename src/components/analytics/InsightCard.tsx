@@ -55,9 +55,9 @@ export const InsightCard: React.FC<InsightCardProps> = ({ insight }) => {
   };
 
   return (
-    <div className={`p-6 rounded-2xl border backdrop-blur-xl ${getBorderColor()} transition-all duration-300 hover:shadow-xl hover:scale-[1.02] animate-fade-in`}>
+    <div className={`p-6 glass rounded-2xl border backdrop-blur-xl ${getBorderColor()} transition-all duration-300 hover:shadow-xl hover:scale-[1.02] animate-fade-in shadow-lg`}>
       <div className="flex items-start">
-        <div className={`flex-shrink-0 w-12 h-12 rounded-xl ${getGradientIcon()} flex items-center justify-center shadow-lg mr-4`}>
+        <div className={`flex-shrink-0 w-12 h-12 rounded-xl ${getGradientIcon()} flex items-center justify-center shadow-lg mr-4 glow-primary`}>
           <div className="text-white">
             {getIcon()}
           </div>
@@ -67,15 +67,15 @@ export const InsightCard: React.FC<InsightCardProps> = ({ insight }) => {
           <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">{insight.description}</p>
 
           {insight.impact && (
-            <div className="mb-3 p-3 rounded-xl glass border border-white/20">
+            <div className="mb-3 p-3 rounded-xl glass border border-primary-200/30 shadow-sm backdrop-blur-xl">
               <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                Impact: <span className="gradient-text-accent font-normal">{insight.impact}</span>
+                📊 Impact: <span className="gradient-text-accent font-normal">{insight.impact}</span>
               </p>
             </div>
           )}
 
           {insight.recommendation && (
-            <div className="p-4 rounded-xl bg-gradient-to-r from-primary-50/50 to-secondary-50/50 border border-primary-200/30">
+            <div className="p-4 rounded-xl glass bg-gradient-to-r from-primary-50/50 to-secondary-50/50 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <p className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300 mb-2">💡 Recommendation:</p>
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{insight.recommendation}</p>
             </div>

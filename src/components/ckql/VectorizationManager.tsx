@@ -16,8 +16,6 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
 
     useEffect(() => {
         loadStatus();
-        const interval = setInterval(loadStatus, 2000); // Poll every 2 seconds
-        return () => clearInterval(interval);
     }, []);
 
     const loadStatus = async () => {
@@ -98,13 +96,13 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
     };
 
     return (
-        <div className={`card card-gradient p-8 shadow-2xl backdrop-blur-xl animate-fade-in ${className}`}>
+        <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 animate-fade-in ${className}`}>
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-2xl glow-primary">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-2xl">
                         <Database className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-display font-bold gradient-text">Vector Search Setup</h2>
+                    <h2 className="text-2xl font-display font-bold gradient-text-primary">Vector Search Setup</h2>
                 </div>
                 <button
                     onClick={() => loadStatus()}
@@ -115,7 +113,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             </div>
 
             {error && (
-                <div className="mb-8 p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+                <div className="mb-8 glass rounded-2xl border border-danger-200/50 shadow-lg backdrop-blur-xl bg-gradient-to-br from-danger-50 to-danger-100/50 p-4 animate-scale-in">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                             <AlertCircle className="w-5 h-5 text-white" />
@@ -131,26 +129,26 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             {/* Statistics */}
             {stats && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                    <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
-                        <div className="text-3xl font-display font-bold gradient-text">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="text-3xl font-display font-bold gradient-text-primary">
                             {stats.total_records.toLocaleString()}
                         </div>
                         <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Total Records</div>
                     </div>
-                    <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="text-3xl font-display font-bold gradient-text-success">
                             {stats.vectorized_records.toLocaleString()}
                         </div>
                         <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Vectorized</div>
                     </div>
-                    <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="text-3xl font-display font-bold gradient-text-accent">
                             {stats.vectorization_rate.toFixed(1)}%
                         </div>
                         <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Coverage</div>
                     </div>
-                    <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
-                        <div className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="text-3xl font-display font-bold gradient-text-secondary">
                             {stats.avg_embedding_dimensions}
                         </div>
                         <div className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Dimensions</div>
@@ -163,7 +161,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                 <div className="mb-8">
                     <div className="flex justify-between text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-3">
                         <span>Vectorization Progress</span>
-                        <span className="gradient-text font-bold">{stats.vectorization_rate.toFixed(1)}% Complete</span>
+                        <span className="gradient-text-primary font-bold">{stats.vectorization_rate.toFixed(1)}% Complete</span>
                     </div>
                     <div className="w-full bg-primary-200/30 rounded-full h-3 shadow-inner">
                         <div
@@ -254,9 +252,9 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             </div>
 
             {/* Info */}
-            <div className="mt-8 p-6 glass border border-primary-200/30 rounded-2xl">
+            <div className="mt-8 p-6 glass border border-primary-200/30 shadow-lg backdrop-blur-xl rounded-2xl">
                 <h3 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
+                    <span className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                         <span className="text-white text-xs">💡</span>
                     </span>
                     About Vector Search

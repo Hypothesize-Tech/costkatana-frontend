@@ -92,7 +92,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
   };
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all hover:scale-[1.02]">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-2xl transition-all hover:scale-[1.02] hover:border-primary-300/40">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between">
@@ -163,27 +163,27 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
       {/* Stats */}
       <div className="px-6 pb-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center glass rounded-lg p-3 border border-info-200/30">
-            <div className="flex items-center justify-center gap-2 text-info-600 dark:text-info-400 mb-2">
+          <div className="text-center glass rounded-lg p-3 border border-highlight-200/30 shadow-lg">
+            <div className="flex items-center justify-center gap-2 text-highlight-600 dark:text-highlight-400 mb-2">
               <DocumentTextIcon className="h-4 w-4" />
               <span className="text-xs font-display font-medium">Requests</span>
             </div>
-            <div className="text-lg font-display font-bold gradient-text-info">
+            <div className="text-lg font-display font-bold gradient-text-highlight">
               {dataset.stats.totalRequests}
             </div>
           </div>
 
-          <div className="text-center glass rounded-lg p-3 border border-warning-200/30">
-            <div className="flex items-center justify-center gap-2 text-warning-600 dark:text-warning-400 mb-2">
+          <div className="text-center glass rounded-lg p-3 border border-accent-200/30 shadow-lg">
+            <div className="flex items-center justify-center gap-2 text-accent-600 dark:text-accent-400 mb-2">
               <StarIcon className="h-4 w-4" />
               <span className="text-xs font-display font-medium">Avg Score</span>
             </div>
-            <div className="text-lg font-display font-bold gradient-text-warning">
+            <div className="text-lg font-display font-bold gradient-text-accent">
               {dataset.stats.averageScore.toFixed(1)}
             </div>
           </div>
 
-          <div className="text-center glass rounded-lg p-3 border border-secondary-200/30">
+          <div className="text-center glass rounded-lg p-3 border border-secondary-200/30 shadow-lg">
             <div className="flex items-center justify-center gap-2 text-secondary-600 dark:text-secondary-400 mb-2">
               <DocumentTextIcon className="h-4 w-4" />
               <span className="text-xs font-display font-medium">Tokens</span>
@@ -193,7 +193,7 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
             </div>
           </div>
 
-          <div className="text-center glass rounded-lg p-3 border border-success-200/30">
+          <div className="text-center glass rounded-lg p-3 border border-success-200/30 shadow-lg">
             <div className="flex items-center justify-center gap-2 text-success-600 dark:text-success-400 mb-2">
               <CurrencyDollarIcon className="h-4 w-4" />
               <span className="text-xs font-display font-medium">Cost</span>
@@ -211,8 +211,8 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
           <div className="px-6 pb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               {Object.keys(dataset.stats.providerBreakdown).length > 0 && (
-                <div className="glass rounded-lg p-4 border border-purple-200/30">
-                  <h4 className="font-display font-medium gradient-text-purple mb-3">Providers</h4>
+                <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg">
+                  <h4 className="font-display font-medium gradient-text-primary mb-3">Providers</h4>
                   <div className="space-y-2">
                     {Object.entries(dataset.stats.providerBreakdown).map(
                       ([provider, count]) => (
@@ -227,8 +227,8 @@ export const DatasetCard: React.FC<DatasetCardProps> = ({
               )}
 
               {Object.keys(dataset.stats.modelBreakdown).length > 0 && (
-                <div className="glass rounded-lg p-4 border border-accent-200/30">
-                  <h4 className="font-display font-medium gradient-text-accent mb-3">Models</h4>
+                <div className="glass rounded-lg p-4 border border-secondary-200/30 shadow-lg">
+                  <h4 className="font-display font-medium gradient-text-secondary mb-3">Models</h4>
                   <div className="space-y-2">
                     {Object.entries(dataset.stats.modelBreakdown)
                       .slice(0, 3)

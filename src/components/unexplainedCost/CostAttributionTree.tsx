@@ -60,11 +60,11 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
     const sortedDrivers = [...analysis.cost_drivers].sort((a, b) => b.cost_impact - a.cost_impact);
 
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Attribution Tree</h2>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary mt-1">Breakdown of what's driving your costs</p>
+                    <p className="text-secondary-600 dark:text-secondary-300 mt-1">Breakdown of what's driving your costs</p>
                 </div>
 
                 <div className="text-right">
@@ -80,7 +80,7 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
                 {sortedDrivers.map((driver, index) => (
                     <div key={index} className="relative">
                         {/* Driver Node */}
-                        <div className="flex items-center p-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+                        <div className="flex items-center p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                             <div className="flex-shrink-0 mr-4">
                                 <div className={`w-12 h-12 rounded-full ${getDriverColor(driver.driver_type)} flex items-center justify-center text-white text-xl glow-primary`}>
                                     {getDriverIcon(driver.driver_type)}
@@ -128,7 +128,7 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
                         </div>
 
                         {/* Optimization Potential */}
-                        <div className="ml-16 mt-3 p-3 glass rounded-xl border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
+                        <div className="ml-16 mt-3 p-3 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
                                     <svg className="h-4 w-4 text-success-600 dark:text-success-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -151,16 +151,16 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
             </div>
 
             {/* Summary Stats */}
-            <div className="mt-6 pt-6 border-t border-accent-200/30">
+            <div className="mt-6 pt-6 border-t border-primary-200/30">
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-3 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                    <div className="text-center p-3 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
                         <div className="text-2xl font-display font-bold text-primary-900 dark:text-primary-300">
                             {analysis.cost_drivers.length}
                         </div>
                         <div className="text-sm text-primary-700 dark:text-primary-400">Cost Drivers</div>
                     </div>
 
-                    <div className="text-center p-3 glass rounded-xl border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
+                    <div className="text-center p-3 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                         <div className="text-2xl font-display font-bold text-success-900 dark:text-success-300">
                             {formatCurrency(analysis.cost_drivers.reduce((sum, driver) => sum + driver.optimization_potential, 0))}
                         </div>
@@ -170,7 +170,7 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
             </div>
 
             {/* Anomaly Score */}
-            <div className="mt-4 p-4 glass rounded-xl border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
+            <div className="mt-4 p-4 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <svg className="h-5 w-5 text-warning-600 dark:text-warning-400 mr-2" fill="currentColor" viewBox="0 0 20 20">

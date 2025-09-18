@@ -13,7 +13,6 @@ import {
     BarChart,
     Bar
 } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
 
@@ -85,7 +84,7 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="card p-4 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 animate-scale-in">
                     <p className="font-display font-bold text-sm text-light-text-primary dark:text-dark-text-primary mb-3">{formatDate(label)}</p>
                     {payload.map((entry: any, index: number) => (
                         <p key={index} className="text-sm font-body mb-1" style={{ color: entry.color }}>
@@ -102,14 +101,14 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
 
     if (loading) {
         return (
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">📈 Usage Trend</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Usage Trend</h3>
                 </div>
                 <div className="flex items-center justify-center h-64">
                     <div className="spinner-lg text-primary-500"></div>
@@ -321,23 +320,23 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     };
 
     return (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">📈 Usage Trend</h3>
+                        <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Usage Trend</h3>
                     </div>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSelectedMetric('all')}
                             className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
-                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                ? 'bg-gradient-primary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             All
@@ -345,8 +344,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedMetric('requests')}
                             className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'requests'
-                                ? 'bg-gradient-secondary text-white shadow-lg glow-secondary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
+                                ? 'bg-gradient-secondary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
                                 }`}
                         >
                             ⚡ Requests
@@ -354,8 +353,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedMetric('tokens')}
                             className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'tokens'
-                                ? 'bg-gradient-success text-white shadow-lg glow-success'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
+                                ? 'bg-gradient-success text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
                                 }`}
                         >
                             🪙 Tokens
@@ -363,8 +362,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedMetric('cost')}
                             className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'cost'
-                                ? 'bg-gradient-warning text-white shadow-lg glow-warning'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
+                                ? 'bg-gradient-warning text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
                                 }`}
                         >
                             💰 Cost
@@ -376,8 +375,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedRange('7d')}
                             className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
-                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                ? 'bg-gradient-primary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             7 Days
@@ -385,8 +384,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedRange('30d')}
                             className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
-                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                ? 'bg-gradient-primary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             30 Days
@@ -394,8 +393,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedRange('60d')}
                             className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
-                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                ? 'bg-gradient-primary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             60 Days
@@ -403,8 +402,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedRange('90d')}
                             className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
-                                ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                ? 'bg-gradient-primary text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             90 Days
@@ -412,15 +411,15 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         <button
                             onClick={() => setSelectedRange('custom')}
                             className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === 'custom'
-                                ? 'bg-gradient-accent text-white shadow-lg glow-accent'
-                                : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
+                                ? 'bg-gradient-accent text-white shadow-lg'
+                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
                                 }`}
                         >
                             📅 Custom
                         </button>
                     </div>
                     {selectedRange === 'custom' && (
-                        <div className="flex items-center gap-3 glass p-3 rounded-xl border border-primary-200/30">
+                        <div className="flex items-center gap-3 glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                             <input
                                 type="date"
                                 value={customStartDate?.toISOString().split('T')[0] || ''}

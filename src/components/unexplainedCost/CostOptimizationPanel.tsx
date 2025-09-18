@@ -91,11 +91,11 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
     };
 
     return (
-        <div className="p-6 glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Optimization</h2>
-                    <p className="mt-1 text-light-text-secondary dark:text-dark-text-secondary">Actionable recommendations to reduce costs</p>
+                    <p className="mt-1 text-secondary-600 dark:text-secondary-300">Actionable recommendations to reduce costs</p>
                 </div>
 
                 <div className="text-right">
@@ -108,21 +108,21 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
 
             {/* Savings Summary */}
             <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="p-3 text-center glass rounded-xl border border-danger-200/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
+                <div className="p-3 text-center glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
                     <div className="text-lg font-display font-bold text-danger-700 dark:text-danger-300">
                         {formatCurrency(immediateSavings)}
                     </div>
                     <div className="text-xs text-danger-600 dark:text-danger-400">Immediate</div>
                 </div>
 
-                <div className="p-3 text-center glass rounded-xl border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
+                <div className="p-3 text-center glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                     <div className="text-lg font-display font-bold text-warning-700 dark:text-warning-300">
                         {formatCurrency(shortTermSavings)}
                     </div>
                     <div className="text-xs text-warning-600 dark:text-warning-400">Short Term</div>
                 </div>
 
-                <div className="p-3 text-center glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                <div className="p-3 text-center glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
                     <div className="text-lg font-display font-bold text-primary-700 dark:text-primary-300">
                         {formatCurrency(longTermSavings)}
                     </div>
@@ -131,7 +131,7 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex p-1 mb-6 space-x-1 glass rounded-xl border border-accent-200/30 backdrop-blur-xl">
+            <div className="flex p-1 mb-6 space-x-1 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <button
                     onClick={() => setSelectedFilter('all')}
                     className={`flex-1 px-3 py-2 text-sm font-display font-medium rounded-lg transition-all duration-300 hover:scale-105 ${selectedFilter === 'all'
@@ -253,7 +253,7 @@ export const CostOptimizationPanel: React.FC<CostOptimizationPanelProps> = ({ an
             </div>
 
             {/* Quick Actions */}
-            <div className="pt-6 mt-6 border-t border-accent-200/30">
+            <div className="pt-6 mt-6 border-t border-primary-200/30">
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={handleApplyImmediate}

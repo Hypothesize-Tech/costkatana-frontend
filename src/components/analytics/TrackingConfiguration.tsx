@@ -98,14 +98,14 @@ export const TrackingConfiguration: React.FC = () => {
 
     return (
         <div className="fixed bottom-4 right-4 z-50">
-            <div className="card card-gradient shadow-2xl backdrop-blur-xl border border-primary-200/30 max-w-sm animate-slide-up">
+            <div className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30 max-w-sm animate-slide-up bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Header */}
                 <div className="p-4 border-b border-primary-200/30">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <div className={`w-4 h-4 rounded-full shadow-lg ${isTrackingEnabled ? 'bg-gradient-success animate-pulse' : 'bg-gradient-danger'}`}></div>
                             <h3 className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-                                Analytics Tracking
+                                📊 Analytics Tracking
                             </h3>
                         </div>
                         <button

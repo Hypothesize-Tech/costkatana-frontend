@@ -299,8 +299,8 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
           onClick={onClose}
         />
 
-        <div className="relative glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
-          <div className="sticky top-0 px-6 py-4 glass border-b border-accent-200/30 rounded-t-xl">
+        <div className="relative glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="sticky top-0 px-6 py-4 glass border-b border-primary-200/30 rounded-t-xl">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-display font-bold gradient-text-primary">
                 Track API Usage
@@ -324,7 +324,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <select
                   value={formData.provider}
                   onChange={(e) => handleChange("provider", e.target.value)}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50"
+                  className="select"
                   required
                 >
                   {aiServices.map((service) => (
@@ -342,7 +342,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <select
                   value={formData.model}
                   onChange={(e) => handleChange("model", e.target.value)}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50"
+                  className="select"
                   required
                 >
                   {getModelsForService(formData.provider).map((model) => (
@@ -376,7 +376,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 value={formData.prompt}
                 onChange={(e) => handleChange("prompt", e.target.value)}
                 rows={3}
-                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400 resize-none"
+                className="input resize-none"
                 placeholder="Enter the prompt you sent to the AI..."
                 required
               />
@@ -384,7 +384,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Optimization Widget */}
             {showOptimizationWidget && formData.prompt && (
-              <div className="p-4 mt-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+              <div className="p-4 mt-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                 <OptimizationWidget
                   prompt={formData.prompt}
                   model={formData.model}
@@ -402,7 +402,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 value={formData.response}
                 onChange={(e) => handleChange("response", e.target.value)}
                 rows={3}
-                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400 resize-none"
+                className="input resize-none"
                 placeholder="Enter the AI's response..."
               />
             </div>
@@ -424,7 +424,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       setTimeout(triggerCalculation, 100);
                     }
                   }}
-                  className="w-4 h-4 text-primary-600 rounded border-accent-300 focus:ring-primary-500"
+                  className="w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                 />
                 <label
                   htmlFor="autoCalculate"
@@ -456,7 +456,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleChange("promptTokens", parseInt(e.target.value) || 0)
                   }
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
+                  className="input disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
@@ -475,7 +475,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       parseInt(e.target.value) || 0,
                     )
                   }
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
+                  className="input disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
@@ -488,7 +488,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <input
                   type="number"
                   value={formData.totalTokens}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 text-base font-body border-accent-200/50 disabled:opacity-50"
+                  className="input disabled:opacity-50"
                   disabled
                 />
               </div>
@@ -507,7 +507,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     )
                   }
                   step="0.0001"
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 disabled:opacity-50"
+                  className="input disabled:opacity-50"
                   disabled={autoCalculate}
                   required
                 />
@@ -525,7 +525,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 onChange={(e) =>
                   handleChange("responseTime", parseInt(e.target.value) || 0)
                 }
-                className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
+                className="input"
                 placeholder="Optional: Time taken for the API call"
               />
             </div>
@@ -542,7 +542,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleMetadataChange("project", e.target.value)
                   }
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
+                  className="input"
                   placeholder="e.g., Customer Support Bot"
                 />
               </div>
@@ -555,7 +555,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   type="text"
                   value={formData.metadata.tags}
                   onChange={(e) => handleMetadataChange("tags", e.target.value)}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
+                  className="input"
                   placeholder="e.g., support, production"
                 />
               </div>
@@ -571,7 +571,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   type="email"
                   value={formData.userEmail}
                   onChange={(e) => handleChange("userEmail", e.target.value)}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
+                  className="input"
                   placeholder="developer@company.com"
                 />
                 <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -587,7 +587,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   type="email"
                   value={formData.customerEmail}
                   onChange={(e) => handleChange("customerEmail", e.target.value)}
-                  className="block mt-1 w-full px-4 py-3 border rounded-xl bg-light-bg-300/50 dark:bg-dark-bg-300/50 text-base font-body transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent border-accent-200/50 text-accent-800 dark:text-accent-200 placeholder:text-accent-500 dark:placeholder:text-accent-400"
+                  className="input"
                   placeholder="client@client.com"
                 />
                 <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -597,7 +597,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end pt-4 space-x-3 border-t border-accent-200/30">
+            <div className="flex justify-end pt-4 space-x-3 border-t border-primary-200/30">
               <button
                 type="button"
                 onClick={onClose}

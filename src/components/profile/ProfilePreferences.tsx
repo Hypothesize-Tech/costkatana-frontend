@@ -38,24 +38,23 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
     setLocalPreferences(preferences);
     setHasChanges(false);
   };
-
   return (
-    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+    <div>
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
           <span className="text-white text-lg">⚙️</span>
         </div>
-        <h2 className="text-2xl font-display font-bold gradient-text">Preferences</h2>
+        <h2 className="text-2xl font-display font-bold gradient-text-primary">Preferences</h2>
       </div>
 
       <div className="space-y-8">
         {/* Display Preferences */}
-        <div className="glass rounded-xl p-6 border border-primary-200/30">
+        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">🎨</span>
             </div>
-            <h3 className="font-display font-semibold gradient-text text-lg">
+            <h3 className="font-display font-semibold gradient-text-primary text-lg">
               Display Settings
             </h3>
           </div>
@@ -133,9 +132,9 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Theme */}
-        <div className="glass rounded-xl p-6 border border-secondary-200/30">
+        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">🌌</span>
             </div>
             <h3 className="font-display font-semibold gradient-text-secondary text-lg">Appearance</h3>
@@ -151,7 +150,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                     key={theme}
                     onClick={() => handleChange("theme", theme)}
                     className={`px-6 py-3 font-display font-medium rounded-xl border transition-all duration-200 ${localPreferences.theme === theme
-                      ? "border-primary-500 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 scale-105 glow-primary"
+                      ? "border-primary-500 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 scale-105 shadow-lg"
                       : "glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:border-primary-300/50 hover:scale-105"
                       }`}
                   >
@@ -164,9 +163,9 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Email Preferences */}
-        <div className="glass rounded-xl p-6 border border-accent-200/30">
+        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">📧</span>
             </div>
             <h3 className="font-display font-semibold gradient-text-accent text-lg">
@@ -191,15 +190,15 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Feature Toggles */}
-        <div className="glass rounded-xl p-6 border border-success-200/30">
+        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
               <span className="text-white text-sm">✨</span>
             </div>
             <h3 className="font-display font-semibold gradient-text-success text-lg">Features</h3>
           </div>
           <div className="space-y-6">
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <Switch
                 checked={localPreferences.autoOptimize}
                 onChange={(checked) => handleChange("autoOptimize", checked)}
@@ -207,7 +206,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                 description="Automatically apply optimizations to frequently used prompts"
               />
             </div>
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <Switch
                 checked={localPreferences.showCostInHeader}
                 onChange={(checked) => handleChange("showCostInHeader", checked)}
@@ -215,7 +214,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                 description="Display your current month's spending in the navigation bar"
               />
             </div>
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <Switch
                 checked={localPreferences.enableBetaFeatures}
                 onChange={(checked) =>
@@ -248,4 +247,4 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
       </div>
     </div>
   );
-};
+}

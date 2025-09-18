@@ -25,7 +25,7 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
     };
 
     return (
-        <div className="space-y-6 card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 animate-fade-in">
+        <div className="space-y-6 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 animate-fade-in">
             <div className="flex items-center space-x-3 pb-4 border-b border-primary-200/30">
                 <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
                     <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" />

@@ -53,7 +53,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="text-center space-y-8">
           <div className="space-y-4">
-            <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto glow-primary animate-pulse">
+            <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto shadow-lg animate-pulse">
               <FiZap className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-4xl font-display font-bold gradient-text-primary">
@@ -67,8 +67,8 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="glass p-6 rounded-2xl border border-success-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center mb-4 glow-success">
+            <div className="glass p-6 rounded-2xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center mb-4 shadow-lg">
                 <FiDollarSign className="w-6 h-6 text-white" />
               </div>
               <h4 className="text-lg font-display font-semibold gradient-text-success mb-2">
@@ -78,22 +78,22 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                 Reduce AI costs by up to 75% with optimized prompts
               </p>
             </div>
-            <div className="glass p-6 rounded-2xl border border-info-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-gradient-info rounded-xl flex items-center justify-center mb-4 glow-info">
+            <div className="glass p-6 rounded-2xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-highlight rounded-xl flex items-center justify-center mb-4 shadow-lg">
                 <FiClock className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-display font-semibold gradient-text-info mb-2">
+              <h4 className="text-lg font-display font-semibold gradient-text-highlight mb-2">
                 Save Time
               </h4>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Reuse proven prompts instead of writing from scratch
               </p>
             </div>
-            <div className="glass p-6 rounded-2xl border border-purple-200/30 shadow-lg backdrop-blur-xl hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-gradient-purple rounded-xl flex items-center justify-center mb-4 glow-purple">
+            <div className="glass p-6 rounded-2xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-xl transition-all">
+              <div className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center mb-4 shadow-lg">
                 <FiTarget className="w-6 h-6 text-white" />
               </div>
-              <h4 className="text-lg font-display font-semibold gradient-text-purple mb-2">
+              <h4 className="text-lg font-display font-semibold gradient-text-secondary mb-2">
                 Better Results
               </h4>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -561,7 +561,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
       content: (
         <div className="text-center space-y-8">
           <div className="space-y-4">
-            <div className="w-20 h-20 bg-gradient-success rounded-full flex items-center justify-center mx-auto glow-success animate-pulse">
+            <div className="w-20 h-20 bg-gradient-success rounded-full flex items-center justify-center mx-auto shadow-lg animate-pulse">
               <FiCheck className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-4xl font-display font-bold gradient-text-success">
@@ -582,7 +582,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                   "Testing and validating template functionality",
                   "Best practices for organizing templates",
                 ].map((achievement, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 glass rounded-lg border border-success-200/30 shadow-md">
+                  <div key={index} className="flex items-center gap-3 p-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl">
                     <FiCheck className="w-5 h-5 text-success-600 dark:text-success-400 flex-shrink-0" />
                     <span className="font-body text-success-800 dark:text-success-200 font-medium">
                       {achievement}
@@ -619,8 +619,8 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                 Your Potential Savings:
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
-                  <div className="w-12 h-12 bg-gradient-success rounded-full flex items-center justify-center flex-shrink-0 glow-success">
+                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <div className="w-12 h-12 bg-gradient-success rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
                     <FiDollarSign className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -632,15 +632,15 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-info-200/30 shadow-lg backdrop-blur-xl">
-                  <div className="w-12 h-12 bg-gradient-info rounded-full flex items-center justify-center flex-shrink-0 glow-info">
+                <div className="flex items-center gap-4 p-4 glass rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <div className="w-12 h-12 bg-gradient-highlight rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
                     <FiClock className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <div className="font-display font-bold gradient-text-info text-lg">
+                    <div className="font-display font-bold gradient-text-highlight text-lg">
                       5-15 hours/week
                     </div>
-                    <div className="font-body text-info-700 dark:text-info-300 text-sm">
+                    <div className="font-body text-highlight-700 dark:text-highlight-300 text-sm">
                       Time saved on prompt writing
                     </div>
                   </div>
@@ -691,9 +691,9 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-primary-200/30 backdrop-blur-xl">
+      <div className="glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         {/* Header */}
-        <div className="bg-gradient-primary text-white p-8 relative rounded-t-3xl glow-primary">
+        <div className="bg-gradient-primary text-white p-8 relative rounded-t-3xl shadow-lg">
           <button
             onClick={onClose}
             className="btn-icon-secondary absolute top-6 right-6 bg-white/20 hover:bg-white/30 text-white"
@@ -738,12 +738,12 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto max-h-[60vh] bg-light-bg-primary dark:bg-dark-bg-primary">
+        <div className="p-8 overflow-y-auto max-h-[60vh] bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
           {currentStepData.content}
         </div>
 
         {/* Footer */}
-        <div className="glass p-6 border-t border-primary-200/30 backdrop-blur-xl rounded-b-3xl">
+        <div className="glass p-6 border-t border-primary-200/30 backdrop-blur-xl rounded-b-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex justify-between items-center">
             <button
               onClick={handlePrev}

@@ -18,12 +18,12 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
   onReset,
 }) => {
   return (
-    <div className="card card-gradient p-6 shadow-lg backdrop-blur-xl">
+    <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
       <div className="flex items-center mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg glow-primary">
           <FunnelIcon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Filters</h3>
+        <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">🔍 Filters</h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -34,7 +34,7 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
           <select
             value={filters.type}
             onChange={(e) => onFilterChange("type", e.target.value)}
-            className="input"
+            className="select"
           >
             <option value="">All Types</option>
             <option value="cost_alert">Cost Alert</option>
@@ -54,7 +54,7 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
           <select
             value={filters.severity}
             onChange={(e) => onFilterChange("severity", e.target.value)}
-            className="input"
+            className="select"
           >
             <option value="">All Severities</option>
             <option value="critical">Critical</option>
@@ -71,7 +71,7 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
           <select
             value={filters.read}
             onChange={(e) => onFilterChange("read", e.target.value)}
-            className="input"
+            className="select"
           >
             <option value="">All</option>
             <option value="unread">Unread</option>

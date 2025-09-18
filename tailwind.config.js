@@ -8,131 +8,142 @@ export default {
     theme: {
       extend: {
         colors: {
-          // CostKatana Vibrant Theme Colors
+          // Cost Katana Professional Green Theme Colors
           primary: {
-            50: '#f8f4ff',
-            100: '#f0e7ff',
-            200: '#e4d4ff',
-            300: '#d1b3ff',
-            400: '#b888ff',
-            500: '#9B5DE5', // Main vibrant purple
-            600: '#8b47d4',
-            700: '#7a38c3',
-            800: '#6b2fb2',
-            900: '#5c26a1',
-            950: '#4d1d90',
+            50: '#f0fdf4',
+            100: '#dcfce7',
+            200: '#bbf7d0',
+            300: '#86efac',
+            400: '#4ade80',
+            500: '#06ec9e', // Main brand green (matching logo)
+            600: '#009454', // Darker green from logo
+            700: '#15803d',
+            800: '#166534',
+            900: '#14532d',
+            950: '#052e16',
           },
           secondary: {
-            50: '#fef7f7',
-            100: '#fdedef',
-            200: '#fbd9df',
-            300: '#f7b8c5',
-            400: '#f28ba8',
-            500: '#F15BB5', // Hot pink-magenta
-            600: '#e03a9e',
-            700: '#cf2987',
-            800: '#be1870',
-            900: '#ad0759',
-            950: '#9c0042',
+            50: '#f8fafc',
+            100: '#f1f5f9',
+            200: '#e2e8f0',
+            300: '#cbd5e1',
+            400: '#94a3b8',
+            500: '#64748b', // Professional slate
+            600: '#475569',
+            700: '#334155',
+            800: '#1e293b',
+            900: '#0f172a',
+            950: '#020617',
           },
           accent: {
-            50: '#fff9e6',
-            100: '#fff0cc',
-            200: '#ffe199',
-            300: '#ffd266',
-            400: '#ffc333',
-            500: '#FF9500', // Golden orange
-            600: '#e6850e',
-            700: '#cc751c',
-            800: '#b3652a',
-            900: '#995538',
-            950: '#804546',
+            50: '#fefce8',
+            100: '#fef9c3',
+            200: '#fef08a',
+            300: '#fde047',
+            400: '#facc15',
+            500: '#eab308', // Golden yellow accent
+            600: '#ca8a04',
+            700: '#a16207',
+            800: '#854d0e',
+            900: '#713f12',
+            950: '#422006',
           },
           highlight: {
-            50: '#fffef0',
-            100: '#fffde0',
-            200: '#fffbc1',
-            300: '#fff8a2',
-            400: '#fff583',
-            500: '#FEE440', // Neon yellow
-            600: '#e5cd39',
-            700: '#ccb632',
-            800: '#b39f2b',
-            900: '#9a8824',
-            950: '#81711d',
+            50: '#f0f9ff',
+            100: '#e0f2fe',
+            200: '#bae6fd',
+            300: '#7dd3fc',
+            400: '#38bdf8',
+            500: '#0ea5e9', // Bright blue highlight
+            600: '#0284c7',
+            700: '#0369a1',
+            800: '#075985',
+            900: '#0c4a6e',
+            950: '#082f49',
           },
           success: {
-            50: '#f0fffe',
-            100: '#e0fffc',
-            200: '#c1fff9',
-            300: '#a2fff6',
-            400: '#83fff3',
-            500: '#00F5D4', // Aqua-cyan pop
-            600: '#0ddcbd',
-            700: '#1ac3a6',
-            800: '#27aa8f',
-            900: '#349178',
-            950: '#417861',
+            50: '#f0fdf4',
+            100: '#dcfce7',
+            200: '#bbf7d0',
+            300: '#86efac',
+            400: '#4ade80',
+            500: '#22c55e', // Success green
+            600: '#16a34a',
+            700: '#15803d',
+            800: '#166534',
+            900: '#14532d',
+            950: '#052e16',
           },
           danger: {
-            50: '#fff0f1',
-            100: '#ffe0e3',
-            200: '#ffc1c7',
-            300: '#ffa2ab',
-            400: '#ff838f',
-            500: '#FF4F64', // Neon red-pink
-            600: '#e6465a',
-            700: '#cc3d50',
-            800: '#b33446',
-            900: '#992b3c',
-            950: '#802232',
+            50: '#fef2f2',
+            100: '#fee2e2',
+            200: '#fecaca',
+            300: '#fca5a5',
+            400: '#f87171',
+            500: '#ef4444', // Error red
+            600: '#dc2626',
+            700: '#b91c1c',
+            800: '#991b1b',
+            900: '#7f1d1d',
+            950: '#450a0a',
           },
           // Dark theme specific colors
           dark: {
-            bg: '#0E0A1F', // Deep cosmic purple-black
-            panel: '#18122B', // Slightly lighter indigo-charcoal
-            card: '#241A3A', // Card highlight
+            bg: {
+              100: '#000000', // Pure black
+              200: '#0C1012', // Landing page dark surface
+              300: '#1a1a1a', // Slightly lighter black
+            },
+            panel: '#0C1012', // Landing page hero surface
+            card: '#1a1a1a', // Card highlight
             text: {
-              primary: '#F7F4FB', // Soft off-white with hint of lilac
-              secondary: '#C7BEE2', // Secondary text
-              muted: '#8E82B4', // Muted text
+              primary: '#f8fafc', // Clean white
+              secondary: '#cbd5e1', // Secondary text
+              muted: '#94a3b8', // Muted text
             }
           },
           // Light theme specific colors
           light: {
-            bg: '#FFFFFF', // Pure white
-            panel: '#FDF7FF', // Lavender white
-            card: '#F8F0FF', // Card highlight
+            bg: '#ffffff', // Pure white
+            panel: '#f8fafc', // Light slate
+            card: '#f1f5f9', // Card highlight
             text: {
-              primary: '#1C1230', // Deep purple-black
-              secondary: '#56397D', // Muted violet
-              muted: '#7A6C99', // Muted text
+              primary: '#0f172a', // Deep slate
+              secondary: '#475569', // Muted slate
+              muted: '#64748b', // Muted text
             }
           },
         },
         fontFamily: {
-          sans: ['Poppins', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-          display: ['Outfit', 'Poppins', 'system-ui', 'sans-serif'],
-          body: ['Inter', 'Poppins', 'system-ui', 'sans-serif'],
-          mono: ['Urbanist', 'ui-monospace', 'SFMono-Regular', 'monospace'],
-          rounded: ['Rubik', 'Poppins', 'system-ui', 'sans-serif'],
+          sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+          body: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          rounded: ['Nunito', 'Inter', 'system-ui', 'sans-serif'],
         },
         backgroundImage: {
-          'gradient-primary': 'linear-gradient(90deg, #9B5DE5, #F15BB5)',
-          'gradient-secondary': 'linear-gradient(90deg, #F15BB5, #9B5DE5)',
-          'gradient-accent': 'linear-gradient(90deg, #FF9500, #FEE440)',
-          'gradient-warning': 'linear-gradient(90deg, #FEE440, #FF9500)',
-          'gradient-success': 'linear-gradient(90deg, #00F5D4, #3DBE8B)',
-          'gradient-danger': 'linear-gradient(90deg, #FF4F64, #E94E4E)',
-          'gradient-dark-ambient': 'radial-gradient(circle at top left, #1E1038, #0E0A1F 70%)',
-          'gradient-light-ambient': 'radial-gradient(circle at top right, #FDF7FF, #FFFFFF 70%)',
-          'gradient-dark-panel': 'linear-gradient(180deg, #1C1B29, #14121D)',
-          'gradient-light-panel': 'linear-gradient(180deg, #F8F0FF, #FFFFFF)',
+          'gradient-primary': 'linear-gradient(135deg, #06ec9e, #009454)',
+          'gradient-secondary': 'linear-gradient(135deg, #64748b, #334155)',
+          'gradient-accent': 'linear-gradient(135deg, #eab308, #ca8a04)',
+          'gradient-warning': 'linear-gradient(135deg, #f59e0b, #d97706)',
+          'gradient-success': 'linear-gradient(135deg, #22c55e, #16a34a)',
+          'gradient-danger': 'linear-gradient(135deg, #ef4444, #dc2626)',
+          'gradient-highlight': 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+          'gradient-dark-ambient': 'linear-gradient(135deg, #000000 0%, #0C1012 25%, #001a0d 50%, #0C1012 75%, #000000 100%)',
+          'gradient-light-ambient': 'radial-gradient(circle at top right, #f8fafc, #ffffff 70%)',
+          'gradient-dark-panel': 'linear-gradient(180deg, #1a1a1a, #0C1012)',
+          'gradient-light-panel': 'linear-gradient(180deg, #f1f5f9, #ffffff)',
+          'gradient-brand': 'linear-gradient(135deg, #06ec9e, #22c55e, #16a34a)',
+          'gradient-professional': 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
         },
         animation: {
           'fade-in': 'fadeIn 0.5s ease-in-out',
           'slide-in': 'slideIn 0.3s ease-out',
           'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          'shimmer': 'shimmer 2s linear infinite',
+          'float': 'float 3s ease-in-out infinite',
+          'rotate-slow': 'rotate-slow 3s linear infinite',
+          'rotate-reverse': 'rotate-reverse 2s linear infinite',
         },
         keyframes: {
           fadeIn: {
@@ -143,6 +154,32 @@ export default {
             '0%': { transform: 'translateX(-100%)' },
             '100%': { transform: 'translateX(0)' },
           },
+          shimmer: {
+            '0%': { transform: 'translateX(-100%)' },
+            '100%': { transform: 'translateX(100%)' },
+          },
+          float: {
+            '0%, 100%': { transform: 'translateY(0px)' },
+            '50%': { transform: 'translateY(-10px)' },
+          },
+          'rotate-slow': {
+            'from': { transform: 'rotate(0deg)' },
+            'to': { transform: 'rotate(360deg)' },
+          },
+          'rotate-reverse': {
+            'from': { transform: 'rotate(360deg)' },
+            'to': { transform: 'rotate(0deg)' },
+          },
+        },
+        animationDelay: {
+          '75': '75ms',
+          '100': '100ms',
+          '150': '150ms',
+          '200': '200ms',
+          '300': '300ms',
+          '500': '500ms',
+          '700': '700ms',
+          '1000': '1000ms',
         },
         screens: {
           'xs': '475px',

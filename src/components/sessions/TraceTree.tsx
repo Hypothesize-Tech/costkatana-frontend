@@ -95,7 +95,7 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
         return (
             <div key={node.id} className="select-none">
                 <div
-                    className={`flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg transition-all duration-200 hover:scale-102 ${isSelected ? 'glass border border-primary-300/50 bg-gradient-primary/10 shadow-lg glow-primary' : 'hover:bg-gradient-primary/5'
+                    className={`flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg transition-all duration-200 hover:scale-102 ${isSelected ? 'glass border border-primary-300/50 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20' : 'hover:bg-gradient-primary/5'
                         }`}
                     style={{ paddingLeft: `${level * 20 + 12}px` }}
                     onClick={() => onNodeSelect?.(node.id)}
@@ -107,7 +107,7 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
                 >
                     {hasChildren && (
                         <button
-                            className="glass p-1 rounded-lg border border-primary-200/30 hover:bg-gradient-primary/20 transition-all duration-200 hover:scale-110"
+                            className="glass p-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-gradient-primary/20 transition-all duration-200 hover:scale-110"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 toggleExpand(node.id);
@@ -131,19 +131,19 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
 
                     <div className="flex items-center gap-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                         {node.duration !== undefined && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-accent-200/30 bg-gradient-accent/10">
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-accent-50/20 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
                                 <Clock className="w-3 h-3 text-accent-500" />
                                 {node.duration}ms
                             </span>
                         )}
                         {node.aiModel && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-primary-200/30 bg-gradient-primary/10">
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
                                 <Cpu className="w-3 h-3 text-primary-500" />
                                 {node.aiModel.split('/').pop()?.split('-').slice(0, 2).join('-')}
                             </span>
                         )}
                         {node.costUSD !== undefined && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-success-200/30 bg-gradient-success/10">
+                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/20 to-success-100/20 dark:from-success-900/10 dark:to-success-800/10">
                                 <DollarSign className="w-3 h-3 text-success-500" />
                                 ${node.costUSD.toFixed(4)}
                             </span>
@@ -162,7 +162,7 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
 
     if (treeData.length === 0) {
         return (
-            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                 <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">🌳</span>
                 </div>
@@ -174,9 +174,9 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
     }
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                     <span className="text-white text-lg">🌳</span>
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-secondary">Trace Tree</h3>

@@ -327,14 +327,14 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
+            <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Header */}
                 <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-purple flex items-center justify-center glow-purple">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                             <CogIcon className="h-6 w-6 text-white" />
                         </div>
-                        <h2 className="text-2xl font-display font-bold gradient-text-purple">
+                        <h2 className="text-2xl font-display font-bold gradient-text-secondary">
                             Create Fine-Tune Job
                         </h2>
                     </div>
@@ -347,11 +347,11 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
+                <form onSubmit={handleSubmit} className="p-8 space-y-8">
                     {/* Dataset Info */}
                     {dataset && (
-                        <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
-                            <h3 className="font-display font-bold gradient-text-info mb-4">Dataset: {dataset.name} v{dataset.version}</h3>
+                        <div className="glass rounded-xl p-6 border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+                            <h3 className="font-display font-bold gradient-text-highlight mb-4">Dataset: {dataset.name} v{dataset.version}</h3>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                 <div className="flex items-center gap-2">
                                     <span className="font-display font-medium gradient-text-secondary">Items:</span>
@@ -376,12 +376,12 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
                     )}
 
                     {/* Basic Information */}
-                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                                 <span className="text-white text-sm">ℹ️</span>
                             </div>
-                            <h3 className="text-xl font-display font-bold gradient-text-success">Basic Information</h3>
+                            <h3 className="text-xl font-display font-bold gradient-text-primary">Basic Information</h3>
                         </div>
 
                         <div>
@@ -411,12 +411,12 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
                     </div>
 
                     {/* Provider and Model Selection */}
-                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                                 <span className="text-white text-sm">🤖</span>
                             </div>
-                            <h3 className="text-xl font-display font-bold gradient-text-accent">Provider & Model</h3>
+                            <h3 className="text-xl font-display font-bold gradient-text-success">Provider & Model</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -466,44 +466,44 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
 
                     {/* Cost Estimate */}
                     {costEstimate && (
-                        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
-                            <h4 className="font-display font-bold gradient-text-success mb-4">Cost Estimate</h4>
+                        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                            <h4 className="font-display font-bold gradient-text-accent mb-4">Cost Estimate</h4>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                 <div className="text-center">
-                                    <div className="font-body text-success-700 dark:text-success-300 mb-1">Est. Cost</div>
-                                    <div className="text-lg font-display font-bold gradient-text-success">
+                                    <div className="font-body text-accent-700 dark:text-accent-300 mb-1">Est. Cost</div>
+                                    <div className="text-lg font-display font-bold gradient-text-accent">
                                         ${costEstimate.estimatedCost.toFixed(3)}
                                     </div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="font-body text-success-700 dark:text-success-300 mb-1">Duration</div>
-                                    <div className="text-lg font-display font-bold gradient-text-success">
+                                    <div className="font-body text-accent-700 dark:text-accent-300 mb-1">Duration</div>
+                                    <div className="text-lg font-display font-bold gradient-text-accent">
                                         {Math.round(costEstimate.estimatedDuration / 60)}min
                                     </div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="font-body text-success-700 dark:text-success-300 mb-1">Items</div>
-                                    <div className="text-lg font-display font-bold gradient-text-success">
+                                    <div className="font-body text-accent-700 dark:text-accent-300 mb-1">Items</div>
+                                    <div className="text-lg font-display font-bold gradient-text-accent">
                                         {costEstimate.itemCount}
                                     </div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="font-body text-success-700 dark:text-success-300 mb-1">Tokens</div>
-                                    <div className="text-lg font-display font-bold gradient-text-success">
+                                    <div className="font-body text-accent-700 dark:text-accent-300 mb-1">Tokens</div>
+                                    <div className="text-lg font-display font-bold gradient-text-accent">
                                         {costEstimate.totalTokens.toLocaleString()}
                                     </div>
                                 </div>
                             </div>
                             {costEstimate.recommendations.length > 0 && (
-                                <div className="mt-4 p-3 glass rounded-lg border border-info-200/30">
-                                    <div className="flex items-center gap-2 text-sm gradient-text-info mb-2">
+                                <div className="mt-4 p-3 glass rounded-lg border border-highlight-200/30">
+                                    <div className="flex items-center gap-2 text-sm gradient-text-highlight mb-2">
                                         <InformationCircleIcon className="h-4 w-4" />
                                         <span className="font-display font-medium">Recommendations:</span>
                                     </div>
                                     <ul className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-1">
                                         {costEstimate.recommendations.slice(0, 2).map((rec: string, idx: number) => (
                                             <li key={idx} className="flex items-start gap-2">
-                                                <span className="text-info-500 mt-0.5">•</span>
+                                                <span className="text-highlight-500 mt-0.5">•</span>
                                                 <span>{rec}</span>
                                             </li>
                                         ))}
@@ -526,12 +526,12 @@ export const CreateFineTuneJobModal: React.FC<CreateFineTuneJobModalProps> = ({
 
                     {/* Advanced Settings */}
                     {showAdvanced && (
-                        <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                                     <span className="text-white text-sm">⚙️</span>
                                 </div>
-                                <h3 className="text-xl font-display font-bold gradient-text-warning">Hyperparameters</h3>
+                                <h3 className="text-xl font-display font-bold gradient-text-secondary">Hyperparameters</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

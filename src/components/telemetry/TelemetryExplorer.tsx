@@ -19,13 +19,13 @@ export const TelemetryExplorer: React.FC = () => {
     const setFilter = (patch: Partial<TelemetryQueryParams>) => setFilters(prev => ({ ...prev, ...patch, page: 1 }));
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-highlight flex items-center justify-center shadow-lg">
                         <span className="text-white text-lg">🔍</span>
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text">Telemetry Explorer</h2>
+                    <h2 className="text-xl font-display font-bold gradient-text-primary">Telemetry Explorer</h2>
                 </div>
                 <button onClick={() => refetch()} disabled={isFetching} className="btn-primary">{isFetching ? 'Refreshing...' : 'Refresh'}</button>
             </div>
@@ -52,9 +52,9 @@ export const TelemetryExplorer: React.FC = () => {
             {isLoading ? (
                 <div className="animate-pulse space-y-4">{[...Array(6)].map((_, i) => (<div key={i} className="h-12 bg-gradient-primary/20 rounded-xl" />))}</div>
             ) : error ? (
-                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                             <span className="text-white text-sm">⚠️</span>
                         </div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">
@@ -67,13 +67,13 @@ export const TelemetryExplorer: React.FC = () => {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-primary-200/30">
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Timestamp</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Service</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Operation</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Status</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Latency (ms)</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Cost ($)</th>
-                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text">Trace ID</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-secondary">Timestamp</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-primary">Service</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-primary">Operation</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-highlight">Status</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-accent">Latency (ms)</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-success">Cost ($)</th>
+                                <th className="px-4 py-3 text-left font-display font-semibold gradient-text-secondary">Trace ID</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +85,7 @@ export const TelemetryExplorer: React.FC = () => {
                                     <td className="px-4 py-3">
                                         <span className={`glass px-3 py-1 rounded-full font-display font-semibold border ${r.status === 'error' ? 'border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' : r.status === 'success' ? 'border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300' : 'border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300'}`}>{r.status}</span>
                                     </td>
-                                    <td className="px-4 py-3 font-display font-semibold gradient-text-warning">{Number(r.duration_ms || 0).toFixed(1)}</td>
+                                    <td className="px-4 py-3 font-display font-semibold gradient-text-accent">{Number(r.duration_ms || 0).toFixed(1)}</td>
                                     <td className="px-4 py-3 font-display font-semibold gradient-text-success">{Number(r.cost_usd || 0).toFixed(4)}</td>
                                     <td className="px-4 py-3 font-mono text-light-text-secondary dark:text-dark-text-secondary text-sm truncate max-w-[140px]" title={r.trace_id}>{r.trace_id}</td>
                                 </tr>

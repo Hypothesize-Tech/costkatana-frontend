@@ -76,10 +76,10 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
         onClick={() => handleRating(true)}
         disabled={isSubmitting}
         className={`
-                    p-1 rounded-full transition-colors duration-200 
+                    p-1 rounded-full transition-all duration-300 hover:scale-110
                     ${rating === true
-            ? 'text-green-600 bg-green-50 hover:bg-green-100'
-            : 'text-gray-400 hover:text-green-500 hover:bg-green-50'
+            ? 'text-success-600 bg-success-50 hover:bg-success-100 shadow-lg'
+            : 'text-light-text-muted dark:text-dark-text-muted hover:text-success-500 hover:bg-success-50'
           }
                     ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -97,10 +97,10 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
         onClick={() => handleRating(false)}
         disabled={isSubmitting}
         className={`
-                    p-1 rounded-full transition-colors duration-200 
+                    p-1 rounded-full transition-all duration-300 hover:scale-110
                     ${rating === false
-            ? 'text-red-600 bg-red-50 hover:bg-red-100'
-            : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+            ? 'text-danger-600 bg-danger-50 hover:bg-danger-100 shadow-lg'
+            : 'text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 hover:bg-danger-50'
           }
                     ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -116,16 +116,16 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
       {/* Comment Input Modal */}
       {showComment && (
         <div className="fixed inset-0 bg-dark-bg/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 max-w-md w-full mx-4 animate-scale-in">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 max-w-md w-full mx-4 animate-scale-in">
             <div className="flex items-center mb-6">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-lg ${rating ? 'bg-gradient-success glow-success' : 'bg-gradient-danger glow-danger'}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-lg ${rating ? 'bg-gradient-success' : 'bg-gradient-danger'}`}>
                 {rating ? (
                   <HandThumbUpIcon className="h-5 w-5 text-white" />
                 ) : (
                   <HandThumbDownIcon className="h-5 w-5 text-white" />
                 )}
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text">
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
                 {rating ? 'What made this response helpful?' : 'How can we improve this response?'}
               </h3>
             </div>
@@ -150,9 +150,9 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
               <button
                 onClick={handleCommentSubmit}
                 disabled={isSubmitting}
-                className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${rating
-                  ? 'bg-gradient-success text-white glow-success'
-                  : 'bg-gradient-danger text-white glow-danger'
+                className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg ${rating
+                  ? 'bg-gradient-success text-white'
+                  : 'bg-gradient-danger text-white'
                   }`}
               >
                 {isSubmitting ? '⏳ Submitting...' : '✨ Submit Feedback'}
@@ -164,7 +164,7 @@ export const FeedbackButton: React.FC<FeedbackButtonProps> = ({
 
       {/* Feedback Status */}
       {rating !== null && !showComment && (
-        <span className="text-xs font-display font-medium gradient-text-success">
+        <span className="text-xs font-display font-medium gradient-text-success animate-fade-in">
           ✨ Thank you for your feedback!
         </span>
       )}

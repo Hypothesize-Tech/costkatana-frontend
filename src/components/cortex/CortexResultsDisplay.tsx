@@ -89,7 +89,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 }) => {
     if (loading) {
         return (
-            <div className="card p-6 animate-fade-in">
+            <div className="glass p-6 animate-fade-in shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center space-x-4">
                     <div className="spinner"></div>
                     <div>
@@ -119,7 +119,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 
     if (!metadata?.cortex) {
         return (
-            <div className="card p-4 animate-fade-in">
+            <div className="glass p-4 animate-fade-in shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center space-x-3">
                     <div className="bg-gradient-accent/20 p-2 rounded-lg">
                         <InformationCircleIcon className="h-5 w-5 text-accent-600" />
@@ -231,7 +231,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
             </div>
 
             {/* Model Information */}
-            <div className="card p-6">
+            <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center space-x-3 mb-4">
                     <div className="bg-gradient-secondary/20 p-2 rounded-lg">
                         <CpuChipIcon className="h-5 w-5 text-secondary-600" />
@@ -274,7 +274,7 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
 
             {/* Debug Information (Development) */}
             {cortex.detailsForDebugging && import.meta.env?.DEV && (
-                <details className="card">
+                <details className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-xl">
                     <summary className="px-4 py-3 cursor-pointer text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-primary-500 transition-colors duration-300">
                         Debug Information
                     </summary>

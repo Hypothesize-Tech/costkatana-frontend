@@ -175,7 +175,7 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
     return (
         <>
             <div className={`space-y-6 ${className}`} id="cost-opportunities">
-                <div className="card p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
+                <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <div className="bg-gradient-danger p-3 rounded-xl glow-danger shadow-lg mr-4">
@@ -202,7 +202,7 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                 {suggestions.map((suggestion) => (
                     <div
                         key={suggestion.usage._id}
-                        className={`card p-6 shadow-lg ${getPriorityColor(suggestion.priority)} hover:scale-105 transition-all duration-300 animate-fade-in`}
+                        className={`glass p-6 shadow-lg ${getPriorityColor(suggestion.priority)} hover:scale-105 transition-all duration-300 animate-fade-in`}
                     >
                         <div className="flex items-start justify-between">
                             <div className="flex-1">

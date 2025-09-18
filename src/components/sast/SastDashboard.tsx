@@ -7,8 +7,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import {
     Brain,
@@ -93,7 +91,7 @@ const SastDashboard: React.FC = () => {
                 <div className="glass rounded-xl p-8 border border-danger-200/30 text-center">
                     <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-danger-500" />
                     <p className="font-body text-danger-600 dark:text-danger-400 mb-4">{error}</p>
-                    <button className="btn-primary">
+                    <button className="btn-primary" onClick={loadDashboardData}>
                         <Zap className="w-4 h-4 mr-2" />
                         Retry
                     </button>
@@ -105,15 +103,15 @@ const SastDashboard: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-4 mb-4">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center glow-primary">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                 <Brain className="w-8 h-8 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-display font-bold gradient-text">
+                                <h1 className="text-4xl font-display font-bold gradient-text-primary">
                                     SAST Dashboard
                                 </h1>
                                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
@@ -137,22 +135,22 @@ const SastDashboard: React.FC = () => {
             {/* Stats Overview */}
             {vocabularyStats && sastStats && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                 <Network className="w-6 h-6 text-white" />
                             </div>
                         </div>
-                        <div className="text-3xl font-display font-bold gradient-text mb-2">{formatNumber(vocabularyStats.totalPrimitives)}</div>
+                        <div className="text-3xl font-display font-bold gradient-text-primary mb-2">{formatNumber(vocabularyStats.totalPrimitives)}</div>
                         <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Semantic Primitives</h3>
                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                             Across {Object.keys(vocabularyStats.primitivesByCategory).length} categories
                         </p>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                                 <Languages className="w-6 h-6 text-white" />
                             </div>
                         </div>
@@ -163,9 +161,9 @@ const SastDashboard: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                                 <TrendingUp className="w-6 h-6 text-white" />
                             </div>
                         </div>
@@ -176,9 +174,9 @@ const SastDashboard: React.FC = () => {
                         </p>
                     </div>
 
-                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                                 <Telescope className="w-6 h-6 text-white" />
                             </div>
                         </div>
@@ -192,44 +190,44 @@ const SastDashboard: React.FC = () => {
             )}
 
             {/* Main Content Tabs */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden">
-                <div className="flex flex-wrap border-b border-primary-200/30">
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-primary-700 dark:text-primary-300 bg-gradient-primary/10 border-b-2 border-primary-500">
+            <Tabs defaultValue="overview" className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
+                <TabsList className="flex flex-wrap border-b border-primary-200/30 bg-transparent">
+                    <TabsTrigger value="overview" className="flex items-center gap-2 px-6 py-4 font-display font-medium data-[state=active]:text-primary-700 data-[state=active]:dark:text-primary-300 data-[state=active]:bg-gradient-primary/10 data-[state=active]:border-b-2 data-[state=active]:border-primary-500">
                         <BarChart3 className="w-4 h-4" />
                         Overview
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
+                    </TabsTrigger>
+                    <TabsTrigger value="explorer" className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Search className="w-4 h-4" />
                         Explorer
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
+                    </TabsTrigger>
+                    <TabsTrigger value="comparator" className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Zap className="w-4 h-4" />
                         Comparator
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
+                    </TabsTrigger>
+                    <TabsTrigger value="telescope" className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Telescope className="w-4 h-4" />
                         Demo
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
+                    </TabsTrigger>
+                    <TabsTrigger value="universal" className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <Globe className="w-4 h-4" />
                         Universal
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
+                    </TabsTrigger>
+                    <TabsTrigger value="showcase" className="flex items-center gap-2 px-6 py-4 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/5 transition-all duration-200">
                         <FileText className="w-4 h-4" />
                         Showcase
-                    </button>
-                </div>
+                    </TabsTrigger>
+                </TabsList>
 
-                <div className="p-8 space-y-8">
+                <TabsContent value="overview" className="p-8 space-y-8">
                     {vocabularyStats && sastStats && (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/* Vocabulary Breakdown */}
-                            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                         <Network className="w-5 h-5 text-white" />
                                     </div>
-                                    <h3 className="text-xl font-display font-bold gradient-text">
+                                    <h3 className="text-xl font-display font-bold gradient-text-primary">
                                         Vocabulary Breakdown
                                     </h3>
                                 </div>
@@ -254,9 +252,9 @@ const SastDashboard: React.FC = () => {
                             </div>
 
                             {/* Performance Metrics */}
-                            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                                         <TrendingUp className="w-5 h-5 text-white" />
                                     </div>
                                     <h3 className="text-xl font-display font-bold gradient-text-success">
@@ -291,10 +289,10 @@ const SastDashboard: React.FC = () => {
                                     </div>
 
                                     <div className="pt-4 border-t border-primary-200/30">
-                                        <div className="glass rounded-lg p-4 border border-primary-200/30 space-y-2">
-                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Average Processing Time: <span className="font-display font-semibold gradient-text">{sastStats.encoding.averageProcessingTime?.toFixed(2) || '0.00'}ms</span></p>
-                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Total Comparisons: <span className="font-display font-semibold gradient-text">{formatNumber(sastStats.comparison.totalComparisons)}</span></p>
-                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Success Rate: <span className="font-display font-semibold gradient-text">{formatPercentage(
+                                        <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-2">
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Average Processing Time: <span className="font-display font-semibold gradient-text-primary">{sastStats.encoding.averageProcessingTime?.toFixed(2) || '0.00'}ms</span></p>
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Total Comparisons: <span className="font-display font-semibold gradient-text-primary">{formatNumber(sastStats.comparison.totalComparisons)}</span></p>
+                                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Success Rate: <span className="font-display font-semibold gradient-text-primary">{formatPercentage(
                                                 sastStats.encoding.totalEncodings > 0
                                                     ? (sastStats.encoding.successfulEncodings / sastStats.encoding.totalEncodings) * 100
                                                     : 0
@@ -327,7 +325,7 @@ const SastDashboard: React.FC = () => {
                             </CardContent>
                         </Card>
                     )}
-                    </div>
+                </TabsContent>
 
                 <TabsContent value="explorer">
                     <SemanticPrimitivesExplorer />
@@ -348,7 +346,7 @@ const SastDashboard: React.FC = () => {
                 <TabsContent value="showcase">
                     <SastShowcase />
                 </TabsContent>
-            </div>
+            </Tabs>
         </div>
     );
 };

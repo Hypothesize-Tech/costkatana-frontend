@@ -124,12 +124,12 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-120 glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 z-10">
+        <div className="absolute right-0 mt-2 w-120 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 z-10">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-display font-bold gradient-text-primary">Filter Usage</h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-xl glass border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
+              className="p-2 rounded-xl glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -143,7 +143,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               <select
                 value={filters.service}
                 onChange={(e) => handleFilterChange('service', e.target.value)}
-                className="block w-full pl-4 pr-10 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                className="select"
               >
                 <option value="">All Services</option>
                 {services.map((service) => (
@@ -161,7 +161,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               <select
                 value={filters.model}
                 onChange={(e) => handleFilterChange('model', e.target.value)}
-                className="block w-full pl-4 pr-10 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                className="select"
               >
                 <option value="">All Models</option>
                 {models.map((model) => (
@@ -179,7 +179,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               <select
                 value={filters.dateRange}
                 onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                className="block w-full pl-4 pr-10 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50"
+                className="select"
               >
                 <option value="1d">Last 24 hours</option>
                 <option value="7d">Last 7 days</option>
@@ -198,7 +198,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   type="number"
                   value={filters.minCost}
                   onChange={(e) => handleFilterChange('minCost', e.target.value)}
-                  className="block w-full pl-4 pr-4 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary"
+                  className="input"
                   placeholder="0.00"
                   step="0.01"
                 />
@@ -211,7 +211,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   type="number"
                   value={filters.maxCost}
                   onChange={(e) => handleFilterChange('maxCost', e.target.value)}
-                  className="block w-full pl-4 pr-4 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary"
+                  className="input"
                   placeholder="100.00"
                   step="0.01"
                 />
@@ -228,7 +228,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   type="email"
                   value={filters.userEmail}
                   onChange={(e) => handleFilterChange('userEmail', e.target.value)}
-                  className="block w-full pl-4 pr-4 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary"
+                  className="input"
                   placeholder="developer@company.com"
                 />
               </div>
@@ -240,7 +240,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   type="email"
                   value={filters.customerEmail}
                   onChange={(e) => handleFilterChange('customerEmail', e.target.value)}
-                  className="block w-full pl-4 pr-4 py-3 text-sm glass rounded-xl border border-accent-200/30 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary"
+                  className="input"
                   placeholder="client@client.com"
                 />
               </div>
@@ -255,7 +255,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                 <button
                   type="button"
                   onClick={addCustomProperty}
-                  className="inline-flex items-center px-3 py-2 text-xs font-medium glass rounded-xl border border-accent-200/30 text-primary-600 dark:text-primary-400 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
+                  className="inline-flex items-center px-3 py-2 text-xs font-medium glass rounded-xl border border-primary-200/30 text-primary-600 dark:text-primary-400 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
                 >
                   <PlusIcon className="w-3 h-3 mr-1" />
                   Add
@@ -263,18 +263,18 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               </div>
 
               {filters.customProperties.length === 0 && (
-                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mb-4 p-3 glass rounded-xl border border-accent-200/30">
+                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mb-4 p-3 glass rounded-xl border border-primary-200/30">
                   Filter by custom properties like feature, environment, user plan, etc.
                 </p>
               )}
 
               <div className="space-y-3">
                 {filters.customProperties.map((prop, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 glass rounded-xl border border-accent-200/30">
+                  <div key={index} className="flex items-center space-x-3 p-3 glass rounded-xl border border-primary-200/30">
                     <select
                       value={prop.key}
                       onChange={(e) => updateCustomProperty(index, 'key', e.target.value)}
-                      className="flex-1 text-sm glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 px-3 py-2"
+                      className="select flex-1"
                     >
                       <option value="">Select property...</option>
                       {availableProperties.map((property) => (
@@ -288,7 +288,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                       <select
                         value={prop.value}
                         onChange={(e) => updateCustomProperty(index, 'value', e.target.value)}
-                        className="flex-1 text-sm glass rounded-xl border border-accent-200/30 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-light-text-primary dark:text-dark-text-primary bg-light-bg-100/50 dark:bg-dark-bg-100/50 px-3 py-2"
+                        className="select flex-1"
                       >
                         <option value="">Select value...</option>
                         {availableProperties
@@ -321,7 +321,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                     <button
                       type="button"
                       onClick={() => removeCustomProperty(index)}
-                      className="p-2 rounded-xl glass border border-accent-200/30 text-red-500 hover:text-red-600 hover:border-red-300/50 hover:shadow-md transition-all duration-300"
+                      className="p-2 rounded-xl glass border border-primary-200/30 text-red-500 hover:text-red-600 hover:border-red-300/50 hover:shadow-md transition-all duration-300"
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>
@@ -330,7 +330,7 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 pt-6 border-t border-accent-200/30">
+            <div className="flex justify-end space-x-3 pt-6 border-t border-primary-200/30">
               <button
                 onClick={resetFilters}
                 className="btn-secondary"

@@ -5,16 +5,16 @@ import { HomeIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export const NotFound: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="mb-8">
             <h1 className="text-9xl font-display font-bold gradient-text-primary animate-pulse">
               404
             </h1>
             <div className="mt-4">
-              <h2 className="text-3xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Page Not Found</h2>
-              <p className="mt-2 text-light-text-secondary dark:text-dark-text-secondary">
+              <h2 className="text-3xl font-display font-bold text-secondary-900 dark:text-white">Page Not Found</h2>
+              <p className="mt-2 text-secondary-600 dark:text-secondary-300">
                 Oops! The page you're looking for doesn't exist or has been moved.
               </p>
             </div>
@@ -38,12 +38,12 @@ export const NotFound: React.FC = () => {
             </button>
           </div>
 
-          <div className="mt-8 text-sm text-light-text-muted dark:text-dark-text-muted">
+          <div className="mt-8 text-sm text-secondary-500 dark:text-secondary-400">
             <p>
               Need help?{" "}
               <Link
                 to="/support"
-                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold"
               >
                 Contact support
               </Link>

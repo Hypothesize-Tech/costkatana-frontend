@@ -26,20 +26,20 @@ export const ModelComparison: React.FC<ModelComparisonProps> = ({ data }) => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-4 card shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in">
-          <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">{label}</p>
+        <div className="p-4 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">🤖 {label}</p>
           <div className="space-y-2">
             <p className="text-sm font-medium gradient-text">
-              Total Cost: {formatCurrency(payload[0].payload.cost)}
+              💰 Total Cost: {formatCurrency(payload[0].payload.cost)}
             </p>
             <p className="text-sm font-medium gradient-text-success">
-              Total Calls: {payload[0].payload.calls.toLocaleString()}
+              📞 Total Calls: {payload[0].payload.calls.toLocaleString()}
             </p>
             <p className="text-sm font-medium gradient-text-accent">
-              Avg Cost/Call: {formatCurrency(payload[0].payload.avgCost)}
+              📊 Avg Cost/Call: {formatCurrency(payload[0].payload.avgCost)}
             </p>
             <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
-              Avg Tokens: {payload[0].payload.avgTokens}
+              🔤 Avg Tokens: {payload[0].payload.avgTokens}
             </p>
           </div>
         </div>
@@ -67,7 +67,7 @@ export const ModelComparison: React.FC<ModelComparisonProps> = ({ data }) => {
           data={sortedData}
           margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(155, 93, 229, 0.1)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(6, 236, 158, 0.1)" />
           <XAxis
             dataKey="displayModel"
             angle={-45}
@@ -75,19 +75,19 @@ export const ModelComparison: React.FC<ModelComparisonProps> = ({ data }) => {
             height={100}
             tick={{ fontSize: 12, fill: 'currentColor' }}
             tickLine={false}
-            axisLine={{ stroke: 'rgba(155, 93, 229, 0.2)' }}
+            axisLine={{ stroke: 'rgba(6, 236, 158, 0.2)' }}
           />
           <YAxis
             tick={{ fontSize: 12, fill: 'currentColor' }}
             tickLine={false}
-            axisLine={{ stroke: 'rgba(155, 93, 229, 0.2)' }}
+            axisLine={{ stroke: 'rgba(6, 236, 158, 0.2)' }}
             tickFormatter={(value) => `$${value}`}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
             wrapperStyle={{
               paddingTop: '20px',
-              fontFamily: 'Outfit, system-ui, sans-serif',
+              fontFamily: 'Inter, system-ui, sans-serif',
               fontWeight: '600'
             }}
           />
@@ -99,8 +99,8 @@ export const ModelComparison: React.FC<ModelComparisonProps> = ({ data }) => {
           />
           <defs>
             <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#9B5DE5" />
-              <stop offset="100%" stopColor="#F15BB5" />
+              <stop offset="0%" stopColor="#06ec9e" />
+              <stop offset="100%" stopColor="#009454" />
             </linearGradient>
           </defs>
         </BarChart>

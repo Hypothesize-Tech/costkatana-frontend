@@ -59,13 +59,13 @@ export const SelectTrigger: React.FC<SelectTriggerProps & any> = ({
   return (
     <button
       type="button"
-      className={`w-full px-4 py-3 text-left glass border border-primary-200/30 rounded-xl backdrop-blur-xl text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-300 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary ${className}`}
+      className={`w-full px-4 py-3 text-left glass border-2 border-primary-200/30 rounded-xl backdrop-blur-xl text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-400 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary shadow-sm hover:shadow-md hover:border-primary-300/50 ${className}`}
       onClick={() => setIsOpen?.(!isOpen)}
     >
       <div className="flex items-center justify-between">
         {children}
         <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform text-primary-500 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -85,7 +85,7 @@ export const SelectContent: React.FC<SelectContentProps & any> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute z-50 w-full mt-2 glass border border-primary-200/30 rounded-xl shadow-xl backdrop-blur-xl max-h-60 overflow-auto">
+    <div className="absolute z-50 w-full mt-2 glass border border-primary-200/30 rounded-xl shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-h-60 overflow-auto animate-fade-in">
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(child as React.ReactElement<any>, { handleSelect })
@@ -102,7 +102,7 @@ export const SelectItem: React.FC<SelectItemProps & any> = ({
 }) => {
   return (
     <div
-      className="px-4 py-3 text-sm font-body cursor-pointer hover:bg-primary-50 dark:hover:bg-primary-900/20 text-light-text-primary dark:text-dark-text-primary transition-all duration-200 hover:scale-105"
+      className="px-4 py-3 text-sm font-body cursor-pointer hover:bg-primary-50 dark:hover:bg-primary-900/20 text-light-text-primary dark:text-dark-text-primary transition-all duration-200 hover:scale-[1.02] hover:shadow-sm rounded-lg mx-1 my-0.5"
       onClick={() => handleSelect?.(value)}
     >
       {children}

@@ -350,7 +350,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
             {/* Divider between categories */}
             {collapsed ? (
-              <div className="mx-2 my-4 border-t border-gradient-primary opacity-30" />
+              <div className="mx-2 my-4 border-t border-primary-200/30" />
             ) : null}
           </li>
         ))}

@@ -159,12 +159,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Project">
       <form onSubmit={handleSubmit} className="p-8 space-y-8">
         {/* Basic Information */}
-        <div className="glass rounded-xl p-6 border border-primary-200/30">
+        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-lg">📋</span>
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text">
+            <h3 className="text-xl font-display font-bold gradient-text-primary">
               Basic Information
             </h3>
           </div>
@@ -198,9 +198,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Budget Settings */}
-        <div className="glass rounded-xl p-6 border border-success-200/30">
+        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
               <span className="text-white text-lg">💰</span>
             </div>
             <h3 className="text-xl font-display font-bold gradient-text-success">
@@ -246,9 +246,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Team Members */}
-        <div className="glass rounded-xl p-6 border border-secondary-200/30">
+        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
               <span className="text-white text-lg">👥</span>
             </div>
             <h3 className="text-xl font-display font-bold gradient-text-secondary">
@@ -272,7 +272,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <button
                     type="button"
                     onClick={() => removeArrayItem("members", index)}
-                    className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                    className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
                   >
                     <FiMinus />
                   </button>
@@ -291,9 +291,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Tags */}
-        <div className="glass rounded-xl p-6 border border-accent-200/30">
+        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
               <span className="text-white text-lg">🏷️</span>
             </div>
             <h3 className="text-xl font-display font-bold gradient-text-accent">
@@ -317,7 +317,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <button
                     type="button"
                     onClick={() => removeArrayItem("tags", index)}
-                    className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:scale-110 transition-all duration-200"
+                    className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
                   >
                     <FiMinus />
                   </button>
@@ -336,9 +336,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Settings */}
-        <div className="glass rounded-xl p-6 border border-warning-200/30">
+        <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
               <span className="text-white text-lg">⚙️</span>
             </div>
             <h3 className="text-xl font-display font-bold gradient-text-warning">
@@ -347,7 +347,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           </div>
 
           <div className="space-y-6">
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <label className="flex gap-3 items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -366,7 +366,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               </label>
             </div>
 
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <label className="flex gap-3 items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -385,7 +385,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               </label>
             </div>
 
-            <div className="glass rounded-lg p-4 border border-primary-200/30">
+            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
               <label className="flex gap-3 items-center cursor-pointer">
                 <input
                   type="checkbox"

@@ -27,10 +27,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
     if (!text) return <span>{text}</span>;
 
     const htmlContent = text
-      .replace(/### (.*?)(?=\n|$)/g, '<h3 class="text-lg font-display font-bold gradient-text mt-4 mb-2">$1</h3>')
-      .replace(/## (.*?)(?=\n|$)/g, '<h2 class="text-xl font-display font-bold gradient-text mt-4 mb-2">$1</h2>')
-      .replace(/# (.*?)(?=\n|$)/g, '<h1 class="text-2xl font-display font-bold gradient-text mt-4 mb-2">$1</h1>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-display font-semibold gradient-text">$1</strong>')
+      .replace(/### (.*?)(?=\n|$)/g, '<h3 class="text-lg font-display font-bold gradient-text-primary mt-4 mb-2">$1</h3>')
+      .replace(/## (.*?)(?=\n|$)/g, '<h2 class="text-xl font-display font-bold gradient-text-primary mt-4 mb-2">$1</h2>')
+      .replace(/# (.*?)(?=\n|$)/g, '<h1 class="text-2xl font-display font-bold gradient-text-primary mt-4 mb-2">$1</h1>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-display font-semibold gradient-text-primary">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic font-body text-light-text-secondary dark:text-dark-text-secondary">$1</em>')
       .replace(/- (.*?)(?=\n|$)/g, '<li class="ml-4 mb-1 font-body text-light-text-primary dark:text-dark-text-primary">• $1</li>')
       .replace(/\n\n/g, '<br/><br/>')
@@ -184,13 +184,13 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
     switch (result.type) {
       case 'query_result':
         return (
-          <div className="mt-6 glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+          <div className="mt-6 glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">📊</span>
                 </div>
-                <span className="font-display font-semibold gradient-text">Query Results</span>
+                <span className="font-display font-semibold gradient-text-primary">Query Results</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium">
@@ -204,14 +204,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             </div>
 
             {result.parsed_query && (
-              <div className="mb-4 glass p-4 rounded-lg border border-accent-200/30">
+              <div className="mb-4 glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-5 h-5 rounded-full bg-gradient-accent flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">🔍</span>
                   </div>
                   <span className="font-display font-semibold gradient-text-accent text-sm">Parsed Query:</span>
                 </div>
-                <code className="font-mono text-sm bg-accent-100/50 dark:bg-accent-900/50 p-2 rounded block gradient-text">
+                <code className="font-mono text-sm bg-accent-100/50 dark:bg-accent-900/50 p-2 rounded block gradient-text-primary">
                   {result.parsed_query}
                 </code>
               </div>
@@ -220,10 +220,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             {result.results && result.results.length > 0 ? (
               <div className="space-y-2">
                 {result.results.map((item: any, index: number) => (
-                  <div key={index} className="glass p-4 rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
+                  <div key={index} className="glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <span className="font-display font-semibold gradient-text text-lg">
+                        <span className="font-display font-semibold gradient-text-primary text-lg">
                           {item.operation_name || item.service_name || 'Unknown Operation'}
                         </span>
                         {item.timestamp && (
@@ -285,9 +285,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             )}
 
             {result.insights && Array.isArray(result.insights) && result.insights.length > 0 && (
-              <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30">
+              <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">💡</span>
                   </div>
                   <span className="font-display font-semibold gradient-text-warning">AI Insights:</span>
@@ -303,9 +303,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
             )}
             {result.insights && !Array.isArray(result.insights) && (
-              <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30">
+              <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">💡</span>
                   </div>
                   <span className="font-display font-semibold gradient-text-warning">AI Insights:</span>
@@ -321,9 +321,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
       case 'visualization':
         return (
-          <div className="mt-6 glass p-6 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
+          <div className="mt-6 glass p-6 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                 <BarChart3 className="h-4 w-4 text-white" />
               </div>
               <span className="font-display font-semibold gradient-text-success">
@@ -332,7 +332,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             </div>
 
             {result.data && (result.data.labels || result.data.datasets) ? (
-              <div className="glass rounded-xl border border-primary-200/30 p-6">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6">
                 {result.chart_type === 'pie' || result.chart_type === 'doughnut' ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Enhanced Pie Chart */}
@@ -405,7 +405,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
                     {/* Legend and Data */}
                     <div className="space-y-3">
-                      <h3 className="text-xl font-display font-bold gradient-text mb-4">Operation Distribution</h3>
+                      <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">Operation Distribution</h3>
                       {result.data.labels.map((label: string, index: number) => {
                         const value = result.data.datasets[0]?.data?.[index] || 0;
                         const total = result.data.datasets[0]?.data?.reduce((sum: number, val: number) => sum + val, 0) || 1;
@@ -413,14 +413,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                         const color = result.data.datasets[0]?.backgroundColor?.[index] || '#3b82f6';
 
                         return (
-                          <div key={index} className="flex items-center justify-between p-4 glass rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
+                          <div key={index} className="flex items-center justify-between p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
                             <div className="flex items-center gap-3">
                               <div
                                 className="w-4 h-4 rounded-full shadow-sm"
                                 style={{ backgroundColor: color }}
                               />
                               <div>
-                                <div className="font-display font-semibold gradient-text">
+                                <div className="font-display font-semibold gradient-text-primary">
                                   {label.split('.').pop() || label}
                                 </div>
                                 <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
@@ -429,7 +429,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-xl font-display font-bold gradient-text">{value.toLocaleString()}</div>
+                              <div className="text-xl font-display font-bold gradient-text-primary">{value.toLocaleString()}</div>
                               <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{percentage}%</div>
                             </div>
                           </div>
@@ -505,9 +505,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
       case 'insights':
         return (
-          <div className="mt-6 glass p-6 rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl">
+          <div className="mt-6 glass p-6 rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+              <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                 <Lightbulb className="w-5 h-5 text-white" />
               </div>
               <div className="text-xl font-display font-bold gradient-text-accent">AI Insights</div>
@@ -518,14 +518,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               {result.insights && typeof result.insights === 'object' && result.insights.insights ? (
                 Array.isArray(result.insights.insights) ? (
                   result.insights.insights.map((insight: string, index: number) => (
-                    <div key={index} className="glass p-4 rounded-lg border border-accent-200/30 hover:border-accent-300/50 transition-all duration-300">
+                    <div key={index} className="glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl hover:border-accent-300/50 transition-all duration-300">
                       <div className="prose prose-sm max-w-none">
                         {renderMarkdown(insight)}
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="glass p-4 rounded-lg border border-accent-200/30">
+                  <div className="glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
                     <div className="prose prose-sm max-w-none">
                       {renderMarkdown(String(result.insights.insights))}
                     </div>
@@ -533,7 +533,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                 )
               ) : result.insights && Array.isArray(result.insights) ? (
                 result.insights.map((insight: string, index: number) => (
-                  <div key={index} className="glass p-4 rounded-lg border border-accent-200/30 hover:border-accent-300/50 transition-all duration-300">
+                  <div key={index} className="glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl hover:border-accent-300/50 transition-all duration-300">
                     <div className="prose prose-sm max-w-none">
                       {renderMarkdown(insight)}
                     </div>
@@ -609,9 +609,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
       case 'error':
         return (
-          <div className="mt-6 glass p-6 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl">
+          <div className="mt-6 glass p-6 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+              <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">⚠️</span>
               </div>
               <span className="font-display font-semibold gradient-text-danger">Error</span>
@@ -652,16 +652,16 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
   }
 
   return (
-    <div className={`card card-hover shadow-2xl backdrop-blur-xl border border-primary-200/30 ${className}`}>
+    <div className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}>
       {/* Enhanced Notebook Header */}
       <div className="p-6 border-b border-primary-200/30 bg-gradient-primary/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-display font-bold gradient-text">{notebook.title}</h2>
+              <h2 className="text-3xl font-display font-bold gradient-text-primary">{notebook.title}</h2>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">{notebook.description}</p>
               <div className="flex items-center gap-4 mt-3 text-sm">
                 <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium">
@@ -713,10 +713,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
         {/* Enhanced Execution Status */}
         {execution && execution.execution_time_ms && (
-          <div className="mt-4 glass p-4 rounded-lg border border-success-200/30">
+          <div className="mt-4 glass p-4 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center shadow-lg">
                   <span className="text-white text-xs">⚡</span>
                 </div>
                 <span className="font-display font-semibold gradient-text-success">
@@ -751,11 +751,11 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             const isEditing = editingCell === cell.id;
 
             return (
-              <div key={cell.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+              <div key={cell.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Cell Header */}
                 <div className="flex items-center justify-between p-4 bg-gradient-primary/5 border-b border-primary-200/30">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary/20 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
                       <Icon className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className={`px-3 py-1 rounded-full font-display font-medium ${getCellTypeColor(cell.type)}`}>
@@ -805,8 +805,8 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                           ))}
                         </div>
                       ) : (
-                        <div className="glass p-4 rounded-lg border border-primary-200/30">
-                          <code className="font-mono text-sm gradient-text block">
+                        <div className="glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                          <code className="font-mono text-sm gradient-text-primary block">
                             {cell.content}
                           </code>
                         </div>
@@ -822,40 +822,40 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
           })}
 
           {/* Add Cell Buttons */}
-          <div className="glass p-6 rounded-xl border-2 border-dashed border-primary-200/50 text-center">
+          <div className="glass p-6 rounded-xl border-2 border-dashed border-primary-200/50 shadow-lg backdrop-blur-xl text-center">
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => addCell('markdown')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-secondary-200/30 text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105"
+                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-secondary/20 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-gradient-secondary/20 flex items-center justify-center shadow-lg">
                   <FileText className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Markdown</span>
               </button>
               <button
                 onClick={() => addCell('query')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-primary-200/30 text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105"
+                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
                   <Search className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Query</span>
               </button>
               <button
                 onClick={() => addCell('visualization')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-success-200/30 text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105"
+                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-success/20 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-gradient-success/20 flex items-center justify-center shadow-lg">
                   <BarChart3 className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Chart</span>
               </button>
               <button
                 onClick={() => addCell('insight')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-accent-200/30 text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105"
+                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-accent/20 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-gradient-accent/20 flex items-center justify-center shadow-lg">
                   <Lightbulb className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Insight</span>
@@ -868,12 +868,12 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
       {/* Drill-Down Modal */}
       {showDrillDownModal && selectedHeatmapCell && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="card max-w-4xl w-full max-h-[90vh] overflow-auto shadow-2xl">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-4xl w-full max-h-[90vh] overflow-auto">
             <div className="p-6">
               {/* Modal Header */}
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h2 className="text-3xl font-display font-bold gradient-text">
+                  <h2 className="text-3xl font-display font-bold gradient-text-primary">
                     {selectedHeatmapCell.day} {selectedHeatmapCell.timeSlot}
                   </h2>
                   <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">Detailed usage analysis for this time period</p>

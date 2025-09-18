@@ -72,11 +72,11 @@ export const AlertItem: React.FC<AlertItemProps> = ({
 
   return (
     <div
-      className={`p-6 rounded-2xl border backdrop-blur-xl ${getSeverityColor()} ${!alert.read ? "ring-2 ring-primary-500 ring-opacity-50 shadow-lg" : "shadow-md"
+      className={`p-6 glass rounded-2xl border backdrop-blur-xl ${getSeverityColor()} ${!alert.read ? "ring-2 ring-primary-500 ring-opacity-50 shadow-2xl" : "shadow-lg"
         } transition-all duration-300 hover:shadow-xl hover:scale-[1.02] animate-fade-in`}
     >
       <div className="flex items-start">
-        <div className="flex-shrink-0 mt-1 w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+        <div className="flex-shrink-0 mt-1 w-10 h-10 rounded-xl glass backdrop-blur-xl flex items-center justify-center shadow-lg border border-primary-200/30">
           {getIcon()}
         </div>
         <div className="ml-4 flex-1">
@@ -85,19 +85,19 @@ export const AlertItem: React.FC<AlertItemProps> = ({
 
           {/* Metadata */}
           {alert.data && (
-            <div className="mt-3 p-3 rounded-xl glass border border-white/20">
+            <div className="mt-3 p-3 rounded-xl glass border border-primary-200/30 shadow-sm backdrop-blur-xl">
               <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                 {alert.type === "cost_threshold" && alert.data.amount && (
-                  <span className="gradient-text-accent">Amount: {formatCurrency(alert.data.amount)}</span>
+                  <span className="gradient-text-accent">💰 Amount: {formatCurrency(alert.data.amount)}</span>
                 )}
                 {alert.type === "optimization_available" &&
                   alert.data.savings && (
                     <span className="gradient-text-success">
-                      Potential savings: {formatCurrency(alert.data.savings)}
+                      💡 Potential savings: {formatCurrency(alert.data.savings)}
                     </span>
                   )}
                 {alert.type === "usage_spike" && alert.data.deviation && (
-                  <span className="gradient-text">Deviation: {alert.data.deviation.toFixed(1)}%</span>
+                  <span className="gradient-text">📊 Deviation: {alert.data.deviation.toFixed(1)}%</span>
                 )}
               </div>
             </div>
@@ -128,30 +128,30 @@ export const AlertItem: React.FC<AlertItemProps> = ({
                 </button>
 
                 {showSnoozeMenu && (
-                  <div className="absolute right-0 mt-2 w-48 card shadow-2xl py-2 z-20 animate-scale-in">
+                  <div className="absolute right-0 mt-2 w-48 glass shadow-2xl py-2 z-20 animate-scale-in border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <button
                       onClick={() => handleSnooze(1)}
                       className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
                     >
-                      1 hour
+                      ⏰ 1 hour
                     </button>
                     <button
                       onClick={() => handleSnooze(4)}
                       className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
                     >
-                      4 hours
+                      🕐 4 hours
                     </button>
                     <button
                       onClick={() => handleSnooze(24)}
                       className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
                     >
-                      1 day
+                      📅 1 day
                     </button>
                     <button
                       onClick={() => handleSnooze(168)}
                       className="block w-full text-left px-4 py-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors duration-200"
                     >
-                      1 week
+                      📆 1 week
                     </button>
                   </div>
                 )}

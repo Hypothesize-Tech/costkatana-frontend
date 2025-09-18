@@ -165,11 +165,11 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
         {/* Header */}
         <div className="p-8 border-b border-primary-200/30">
           <div className="flex gap-4 items-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <FiUsers className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-display font-bold gradient-text">
+              <h2 className="text-2xl font-display font-bold gradient-text-primary">
                 {project.name} - Members
               </h2>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -179,9 +179,9 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
           </div>
 
           {/* Add New Member */}
-          <div className="glass rounded-xl p-6 border border-primary-200/30">
+          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">➕</span>
               </div>
               <h3 className="font-display font-semibold gradient-text-success text-lg">
@@ -231,7 +231,7 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">👥</span>
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-secondary">
@@ -241,11 +241,11 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
             </div>
 
             {members.length === 0 ? (
-              <div className="glass rounded-xl p-12 border border-primary-200/30 text-center">
+              <div className="glass rounded-xl p-12 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-primary/20 flex items-center justify-center mx-auto mb-4">
                   <FiUsers className="w-8 h-8 text-primary-500" />
                 </div>
-                <h3 className="mb-2 text-lg font-display font-semibold gradient-text">
+                <h3 className="mb-2 text-lg font-display font-semibold gradient-text-primary">
                   No members yet
                 </h3>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -262,11 +262,11 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
                   return (
                     <div
                       key={index}
-                      className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
+                      className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-300/50 transition-all duration-200"
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex gap-4 items-center">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <span className="font-display font-bold text-white text-lg">
                               {email.charAt(0).toUpperCase()}
                             </span>
@@ -330,9 +330,9 @@ export const ProjectMembersModal: React.FC<ProjectMembersModalProps> = ({
           </div>
 
           {/* Role Descriptions */}
-          <div className="glass rounded-xl p-6 border border-accent-200/30 mt-8">
+          <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mt-8">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">🛡️</span>
               </div>
               <h4 className="font-display font-semibold gradient-text-accent text-lg">

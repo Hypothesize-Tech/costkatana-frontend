@@ -352,7 +352,7 @@ export const ChatInterface: React.FC = () => {
                 {/* Model Dropdown */}
                 {showModelDropdown && (
                   <div
-                    className="absolute top-full left-0 mt-2 w-80 card shadow-2xl backdrop-blur-xl border border-primary-200/30 z-10 scrollbar-hide animate-scale-in"
+                    className="absolute top-full left-0 mt-2 w-80 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 z-10 scrollbar-hide animate-scale-in"
                     style={{ maxHeight: "400px", overflowY: "auto" }}
                   >
                     <div className="p-2">
@@ -421,7 +421,7 @@ export const ChatInterface: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
-                <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <CurrencyDollarIcon className="h-6 w-6 text-white" />
                   </div>
@@ -433,7 +433,7 @@ export const ChatInterface: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <SparklesIcon className="h-6 w-6 text-white" />
                   </div>
@@ -446,7 +446,7 @@ export const ChatInterface: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <ClockIcon className="h-6 w-6 text-white" />
                   </div>
@@ -484,7 +484,7 @@ export const ChatInterface: React.FC = () => {
               <div
                 className={`max-w-4xl px-6 py-4 rounded-2xl text-base leading-relaxed shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] ${message.role === "user"
                   ? "bg-gradient-primary text-white glow-primary"
-                  : "card border border-primary-200/30"
+                  : "glass border border-primary-200/30"
                   }`}
               >
                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
@@ -520,7 +520,7 @@ export const ChatInterface: React.FC = () => {
 
           {isLoading && (
             <div className="flex justify-start animate-fade-in">
-              <div className="card p-4 shadow-lg backdrop-blur-xl border border-primary-200/30">
+              <div className="glass p-4 shadow-lg backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center space-x-2 text-light-text-secondary dark:text-dark-text-secondary">
                   <LoadingSpinner size="small" />
                   <span className="text-sm font-medium">Thinking...</span>

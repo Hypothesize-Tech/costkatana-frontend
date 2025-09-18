@@ -38,7 +38,7 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-3 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-3 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <p className="text-sm font-display font-medium gradient-text-primary">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm font-body" style={{ color: entry.color }}>
@@ -64,7 +64,7 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const ChartComponent = type === "line" ? LineChart : BarChart;
 
   return (
-    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="mb-4">
         <h3 className="text-lg font-display font-bold gradient-text-primary">Usage Over Time</h3>
         <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Track your API usage trends</p>

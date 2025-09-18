@@ -150,7 +150,7 @@ export default function Requests() {
   const BudgetStatusBadge: React.FC<{ budgetInfo: any }> = ({ budgetInfo }) => {
     if (!budgetInfo) {
       return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-light-bg-300 to-light-bg-400 dark:from-dark-bg-300 dark:to-dark-bg-400 text-light-text-secondary dark:text-dark-text-secondary border border-accent-200/30">
+        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400 border border-primary-200/30">
           No Budget Set
         </span>
       );
@@ -160,7 +160,7 @@ export default function Requests() {
 
     if (isOverBudget) {
       return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-error-500 to-error-600 text-white shadow-lg">
+        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-danger-500 to-danger-600 text-white shadow-lg">
           Over Budget ({budgetPercentage.toFixed(1)}%)
         </span>
       );
@@ -187,7 +187,7 @@ export default function Requests() {
   }) => {
     if (!approvalStatus) {
       return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-light-bg-300 to-light-bg-400 dark:from-dark-bg-300 dark:to-dark-bg-400 text-light-text-secondary dark:text-dark-text-secondary border border-accent-200/30">
+        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400 border border-primary-200/30">
           No Approval Required
         </span>
       );
@@ -195,7 +195,7 @@ export default function Requests() {
 
     if (approvalStatus.requiredApproval) {
       return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg">
+        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-primary-500 to-highlight-500 text-white shadow-lg">
           Approval Required
         </span>
       );
@@ -217,15 +217,15 @@ export default function Requests() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
       {/* Header */}
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 mb-8">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">
               Requests
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-secondary-600 dark:text-secondary-300">
               Monitor your real-time LLM API requests.
             </p>
           </div>
@@ -243,64 +243,64 @@ export default function Requests() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 mr-4">
               <ChartBarIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div className="flex-1">
-              <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Total Requests
               </dt>
-              <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                 {stats.totalRequests.toLocaleString()}
               </dd>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 mr-4">
               <ChartBarIcon className="h-6 w-6 text-success-600 dark:text-success-400" />
             </div>
             <div className="flex-1">
-              <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Total Cost
               </dt>
-              <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                 {formatCost(stats.totalCost)}
               </dd>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-secondary-500/20 to-secondary-600/20 mr-4">
-              <ClockIcon className="h-6 w-6 text-secondary-600 dark:text-secondary-400" />
+            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 mr-4">
+              <ClockIcon className="h-6 w-6 text-highlight-600 dark:text-highlight-400" />
             </div>
             <div className="flex-1">
-              <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Avg Response Time
               </dt>
-              <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                 {stats.avgResponseTime}ms
               </dd>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 mr-4">
               <CheckCircleIcon className="h-6 w-6 text-success-600 dark:text-success-400" />
             </div>
             <div className="flex-1">
-              <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Success Rate
               </dt>
-              <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                 {stats.successRate}%
               </dd>
             </div>
@@ -308,19 +308,19 @@ export default function Requests() {
         </div>
 
         {/* Token Breakdown Stats Card */}
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 mr-4">
               <ChartBarIcon className="h-6 w-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div className="flex-1">
-              <dt className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Token Breakdown
               </dt>
-              <dd className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <dd className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                 {stats.totalTokens.toLocaleString()}
               </dd>
-              <dd className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">
+              <dd className="text-sm text-secondary-600 dark:text-secondary-300 mt-2">
                 <div className="flex justify-between">
                   <span>Input: {Math.round(stats.totalTokens * 0.7).toLocaleString()}</span>
                   <span>Output: {Math.round(stats.totalTokens * 0.3).toLocaleString()}</span>
@@ -332,14 +332,14 @@ export default function Requests() {
       </div>
 
       {/* Filters and Search */}
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                  <MagnifyingGlassIcon className="h-5 w-5 text-secondary-600 dark:text-secondary-300" />
                 </div>
                 <input
                   type="text"
@@ -388,7 +388,7 @@ export default function Requests() {
       </div>
 
       {/* Requests Table */}
-      <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-6">
           {requestsLoading ? (
             <div className="flex justify-center py-8">
@@ -396,69 +396,69 @@ export default function Requests() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-accent-200/30">
-                <thead className="glass rounded-lg border border-accent-200/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
+              <table className="min-w-full divide-y divide-primary-200/30">
+                <thead className="glass rounded-lg border border-primary-200/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       TIMESTAMP
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       MODEL
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       STATUS
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       LATENCY
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       TOKEN BREAKDOWN
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       COST
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       USER
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       BUDGET STATUS
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       PROJECT
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                       APPROVAL
                     </th>
                   </tr>
                 </thead>
-                <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-accent-200/20">
+                <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20">
                   {filteredRequests.map((request: Request) => (
                     <tr
                       key={request.id}
-                      className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-secondary-500/5 transition-all duration-300"
+                      className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-success-500/5 transition-all duration-300"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
                         {formatTimeAgo(request.timestamp)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500/20 to-secondary-500/20 text-primary-600 dark:text-primary-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500/20 to-success-500/20 text-primary-600 dark:text-primary-400">
                           {request.model}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {getStatusIcon(request.status, request.statusCode)}
-                          <span className="ml-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                          <span className="ml-2 text-sm font-medium text-secondary-700 dark:text-secondary-300">
                             • {request.statusCode}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-highlight-500/20 to-accent-500/20 text-highlight-600 dark:text-highlight-400">
                           {request.latency} ms
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
                         <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-accent-500/20 to-warning-500/20 text-accent-600 dark:text-accent-400">
                           {request.totalTokens.toLocaleString()}
                         </span>
@@ -466,15 +466,15 @@ export default function Requests() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-success-600 dark:text-success-400">
                         {formatCost(request.cost)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-light-bg-300 to-light-bg-400 dark:from-dark-bg-300 dark:to-dark-bg-400 text-light-text-secondary dark:text-dark-text-secondary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
                           {request.user}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <BudgetStatusBadge budgetInfo={request.budgetInfo} />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary-700 dark:text-secondary-300">
                         {getProjectDisplayName(request.projectName)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -489,14 +489,14 @@ export default function Requests() {
 
               {filteredRequests.length === 0 && (
                 <div className="text-center py-12">
-                  <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8 mx-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
+                  <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mx-4">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-500/20 to-success-500/20 flex items-center justify-center">
                       <MagnifyingGlassIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                     </div>
-                    <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                    <h3 className="text-lg font-display font-semibold text-secondary-900 dark:text-white mb-2">
                       No Requests Found
                     </h3>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-secondary-600 dark:text-secondary-300">
                       No requests found for the selected filters. Try adjusting your search criteria.
                     </p>
                   </div>

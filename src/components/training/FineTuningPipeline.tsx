@@ -106,12 +106,12 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
 
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-8">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-purple flex items-center justify-center glow-purple">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                         <span className="text-white text-xl">🔧</span>
                     </div>
-                    <h2 className="text-2xl font-display font-bold gradient-text-purple">
+                    <h2 className="text-2xl font-display font-bold gradient-text-primary">
                         Fine-Tuning Pipeline Overview
                     </h2>
                 </div>
@@ -121,10 +121,10 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
                     {/* Dataset Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-info rounded-full flex items-center justify-center mx-auto mb-3 glow-info">
+                            <div className="w-16 h-16 bg-gradient-highlight rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
                                 <ChartBarIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-display font-medium gradient-text-info mb-1">Dataset</h3>
+                            <h3 className="font-display font-medium gradient-text-highlight mb-1">Dataset</h3>
                             <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Training data preparation</p>
                             {dataset && (
                                 <div className="mt-2 text-xs text-gray-600">
@@ -150,10 +150,10 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
                     {/* Fine-Tuning Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-purple rounded-full flex items-center justify-center mx-auto mb-3 glow-purple">
+                            <div className="w-16 h-16 bg-gradient-secondary rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
                                 <CogIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-display font-medium gradient-text-purple mb-1">Fine-Tuning</h3>
+                            <h3 className="font-display font-medium gradient-text-secondary mb-1">Fine-Tuning</h3>
                             <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Model training</p>
                             <div className="mt-2 text-xs text-gray-600">
                                 <div>{fineTuneJobs.length} jobs</div>
@@ -179,10 +179,10 @@ export const FineTuningPipeline: React.FC<FineTuningPipelineProps> = ({ datasetI
                     {/* Evaluation Stage */}
                     <div className="flex-1">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-success rounded-full flex items-center justify-center mx-auto mb-3 glow-success">
+                            <div className="w-16 h-16 bg-gradient-accent rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
                                 <EyeIcon className="h-8 w-8 text-white" />
                             </div>
-                            <h3 className="font-display font-medium gradient-text-success mb-1">Evaluation</h3>
+                            <h3 className="font-display font-medium gradient-text-accent mb-1">Evaluation</h3>
                             <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Performance analysis</p>
                             <div className="mt-2 text-xs text-gray-600">
                                 <div>{evaluations.length} evaluations</div>

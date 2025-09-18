@@ -81,7 +81,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="lg">
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
-        <div className="glass flex justify-between items-start p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-xl">
+        <div className="glass flex justify-between items-start p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex-1 min-w-0">
             <div className="flex gap-3 items-center mb-2">
               <h2 className="text-3xl font-display font-bold gradient-text-primary truncate">
@@ -91,7 +91,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 {template.category}
               </span>
               {template.isFavorite && (
-                <FiStar className="w-5 h-5 text-warning-500 fill-current glow-warning" />
+                <FiStar className="w-5 h-5 text-accent-500 fill-current shadow-lg" />
               )}
             </div>
 
@@ -129,8 +129,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
             <button
               onClick={() => onFavorite(template)}
               className={`btn-icon-secondary ${template.isFavorite
-                ? "text-warning-500 bg-warning-100/20 hover:bg-warning-100/30 glow-warning"
-                : "hover:text-warning-500"
+                ? "text-accent-500 bg-accent-100/20 hover:bg-accent-100/30 shadow-lg"
+                : "hover:text-accent-500"
                 }`}
               title={
                 template.isFavorite
@@ -172,8 +172,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-6 py-3 text-sm font-display font-medium transition-all ${activeTab === tab.id
-                ? "gradient-text-primary border-b-2 border-primary-500 bg-primary-50/20 glow-primary"
-                : "text-light-text-secondary dark:text-dark-text-secondary hover:gradient-text-accent"
+                ? "gradient-text-primary border-b-2 border-primary-500 bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10 shadow-lg"
+                : "text-light-text-secondary dark:text-dark-text-secondary hover:gradient-text-primary"
                 }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -183,7 +183,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 bg-light-bg-primary dark:bg-dark-bg-primary">
+        <div className="overflow-y-auto flex-1 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
           {activeTab === "content" && (
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
@@ -193,7 +193,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 <button
                   onClick={handleCopyContent}
                   className={`btn-secondary inline-flex items-center gap-2 ${copied
-                    ? "text-success-600 bg-success-50/20 glow-success"
+                    ? "text-success-600 bg-success-50/20 shadow-lg"
                     : ""
                     }`}
                 >
@@ -202,7 +202,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 </button>
               </div>
               <div className="relative">
-                <pre className="glass overflow-x-auto p-4 text-sm font-mono text-light-text-primary dark:text-dark-text-primary whitespace-pre-wrap rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                <pre className="glass overflow-x-auto p-4 text-sm font-mono text-light-text-primary dark:text-dark-text-primary whitespace-pre-wrap rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
                   {template.content}
                 </pre>
               </div>
@@ -226,8 +226,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
               )}
 
               {template.metadata.estimatedTokens && (
-                <div className="glass p-4 mt-6 rounded-lg border border-info-200/30 shadow-lg backdrop-blur-xl">
-                  <div className="flex gap-2 items-center gradient-text-info">
+                <div className="glass p-4 mt-6 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
+                  <div className="flex gap-2 items-center gradient-text-highlight">
                     <FiCode className="w-4 h-4" />
                     <span className="text-sm font-display font-medium">
                       Estimated Tokens: {template.metadata.estimatedTokens}
@@ -277,7 +277,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                           <span className="font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                             Default:{" "}
                           </span>
-                          <code className="bg-gradient-accent text-white px-2 py-1 rounded font-mono glow-accent">
+                          <code className="bg-gradient-accent text-white px-2 py-1 rounded font-mono shadow-lg">
                             {variable.defaultValue}
                           </code>
                         </div>
@@ -330,26 +330,26 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 )}
 
                 {template.usage.totalCostSaved && (
-                  <div className="glass p-4 rounded-lg border border-purple-200/30 shadow-lg backdrop-blur-xl">
-                    <div className="flex gap-2 items-center gradient-text-purple">
+                  <div className="glass p-4 rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="flex gap-2 items-center gradient-text-secondary">
                       <FiDollarSign className="w-5 h-5" />
                       <span className="text-sm font-display font-medium">Cost Saved</span>
                     </div>
-                    <p className="mt-2 text-3xl font-display font-bold gradient-text-purple">
+                    <p className="mt-2 text-3xl font-display font-bold gradient-text-secondary">
                       ${template.usage.totalCostSaved.toFixed(2)}
                     </p>
                   </div>
                 )}
 
                 {template.usage.averageRating && (
-                  <div className="glass p-4 rounded-lg border border-warning-200/30 shadow-lg backdrop-blur-xl">
-                    <div className="flex gap-2 items-center gradient-text-warning">
+                  <div className="glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="flex gap-2 items-center gradient-text-accent">
                       <FiStar className="w-5 h-5" />
                       <span className="text-sm font-display font-medium">
                         Average Rating
                       </span>
                     </div>
-                    <p className="mt-2 text-3xl font-display font-bold gradient-text-warning">
+                    <p className="mt-2 text-3xl font-display font-bold gradient-text-accent">
                       {template.usage.averageRating.toFixed(1)}/5
                     </p>
                   </div>
@@ -357,8 +357,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
               </div>
 
               {template.usage.lastUsed && (
-                <div className="glass p-4 mt-6 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
-                  <div className="flex gap-2 items-center gradient-text-accent">
+                <div className="glass p-4 mt-6 rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                  <div className="flex gap-2 items-center gradient-text-secondary">
                     <FiClock className="w-4 h-4" />
                     <span className="text-sm font-body">
                       Last used: {formatDate(template.usage.lastUsed)}
@@ -375,11 +375,11 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 Version History
               </h3>
               <div className="space-y-4">
-                <div className="glass p-4 rounded-lg border border-info-200/30 shadow-lg backdrop-blur-xl">
+                <div className="glass p-4 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex gap-2 items-center mb-2">
-                        <span className="font-display font-medium gradient-text-info">
+                        <span className="font-display font-medium gradient-text-highlight">
                           Version {template.version}
                         </span>
                         <span className="badge-primary">

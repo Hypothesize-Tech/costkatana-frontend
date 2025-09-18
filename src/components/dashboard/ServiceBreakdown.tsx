@@ -15,7 +15,7 @@ interface ServiceBreakdownProps {
 export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
   if (loading) {
     return (
-      <div className="card p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+      <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
             <span className="text-lg">🍰</span>
@@ -66,7 +66,7 @@ export const ServiceBreakdown = ({ data, loading }: ServiceBreakdownProps) => {
   const totalCost = data.reduce((sum, d) => sum + (d.totalCost || 0), 0);
 
   return (
-    <div className="card p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300">
+    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300">
       <div className="flex items-center gap-3 mb-6">
         <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
           <span className="text-lg">🍰</span>

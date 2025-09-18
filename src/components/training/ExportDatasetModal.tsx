@@ -112,15 +112,15 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
+      <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         {/* Header */}
         <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-xl">📤</span>
             </div>
             <div>
-              <h2 className="text-2xl font-display font-bold gradient-text-success">
+              <h2 className="text-2xl font-display font-bold gradient-text-primary">
                 Export Dataset
               </h2>
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
@@ -137,16 +137,16 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
           </button>
         </div>
 
-        <div className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
+        <div className="p-8 space-y-8">
           {!showPreview ? (
             <>
               {/* Format Selection */}
-              <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+              <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">📝</span>
                   </div>
-                  <h3 className="text-xl font-display font-bold gradient-text-info">
+                  <h3 className="text-xl font-display font-bold gradient-text-success">
                     Select Export Format
                   </h3>
                 </div>
@@ -156,8 +156,8 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
                     <div
                       key={format.id}
                       className={`glass border rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg ${selectedFormat === format.id
-                          ? "border-primary-300/50 shadow-lg glow-primary"
-                          : "border-accent-200/30 hover:border-accent-300/50"
+                        ? "border-primary-300/50 shadow-lg"
+                        : "border-secondary-200/30 hover:border-secondary-300/50"
                         }`}
                       onClick={() => setSelectedFormat(format.id)}
                     >
@@ -189,10 +189,15 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
               </div>
 
               {/* Options */}
-              <div className="space-y-4 mb-6">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Export Options
-                </h3>
+              <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">⚙️</span>
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-accent">
+                    Export Options
+                  </h3>
+                </div>
 
                 <div className="flex items-center space-x-3">
                   <input
@@ -200,11 +205,11 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
                     id="includeMetadata"
                     checked={includeMetadata}
                     onChange={(e) => setIncludeMetadata(e.target.checked)}
-                    className="text-blue-600"
+                    className="text-primary-600"
                   />
                   <label
                     htmlFor="includeMetadata"
-                    className="text-sm text-gray-700"
+                    className="text-sm font-body text-light-text-primary dark:text-dark-text-primary"
                   >
                     Include metadata (request ID, score, cost, tokens)
                   </label>
@@ -212,71 +217,73 @@ export const ExportDatasetModal: React.FC<ExportDatasetModalProps> = ({
               </div>
 
               {/* Dataset Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-gray-900 mb-3">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                <h3 className="font-display font-bold gradient-text-secondary mb-4">
                   Dataset Summary
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Requests:</span>
-                    <span className="ml-2 font-medium">
+                  <div className="text-center">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Requests:</span>
+                    <div className="text-lg font-display font-bold gradient-text-primary mt-1">
                       {dataset.stats.totalRequests}
-                    </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-gray-600">Avg Score:</span>
-                    <span className="ml-2 font-medium">
+                  <div className="text-center">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Avg Score:</span>
+                    <div className="text-lg font-display font-bold gradient-text-accent mt-1">
                       {dataset.stats.averageScore.toFixed(1)}★
-                    </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-gray-600">Total Tokens:</span>
-                    <span className="ml-2 font-medium">
+                  <div className="text-center">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Total Tokens:</span>
+                    <div className="text-lg font-display font-bold gradient-text-secondary mt-1">
                       {dataset.stats.totalTokens > 1000
                         ? `${(dataset.stats.totalTokens / 1000).toFixed(1)}k`
                         : dataset.stats.totalTokens}
-                    </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-gray-600">Total Cost:</span>
-                    <span className="ml-2 font-medium">
+                  <div className="text-center">
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Total Cost:</span>
+                    <div className="text-lg font-display font-bold gradient-text-success mt-1">
                       $
                       {dataset.stats.totalCost < 0.01
                         ? (dataset.stats.totalCost * 1000).toFixed(2) + "k"
                         : dataset.stats.totalCost.toFixed(3)}
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex justify-between">
-                <button
-                  onClick={handlePreview}
-                  className="flex items-center space-x-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  <EyeIcon className="h-4 w-4" />
-                  <span>Preview</span>
-                </button>
+              <div className="glass rounded-xl p-6 border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+                <div className="flex justify-between">
+                  <button
+                    onClick={handlePreview}
+                    className="btn-secondary inline-flex items-center gap-2"
+                  >
+                    <EyeIcon className="h-4 w-4" />
+                    <span>Preview</span>
+                  </button>
 
-                <div className="flex space-x-3">
-                  <button
-                    onClick={onClose}
-                    className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-                    disabled={isExporting}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleExport}
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isExporting}
-                  >
-                    <ArrowDownTrayIcon className="h-4 w-4" />
-                    <span>
-                      {isExporting ? "Exporting..." : "Export Dataset"}
-                    </span>
-                  </button>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={onClose}
+                      className="btn-secondary"
+                      disabled={isExporting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleExport}
+                      className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={isExporting}
+                    >
+                      <ArrowDownTrayIcon className="h-4 w-4" />
+                      <span>
+                        {isExporting ? "Exporting..." : "Export Dataset"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </>

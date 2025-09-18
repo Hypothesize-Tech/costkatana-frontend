@@ -196,169 +196,169 @@ const UniversalSemanticsTest: React.FC = () => {
             {testResult && (
                 <div className="space-y-6">
                     {/* Overview */}
-                    <Card>
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <CardTitle className="flex items-center">
-                                    <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
+                    <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                                    <BarChart3 className="w-6 h-6 text-white" />
+                                </div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
                                     Universality Results
-                                </CardTitle>
-                                {getUniversalityBadge(testResult.isUniversal, testResult.unificationScore)}
+                                </h2>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-gray-900 mb-2">
-                                        {((testResult.unificationScore || 0) * 100).toFixed(1)}%
-                                    </div>
-                                    <div className="text-sm text-gray-600">
-                                        Semantic Unification Score
-                                    </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
-                                        <div
-                                            className={`h-3 rounded-full ${testResult.unificationScore > 0.8 ? 'bg-green-500' :
-                                                testResult.unificationScore > 0.6 ? 'bg-blue-500' :
-                                                    testResult.unificationScore > 0.4 ? 'bg-yellow-500' :
-                                                        'bg-red-500'
-                                                }`}
-                                            style={{ width: `${(testResult.unificationScore || 0) * 100}%` }}
-                                        />
-                                    </div>
+                            {getUniversalityBadge(testResult.isUniversal, testResult.unificationScore)}
+                        </div>
+                        <div className="space-y-4">
+                            <div className="text-center">
+                                <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
+                                    {((testResult.unificationScore || 0) * 100).toFixed(1)}%
+                                </div>
+                                <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                                    Semantic Unification Score
+                                </div>
+                                <div className="w-full bg-light-background-secondary dark:bg-dark-background-secondary rounded-full h-3 mt-2">
+                                    <div
+                                        className={`h-3 rounded-full transition-all duration-500 ${testResult.unificationScore > 0.8 ? 'bg-gradient-success' :
+                                            testResult.unificationScore > 0.6 ? 'bg-gradient-primary' :
+                                                testResult.unificationScore > 0.4 ? 'bg-gradient-warning' :
+                                                    'bg-gradient-danger'
+                                            }`}
+                                        style={{ width: `${(testResult.unificationScore || 0) * 100}%` }}
+                                    />
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
 
                     {/* Language Translations */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Languages className="w-5 h-5 mr-2 text-green-500" />
+                    <div className="glass rounded-xl p-8 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+                                <Languages className="w-6 h-6 text-white" />
+                            </div>
+                            <h2 className="text-2xl font-display font-bold gradient-text-success">
                                 Cross-Lingual Translations
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {Object.entries(testResult.translations).map(([langCode, translation]) => {
-                                    const language = availableLanguages.find(l => l.code === langCode);
-                                    return (
-                                        <div key={langCode} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                            <div className="text-2xl">{language?.flag || '🌐'}</div>
-                                            <div className="flex-1">
-                                                <div className="font-medium text-gray-900">
-                                                    {language?.name || langCode.toUpperCase()}
-                                                </div>
-                                                <div className="text-sm text-gray-600">
-                                                    "{translation}"
-                                                </div>
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Object.entries(testResult.translations).map(([langCode, translation]) => {
+                                const language = availableLanguages.find(l => l.code === langCode);
+                                return (
+                                    <div key={langCode} className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel flex items-center gap-3">
+                                        <div className="text-2xl">{language?.flag || '🌐'}</div>
+                                        <div className="flex-1">
+                                            <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                                {language?.name || langCode.toUpperCase()}
+                                            </div>
+                                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                                                "{translation}"
                                             </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        </CardContent>
-                    </Card>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
                     {/* SAST Representations */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Network className="w-5 h-5 mr-2 text-purple-500" />
+                    <div className="glass rounded-xl p-8 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
+                                <Network className="w-6 h-6 text-white" />
+                            </div>
+                            <h2 className="text-2xl font-display font-bold gradient-text-secondary">
                                 SAST Semantic Representations
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {Object.entries(testResult.sastRepresentations).map(([langCode, representation]) => {
-                                    const language = availableLanguages.find(l => l.code === langCode);
-                                    return (
-                                        <div key={langCode} className="border rounded-lg p-4">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <span className="text-lg">{language?.flag || '🌐'}</span>
-                                                <span className="font-medium">{language?.name || langCode.toUpperCase()}</span>
-                                                <ArrowRight className="w-4 h-4 text-gray-400" />
-                                                <Badge variant="outline" className="text-purple-700 border-purple-300">
-                                                    {representation.frameType} frame
-                                                </Badge>
-                                            </div>
+                            </h2>
+                        </div>
+                        <div className="space-y-4">
+                            {Object.entries(testResult.sastRepresentations).map(([langCode, representation]) => {
+                                const language = availableLanguages.find(l => l.code === langCode);
+                                return (
+                                    <div key={langCode} className="glass rounded-lg p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="text-lg">{language?.flag || '🌐'}</span>
+                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{language?.name || langCode.toUpperCase()}</span>
+                                            <ArrowRight className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                                            <span className="glass px-3 py-1 rounded border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-semibold">
+                                                {representation.frameType} frame
+                                            </span>
+                                        </div>
 
-                                            <div className="bg-gray-50 p-3 rounded text-sm font-mono">
-                                                <div className="text-gray-600">Primitives: {Object.keys(representation.primitives).length}</div>
-                                                <div className="text-xs text-gray-500 mt-1">
-                                                    Confidence: {((representation.metadata.confidence || 0) * 100).toFixed(1)}%
-                                                </div>
+                                        <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl font-mono text-sm">
+                                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Primitives: {Object.keys(representation.primitives).length}</div>
+                                            <div className="font-body text-light-text-tertiary dark:text-dark-text-tertiary text-xs mt-1">
+                                                Confidence: {((representation.metadata.confidence || 0) * 100).toFixed(1)}%
                                             </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        </CardContent>
-                    </Card>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
                     {/* Analysis Summary */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <CheckCircle2 className="w-5 h-5 mr-2 text-green-500" />
+                    <div className="glass rounded-xl p-8 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
+                                <CheckCircle2 className="w-6 h-6 text-white" />
+                            </div>
+                            <h2 className="text-2xl font-display font-bold gradient-text-accent">
                                 Analysis Summary
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                                    <div className="p-4 bg-blue-50 rounded-lg">
-                                        <div className="text-2xl font-bold text-blue-600">
-                                            {testResult.languages.length}
-                                        </div>
-                                        <div className="text-sm text-gray-600">Languages Tested</div>
+                            </h2>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                <div className="glass rounded-lg p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                    <div className="text-2xl font-display font-bold gradient-text-primary">
+                                        {testResult.languages.length}
                                     </div>
-
-                                    <div className="p-4 bg-green-50 rounded-lg">
-                                        <div className="text-2xl font-bold text-green-600">
-                                            {Object.keys(testResult.sastRepresentations).length}
-                                        </div>
-                                        <div className="text-sm text-gray-600">SAST Representations</div>
-                                    </div>
-
-                                    <div className="p-4 bg-purple-50 rounded-lg">
-                                        <div className="text-2xl font-bold text-purple-600">
-                                            {testResult.isUniversal ? 'Yes' : 'Partial'}
-                                        </div>
-                                        <div className="text-sm text-gray-600">Universal Coverage</div>
-                                    </div>
+                                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Languages Tested</div>
                                 </div>
 
-                                <div className="pt-4 border-t">
-                                    <h4 className="font-medium text-gray-900 mb-2">Key Findings:</h4>
-                                    <ul className="space-y-1 text-sm text-gray-700">
-                                        {testResult.unificationScore > 0.8 && (
-                                            <li className="flex items-center gap-2">
-                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                                High semantic consistency across all languages
-                                            </li>
-                                        )}
-                                        {testResult.unificationScore > 0.6 && testResult.unificationScore <= 0.8 && (
-                                            <li className="flex items-center gap-2">
-                                                <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                                                Moderate semantic consistency with some variations
-                                            </li>
-                                        )}
-                                        {testResult.unificationScore <= 0.6 && (
-                                            <li className="flex items-center gap-2">
-                                                <AlertTriangle className="w-4 h-4 text-red-500" />
-                                                Significant semantic variations between languages
-                                            </li>
-                                        )}
-                                        <li className="flex items-center gap-2">
-                                            <Network className="w-4 h-4 text-blue-500" />
-                                            SAST successfully generated representations for {Object.keys(testResult.sastRepresentations).length} languages
-                                        </li>
-                                    </ul>
+                                <div className="glass rounded-lg p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                    <div className="text-2xl font-display font-bold gradient-text-success">
+                                        {Object.keys(testResult.sastRepresentations).length}
+                                    </div>
+                                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">SAST Representations</div>
+                                </div>
+
+                                <div className="glass rounded-lg p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                    <div className="text-2xl font-display font-bold gradient-text-secondary">
+                                        {testResult.isUniversal ? 'Yes' : 'Partial'}
+                                    </div>
+                                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Universal Coverage</div>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            <div className="pt-4 border-t border-primary-200/30">
+                                <h4 className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Key Findings:</h4>
+                                <ul className="space-y-1 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                                    {testResult.unificationScore > 0.8 && (
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle2 className="w-4 h-4 text-success-500" />
+                                            High semantic consistency across all languages
+                                        </li>
+                                    )}
+                                    {testResult.unificationScore > 0.6 && testResult.unificationScore <= 0.8 && (
+                                        <li className="flex items-center gap-2">
+                                            <AlertTriangle className="w-4 h-4 text-warning-500" />
+                                            Moderate semantic consistency with some variations
+                                        </li>
+                                    )}
+                                    {testResult.unificationScore <= 0.6 && (
+                                        <li className="flex items-center gap-2">
+                                            <AlertTriangle className="w-4 h-4 text-danger-500" />
+                                            Significant semantic variations between languages
+                                        </li>
+                                    )}
+                                    <li className="flex items-center gap-2">
+                                        <Network className="w-4 h-4 text-primary-500" />
+                                        SAST successfully generated representations for {Object.keys(testResult.sastRepresentations).length} languages
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

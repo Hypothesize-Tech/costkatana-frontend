@@ -993,7 +993,7 @@ export const ConversationalAgent: React.FC = () => {
 
               {/* Model Dropdown */}
               {showModelDropdown && (
-                <div className="absolute top-full left-0 mt-2 w-80 card shadow-2xl backdrop-blur-xl border border-primary-200/30 z-50 max-h-80 overflow-y-auto animate-scale-in">
+                <div className="absolute top-full left-0 mt-2 w-80 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 z-50 max-h-80 overflow-y-auto animate-scale-in">
                   {availableModels.map((model) => (
                     <button
                       key={model.id}
@@ -1029,47 +1029,57 @@ export const ConversationalAgent: React.FC = () => {
             </div>
 
             {/* Chat Mode Controls */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <label className="label text-xs">Chat Mode:</label>
-                <select
-                  value={chatMode}
-                  onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
-                  className="input text-xs py-1 px-2 min-w-0"
-                >
-                  <option value="fastest">⚡ Fastest</option>
-                  <option value="balanced">⚖️ Balanced</option>
-                  <option value="cheapest">💰 Cheapest</option>
-                </select>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-3">
+                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
+                  Chat Mode:
+                </label>
+                <div className="relative">
+                  <select
+                    value={chatMode}
+                    onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
+                    className="input text-sm py-2 px-3 pr-8 min-w-[120px] appearance-none bg-white dark:bg-gray-800"
+                  >
+                    <option value="fastest">Fastest</option>
+                    <option value="balanced">Balanced</option>
+                    <option value="cheapest">Cheapest</option>
+                  </select>
+                  <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary pointer-events-none" />
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <label className="label text-xs flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={useMultiAgent}
                     onChange={(e) => setUseMultiAgent(e.target.checked)}
                     className="w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  🤖 Multi-Agent
+                  <CpuChipIcon className="w-4 h-4 text-primary-500" />
+                  Multi-Agent
                 </label>
               </div>
 
-              <button
-                onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
-                className="btn-ghost text-xs font-display font-medium"
-              >
-                📊 Optimizations
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
+                  className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
+                  title="View Optimizations"
+                >
+                  <ChartBarIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Optimizations</span>
+                </button>
 
-              <button
-                onClick={() => navigate('/memory')}
-                className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
-                title="Manage AI Memory & Personalization"
-              >
-                <BoltIcon className="w-4 h-4" />
-                🧠 Memory
-              </button>
+                <button
+                  onClick={() => navigate('/memory')}
+                  className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
+                  title="Manage AI Memory & Personalization"
+                >
+                  <BoltIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Memory</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1077,7 +1087,7 @@ export const ConversationalAgent: React.FC = () => {
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="card bg-gradient-danger/10 border border-danger-200/30 p-4 animate-scale-in">
+            <div className="glass bg-gradient-danger/10 border border-danger-200/30 p-4 animate-scale-in shadow-2xl backdrop-blur-xl">
               <div className="flex items-center gap-3">
                 <div className="bg-gradient-danger p-2 rounded-lg">
                   <SparklesIcon className="w-4 h-4 text-white" />
@@ -1124,7 +1134,7 @@ export const ConversationalAgent: React.FC = () => {
                         <button
                           key={index}
                           onClick={() => sendMessage(question.text)}
-                          className="card card-hover p-4 text-left transition-all duration-300 hover:scale-105 group"
+                          className="glass p-4 text-left transition-all duration-300 hover:scale-105 group shadow-lg backdrop-blur-xl border border-primary-200/30 hover:border-primary-300/50"
                         >
                           <div className="flex items-start gap-3">
                             <div className="bg-gradient-primary/10 p-2 rounded-lg group-hover:bg-gradient-primary group-hover:glow-primary transition-all duration-300">
@@ -1151,7 +1161,7 @@ export const ConversationalAgent: React.FC = () => {
 
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-              <div className={`max-w-4xl ${message.role === 'user' ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'card'} p-4 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'}`}>
+              <div className={`max-w-4xl ${message.role === 'user' ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30'} p-4 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'}`}>
                 {renderMessageContent(message.content, message)}
                 <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-primary-200/20">
                   <div className="flex items-center gap-3 text-xs">
@@ -1288,7 +1298,7 @@ export const ConversationalAgent: React.FC = () => {
 
           {isLoading && (
             <div className="flex justify-start animate-fade-in">
-              <div className="card p-4 rounded-2xl rounded-bl-sm">
+              <div className="glass p-4 rounded-2xl rounded-bl-sm shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center gap-3">
                   <div className="bg-gradient-primary p-2 rounded-lg animate-pulse glow-primary">
                     <SparklesIcon className="w-4 h-4 text-white" />

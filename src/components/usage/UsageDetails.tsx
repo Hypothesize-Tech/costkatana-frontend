@@ -28,7 +28,7 @@ export const UsageDetails: React.FC<UsageDetailsProps> = ({
   };
 
   return (
-    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl overflow-hidden bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -117,14 +117,14 @@ export const UsageDetails: React.FC<UsageDetailsProps> = ({
         </div>
 
         {expanded && (
-          <div className="mt-4 space-y-4 border-t border-accent-200/30 pt-4">
+          <div className="mt-4 space-y-4 border-t border-primary-200/30 pt-4">
             {usage.prompt && (
               <div>
                 <h4 className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-1 flex items-center">
                   <DocumentTextIcon className="h-4 w-4 mr-1" />
                   Prompt
                 </h4>
-                <div className="p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-secondary to-light-bg-tertiary dark:from-dark-bg-secondary dark:to-dark-bg-tertiary">
+                <div className="p-3 glass rounded-lg border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
                   <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary whitespace-pre-wrap">
                     {usage.prompt}
                   </p>
@@ -138,7 +138,7 @@ export const UsageDetails: React.FC<UsageDetailsProps> = ({
                   <DocumentTextIcon className="h-4 w-4 mr-1" />
                   Response
                 </h4>
-                <div className="p-3 glass rounded-lg border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
+                <div className="p-3 glass rounded-lg border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                   <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary whitespace-pre-wrap">
                     {usage.completion}
                   </p>

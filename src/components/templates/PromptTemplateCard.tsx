@@ -28,18 +28,6 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
   onCopy,
   onFavorite,
 }) => {
-  const getCategoryColor = (category: string) => {
-    const colors = {
-      general: "bg-gray-100 text-gray-800",
-      coding: "bg-blue-100 text-blue-800",
-      writing: "bg-green-100 text-green-800",
-      analysis: "bg-purple-100 text-purple-800",
-      creative: "bg-pink-100 text-pink-800",
-      business: "bg-yellow-100 text-yellow-800",
-      custom: "bg-indigo-100 text-indigo-800",
-    };
-    return colors[category as keyof typeof colors] || colors.general;
-  };
 
   const getVisibilityIcon = (visibility: string) => {
     switch (visibility) {
@@ -57,23 +45,23 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
   };
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 hover:shadow-2xl transition-all duration-300">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/40 transition-all duration-300">
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">
-              <h3 className="text-xl font-display font-bold gradient-text truncate">
+              <h3 className="text-xl font-display font-bold gradient-text-primary truncate">
                 {template.name}
               </h3>
               {template.isFavorite && (
-                <div className="w-6 h-6 rounded-full bg-gradient-warning flex items-center justify-center glow-warning">
+                <div className="w-6 h-6 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg">
                   <FiStar className="w-3 h-3 text-white fill-current" />
                 </div>
               )}
               {getVisibilityIcon(template.sharing.visibility) && (
-                <div className="w-5 h-5 rounded-full bg-gradient-accent/20 flex items-center justify-center">
-                  <span className="text-accent-500">
+                <div className="w-5 h-5 rounded-full bg-gradient-highlight/20 flex items-center justify-center">
+                  <span className="text-highlight-500">
                     {getVisibilityIcon(template.sharing.visibility)}
                   </span>
                 </div>
@@ -88,7 +76,7 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
             <button
               onClick={() => onFavorite(template)}
               className={`btn-icon-sm ${template.isFavorite
-                ? "bg-gradient-warning text-white glow-warning"
+                ? "bg-gradient-accent text-white shadow-lg"
                 : "btn-icon-secondary"
                 }`}
               title={
@@ -103,14 +91,14 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
             </button>
             <button
               onClick={() => onCopy(template)}
-              className="btn-icon-sm btn-icon-accent"
+              className="btn-icon-sm btn-icon-primary"
               title="Copy template"
             >
               <FiCopy className="w-4 h-4" />
             </button>
             <button
               onClick={() => onView(template)}
-              className="btn-icon-sm btn-icon-info"
+              className="btn-icon-sm btn-icon-highlight"
               title="View template"
             >
               <FiEye className="w-4 h-4" />
@@ -142,7 +130,7 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
 
         {/* Content Preview */}
         <div className="mb-6">
-          <p className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary line-clamp-3 glass p-4 rounded-lg border border-primary-200/30 bg-gradient-primary/10">
+          <p className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary line-clamp-3 glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
             {template.content}
           </p>
         </div>
@@ -150,7 +138,7 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
         {/* Variables */}
         {template.variables.length > 0 && (
           <div className="mb-6">
-            <p className="font-display font-medium gradient-text text-sm mb-3">
+            <p className="font-display font-medium gradient-text-secondary text-sm mb-3">
               Variables ({template.variables.length}):
             </p>
             <div className="flex flex-wrap gap-2">
@@ -194,22 +182,22 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 text-center border-t border-primary-200/30 pt-6">
-          <div className="glass rounded-lg p-3 border border-success-200/30">
+          <div className="glass rounded-lg p-3 border border-success-200/30 shadow-lg backdrop-blur-xl">
             <p className="font-display font-bold gradient-text-success text-lg">
               {template.usage.count}
             </p>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">Uses</p>
           </div>
-          <div className="glass rounded-lg p-3 border border-warning-200/30">
-            <p className="font-display font-bold gradient-text-warning text-lg">
+          <div className="glass rounded-lg p-3 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+            <p className="font-display font-bold gradient-text-accent text-lg">
               {template.usage.averageRating
                 ? template.usage.averageRating.toFixed(1)
                 : "N/A"}
             </p>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">Rating</p>
           </div>
-          <div className="glass rounded-lg p-3 border border-info-200/30">
-            <p className="font-display font-bold gradient-text-info text-lg">
+          <div className="glass rounded-lg p-3 border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+            <p className="font-display font-bold gradient-text-highlight text-lg">
               v{template.version}
             </p>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">Version</p>
@@ -219,15 +207,15 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
         {/* Footer */}
         <div className="flex justify-between items-center mt-6 pt-4 border-t border-primary-200/30">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-accent/20 flex items-center justify-center">
-              <FiClock className="w-2 h-2 text-accent-500" />
+            <div className="w-4 h-4 rounded-full bg-gradient-secondary/20 flex items-center justify-center">
+              <FiClock className="w-2 h-2 text-secondary-500" />
             </div>
             <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">
               Created {formatDate(template.createdAt)}
             </span>
           </div>
           {template.metadata.estimatedTokens && (
-            <div className="glass px-3 py-1 rounded-full border border-success-200/30 bg-gradient-success/20">
+            <div className="glass px-3 py-1 rounded-full border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
               <span className="font-display font-semibold text-success-700 dark:text-success-300 text-xs">
                 ~{template.metadata.estimatedTokens} tokens
               </span>

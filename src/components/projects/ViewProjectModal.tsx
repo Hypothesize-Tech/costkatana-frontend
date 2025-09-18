@@ -105,13 +105,13 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
         <div className="flex justify-between items-start p-8 border-b border-primary-200/30 glass rounded-t-xl">
           <div className="flex-1 min-w-0">
             <div className="flex gap-4 items-center mb-4">
-              <div className="flex justify-center items-center w-16 h-16 bg-gradient-primary rounded-2xl glow-primary">
+              <div className="flex justify-center items-center w-16 h-16 bg-gradient-primary rounded-2xl shadow-lg">
                 <span className="text-white font-display font-bold text-2xl">
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <h2 className="text-4xl font-display font-bold gradient-text">
+                <h2 className="text-4xl font-display font-bold gradient-text-primary">
                   {project.name}
                 </h2>
                 <span
@@ -226,14 +226,14 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
             <div className="space-y-8">
               {/* Key Metrics */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                   <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                       <FiDollarSign className="w-6 h-6 text-white" />
                     </div>
                     <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Total Budget</span>
                   </div>
-                  <p className="text-3xl font-display font-bold gradient-text mb-2">
+                  <p className="text-3xl font-display font-bold gradient-text-primary mb-2">
                     {formatCurrency(project.budget?.amount || 0)}
                   </p>
                   <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -241,9 +241,9 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                   <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                       <FiTrendingUp className="w-6 h-6 text-white" />
                     </div>
                     <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Spent</span>
@@ -258,9 +258,9 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+                <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
                   <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                       <FiTarget className="w-6 h-6 text-white" />
                     </div>
                     <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Remaining</span>

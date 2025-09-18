@@ -146,7 +146,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 text-left align-middle transition-all animate-scale-in">
+                            <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 text-left align-middle transition-all animate-scale-in">
                                 <div className="flex items-center justify-between mb-8">
                                     <div className="flex items-center">
                                         <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
@@ -205,7 +205,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
 
                                 {/* Error State */}
                                 {error && (
-                                    <div className="card p-6 bg-danger-500/10 border border-danger-200/30 rounded-xl text-danger-700 dark:text-danger-300 animate-fade-in mb-6">
+                                    <div className="glass p-6 bg-danger-500/10 border border-danger-200/30 rounded-xl text-danger-700 dark:text-danger-300 animate-fade-in mb-6">
                                         <div className="flex">
                                             <ExclamationTriangleIcon className="h-6 w-6 text-danger-500 mr-3 glow-danger" />
                                             <div>
@@ -220,7 +220,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 {simulationResult && (
                                     <div className="space-y-6">
                                         {/* Summary */}
-                                        <div className="card p-8 bg-gradient-primary/10 border border-primary-200/30 rounded-xl shadow-lg animate-fade-in">
+                                        <div className="glass p-8 bg-gradient-primary/10 border border-primary-200/30 rounded-xl shadow-lg animate-fade-in">
                                             <div className="flex items-center justify-between mb-4">
                                                 <h4 className="text-xl font-display font-bold gradient-text">Optimization Opportunities</h4>
                                                 <div className="text-right">
@@ -239,7 +239,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                         </div>
 
                                         {/* Optimization Options */}
-                                        <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                        <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
                                             <h4 className="text-xl font-display font-bold gradient-text mb-6">Optimization Options</h4>
                                             <div className="space-y-4">
                                                 {(simulationResult.optimizedOptions || []).map((option, index) => (
@@ -305,7 +305,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
 
                                         {/* Recommendations */}
                                         {(simulationResult.recommendations || []).length > 0 && (
-                                            <div className="card p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                            <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
                                                 <h4 className="text-xl font-display font-bold gradient-text mb-6">AI Recommendations</h4>
                                                 <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5">
                                                     <ul className="space-y-4">

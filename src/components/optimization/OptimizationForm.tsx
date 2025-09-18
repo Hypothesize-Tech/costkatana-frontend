@@ -160,13 +160,13 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
 
   return (
     <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="card shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden backdrop-blur-xl border border-primary-200/30">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-6xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-8 border-b border-primary-200/30 bg-gradient-primary/10">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <SparklesIcon className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-2xl font-display font-bold gradient-text">
+            <h2 className="text-2xl font-display font-bold gradient-text-primary">
               AI Usage Optimization
             </h2>
           </div>
@@ -185,12 +185,12 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
           >
             <div className="space-y-8">
               {/* Quick Setup */}
-              <div className="glass rounded-xl p-6 border border-primary-200/30">
+              <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">⚡</span>
                   </div>
-                  <h3 className="font-display font-semibold gradient-text text-lg">
+                  <h3 className="font-display font-semibold gradient-text-primary text-lg">
                     Quick Start
                   </h3>
                 </div>
@@ -202,9 +202,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Provider & Model Selection */}
-              <div className="glass rounded-xl p-6 border border-accent-200/30">
+              <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">🤖</span>
                   </div>
                   <h3 className="font-display font-semibold gradient-text-accent text-lg">
@@ -249,9 +249,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Prompt Input */}
-              <div className="glass rounded-xl p-6 border border-success-200/30">
+              <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">📝</span>
                   </div>
                   <h3 className="font-display font-semibold gradient-text-success text-lg">
@@ -346,10 +346,10 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
             <div className="w-1/2 p-8 bg-gradient-primary/5 border-l border-primary-200/30 overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                     <EyeIcon className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className="text-xl font-display font-bold gradient-text">
+                  <h3 className="text-xl font-display font-bold gradient-text-primary">
                     Optimization Preview
                   </h3>
                 </div>
@@ -366,7 +366,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                         <span className="text-white text-xs">💰</span>
                       </div>
                       <p className="font-display font-semibold gradient-text-success">
@@ -377,7 +377,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                       ${formatSmartNumber(previewData.totalSavings || 0)}
                     </p>
                   </div>
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center glow-success">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center shadow-lg">
                     <SparklesIcon className="w-8 h-8 text-white" />
                   </div>
                 </div>
@@ -402,9 +402,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Optimization Techniques */}
-              <div className="glass rounded-xl p-6 border border-accent-200/30 mb-8">
+              <div className="glass rounded-xl p-6 border border-accent-200/30 mb-8 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">⚙️</span>
                   </div>
                   <h4 className="font-display font-semibold gradient-text-accent">
@@ -419,7 +419,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                         className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-4 h-4 bg-gradient-primary rounded-full glow-primary"></div>
+                          <div className="w-4 h-4 bg-gradient-primary rounded-full shadow-lg"></div>
                           <span className="font-body text-light-text-primary dark:text-dark-text-primary capitalize">
                             {technique.replace(/_/g, " ")}
                           </span>
@@ -441,9 +441,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               )}
 
               {/* Suggestions */}
-              <div className="glass rounded-xl p-6 border border-secondary-200/30">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">💡</span>
                   </div>
                   <h4 className="font-display font-semibold gradient-text-secondary">
@@ -464,10 +464,10 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                               {suggestion.type || "Optimization"}
                             </h5>
                             <span className={`px-3 py-1 rounded-full text-xs font-display font-medium ${suggestion.estimatedSavings
-                                ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
-                                : suggestion.implemented
-                                  ? "bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30"
-                                  : "bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border border-accent-200/30"
+                              ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
+                              : suggestion.implemented
+                                ? "bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30"
+                                : "bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border border-accent-200/30"
                               }`}>
                               {suggestion.estimatedSavings
                                 ? `$${formatSmartNumber(suggestion.estimatedSavings)} saved`
@@ -491,7 +491,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                               </div>
                               <div className="w-full bg-light-background-secondary dark:bg-dark-background-secondary rounded-full h-2">
                                 <div
-                                  className="bg-gradient-primary h-2 rounded-full glow-primary transition-all duration-300"
+                                  className="bg-gradient-primary h-2 rounded-full shadow-lg transition-all duration-300"
                                   style={{
                                     width: `${suggestion.confidence * 100}%`,
                                   }}
@@ -503,10 +503,10 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                             <div>
                               <span
                                 className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-display font-medium ${suggestion.impact === "high"
-                                    ? "bg-gradient-danger/20 text-danger-700 dark:text-danger-300 border border-danger-200/30"
-                                    : suggestion.impact === "medium"
-                                      ? "bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border border-warning-200/30"
-                                      : "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
+                                  ? "bg-gradient-danger/20 text-danger-700 dark:text-danger-300 border border-danger-200/30"
+                                  : suggestion.impact === "medium"
+                                    ? "bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border border-warning-200/30"
+                                    : "bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30"
                                   }`}
                               >
                                 {suggestion.impact} impact

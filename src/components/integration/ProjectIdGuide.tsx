@@ -75,12 +75,12 @@ await optimizer.bulkImport(usageData);`;
 
   return (
     <div className="space-y-8">
-      <div className="card p-6 bg-gradient-primary/10 border border-primary-200/30 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 p-6">
         <div className="flex items-center mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
             <InformationCircleIcon className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-xl font-display font-bold gradient-text">
+          <h3 className="text-xl font-display font-bold gradient-text-primary">
             🆔 Project ID Integration
           </h3>
         </div>
@@ -91,12 +91,12 @@ await optimizer.bulkImport(usageData);`;
       </div>
 
       {/* Project List */}
-      <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
             <FolderIcon className="w-4 h-4 text-white" />
           </div>
-          <h4 className="text-xl font-display font-bold gradient-text">
+          <h4 className="text-xl font-display font-bold gradient-text-primary">
             📁 Available Projects
           </h4>
         </div>
@@ -104,7 +104,7 @@ await optimizer.bulkImport(usageData);`;
           {projects?.map((project) => (
             <div
               key={project._id}
-              className="card border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden"
+              className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden"
             >
               <div className="p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-b border-success-200/30">
                 <div className="flex items-center justify-between">
@@ -140,7 +140,7 @@ await optimizer.bulkImport(usageData);`;
                     )}
                   </button>
                 </div>
-                <div className="mt-4 glass p-3 rounded-xl border border-success-200/30">
+                <div className="mt-4 glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                   <code className="text-sm font-mono text-success-700 dark:text-success-300 break-all">
                     🆔 {project._id}
                   </code>
@@ -154,7 +154,7 @@ await optimizer.bulkImport(usageData);`;
                     <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center mr-2 shadow-lg">
                       <CodeBracketIcon className="w-3 h-3 text-white" />
                     </div>
-                    <h6 className="text-sm font-display font-bold gradient-text">
+                    <h6 className="text-sm font-display font-bold gradient-text-primary">
                       💻 Usage Example
                     </h6>
                   </div>
@@ -165,16 +165,16 @@ await optimizer.bulkImport(usageData);`;
                         `example-${project._id}`,
                       )
                     }
-                    className="p-2 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                    className="p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
                   >
                     {copied === `example-${project._id}` ? (
                       <CheckIcon className="h-4 w-4 gradient-text-success" />
                     ) : (
-                      <DocumentDuplicateIcon className="h-4 w-4 gradient-text" />
+                      <DocumentDuplicateIcon className="h-4 w-4 gradient-text-primary" />
                     )}
                   </button>
                 </div>
-                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-dark-bg/5 dark:bg-light-bg/5">
+                <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-dark-bg/5 dark:bg-light-bg/5">
                   <pre className="text-xs font-mono text-light-text-primary dark:text-dark-text-primary overflow-x-auto">
                     <code>
                       {generateProjectUsageExample(project._id, project.name)}
@@ -187,10 +187,10 @@ await optimizer.bulkImport(usageData);`;
 
           {(!projects || projects.length === 0) && (
             <div className="text-center py-12">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
                 <FolderIcon className="w-8 h-8 text-white" />
               </div>
-              <p className="text-lg font-display font-bold gradient-text mb-2">No projects found</p>
+              <p className="text-lg font-display font-bold gradient-text-primary mb-2">No projects found</p>
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Create a project to get started with project-based tracking
               </p>
@@ -200,7 +200,7 @@ await optimizer.bulkImport(usageData);`;
       </div>
 
       {/* Integration Tips */}
-      <div className="card p-6 bg-gradient-accent/10 border border-accent-200/30 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-accent/10 p-6">
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center mr-3 shadow-lg">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +219,7 @@ await optimizer.bulkImport(usageData);`;
             "Tag your usage data for better organization and reporting",
             "Monitor project analytics to optimize AI usage"
           ].map((tip, index) => (
-            <div key={index} className="glass p-3 rounded-xl border border-accent-200/30 hover:bg-accent-500/5 transition-all duration-300">
+            <div key={index} className="glass p-3 rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl hover:bg-accent-500/5 transition-all duration-300">
               <div className="flex items-start">
                 <div className="w-2 h-2 bg-gradient-accent rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
                 <span className="text-sm font-body text-accent-700 dark:text-accent-300">{tip}</span>
@@ -230,7 +230,7 @@ await optimizer.bulkImport(usageData);`;
       </div>
 
       {/* Environment Variables */}
-      <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-6">
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center mr-3 shadow-lg">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,21 +246,21 @@ await optimizer.bulkImport(usageData);`;
           Set these environment variables in your application:
         </p>
         <div className="space-y-3">
-          <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-100/20 dark:bg-warning-800/20">
+          <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-warning-100/20 dark:bg-warning-800/20">
             <div className="flex items-center justify-between">
               <code className="text-sm font-mono text-warning-800 dark:text-warning-200 break-all">
-                API_KEY={window.location.origin}/api
+                API_KEY=ck_live_sk_a7b9c2d4e8f1g3h5j6k9l2m4n7p0q3r5s8t1u4v7w0x3y6z9
               </code>
               <button
                 onClick={() =>
                   copyToClipboard(
-                    `${window.location.origin}/api`,
-                    "dashboard-url",
+                    "ck_live_sk_a7b9c2d4e8f1g3h5j6k9l2m4n7p0q3r5s8t1u4v7w0x3y6z9",
+                    "api-key-sample",
                   )
                 }
-                className="ml-3 p-2 glass rounded-xl border border-warning-200/30 hover:bg-warning-500/10 transition-all duration-300 hover:scale-110"
+                className="ml-3 p-2 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl hover:bg-warning-500/10 transition-all duration-300 hover:scale-110"
               >
-                {copied === "dashboard-url" ? (
+                {copied === "api-key-sample" ? (
                   <CheckIcon className="h-4 w-4 gradient-text-success" />
                 ) : (
                   <DocumentDuplicateIcon className="h-4 w-4 gradient-text-warning" />
@@ -268,7 +268,7 @@ await optimizer.bulkImport(usageData);`;
               </button>
             </div>
           </div>
-          <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-100/20 dark:bg-warning-800/20">
+          <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-warning-100/20 dark:bg-warning-800/20">
             <code className="text-sm font-mono text-warning-800 dark:text-warning-200">
               DEFAULT_PROJECT_ID=your-project-id
             </code>

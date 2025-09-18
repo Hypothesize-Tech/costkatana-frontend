@@ -23,8 +23,8 @@ export const WebhookList: React.FC<WebhookListProps> = ({
 }) => {
     if (loading) {
         return (
-            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
-                <h2 className="text-lg font-semibold mb-4 text-light-text-primary dark:text-dark-text-primary">Your Webhooks</h2>
+            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <h2 className="text-lg font-semibold mb-4 text-secondary-900 dark:text-white">Your Webhooks</h2>
                 <div className="space-y-4">
                     {[1, 2, 3].map(i => (
                         <div key={i} className="animate-pulse">
@@ -37,14 +37,14 @@ export const WebhookList: React.FC<WebhookListProps> = ({
     }
 
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
-            <h2 className="text-lg font-semibold mb-4 text-light-text-primary dark:text-dark-text-primary">Your Webhooks</h2>
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <h2 className="text-lg font-semibold mb-4 text-secondary-900 dark:text-white">Your Webhooks</h2>
 
             {webhooks.length === 0 ? (
                 <div className="text-center py-8">
-                    <Webhook className="w-12 h-12 text-light-text-tertiary dark:text-dark-text-tertiary mx-auto mb-3" />
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary">No webhooks configured</p>
-                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">Create your first webhook to get started</p>
+                    <Webhook className="w-12 h-12 text-secondary-400 dark:text-secondary-500 mx-auto mb-3" />
+                    <p className="text-secondary-600 dark:text-secondary-300">No webhooks configured</p>
+                    <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1">Create your first webhook to get started</p>
                 </div>
             ) : (
                 <div className="space-y-3">

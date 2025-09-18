@@ -18,12 +18,12 @@ export const WebhookDetails: React.FC<WebhookDetailsProps> = ({
     onCopySecret
 }) => {
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 mb-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h2 className="text-2xl font-display font-bold gradient-text-primary">{webhook.name}</h2>
                     {webhook.description && (
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary mt-1">{webhook.description}</p>
+                        <p className="text-secondary-600 dark:text-secondary-300 mt-1">{webhook.description}</p>
                     )}
                     <div className="flex items-center gap-4 mt-3">
                         <span className={`px-3 py-1 text-xs font-medium rounded-full glass border border-accent-200/30 ${webhook.active
@@ -32,8 +32,8 @@ export const WebhookDetails: React.FC<WebhookDetailsProps> = ({
                             }`}>
                             {webhook.active ? 'Active' : 'Inactive'}
                         </span>
-                        <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">v{webhook.version}</span>
-                        <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <span className="text-sm text-secondary-500 dark:text-secondary-400">v{webhook.version}</span>
+                        <span className="text-sm text-secondary-500 dark:text-secondary-400">
                             Created {new Date(webhook.createdAt).toLocaleDateString()}
                         </span>
                     </div>
@@ -66,48 +66,48 @@ export const WebhookDetails: React.FC<WebhookDetailsProps> = ({
             <div className="space-y-6">
                 {/* URL Section */}
                 <div>
-                    <h3 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
                         <Globe className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                         Endpoint URL
                     </h3>
-                    <div className="glass rounded-xl border border-accent-200/30 bg-light-bg-100/50 dark:bg-dark-bg-100/50 p-3 font-mono text-sm break-all text-light-text-primary dark:text-dark-text-primary">
+                    <div className="glass rounded-xl border border-primary-200/30 bg-secondary-50/50 dark:bg-secondary-800/50 p-3 font-mono text-sm break-all text-secondary-900 dark:text-white">
                         {webhook.url}
                     </div>
                 </div>
 
                 {/* Secret Section */}
                 <div>
-                    <h3 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
                         <Lock className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                         Webhook Secret
                     </h3>
                     <div className="flex items-center gap-2">
-                        <div className="glass rounded-xl border border-accent-200/30 bg-light-bg-100/50 dark:bg-dark-bg-100/50 p-3 font-mono text-sm flex-1 text-light-text-primary dark:text-dark-text-primary">
+                        <div className="glass rounded-xl border border-primary-200/30 bg-secondary-50/50 dark:bg-secondary-800/50 p-3 font-mono text-sm flex-1 text-secondary-900 dark:text-white">
                             {webhook.secret}
                         </div>
                         <button
                             onClick={() => onCopySecret(webhook.secret || '')}
-                            className="p-2 glass rounded-xl border border-accent-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-300"
+                            className="p-2 glass rounded-xl border border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-300"
                             title="Copy secret"
                         >
                             <Copy className="w-5 h-5" />
                         </button>
                     </div>
-                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                    <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
                         Use this secret to verify webhook signatures
                     </p>
                 </div>
 
                 {/* Events Section */}
                 <div>
-                    <h3 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
+                    <h3 className="text-sm font-medium text-secondary-900 dark:text-white mb-2">
                         Subscribed Events ({webhook.events.length})
                     </h3>
                     <div className="flex flex-wrap gap-2">
                         {webhook.events.map((event: string) => (
                             <span
                                 key={event}
-                                className="px-3 py-1 text-xs glass rounded-full border border-accent-200/30 bg-gradient-to-r from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50 text-primary-800 dark:text-primary-200"
+                                className="px-3 py-1 text-xs glass rounded-full border border-primary-200/30 bg-gradient-to-r from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50 text-primary-800 dark:text-primary-200"
                             >
                                 {event.split('.').join(' ')}
                             </span>
@@ -118,16 +118,16 @@ export const WebhookDetails: React.FC<WebhookDetailsProps> = ({
                 {/* Authentication Section */}
                 {webhook.auth && webhook.auth.type !== 'none' && (
                     <div>
-                        <h3 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
+                        <h3 className="text-sm font-medium text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
                             <Lock className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                             Authentication
                         </h3>
-                        <div className="glass rounded-xl border border-accent-200/30 bg-light-bg-100/50 dark:bg-dark-bg-100/50 p-3">
-                            <p className="text-sm text-light-text-primary dark:text-dark-text-primary">
+                        <div className="glass rounded-xl border border-primary-200/30 bg-secondary-50/50 dark:bg-secondary-800/50 p-3">
+                            <p className="text-sm text-secondary-900 dark:text-white">
                                 <span className="font-medium">Type:</span> {webhook.auth.type}
                             </p>
                             {webhook.auth.hasCredentials && (
-                                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                                <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
                                     Credentials configured
                                 </p>
                             )}
@@ -219,39 +219,39 @@ export const WebhookDetails: React.FC<WebhookDetailsProps> = ({
 
                 {/* Statistics */}
                 <div>
-                    <h3 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
                         <RefreshCw className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                         Performance
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20 p-3 text-center">
-                            <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 p-3 text-center">
+                            <p className="text-2xl font-bold text-secondary-900 dark:text-white">
                                 {webhook.stats.totalDeliveries}
                             </p>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Total</p>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Total</p>
                         </div>
-                        <div className="glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 p-3 text-center">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 p-3 text-center">
                             <p className="text-2xl font-bold text-success-600 dark:text-success-400">
                                 {webhook.stats.successfulDeliveries}
                             </p>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Success</p>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Success</p>
                         </div>
-                        <div className="glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20 p-3 text-center">
-                            <p className="text-2xl font-bold text-error-600 dark:text-error-400">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-3 text-center">
+                            <p className="text-2xl font-bold text-danger-600 dark:text-danger-400">
                                 {webhook.stats.failedDeliveries}
                             </p>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Failed</p>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Failed</p>
                         </div>
-                        <div className="glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-3 text-center">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-3 text-center">
                             <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                                 {webhook.stats.averageResponseTime || '-'}
                                 {webhook.stats.averageResponseTime && <span className="text-sm">ms</span>}
                             </p>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Avg Time</p>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">Avg Time</p>
                         </div>
                     </div>
                     {webhook.stats.lastDeliveryAt && (
-                        <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
+                        <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-2">
                             Last delivery: {new Date(webhook.stats.lastDeliveryAt).toLocaleString()}
                         </p>
                     )}

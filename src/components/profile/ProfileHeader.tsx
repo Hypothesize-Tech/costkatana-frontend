@@ -29,11 +29,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   };
 
   return (
-    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8">
+    <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="flex items-center space-x-8">
         {/* Avatar */}
         <div className="relative">
-          <div className="flex justify-center items-center w-28 h-28 text-3xl font-display font-bold text-white bg-gradient-primary rounded-2xl glow-primary">
+          <div className="flex justify-center items-center w-28 h-28 text-3xl font-display font-bold text-white bg-gradient-primary rounded-2xl shadow-lg">
             {user.avatar ? (
               <img
                 src={user.avatar}
@@ -59,7 +59,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
         {/* User Info */}
         <div className="flex-1">
-          <h1 className="text-3xl font-display font-bold gradient-text mb-2">
+          <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">
             {user.name || "User"}
           </h1>
           <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg mb-4">{user.email}</p>
@@ -106,13 +106,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
         {/* Subscription Badge */}
         <div className="text-right">
-          <div className="glass rounded-xl p-4 border border-success-200/30">
+          <div className="glass rounded-xl p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
             <span
               className={`inline-flex items-center px-4 py-2 rounded-xl font-display font-bold text-white shadow-lg ${user.subscription?.plan === "pro"
-                  ? "bg-gradient-secondary glow-secondary"
-                  : user.subscription?.plan === "enterprise"
-                    ? "bg-gradient-warning glow-warning"
-                    : "bg-gradient-primary glow-primary"
+                ? "bg-gradient-secondary"
+                : user.subscription?.plan === "enterprise"
+                  ? "bg-gradient-warning"
+                  : "bg-gradient-primary"
                 }`}
             >
               {user.subscription?.plan || "Free"} Plan

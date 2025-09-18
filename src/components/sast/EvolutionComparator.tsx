@@ -117,12 +117,12 @@ const EvolutionComparator: React.FC = () => {
     return (
         <div className="space-y-8">
             {/* Input Section */}
-            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                         <Zap className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-display font-bold gradient-text">
+                    <h2 className="text-2xl font-display font-bold gradient-text-primary">
                         Evolution Comparator
                     </h2>
                 </div>
@@ -173,9 +173,9 @@ const EvolutionComparator: React.FC = () => {
             </div>
 
             {/* Example Texts */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                         <span className="text-white text-sm">💡</span>
                     </div>
                     <h3 className="font-display font-semibold gradient-text-secondary">Try These Examples</h3>
@@ -195,7 +195,7 @@ const EvolutionComparator: React.FC = () => {
 
             {/* Error Display */}
             {error && (
-                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl">
+                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
                         <AlertTriangle className="w-5 h-5" />
                         <span className="font-body">{error}</span>
@@ -207,21 +207,21 @@ const EvolutionComparator: React.FC = () => {
             {comparison && (
                 <div className="space-y-6">
                     {/* Overview Card */}
-                    <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                     <BarChart3 className="w-5 h-5 text-white" />
                                 </div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary">
                                     Comparison Results
                                 </h3>
                             </div>
                             {getRecommendationBadge(comparison.metadata.recommendedApproach)}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <div className="glass rounded-lg p-6 border border-success-200/30 text-center">
-                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.tokenReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.tokenReduction) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                            <div className="glass rounded-lg p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.tokenReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.tokenReduction) === 'text-blue-600' ? 'gradient-text-primary' : 'text-danger-600'}`}>
                                     {formatPercentage(comparison.improvements.tokenReduction)}
                                 </div>
                                 <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Token Reduction</div>
@@ -232,23 +232,23 @@ const EvolutionComparator: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="glass rounded-lg p-6 border border-secondary-200/30 text-center">
-                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                            <div className="glass rounded-lg p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.ambiguityReduction) === 'text-blue-600' ? 'gradient-text-primary' : 'text-danger-600'}`}>
                                     {formatPercentage(comparison.improvements.ambiguityReduction)}
                                 </div>
                                 <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Ambiguity Reduction</div>
                                 <Brain className="w-5 h-5 mx-auto text-secondary-500" />
                             </div>
 
-                            <div className="glass rounded-lg p-6 border border-accent-200/30 text-center">
-                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                            <div className="glass rounded-lg p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+                                <div className={`text-3xl font-display font-bold mb-2 ${getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.semanticClarityGain * 100) === 'text-blue-600' ? 'gradient-text-primary' : 'text-danger-600'}`}>
                                     {formatPercentage(comparison.improvements.semanticClarityGain * 100)}
                                 </div>
                                 <div className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Semantic Clarity</div>
                                 <CheckCircle2 className="w-5 h-5 mx-auto text-accent-500" />
                             </div>
 
-                            <div className="glass rounded-lg p-6 border border-warning-200/30 text-center">
+                            <div className="glass rounded-lg p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                 <div className="text-3xl font-display font-bold mb-2">
                                     {comparison.improvements.crossLingualCompatibility ? (
                                         <CheckCircle2 className="w-10 h-10 mx-auto text-success-500" />
@@ -265,12 +265,12 @@ const EvolutionComparator: React.FC = () => {
                     {/* Detailed Comparison */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Traditional Cortex */}
-                        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                     <FileText className="w-5 h-5 text-white" />
                                 </div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary">
                                     Traditional Cortex
                                 </h3>
                             </div>
@@ -306,9 +306,9 @@ const EvolutionComparator: React.FC = () => {
                         </div>
 
                         {/* SAST Cortex */}
-                        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
                                     <Brain className="w-5 h-5 text-white" />
                                 </div>
                                 <h3 className="text-xl font-display font-bold gradient-text-secondary">
@@ -345,9 +345,9 @@ const EvolutionComparator: React.FC = () => {
                     </div>
 
                     {/* Processing Metadata */}
-                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center glow-accent">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                                 <Clock className="w-5 h-5 text-white" />
                             </div>
                             <h3 className="text-xl font-display font-bold gradient-text-accent">
@@ -355,17 +355,17 @@ const EvolutionComparator: React.FC = () => {
                             </h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                 <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Complexity Level</div>
-                                <div className="font-display font-bold gradient-text capitalize">{comparison.metadata.complexityLevel}</div>
+                                <div className="font-display font-bold gradient-text-primary capitalize">{comparison.metadata.complexityLevel}</div>
                             </div>
-                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                 <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Processing Time</div>
-                                <div className="font-display font-bold gradient-text">{comparison.metadata.comparisonTime}ms</div>
+                                <div className="font-display font-bold gradient-text-primary">{comparison.metadata.comparisonTime}ms</div>
                             </div>
-                            <div className="glass rounded-lg p-4 border border-primary-200/30 text-center">
+                            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                 <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Processing Efficiency</div>
-                                <div className={`font-display font-bold ${getImprovementColor(comparison.improvements.processingEfficiency) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.processingEfficiency) === 'text-blue-600' ? 'gradient-text' : 'text-danger-600'}`}>
+                                <div className={`font-display font-bold ${getImprovementColor(comparison.improvements.processingEfficiency) === 'text-green-600' ? 'gradient-text-success' : getImprovementColor(comparison.improvements.processingEfficiency) === 'text-blue-600' ? 'gradient-text-primary' : 'text-danger-600'}`}>
                                     {formatPercentage(comparison.improvements.processingEfficiency)}
                                 </div>
                             </div>

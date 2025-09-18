@@ -91,14 +91,14 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
+            <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Header */}
                 <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <span className="text-white text-xl">📊</span>
                         </div>
-                        <h2 className="text-2xl font-display font-bold gradient-text-secondary">
+                        <h2 className="text-2xl font-display font-bold gradient-text-primary">
                             Dataset Versions - {dataset?.name}
                         </h2>
                     </div>
@@ -111,7 +111,7 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
                 </div>
 
                 {/* Content */}
-                <div className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
+                <div className="p-8 space-y-8">
                     {/* Create New Version */}
                     {!showCreateVersion ? (
                         <div className="mb-6">
@@ -127,12 +127,12 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
                             </button>
                         </div>
                     ) : (
-                        <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                                     <PlusIcon className="h-4 w-4 text-white" />
                                 </div>
-                                <h3 className="text-xl font-display font-bold gradient-text-info">Create New Version</h3>
+                                <h3 className="text-xl font-display font-bold gradient-text-success">Create New Version</h3>
                             </div>
                             <form onSubmit={handleCreateVersion} className="space-y-6">
                                 <div>
@@ -181,12 +181,12 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
                     )}
 
                     {/* Versions List */}
-                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                                 <span className="text-white text-sm">📜</span>
                             </div>
-                            <h3 className="text-xl font-display font-bold gradient-text-accent">Version History</h3>
+                            <h3 className="text-xl font-display font-bold gradient-text-secondary">Version History</h3>
                         </div>
 
                         {loading ? (
@@ -196,7 +196,7 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
                             </div>
                         ) : versions.length === 0 ? (
                             <div className="text-center py-8">
-                                <DocumentDuplicateIcon className="h-12 w-12 text-accent-400 mx-auto mb-4 animate-pulse" />
+                                <DocumentDuplicateIcon className="h-12 w-12 text-secondary-400 mx-auto mb-4 animate-pulse" />
                                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">No versions found</p>
                             </div>
                         ) : (
@@ -205,8 +205,8 @@ export const DatasetVersionsModal: React.FC<DatasetVersionsModalProps> = ({
                                     <div
                                         key={version.id}
                                         className={`glass p-4 rounded-lg border transition-all hover:shadow-lg ${version.id === dataset?._id
-                                                ? 'border-primary-300/50 shadow-lg glow-primary'
-                                                : 'border-secondary-200/30 hover:border-secondary-300/50'
+                                            ? 'border-primary-300/50 shadow-lg glow-primary'
+                                            : 'border-secondary-200/30 hover:border-secondary-300/50'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">

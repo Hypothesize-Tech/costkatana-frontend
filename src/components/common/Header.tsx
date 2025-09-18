@@ -115,7 +115,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-3 w-56 origin-top-right rounded-2xl card shadow-2xl border-primary-200/30 focus:outline-none animate-scale-in">
+            <Menu.Items className="absolute right-0 z-10 mt-3 w-56 origin-top-right rounded-2xl glass shadow-2xl border border-primary-200/30 focus:outline-none animate-scale-in backdrop-blur-xl">
               <div className="px-4 py-3 border-b border-primary-200/20">
                 <p className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
                   Signed in as

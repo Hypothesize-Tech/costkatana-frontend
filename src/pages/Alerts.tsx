@@ -121,30 +121,32 @@ export const Alerts: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-2xl font-display font-bold gradient-text-primary">
-            Alerts
-          </h1>
-          <p className="my-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-            Manage and review system alerts and notifications.
-          </p>
-        </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            onClick={() => markAllAsReadMutation.mutate()}
-            className="btn-primary inline-flex items-center"
-          >
-            Mark all as read
-          </button>
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-2xl font-display font-bold gradient-text-primary">
+              Alerts
+            </h1>
+            <p className="my-2 text-sm text-secondary-600 dark:text-secondary-300">
+              Manage and review system alerts and notifications.
+            </p>
+          </div>
+          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <button
+              type="button"
+              onClick={() => markAllAsReadMutation.mutate()}
+              className="btn-primary inline-flex items-center"
+            >
+              Mark all as read
+            </button>
+          </div>
         </div>
       </div>
 
       <AlertSummary summary={summary} />
 
-      <div className="mt-8 glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-4">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
         <AlertFilter
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -156,11 +158,11 @@ export const Alerts: React.FC = () => {
             <LoadingSpinner />
           </div>
         ) : isError || !alerts ? (
-          <div className="p-8 text-center text-error-500">
+          <div className="p-8 text-center text-danger-500">
             Failed to load alerts. Please try again.
           </div>
         ) : alerts.data.length === 0 ? (
-          <div className="p-8 text-center text-light-text-tertiary dark:text-dark-text-tertiary">No alerts found.</div>
+          <div className="p-8 text-center text-secondary-500 dark:text-secondary-400">No alerts found.</div>
         ) : (
           <>
             <AlertList

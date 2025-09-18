@@ -102,15 +102,15 @@ export const BulkOptimizer: React.FC = () => {
   };
 
   return (
-    <div className="card shadow-2xl backdrop-blur-xl border border-primary-200/30">
+    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
         <div className="flex justify-between items-center">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                 <RocketLaunchIcon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-3xl font-display font-bold gradient-text">
+              <h3 className="text-3xl font-display font-bold gradient-text-primary">
                 Bulk Optimization
               </h3>
             </div>
@@ -129,9 +129,9 @@ export const BulkOptimizer: React.FC = () => {
 
       {isOpen && (
         <div className="p-8">
-          <div className="glass rounded-xl p-6 border border-primary-200/30 mb-6">
-            <h4 className="font-display font-semibold gradient-text mb-4 flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center">
+          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl mb-6">
+            <h4 className="font-display font-semibold gradient-text-primary mb-4 flex items-center gap-2">
+              <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                 <span className="text-white text-xs">⚙️</span>
               </div>
               Analysis Filters
@@ -195,7 +195,7 @@ export const BulkOptimizer: React.FC = () => {
           </div>
 
           {/* Cortex Toggle */}
-          <div className="glass rounded-xl p-6 border border-secondary-200/30 mb-6">
+          <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl mb-6">
             <CortexToggle
               enabled={cortexEnabled}
               onChange={setCortexEnabled}
@@ -203,9 +203,9 @@ export const BulkOptimizer: React.FC = () => {
               onConfigChange={handleCortexConfigChange}
             />
             {cortexEnabled && (
-              <div className="mt-4 p-4 glass rounded-lg border border-secondary-200/30">
+              <div className="mt-4 p-4 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">✨</span>
                   </div>
                   <p className="font-display font-medium gradient-text-secondary">Cortex Enhancement Active</p>
@@ -235,9 +235,9 @@ export const BulkOptimizer: React.FC = () => {
           </div>
 
           {prompts.length > 0 && (
-            <div className="glass rounded-xl p-6 border border-success-200/30">
+            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">📝</span>
                 </div>
                 <h4 className="text-xl font-display font-bold gradient-text-success">
@@ -246,7 +246,7 @@ export const BulkOptimizer: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="glass rounded-lg p-4 border border-primary-200/30">
+                <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -257,7 +257,7 @@ export const BulkOptimizer: React.FC = () => {
                     />
                     <label
                       htmlFor="select-all"
-                      className="font-display font-semibold gradient-text cursor-pointer"
+                      className="font-display font-semibold gradient-text-primary cursor-pointer"
                     >
                       Select All ({selectedPrompts.length} / {prompts.length})
                     </label>

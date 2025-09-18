@@ -44,7 +44,7 @@ export const StatsCard = ({
   const isNegative = change?.trend === "down";
 
   return (
-    <div className={`card p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 ${className || ""}`}>
+    <div className={`glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 ${className || ""}`}>
       <div className="flex justify-between items-center">
         <div className="flex-1">
           <dt className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-3">

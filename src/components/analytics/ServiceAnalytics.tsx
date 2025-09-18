@@ -19,14 +19,14 @@ interface ServiceAnalyticsProps {
 }
 
 const COLORS = [
-  "#9B5DE5", // Primary purple
-  "#F15BB5", // Secondary pink
-  "#FF9500", // Accent orange
-  "#FEE440", // Highlight yellow
-  "#00F5D4", // Success cyan
-  "#FF4F64", // Danger red
-  "#A259FF", // Light purple
-  "#00C4B4", // Teal
+  "#06ec9e", // Primary green
+  "#009454", // Dark green
+  "#f59e0b", // Accent yellow
+  "#3b82f6", // Highlight blue
+  "#10b981", // Success green
+  "#ef4444", // Danger red
+  "#8b5cf6", // Purple
+  "#06b6d4", // Cyan
 ];
 
 export const ServiceAnalytics: React.FC<ServiceAnalyticsProps> = ({ data }) => {
@@ -35,17 +35,17 @@ export const ServiceAnalytics: React.FC<ServiceAnalyticsProps> = ({ data }) => {
       const data = payload[0];
       const serviceName = data.payload?.service || data.name || 'Unknown Service';
       return (
-        <div className="p-4 card shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in">
-          <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">{serviceName}</p>
+        <div className="p-4 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-scale-in bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">🔧 {serviceName}</p>
           <div className="space-y-2">
             <p className="text-sm font-medium gradient-text">
-              Cost: {formatCurrency(data.value)}
+              💰 Cost: {formatCurrency(data.value)}
             </p>
             <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
-              Percentage: {data.payload?.percentage?.toFixed(1) || 0}%
+              📊 Percentage: {data.payload?.percentage?.toFixed(1) || 0}%
             </p>
             <p className="text-sm font-medium gradient-text-success">
-              Calls: {data.payload?.calls?.toLocaleString() || 0}
+              📞 Calls: {data.payload?.calls?.toLocaleString() || 0}
             </p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export const ServiceAnalytics: React.FC<ServiceAnalyticsProps> = ({ data }) => {
             verticalAlign="bottom"
             height={36}
             wrapperStyle={{
-              fontFamily: 'Outfit, system-ui, sans-serif',
+              fontFamily: 'Inter, system-ui, sans-serif',
               fontWeight: '600'
             }}
             formatter={(value: string, entry: any) => (

@@ -30,16 +30,16 @@ export const OptimizationStats: React.FC<OptimizationStatsProps> = ({
       gradient: "bg-gradient-success",
       textGradient: "gradient-text-success",
       borderColor: "border-success-200/30",
-      glowClass: "glow-success",
+      glowClass: "shadow-lg",
     },
     {
       title: "Tokens Saved",
       value: stats.totalTokensSaved.toLocaleString(),
       icon: ChartBarIcon,
       gradient: "bg-gradient-primary",
-      textGradient: "gradient-text",
+      textGradient: "gradient-text-primary",
       borderColor: "border-primary-200/30",
-      glowClass: "glow-primary",
+      glowClass: "shadow-lg",
     },
     {
       title: "Avg Improvement",
@@ -48,7 +48,7 @@ export const OptimizationStats: React.FC<OptimizationStatsProps> = ({
       gradient: "bg-gradient-secondary",
       textGradient: "gradient-text-secondary",
       borderColor: "border-secondary-200/30",
-      glowClass: "glow-secondary",
+      glowClass: "shadow-lg",
     },
     {
       title: "Application Rate",
@@ -57,7 +57,7 @@ export const OptimizationStats: React.FC<OptimizationStatsProps> = ({
       gradient: "bg-gradient-accent",
       textGradient: "gradient-text-accent",
       borderColor: "border-accent-200/30",
-      glowClass: "glow-accent",
+      glowClass: "shadow-lg",
     },
   ];
 
@@ -66,7 +66,7 @@ export const OptimizationStats: React.FC<OptimizationStatsProps> = ({
       {cards.map((card, index) => (
         <div
           key={index}
-          className={`glass rounded-xl p-6 shadow-lg border ${card.borderColor} backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-opacity-50`}
+          className={`glass rounded-xl p-6 shadow-lg border ${card.borderColor} backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 hover:border-opacity-50`}
         >
           <div className="flex items-center gap-4">
             <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center ${card.glowClass}`}>

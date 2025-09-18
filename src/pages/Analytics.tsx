@@ -420,10 +420,10 @@ export const Analytics: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 min-h-screen animate-fade-in">
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen animate-fade-in">
         {/* Header */}
         <div className="mb-8">
-          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
             <div className="flex items-center mb-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center mr-4 shadow-lg">
                 <ChartBarIcon className="h-7 w-7 text-white" />
@@ -498,7 +498,7 @@ export const Analytics: React.FC = () => {
                   Project Comparison
                 </h3>
               </div>
-              <span className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary bg-gradient-warning/10 px-3 py-1 rounded-lg">
+              <span className="text-sm font-medium text-secondary-600 dark:text-secondary-300 bg-gradient-to-r from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 px-3 py-1 rounded-lg border border-accent-200/30">
                 Select 2+ projects to compare
               </span>
             </div>
@@ -513,11 +513,11 @@ export const Analytics: React.FC = () => {
                       className="mt-1 w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2"
                     />
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate block">
+                      <span className="text-sm font-display font-semibold text-secondary-900 dark:text-white truncate block">
                         {project.name}
                       </span>
                       {project.description && (
-                        <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary truncate block mt-1">
+                        <span className="text-xs font-body text-secondary-600 dark:text-secondary-300 truncate block mt-1">
                           {project.description}
                         </span>
                       )}
@@ -527,8 +527,8 @@ export const Analytics: React.FC = () => {
               ))}
             </div>
             {selectedProjects.length < 2 && (
-              <div className="mt-4 p-3 bg-gradient-warning/10 border border-warning-200/30 rounded-xl">
-                <p className="text-sm font-medium text-warning-700 dark:text-warning-400 flex items-center">
+              <div className="mt-4 p-3 bg-gradient-to-r from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 border border-accent-200/30 rounded-xl">
+                <p className="text-sm font-medium text-accent-700 dark:text-accent-400 flex items-center">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
@@ -552,7 +552,7 @@ export const Analytics: React.FC = () => {
                       <CurrencyDollarIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</p>
+                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Cost</p>
                       <p className="text-3xl font-display font-bold gradient-text-success">
                         {formatCurrency(data.summary.totalCost)}
                       </p>
@@ -566,7 +566,7 @@ export const Analytics: React.FC = () => {
                       <ChartBarIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Tokens</p>
+                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Tokens</p>
                       <p className="text-3xl font-display font-bold gradient-text">
                         {data.summary.totalTokens.toLocaleString()}
                       </p>
@@ -582,7 +582,7 @@ export const Analytics: React.FC = () => {
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">API Requests</p>
+                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">API Requests</p>
                       <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
                         {data.summary.totalRequests.toLocaleString()}
                       </p>
@@ -598,7 +598,7 @@ export const Analytics: React.FC = () => {
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Cost/Request</p>
+                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Avg Cost/Request</p>
                       <p className="text-3xl font-display font-bold gradient-text-accent">
                         {formatCurrency(data.summary.averageCostPerRequest)}
                       </p>
@@ -619,7 +619,7 @@ export const Analytics: React.FC = () => {
                     </h3>
                   </div>
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-lg font-display font-semibold text-secondary-900 dark:text-white">
                       {data.summary.budgetUtilization.toFixed(1)}% of budget used
                     </span>
                     <span className="text-lg font-display font-bold gradient-text">
@@ -708,7 +708,7 @@ export const Analytics: React.FC = () => {
                           </svg>
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Projects</p>
+                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Projects</p>
                           <p className="text-3xl font-display font-bold gradient-text">
                             {comparison.summary?.totalProjects ?? 0}
                           </p>
@@ -722,7 +722,7 @@ export const Analytics: React.FC = () => {
                           <CurrencyDollarIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</p>
+                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Cost</p>
                           <p className="text-3xl font-display font-bold gradient-text-success">
                             {formatCurrency(comparison.summary?.totalCost ?? 0)}
                           </p>
@@ -736,7 +736,7 @@ export const Analytics: React.FC = () => {
                           <ChartBarIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Tokens</p>
+                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Tokens</p>
                           <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
                             {(comparison.summary?.totalTokens ?? 0).toLocaleString()}
                           </p>
@@ -752,7 +752,7 @@ export const Analytics: React.FC = () => {
                           </svg>
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</p>
+                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Requests</p>
                           <p className="text-3xl font-display font-bold gradient-text-accent">
                             {(comparison.summary?.totalRequests ?? 0).toLocaleString()}
                           </p>
@@ -776,7 +776,7 @@ export const Analytics: React.FC = () => {
                       <h3 className="text-xl font-display font-bold gradient-text">
                         Project Details
                       </h3>
-                      <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      <p className="mt-1 text-sm font-body text-secondary-600 dark:text-secondary-300">
                         Detailed comparison of selected projects
                       </p>
                     </div>
@@ -786,22 +786,22 @@ export const Analytics: React.FC = () => {
                   <table className="min-w-full divide-y divide-primary-200/20">
                     <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30">
                       <tr>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Project
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Cost
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Tokens
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Requests
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Avg Cost/Request
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-light-text-muted dark:text-dark-text-muted uppercase tracking-wider">
+                        <th className="px-6 py-4 text-left text-xs font-display font-bold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">
                           Budget Usage
                         </th>
                       </tr>
@@ -819,7 +819,7 @@ export const Analytics: React.FC = () => {
                                 </div>
                               </div>
                               <div className="ml-4">
-                                <div className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                <div className="text-sm font-display font-semibold text-secondary-900 dark:text-white">
                                   {project?.projectName || 'Unknown Project'}
                                 </div>
                               </div>
@@ -831,17 +831,17 @@ export const Analytics: React.FC = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                               {(project?.metrics?.tokens || 0).toLocaleString()}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                               {(project?.metrics?.requests || 0).toLocaleString()}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                               {formatCurrency(project?.metrics?.averageCostPerRequest || 0)}
                             </div>
                           </td>
@@ -858,7 +858,7 @@ export const Analytics: React.FC = () => {
                                 </span>
                               </div>
                             ) : (
-                              <span className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">No budget set</span>
+                              <span className="text-sm font-medium text-secondary-500 dark:text-secondary-400">No budget set</span>
                             )}
                           </td>
                         </tr>
@@ -878,7 +878,7 @@ export const Analytics: React.FC = () => {
               <ChartBarIcon className="h-10 w-10 text-white" />
             </div>
             <h3 className="text-2xl font-display font-bold gradient-text mb-2">No Analytics Data</h3>
-            <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-lg font-body text-secondary-600 dark:text-secondary-300">
               Start using your AI services to see analytics here.
             </p>
           </div>

@@ -46,25 +46,25 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className="glass rounded-xl shadow-lg border border-primary-200/30 backdrop-blur-xl hover:scale-105 transition-all duration-300 hover:border-primary-300/50 overflow-hidden">
+    <div className="glass rounded-xl shadow-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 hover:border-primary-300/50 overflow-hidden">
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div className="flex-1 min-w-0">
             <div className="flex gap-3 items-center mb-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                 <span className="text-white font-display font-bold text-lg">
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-display font-bold gradient-text truncate mb-1">
+                <h3 className="text-xl font-display font-bold gradient-text-primary truncate mb-1">
                   {project.name}
                 </h3>
                 <span
                   className={`px-3 py-1 text-xs font-display font-bold rounded-full border ${project.isActive
-                      ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30"
-                      : "bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30"
+                    ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30"
+                    : "bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30"
                     }`}
                 >
                   {project.isActive ? "Active" : "Inactive"}
@@ -120,10 +120,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="w-full h-3 bg-light-background-secondary dark:bg-dark-background-secondary rounded-full overflow-hidden">
             <div
               className={`h-3 rounded-full transition-all duration-500 ${isOverBudget
-                  ? "bg-gradient-danger"
-                  : isNearLimit
-                    ? "bg-gradient-warning"
-                    : "bg-gradient-success"
+                ? "bg-gradient-danger"
+                : isNearLimit
+                  ? "bg-gradient-warning"
+                  : "bg-gradient-success"
                 }`}
               style={{ width: `${Math.min(budgetUsagePercentage, 100)}%` }}
             />
@@ -132,8 +132,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="glass rounded-lg p-4 border border-secondary-200/30 text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary mx-auto mb-2">
+          <div className="glass rounded-lg p-4 border border-secondary-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg mx-auto mb-2">
               <FiUsers className="w-4 h-4 text-white" />
             </div>
             <p className="text-lg font-display font-bold gradient-text-secondary">
@@ -141,8 +141,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </p>
             <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Members</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-success-200/30 text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success mx-auto mb-2">
+          <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg mx-auto mb-2">
               <FiDollarSign className="w-4 h-4 text-white" />
             </div>
             <p className="text-lg font-display font-bold gradient-text-success">
@@ -150,8 +150,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </p>
             <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Budget</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-accent-200/30 text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent mx-auto mb-2">
+          <div className="glass rounded-lg p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg mx-auto mb-2">
               <FiTrendingUp className="w-4 h-4 text-white" />
             </div>
             <p className="text-lg font-display font-bold gradient-text-accent">
@@ -183,9 +183,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         {/* Period indicator */}
         {project.budget?.period && (
           <div className="pt-4 mt-6 border-t border-primary-200/30">
-            <div className="glass rounded-lg p-3 border border-primary-200/30 text-center">
+            <div className="glass rounded-lg p-3 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-                Budget period: <span className="font-display font-semibold gradient-text">{project.budget.period}</span>
+                Budget period: <span className="font-display font-semibold gradient-text-primary">{project.budget.period}</span>
               </p>
             </div>
           </div>

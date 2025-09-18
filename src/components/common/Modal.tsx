@@ -57,7 +57,7 @@ export const Modal = ({
             >
               <Dialog.Panel
                 className={cn(
-                  "w-full transform overflow-hidden rounded-2xl card shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 text-left align-middle transition-all animate-scale-in",
+                  "w-full transform overflow-hidden rounded-2xl glass shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 text-left align-middle transition-all animate-scale-in",
                   sizeClasses[size],
                   className,
                 )}

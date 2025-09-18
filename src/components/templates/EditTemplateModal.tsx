@@ -181,13 +181,13 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="xl">
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-8 border-b border-primary-200/30">
+        <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-xl">✏️</span>
             </div>
             <div>
-              <h2 className="text-2xl font-display font-bold gradient-text">
+              <h2 className="text-2xl font-display font-bold gradient-text-primary">
                 Edit Template
               </h2>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -203,12 +203,12 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
         >
           <div className="overflow-y-auto flex-1 p-8 space-y-8">
             {/* Basic Information */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">ℹ️</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text">
+                <h3 className="text-xl font-display font-bold gradient-text-highlight">
                   Basic Information
                 </h3>
               </div>
@@ -261,9 +261,9 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
 
             {/* Template Content */}
-            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">📝</span>
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-success">
@@ -290,10 +290,10 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
 
             {/* Variables */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                     <span className="text-white text-sm">🏷️</span>
                   </div>
                   <h3 className="text-xl font-display font-bold gradient-text-secondary">
@@ -313,10 +313,10 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
               {formData.variables.map((variable, index) => (
                 <div
                   key={index}
-                  className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl"
+                  className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10"
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-display font-semibold gradient-text">
+                    <h4 className="font-display font-semibold gradient-text-primary">
                       Variable {index + 1}
                     </h4>
                     <button
@@ -438,9 +438,9 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
 
             {/* Metadata */}
-            <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">📊</span>
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-accent">
@@ -550,12 +550,12 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
 
             {/* Sharing Settings */}
-            <div className="glass rounded-xl p-6 border border-purple-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-purple flex items-center justify-center glow-purple">
+                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">🔗</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text-purple">
+                <h3 className="text-xl font-display font-bold gradient-text-secondary">
                   Sharing Settings
                 </h3>
               </div>
@@ -603,11 +603,11 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="glass rounded-xl p-6 border border-indigo-200/30 shadow-lg backdrop-blur-xl">
+          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center text-sm">
                 {hasChanges ? (
-                  <span className="gradient-text-warning font-medium">
+                  <span className="gradient-text-accent font-medium">
                     You have unsaved changes
                   </span>
                 ) : (

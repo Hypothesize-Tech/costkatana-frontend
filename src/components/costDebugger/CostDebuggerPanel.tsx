@@ -22,7 +22,7 @@ export const CostDebuggerPanel: React.FC<CostDebuggerPanelProps> = ({
                     <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
                         <span className="text-lg">📊</span>
                     </div>
-                    <h3>Cost Analysis</h3>
+                    <h3 className="font-display font-bold gradient-text">Cost Analysis</h3>
                 </div>
             </div>
 

@@ -98,16 +98,16 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
     };
 
     return (
-        <div className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl ${className}`}>
+        <div className={`glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}>
             {/* Header */}
             <div className="p-8 border-b border-primary-200/30">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <Database className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-display font-bold gradient-text">Telemetry Data</h2>
+                            <h2 className="text-2xl font-display font-bold gradient-text-primary">Telemetry Data</h2>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                                 View and vectorize telemetry records for semantic search
                             </p>
@@ -137,10 +137,10 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
 
                 {/* Selection Actions */}
                 {selectedRecords.size > 0 && (
-                    <div className="mt-6 glass p-4 border border-accent-200/30 bg-gradient-accent/10 rounded-xl shadow-lg">
+                    <div className="mt-6 glass p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                                     <span className="text-white text-sm">✓</span>
                                 </div>
                                 <span className="font-display font-semibold gradient-text-accent">
@@ -185,19 +185,19 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                 ) : (
                     <div className="space-y-4">
                         {/* Header Row */}
-                        <div className="flex items-center gap-4 p-4 glass rounded-xl border border-primary-200/30">
+                        <div className="flex items-center gap-4 p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                             <input
                                 type="checkbox"
                                 checked={selectedRecords.size === records.length}
                                 onChange={handleSelectAll}
                                 className="toggle-switch-sm"
                             />
-                            <div className="flex-1 font-display font-semibold gradient-text">Operation</div>
-                            <div className="w-24 font-display font-semibold gradient-text">Status</div>
-                            <div className="w-20 font-display font-semibold gradient-text">Cost</div>
-                            <div className="w-20 font-display font-semibold gradient-text">Duration</div>
-                            <div className="w-24 font-display font-semibold gradient-text">Vectorized</div>
-                            <div className="w-20 font-display font-semibold gradient-text">Actions</div>
+                            <div className="flex-1 font-display font-semibold gradient-text-primary">Operation</div>
+                            <div className="w-24 font-display font-semibold gradient-text-highlight">Status</div>
+                            <div className="w-20 font-display font-semibold gradient-text-success">Cost</div>
+                            <div className="w-20 font-display font-semibold gradient-text-accent">Duration</div>
+                            <div className="w-24 font-display font-semibold gradient-text-secondary">Vectorized</div>
+                            <div className="w-20 font-display font-semibold gradient-text-primary">Actions</div>
                         </div>
 
                         {/* Data Rows */}
@@ -244,19 +244,19 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                                 </div>
 
                                 <div className="w-20 text-right">
-                                    <span className="font-display font-semibold gradient-text-warning text-sm">
+                                    <span className="font-display font-semibold gradient-text-accent text-sm">
                                         {record.duration_ms}ms
                                     </span>
                                 </div>
 
                                 <div className="w-24 text-center">
                                     {isVectorized(record) ? (
-                                        <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mx-auto glow-success">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mx-auto shadow-lg">
                                             <CheckCircle className="w-4 h-4 text-white" />
                                         </div>
                                     ) : (
-                                        <div className="w-6 h-6 rounded-full bg-gradient-accent/20 flex items-center justify-center mx-auto">
-                                            <XCircle className="w-4 h-4 text-accent-500" />
+                                        <div className="w-6 h-6 rounded-full bg-gradient-secondary/20 flex items-center justify-center mx-auto">
+                                            <XCircle className="w-4 h-4 text-secondary-500" />
                                         </div>
                                     )}
                                 </div>
@@ -279,27 +279,27 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                 )}
 
                 {/* Summary Stats */}
-                <div className="mt-8 glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                    <h4 className="font-display font-semibold gradient-text mb-4">Summary Statistics</h4>
+                <div className="mt-8 glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h4 className="font-display font-semibold gradient-text-primary mb-4">Summary Statistics</h4>
                     <div className="grid grid-cols-4 gap-6 text-center">
-                        <div className="glass rounded-lg p-4 border border-primary-200/30">
-                            <div className="text-3xl font-display font-bold gradient-text">{records.length}</div>
+                        <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="text-3xl font-display font-bold gradient-text-primary">{records.length}</div>
                             <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Total Records</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-success-200/30">
+                        <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
                             <div className="text-3xl font-display font-bold gradient-text-success">
                                 {records.filter(r => isVectorized(r)).length}
                             </div>
                             <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Vectorized</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-warning-200/30">
-                            <div className="text-3xl font-display font-bold gradient-text-warning">
+                        <div className="glass rounded-lg p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="text-3xl font-display font-bold gradient-text-accent">
                                 {records.filter(r => !isVectorized(r)).length}
                             </div>
                             <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Not Vectorized</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-info-200/30">
-                            <div className="text-3xl font-display font-bold gradient-text-info">
+                        <div className="glass rounded-lg p-4 border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="text-3xl font-display font-bold gradient-text-highlight">
                                 {records.filter(r => r.cost_usd && r.cost_usd > 0).length}
                             </div>
                             <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">With Costs</div>
@@ -308,23 +308,23 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                 </div>
 
                 {/* Vectorization Flow Explanation */}
-                <div className="mt-8 glass p-6 rounded-xl border border-info-200/30 bg-gradient-info/10 shadow-lg backdrop-blur-xl">
+                <div className="mt-8 glass p-6 rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
                             <span className="text-white text-sm">🧠</span>
                         </div>
-                        <h4 className="font-display font-semibold gradient-text-info">How Vectorization Works</h4>
+                        <h4 className="font-display font-semibold gradient-text-highlight">How Vectorization Works</h4>
                     </div>
                     <div className="flex items-center gap-3 text-sm mb-4 flex-wrap">
-                        <span className="glass px-3 py-2 rounded-lg border border-info-200/30 font-display font-medium text-light-text-primary dark:text-dark-text-primary">Telemetry Data</span>
-                        <ArrowRight className="w-4 h-4 text-info-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-info-200/30 font-display font-medium text-light-text-primary dark:text-dark-text-primary">AI Analysis</span>
-                        <ArrowRight className="w-4 h-4 text-info-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-info-200/30 font-display font-medium text-light-text-primary dark:text-dark-text-primary">Vector Embeddings</span>
-                        <ArrowRight className="w-4 h-4 text-info-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-info-200/30 font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Search</span>
-                        <ArrowRight className="w-4 h-4 text-info-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-info-200/30 font-display font-medium text-light-text-primary dark:text-dark-text-primary">Smart Insights</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Telemetry Data</span>
+                        <ArrowRight className="w-4 h-4 text-highlight-500" />
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">AI Analysis</span>
+                        <ArrowRight className="w-4 h-4 text-highlight-500" />
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Vector Embeddings</span>
+                        <ArrowRight className="w-4 h-4 text-highlight-500" />
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Search</span>
+                        <ArrowRight className="w-4 h-4 text-highlight-500" />
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Smart Insights</span>
                     </div>
                     <p className="font-body text-light-text-primary dark:text-dark-text-primary">
                         Vectorized records can be found using natural language queries like "expensive AI operations" or "slow database calls"

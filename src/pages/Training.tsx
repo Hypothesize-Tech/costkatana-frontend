@@ -135,16 +135,16 @@ export const Training: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-8 mb-8">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">
                 Datasets & Fine-Tuning
               </h1>
-              <p className="text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-secondary-600 dark:text-secondary-300">
                 Complete ML pipeline: Dataset management, versioning, PII detection, fine-tuning, and evaluation
               </p>
             </div>
@@ -168,15 +168,15 @@ export const Training: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-2 mb-8">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2 mb-8">
           <nav className="flex space-x-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
                 className={`flex items-center space-x-2 py-3 px-4 font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === tab.id
-                  ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10"
+                  ? "bg-gradient-primary text-white shadow-lg glow-primary"
+                  : "text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10"
                   }`}
               >
                 <tab.icon className="h-5 w-5" />
@@ -192,41 +192,47 @@ export const Training: React.FC = () => {
             <div className="space-y-8">
               {/* Stats Overview */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
                   <div className="flex items-center">
                     <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 mr-4">
                       <DocumentTextIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Datasets</p>
-                      <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">{datasets.length}</p>
+                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Datasets</p>
+                      <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{datasets.length}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
                   <div className="flex items-center">
-                    <CogIcon className="h-8 w-8 text-purple-600" />
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-500">Fine-Tune Jobs</p>
-                      <p className="text-2xl font-bold text-gray-900">{fineTuneJobs.length}</p>
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 mr-4">
+                      <CogIcon className="h-6 w-6 text-highlight-600 dark:text-highlight-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Fine-Tune Jobs</p>
+                      <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{fineTuneJobs.length}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
                   <div className="flex items-center">
-                    <EyeIcon className="h-8 w-8 text-green-600" />
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-500">Evaluations</p>
-                      <p className="text-2xl font-bold text-gray-900">{evaluations.length}</p>
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 mr-4">
+                      <EyeIcon className="h-6 w-6 text-success-600 dark:text-success-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Evaluations</p>
+                      <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{evaluations.length}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
                   <div className="flex items-center">
-                    <ShieldExclamationIcon className="h-8 w-8 text-red-600" />
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-500">PII Items</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-danger-500/20 to-danger-600/20 mr-4">
+                      <ShieldExclamationIcon className="h-6 w-6 text-danger-600 dark:text-danger-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">PII Items</p>
+                      <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                         {datasets.reduce((sum, d) => sum + d.stats.piiStats.totalWithPII, 0)}
                       </p>
                     </div>
@@ -235,52 +241,52 @@ export const Training: React.FC = () => {
               </div>
 
               {/* Enhanced Workflow */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-success-50/50 dark:from-primary-900/20 dark:to-success-900/20 p-6">
+                <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4">
                   Complete ML Pipeline
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">1</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Create Dataset</h3>
-                    <p className="text-xs text-gray-600">Build versioned datasets</p>
+                    <div className="w-10 h-10 bg-gradient-primary text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">1</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Create Dataset</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Build versioned datasets</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">2</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Detect PII</h3>
-                    <p className="text-xs text-gray-600">Analyze & sanitize sensitive data</p>
+                    <div className="w-10 h-10 bg-gradient-secondary text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">2</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Detect PII</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Analyze & sanitize sensitive data</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">3</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Configure Splits</h3>
-                    <p className="text-xs text-gray-600">Train/dev/test allocation</p>
+                    <div className="w-10 h-10 bg-gradient-highlight text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">3</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Configure Splits</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Train/dev/test allocation</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">4</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Fine-Tune</h3>
-                    <p className="text-xs text-gray-600">Train on AWS/OpenAI</p>
+                    <div className="w-10 h-10 bg-gradient-accent text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">4</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Fine-Tune</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Train on AWS/OpenAI</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">5</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Evaluate</h3>
-                    <p className="text-xs text-gray-600">Automated quality assessment</p>
+                    <div className="w-10 h-10 bg-gradient-success text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">5</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Evaluate</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Automated quality assessment</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-yellow-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">6</div>
-                    <h3 className="font-medium text-gray-900 mb-1">Deploy</h3>
-                    <p className="text-xs text-gray-600">Production integration</p>
+                    <div className="w-10 h-10 bg-gradient-warning text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold shadow-lg">6</div>
+                    <h3 className="font-medium text-secondary-900 dark:text-white mb-1">Deploy</h3>
+                    <p className="text-xs text-secondary-600 dark:text-secondary-300">Production integration</p>
                   </div>
                 </div>
                 <div className="mt-6 flex justify-center space-x-4">
                   <button
                     onClick={() => setActiveTab("pipeline")}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                    className="btn-primary"
                   >
                     View Pipeline
                   </button>
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="px-4 py-2 border border-purple-600 text-purple-600 rounded-md hover:bg-purple-50"
+                    className="btn-outline"
                   >
                     Start Building
                   </button>
@@ -300,18 +306,18 @@ export const Training: React.FC = () => {
 
           {activeTab === "scoring" && (
             <div className="space-y-6">
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4">
                   Request Scoring
                 </h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-secondary-600 dark:text-secondary-300 mb-6">
                   Score your AI requests to identify high-quality examples for
                   training. Requests with 4+ stars automatically become training
                   candidates.
                 </p>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-yellow-800 text-sm">
+                <div className="bg-gradient-to-r from-warning-50 to-accent-50 dark:from-warning-900/20 dark:to-accent-900/20 border border-warning-200 dark:border-warning-700/50 rounded-lg p-4">
+                  <p className="text-warning-800 dark:text-warning-300 text-sm">
                     <strong>Note:</strong> Request scoring is integrated into your
                     usage history and chat interface. Visit the Usage page or chat
                     with the AI to start scoring requests.
@@ -328,16 +334,16 @@ export const Training: React.FC = () => {
               {/* Header with Create Button */}
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h2 className="text-xl font-semibold text-secondary-900 dark:text-white">
                     Training Datasets
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-secondary-600 dark:text-secondary-300">
                     Manage your training datasets and export them for fine-tuning
                   </p>
                 </div>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  className="btn-primary flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>Create Dataset</span>
@@ -351,17 +357,17 @@ export const Training: React.FC = () => {
                   <span className="ml-3 text-gray-600">Loading datasets...</span>
                 </div>
               ) : datasets.length === 0 ? (
-                <div className="text-center py-12 bg-gray-50 rounded-lg">
-                  <DocumentTextIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <div className="text-center py-12 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <DocumentTextIcon className="h-12 w-12 text-primary-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-secondary-900 dark:text-white mb-2">
                     No Datasets Yet
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-secondary-600 dark:text-secondary-300 mb-4">
                     Create your first dataset with versioning, PII detection, and automated splits.
                   </p>
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="btn-primary"
                   >
                     Create First Dataset
                   </button>
@@ -369,7 +375,7 @@ export const Training: React.FC = () => {
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {datasets.map((dataset) => (
-                    <div key={dataset._id} className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div key={dataset._id} className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
                       <div className="flex justify-between items-start mb-4">
                         <div>
                           <h3 className="text-lg font-medium text-gray-900">{dataset.name}</h3>

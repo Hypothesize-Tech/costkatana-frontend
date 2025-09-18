@@ -139,11 +139,11 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl">
+      <div className="glass rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         {/* Header */}
         <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <span className="text-white text-xl">📊</span>
             </div>
             <h2 className="text-2xl font-display font-bold gradient-text-primary">
@@ -159,14 +159,14 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {/* Basic Information */}
           <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center glow-info">
+              <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
                 <span className="text-white text-sm">ℹ️</span>
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-info">
+              <h3 className="text-xl font-display font-bold gradient-text-highlight">
                 Basic Information
               </h3>
             </div>
@@ -351,12 +351,12 @@ export const CreateDatasetModal: React.FC<CreateDatasetModalProps> = ({
 
           {/* Advanced Filters */}
           {showAdvanced && (
-            <div className="glass rounded-xl p-6 border border-purple-200/30 shadow-lg backdrop-blur-xl space-y-6">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-purple flex items-center justify-center glow-purple">
+                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">🔍</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text-purple">
+                <h3 className="text-xl font-display font-bold gradient-text-secondary">
                   Advanced Filters
                 </h3>
               </div>

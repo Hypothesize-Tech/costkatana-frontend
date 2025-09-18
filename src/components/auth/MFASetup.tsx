@@ -222,7 +222,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       )}
 
       {/* MFA Status Overview */}
-      <div className="card card-gradient p-6 shadow-lg backdrop-blur-xl">
+      <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
         <h4 className="mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">Current Status</h4>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -243,7 +243,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {setupMode === 'none' && (
         <div className="space-y-6">
           {/* Email MFA */}
-          <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+          <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
             <div className="flex justify-between items-start">
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
@@ -279,7 +279,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
           </div>
 
           {/* TOTP MFA */}
-          <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+          <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
             <div className="flex justify-between items-start">
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
@@ -319,31 +319,33 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {/* TOTP Setup Flow */}
       {setupMode === 'totp' && totpSetup && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg border border-gray-200">
-            <h4 className="flex items-center mb-4 text-lg font-medium text-gray-900">
-              <QrCodeIcon className="mr-2 w-5 h-5" />
+          <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+            <h4 className="flex items-center mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+                <QrCodeIcon className="w-5 h-5 text-white" />
+              </div>
               Setup Authenticator App
             </h4>
 
             <div className="space-y-4">
-              <div className="text-sm text-gray-600">
-                <p className="mb-2">1. Install an authenticator app like Google Authenticator or Authy</p>
+              <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <p className="mb-2">1. Install an authenticator app like Google Authenticator, Authy, or 1Password</p>
                 <p className="mb-2">2. Scan the QR code below with your app</p>
                 <p>3. Enter the 6-digit code from your app to complete setup</p>
               </div>
 
               {/* QR Code */}
-              <div className="flex justify-center p-4 bg-white rounded border">
+              <div className="flex justify-center p-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <img
                   src={totpSetup.qrCodeUrl}
                   alt="TOTP QR Code"
-                  className="w-48 h-48"
+                  className="w-48 h-48 rounded-lg shadow-lg"
                 />
               </div>
 
               {/* Verification */}
               <div className="space-y-3">
-                <label htmlFor="totp-token" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="totp-token" className="label">
                   Enter 6-digit code from your app
                 </label>
                 <input
@@ -351,25 +353,25 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   type="text"
                   value={totpToken}
                   onChange={(e) => setTotpToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="block px-3 py-2 w-full text-2xl tracking-widest text-center rounded-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="input w-full text-2xl tracking-widest text-center"
                   placeholder="000000"
                   maxLength={6}
                 />
               </div>
 
               {/* Backup Codes */}
-              <div className="p-4 bg-yellow-50 rounded-md border border-yellow-200">
-                <h5 className="mb-2 text-sm font-medium text-yellow-800">Backup Codes</h5>
-                <p className="mb-3 text-sm text-yellow-700">
+              <div className="p-4 glass rounded-xl border border-warning-200/30 bg-gradient-to-br from-warning-50/50 to-warning-100/50 shadow-lg backdrop-blur-xl">
+                <h5 className="mb-2 text-sm font-display font-bold text-warning-700 dark:text-warning-300">🔐 Backup Codes</h5>
+                <p className="mb-3 text-sm font-body text-warning-700 dark:text-warning-300">
                   Save these backup codes in a safe place. You can use them to access your account if you lose your authenticator device.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {totpSetup.backupCodes.map((code, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="font-mono text-sm">{code}</span>
+                    <div key={index} className="flex justify-between items-center p-2 glass rounded-lg border border-primary-200/30 shadow-sm backdrop-blur-xl">
+                      <span className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary">{code}</span>
                       <button
                         onClick={() => copyToClipboard(code)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 transition-colors duration-300"
                       >
                         <DocumentDuplicateIcon className="w-4 h-4" />
                       </button>
@@ -378,9 +380,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 </div>
                 <button
                   onClick={downloadBackupCodes}
-                  className="px-3 py-1 text-sm text-yellow-700 rounded border border-yellow-300 hover:bg-yellow-100"
+                  className="btn-ghost text-warning-600 dark:text-warning-400 hover:bg-warning-500/10"
                 >
-                  Download Backup Codes
+                  📥 Download Backup Codes
                 </button>
               </div>
 
@@ -389,9 +391,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 <button
                   onClick={handleVerifyTOTP}
                   disabled={isSettingUpTotp || totpToken.length !== 6}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary flex-1"
                 >
-                  {isSettingUpTotp ? 'Verifying...' : 'Complete Setup'}
+                  {isSettingUpTotp ? '🔄 Verifying...' : '✅ Complete Setup'}
                 </button>
                 <button
                   onClick={() => {
@@ -399,7 +401,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     setTotpSetup(null);
                     setTotpToken('');
                   }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
@@ -412,19 +414,21 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {/* Email Setup Flow */}
       {setupMode === 'email' && emailCodeSent && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg border border-gray-200">
-            <h4 className="flex items-center mb-4 text-lg font-medium text-gray-900">
-              <EnvelopeIcon className="mr-2 w-5 h-5" />
+          <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+            <h4 className="flex items-center mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+                <EnvelopeIcon className="w-5 h-5 text-white" />
+              </div>
               Verify Email Address
             </h4>
 
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                We've sent a 6-digit verification code to your email address. Enter it below to enable email-based two-factor authentication.
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                📧 We've sent a 6-digit verification code to your email address. Enter it below to enable email-based two-factor authentication.
               </p>
 
               <div className="space-y-3">
-                <label htmlFor="email-code" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email-code" className="label">
                   Enter 6-digit code from email
                 </label>
                 <input
@@ -432,7 +436,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   type="text"
                   value={emailCode}
                   onChange={(e) => setEmailCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="block px-3 py-2 w-full text-2xl tracking-widest text-center rounded-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="input w-full text-2xl tracking-widest text-center"
                   placeholder="000000"
                   maxLength={6}
                 />
@@ -442,9 +446,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 <button
                   onClick={handleVerifyEmail}
                   disabled={isSettingUpEmail || emailCode.length !== 6}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary flex-1"
                 >
-                  {isSettingUpEmail ? 'Verifying...' : 'Complete Setup'}
+                  {isSettingUpEmail ? '🔄 Verifying...' : '✅ Complete Setup'}
                 </button>
                 <button
                   onClick={() => {
@@ -452,7 +456,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     setEmailCode('');
                     setEmailCodeSent(false);
                   }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>

@@ -55,7 +55,7 @@
 }
 
 .control-label .icon {
-  @apply w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary;
+  @apply w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg;
   font-size: 1.25rem;
   color: white;
 }
@@ -168,13 +168,13 @@
 }
 
 .type-icon {
-  @apply w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent;
+  @apply w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg;
   font-size: 1rem;
   color: white;
 }
 
 .type-name {
-  @apply font-display font-semibold gradient-text;
+  @apply font-display font-semibold gradient-text-primary;
   text-transform: capitalize;
   flex: 1;
 }
@@ -209,7 +209,7 @@
   left: 0;
   top: 0;
   height: 100%;
-  @apply bg-gradient-primary glow-primary;
+  @apply bg-gradient-primary shadow-lg;
   transition: width 0.3s ease;
 }
 
@@ -228,7 +228,7 @@
 }
 
 .preview-section h5 {
-  @apply text-lg font-display font-semibold gradient-text;
+  @apply text-lg font-display font-semibold gradient-text-primary;
   margin: 0 0 1rem 0;
 }
 
@@ -292,7 +292,7 @@
 }
 
 .apply-button {
-  @apply bg-gradient-success text-white glow-success hover:scale-105;
+  @apply bg-gradient-success text-white shadow-lg hover:scale-105;
 }
 
 .apply-button:hover:not(:disabled) {

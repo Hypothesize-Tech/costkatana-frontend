@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
 
             {this.state.error && import.meta.env.MODE === "development" && (
-              <details className="mb-8 text-left card p-4 animate-scale-in">
+              <details className="mb-8 text-left glass p-4 animate-scale-in shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <summary className="cursor-pointer text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary hover:text-primary-500 transition-colors duration-300">
                   Error details (Development only)
                 </summary>

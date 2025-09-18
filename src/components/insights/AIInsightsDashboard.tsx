@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, TrendingUp, Brain, Target, Clock, DollarSign, Zap, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import NotebookService, { AIInsightsSummary, AnomalyDetection, CostOptimization, PredictiveForecast } from '../../services/notebook.service';
+import { AlertTriangle, TrendingUp, Brain, Target, Zap, CheckCircle, XCircle, AlertCircle, DollarSign } from 'lucide-react';
+import NotebookService, { AIInsightsSummary } from '../../services/notebook.service';
 
 interface AIInsightsDashboardProps {
   timeframe?: string;
@@ -90,11 +90,11 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   if (loading) {
     return (
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="spinner-lg text-primary-500 mb-4"></div>
-            <div className="text-lg font-display font-semibold gradient-text">🧠 Generating AI insights...</div>
+            <div className="text-lg font-display font-semibold gradient-text-primary">🧠 Generating AI insights...</div>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   if (error) {
     return (
-      <div className="card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
             <AlertCircle className="w-5 h-5 text-white" />
@@ -123,13 +123,13 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   if (!insights) {
     return (
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center justify-center h-64 text-center">
           <div>
-            <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
               <Brain className="w-8 h-8 text-white" />
             </div>
-            <div className="text-lg font-display font-bold gradient-text mb-2">No Insights Available</div>
+            <div className="text-lg font-display font-bold gradient-text-primary mb-2">No Insights Available</div>
             <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Start using AI services to generate insights</div>
           </div>
         </div>
@@ -140,13 +140,13 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Header */}
-      <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <Brain className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-3xl font-display font-bold gradient-text">🧠 AI-Powered Insights</h2>
+            <h2 className="text-3xl font-display font-bold gradient-text-primary">🧠 AI-Powered Insights</h2>
           </div>
           <div className="flex items-center gap-3">
             <select
@@ -171,7 +171,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Health Score & Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className={`card card-hover p-6 border ${getHealthScoreColor(insights.overall_health_score)} text-center`}>
+        <div className={`glass rounded-xl p-6 border ${getHealthScoreColor(insights.overall_health_score)} text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300`}>
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <Target className="w-5 h-5 text-white" />
@@ -180,7 +180,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
           </div>
           <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🎯 Health Score</div>
         </div>
-        <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30 text-center">
+        <div className="glass rounded-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
               <AlertTriangle className="w-5 h-5 text-white" />
@@ -189,7 +189,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
           </div>
           <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚠️ Anomalies</div>
         </div>
-        <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 text-center">
+        <div className="glass rounded-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
               <Zap className="w-5 h-5 text-white" />
@@ -198,12 +198,12 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
           </div>
           <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚡ Optimizations</div>
         </div>
-        <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+        <div className="glass rounded-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold gradient-text">{insights.forecasts.length}</div>
+            <div className="text-3xl font-display font-bold gradient-text-primary">{insights.forecasts.length}</div>
           </div>
           <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📈 Forecasts</div>
         </div>
@@ -211,16 +211,16 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Key Insights */}
       {insights.key_insights.length > 0 && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
               <Brain className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">💡 Key Insights</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">💡 Key Insights</h3>
           </div>
           <div className="space-y-4">
             {insights.key_insights.map((insight, index) => (
-              <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+              <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/5 transition-all duration-300">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-gradient-primary rounded-full mt-2 flex-shrink-0 shadow-lg"></div>
                   <p className="font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{insight}</p>
@@ -233,16 +233,16 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Priority Actions */}
       {insights.priority_actions.length > 0 && (
-        <div className="card p-8 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg glow-warning">
+            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
               <Target className="w-5 h-5 text-white" />
             </div>
             <h3 className="text-2xl font-display font-bold gradient-text-warning">🎯 Priority Actions</h3>
           </div>
           <div className="space-y-4">
             {insights.priority_actions.map((action, index) => (
-              <div key={index} className="glass p-4 rounded-xl border border-warning-200/30 hover:bg-warning-500/5 transition-all duration-300">
+              <div key={index} className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl hover:bg-warning-500/5 transition-all duration-300">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-gradient-warning text-white rounded-xl flex items-center justify-center text-sm font-display font-bold flex-shrink-0 shadow-lg">
                     {index + 1}
@@ -257,18 +257,18 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Anomalies */}
       {insights.anomalies.length > 0 && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg glow-danger">
+            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">⚠️ Anomaly Detection</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">⚠️ Anomaly Detection</h3>
           </div>
           <div className="space-y-6">
             {insights.anomalies.map((anomaly) => {
               const SeverityIcon = getSeverityIcon(anomaly.severity);
               return (
-                <div key={anomaly.id} className={`card card-hover p-6 border ${getSeverityColor(anomaly.severity)} transition-all duration-300 hover:scale-105`}>
+                <div key={anomaly.id} className={`glass rounded-xl p-6 border ${getSeverityColor(anomaly.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-4">
                       <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
@@ -292,8 +292,8 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                     </span>
                   </div>
                   {anomaly.recommendations.length > 0 && (
-                    <div className="glass p-4 rounded-xl border border-primary-200/30 mt-4">
-                      <div className="text-sm font-display font-bold gradient-text mb-3">💡 Recommendations:</div>
+                    <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
+                      <div className="text-sm font-display font-bold gradient-text-primary mb-3">💡 Recommendations:</div>
                       <div className="space-y-2">
                         {anomaly.recommendations.slice(0, 2).map((rec, index) => (
                           <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
@@ -313,21 +313,21 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Cost Optimizations */}
       {insights.optimizations.length > 0 && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">⚡ Cost Optimization Opportunities</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">⚡ Cost Optimization Opportunities</h3>
           </div>
           <div className="space-y-6">
             {insights.optimizations.map((optimization) => (
-              <div key={optimization.id} className="card card-hover p-6 border border-primary-200/30 transition-all duration-300 hover:scale-105">
+              <div key={optimization.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 transition-all duration-300 hover:scale-105">
                 <div className="mb-4">
                   <div className="font-display font-bold text-xl text-light-text-primary dark:text-dark-text-primary mb-2">{optimization.title}</div>
                   <div className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{optimization.description}</div>
                   <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex items-center gap-2 glass p-3 rounded-xl border border-success-200/30">
+                    <div className="flex items-center gap-2 glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                       <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                         <DollarSign className="w-3 h-3 text-white" />
                       </div>
@@ -345,8 +345,8 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                   </div>
                 </div>
                 {optimization.steps.length > 0 && (
-                  <div className="glass p-4 rounded-xl border border-primary-200/30 mt-4">
-                    <div className="text-sm font-display font-bold gradient-text mb-3">🛠️ Implementation Steps:</div>
+                  <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
+                    <div className="text-sm font-display font-bold gradient-text-primary mb-3">🛠️ Implementation Steps:</div>
                     <div className="space-y-2">
                       {optimization.steps.slice(0, 3).map((step, index) => (
                         <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
@@ -367,25 +367,25 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Predictive Forecasts */}
       {insights.forecasts.length > 0 && (
-        <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">📈 Predictive Forecasts</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Predictive Forecasts</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {insights.forecasts.map((forecast) => (
-              <div key={forecast.id} className="card card-hover p-6 border border-primary-200/30 transition-all duration-300 hover:scale-105">
+              <div key={forecast.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="font-display font-bold text-lg gradient-text capitalize">
+                  <div className="font-display font-bold text-lg gradient-text-primary capitalize">
                     {forecast.forecast_type} Forecast
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                     <span className="text-xl">{getTrendIcon(forecast.trends.direction)}</span>
                   </div>
                 </div>
-                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 glass p-3 rounded-xl border border-primary-200/30">
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                   📊 Trend: {forecast.trends.direction} • ⏰ {forecast.timeframe}
                 </div>
                 <div className="space-y-2">
@@ -406,4 +406,3 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 };
 
 export default AIInsightsDashboard;
-

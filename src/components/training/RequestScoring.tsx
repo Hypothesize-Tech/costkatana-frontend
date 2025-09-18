@@ -86,7 +86,7 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
   const classes = sizeClasses[size];
 
   return (
-    <div className={`glass rounded-xl p-4 border border-warning-200/30 shadow-lg backdrop-blur-xl ${classes.container}`}>
+    <div className={`glass rounded-xl p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${classes.container}`}>
       {/* Star Rating */}
       <div className="flex items-center space-x-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -94,8 +94,8 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
             key={star}
             onClick={() => handleScoreClick(star)}
             className={`transition-all hover:scale-110 ${star <= score
-                ? "text-warning-400 hover:text-warning-500 glow-warning"
-                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-warning-300"
+              ? "text-accent-400 hover:text-accent-500"
+              : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-accent-300"
               }`}
             disabled={isSubmitting}
           >
@@ -107,7 +107,7 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
           </button>
         ))}
         {score > 0 && (
-          <span className={`ml-3 font-display font-bold gradient-text-warning ${classes.text}`}>
+          <span className={`ml-3 font-display font-bold gradient-text-accent ${classes.text}`}>
             {score}/5
             {score >= 4 && (
               <span className="ml-2 badge-success text-xs">
@@ -120,7 +120,7 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
 
       {/* Expanded Options */}
       {isExpanded && score > 0 && (
-        <div className={`border-t border-warning-200/30 pt-4 ${classes.container}`}>
+        <div className={`border-t border-accent-200/30 pt-4 ${classes.container}`}>
           {/* Training Tags */}
           {showTags && (
             <div>
@@ -135,8 +135,8 @@ export const RequestScoring: React.FC<RequestScoringProps> = ({
                     key={tag}
                     onClick={() => handleTagToggle(tag)}
                     className={`px-3 py-1 rounded-full text-xs font-medium transition-all hover:scale-105 ${selectedTags.includes(tag)
-                        ? "badge-primary glow-primary"
-                        : "badge-secondary hover:badge-primary"
+                      ? "badge-primary glow-primary"
+                      : "badge-secondary hover:badge-primary"
                       }`}
                     disabled={isSubmitting}
                   >

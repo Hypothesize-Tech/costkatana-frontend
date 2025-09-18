@@ -70,7 +70,7 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
                     <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
                         <span className="text-lg">💡</span>
                     </div>
-                    <h2>Optimization Suggestions</h2>
+                    <h2 className="font-display font-bold gradient-text">Optimization Suggestions</h2>
                 </div>
                 <div className="suggestions-summary">
                     <span className="savings-potential">
@@ -142,7 +142,7 @@ export const OptimizationSuggestions: React.FC<OptimizationSuggestionsProps> = (
                         <div className="bg-gradient-danger p-2 rounded-lg glow-danger">
                             <span className="text-lg text-white">💀</span>
                         </div>
-                        <h3>Dead Weight Analysis</h3>
+                        <h3 className="font-display font-bold gradient-text">Dead Weight Analysis</h3>
                     </div>
                     <div className="dead-weight-grid">
                         {deadWeight.redundantInstructions?.length > 0 && (

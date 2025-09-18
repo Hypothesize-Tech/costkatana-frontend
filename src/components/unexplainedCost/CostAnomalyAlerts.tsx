@@ -72,7 +72,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
 
     if (anomalies.length === 0) {
         return (
-            <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="text-center">
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gradient-success glow-success mb-4">
                         <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -80,7 +80,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                         </svg>
                     </div>
                     <h3 className="text-lg font-display font-bold gradient-text-success mb-2">No Anomalies Detected</h3>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary">Your cost patterns are within normal ranges. Great job!</p>
+                    <p className="text-secondary-600 dark:text-secondary-300">Your cost patterns are within normal ranges. Great job!</p>
                 </div>
             </div>
         );
@@ -92,11 +92,11 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
     const lowAnomalies = anomalies.filter(a => a.severity === 'low');
 
     return (
-        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Anomaly Alerts</h2>
-                    <p className="text-light-text-secondary dark:text-dark-text-secondary mt-1">Unusual patterns that need attention</p>
+                    <p className="text-secondary-600 dark:text-secondary-300 mt-1">Unusual patterns that need attention</p>
                 </div>
 
                 <div className="text-right">
@@ -109,32 +109,32 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
 
             {/* Severity Summary */}
             <div className="grid grid-cols-4 gap-3 mb-6">
-                <div className="text-center p-3 glass rounded-xl border border-danger-200/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
+                <div className="text-center p-3 glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 dark:from-danger-900/20 dark:to-danger-800/20">
                     <div className="text-lg font-display font-bold text-danger-700 dark:text-danger-300">
                         {criticalAnomalies.length}
                     </div>
                     <div className="text-xs text-danger-600 dark:text-danger-400">Critical</div>
                 </div>
 
-                <div className="text-center p-3 glass rounded-xl border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                <div className="text-center p-3 glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20">
                     <div className="text-lg font-display font-bold text-secondary-700 dark:text-secondary-300">
                         {highAnomalies.length}
                     </div>
                     <div className="text-xs text-secondary-600 dark:text-secondary-400">High</div>
                 </div>
 
-                <div className="text-center p-3 glass rounded-xl border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
+                <div className="text-center p-3 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                     <div className="text-lg font-display font-bold text-warning-700 dark:text-warning-300">
                         {mediumAnomalies.length}
                     </div>
                     <div className="text-xs text-warning-600 dark:text-warning-400">Medium</div>
                 </div>
 
-                <div className="text-center p-3 glass rounded-xl border border-info-200/30 backdrop-blur-xl bg-gradient-to-br from-info-50/50 to-info-100/50 dark:from-info-900/20 dark:to-info-800/20">
-                    <div className="text-lg font-display font-bold text-info-700 dark:text-info-300">
+                <div className="text-center p-3 glass rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-highlight-50/50 to-highlight-100/50 dark:from-highlight-900/20 dark:to-highlight-800/20">
+                    <div className="text-lg font-display font-bold text-highlight-700 dark:text-highlight-300">
                         {lowAnomalies.length}
                     </div>
-                    <div className="text-xs text-info-600 dark:text-info-400">Low</div>
+                    <div className="text-xs text-highlight-600 dark:text-highlight-400">Low</div>
                 </div>
             </div>
 
@@ -216,7 +216,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-6 pt-6 border-t border-accent-200/30">
+            <div className="mt-6 pt-6 border-t border-primary-200/30">
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={() => {

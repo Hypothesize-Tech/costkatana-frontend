@@ -101,7 +101,7 @@ export const CacheDashboard: React.FC = () => {
             </div>
 
             {/* Cache Provider Info */}
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center mb-6">
                     <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@ export const CacheDashboard: React.FC = () => {
 
             {/* Main Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@ export const CacheDashboard: React.FC = () => {
                     <h2 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">Total Requests</h2>
                     <p className="text-3xl font-display font-bold gradient-text">{metrics.data.redis.totalRequests.toLocaleString()}</p>
                 </div>
-                <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,7 +148,7 @@ export const CacheDashboard: React.FC = () => {
                     <h2 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">Cache Hits</h2>
                     <p className="text-3xl font-display font-bold gradient-text-success">{metrics.data.redis.hits.toLocaleString()}</p>
                 </div>
-                <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border-danger-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +159,7 @@ export const CacheDashboard: React.FC = () => {
                     <h2 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">Cache Misses</h2>
                     <p className="text-3xl font-display font-bold text-danger-600 dark:text-danger-400">{metrics.data.redis.misses.toLocaleString()}</p>
                 </div>
-                <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                <div className="glass p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border border-accent-200/30 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl">
                     <div className="flex items-center justify-between mb-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,47 +174,47 @@ export const CacheDashboard: React.FC = () => {
 
             {/* Performance Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div className="bg-yellow-50 p-4 rounded-lg shadow-md border border-yellow-200">
-                    <h2 className="text-lg font-semibold text-yellow-700">Cost Saved</h2>
-                    <p className="text-2xl font-bold text-yellow-600">${metrics.data.redis.costSaved.toFixed(4)}</p>
+                <div className="glass p-4 rounded-xl shadow-lg border border-accent-200/30 bg-gradient-to-br from-accent-50/50 to-accent-100/50 backdrop-blur-xl">
+                    <h2 className="text-lg font-display font-bold text-accent-700 dark:text-accent-300">Cost Saved</h2>
+                    <p className="text-2xl font-display font-bold gradient-text-accent">${metrics.data.redis.costSaved.toFixed(4)}</p>
                 </div>
-                <div className="bg-purple-50 p-4 rounded-lg shadow-md border border-purple-200">
-                    <h2 className="text-lg font-semibold text-purple-700">Tokens Saved</h2>
-                    <p className="text-2xl font-bold text-purple-600">{metrics.data.redis.tokensSaved.toLocaleString()}</p>
+                <div className="glass p-4 rounded-xl shadow-lg border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 backdrop-blur-xl">
+                    <h2 className="text-lg font-display font-bold text-secondary-700 dark:text-secondary-300">Tokens Saved</h2>
+                    <p className="text-2xl font-display font-bold gradient-text-secondary">{metrics.data.redis.tokensSaved.toLocaleString()}</p>
                 </div>
-                <div className="bg-indigo-50 p-4 rounded-lg shadow-md border border-indigo-200">
-                    <h2 className="text-lg font-semibold text-indigo-700">Avg Response Time</h2>
-                    <p className="text-2xl font-bold text-indigo-600">{metrics.data.redis.avgResponseTime.toFixed(2)}ms</p>
+                <div className="glass p-4 rounded-xl shadow-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 backdrop-blur-xl">
+                    <h2 className="text-lg font-display font-bold text-primary-700 dark:text-primary-300">Avg Response Time</h2>
+                    <p className="text-2xl font-display font-bold gradient-text">{metrics.data.redis.avgResponseTime.toFixed(2)}ms</p>
                 </div>
             </div>
 
             {/* Advanced Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-4 rounded-lg shadow-md border">
-                    <h2 className="text-lg font-semibold mb-3">Advanced Cache Metrics</h2>
+                <div className="glass p-4 rounded-xl shadow-lg border border-primary-200/30 backdrop-blur-xl">
+                    <h2 className="text-lg font-display font-bold gradient-text mb-3">Advanced Cache Metrics</h2>
                     <div className="space-y-2">
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Semantic Matches:</span>
-                            <span className="font-semibold">{metrics.data.redis.semanticMatches}</span>
+                            <span className="text-light-text-secondary dark:text-dark-text-secondary font-body">Semantic Matches:</span>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{metrics.data.redis.semanticMatches}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Deduplication Count:</span>
-                            <span className="font-semibold">{metrics.data.redis.deduplicationCount}</span>
+                            <span className="text-light-text-secondary dark:text-dark-text-secondary font-body">Deduplication Count:</span>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{metrics.data.redis.deduplicationCount}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Cache Size:</span>
-                            <span className="font-semibold">{(metrics.data.redis.cacheSize / 1024 / 1024).toFixed(2)} MB</span>
+                            <span className="text-light-text-secondary dark:text-dark-text-secondary font-body">Cache Size:</span>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{(metrics.data.redis.cacheSize / 1024 / 1024).toFixed(2)} MB</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg shadow-md border">
-                    <h2 className="text-lg font-semibold mb-3">Top Performing Models</h2>
+                <div className="glass p-4 rounded-xl shadow-lg border border-primary-200/30 backdrop-blur-xl">
+                    <h2 className="text-lg font-display font-bold gradient-text mb-3">Top Performing Models</h2>
                     <div className="space-y-2">
                         {metrics.data.redis.topModels.slice(0, 5).map((model: { model: string; hits: number }, index: number) => (
                             <div key={index} className="flex justify-between">
-                                <span className="text-gray-600">{model.model}:</span>
-                                <span className="font-semibold">{model.hits} hits</span>
+                                <span className="text-light-text-secondary dark:text-dark-text-secondary font-body">{model.model}:</span>
+                                <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{model.hits} hits</span>
                             </div>
                         ))}
                     </div>

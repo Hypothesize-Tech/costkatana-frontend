@@ -137,51 +137,53 @@ export const WebhookDashboard: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
-                            <Webhook className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                            Webhooks
-                        </h1>
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary mt-2">
-                            Send real-time notifications to external services
-                        </p>
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
+                                <Webhook className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                                Webhooks
+                            </h1>
+                            <p className="text-secondary-600 dark:text-secondary-300 mt-2">
+                                Send real-time notifications to external services
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setShowForm(true)}
+                            className="btn-primary flex items-center gap-2"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Create Webhook
+                        </button>
                     </div>
-                    <button
-                        onClick={() => setShowForm(true)}
-                        className="btn-primary flex items-center gap-2"
-                    >
-                        <Plus className="w-5 h-5" />
-                        Create Webhook
-                    </button>
                 </div>
 
                 {/* Queue Stats */}
                 {queueStats && (
-                    <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-6 mb-6">
-                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-secondary-900 dark:text-white">
                             <Activity className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                             Delivery Queue
                         </h2>
                         <div className="grid grid-cols-4 gap-4">
-                            <div className="text-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
-                                <p className="text-3xl font-bold text-warning-600 dark:text-warning-400">{queueStats.waiting}</p>
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary">Waiting</p>
+                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
+                                <p className="text-3xl font-bold text-accent-600 dark:text-accent-400">{queueStats.waiting}</p>
+                                <p className="text-secondary-600 dark:text-secondary-300">Waiting</p>
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                                 <p className="text-3xl font-bold text-primary-600 dark:text-primary-400">{queueStats.active}</p>
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary">Active</p>
+                                <p className="text-secondary-600 dark:text-secondary-300">Active</p>
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                                 <p className="text-3xl font-bold text-success-600 dark:text-success-400">{queueStats.completed}</p>
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary">Completed</p>
+                                <p className="text-secondary-600 dark:text-secondary-300">Completed</p>
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-accent-200/30 bg-gradient-to-br from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20">
-                                <p className="text-3xl font-bold text-error-600 dark:text-error-400">{queueStats.failed}</p>
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary">Failed</p>
+                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                                <p className="text-3xl font-bold text-danger-600 dark:text-danger-400">{queueStats.failed}</p>
+                                <p className="text-secondary-600 dark:text-secondary-300">Failed</p>
                             </div>
                         </div>
                     </div>
@@ -221,9 +223,9 @@ export const WebhookDashboard: React.FC = () => {
                                 />
                             </>
                         ) : (
-                            <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-light-bg-200 to-light-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300 p-12 text-center">
-                                <Webhook className="w-16 h-16 text-light-text-tertiary dark:text-dark-text-tertiary mx-auto mb-4" />
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary">Select a webhook to view details</p>
+                            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
+                                <Webhook className="w-16 h-16 text-secondary-400 dark:text-secondary-500 mx-auto mb-4" />
+                                <p className="text-secondary-600 dark:text-secondary-300">Select a webhook to view details</p>
                             </div>
                         )}
                     </div>
@@ -232,7 +234,7 @@ export const WebhookDashboard: React.FC = () => {
                 {/* Create/Edit Form Modal */}
                 {(showForm || editingWebhook) && (
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                        <div className="glass rounded-xl border border-accent-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                             <WebhookForm
                                 webhook={editingWebhook}
                                 onSubmit={editingWebhook

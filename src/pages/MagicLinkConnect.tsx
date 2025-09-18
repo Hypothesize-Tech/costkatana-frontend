@@ -136,13 +136,13 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
         <div className="text-center">
           <LoadingSpinner />
-          <h2 className="mt-4 text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+          <h2 className="mt-4 text-xl font-semibold text-secondary-900 dark:text-white">
             Connecting to Cost Katana...
           </h2>
-          <p className="mt-2 text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="mt-2 text-secondary-600 dark:text-secondary-300">
             Please wait while we set up your account
           </p>
         </div>
@@ -152,16 +152,16 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "expired") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
         <div className="text-center max-w-md mx-auto p-6">
           <div className="text-6xl mb-4">⏰</div>
-          <h2 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
+          <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-4">
             Magic Link Expired
           </h2>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
+          <p className="text-secondary-600 dark:text-secondary-300 mb-6">
             This magic link has expired. Please generate a new one from ChatGPT.
           </p>
-          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-4">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
             <p className="text-sm text-primary-800 dark:text-primary-200">
               <strong>How to get a new link:</strong>
               <br />
@@ -175,19 +175,19 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-light-bg-100 to-light-bg-200 dark:from-dark-bg-100 dark:to-dark-bg-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
         <div className="text-center max-w-md mx-auto p-6">
           <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
+          <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-4">
             Connection Failed
           </h2>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-2">
+          <p className="text-secondary-600 dark:text-secondary-300 mb-2">
             We couldn't process your magic link.
           </p>
           {errorMessage && (
-            <p className="text-sm text-error-600 dark:text-error-400 mb-6">Error: {errorMessage}</p>
+            <p className="text-sm text-danger-600 dark:text-danger-400 mb-6">Error: {errorMessage}</p>
           )}
-          <div className="glass rounded-xl border border-accent-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-4">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
             <p className="text-sm text-primary-800 dark:text-primary-200">
               <strong>Try again:</strong>
               <br />

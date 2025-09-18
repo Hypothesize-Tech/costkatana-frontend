@@ -89,11 +89,11 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-danger-200/30 backdrop-blur-xl">
+            <div className="glass rounded-3xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-danger-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Header */}
                 <div className="glass flex items-center justify-between p-8 border-b border-danger-200/30 backdrop-blur-xl rounded-t-3xl">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center glow-danger">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
                             <ShieldExclamationIcon className="h-6 w-6 text-white" />
                         </div>
                         <h2 className="text-2xl font-display font-bold gradient-text-danger">
@@ -109,7 +109,7 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
                 </div>
 
                 {/* Content */}
-                <div className="p-8 space-y-8 bg-light-bg-primary dark:bg-dark-bg-primary">
+                <div className="p-8 space-y-8">
                     {loading ? (
                         <div className="text-center py-12">
                             <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-500 border-t-transparent mx-auto"></div>
@@ -168,8 +168,8 @@ export const PIIAnalysisModal: React.FC<PIIAnalysisModalProps> = ({
 
                             {/* Sanitization Actions */}
                             {analysisResult.totalWithPII > 0 && (
-                                <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl">
-                                    <h4 className="font-display font-bold gradient-text-warning mb-4">Sanitization Options</h4>
+                                <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                                    <h4 className="font-display font-bold gradient-text-accent mb-4">Sanitization Options</h4>
                                     <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
                                         Choose how to handle the detected PII in your dataset:
                                     </p>

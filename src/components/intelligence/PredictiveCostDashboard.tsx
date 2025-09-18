@@ -122,11 +122,11 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (loading) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="card card-gradient p-12 shadow-2xl backdrop-blur-xl text-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-6 flex items-center justify-center animate-pulse glow-primary">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
+                    <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-6 flex items-center justify-center animate-pulse shadow-lg">
                         <span className="text-white text-3xl">🧠</span>
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text mb-4">Generating Predictive Intelligence...</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Generating Predictive Intelligence...</h3>
                     <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns, forecasting costs, and identifying opportunities</p>
                 </div>
             </div>
@@ -136,8 +136,8 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (error) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl text-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-danger mx-auto mb-4 flex items-center justify-center glow-danger">
+                <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-gradient-danger mx-auto mb-4 flex items-center justify-center shadow-lg">
                         <span className="text-white text-2xl">❌</span>
                     </div>
                     <h3 className="text-xl font-display font-bold gradient-text-danger mb-3">Intelligence Generation Failed</h3>
@@ -156,11 +156,11 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (!intelligenceData || !keyMetrics) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="card card-gradient p-12 shadow-2xl backdrop-blur-xl text-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-secondary mx-auto mb-6 flex items-center justify-center glow-secondary">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
+                    <div className="w-20 h-20 rounded-full bg-gradient-secondary mx-auto mb-6 flex items-center justify-center shadow-lg">
                         <span className="text-white text-3xl">📊</span>
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text mb-4">No Intelligence Data Available</h3>
+                    <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">No Intelligence Data Available</h3>
                     <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Insufficient historical data for predictive analysis</p>
                 </div>
             </div>
@@ -170,24 +170,24 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     return (
         <div className={`max-w-7xl mx-auto p-6 space-y-8 ${className}`}>
             {/* Header */}
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <span className="text-white text-2xl">🧠</span>
                         </div>
                         <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text mb-2">Predictive Cost Intelligence</h1>
+                            <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">Predictive Cost Intelligence</h1>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered cost forecasting and proactive optimization</p>
                             <div className="flex items-center gap-3 mt-3">
                                 <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Confidence Score:</span>
                                 <div className="w-32 h-2 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-gradient-primary rounded-full transition-all duration-500 glow-primary"
+                                        className="h-full bg-gradient-primary rounded-full transition-all duration-500 shadow-lg"
                                         style={{ width: `${keyMetrics.confidenceScore * 100}%` }}
                                     ></div>
                                 </div>
-                                <span className="font-display font-semibold gradient-text">{Math.round(keyMetrics.confidenceScore * 100)}%</span>
+                                <span className="font-display font-semibold gradient-text-primary">{Math.round(keyMetrics.confidenceScore * 100)}%</span>
                             </div>
                         </div>
                     </div>
@@ -205,7 +205,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                             <option value={90}>90 Days</option>
                         </select>
 
-                        <div className="glass p-4 rounded-xl border border-primary-200/30 flex items-center gap-3">
+                        <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center gap-3">
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                     type="checkbox"
@@ -213,7 +213,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                     onChange={(e) => setAutoOptimizeEnabled(e.target.checked)}
                                     className="w-5 h-5 rounded border-2 border-primary-300 text-primary-600 focus:ring-primary-500"
                                 />
-                                <span className="font-display font-medium gradient-text">Auto-Optimize</span>
+                                <span className="font-display font-medium gradient-text-primary">Auto-Optimize</span>
                             </label>
                         </div>
                     </div>
@@ -222,9 +222,9 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
             {/* Key Metrics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="card card-hover p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30">
+                <div className="glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center glow-danger">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
                             <span className="text-white text-xl">🚨</span>
                         </div>
                         <div>
@@ -239,9 +239,9 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30">
+                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                             <span className="text-white text-xl">💰</span>
                         </div>
                         <div>
@@ -254,9 +254,9 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border border-warning-200/30">
+                <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
                             <span className="text-white text-xl">📊</span>
                         </div>
                         <div>
@@ -271,13 +271,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <span className="text-white text-xl">📈</span>
                         </div>
                         <div>
-                            <h3 className="text-3xl font-display font-bold gradient-text">{intelligenceData.promptLengthGrowth.growthRatePerWeek.toFixed(1)}%</h3>
+                            <h3 className="text-3xl font-display font-bold gradient-text-primary">{intelligenceData.promptLengthGrowth.growthRatePerWeek.toFixed(1)}%</h3>
                             <p className="font-body text-primary-600 dark:text-primary-400">Weekly Prompt Growth</p>
                             <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${intelligenceData.historicalTokenTrends.tokenEfficiencyTrend === 'improving'
                                 ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
@@ -293,7 +293,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             </div>
 
             {/* Navigation Tabs */}
-            <div className="card card-gradient p-2 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2">
                 <div className="flex flex-wrap gap-2">
                     {[
                         { id: 'overview', label: 'Overview', icon: '🏠' },
@@ -305,8 +305,8 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         <button
                             key={tab.id}
                             className={`flex items-center gap-2 px-4 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === tab.id
-                                ? 'bg-gradient-primary text-white glow-primary shadow-2xl'
-                                : 'glass hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30'
+                                ? 'bg-gradient-primary text-white shadow-2xl'
+                                : 'glass hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30 shadow-lg backdrop-blur-xl'
                                 }`}
                             onClick={() => setActiveTab(tab.id as any)}
                         >
@@ -318,29 +318,29 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             </div>
 
             {/* Tab Content */}
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl min-h-[600px]">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 min-h-[600px]">
                 {activeTab === 'overview' && (
                     <div className="space-y-6">
                         <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
+                            <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center shadow-lg">
                                 <span className="text-white text-2xl">🏠</span>
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text mb-2">Intelligence Overview</h2>
+                            <h2 className="text-2xl font-display font-bold gradient-text-primary mb-2">Intelligence Overview</h2>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Key insights and upcoming challenges</p>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                             {/* Next Budget Exceedance */}
                             {keyMetrics.nextBudgetExceedance && (
-                                <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-lg backdrop-blur-xl">
+                                <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-warning/10 p-6">
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
                                             <span className="text-white text-xl">⚠️</span>
                                         </div>
                                         <h3 className="text-xl font-display font-bold gradient-text-warning">Upcoming Budget Exceedance</h3>
                                     </div>
                                     <div className="text-center mb-6">
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
-                                            <span className="font-semibold gradient-text">{keyMetrics.nextBudgetExceedance.scopeName}</span> will exceed budget in
+                                            <span className="font-semibold gradient-text-primary">{keyMetrics.nextBudgetExceedance.scopeName}</span> will exceed budget in
                                         </p>
                                         <div className="text-5xl font-display font-bold gradient-text-warning mb-2">
                                             {keyMetrics.nextBudgetExceedance.daysUntilExceedance} days
@@ -350,10 +350,10 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                         </p>
                                     </div>
                                     <div>
-                                        <h4 className="font-display font-semibold gradient-text mb-4">Quick Actions:</h4>
+                                        <h4 className="font-display font-semibold gradient-text-primary mb-4">Quick Actions:</h4>
                                         <div className="space-y-3">
                                             {keyMetrics.nextBudgetExceedance.mitigationStrategies.slice(0, 2).map((strategy: any, index: number) => (
-                                                <div key={index} className="glass p-4 rounded-xl border border-warning-200/30 flex justify-between items-center">
+                                                <div key={index} className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl flex justify-between items-center">
                                                     <span className="font-body text-light-text-primary dark:text-dark-text-primary">{strategy.strategy}</span>
                                                     <span className="font-display font-semibold gradient-text-success">{formatCurrency(strategy.potentialSaving)}</span>
                                                 </div>
@@ -365,21 +365,21 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
                             {/* Top Optimization Opportunity */}
                             {intelligenceData.optimizationRecommendations.length > 0 && (
-                                <div className="card p-6 bg-gradient-success/10 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 p-6">
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center glow-success">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
                                             <span className="text-white text-xl">💡</span>
                                         </div>
                                         <h3 className="text-xl font-display font-bold gradient-text-success">Top Optimization Opportunity</h3>
                                     </div>
                                     <div className="space-y-4">
-                                        <h4 className="text-lg font-display font-semibold gradient-text">{intelligenceData.optimizationRecommendations[0].title}</h4>
+                                        <h4 className="text-lg font-display font-semibold gradient-text-primary">{intelligenceData.optimizationRecommendations[0].title}</h4>
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">{intelligenceData.optimizationRecommendations[0].description}</p>
-                                        <div className="glass p-4 rounded-xl border border-success-200/30">
+                                        <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                                             <div className="flex items-center justify-center gap-4 text-center">
                                                 <div>
                                                     <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Current</div>
-                                                    <div className="font-display font-bold gradient-text">
+                                                    <div className="font-display font-bold gradient-text-primary">
                                                         {formatCurrency(intelligenceData.optimizationRecommendations[0].currentCost)}
                                                     </div>
                                                 </div>
@@ -412,21 +412,21 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                             )}
 
                             {/* Token Growth Trend */}
-                            <div className="card p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 p-6">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                                         <span className="text-white text-xl">📈</span>
                                     </div>
-                                    <h3 className="text-xl font-display font-bold gradient-text">Token Usage Trends</h3>
+                                    <h3 className="text-xl font-display font-bold gradient-text-primary">Token Usage Trends</h3>
                                 </div>
                                 <div className="space-y-4">
-                                    <div className="glass p-4 rounded-xl border border-primary-200/30 flex justify-between items-center">
+                                    <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex justify-between items-center">
                                         <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Average Prompt Length</span>
-                                        <span className="font-display font-bold gradient-text">
+                                        <span className="font-display font-bold gradient-text-primary">
                                             {intelligenceData.historicalTokenTrends.averagePromptLength.toFixed(0)} tokens
                                         </span>
                                     </div>
-                                    <div className="glass p-4 rounded-xl border border-primary-200/30 flex justify-between items-center">
+                                    <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex justify-between items-center">
                                         <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Growth Rate (Weekly)</span>
                                         <span className={`font-display font-bold ${intelligenceData.promptLengthGrowth.growthRatePerWeek > 5
                                             ? 'gradient-text-warning'
@@ -435,9 +435,9 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                             {intelligenceData.promptLengthGrowth.growthRatePerWeek.toFixed(1)}%
                                         </span>
                                     </div>
-                                    <div className="glass p-4 rounded-xl border border-primary-200/30 flex justify-between items-center">
+                                    <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex justify-between items-center">
                                         <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Projected Monthly Increase</span>
-                                        <span className="font-display font-bold gradient-text">
+                                        <span className="font-display font-bold gradient-text-primary">
                                             {formatCurrency(
                                                 intelligenceData.promptLengthGrowth.impactOnCosts.projectedMonthly -
                                                 intelligenceData.promptLengthGrowth.impactOnCosts.currentMonthly

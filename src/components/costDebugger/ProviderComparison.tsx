@@ -12,12 +12,12 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
     return (
         <div className="provider-comparison">
             <div className="comparison-header">
-                <button onClick={onBack} className="back-btn">← Back to Suggestions</button>
+                <button onClick={onBack} className="btn-secondary font-display font-semibold hover:scale-105">← Back to Suggestions</button>
                 <div className="flex items-center gap-3">
                     <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
                         <span className="text-lg">⚖️</span>
                     </div>
-                    <h2>Prompt Comparison Results</h2>
+                    <h2 className="font-display font-bold gradient-text">Prompt Comparison Results</h2>
                 </div>
             </div>
 
@@ -129,7 +129,7 @@ export const ProviderComparison: React.FC<ProviderComparisonProps> = ({ comparis
                     <div className="bg-gradient-accent p-2 rounded-lg glow-accent">
                         <span className="text-lg text-white">📊</span>
                     </div>
-                    <h3>Quality Metrics Comparison</h3>
+                    <h3 className="font-display font-bold gradient-text">Quality Metrics Comparison</h3>
                 </div>
                 <div className="quality-grid">
                     <div className="quality-metric">

@@ -300,7 +300,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
 
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-display font-bold gradient-text">
+                <h3 className="text-xl font-display font-bold gradient-text-primary">
                   Budget Alerts
                 </h3>
                 <button
@@ -315,7 +315,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                 {settings.budget.alerts.map((alert, index) => (
                   <div
                     key={index}
-                    className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl"
+                    className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
@@ -360,7 +360,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                       <div className="flex items-end">
                         <button
                           onClick={() => removeAlert(index)}
-                          className="glass p-3 rounded-lg border border-danger-200/30 text-danger-600 hover:bg-danger-900/20 transition-all duration-200 hover:scale-110"
+                          className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:bg-danger-900/20 transition-all duration-200 hover:scale-110"
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -419,7 +419,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {availableModels.map((model) => (
-                  <label key={model} className="flex items-center gap-3 glass p-3 rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200">
+                  <label key={model} className="flex items-center gap-3 glass p-3 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-200">
                     <input
                       type="checkbox"
                       checked={settings.security.allowedModels.includes(model)}
@@ -450,7 +450,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         return (
           <div className="space-y-6">
             {Object.entries(settings.features).map(([key, value]) => (
-              <div key={key} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+              <div key={key} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
@@ -701,11 +701,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         <div className="glass rounded-t-xl p-8 border-b border-primary-200/30">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                 <FiSettings className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-display font-bold gradient-text">
+                <h2 className="text-2xl font-display font-bold gradient-text-primary">
                   {project.name} Settings
                 </h2>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -729,8 +729,8 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-6 py-4 font-display font-medium transition-all duration-200 ${activeTab === tab.id
-                  ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
+                ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
+                : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
                 }`}
             >
               <tab.icon className="w-4 h-4" />

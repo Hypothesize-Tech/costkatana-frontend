@@ -137,15 +137,15 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
   return (
     <div
-      className={`card shadow-2xl backdrop-blur-xl border border-primary-200/30 ${className}`}
+      className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}
     >
       <div className="p-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <SparklesIcon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text">
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">
               Quick Optimize
             </h3>
           </div>
@@ -159,9 +159,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
         {!showResult ? (
           <div className="space-y-6">
-            <div className="glass rounded-xl p-6 border border-success-200/30">
+            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
+                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                   <span className="text-white text-sm">📝</span>
                 </div>
                 <label className="font-display font-semibold gradient-text-success text-lg">
@@ -178,7 +178,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             </div>
 
             {/* Cortex Toggle for Quick Optimize */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30">
+            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
               <CortexToggle
                 enabled={cortexEnabled}
                 onChange={setCortexEnabled}
@@ -190,7 +190,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
             {/* Cortex Advanced Configuration */}
             {cortexEnabled && showCortexAdvanced && (
-              <div className="glass rounded-xl p-6 border border-secondary-200/30">
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <CortexConfigPanel
                   config={cortexConfig}
                   onChange={setCortexConfig}
@@ -219,9 +219,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
             {/* Show error if optimization fails */}
             {optimizationError && (
-              <div className="glass rounded-xl p-6 border border-danger-200/30">
+              <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center glow-danger">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                     <span className="text-white text-xs">⚠️</span>
                   </div>
                   <span className="font-display font-semibold gradient-text-danger">Optimization Error</span>
@@ -247,9 +247,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               }`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
-                    ? 'bg-gradient-secondary glow-secondary'
-                    : 'bg-gradient-success glow-success'
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    ? 'bg-gradient-secondary'
+                    : 'bg-gradient-success'
                     }`}>
                     <CheckIcon className="w-6 h-6 text-white" />
                   </div>
@@ -329,9 +329,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                   }`}>
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
-                        ? 'bg-gradient-secondary glow-secondary'
-                        : 'bg-gradient-success glow-success'
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'bg-gradient-secondary'
+                        : 'bg-gradient-success'
                         }`}>
                         <span className="text-white text-xs">✨</span>
                       </div>
@@ -438,13 +438,13 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               return (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className={`glass rounded-xl p-6 border text-center hover:scale-105 transition-transform duration-300 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300 ${cortexEnabled && optimizationResult?.metadata?.cortex
                       ? 'border-secondary-200/30'
                       : 'border-primary-200/30'
                       }`}>
-                      <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center ${cortexEnabled && optimizationResult?.metadata?.cortex
-                        ? 'bg-gradient-secondary glow-secondary'
-                        : 'bg-gradient-primary glow-primary'
+                      <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                        ? 'bg-gradient-secondary'
+                        : 'bg-gradient-primary'
                         }`}>
                         <span className="text-white text-lg">📈</span>
                       </div>
@@ -458,8 +458,8 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                         {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
                       </div>
                     </div>
-                    <div className="glass rounded-xl p-6 border border-success-200/30 text-center hover:scale-105 transition-transform duration-300">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-3 glow-success">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-3 shadow-lg">
                         <span className="text-white text-lg">🎯</span>
                       </div>
                       <div className="text-2xl font-display font-bold gradient-text-success mb-1">
@@ -467,8 +467,8 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       </div>
                       <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens Saved</div>
                     </div>
-                    <div className="glass rounded-xl p-6 border border-accent-200/30 text-center hover:scale-105 transition-transform duration-300">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-3 glow-accent">
+                    <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-3 shadow-lg">
                         <span className="text-white text-lg">{cortexEnabled && optimizationResult?.metadata?.cortex ? '🔍' : '⚙️'}</span>
                       </div>
                       <div className="text-2xl font-display font-bold gradient-text-accent mb-1">
@@ -485,7 +485,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
                   {/* Cortex Results Display */}
                   {cortexEnabled && hasCortex && (
-                    <div className="glass rounded-xl p-6 border border-secondary-200/30">
+                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                       <CortexResultsDisplay
                         metadata={optimizationResult?.metadata}
                         loading={false}
@@ -501,9 +501,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             {optimizationResult?.suggestions &&
               Array.isArray(optimizationResult.suggestions) &&
               optimizationResult.suggestions.length > 0 && (
-                <div className="glass rounded-xl p-6 border border-accent-200/30">
+                <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
                       <span className="text-white text-sm">⚙️</span>
                     </div>
                     <h4 className="font-display font-semibold gradient-text-accent text-lg">
@@ -523,15 +523,15 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                         return (
                           <div
                             key={`suggestion-${index}`}
-                            className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
+                            className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-200"
                           >
                             <div className="flex items-start gap-4">
-                              <div className="w-5 h-5 bg-gradient-primary rounded-full mt-1 flex-shrink-0 glow-primary flex items-center justify-center">
+                              <div className="w-5 h-5 bg-gradient-primary rounded-full mt-1 flex-shrink-0 shadow-lg flex items-center justify-center">
                                 <span className="text-white text-xs">✓</span>
                               </div>
                               <div className="flex-1">
                                 <div className="flex justify-between items-start mb-2">
-                                  <span className="font-display font-semibold gradient-text capitalize">
+                                  <span className="font-display font-semibold gradient-text-primary capitalize">
                                     {suggestionType.replace(/_/g, " ")}
                                   </span>
                                   {isImplemented && (

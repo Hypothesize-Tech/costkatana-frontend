@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Progress } from '../common/Progress';
-import { Alert, AlertDescription, AlertTitle } from '../common/Alert';
 import { TrendingUp, AlertTriangle, CheckCircle, XCircle, Database } from 'lucide-react';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
@@ -108,7 +105,7 @@ export const UsageOverview: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center justify-center h-64">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
@@ -118,7 +115,7 @@ export const UsageOverview: React.FC = () => {
 
     if (error || !usageStats) {
         return (
-            <div className="card p-8 bg-gradient-danger/10 border border-danger-200/30 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8">
                 <div className="flex items-center mb-4">
                     <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
                         <AlertTriangle className="h-5 w-5 text-white" />
@@ -135,13 +132,13 @@ export const UsageOverview: React.FC = () => {
     return (
         <div className="space-y-8">
             {/* Plan Overview */}
-            <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                             <Database className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">📊 Usage Overview</h3>
+                        <h3 className="text-2xl font-display font-bold gradient-text-primary">📊 Usage Overview</h3>
                     </div>
                     <span className="text-sm font-display font-bold bg-gradient-primary text-white px-4 py-2 rounded-full shadow-lg">
                         ✨ {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
@@ -149,7 +146,7 @@ export const UsageOverview: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Tokens Usage */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🪙 Tokens</span>
                             {getStatusIcon(percentages.tokens)}
@@ -170,7 +167,7 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Requests Usage */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
+                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">⚡ API Requests</span>
                             {getStatusIcon(percentages.requests)}
@@ -191,7 +188,7 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Logs Usage */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">📝 Logs</span>
                             {getStatusIcon(percentages.logs)}
@@ -212,7 +209,7 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Projects */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
+                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🗂️ Projects</span>
                             {getStatusIcon(percentages.projects)}
@@ -233,7 +230,7 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Workflows */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 border-warning-200/30">
+                    <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">⚙️ Workflows</span>
                             {getStatusIcon(percentages.workflows)}
@@ -254,14 +251,14 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Monthly Cost */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">💰 Monthly Cost</span>
                             <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
                                 <TrendingUp className="w-3 h-3 text-white" />
                             </div>
                         </div>
-                        <div className="text-3xl font-display font-bold gradient-text mb-2">
+                        <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
                             ${current.cost.toFixed(2)}
                         </div>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -270,7 +267,7 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Model Usage */}
-                    <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
+                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🤖 Available Models</span>
                             <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
@@ -299,29 +296,29 @@ export const UsageOverview: React.FC = () => {
 
             {/* Predictions */}
             {predictions && (
-                <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                     <div className="flex items-center mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg glow-accent">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg">
                             <TrendingUp className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">🔮 End of Month Predictions</h3>
+                        <h3 className="text-2xl font-display font-bold gradient-text-primary">🔮 End of Month Predictions</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30 text-center">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 text-center hover:scale-105 transition-transform duration-300">
                             <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">🪙 Predicted Tokens</p>
-                            <p className="text-2xl font-display font-bold gradient-text mb-2">{formatNumber(predictions.tokens)}</p>
+                            <p className="text-2xl font-display font-bold gradient-text-primary mb-2">{formatNumber(predictions.tokens)}</p>
                             {predictions.tokens > limits.tokensPerMonth && limits.tokensPerMonth !== -1 && (
                                 <p className="text-xs font-display font-bold gradient-text-danger">⚠️ Will exceed limit</p>
                             )}
                         </div>
-                        <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30 text-center">
+                        <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 text-center hover:scale-105 transition-transform duration-300">
                             <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">⚡ Predicted Requests</p>
-                            <p className="text-2xl font-display font-bold text-secondary-600 dark:text-secondary-400 mb-2">{formatNumber(predictions.requests)}</p>
+                            <p className="text-2xl font-display font-bold gradient-text-secondary mb-2">{formatNumber(predictions.requests)}</p>
                             {predictions.requests > limits.requestsPerMonth && limits.requestsPerMonth !== -1 && (
                                 <p className="text-xs font-display font-bold gradient-text-danger">⚠️ Will exceed limit</p>
                             )}
                         </div>
-                        <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30 text-center">
+                        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
                             <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">📝 Predicted Logs</p>
                             <p className="text-2xl font-display font-bold gradient-text-accent mb-2">{formatNumber(predictions.logs)}</p>
                             {predictions.logs > limits.logsPerMonth && limits.logsPerMonth !== -1 && (
@@ -334,18 +331,18 @@ export const UsageOverview: React.FC = () => {
 
             {/* Recommendations */}
             {recommendations && recommendations.length > 0 && (
-                <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
                     <div className="flex items-center mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
                             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">💡 Optimization Recommendations</h3>
+                        <h3 className="text-2xl font-display font-bold gradient-text-primary">💡 Optimization Recommendations</h3>
                     </div>
                     <div className="space-y-4">
                         {recommendations.map((rec, index) => (
-                            <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                            <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/5 transition-all duration-300">
                                 <div className="flex items-start space-x-3">
                                     <div className="w-2 h-2 bg-gradient-success rounded-full mt-2 flex-shrink-0 shadow-lg"></div>
                                     <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{rec}</span>
@@ -358,9 +355,9 @@ export const UsageOverview: React.FC = () => {
 
             {/* Upgrade Prompt for Free Users */}
             {plan === 'free' && (percentages.tokens > 70 || percentages.requests > 70) && (
-                <div className="card p-6 bg-gradient-primary shadow-2xl backdrop-blur-xl border border-primary-200/30">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary p-6">
                     <div className="flex items-center mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3">
+                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3 shadow-lg">
                             <TrendingUp className="w-4 h-4 text-white" />
                         </div>
                         <h3 className="text-lg font-display font-bold text-white">🚀 Approaching Limits</h3>
@@ -369,7 +366,7 @@ export const UsageOverview: React.FC = () => {
                         You're approaching your plan limits. Consider upgrading to Plus or Pro for increased limits and access to all AI models.
                     </p>
                     <a
-                        href="https://costkatana.com/pricing"
+                        href="https://www.costkatana.com/#pricing"
                         className="inline-flex items-center text-sm font-display font-semibold bg-white text-primary-600 px-4 py-2 rounded-xl hover:bg-primary-50 transition-all duration-300 hover:scale-105 shadow-lg"
                     >
                         ✨ View Plans →

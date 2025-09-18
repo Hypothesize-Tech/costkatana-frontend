@@ -249,7 +249,7 @@ app.listen(3000, () => {
     <Modal isOpen={isOpen} onClose={onClose} title="🔗 Dashboard API Integration">
       <div className="mx-auto max-w-4xl">
         {/* Tab Navigation */}
-        <div className="mb-8 card p-6 shadow-2xl backdrop-blur-xl">
+        <div className="mb-8 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex space-x-4">
             {[
               { id: "setup", name: "Setup", icon: CogIcon, emoji: "⚙️" },
@@ -260,8 +260,8 @@ app.listen(3000, () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === tab.id
-                  ? "bg-gradient-primary text-white shadow-lg glow-primary"
-                  : "glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
+                  ? "bg-gradient-primary text-white shadow-lg"
+                  : "glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
                   }`}
               >
                 <div className="flex items-center">
@@ -277,12 +277,12 @@ app.listen(3000, () => {
         {activeTab === "setup" && (
           <div className="space-y-8">
             {/* API Key Status */}
-            <div className="card p-6 bg-gradient-primary/10 border border-primary-200/30 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
                   <InformationCircleIcon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text">
+                <h3 className="text-xl font-display font-bold gradient-text-primary">
                   🔑 Dashboard API Key Integration
                 </h3>
               </div>
@@ -293,12 +293,12 @@ app.listen(3000, () => {
             </div>
 
             {/* API Keys List */}
-            <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
               <div className="flex items-center mb-6">
                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
                   <KeyIcon className="w-4 h-4 text-white" />
                 </div>
-                <h4 className="text-xl font-display font-bold gradient-text">
+                <h4 className="text-xl font-display font-bold gradient-text-primary">
                   🔐 Available Dashboard API Keys
                 </h4>
               </div>
@@ -306,7 +306,7 @@ app.listen(3000, () => {
                 {apiKeys?.map((apiKey) => (
                   <div
                     key={apiKey.keyId}
-                    className="card card-hover p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30 transition-all duration-300 hover:scale-105"
+                    className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 transition-all duration-300 hover:scale-105"
                   >
                     <div className="flex justify-between items-center">
                       <div className="flex items-center">
@@ -345,10 +345,10 @@ app.listen(3000, () => {
                 ))}
                 {(!apiKeys || apiKeys.length === 0) && (
                   <div className="py-8 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl glow-secondary animate-pulse">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
                       <KeyIcon className="w-8 h-8 text-white" />
                     </div>
-                    <p className="text-lg font-display font-bold gradient-text mb-2">No dashboard API keys configured</p>
+                    <p className="text-lg font-display font-bold gradient-text-primary mb-2">No dashboard API keys configured</p>
                     <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       Create API keys in Settings to enable integration
                     </p>
@@ -358,14 +358,14 @@ app.listen(3000, () => {
             </div>
 
             {/* Project Selection */}
-            <div className="card card-gradient p-6 shadow-2xl backdrop-blur-xl">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
               <div className="flex items-center mb-6">
                 <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center mr-3 shadow-lg">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
-                <h4 className="text-xl font-display font-bold gradient-text">
+                <h4 className="text-xl font-display font-bold gradient-text-primary">
                   📁 Select Project for Integration
                 </h4>
               </div>
@@ -382,7 +382,7 @@ app.listen(3000, () => {
                 ))}
               </select>
               {selectedProject && (
-                <div className="card p-4 bg-gradient-success/10 border border-success-200/30 mt-4">
+                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 p-4 mt-4">
                   <p className="text-sm font-display font-bold gradient-text-success mb-2">
                     ✅ Project selected: {projects?.find((p) => p._id === selectedProject)?.name}
                   </p>
@@ -398,7 +398,7 @@ app.listen(3000, () => {
 
             {/* Integration Warning */}
             {(!apiKeys || apiKeys.length === 0) && (
-              <div className="card p-6 bg-gradient-warning/10 border border-warning-200/30 shadow-2xl backdrop-blur-xl">
+              <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-6">
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
                     <ExclamationTriangleIcon className="w-5 h-5 text-white" />
@@ -427,15 +427,15 @@ app.listen(3000, () => {
                   ([language, code]) => (
                     <div
                       key={language}
-                      className="rounded-lg border dark:border-gray-700"
+                      className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl"
                     >
-                      <div className="flex justify-between items-center px-4 py-2 bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700">
-                        <span className="font-medium text-gray-900 capitalize dark:text-white">
+                      <div className="flex justify-between items-center px-4 py-2 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-b border-primary-200/30 rounded-t-xl">
+                        <span className="font-medium gradient-text-primary capitalize">
                           {language}
                         </span>
                         <button
                           onClick={() => copyToClipboard(code, language)}
-                          className="flex items-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400"
+                          className="flex items-center text-sm gradient-text-primary hover:scale-110 transition-transform duration-300"
                         >
                           {copied === language ? (
                             <CheckIcon className="mr-1 w-4 h-4" />
@@ -446,7 +446,7 @@ app.listen(3000, () => {
                         </button>
                       </div>
 
-                      <pre className="overflow-x-auto p-4 text-sm text-gray-800 dark:text-gray-200">
+                      <pre className="overflow-x-auto p-4 text-sm text-light-text-primary dark:text-dark-text-primary bg-gradient-to-br from-secondary-50/30 to-secondary-100/30">
                         <code>{code}</code>
                       </pre>
                     </div>
@@ -456,16 +456,16 @@ app.listen(3000, () => {
             </div>
 
             {/* Environment Variables */}
-            <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
-              <h5 className="mb-2 font-medium text-gray-900 dark:text-white">
+            <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30">
+              <h5 className="mb-2 font-medium gradient-text-primary">
                 Environment Variables
               </h5>
               <div className="space-y-2 text-sm">
                 <div>
-                  <code className="text-blue-600 dark:text-blue-400">
+                  <code className="gradient-text-primary">
                     DASHBOARD_API_KEY
                   </code>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-light-text-secondary dark:text-dark-text-secondary">
                     {" "}
                     ={" "}
                     {apiKeys?.find((k) => k.permissions.includes("read"))
@@ -473,19 +473,19 @@ app.listen(3000, () => {
                   </span>
                 </div>
                 <div>
-                  <code className="text-blue-600 dark:text-blue-400">
+                  <code className="gradient-text-primary">
                     DASHBOARD_URL
                   </code>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-light-text-secondary dark:text-dark-text-secondary">
                     {" "}
                     = {window.location.origin}/api
                   </span>
                 </div>
                 <div>
-                  <code className="text-blue-600 dark:text-blue-400">
+                  <code className="gradient-text-primary">
                     PROJECT_ID
                   </code>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-light-text-secondary dark:text-dark-text-secondary">
                     {" "}
                     = {selectedProject || "Select a project above"}
                   </span>
@@ -503,14 +503,14 @@ app.listen(3000, () => {
                 Common Use Cases
               </h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="p-4 rounded-lg border dark:border-gray-700">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-white">
+                <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                  <h4 className="mb-2 font-medium gradient-text-primary">
                     Track AI Usage
                   </h4>
-                  <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mb-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     Automatically track AI API calls and costs
                   </p>
-                  <code className="block p-2 text-xs bg-gray-100 rounded dark:bg-gray-800">
+                  <code className="block p-2 text-xs bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 rounded">
                     POST /api/usage/track
                   </code>
                 </div>
