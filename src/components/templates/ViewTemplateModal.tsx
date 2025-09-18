@@ -216,7 +216,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                     {template.metadata.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="badge-secondary"
+                        className="badge-secondary p-2 rounded-md"
                       >
                         {tag}
                       </span>
@@ -273,7 +273,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         </p>
                       )}
                       {variable.defaultValue && (
-                        <div className="text-sm mb-2">
+                        <div className="text-sm mb-4">
                           <span className="font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                             Default:{" "}
                           </span>
@@ -283,7 +283,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         </div>
                       )}
                       {variable.required && (
-                        <span className="badge-danger">
+                        <span className="badge-danger p-2 rounded-md mt-2">
                           Required
                         </span>
                       )}
@@ -382,7 +382,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         <span className="font-display font-medium gradient-text-highlight">
                           Version {template.version}
                         </span>
-                        <span className="badge-primary">
+                        <span className="badge-primary p-2 rounded-md">
                           Current
                         </span>
                       </div>
@@ -390,9 +390,6 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         Updated {formatDate(template.updatedAt)}
                       </p>
                     </div>
-                    <button className="btn-secondary text-sm">
-                      View Changes
-                    </button>
                   </div>
                 </div>
 

@@ -61,7 +61,6 @@ export const Profile: React.FC = () => {
       enabled: !!user?.id && activeTab === 'activity',
     }
   );
-
   const updateProfileMutation = useMutation(
     (data: any) => userService.updateProfile(data),
     {
@@ -203,7 +202,7 @@ export const Profile: React.FC = () => {
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <ProfileHeader
-          user={profileData || user!}
+          user={profileData}
           onAvatarChange={handleAvatarChange}
           editable={true}
         />

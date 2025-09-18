@@ -96,9 +96,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   </svg>
                 </div>
                 Joined{" "}
-                {user.createdAt
-                  ? new Date(user.createdAt).toLocaleDateString()
-                  : "Recently"}
+                {new Date(user.createdAt).toLocaleDateString()}
               </span>
             </div>
           </div>

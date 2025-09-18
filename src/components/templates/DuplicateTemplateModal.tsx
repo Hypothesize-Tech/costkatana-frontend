@@ -80,7 +80,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="">
+    <Modal isOpen={true} onClose={onClose} size="lg" title="">
       <div className="glass rounded-3xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="glass flex items-center gap-4 p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
           <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
@@ -90,7 +90,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
             <h2 className="text-2xl font-display font-bold gradient-text-primary">
               Duplicate Template
             </h2>
-            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="font-body text-light-text-secondary dark:text-white">
               Create a copy of "{template.name}" with customizable settings
             </p>
           </div>
@@ -107,7 +107,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                   <h3 className="font-display font-semibold gradient-text-highlight mb-2">
                     Duplicating "{template.name}"
                   </h3>
-                  <p className="font-body text-light-text-primary dark:text-dark-text-primary">
+                  <p className="font-body text-light-text-primary dark:text-white">
                     This will create a copy of the template with all its content and
                     variables. You can modify the details below before creating the
                     duplicate.
@@ -186,7 +186,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                 <div className="mb-3 font-display font-medium gradient-text-secondary">
                   Template Content:
                 </div>
-                <div className="overflow-y-auto p-4 max-h-32 font-mono text-sm text-light-text-primary dark:text-dark-text-primary glass rounded border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+                <div className="overflow-y-auto p-4 max-h-32 font-mono text-sm text-light-text-primary dark:text-white glass rounded border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
                   {formData.content}
                 </div>
               </div>
@@ -199,14 +199,14 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                   <div className="space-y-3">
                     {formData.variables.map((variable, index) => (
                       <div key={index} className="flex gap-3 items-center">
-                        <span className="glass px-3 py-1 font-mono border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 rounded-full font-semibold text-sm">
+                        <span className="glass px-3 py-1 font-mono border border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-white rounded-full font-semibold text-sm">
                           {variable.name}
                         </span>
-                        <span className="glass px-2 py-1 rounded-full border border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300 font-display font-medium text-sm">
+                        <span className="glass px-2 py-1 rounded-full border border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-white font-display font-medium text-sm">
                           ({variable.type})
                         </span>
                         {variable.required && (
-                          <span className="glass px-2 py-1 rounded-full border border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300 font-display font-semibold text-xs">
+                          <span className="glass px-2 py-1 rounded-full border border-danger-200/30 bg-gradient-danger/20 text-danger-700 dark:text-white font-display font-semibold text-xs">
                             Required
                           </span>
                         )}
@@ -247,7 +247,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                   <option value="organization">Organization</option>
                   <option value="public">Public</option>
                 </select>
-                <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                <p className="mt-2 font-body text-light-text-secondary dark:text-white text-sm">
                   Duplicated templates start as private by default for security.
                 </p>
               </div>
@@ -265,7 +265,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                     }
                     className="toggle-switch-sm"
                   />
-                  <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                  <span className="font-body text-light-text-primary dark:text-white">
                     Allow others to fork this template
                   </span>
                 </label>

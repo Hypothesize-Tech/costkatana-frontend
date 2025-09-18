@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FiPlus, FiMinus, FiSave } from "react-icons/fi";
+import { FiPlus, FiMinus, FiSave, FiCpu as FiBrain } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
+import { AITemplateOptimizer } from "./AITemplateOptimizer";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface EditTemplateModalProps {
   template: PromptTemplate;
@@ -14,6 +16,9 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const { accessToken } = useAuth();
+  const [activeTab, setActiveTab] = useState<"edit" | "optimize">("edit");
+
   const [formData, setFormData] = useState({
     name: template.name,
     description: template.description || "",
@@ -190,461 +195,506 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
               <h2 className="text-2xl font-display font-bold gradient-text-primary">
                 Edit Template
               </h2>
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="font-body text-light-text-secondary dark:text-white">
                 Modify your template settings and content
               </p>
             </div>
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col flex-1"
-        >
-          <div className="overflow-y-auto flex-1 p-8 space-y-8">
-            {/* Basic Information */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">ℹ️</span>
-                </div>
-                <h3 className="text-xl font-display font-bold gradient-text-highlight">
-                  Basic Information
-                </h3>
-              </div>
+        {/* Tab Navigation */}
+        <div className="glass flex border-b border-primary-200/30 backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={() => setActiveTab("edit")}
+            className={`px-6 py-3 font-display font-semibold text-sm transition-all duration-300 hover:scale-105 ${activeTab === "edit"
+              ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-gradient-primary/10"
+              : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
+              }`}
+          >
+            <FiSave className="inline-block mr-2 mb-1" />
+            Edit Template
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("optimize")}
+            className={`px-6 py-3 font-display font-semibold text-sm transition-all duration-300 hover:scale-105 ${activeTab === "optimize"
+              ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-gradient-primary/10"
+              : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
+              }`}
+          >
+            <FiBrain className="inline-block mr-2 mb-1" />
+            AI Optimization
+          </button>
+        </div>
 
-              <div>
-                <label className="form-label">
-                  Template Name *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="input"
-                  placeholder="Enter template name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="form-label">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  rows={3}
-                  className="input"
-                  placeholder="Describe your template"
-                />
-              </div>
-
-              <div>
-                <label className="form-label">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => handleInputChange("category", e.target.value)}
-                  className="input"
-                >
-                  {categories.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Template Content */}
-            <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">📝</span>
-                </div>
-                <h3 className="text-xl font-display font-bold gradient-text-success">
-                  Template Content
-                </h3>
-              </div>
-
-              <div>
-                <label className="form-label">
-                  Prompt Template *
-                </label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => handleInputChange("content", e.target.value)}
-                  rows={8}
-                  className="input font-mono text-sm"
-                  placeholder="Enter your prompt template here..."
-                  required
-                />
-                <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-                  Use {"{{variable_name}}"} syntax for variables
-                </p>
-              </div>
-            </div>
-
-            {/* Variables */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
-              <div className="flex justify-between items-center">
+        {activeTab === "edit" ? (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col flex-1"
+          >
+            <div className="overflow-y-auto flex-1 p-8 space-y-8">
+              {/* Basic Information */}
+              <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-sm">🏷️</span>
+                  <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">ℹ️</span>
                   </div>
-                  <h3 className="text-xl font-display font-bold gradient-text-secondary">
-                    Variables
+                  <h3 className="text-xl font-display font-bold gradient-text-highlight">
+                    Basic Information
                   </h3>
                 </div>
-                <button
-                  type="button"
-                  onClick={addVariable}
-                  className="btn-secondary inline-flex items-center gap-2"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Add Variable
-                </button>
+
+                <div>
+                  <label className="form-label">
+                    Template Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    className="input"
+                    placeholder="Enter template name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Description
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) =>
+                      handleInputChange("description", e.target.value)
+                    }
+                    rows={3}
+                    className="input"
+                    placeholder="Describe your template"
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Category
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => handleInputChange("category", e.target.value)}
+                    className="input"
+                  >
+                    {categories.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              {formData.variables.map((variable, index) => (
-                <div
-                  key={index}
-                  className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-display font-semibold gradient-text-primary">
-                      Variable {index + 1}
-                    </h4>
-                    <button
-                      type="button"
-                      onClick={() => removeVariable(index)}
-                      className="btn-icon-danger"
-                    >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
+              {/* Template Content */}
+              <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">📝</span>
                   </div>
-
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                      <label className="form-label text-sm">
-                        Name *
-                      </label>
-                      <input
-                        type="text"
-                        value={variable.name}
-                        onChange={(e) =>
-                          handleVariableChange(index, "name", e.target.value)
-                        }
-                        className="input text-sm"
-                        placeholder="variable_name"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="form-label text-sm">
-                        Type
-                      </label>
-                      <select
-                        value={variable.type}
-                        onChange={(e) =>
-                          handleVariableChange(index, "type", e.target.value)
-                        }
-                        className="input text-sm"
-                      >
-                        <option value="string">String</option>
-                        <option value="number">Number</option>
-                        <option value="boolean">Boolean</option>
-                        <option value="array">Array</option>
-                        <option value="object">Object</option>
-                      </select>
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="form-label text-sm">
-                        Description
-                      </label>
-                      <input
-                        type="text"
-                        value={variable.description}
-                        onChange={(e) =>
-                          handleVariableChange(
-                            index,
-                            "description",
-                            e.target.value,
-                          )
-                        }
-                        className="input text-sm"
-                        placeholder="Describe this variable"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="form-label text-sm">
-                        Default Value
-                      </label>
-                      <input
-                        type="text"
-                        value={variable.defaultValue}
-                        onChange={(e) =>
-                          handleVariableChange(
-                            index,
-                            "defaultValue",
-                            e.target.value,
-                          )
-                        }
-                        className="input text-sm"
-                        placeholder="Optional default value"
-                      />
-                    </div>
-
-                    <div className="flex items-center">
-                      <label className="flex gap-3 items-center">
-                        <input
-                          type="checkbox"
-                          checked={variable.required}
-                          onChange={(e) =>
-                            handleVariableChange(
-                              index,
-                              "required",
-                              e.target.checked,
-                            )
-                          }
-                          className="toggle-switch-sm"
-                        />
-                        <span className="font-body text-light-text-primary dark:text-dark-text-primary text-sm">
-                          Required
-                        </span>
-                      </label>
-                    </div>
-                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-success">
+                    Template Content
+                  </h3>
                 </div>
-              ))}
 
-              {formData.variables.length === 0 && (
-                <div className="py-8 text-center">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🏷️</span>
-                  </div>
-                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
-                    No variables defined. Click "Add Variable" to create one.
+                <div>
+                  <label className="form-label">
+                    Prompt Template *
+                  </label>
+                  <textarea
+                    value={formData.content}
+                    onChange={(e) => handleInputChange("content", e.target.value)}
+                    rows={8}
+                    className="input font-mono text-sm"
+                    placeholder="Enter your prompt template here..."
+                    required
+                  />
+                  <p className="mt-2 font-body text-light-text-secondary dark:text-white text-sm">
+                    Use {"{{variable_name}}"} syntax for variables
                   </p>
                 </div>
-              )}
-            </div>
-
-            {/* Metadata */}
-            <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">📊</span>
-                </div>
-                <h3 className="text-xl font-display font-bold gradient-text-accent">
-                  Metadata
-                </h3>
               </div>
 
-              <div>
-                <label className="form-label">
-                  Tags
-                </label>
-                <div className="space-y-3">
-                  {formData.metadata.tags.map((tag, index) => (
-                    <div key={index} className="flex gap-3">
-                      <input
-                        type="text"
-                        value={tag}
-                        onChange={(e) => handleTagChange(index, e.target.value)}
-                        className="input flex-1"
-                        placeholder="Enter tag"
-                      />
+              {/* Variables */}
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                      <span className="text-white text-sm">🏷️</span>
+                    </div>
+                    <h3 className="text-xl font-display font-bold gradient-text-secondary">
+                      Variables
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addVariable}
+                    className="btn-secondary inline-flex items-center gap-2"
+                  >
+                    <FiPlus className="w-4 h-4" />
+                    Add Variable
+                  </button>
+                </div>
+
+                {formData.variables.map((variable, index) => (
+                  <div
+                    key={index}
+                    className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="font-display font-semibold gradient-text-primary">
+                        Variable {index + 1}
+                      </h4>
                       <button
                         type="button"
-                        onClick={() => removeTag(index)}
+                        onClick={() => removeVariable(index)}
                         className="btn-icon-danger"
                       >
                         <FiMinus className="w-4 h-4" />
                       </button>
                     </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={addTag}
-                    className="btn-secondary inline-flex items-center gap-2"
-                  >
-                    <FiPlus className="w-4 h-4" />
-                    Add Tag
-                  </button>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="form-label text-sm">
+                          Name *
+                        </label>
+                        <input
+                          type="text"
+                          value={variable.name}
+                          onChange={(e) =>
+                            handleVariableChange(index, "name", e.target.value)
+                          }
+                          className="input text-sm"
+                          placeholder="variable_name"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="form-label text-sm">
+                          Type
+                        </label>
+                        <select
+                          value={variable.type}
+                          onChange={(e) =>
+                            handleVariableChange(index, "type", e.target.value)
+                          }
+                          className="input text-sm"
+                        >
+                          <option value="string">String</option>
+                          <option value="number">Number</option>
+                          <option value="boolean">Boolean</option>
+                          <option value="array">Array</option>
+                          <option value="object">Object</option>
+                        </select>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="form-label text-sm">
+                          Description
+                        </label>
+                        <input
+                          type="text"
+                          value={variable.description}
+                          onChange={(e) =>
+                            handleVariableChange(
+                              index,
+                              "description",
+                              e.target.value,
+                            )
+                          }
+                          className="input text-sm"
+                          placeholder="Describe this variable"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="form-label text-sm">
+                          Default Value
+                        </label>
+                        <input
+                          type="text"
+                          value={variable.defaultValue}
+                          onChange={(e) =>
+                            handleVariableChange(
+                              index,
+                              "defaultValue",
+                              e.target.value,
+                            )
+                          }
+                          className="input text-sm"
+                          placeholder="Optional default value"
+                        />
+                      </div>
+
+                      <div className="flex items-center">
+                        <label className="flex gap-3 items-center">
+                          <input
+                            type="checkbox"
+                            checked={variable.required}
+                            onChange={(e) =>
+                              handleVariableChange(
+                                index,
+                                "required",
+                                e.target.checked,
+                              )
+                            }
+                            className="toggle-switch-sm"
+                          />
+                          <span className="font-body text-light-text-primary dark:text-white text-sm">
+                            Required
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {formData.variables.length === 0 && (
+                  <div className="py-8 text-center">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🏷️</span>
+                    </div>
+                    <p className="font-body text-light-text-secondary dark:text-white">
+                      No variables defined. Click "Add Variable" to create one.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Metadata */}
+              <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">📊</span>
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-accent">
+                    Metadata
+                  </h3>
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Tags
+                  </label>
+                  <div className="space-y-3">
+                    {formData.metadata.tags.map((tag, index) => (
+                      <div key={index} className="flex gap-3">
+                        <input
+                          type="text"
+                          value={tag}
+                          onChange={(e) => handleTagChange(index, e.target.value)}
+                          className="input flex-1"
+                          placeholder="Enter tag"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeTag(index)}
+                          className="btn-icon-danger"
+                        >
+                          <FiMinus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={addTag}
+                      className="btn-secondary inline-flex items-center gap-2"
+                    >
+                      <FiPlus className="w-4 h-4" />
+                      Add Tag
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <label className="form-label">
+                      Language
+                    </label>
+                    <select
+                      value={formData.metadata.language}
+                      onChange={(e) =>
+                        handleNestedInputChange(
+                          ["metadata", "language"],
+                          e.target.value,
+                        )
+                      }
+                      className="select"
+                    >
+                      <option value="en">English</option>
+                      <option value="es">Spanish</option>
+                      <option value="fr">French</option>
+                      <option value="de">German</option>
+                      <option value="it">Italian</option>
+                      <option value="pt">Portuguese</option>
+                      <option value="ru">Russian</option>
+                      <option value="ja">Japanese</option>
+                      <option value="ko">Korean</option>
+                      <option value="zh">Chinese</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="form-label">
+                      Estimated Tokens
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.metadata.estimatedTokens || ""}
+                      onChange={(e) =>
+                        handleNestedInputChange(
+                          ["metadata", "estimatedTokens"],
+                          e.target.value ? parseInt(e.target.value) : undefined,
+                        )
+                      }
+                      className="input"
+                      placeholder="e.g., 100"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Recommended Model
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.metadata.recommendedModel}
+                    onChange={(e) =>
+                      handleNestedInputChange(
+                        ["metadata", "recommendedModel"],
+                        e.target.value,
+                      )
+                    }
+                    className="input"
+                    placeholder="e.g., gpt-4, claude-3, etc."
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {/* Sharing Settings */}
+              <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">🔗</span>
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-secondary">
+                    Sharing Settings
+                  </h3>
+                </div>
+
                 <div>
                   <label className="form-label">
-                    Language
+                    Visibility
                   </label>
                   <select
-                    value={formData.metadata.language}
+                    value={formData.sharing.visibility}
                     onChange={(e) =>
                       handleNestedInputChange(
-                        ["metadata", "language"],
+                        ["sharing", "visibility"],
                         e.target.value,
                       )
                     }
                     className="select"
                   >
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="it">Italian</option>
-                    <option value="pt">Portuguese</option>
-                    <option value="ru">Russian</option>
-                    <option value="ja">Japanese</option>
-                    <option value="ko">Korean</option>
-                    <option value="zh">Chinese</option>
+                    <option value="private">Private</option>
+                    <option value="project">Project</option>
+                    <option value="organization">Organization</option>
+                    <option value="public">Public</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="form-label">
-                    Estimated Tokens
+                  <label className="flex gap-3 items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.sharing.allowFork}
+                      onChange={(e) =>
+                        handleNestedInputChange(
+                          ["sharing", "allowFork"],
+                          e.target.checked,
+                        )
+                      }
+                      className="checkbox"
+                    />
+                    <span className="font-body text-light-text-primary dark:text-white text-sm">
+                      Allow others to fork this template
+                    </span>
                   </label>
-                  <input
-                    type="number"
-                    value={formData.metadata.estimatedTokens || ""}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        ["metadata", "estimatedTokens"],
-                        e.target.value ? parseInt(e.target.value) : undefined,
-                      )
-                    }
-                    className="input"
-                    placeholder="e.g., 100"
-                    min="1"
-                  />
                 </div>
-              </div>
-
-              <div>
-                <label className="form-label">
-                  Recommended Model
-                </label>
-                <input
-                  type="text"
-                  value={formData.metadata.recommendedModel}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["metadata", "recommendedModel"],
-                      e.target.value,
-                    )
-                  }
-                  className="input"
-                  placeholder="e.g., gpt-4, claude-3, etc."
-                />
               </div>
             </div>
 
-            {/* Sharing Settings */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">🔗</span>
-                </div>
-                <h3 className="text-xl font-display font-bold gradient-text-secondary">
-                  Sharing Settings
-                </h3>
-              </div>
-
-              <div>
-                <label className="form-label">
-                  Visibility
-                </label>
-                <select
-                  value={formData.sharing.visibility}
-                  onChange={(e) =>
-                    handleNestedInputChange(
-                      ["sharing", "visibility"],
-                      e.target.value,
-                    )
-                  }
-                  className="select"
-                >
-                  <option value="private">Private</option>
-                  <option value="project">Project</option>
-                  <option value="organization">Organization</option>
-                  <option value="public">Public</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="flex gap-3 items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.sharing.allowFork}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        ["sharing", "allowFork"],
-                        e.target.checked,
-                      )
-                    }
-                    className="checkbox"
-                  />
-                  <span className="font-body text-light-text-primary dark:text-dark-text-primary text-sm">
-                    Allow others to fork this template
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center text-sm">
-                {hasChanges ? (
-                  <span className="gradient-text-accent font-medium">
-                    You have unsaved changes
-                  </span>
-                ) : (
-                  <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                    No changes made
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading || !hasChanges}
-                  className="btn-primary inline-flex items-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                      Saving...
-                    </>
+            {/* Actions */}
+            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2 items-center text-sm">
+                  {hasChanges ? (
+                    <span className="gradient-text-accent font-medium">
+                      You have unsaved changes
+                    </span>
                   ) : (
-                    <>
-                      <FiSave className="w-4 h-4" />
-                      Save Changes
-                    </>
+                    <span className="text-light-text-secondary dark:text-white">
+                      No changes made
+                    </span>
                   )}
-                </button>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading || !hasChanges}
+                    className="btn-primary inline-flex items-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <FiSave className="w-4 h-4" />
+                        Save Changes
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
+          </form>
+        ) : (
+          <div className="overflow-y-auto flex-1 p-8">
+            <AITemplateOptimizer
+              templateId={template._id}
+              onOptimizationApplied={(optimizedContent, metadata) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  content: optimizedContent,
+                  metadata: {
+                    ...prev.metadata,
+                    ...metadata,
+                  },
+                }));
+                setActiveTab("edit");
+              }}
+            />
           </div>
-        </form>
+        )}
       </div>
     </Modal>
   );

@@ -363,4 +363,141 @@ export class PromptTemplateService {
     });
     return response.data.data;
   }
+
+  // ============ AI-POWERED ENDPOINTS ============
+
+  // AI: Generate template from intent
+  static async generateFromIntent(data: {
+    intent: string;
+    category?: string;
+    context?: any;
+    constraints?: any;
+  }): Promise<{
+    template: PromptTemplate;
+    metadata: any;
+    alternatives: any[];
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/ai/generate`, data);
+    return response.data.data;
+  }
+
+  // AI: Detect variables in template content
+  static async detectVariables(data: {
+    content: string;
+    autoFillDefaults?: boolean;
+    validateTypes?: boolean;
+  }): Promise<{
+    variables: any[];
+    suggestions: string[];
+    confidence: number;
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/ai/detect-variables`, data);
+    return response.data.data;
+  }
+
+  // AI: Optimize template
+  static async optimizeTemplate(
+    templateId: string,
+    data: {
+      optimizationType: 'token' | 'cost' | 'quality' | 'model-specific';
+      targetModel?: string;
+      preserveIntent?: boolean;
+    }
+  ): Promise<{
+    original: any;
+    optimized: any;
+    metrics: any;
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/ai/optimize`, data);
+    return response.data.data;
+  }
+
+  // AI: Get template recommendations
+  static async getRecommendations(data: {
+    context?: any;
+    limit?: number;
+  }): Promise<{
+    recommendations: any[];
+    reasoning: string[];
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/ai/recommendations`, data);
+    return response.data.data;
+  }
+
+  // AI: Predict template effectiveness
+  static async predictEffectiveness(
+    templateId: string,
+    variables?: Record<string, any>
+  ): Promise<{
+    overall: number;
+    clarity: number;
+    specificity: number;
+    tokenEfficiency: number;
+    expectedOutputQuality: number;
+    suggestions: string[];
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/ai/effectiveness`, { variables });
+    return response.data.data;
+  }
+
+  // AI: Get template insights
+  static async getInsights(
+    templateId?: string,
+    timeframe?: string
+  ): Promise<{
+    usagePatterns: any;
+    performance: any;
+    recommendations: any;
+    trends?: any;
+  }> {
+    const url = templateId 
+      ? `${this.baseUrl}/${templateId}/ai/insights`
+      : `${this.baseUrl}/ai/insights`;
+    const response = await apiClient.get(url, {
+      params: { timeframe }
+    });
+    return response.data.data;
+  }
+
+  // AI: Semantic search templates
+  static async searchSemantic(data: {
+    query: string;
+    limit?: number;
+    threshold?: number;
+  }): Promise<{
+    results: any[];
+    totalResults: number;
+    searchTime: number;
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/ai/search`, data);
+    return response.data.data;
+  }
+
+  // AI: Personalize template
+  static async personalizeTemplate(
+    templateId: string,
+    data: {
+      preferences?: any;
+      context?: any;
+    }
+  ): Promise<{
+    personalizedContent: string;
+    adaptations: string[];
+    confidence: number;
+  }> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/ai/personalize`, data);
+    return response.data.data;
+  }
+
+  // AI: Apply optimization to template
+  static async applyOptimization(
+    templateId: string,
+    data: {
+      optimizedContent: string;
+      metadata: any;
+    }
+  ): Promise<PromptTemplate> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/ai/apply-optimization`, data);
+    return response.data.data;
+  }
 }

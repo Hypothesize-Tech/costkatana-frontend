@@ -332,14 +332,18 @@
     border-image: linear-gradient(135deg, #06ec9e, #009454) 1;
     color: #06ec9e;
     font-weight: 600;
+    padding: 8px;
   }
 
   .light .btn-outline {
     color: #009454;
+    border-radius: 12px;
+
   }
 
   .dark .btn-outline {
     color: #06ec9e;
+    border-radius: 12px;
   }
 
   .btn-outline:hover:not(:disabled) {
