@@ -143,46 +143,9 @@ export const Optimization: React.FC = () => {
     return optimizations.data;
   };
 
-  // Use summary data for accurate statistics
+  // Use summary data for accurate statistics (includes ALL optimizations, not just current page)
   const calculateStats = () => {
-    // Calculate from actual optimizations if available (more accurate with cortex metrics)
-    if (optimizations?.data && optimizations.data.length > 0) {
-      const allOpts = getAllOptimizations();
-
-      const totalSaved = allOpts.reduce((total: number, opt: any) => {
-        const saved = opt.cortexImpactMetrics
-          ? Math.abs(opt.cortexImpactMetrics.costImpact.costSavings)
-          : opt.costSaved || opt.savings || 0;
-        return total + saved;
-      }, 0);
-
-      const totalTokensSaved = allOpts.reduce((total: number, opt: any) => {
-        const tokensSaved = opt.cortexImpactMetrics
-          ? Math.abs(opt.cortexImpactMetrics.tokenReduction.absoluteSavings)
-          : opt.tokensSaved || 0;
-        return total + tokensSaved;
-      }, 0);
-
-      const avgImprovement = allOpts.length > 0
-        ? allOpts.reduce((sum: number, opt: any) => {
-          const improvement = opt.cortexImpactMetrics
-            ? Math.abs(opt.cortexImpactMetrics.tokenReduction.percentageSavings)
-            : opt.improvementPercentage || 0;
-          return sum + improvement;
-        }, 0) / allOpts.length
-        : 0;
-
-      return {
-        total: allOpts.length,
-        applied: summary?.applied || 0,
-        totalSaved,
-        totalTokensSaved,
-        avgImprovement,
-        applicationRate: summary?.applicationRate || 0,
-      };
-    }
-
-    // Fallback to summary if no optimizations
+    // Always use summary data as it includes all optimizations across all pages
     if (!summary) return null;
 
     return {
@@ -400,7 +363,7 @@ export const Optimization: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-display font-semibold gradient-text-primary">
                 Latest Optimization
-                {getAllOptimizations()[0]?.cortexImpactMetrics && (
+                {getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex && (
                   <span className="ml-2 px-2 py-1 text-xs from-accent-500 to-secondary-500 dark:from-accent-400 dark:to-secondary-400 text-white rounded-full border border-accent-300/50 dark:border-accent-500/50 shadow-sm font-medium">
                     ✨ Cortex Optimized
                   </span>
@@ -415,7 +378,7 @@ export const Optimization: React.FC = () => {
             </div>
 
             {/* With/Without Cortex Comparison */}
-            {getAllOptimizations()[0]?.cortexImpactMetrics && (
+            {getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex && (
               <div className="mb-4 p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-accent-50/30 dark:from-secondary-900/20 dark:to-accent-900/20">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-6 h-6 rounded-lg bg-gradient-to-r from-secondary-500 to-accent-500 flex items-center justify-center shadow-lg">
@@ -480,7 +443,7 @@ export const Optimization: React.FC = () => {
               <div className="p-3 glass rounded-lg border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-center">
                 <div className="text-lg font-display font-bold text-success-600 dark:text-success-400">
                   ${formatSmartNumber(
-                    getAllOptimizations()[0]?.cortexImpactMetrics
+                    (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings)
                       : getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0
                   )}
@@ -490,7 +453,7 @@ export const Optimization: React.FC = () => {
               <div className="p-3 glass rounded-lg border border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 text-center">
                 <div className="text-lg font-display font-bold text-danger-600 dark:text-danger-400">
                   ${formatSmartNumber(
-                    getAllOptimizations()[0]?.cortexImpactMetrics
+                    (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex
                       : getAllOptimizations()[0]?.originalCost || 0
                   )}
@@ -500,7 +463,7 @@ export const Optimization: React.FC = () => {
               <div className="p-3 glass rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 text-center">
                 <div className="text-lg font-display font-bold text-primary-600 dark:text-primary-400">
                   {formatSmartNumber(
-                    getAllOptimizations()[0]?.cortexImpactMetrics
+                    (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.percentageSavings)
                       : getAllOptimizations()[0]?.improvementPercentage || 0
                   )}%
@@ -509,7 +472,7 @@ export const Optimization: React.FC = () => {
               </div>
               <div className="p-3 glass rounded-lg border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 text-center">
                 <div className="text-lg font-display font-bold text-secondary-600 dark:text-secondary-400">
-                  {getAllOptimizations()[0]?.cortexImpactMetrics
+                  {(getAllOptimizations()[0]?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                     ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()
                     : getAllOptimizations()[0]?.tokensSaved || 0}
                 </div>

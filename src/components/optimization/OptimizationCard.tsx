@@ -49,7 +49,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-display font-medium bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30">
                 Answer Generated
               </span>
-              {optimization.cortexImpactMetrics && (
+              {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-display font-medium bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border border-secondary-200/30">
                   <span className="mr-1">✨</span>
                   Cortex Optimized
@@ -61,9 +61,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             </div>
 
             <h3 className="text-2xl font-display font-bold gradient-text-primary mb-6">
-              {optimization.cortexImpactMetrics
+              {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex
                 ? `${Math.abs(optimization.cortexImpactMetrics.tokenReduction.percentageSavings).toFixed(1)}% Token ${optimization.cortexImpactMetrics.tokenReduction.percentageSavings >= 0 ? 'Reduction' : 'Increase'}`
-                : `${optimization.improvementPercentage.toFixed(1)}% Token Reduction`}
+                : `${optimization.improvementPercentage.toFixed(1)}% Improvement`}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -73,7 +73,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Tokens Saved</span>
                 </div>
                 <span className="font-display font-bold gradient-text-primary text-lg">
-                  {optimization.cortexImpactMetrics
+                  {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex
                     ? Math.abs(optimization.cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()
                     : optimization.tokensSaved.toLocaleString()}
                 </span>
@@ -84,7 +84,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Cost Saved</span>
                 </div>
                 <span className="font-display font-bold gradient-text-success text-lg">
-                  {formatCurrency(optimization.cortexImpactMetrics
+                  {formatCurrency(optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex
                     ? Math.abs(optimization.cortexImpactMetrics.costImpact.costSavings)
                     : optimization.costSaved)}
                 </span>
@@ -145,7 +145,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-xs">
-                    {optimization.cortexImpactMetrics
+                    {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex
                       ? optimization.cortexImpactMetrics.tokenReduction.withoutCortex.toLocaleString()
                       : optimization.originalTokens.toLocaleString()} tokens
                   </span>
@@ -171,7 +171,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-xs">
-                    {optimization.cortexImpactMetrics
+                    {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex
                       ? optimization.cortexImpactMetrics.tokenReduction.withCortex.toLocaleString()
                       : optimization.optimizedTokens.toLocaleString()} tokens
                   </span>
@@ -180,14 +180,14 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             </div>
 
             {/* Cortex Impact Display - Full Component */}
-            {optimization.cortexImpactMetrics && (
+            {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex && (
               <div className="mt-6">
                 <CortexImpactDisplay metrics={optimization.cortexImpactMetrics} />
               </div>
             )}
 
             {/* Cortex Impact Comparison Accordion - Additional Details */}
-            {optimization.cortexImpactMetrics && (
+            {optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex && (
               <div className="mt-6">
                 <div
                   className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/80 to-accent-50/60 dark:from-secondary-900/20 dark:to-accent-900/20 overflow-hidden"
@@ -334,7 +334,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {/* Suggestions */}
             {optimization.suggestions &&
               optimization.suggestions.length > 0 && (
-                <div className={`glass rounded-xl p-6 border border-accent-200/30 ${optimization.cortexImpactMetrics ? "mt-6" : ""}`}>
+                <div className={`glass rounded-xl p-6 border border-accent-200/30 ${(optimization.metadata?.cortexEnabled && optimization.cortexImpactMetrics && !optimization.metadata?.cortex?.lightweightCortex) ? "mt-6" : ""}`}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center glow-accent">
                       <CheckCircleIcon className="w-4 h-4 text-white" />

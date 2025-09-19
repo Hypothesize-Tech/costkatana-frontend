@@ -241,34 +241,34 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         ) : (
           <div className="space-y-6">
             {/* Success Header */}
-            <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl ${cortexEnabled && optimizationResult?.metadata?.cortex
+            <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
               ? 'border-secondary-200/30'
               : 'border-success-200/30'
               }`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                     ? 'bg-gradient-secondary'
                     : 'bg-gradient-success'
                     }`}>
                     <CheckIcon className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    <span className={`text-xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                       ? 'gradient-text-secondary'
                       : 'gradient-text-success'
                       }`}>
-                      {cortexEnabled && optimizationResult?.metadata?.cortex
+                      {cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                         ? 'Cortex Optimization Complete!'
                         : 'Optimization Complete!'}
                     </span>
-                    {cortexEnabled && optimizationResult?.metadata?.cortex && (
+                    {cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex && (
                       <SparklesIcon className="w-5 h-5 text-secondary-500" />
                     )}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-3xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                  <div className={`text-3xl font-display font-bold ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                     ? 'gradient-text-secondary'
                     : 'gradient-text-success'
                     }`}>
@@ -297,8 +297,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     <div className="flex items-center space-x-3">
                       <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border border-primary-200/30 font-display font-medium text-xs">
                         {(() => {
-                          const originalTokens = optimizationResult?.metadata?.cortexTokenReduction?.originalTokens
-                            || optimizationResult?.originalTokens
+                          const originalTokens = optimizationResult?.originalTokens
                             || Math.ceil(prompt.split(/\s+/).length * 1.3);
                           return `${Math.round(originalTokens)} tokens`;
                         })()}
@@ -323,19 +322,19 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </div>
 
                 {/* Generated Answer */}
-                <div className={`glass rounded-xl p-6 border ${cortexEnabled && optimizationResult?.metadata?.cortex
+                <div className={`glass rounded-xl p-6 border ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                   ? 'border-secondary-200/30'
                   : 'border-success-200/30'
                   }`}>
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                         ? 'bg-gradient-secondary'
                         : 'bg-gradient-success'
                         }`}>
                         <span className="text-white text-xs">✨</span>
                       </div>
-                      <label className={`font-display font-semibold ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      <label className={`font-display font-semibold ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                         ? 'gradient-text-secondary'
                         : 'gradient-text-success'
                         }`}>
@@ -343,13 +342,12 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       </label>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <span className={`px-3 py-1 rounded-full border font-display font-medium text-xs ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      <span className={`px-3 py-1 rounded-full border font-display font-medium text-xs ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                         ? 'bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30'
                         : 'bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30'
                         }`}>
                         {(() => {
-                          const optimizedTokens = optimizationResult?.metadata?.cortexTokenReduction?.cortexTokens
-                            || optimizationResult?.optimizedTokens
+                          const optimizedTokens = optimizationResult?.optimizedTokens
                             || Math.ceil((optimizationResult?.generatedAnswer?.split(/\s+/).length || 0) * 1.3);
                           return `${Math.round(optimizedTokens)} tokens`;
                         })()}
@@ -363,7 +361,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                       </button>
                     </div>
                   </div>
-                  <div className={`glass rounded-lg p-4 border max-h-48 overflow-y-auto ${cortexEnabled && optimizationResult?.metadata?.cortex
+                  <div className={`glass rounded-lg p-4 border max-h-48 overflow-y-auto ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                     ? 'border-secondary-200/30'
                     : 'border-success-200/30'
                     }`}>
@@ -378,50 +376,30 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               </div>
 
               {/* Token Comparison Stats */}
-              <div className={`glass rounded-xl p-6 border shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+              <div className={`glass rounded-xl p-6 border shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex
                 ? 'border-secondary-200/30'
                 : 'border-primary-200/30'
                 }`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
-                      ? 'gradient-text-secondary'
-                      : 'gradient-text'
-                      }`}>
-                      {optimizationResult
-                        ? formatSmartNumber(
-                          optimizationResult.cortexImpactMetrics
-                            ? Math.abs(optimizationResult.cortexImpactMetrics.tokenReduction.absoluteSavings)
-                            : optimizationResult.tokensSaved
-                        )
-                        : '0'}
+                    <div className="text-2xl font-display font-bold gradient-text mb-1">
+                      {optimizationResult ? formatSmartNumber(optimizationResult.tokensSaved) : '0'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                       Tokens Saved
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
-                      ? 'gradient-text-secondary'
-                      : 'gradient-text'
-                      }`}>
-                      {optimizationResult
-                        ? `${optimizationResult.cortexImpactMetrics
-                          ? Math.abs(optimizationResult.cortexImpactMetrics.tokenReduction.percentageSavings).toFixed(1)
-                          : optimizationResult.improvementPercentage.toFixed(1)}%`
-                        : '0%'}
+                    <div className="text-2xl font-display font-bold gradient-text mb-1">
+                      {optimizationResult ? `${optimizationResult.improvementPercentage.toFixed(1)}%` : '0%'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-                      {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
+                      Improvement
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-display font-bold gradient-text-success mb-1">
-                      {optimizationResult
-                        ? `$${optimizationResult.cortexImpactMetrics
-                          ? Math.abs(optimizationResult.cortexImpactMetrics.costImpact.costSavings).toFixed(6)
-                          : optimizationResult.costSaved.toFixed(6)}`
-                        : '$0'}
+                      {optimizationResult ? `$${optimizationResult.costSaved.toFixed(6)}` : '$0'}
                     </div>
                     <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
                       Cost Saved
@@ -433,29 +411,32 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
             {/* Optimization Stats */}
             {(() => {
-              const hasCortex = optimizationResult?.metadata?.cortex;
+              // Only show Cortex UI if explicitly enabled AND not lightweight cortex
+              // If cortexEnabled = false, it means user disabled Cortex, so we used lightweight cortex instead
+              // In that case, we should show normal optimization UI (no Cortex branding)
+              const hasCortex = cortexEnabled && optimizationResult?.metadata?.cortex && !optimizationResult?.metadata?.cortex?.lightweightCortex;
 
               return (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                    <div className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300 ${hasCortex
                       ? 'border-secondary-200/30'
                       : 'border-primary-200/30'
                       }`}>
-                      <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-lg ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-lg ${hasCortex
                         ? 'bg-gradient-secondary'
                         : 'bg-gradient-primary'
                         }`}>
                         <span className="text-white text-lg">📈</span>
                       </div>
-                      <div className={`text-2xl font-display font-bold mb-1 ${cortexEnabled && optimizationResult?.metadata?.cortex
+                      <div className={`text-2xl font-display font-bold mb-1 ${hasCortex
                         ? 'gradient-text-secondary'
                         : 'gradient-text'
                         }`}>
                         {optimizationResult ? `${optimizationResult.improvementPercentage.toFixed(1)}%` : '0%'}
                       </div>
                       <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-                        {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Token Reduction' : 'Improvement'}
+                        {hasCortex ? 'Token Reduction' : 'Improvement'}
                       </div>
                     </div>
                     <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
@@ -469,22 +450,22 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     </div>
                     <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
                       <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center mx-auto mb-3 shadow-lg">
-                        <span className="text-white text-lg">{cortexEnabled && optimizationResult?.metadata?.cortex ? '🔍' : '⚙️'}</span>
+                        <span className="text-white text-lg">{hasCortex ? '🔍' : '⚙️'}</span>
                       </div>
                       <div className="text-2xl font-display font-bold gradient-text-accent mb-1">
-                        {cortexEnabled && optimizationResult?.metadata?.cortex
+                        {hasCortex
                           ? `${Math.round((optimizationResult?.metadata?.cortex?.semanticIntegrity || 0) * 100)}%`
                           : (optimizationResult?.suggestions?.length || 0)
                         }
                       </div>
                       <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-                        {cortexEnabled && optimizationResult?.metadata?.cortex ? 'Integrity' : 'Techniques'}
+                        {hasCortex ? 'Integrity' : 'Techniques'}
                       </div>
                     </div>
                   </div>
 
                   {/* Cortex Results Display */}
-                  {cortexEnabled && hasCortex && (
+                  {hasCortex && (
                     <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                       <CortexResultsDisplay
                         metadata={optimizationResult?.metadata}

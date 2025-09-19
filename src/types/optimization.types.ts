@@ -104,6 +104,7 @@ export interface OptimizationMetadata {
     };
     error?: string;
     fallbackUsed?: boolean;
+    lightweightCortex?: boolean; // Added for lightweight Cortex identification
     detailsForDebugging?: {
       errorType?: string;
       errorMessage?: string;
