@@ -16,12 +16,13 @@ export interface ProxyKey {
     keyId: string;
     name: string;
     description?: string;
-    providerKeyId: {
-        _id: string;
+    providerKey: {
         name: string;
         provider: string;
-    };
-    userId: string;
+        maskedKey: string;
+    }[];
+    project?: any[];
+    userId?: string;
     projectId?: string;
     permissions: ('read' | 'write' | 'admin')[];
     budgetLimit?: number;
@@ -32,7 +33,7 @@ export interface ProxyKey {
     allowedDomains?: string[];
     isActive: boolean;
     createdAt: string;
-    updatedAt: string;
+    updatedAt?: string;
     lastUsed?: string;
     expiresAt?: string;
     usageStats: {

@@ -91,7 +91,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
               {proxyKey.name}
             </h3>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">
-              Linked to <span className="font-semibold gradient-text-primary">{proxyKey.providerKeyId.name}</span> ({proxyKey.providerKeyId.provider})
+              Linked to <span className="font-semibold gradient-text-primary">{proxyKey.providerKey?.[0]?.name || 'Unknown Provider'}</span> ({proxyKey.providerKey?.[0]?.provider || 'Unknown'})
             </p>
             {proxyKey.description && (
               <p className="font-body text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
