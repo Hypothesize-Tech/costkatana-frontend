@@ -53,7 +53,7 @@ export const formatSmartNumber = (num: number): string => {
 /**
  * Format currency values with smart decimal handling
  */
-export const formatCurrency = (amount: number, currency: string = 'USD'): string => {
+export const formatCurrency = (amount: number, _currency: string = 'USD'): string => {
     const formattedAmount = formatSmartNumber(amount);
     return `$${formattedAmount}`;
 };
@@ -93,16 +93,27 @@ export const formatBytes = (bytes: number): string => {
 /**
  * Format relative time
  */
-export const formatRelativeTime = (date: Date | string): string => {
+export const formatRelativeTime = (date: Date | string | null | undefined): string => {
+    // Handle null, undefined, or invalid dates
+    if (!date) {
+        return 'No date available';
+    }
+
     const d = typeof date === 'string' ? new Date(date) : date;
+
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+        return 'Invalid date';
+    }
+
     const now = new Date();
     const diff = now.getTime() - d.getTime();
-    
+
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) return `${days}d ago`;
     if (hours > 0) return `${hours}h ago`;
     if (minutes > 0) return `${minutes}m ago`;
@@ -112,20 +123,30 @@ export const formatRelativeTime = (date: Date | string): string => {
 /**
  * Format date to readable format
  */
-export const formatDate = (date: Date | string, format?: string): string => {
+export const formatDate = (date: Date | string | null | undefined, format?: string): string => {
+    // Handle null, undefined, or invalid dates
+    if (!date) {
+        return 'No date available';
+    }
+
     const d = typeof date === 'string' ? new Date(date) : date;
-    
+
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+        return 'Invalid date';
+    }
+
     if (format === 'relative') {
         return formatRelativeTime(d);
     }
-    
+
     if (format === 'short' || format === 'MMM dd' || format === 'MMM d') {
         return d.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric'
         });
     }
-    
+
     return d.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -136,8 +157,19 @@ export const formatDate = (date: Date | string, format?: string): string => {
 /**
  * Format date and time
  */
-export const formatDateTime = (date: Date | string): string => {
+export const formatDateTime = (date: Date | string | null | undefined): string => {
+    // Handle null, undefined, or invalid dates
+    if (!date) {
+        return 'No date available';
+    }
+
     const d = typeof date === 'string' ? new Date(date) : date;
+
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+        return 'Invalid date';
+    }
+
     return d.toLocaleString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -309,7 +341,7 @@ export const renderFormattedContent = (content: string): string => {
         .replace(/`(.*?)`/g, '<code>$1</code>');
 };
 
-export const formatOptimizationSuggestions = (suggestions: any[]): string[] => {
+export const formatOptimizationSuggestions = (suggestions: unknown[]): string[] => {
     if (!Array.isArray(suggestions)) return [];
-    return suggestions.map(s => typeof s === 'string' ? s : s.description || '');
+    return suggestions.map(s => typeof s === 'string' ? s : (s as any)?.description || '');
 };

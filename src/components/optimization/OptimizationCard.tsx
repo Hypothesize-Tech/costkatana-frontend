@@ -56,7 +56,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </span>
               )}
               <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
-                {formatDate(optimization.createdAt)}
+                {optimization.createdAt ? formatDate(optimization.createdAt) : 'Recently created'}
               </span>
             </div>
 
