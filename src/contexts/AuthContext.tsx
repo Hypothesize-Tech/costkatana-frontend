@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { authService } from "@/services/auth.service";
 import { User, LoginCredentials, RegisterData } from "@/types";
+import { setUserContext, addBreadcrumb } from "@/config/sentry";
 
 interface AuthContextType {
   user: User | null;
@@ -73,6 +74,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     initAuth();
   }, []);
+
+  // Track user authentication state changes for Sentry
+  useEffect(() => {
+    if (user) {
+      // Set user context in Sentry when user is authenticated
+      setUserContext({
+        id: user.id,
+        email: user.email,
+        username: user.name || user.email,
+        role: user.role || 'user',
+        organization: user.company || undefined,
+      });
+
+      addBreadcrumb(
+        `User authenticated: ${user.email}`,
+        'auth.login',
+        'info',
+        {
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+          organization: user.company,
+        }
+      );
+    } else {
+      // Clear user context when user logs out
+      setUserContext({});
+
+      addBreadcrumb(
+        'User logged out',
+        'auth.logout',
+        'info'
+      );
+    }
+  }, [user]);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {

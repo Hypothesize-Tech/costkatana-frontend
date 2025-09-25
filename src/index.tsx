@@ -7,6 +7,10 @@ import { Toaster } from "react-hot-toast";
 import App from "./App";
 import "./styles/global.css";
 
+// Initialize Sentry as early as possible
+import { initializeSentryReact } from "./config/sentry";
+initializeSentryReact();
+
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {

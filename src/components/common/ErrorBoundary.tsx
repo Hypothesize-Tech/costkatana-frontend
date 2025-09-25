@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from "react";
+import { captureError, setComponentContext } from "@/config/sentry";
 
 /// <reference types="vite/client" />
 
@@ -24,6 +25,37 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("ErrorBoundary caught an error:", error, errorInfo);
+
+    // Capture error with Sentry
+    captureError(error, {
+      component: {
+        name: 'ErrorBoundary',
+        props: this.props,
+      },
+      route: {
+        path: window.location.pathname,
+        component: 'ErrorBoundary',
+      },
+      tags: {
+        'error.type': 'react_error_boundary',
+        'error.component': 'ErrorBoundary',
+        'error.boundary': 'global',
+      },
+      extra: {
+        errorInfo,
+        componentStack: errorInfo.componentStack,
+        errorBoundary: 'global',
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    // Set component context for better error tracking
+    setComponentContext({
+      name: 'ErrorBoundary',
+      props: this.props,
+    });
   }
 
   render() {
