@@ -19,6 +19,7 @@ export const RegisterForm = () => {
     formState: { errors },
     setError,
   } = useForm<RegisterFormData>({
+    mode: 'onSubmit',
     resolver: zodResolver(registerSchema),
   });
 

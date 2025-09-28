@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema } from "@/utils/validators";
-import { authService } from "@/services/auth.service";
+import { authService } from "../../services/auth.service";
 import { cn } from "@/utils/helpers";
 import toast from "react-hot-toast";
 

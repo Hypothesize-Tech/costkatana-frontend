@@ -7,9 +7,9 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { authService } from "@/services/auth.service";
-import { User, LoginCredentials, RegisterData } from "@/types";
-import { setUserContext, addBreadcrumb } from "@/config/sentry";
+import { authService } from "../services/auth.service";
+import { User, LoginCredentials, RegisterData } from "../types";
+import { setUserContext, addBreadcrumb } from "../config/sentry";
 
 interface AuthContextType {
   user: User | null;

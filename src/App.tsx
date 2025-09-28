@@ -62,8 +62,6 @@ import CostDebuggerPage from './pages/CostDebugger';
 import UnexplainedCosts from './pages/UnexplainedCosts';
 import SAST from './pages/SAST';
 
-
-
 // Component to handle global tracking inside the context providers
 function AppContent() {
   // Initialize copy code functionality

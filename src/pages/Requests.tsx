@@ -8,9 +8,9 @@ import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
-import { usageService } from "@/services/usage.service";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { useProject } from "@/contexts/ProjectContext";
+import { usageService } from "../services/usage.service";
+import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { useProject } from "../contexts/ProjectContext";
 import toast from "react-hot-toast";
 
 interface Request {

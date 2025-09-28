@@ -21,32 +21,32 @@ export const formatNumber = (num: number): string => {
 /**
  * Smart number formatting - shows meaningful digits after decimal
  */
-export const formatSmartNumber = (num: number): string => {
-    if (num === 0) return '0';
+export const formatSmartNumber = (num: number | null | undefined): string => {
+    if (num === null || num === undefined || num === 0) return '0';
     if (num >= 1) return num.toFixed(2);
-    
+
     // For numbers less than 1, find the first non-zero digit after decimal
     const str = num.toString();
     const decimalIndex = str.indexOf('.');
-    
+
     if (decimalIndex === -1) return num.toString();
-    
+
     const afterDecimal = str.substring(decimalIndex + 1);
     let firstNonZeroIndex = -1;
-    
+
     for (let i = 0; i < afterDecimal.length; i++) {
         if (afterDecimal[i] !== '0') {
             firstNonZeroIndex = i;
             break;
         }
     }
-    
+
     if (firstNonZeroIndex === -1) return '0';
-    
+
     // Show up to the first 2-3 significant digits after the first non-zero
     const significantDigits = Math.max(2, firstNonZeroIndex + 2);
     const decimalPlaces = Math.min(significantDigits, 6); // Cap at 6 decimal places
-    
+
     return num.toFixed(decimalPlaces);
 };
 
