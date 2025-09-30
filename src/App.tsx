@@ -20,6 +20,7 @@ import { Layout } from './components/common/Layout';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TrackingConfiguration } from './components/analytics/TrackingConfiguration';
+import { OnboardingCheck } from './components/common/OnboardingCheck';
 
 // Pages
 import Login from './pages/Login';
@@ -88,7 +89,9 @@ function AppContent() {
           path="/"
           element={
             <ProtectedRoute>
-              <Layout />
+              <OnboardingCheck>
+                <Layout />
+              </OnboardingCheck>
             </ProtectedRoute>
           }
         >
