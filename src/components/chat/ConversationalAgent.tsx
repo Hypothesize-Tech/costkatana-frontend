@@ -23,6 +23,9 @@ import { FeedbackButton } from "../feedback/FeedbackButton";
 import { feedbackService } from "../../services/feedback.service";
 import { marked } from "marked";
 import { apiClient } from "@/config/api";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 // Configure marked for security
 marked.setOptions({
@@ -36,7 +39,7 @@ interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
-  requestId?: string; // For feedback tracking
+  requestId?: string;
   metadata?: {
     cost?: number;
     latency?: number;
@@ -60,6 +63,13 @@ interface ChatMessage {
   cacheHit?: boolean;
   agentPath?: string[];
   riskLevel?: string;
+  // Sources for citations and references
+  sources?: Array<{
+    title: string;
+    url: string;
+    type: 'web' | 'document' | 'api' | 'database';
+    description?: string;
+  }>;
 }
 
 interface Conversation {
@@ -94,6 +104,7 @@ export const ConversationalAgent: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessageId, setLoadingMessageId] = useState<string | null>(null);
   const [availableModels, setAvailableModels] = useState<AvailableModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<AvailableModel | null>(
     null,
@@ -107,6 +118,8 @@ export const ConversationalAgent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
+  const [showSourcesModal, setShowSourcesModal] = useState(false);
+  const [currentSources, setCurrentSources] = useState<ChatMessage['sources']>([]);
 
   // Multi-agent features
   const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
@@ -451,7 +464,7 @@ export const ConversationalAgent: React.FC = () => {
     loadAvailableModels();
     loadConversations();
     loadDataDrivenSuggestions();
-  }, [loadDataDrivenSuggestions]);
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -532,12 +545,17 @@ export const ConversationalAgent: React.FC = () => {
     setMessages((prev) => [...prev, userMessage]);
     setCurrentMessage("");
     setIsLoading(true);
+    setLoadingMessageId(userMessage.id);
     setError(null);
 
     try {
       // Handle demo message locally
       if (messageContent.includes("Demo: Show AI thinking process")) {
         setTimeout(() => {
+          // Parse sources from demo response
+          const demoResponse = "Here's how I would approach optimizing your AI costs. This demo shows my thinking process as I analyze your requirements and develop a solution.\n\nSources: 1. https://www.google.com/search?q=write%20a%20program%20in%20python%20for%20factorial%20of%20n";
+          const demoSources = parseSourcesFromResponse(demoResponse);
+
           const demoMessage: ChatMessage = {
             id: (Date.now() + 1).toString(),
             role: "assistant",
@@ -550,6 +568,7 @@ export const ConversationalAgent: React.FC = () => {
               latency: 1200,
               tokenCount: 150,
             },
+            sources: demoSources,
             thinking: {
               title: "Analyzing cost optimization strategies",
               summary:
@@ -601,6 +620,7 @@ export const ConversationalAgent: React.FC = () => {
 
           setMessages((prev) => [...prev, demoMessage]);
           setIsLoading(false);
+          setLoadingMessageId(null);
         }, 1500);
         return;
       }
@@ -613,12 +633,15 @@ export const ConversationalAgent: React.FC = () => {
         useMultiAgent: useMultiAgent,
       });
 
+      // Parse sources from the response text
+      const sources = parseSourcesFromResponse(response.response);
+
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: response.response,
         timestamp: new Date(),
-        requestId: `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate unique request ID
+        requestId: `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         metadata: {
           cost: response.cost,
           latency: response.latency,
@@ -629,7 +652,7 @@ export const ConversationalAgent: React.FC = () => {
         cacheHit: response.cacheHit || false,
         agentPath: response.agentPath || [],
         riskLevel: response.riskLevel || 'low',
-        // Add thinking data from backend response or generate fallback based on query type
+        sources: sources,
         thinking:
           response.thinking ||
           (messageContent.toLowerCase().includes("money") ||
@@ -670,6 +693,8 @@ export const ConversationalAgent: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      setIsLoading(false);
+      setLoadingMessageId(null);
 
       if (response.conversationId && !currentConversationId) {
         setCurrentConversationId(response.conversationId);
@@ -680,8 +705,10 @@ export const ConversationalAgent: React.FC = () => {
       setError(
         error instanceof Error ? error.message : "Failed to send message",
       );
-    } finally {
       setIsLoading(false);
+      setLoadingMessageId(null);
+    } finally {
+      // Additional cleanup if needed
     }
   };
 
@@ -748,10 +775,97 @@ export const ConversationalAgent: React.FC = () => {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const renderMessageContent = (content: string, message?: ChatMessage) => {
-    // Split content into parts (text and code blocks)
-    const parts = content.split(/(```[\s\S]*?```)/g);
+  const openSourcesModal = (sources: ChatMessage['sources']) => {
+    setCurrentSources(sources || []);
+    setShowSourcesModal(true);
+  };
 
+  const getSourceIcon = (type: string) => {
+    switch (type) {
+      case 'web':
+        return '🌐';
+      case 'document':
+        return '📄';
+      case 'api':
+        return '🔗';
+      case 'database':
+        return '🗄️';
+      default:
+        return '📚';
+    }
+  };
+
+  const parseSourcesFromResponse = (responseText: string): ChatMessage['sources'] => {
+    const sources: ChatMessage['sources'] = [];
+    // Look for "Sources:" section in the response - try multiple patterns
+    const patterns = [
+      /Sources:\s*([\s\S]*?)(?:\n\n|\n*$|$)/i,
+      /Sources:\s*\n([\s\S]*?)(?:\n\n|\n*$|$)/i,
+      /Sources:\s*\d+\.\s*([\s\S]*?)(?:\n\n|\n*$|$)/i
+    ];
+
+    let sourcesMatch = null;
+    for (const pattern of patterns) {
+      sourcesMatch = responseText.match(pattern);
+      if (sourcesMatch) break;
+    }
+
+    if (sourcesMatch && sourcesMatch[1]) {
+      const sourcesText = sourcesMatch[1];
+
+      // Extract individual source lines (numbered list like "1. https://...")
+      const sourceLines = sourcesText.match(/\d+\.\s*(https?:\/\/[^\s\n]+)/g);
+
+      if (sourceLines) {
+        sourceLines.forEach((line, index) => {
+          const urlMatch = line.match(/\d+\.\s*(https?:\/\/[^\s\n]+)/);
+          if (urlMatch && urlMatch[1]) {
+            const url = urlMatch[1];
+
+            // Determine source type based on URL domain
+            let type: 'web' | 'document' | 'api' | 'database' = 'web';
+
+            if (url.includes('google.com/search') || url.includes('search') || url.includes('bing.com') || url.includes('duckduckgo.com')) {
+              type = 'web';
+            } else if (url.includes('api.') || url.includes('/api/') || url.includes('docs/api')) {
+              type = 'api';
+            } else if (url.includes('docs') || url.includes('documentation') || url.includes('readme') || url.includes('.md')) {
+              type = 'document';
+            } else if (url.includes('database') || url.includes('db') || url.includes('mongodb') || url.includes('postgresql')) {
+              type = 'database';
+            }
+
+            // Create a more descriptive title from the URL
+            const urlObj = new URL(url);
+            let title = urlObj.hostname;
+
+            // If it's a search URL, extract the search query
+            if (url.includes('google.com/search') || url.includes('search')) {
+              const searchParams = new URLSearchParams(urlObj.search);
+              const query = searchParams.get('q');
+              if (query) {
+                title = `Search: ${decodeURIComponent(query)}`;
+              }
+            } else {
+              // For other URLs, use the path as title
+              title = urlObj.pathname !== '/' ? `${urlObj.hostname}${urlObj.pathname}` : urlObj.hostname;
+            }
+
+            sources.push({
+              title: title,
+              url: url,
+              type: type,
+              description: `Source ${index + 1} - ${type.toUpperCase()} reference`
+            });
+          }
+        });
+      }
+    }
+
+    return sources.length > 0 ? sources : undefined;
+  };
+
+  const renderMessageContent = (content: string, message?: ChatMessage) => {
     return (
       <>
         {/* Thinking Section */}
@@ -812,49 +926,232 @@ export const ConversationalAgent: React.FC = () => {
           </div>
         )}
 
-        {/* Main Content */}
+        {/* Main Content - Using ReactMarkdown with SyntaxHighlighter */}
         <div className="main-response">
-          {parts.map((part, index) => {
-            if (part.startsWith("```") && part.endsWith("```")) {
-              // This is a code block
-              const codeMatch = part.match(/```(\w+)?\n?([\s\S]*?)```/);
-              const language = codeMatch?.[1] || "text";
-              const code = codeMatch?.[2] || part.slice(3, -3);
-
-              return (
-                <div key={index} className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
-                  <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
-                    <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
-                      {language}
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(code)}
-                      className="btn-ghost text-xs font-display font-medium"
-                    >
-                      {copiedCode === code ? "✓ Copied!" : "📋 Copy"}
-                    </button>
+          <div className="prose prose-sm max-w-none font-body text-light-text-primary dark:text-dark-text-primary">
+            <ReactMarkdown
+              components={{
+                code({ className, children, ...props }: { className?: string; children?: React.ReactNode;[key: string]: any }) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  const isInline = !match || className?.includes('inline');
+                  return !isInline && match ? (
+                    <div className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
+                      <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
+                        <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                          {match[1]}
+                        </span>
+                        <button
+                          onClick={() => copyToClipboard(String(children).replace(/\n$/, ''))}
+                          className="btn-ghost text-xs font-display font-medium"
+                        >
+                          {copiedCode === String(children).replace(/\n$/, '') ? "✓ Copied!" : "📋 Copy"}
+                        </button>
+                      </div>
+                      <SyntaxHighlighter
+                        style={oneDark}
+                        language={match[1]}
+                        PreTag="div"
+                        className="rounded-b-xl !mt-0 !p-4 !bg-[#011627] text-sm leading-relaxed overflow-x-auto"
+                        showLineNumbers={true}
+                        wrapLines={true}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    </div>
+                  ) : (
+                    <code className={`${className} bg-primary-100 dark:bg-primary-900 px-1.5 py-0.5 rounded text-sm`} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+                pre({ children }) {
+                  return <>{children}</>;
+                },
+                // Enhanced styling for other markdown elements
+                h1: ({ children }) => (
+                  <h1 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4 mt-6 first:mt-0">
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="text-xl font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 mt-5 first:mt-0">
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 mt-4 first:mt-0">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="mb-4 last:mb-0 leading-relaxed text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </p>
+                ),
+                ul: ({ children }) => (
+                  <ul className="list-disc list-inside mb-4 last:mb-0 space-y-1 text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="list-decimal list-inside mb-4 last:mb-0 space-y-1 text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </li>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-4 border-primary-300 pl-4 italic mb-4 last:mb-0 text-light-text-secondary dark:text-dark-text-secondary bg-primary-50/50 dark:bg-primary-900/30 py-2 rounded-r-lg">
+                    {children}
+                  </blockquote>
+                ),
+                table: ({ children }) => (
+                  <div className="overflow-x-auto mb-4 last:mb-0">
+                    <table className="min-w-full border-collapse border border-primary-200/30 rounded-lg overflow-hidden">
+                      {children}
+                    </table>
                   </div>
-                  <pre className="p-4 bg-dark-bg-primary text-dark-text-primary font-mono text-sm leading-relaxed overflow-x-auto">
-                    <code>{code}</code>
-                  </pre>
-                </div>
-              );
-            } else {
-              // This is regular text - parse markdown
-              const parsedContent = marked.parse(part, {
-                breaks: true,
-              }) as string;
-              return (
-                <div
-                  key={index}
-                  className="prose prose-sm max-w-none font-body text-light-text-primary dark:text-dark-text-primary"
-                  dangerouslySetInnerHTML={{ __html: parsedContent }}
-                />
-              );
-            }
-          })}
+                ),
+                thead: ({ children }) => (
+                  <thead className="bg-primary-50/50 dark:bg-primary-900/30">
+                    {children}
+                  </thead>
+                ),
+                th: ({ children }) => (
+                  <th className="border border-primary-200/30 px-4 py-2 text-left font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </th>
+                ),
+                td: ({ children }) => (
+                  <td className="border border-primary-200/30 px-4 py-2 text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </td>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </strong>
+                ),
+                em: ({ children }) => (
+                  <em className="italic text-light-text-primary dark:text-dark-text-primary">
+                    {children}
+                  </em>
+                ),
+              }}
+            >
+              {content}
+            </ReactMarkdown>
+          </div>
         </div>
       </>
+    );
+  };
+
+  const SourcesModal = () => {
+    if (!showSourcesModal) return null;
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div className="glass max-w-2xl w-full max-h-[80vh] overflow-hidden rounded-2xl shadow-2xl animate-scale-in">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
+            <h3 className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+              📚 Sources & References
+            </h3>
+            <button
+              onClick={() => setShowSourcesModal(false)}
+              className="p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6 max-h-[60vh] overflow-y-auto scrollbar-hide">
+            {(currentSources || []).length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-light-text-secondary dark:text-dark-text-secondary">
+                  No sources available for this response.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {(currentSources || []).map((source, index) => (
+                  <div
+                    key={index}
+                    className="glass p-4 rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 group"
+                  >
+                    <div className="flex items-start gap-3">
+                      {/* Source Icon */}
+                      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-accent/20 flex items-center justify-center text-lg">
+                        {getSourceIcon(source.type)}
+                      </div>
+
+                      {/* Source Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
+                              {source.title}
+                            </h4>
+                            {source.description && (
+                              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-2">
+                                {source.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-2 text-xs text-light-text-muted dark:text-dark-text-muted">
+                              <span className={`px-2 py-1 rounded-full font-medium ${source.type === 'web' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' :
+                                source.type === 'document' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
+                                  source.type === 'api' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' :
+                                    'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
+                                }`}>
+                                {source.type.toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <button
+                            onClick={() => window.open(source.url, '_blank')}
+                            className="flex-shrink-0 p-2 rounded-lg bg-gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg glow-primary"
+                            title="Open source in new tab"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* URL */}
+                        <div className="mt-2 p-2 bg-primary-50/50 dark:bg-primary-900/30 rounded-lg border border-primary-200/20">
+                          <p className="text-xs font-mono text-light-text-muted dark:text-dark-text-muted break-all">
+                            {source.url}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-end p-6 border-t border-primary-200/30">
+            <button
+              onClick={() => setShowSourcesModal(false)}
+              className="btn-primary px-6 py-2"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -1186,6 +1483,14 @@ export const ConversationalAgent: React.FC = () => {
                         {message.riskLevel === 'high' ? '🔴' : '🟡'} {message.riskLevel.toUpperCase()} RISK
                       </span>
                     )}
+                    {message.sources && message.sources.length > 0 && (
+                      <button
+                        onClick={() => openSourcesModal(message.sources)}
+                        className="px-2 py-1 rounded-lg font-display font-semibold text-xs bg-gradient-accent/20 text-accent-600 hover:bg-gradient-accent/30 transition-all duration-300"
+                      >
+                        📚 {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
+                      </button>
+                    )}
                   </div>
 
                   {message.role === "assistant" && message.requestId && (
@@ -1296,7 +1601,7 @@ export const ConversationalAgent: React.FC = () => {
             </div>
           ))}
 
-          {isLoading && (
+          {isLoading && loadingMessageId && (
             <div className="flex justify-start animate-fade-in">
               <div className="glass p-4 rounded-2xl rounded-bl-sm shadow-2xl backdrop-blur-xl border border-primary-200/30">
                 <div className="flex items-center gap-3">
@@ -1306,6 +1611,11 @@ export const ConversationalAgent: React.FC = () => {
                   <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                     AI Assistant is thinking...
                   </span>
+                  <div className="flex space-x-1">
+                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce"></div>
+                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1339,6 +1649,8 @@ export const ConversationalAgent: React.FC = () => {
         </div>
       </div>
 
+      {/* Sources Modal */}
+      <SourcesModal />
     </div>
   );
 };

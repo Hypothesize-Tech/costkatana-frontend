@@ -231,7 +231,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
             }}
             className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
           />
-          <label htmlFor="remember-device" className="block ml-2 text-sm text-gray-900">
+          <label htmlFor="remember-device" className="block ml-2 text-sm text-light-text-primary dark:text-dark-text-primary">
             Trust this device for 30 days
           </label>
         </div>

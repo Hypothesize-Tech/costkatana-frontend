@@ -112,6 +112,7 @@ export class ChatService {
     }
   }
 
+
   /**
    * Create a new conversation
    */
