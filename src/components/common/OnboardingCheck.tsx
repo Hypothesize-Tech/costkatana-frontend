@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { OnboardingService } from '../../services/onboarding.service';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useProject } from '../../contexts/ProjectContext';
 import { LoadingSpinner } from './LoadingSpinner';
 import { Onboarding } from '../../pages/Onboarding';
 
@@ -11,40 +11,56 @@ interface OnboardingCheckProps {
 
 export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fallback }) => {
     const { user } = useAuth();
+    const { projects, isLoading: projectsLoading } = useProject();
     const [needsOnboarding, setNeedsOnboarding] = useState<boolean | null>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        checkOnboarding();
-    }, [user]);
+        // Check if user needs onboarding based on their onboarding status and projects
+        if (user && !projectsLoading) {
+            // If user already has projects, skip onboarding regardless of onboarding status
+            const hasProjects = projects && projects.length > 0;
+
+            if (hasProjects) {
+                setNeedsOnboarding(false);
+                return;
+            }
+
+            // Ensure onboarding field exists and has proper structure
+            if (!user.onboarding) {
+                // Initialize onboarding field if it doesn't exist
+                user.onboarding = {
+                    completed: false,
+                    projectCreated: false,
+                    firstLlmCall: false,
+                    stepsCompleted: []
+                };
+            }
+
+            if (typeof user.onboarding.completed === 'boolean') {
+                setNeedsOnboarding(!user.onboarding.completed);
+            } else {
+                // onboarding.completed is not a boolean - assume they need onboarding
+                user.onboarding.completed = false;
+                setNeedsOnboarding(true);
+            }
+        } else if (!user) {
+            // No user - don't set onboarding status yet
+            setNeedsOnboarding(null);
+        }
+    }, [user, projects, projectsLoading]);
 
     const handleOnboardingComplete = () => {
         setNeedsOnboarding(false);
+        // Update user object to reflect completed onboarding
+        if (user && user.onboarding) {
+            user.onboarding.completed = true;
+            user.onboarding.completedAt = new Date().toISOString();
+            // Update localStorage to persist the change
+            localStorage.setItem('user', JSON.stringify(user));
+        }
     };
 
-    const checkOnboarding = useCallback(async () => {
-        if (user?.id) {
-            try {
-                const status = await OnboardingService.getOnboardingStatus();
-                // If onboarding status doesn't exist or is not completed, user needs onboarding
-                setNeedsOnboarding(!status || !status.completed);
-            } catch (error) {
-                console.error('Error checking onboarding status:', error);
-                // Default to showing onboarding if there's an error
-                setNeedsOnboarding(true);
-            } finally {
-                setLoading(false);
-            }
-        } else {
-            setLoading(false);
-        }
-    }, [user?.id]);
-
-    useEffect(() => {
-        checkOnboarding();
-    }, [checkOnboarding]);
-
-    if (loading) {
+    if (needsOnboarding === null || (user && projectsLoading)) {
         return (
             <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center">
                 <div className="text-center">

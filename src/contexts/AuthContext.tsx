@@ -229,6 +229,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const updateUser = useCallback((updatedUser: User) => {
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
+
+    // Update Sentry context when user is updated
+    setUserContext({
+      id: updatedUser.id,
+      email: updatedUser.email,
+      username: updatedUser.name || updatedUser.email,
+      role: updatedUser.role || 'user',
+      organization: updatedUser.company || undefined,
+    });
   }, []);
 
   const value = {

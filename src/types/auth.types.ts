@@ -8,6 +8,13 @@ export interface User {
   subscription: Subscription;
   preferences: UserPreferences;
   usage: UserUsage;
+  onboarding: {
+    completed: boolean;
+    completedAt?: string;
+    projectCreated: boolean;
+    firstLlmCall: boolean;
+    stepsCompleted: string[];
+  };
   createdAt: string;
   lastLogin?: string;
   avatar?: string;

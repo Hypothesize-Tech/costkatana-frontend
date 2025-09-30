@@ -122,40 +122,30 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         },
     ];
 
-    // Load onboarding status on mount
+    // Initialize onboarding based on user data - no need for API calls
     useEffect(() => {
-        loadOnboardingStatus();
-    }, []);
-
-    const updateStepsFromStatus = useCallback((status: any) => {
-        steps.forEach(step => {
-            step.completed = status.steps?.find((s: any) => s.id === step.id)?.completed || false;
-        });
-    }, []);
-
-    const loadOnboardingStatus = useCallback(async () => {
-        try {
-            setLoading(true);
-            if (user?.id) {
-                const status = await OnboardingService.getOnboardingStatus();
-                if (status) {
-                    setOnboardingData(status);
-                    updateStepsFromStatus(status);
-                    setCurrentStep(status.currentStep);
-                } else {
-                    // Initialize onboarding
-                    const initData = await OnboardingService.initializeOnboarding();
-                    setOnboardingData(initData);
-                    setCurrentStep(0);
-                }
+        if (user?.onboarding) {
+            // Ensure onboarding field has proper structure
+            if (!user.onboarding.stepsCompleted) {
+                user.onboarding.stepsCompleted = [];
             }
-        } catch (error) {
-            console.error('Error loading onboarding status:', error);
-            showNotification('Failed to load onboarding status', 'error');
-        } finally {
+
+            // Check if user has already completed some steps
+            const completedSteps = user.onboarding.stepsCompleted || [];
+            steps.forEach(step => {
+                step.completed = completedSteps.includes(step.id);
+            });
+
+            // Set current step based on completed steps
+            const lastCompletedIndex = steps.findIndex(step => !step.completed);
+            setCurrentStep(lastCompletedIndex === -1 ? steps.length - 1 : lastCompletedIndex);
+            setLoading(false);
+        } else {
+            // User doesn't have onboarding data, start from beginning
+            setCurrentStep(0);
             setLoading(false);
         }
-    }, [user?.id, showNotification, updateStepsFromStatus]);
+    }, [user?.onboarding]);
 
     const handleNext = async () => {
         if (currentStep < steps.length - 1) {
