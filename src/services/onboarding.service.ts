@@ -12,6 +12,8 @@ export interface OnboardingStatus {
   completed: boolean;
   startedAt: string;
   completedAt?: string;
+  skipped?: boolean;
+  skippedAt?: string;
 }
 
 export interface CreateProjectData {
@@ -118,6 +120,19 @@ export class OnboardingService {
       return response.data.data;
     } catch (error) {
       console.error('Error completing onboarding:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Skip onboarding process
+   */
+  static async skipOnboarding(): Promise<OnboardingStatus> {
+    try {
+      const response = await apiClient.post(`${this.BASE_URL}/skip`);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error skipping onboarding:', error);
       throw error;
     }
   }

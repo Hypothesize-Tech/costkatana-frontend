@@ -248,6 +248,24 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         }
     };
 
+    const handleSkipOnboarding = async () => {
+        try {
+            setSubmitting(true);
+            await OnboardingService.skipOnboarding();
+            showNotification('Onboarding skipped. You can access it later from settings.', 'info');
+
+            // Call the completion callback
+            if (onComplete) {
+                onComplete();
+            }
+        } catch (error) {
+            console.error('Error skipping onboarding:', error);
+            showNotification('Failed to skip onboarding', 'error');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center">
@@ -669,40 +687,52 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                             ))}
                         </div>
 
-                        <button
-                            onClick={() => {
-                                if (currentStep === 0) {
-                                    handleNext();
-                                } else if (currentStep === 1) {
-                                    handleProjectSubmit();
-                                } else if (currentStep === 2) {
-                                    handleNext(); // Skip to LLM query
-                                } else if (currentStep === 3) {
-                                    handleLlmQuerySubmit();
-                                } else if (currentStep === 4) {
-                                    handleCompleteOnboarding();
-                                }
-                            }}
-                            disabled={submitting}
-                            className="flex items-center px-8 lg:px-10 py-3 lg:py-4 font-semibold text-white bg-gradient-primary rounded-xl lg:rounded-2xl hover:bg-gradient-success transition-all duration-300 shadow-lg lg:shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
-                        >
-                            {submitting ? (
-                                <>
-                                    <div className="w-4 h-4 lg:w-5 lg:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 lg:mr-3" />
-                                    Processing...
-                                </>
-                            ) : currentStep === steps.length - 1 ? (
-                                <>
-                                    <RocketLaunchIcon className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3" />
-                                    Get Started
-                                </>
-                            ) : (
-                                <>
-                                    Next
-                                    <ArrowRightIcon className="w-4 h-4 lg:w-5 lg:h-5 ml-2 lg:ml-3" />
-                                </>
+                        <div className="flex items-center space-x-3">
+                            {currentStep !== steps.length - 1 && (
+                                <button
+                                    onClick={handleSkipOnboarding}
+                                    disabled={submitting}
+                                    className="flex items-center px-4 lg:px-6 py-2 lg:py-3 font-medium text-secondary-600 dark:text-secondary-300 hover:text-secondary-800 dark:hover:text-secondary-100 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg lg:rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Skip Setup
+                                </button>
                             )}
-                        </button>
+
+                            <button
+                                onClick={() => {
+                                    if (currentStep === 0) {
+                                        handleNext();
+                                    } else if (currentStep === 1) {
+                                        handleProjectSubmit();
+                                    } else if (currentStep === 2) {
+                                        handleNext(); // Skip to LLM query
+                                    } else if (currentStep === 3) {
+                                        handleLlmQuerySubmit();
+                                    } else if (currentStep === 4) {
+                                        handleCompleteOnboarding();
+                                    }
+                                }}
+                                disabled={submitting}
+                                className="flex items-center px-8 lg:px-10 py-3 lg:py-4 font-semibold text-white bg-gradient-primary rounded-xl lg:rounded-2xl hover:bg-gradient-success transition-all duration-300 shadow-lg lg:shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+                            >
+                                {submitting ? (
+                                    <>
+                                        <div className="w-4 h-4 lg:w-5 lg:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 lg:mr-3" />
+                                        Processing...
+                                    </>
+                                ) : currentStep === steps.length - 1 ? (
+                                    <>
+                                        <RocketLaunchIcon className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3" />
+                                        Get Started
+                                    </>
+                                ) : (
+                                    <>
+                                        Next
+                                        <ArrowRightIcon className="w-4 h-4 lg:w-5 lg:h-5 ml-2 lg:ml-3" />
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,7 @@ export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fall
             }
 
             if (typeof user.onboarding.completed === 'boolean') {
-                setNeedsOnboarding(!user.onboarding.completed);
+                setNeedsOnboarding(!user.onboarding.completed && !user.onboarding.skipped);
             } else {
                 // onboarding.completed is not a boolean - assume they need onboarding
                 user.onboarding.completed = false;

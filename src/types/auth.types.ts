@@ -11,6 +11,8 @@ export interface User {
   onboarding: {
     completed: boolean;
     completedAt?: string;
+    skipped?: boolean;
+    skippedAt?: string;
     projectCreated: boolean;
     firstLlmCall: boolean;
     stepsCompleted: string[];
