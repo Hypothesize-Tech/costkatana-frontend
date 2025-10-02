@@ -203,7 +203,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold gradient-text-primary">{insights.forecasts.length}</div>
+            <div className="text-3xl font-display font-bold gradient-text-primary">0</div>
           </div>
           <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📈 Forecasts</div>
         </div>
@@ -365,42 +365,6 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
         </div>
       )}
 
-      {/* Predictive Forecasts */}
-      {insights.forecasts.length > 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Predictive Forecasts</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {insights.forecasts.map((forecast) => (
-              <div key={forecast.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 transition-all duration-300 hover:scale-105">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="font-display font-bold text-lg gradient-text-primary capitalize">
-                    {forecast.forecast_type} Forecast
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                    <span className="text-xl">{getTrendIcon(forecast.trends.direction)}</span>
-                  </div>
-                </div>
-                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                  📊 Trend: {forecast.trends.direction} • ⏰ {forecast.timeframe}
-                </div>
-                <div className="space-y-2">
-                  {forecast.recommendations.slice(0, 2).map((rec, index) => (
-                    <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
-                      <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
-                      <span>{rec}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

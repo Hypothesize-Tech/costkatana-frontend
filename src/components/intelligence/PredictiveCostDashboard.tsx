@@ -17,7 +17,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedTimeHorizon, setSelectedTimeHorizon] = useState(30);
-    const [activeTab, setActiveTab] = useState<'overview' | 'alerts' | 'forecasts' | 'optimizations' | 'scenarios'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'alerts' | 'optimizations' | 'scenarios'>('overview');
     const [autoOptimizeEnabled, setAutoOptimizeEnabled] = useState(false);
 
     // Fetch predictive intelligence data
@@ -127,7 +127,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         <span className="text-white text-3xl">🧠</span>
                     </div>
                     <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Generating Predictive Intelligence...</h3>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns, forecasting costs, and identifying opportunities</p>
+                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns and identifying optimization opportunities</p>
                 </div>
             </div>
         );
@@ -178,7 +178,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         </div>
                         <div>
                             <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">Predictive Cost Intelligence</h1>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered cost forecasting and proactive optimization</p>
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered proactive optimization and intelligence</p>
                             <div className="flex items-center gap-3 mt-3">
                                 <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Confidence Score:</span>
                                 <div className="w-32 h-2 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-full overflow-hidden">
@@ -298,7 +298,6 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     {[
                         { id: 'overview', label: 'Overview', icon: '🏠' },
                         { id: 'alerts', label: 'Proactive Alerts', icon: '🚨' },
-                        { id: 'forecasts', label: 'Cost Forecasts', icon: '📊' },
                         { id: 'optimizations', label: 'Smart Optimizations', icon: '⚡' },
                         { id: 'scenarios', label: 'Future Scenarios', icon: '🔮' }
                     ].map(tab => (
@@ -538,86 +537,6 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 )}
 
-                {activeTab === 'forecasts' && (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
-                                <span className="text-white text-2xl">📊</span>
-                            </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text mb-2">Cost Forecasts</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Predictive cost analysis for the next {selectedTimeHorizon} days</p>
-                        </div>
-
-                        <div className="card p-6 bg-gradient-to-br from-primary-50/30 to-primary-100/30 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                            <div className="flex justify-between items-center mb-6">
-                                <h4 className="text-lg font-display font-bold gradient-text">Daily Cost Forecast</h4>
-                                <div className="flex gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-1 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded"></div>
-                                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Baseline</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-4 h-1 bg-gradient-primary rounded"></div>
-                                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Predicted</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="glass p-6 rounded-xl border border-primary-200/30">
-                                <div className="flex gap-2 items-end h-48">
-                                    {intelligenceData.forecasts.slice(0, 14).map((forecast, index) => (
-                                        <div key={index} className="flex-1 flex flex-col items-center gap-2">
-                                            <div className="flex gap-1 items-end h-32 w-full">
-                                                <div
-                                                    className="bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-t flex-1 transition-all duration-500"
-                                                    style={{ height: `${(forecast.baselineCost / Math.max(...intelligenceData.forecasts.map(f => f.predictedCost))) * 100}%` }}
-                                                ></div>
-                                                <div
-                                                    className="bg-gradient-primary rounded-t flex-1 transition-all duration-500 glow-primary"
-                                                    style={{ height: `${(forecast.predictedCost / Math.max(...intelligenceData.forecasts.map(f => f.predictedCost))) * 100}%` }}
-                                                ></div>
-                                            </div>
-                                            <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
-                                                {new Date(forecast.period).getDate()}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-8">
-                            <h4 className="text-lg font-display font-bold gradient-text mb-6">Key Insights</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="glass p-4 rounded-xl border border-primary-200/30 text-center">
-                                    <h5 className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">Trend Direction</h5>
-                                    <span className={`text-lg font-display font-bold ${intelligenceData.forecasts[0]?.trend === 'increasing' ? 'gradient-text-danger'
-                                        : intelligenceData.forecasts[0]?.trend === 'stable' ? 'gradient-text-success'
-                                            : 'gradient-text'
-                                        }`}>
-                                        {intelligenceData.forecasts[0]?.trend || 'stable'}
-                                    </span>
-                                </div>
-                                <div className="glass p-4 rounded-xl border border-primary-200/30 text-center">
-                                    <h5 className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">Peak Cost Day</h5>
-                                    <span className="text-lg font-display font-bold gradient-text">
-                                        {intelligenceData.forecasts.reduce((max, current) =>
-                                            current.predictedCost > max.predictedCost ? current : max
-                                        ).period ? formatDate(intelligenceData.forecasts.reduce((max, current) =>
-                                            current.predictedCost > max.predictedCost ? current : max
-                                        ).period) : 'N/A'}
-                                    </span>
-                                </div>
-                                <div className="glass p-4 rounded-xl border border-primary-200/30 text-center">
-                                    <h5 className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">Average Daily Cost</h5>
-                                    <span className="text-lg font-display font-bold gradient-text">
-                                        {formatCurrency(intelligenceData.forecasts.reduce((sum, f) => sum + f.predictedCost, 0) / intelligenceData.forecasts.length)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {activeTab === 'optimizations' && (
                     <div className="space-y-6">

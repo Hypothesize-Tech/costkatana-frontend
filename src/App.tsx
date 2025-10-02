@@ -58,7 +58,6 @@ import CostLake from './pages/CostLake';
 import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
-import { CPIDashboard } from './components/cpi/CPIDashboard';
 import CostDebuggerPage from './pages/CostDebugger';
 import UnexplainedCosts from './pages/UnexplainedCosts';
 import SAST from './pages/SAST';
@@ -211,10 +210,6 @@ function AppContent() {
           <Route
             path="cost-lake"
             element={<CostLake />}
-          />
-          <Route
-            path="cpi"
-            element={<CPIDashboard userId="current" />}
           />
 
           <Route

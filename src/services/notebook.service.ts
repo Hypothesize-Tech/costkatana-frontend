@@ -67,30 +67,10 @@ export interface CostOptimization {
   affected_operations: string[];
 }
 
-export interface PredictiveForecast {
-  id: string;
-  forecast_type: 'cost' | 'usage' | 'performance';
-  timeframe: '24h' | '7d' | '30d';
-  predictions: Array<{
-    timestamp: string;
-    predicted_value: number;
-    confidence_interval: {
-      lower: number;
-      upper: number;
-    };
-  }>;
-  trends: {
-    direction: 'increasing' | 'decreasing' | 'stable';
-    rate_of_change: number;
-    seasonal_patterns: string[];
-  };
-  recommendations: string[];
-}
 
 export interface AIInsightsSummary {
   anomalies: AnomalyDetection[];
   optimizations: CostOptimization[];
-  forecasts: PredictiveForecast[];
   overall_health_score: number;
   key_insights: string[];
   priority_actions: string[];
@@ -194,15 +174,6 @@ export class NotebookService {
     return response.data.optimizations;
   }
 
-  /**
-   * Get predictive forecasts
-   */
-  static async getForecasts(timeframe: string = '24h'): Promise<PredictiveForecast[]> {
-    const response = await apiClient.get('/notebooks/insights/forecasts', {
-      params: { timeframe }
-    });
-    return response.data.forecasts;
-  }
 }
 
 export default NotebookService;

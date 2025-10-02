@@ -15,7 +15,6 @@ import {
 import AdvancedMonitoringService, {
   TagAnalytics,
   RealTimeMetrics,
-  CostForecast,
   PerformanceCorrelation,
 } from "../../services/advancedMonitoring.service";
 import { authService } from "../../services/auth.service";
@@ -39,7 +38,6 @@ const AdvancedCostMonitoring: React.FC = () => {
   >("realtime");
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("30d");
   const [realTimeData, setRealTimeData] = useState<RealTimeMetrics[]>([]);
-  const [costForecast, setCostForecast] = useState<CostForecast | null>(null);
   const [performanceData, setPerformanceData] = useState<
     PerformanceCorrelation[]
   >([]);
@@ -139,7 +137,6 @@ const AdvancedCostMonitoring: React.FC = () => {
       await Promise.all([
         fetchTagAnalytics(),
         fetchRealTimeData(),
-        fetchCostForecast(),
         fetchPerformanceCorrelations(),
       ]);
     } catch (error: any) {
@@ -202,19 +199,6 @@ const AdvancedCostMonitoring: React.FC = () => {
     }
   };
 
-  const fetchCostForecast = async () => {
-    try {
-      const data = await AdvancedMonitoringService.generateCostForecast({
-        forecastType: "daily",
-        timeHorizon: 30,
-        tags: selectedTags.length > 0 ? selectedTags : undefined,
-      });
-      setCostForecast(data);
-    } catch (error) {
-      console.error("Error fetching cost forecast:", error);
-      setCostForecast(null);
-    }
-  };
 
   const fetchPerformanceCorrelations = async () => {
     try {
@@ -268,76 +252,7 @@ const AdvancedCostMonitoring: React.FC = () => {
   };
 
   const generateForecastChartData = () => {
-    if (
-      !costForecast ||
-      !costForecast.forecasts ||
-      costForecast.forecasts.length === 0
-    ) {
-      return null;
-    }
-
-    // Better date parsing and formatting for real data
-    const labels = costForecast.forecasts.map((f: any) => {
-      let date;
-      try {
-        // Try different date field names and formats
-        const dateStr = f.period || f.date || f.timestamp;
-        date = new Date(dateStr);
-
-        // Check if date is valid
-        if (isNaN(date.getTime())) {
-          // Fallback to current date + index
-          date = new Date();
-          date.setDate(date.getDate() + costForecast.forecasts.indexOf(f));
-        }
-      } catch (error) {
-        // Fallback to current date + index
-        date = new Date();
-        date.setDate(date.getDate() + costForecast.forecasts.indexOf(f));
-      }
-
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
-    });
-
-    return {
-      labels: labels,
-      datasets: [
-        {
-          label: "Predicted Cost ($)",
-          data: costForecast.forecasts.map((f: any) => f.predictedCost || 0),
-          borderColor: "rgb(59, 130, 246)",
-          backgroundColor: "rgba(59, 130, 246, 0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: "rgb(59, 130, 246)",
-          pointBorderColor: "#fff",
-          pointBorderWidth: 2,
-          yAxisID: "y",
-        },
-        {
-          label: "Confidence Level (%)",
-          data: costForecast.forecasts.map((f: any) =>
-            ((f.confidence || 0.7) * 100).toFixed(1),
-          ),
-          borderColor: "rgb(16, 185, 129)",
-          backgroundColor: "rgba(16, 185, 129, 0.1)",
-          fill: false,
-          tension: 0.4,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          pointBackgroundColor: "rgb(16, 185, 129)",
-          pointBorderColor: "#fff",
-          pointBorderWidth: 2,
-          yAxisID: "y1",
-          borderDash: [5, 5],
-        },
-      ],
-    };
+    return null;
   };
 
   const generateTagDistributionData = () => {
@@ -525,190 +440,9 @@ const AdvancedCostMonitoring: React.FC = () => {
 
   const renderForecastTab = () => (
     <div className="space-y-6">
-      {/* Budget Alerts */}
-      {costForecast?.budgetAlerts && costForecast.budgetAlerts.length > 0 && (
-        <div className="p-4 mt-4 bg-red-50 rounded-lg border border-red-200">
-          {costForecast.budgetAlerts.map((alert: any, index: number) => (
-            <div key={index} className="flex items-center text-red-700">
-              <span className="mr-2">⚠️</span>
-              <span>{alert.message}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
       <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">
-            Cost Forecast (30 Days)
-          </h3>
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="text-sm text-gray-600">Cost</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <div
-                className="w-3 h-1 bg-green-500 rounded-full"
-                style={{ borderStyle: "dashed" }}
-              ></div>
-              <span className="text-sm text-gray-600">Confidence</span>
-            </div>
-          </div>
-        </div>
-        <div className="relative h-64">
-          {(() => {
-            const chartData = generateForecastChartData();
-            if (
-              !chartData ||
-              !chartData.labels ||
-              chartData.labels.length === 0
-            ) {
-              return (
-                <div className="flex justify-center items-center h-full bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">No forecast data available</p>
-                </div>
-              );
-            }
-            return (
-              <Line
-                data={chartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  interaction: {
-                    mode: "index" as const,
-                    intersect: false,
-                  },
-                  plugins: {
-                    title: {
-                      display: false,
-                    },
-                    legend: {
-                      display: true,
-                      position: "top" as const,
-                      labels: {
-                        usePointStyle: true,
-                        padding: 20,
-                        font: {
-                          size: 12,
-                        },
-                      },
-                    },
-                    tooltip: {
-                      backgroundColor: "rgba(0, 0, 0, 0.8)",
-                      titleColor: "#fff",
-                      bodyColor: "#fff",
-                      borderColor: "#374151",
-                      borderWidth: 1,
-                      cornerRadius: 8,
-                      padding: 12,
-                      displayColors: true,
-                      callbacks: {
-                        title: (context: any) => {
-                          return `Date: ${context[0].label}`;
-                        },
-                        label: (context: any) => {
-                          const label = context.dataset.label || "";
-                          const value = context.parsed.y;
-
-                          if (label.includes("Cost")) {
-                            return `${label}: $${value.toFixed(2)}`;
-                          } else if (label.includes("Confidence")) {
-                            return `${label}: ${value}%`;
-                          }
-                          return `${label}: ${value}`;
-                        },
-                      },
-                    },
-                  },
-                  scales: {
-                    x: {
-                      display: true,
-                      title: {
-                        display: true,
-                        text: "Date",
-                        font: {
-                          size: 12,
-                          weight: "bold",
-                        },
-                      },
-                      grid: {
-                        display: true,
-                        color: "rgba(0, 0, 0, 0.1)",
-                      },
-                      ticks: {
-                        font: {
-                          size: 11,
-                        },
-                      },
-                    },
-                    y: {
-                      type: "linear" as const,
-                      display: true,
-                      position: "left" as const,
-                      title: {
-                        display: true,
-                        text: "Predicted Cost ($)",
-                        font: {
-                          size: 12,
-                          weight: "bold",
-                        },
-                      },
-                      beginAtZero: true,
-                      grid: {
-                        display: true,
-                        color: "rgba(59, 130, 246, 0.1)",
-                      },
-                      ticks: {
-                        font: {
-                          size: 11,
-                        },
-                        callback: function (value: any) {
-                          return "$" + value.toFixed(2);
-                        },
-                      },
-                    },
-                    y1: {
-                      type: "linear" as const,
-                      display: true,
-                      position: "right" as const,
-                      title: {
-                        display: true,
-                        text: "Confidence Level (%)",
-                        font: {
-                          size: 12,
-                          weight: "bold",
-                        },
-                      },
-                      min: 0,
-                      max: 100,
-                      grid: {
-                        drawOnChartArea: false,
-                        color: "rgba(16, 185, 129, 0.1)",
-                      },
-                      ticks: {
-                        font: {
-                          size: 11,
-                        },
-                        callback: function (value: any) {
-                          return value + "%";
-                        },
-                      },
-                    },
-                  },
-                  elements: {
-                    line: {
-                      borderWidth: 2,
-                    },
-                    point: {
-                      hoverBorderWidth: 3,
-                    },
-                  },
-                }}
-              />
-            );
-          })()}
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">Cost forecasting has been removed</p>
         </div>
       </div>
     </div>

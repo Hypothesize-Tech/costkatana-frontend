@@ -17,17 +17,6 @@ export interface RealTimeMetrics {
   projectedMonthlyCost: number;
 }
 
-export interface CostForecast {
-  forecasts: Array<{
-    date: string;
-    predictedCost: number;
-    confidence: number;
-  }>;
-  budgetAlerts?: Array<{
-    message: string;
-    severity: "low" | "medium" | "high";
-  }>;
-}
 
 export interface PerformanceCorrelation {
   service: string;
@@ -84,28 +73,6 @@ export class AdvancedMonitoringService {
     }
   }
 
-  // Cost Forecasting - using longRunningApiClient for longer operations
-  static async generateCostForecast(params: {
-    forecastType: "hourly" | "daily" | "weekly" | "monthly";
-    timeHorizon: number;
-    tags?: string[];
-  }): Promise<CostForecast> {
-    try {
-      const response = await longRunningApiClient.post(
-        "/forecasting/generate",
-        params,
-      );
-      return response.data.data;
-    } catch (error: any) {
-      console.error("Cost forecast request failed:", error.message);
-      if (error.code === "ECONNABORTED") {
-        throw new Error(
-          "Cost forecast request timed out. Please try with a smaller time horizon.",
-        );
-      }
-      throw error;
-    }
-  }
 
   static async getPredictiveAlerts(params: {
     tags?: string[];

@@ -5,7 +5,6 @@ export interface PredictiveIntelligenceData {
     teamId?: string;
     userId: string;
     timeHorizon: number;
-    forecasts: any[];
     historicalTokenTrends: any;
     promptLengthGrowth: any;
     modelSwitchPatterns: any;

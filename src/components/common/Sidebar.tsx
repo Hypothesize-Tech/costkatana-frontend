@@ -64,7 +64,6 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
       { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
-      { name: 'CPI Dashboard', href: '/cpi', icon: RocketLaunchIcon, description: 'Cost-Performance Index & Intelligent Routing' },
       { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
     ],
   },
