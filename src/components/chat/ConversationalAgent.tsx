@@ -26,6 +26,8 @@ import { apiClient } from "@/config/api";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { PreviewRenderer } from "../preview/PreviewRenderer";
+import { CodePreview } from "../preview/CodePreview";
 
 // Configure marked for security
 marked.setOptions({
@@ -120,6 +122,20 @@ export const ConversationalAgent: React.FC = () => {
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [currentSources, setCurrentSources] = useState<ChatMessage['sources']>([]);
+
+  // Preview functionality
+  const [showPreviews, setShowPreviews] = useState<Record<string, boolean>>({});
+  const [previewMode, setPreviewMode] = useState<'strict' | 'moderate' | 'permissive'>('strict');
+
+  // Memoized preview toggle function to prevent re-renders
+  const togglePreview = useCallback((codeId: string) => {
+    setShowPreviews(prev => ({ ...prev, [codeId]: !prev[codeId] }));
+  }, []);
+
+  // Memoized preview mode change function
+  const handlePreviewModeChange = useCallback((mode: 'strict' | 'moderate' | 'permissive') => {
+    setPreviewMode(mode);
+  }, []);
 
   // Multi-agent features
   const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
@@ -934,29 +950,94 @@ export const ConversationalAgent: React.FC = () => {
                 code({ className, children, ...props }: { className?: string; children?: React.ReactNode;[key: string]: any }) {
                   const match = /language-(\w+)/.exec(className || '');
                   const isInline = !match || className?.includes('inline');
+                  const codeContent = String(children).replace(/\n$/, '');
+                  const language = match ? match[1] : 'text';
+
+                  // Create a stable codeId using content hash to prevent re-renders
+                  const contentHash = codeContent.split('').reduce((a, b) => {
+                    a = ((a << 5) - a) + b.charCodeAt(0);
+                    return a & a;
+                  }, 0);
+                  const codeId = `${language}-${Math.abs(contentHash).toString(36)}`;
+
+                  // Check if language has preview capability
+                  const hasPreview = ['html', 'javascript', 'js', 'typescript', 'ts', 'jsx', 'tsx', 'react', 'vue', 'angular', 'svelte', 'css', 'scss', 'terminal', 'bash', 'shell'].includes(language.toLowerCase());
+
                   return !isInline && match ? (
                     <div className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
                       <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
-                        <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
-                          {match[1]}
-                        </span>
-                        <button
-                          onClick={() => copyToClipboard(String(children).replace(/\n$/, ''))}
-                          className="btn-ghost text-xs font-display font-medium"
-                        >
-                          {copiedCode === String(children).replace(/\n$/, '') ? "✓ Copied!" : "📋 Copy"}
-                        </button>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                            {language}
+                          </span>
+                          {hasPreview && (
+                            <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
+                              PREVIEW
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {hasPreview && (
+                            <button
+                              onClick={() => togglePreview(codeId)}
+                              className="btn-ghost text-xs font-display font-medium"
+                              title="Toggle Preview"
+                            >
+                              {showPreviews[codeId] ? "👁️ Hide Preview" : "👁️ Show Preview"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => copyToClipboard(codeContent)}
+                            className="btn-ghost text-xs font-display font-medium"
+                          >
+                            {copiedCode === codeContent ? "✓ Copied!" : "📋 Copy"}
+                          </button>
+                        </div>
                       </div>
                       <SyntaxHighlighter
                         style={oneDark}
-                        language={match[1]}
+                        language={language}
                         PreTag="div"
                         className="rounded-b-xl !mt-0 !p-4 !bg-[#011627] text-sm leading-relaxed overflow-x-auto"
                         showLineNumbers={true}
                         wrapLines={true}
                       >
-                        {String(children).replace(/\n$/, '')}
+                        {codeContent}
                       </SyntaxHighlighter>
+
+                      {/* Preview Section */}
+                      {hasPreview && showPreviews[codeId] && (
+                        <div className="mt-4 border-t border-primary-200/30">
+                          <div className="p-4 bg-gray-50 dark:bg-gray-800">
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              Preview for {language} code (ID: {codeId}) - State: {showPreviews[codeId] ? 'SHOWING' : 'HIDDEN'}
+                            </div>
+                            {language.toLowerCase() === 'html' ? (
+                              <CodePreview
+                                code={codeContent}
+                                language={language}
+                                title={`${language.toUpperCase()} Preview`}
+                                sandboxMode={previewMode}
+                                theme="auto"
+                                maxHeight="400px"
+                                allowFullscreen={true}
+                                allowDownload={true}
+                              />
+                            ) : (
+                              <PreviewRenderer
+                                content={codeContent}
+                                language={language}
+                                showPreview={true}
+                                sandboxMode={previewMode}
+                                theme="auto"
+                                maxHeight="400px"
+                                allowFullscreen={true}
+                                allowDownload={true}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <code className={`${className} bg-primary-100 dark:bg-primary-900 px-1.5 py-0.5 rounded text-sm`} {...props}>
@@ -1356,6 +1437,25 @@ export const ConversationalAgent: React.FC = () => {
                   <CpuChipIcon className="w-4 h-4 text-primary-500" />
                   Multi-Agent
                 </label>
+              </div>
+
+              {/* Preview Settings */}
+              <div className="flex items-center gap-3">
+                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
+                  Preview:
+                </label>
+                <div className="relative">
+                  <select
+                    value={previewMode}
+                    onChange={(e) => handlePreviewModeChange(e.target.value as 'strict' | 'moderate' | 'permissive')}
+                    className="input text-sm py-2 px-3 pr-8 min-w-[120px] appearance-none bg-white dark:bg-gray-800"
+                  >
+                    <option value="strict">Strict</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="permissive">Permissive</option>
+                  </select>
+                  <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex items-center gap-2">

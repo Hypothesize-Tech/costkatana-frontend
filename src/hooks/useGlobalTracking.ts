@@ -83,10 +83,10 @@ export const useGlobalTracking = () => {
     // Button categorization
     if (tagName === 'button' || role === 'button') {
       if (type === 'submit') return 'submit_button';
-      if (className?.includes('primary') || className?.includes('cta')) return 'primary_button';
-      if (className?.includes('secondary')) return 'secondary_button';
-      if (className?.includes('danger') || className?.includes('delete')) return 'danger_button';
-      if (className?.includes('success') || className?.includes('save')) return 'success_button';
+      if (typeof className === 'string' && (className.includes('primary') || className.includes('cta'))) return 'primary_button';
+      if (typeof className === 'string' && className.includes('secondary')) return 'secondary_button';
+      if (typeof className === 'string' && (className.includes('danger') || className.includes('delete'))) return 'danger_button';
+      if (typeof className === 'string' && (className.includes('success') || className.includes('save'))) return 'success_button';
       return 'button';
     }
     
@@ -94,8 +94,8 @@ export const useGlobalTracking = () => {
     if (tagName === 'a' || href) {
       if (href?.includes('http')) return 'external_link';
       if (href?.startsWith('#')) return 'anchor_link';
-      if (className?.includes('nav') || className?.includes('menu')) return 'navigation_link';
-      if (className?.includes('social')) return 'social_link';
+      if (typeof className === 'string' && (className.includes('nav') || className.includes('menu'))) return 'navigation_link';
+      if (typeof className === 'string' && className.includes('social')) return 'social_link';
       return 'link';
     }
     
@@ -107,13 +107,13 @@ export const useGlobalTracking = () => {
     }
     
     // Icon categorization
-    if (className?.includes('icon') || className?.includes('svg')) return 'icon';
+    if (typeof className === 'string' && (className.includes('icon') || className.includes('svg'))) return 'icon';
     
     // Card categorization
-    if (className?.includes('card')) return 'card';
+    if (typeof className === 'string' && className.includes('card')) return 'card';
     
     // Modal categorization
-    if (className?.includes('modal') || role === 'dialog') return 'modal';
+    if (typeof className === 'string' && className.includes('modal') || role === 'dialog') return 'modal';
     
     return 'other';
   }, []);
@@ -123,25 +123,25 @@ export const useGlobalTracking = () => {
     const { tagName, className } = element;
     
     // Header elements
-    if (className?.includes('header') || className?.includes('nav')) return 'header';
+    if (typeof className === 'string' && (className.includes('header') || className.includes('nav'))) return 'header';
     
     // Sidebar elements
-    if (className?.includes('sidebar') || className?.includes('aside')) return 'sidebar';
+    if (typeof className === 'string' && (className.includes('sidebar') || className.includes('aside'))) return 'sidebar';
     
     // Footer elements
-    if (className?.includes('footer')) return 'footer';
+    if (typeof className === 'string' && className.includes('footer')) return 'footer';
     
     // Modal elements
-    if (className?.includes('modal') || className?.includes('dialog')) return 'modal';
+    if (typeof className === 'string' && (className.includes('modal') || className.includes('dialog'))) return 'modal';
     
     // Content elements
-    if (className?.includes('content') || className?.includes('main')) return 'content';
+    if (typeof className === 'string' && (className.includes('content') || className.includes('main'))) return 'content';
     
     // Form elements
-    if (className?.includes('form')) return 'form';
+    if (typeof className === 'string' && className.includes('form')) return 'form';
     
     // Table elements
-    if (tagName === 'table' || className?.includes('table')) return 'table';
+    if (tagName === 'table' || (typeof className === 'string' && className.includes('table'))) return 'table';
     
     return 'content';
   }, []);
