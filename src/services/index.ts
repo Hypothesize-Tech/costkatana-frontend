@@ -14,4 +14,3 @@ export * from "./project.service";
 export * from "./promptTemplate.service";
 export { default as AdvancedMonitoringService } from "./advancedMonitoring.service";
 export * from "./unexplainedCost.service";
-export { sastService } from "./sast.service";

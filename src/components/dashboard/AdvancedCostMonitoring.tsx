@@ -34,7 +34,7 @@ ChartJS.register(
 const AdvancedCostMonitoring: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<
-    "realtime" | "forecast" | "performance" | "tags"
+    "realtime" | "performance" | "tags"
   >("realtime");
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("30d");
   const [realTimeData, setRealTimeData] = useState<RealTimeMetrics[]>([]);
@@ -251,9 +251,7 @@ const AdvancedCostMonitoring: React.FC = () => {
     }
   };
 
-  const generateForecastChartData = () => {
-    return null;
-  };
+
 
   const generateTagDistributionData = () => {
     if (!tagAnalytics || tagAnalytics.length === 0) {
@@ -438,15 +436,6 @@ const AdvancedCostMonitoring: React.FC = () => {
     </div>
   );
 
-  const renderForecastTab = () => (
-    <div className="space-y-6">
-      <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-        <div className="flex justify-center items-center h-64">
-          <p className="text-gray-500">Cost forecasting has been removed</p>
-        </div>
-      </div>
-    </div>
-  );
 
   const renderPerformanceTab = () => (
     <div className="space-y-6">
@@ -834,7 +823,6 @@ const AdvancedCostMonitoring: React.FC = () => {
         <nav className="flex space-x-2 px-6">
           {[
             { key: "realtime", label: "Real-time", icon: "🔴" },
-            { key: "forecast", label: "Forecast", icon: "🔮" },
             { key: "performance", label: "Performance", icon: "🚀" },
             { key: "tags", label: "Tags", icon: "🏷️" },
           ].map((tab) => (
@@ -854,7 +842,6 @@ const AdvancedCostMonitoring: React.FC = () => {
       </div>
 
       {activeTab === "realtime" && renderRealTimeTab()}
-      {activeTab === "forecast" && renderForecastTab()}
       {activeTab === "performance" && renderPerformanceTab()}
       {activeTab === "tags" && renderTagsTab()}
     </div>

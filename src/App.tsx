@@ -47,7 +47,6 @@ import Experimentation from './pages/Experimentation';
 import Gateway from './pages/Gateway';
 import Workflows from './pages/Workflows';
 import KeyVault from './pages/KeyVault';
-import { Training } from './pages/Training';
 import PredictiveIntelligence from './pages/PredictiveIntelligence';
 import Memory from './pages/Memory';
 import Cache from './pages/Cache';
@@ -58,9 +57,7 @@ import CostLake from './pages/CostLake';
 import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
-import CostDebuggerPage from './pages/CostDebugger';
 import UnexplainedCosts from './pages/UnexplainedCosts';
-import SAST from './pages/SAST';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -120,16 +117,8 @@ function AppContent() {
             element={<Optimization />}
           />
           <Route
-            path="cost-debugger"
-            element={<CostDebuggerPage />}
-          />
-          <Route
             path="unexplained-costs"
             element={<UnexplainedCosts />}
-          />
-          <Route
-            path="sast"
-            element={<SAST />}
           />
           <Route
             path="cache"
@@ -178,10 +167,6 @@ function AppContent() {
           <Route
             path="security"
             element={<Security />}
-          />
-          <Route
-            path="training"
-            element={<Training />}
           />
           <Route
             path="predictive-intelligence"

@@ -15,7 +15,6 @@ import { ProactiveTip, TipData } from '../intelligence/ProactiveTip';
 import { intelligenceService } from '../../services/intelligence.service';
 import { FeedbackButton } from '../feedback/FeedbackButton';
 import { feedbackService } from '../../services/feedback.service';
-import { RequestScoring } from '../training/RequestScoring';
 
 interface UsageItemProps {
   usage: Usage;
@@ -228,25 +227,6 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                 setShowTip(false);
               }}
             />
-          </td>
-        </tr>
-      )}
-
-      {showScoring && usage.metadata?.requestId && (
-        <tr>
-          <td colSpan={7} className="px-6 py-4 glass bg-gradient-to-r from-blue-50/30 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/20 border-t border-blue-200/30">
-            <div className="max-w-md">
-              <h4 className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
-                Score this request for training
-              </h4>
-              <RequestScoring
-                requestId={usage.metadata.requestId}
-                size="sm"
-                onScoreSubmitted={() => {
-                  setShowScoring(false);
-                }}
-              />
-            </div>
           </td>
         </tr>
       )}

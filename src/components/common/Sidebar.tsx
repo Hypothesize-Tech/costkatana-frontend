@@ -84,8 +84,6 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
-      { name: 'SAST', href: '/sast', icon: CpuChipIcon, description: 'Semantic Abstract Syntax Tree - Advanced semantic understanding and optimization' },
-      { name: 'Cost Debugger', href: '/cost-debugger', icon: BugAntIcon, description: 'DevTools for AI prompts - analyze token usage and optimize costs' },
       { name: 'Unexplained Costs', href: '/unexplained-costs', icon: CircleStackIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
     ],
   },
@@ -103,7 +101,6 @@ const navCategories: NavCategory[] = [
     id: 'build',
     label: 'Build & Manage',
     items: [
-      { name: 'Training', href: '/training', icon: AcademicCapIcon, description: 'Cost-effective model training' },
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
       { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
       { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
