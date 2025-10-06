@@ -1629,14 +1629,31 @@ export const ConversationalAgent: React.FC = () => {
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            {message.optimizationsApplied.map((opt, idx) => (
-                              <span key={idx} className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${opt.includes('cache') ? 'bg-gradient-success/20 text-success-600' :
-                                opt.includes('prompt') ? 'bg-gradient-warning/20 text-warning-600' :
-                                  'bg-gradient-primary/20 text-primary-600'
-                                }`}>
-                                {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                              </span>
-                            ))}
+                            {message.optimizationsApplied.map((opt, idx) => {
+                              // Determine color and icon based on optimization type
+                              let colorClass = 'bg-gradient-primary/20 text-primary-600';
+                              let icon = '⚙️';
+
+                              if (opt.includes('cache')) {
+                                colorClass = 'bg-gradient-success/20 text-success-600';
+                                icon = '⚡';
+                              } else if (opt.includes('prompt') || opt.includes('system')) {
+                                colorClass = 'bg-gradient-warning/20 text-warning-600';
+                                icon = '🧠';
+                              } else if (opt.includes('multi_turn') || opt.includes('context')) {
+                                colorClass = 'bg-gradient-primary/20 text-primary-600';
+                                icon = '💬';
+                              } else if (opt.includes('summarization')) {
+                                colorClass = 'bg-gradient-accent/20 text-accent-600';
+                                icon = '📝';
+                              }
+
+                              return (
+                                <span key={idx} className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${colorClass}`} title={opt}>
+                                  {icon} {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
