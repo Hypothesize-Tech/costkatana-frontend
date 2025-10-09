@@ -44,6 +44,13 @@ export const useGlobalTracking = () => {
   const isAuthPage = location.pathname.includes('/login') || location.pathname.includes('/register');
   const shouldTrack = isTrackingEnabled && !isAuthPage;
 
+  // Utility function to safely convert className to string
+  const safeClassNameToString = (className: string | DOMTokenList | undefined): string => {
+    if (typeof className === 'string') return className;
+    if (className && typeof className.toString === 'function') return className.toString();
+    return '';
+  };
+
   // Generate session ID for this session
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -62,7 +69,7 @@ export const useGlobalTracking = () => {
     return {
       tagName: element.tagName.toLowerCase(),
       id: element.id || undefined,
-      className: element.className || undefined,
+      className: safeClassNameToString(element.className) || undefined,
       textContent: element.textContent?.trim() || undefined,
       href: (element as HTMLAnchorElement).href || undefined,
       type: (element as HTMLButtonElement).type || undefined,
@@ -80,13 +87,16 @@ export const useGlobalTracking = () => {
   const categorizeElement = useCallback((element: TrackingElement) => {
     const { tagName, className, role, type, href } = element;
     
+    // Ensure className is a string for safe operations
+    const classNameStr = safeClassNameToString(className);
+    
     // Button categorization
     if (tagName === 'button' || role === 'button') {
       if (type === 'submit') return 'submit_button';
-      if (typeof className === 'string' && (className.includes('primary') || className.includes('cta'))) return 'primary_button';
-      if (typeof className === 'string' && className.includes('secondary')) return 'secondary_button';
-      if (typeof className === 'string' && (className.includes('danger') || className.includes('delete'))) return 'danger_button';
-      if (typeof className === 'string' && (className.includes('success') || className.includes('save'))) return 'success_button';
+      if (classNameStr && (classNameStr.includes('primary') || classNameStr.includes('cta'))) return 'primary_button';
+      if (classNameStr && classNameStr.includes('secondary')) return 'secondary_button';
+      if (classNameStr && (classNameStr.includes('danger') || classNameStr.includes('delete'))) return 'danger_button';
+      if (classNameStr && (classNameStr.includes('success') || classNameStr.includes('save'))) return 'success_button';
       return 'button';
     }
     
@@ -94,8 +104,8 @@ export const useGlobalTracking = () => {
     if (tagName === 'a' || href) {
       if (href?.includes('http')) return 'external_link';
       if (href?.startsWith('#')) return 'anchor_link';
-      if (typeof className === 'string' && (className.includes('nav') || className.includes('menu'))) return 'navigation_link';
-      if (typeof className === 'string' && className.includes('social')) return 'social_link';
+      if (classNameStr && (classNameStr.includes('nav') || classNameStr.includes('menu'))) return 'navigation_link';
+      if (classNameStr && classNameStr.includes('social')) return 'social_link';
       return 'link';
     }
     
@@ -107,13 +117,13 @@ export const useGlobalTracking = () => {
     }
     
     // Icon categorization
-    if (typeof className === 'string' && (className.includes('icon') || className.includes('svg'))) return 'icon';
+    if (classNameStr && (classNameStr.includes('icon') || classNameStr.includes('svg'))) return 'icon';
     
     // Card categorization
-    if (typeof className === 'string' && className.includes('card')) return 'card';
+    if (classNameStr && classNameStr.includes('card')) return 'card';
     
     // Modal categorization
-    if (typeof className === 'string' && className.includes('modal') || role === 'dialog') return 'modal';
+    if ((classNameStr && classNameStr.includes('modal')) || role === 'dialog') return 'modal';
     
     return 'other';
   }, []);
@@ -122,26 +132,29 @@ export const useGlobalTracking = () => {
   const getElementPosition = useCallback((element: TrackingElement) => {
     const { tagName, className } = element;
     
+    // Ensure className is a string for safe operations
+    const classNameStr = safeClassNameToString(className);
+    
     // Header elements
-    if (typeof className === 'string' && (className.includes('header') || className.includes('nav'))) return 'header';
+    if (classNameStr && (classNameStr.includes('header') || classNameStr.includes('nav'))) return 'header';
     
     // Sidebar elements
-    if (typeof className === 'string' && (className.includes('sidebar') || className.includes('aside'))) return 'sidebar';
+    if (classNameStr && (classNameStr.includes('sidebar') || classNameStr.includes('aside'))) return 'sidebar';
     
     // Footer elements
-    if (typeof className === 'string' && className.includes('footer')) return 'footer';
+    if (classNameStr && classNameStr.includes('footer')) return 'footer';
     
     // Modal elements
-    if (typeof className === 'string' && (className.includes('modal') || className.includes('dialog'))) return 'modal';
+    if (classNameStr && (classNameStr.includes('modal') || classNameStr.includes('dialog'))) return 'modal';
     
     // Content elements
-    if (typeof className === 'string' && (className.includes('content') || className.includes('main'))) return 'content';
+    if (classNameStr && (classNameStr.includes('content') || classNameStr.includes('main'))) return 'content';
     
     // Form elements
-    if (typeof className === 'string' && className.includes('form')) return 'form';
+    if (classNameStr && classNameStr.includes('form')) return 'form';
     
     // Table elements
-    if (tagName === 'table' || (typeof className === 'string' && className.includes('table'))) return 'table';
+    if (tagName === 'table' || (classNameStr && classNameStr.includes('table'))) return 'table';
     
     return 'content';
   }, []);
@@ -252,6 +265,7 @@ export const useGlobalTracking = () => {
 
     // Log for debugging (only in development)
     if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
       console.log('Tracked click:', {
         element: elementInfo,
         category,
@@ -259,7 +273,7 @@ export const useGlobalTracking = () => {
         page: location.pathname
       });
     }
-  }, [shouldTrack, location.pathname, sessionId, extractElementInfo, categorizeElement, getElementPosition, trackUserAction, trackButtonAnalytics]);
+  }, [shouldTrack, location.pathname, sessionId, extractElementInfo, categorizeElement, getElementPosition, trackUserAction, trackButtonAnalytics, user?.email, user?.name]);
 
   // Track form submissions
   const trackFormSubmission = useCallback((event: Event) => {
@@ -296,7 +310,7 @@ export const useGlobalTracking = () => {
         formFields: Object.keys(formFields)
       }
     );
-  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction, user?.email, user?.name]);
 
   // Track navigation events
   const trackNavigation = useCallback((_event: PopStateEvent) => {
@@ -319,7 +333,7 @@ export const useGlobalTracking = () => {
         navigationType: 'popstate'
       }
     );
-  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction, user?.email, user?.name]);
 
   // Set up global event listeners
   useEffect(() => {
@@ -370,7 +384,7 @@ export const useGlobalTracking = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction, user?.email, user?.name]);
 
   // Track scroll events (throttled)
   useEffect(() => {
@@ -420,7 +434,7 @@ export const useGlobalTracking = () => {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimeout);
     };
-  }, [shouldTrack, location.pathname, sessionId, trackUserAction]);
+  }, [shouldTrack, location.pathname, sessionId, trackUserAction, user?.email, user?.name]);
 
   return {
     sessionId,
