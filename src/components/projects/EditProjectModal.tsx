@@ -36,7 +36,6 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       },
       notifications: {
         budgetAlerts: project.settings?.notifications?.budgetAlerts || true,
-        weeklyReports: project.settings?.notifications?.weeklyReports || false,
         monthlyReports:
           project.settings?.notifications?.monthlyReports || false,
       },
@@ -453,25 +452,6 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                   />
                   <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                     Budget alerts
-                  </span>
-                </label>
-              </div>
-
-              <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                <label className="flex gap-3 items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.settings.notifications.weeklyReports}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        ["settings", "notifications", "weeklyReports"],
-                        e.target.checked,
-                      )
-                    }
-                    className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
-                  />
-                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
-                    Weekly reports
                   </span>
                 </label>
               </div>

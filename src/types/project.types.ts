@@ -65,7 +65,6 @@ export interface ProjectSettings {
   };
   notifications: {
     budgetAlerts: boolean;
-    weeklyReports: boolean;
     monthlyReports: boolean;
     usageReports?: boolean;
   };
@@ -120,7 +119,6 @@ export interface CreateProjectRequest {
     };
     notifications: {
       budgetAlerts: boolean;
-      weeklyReports: boolean;
       monthlyReports: boolean;
     };
   };

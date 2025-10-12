@@ -181,7 +181,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                     },
                     notifications: {
                         budgetAlerts: true,
-                        weeklyReports: true,
                         monthlyReports: true
                     }
                 }

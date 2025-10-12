@@ -480,7 +480,6 @@ export class ProjectService {
         },
         notifications: {
           budgetAlerts: originalProject.settings.notifications.budgetAlerts,
-          weeklyReports: originalProject.settings.notifications.weeklyReports,
           monthlyReports: originalProject.settings.notifications.monthlyReports,
         },
       },

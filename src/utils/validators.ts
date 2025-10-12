@@ -92,7 +92,6 @@ export const updateProfileSchema = z.object({
     .object({
       emailAlerts: z.boolean().optional(),
       alertThreshold: z.number().positive().optional(),
-      weeklyReports: z.boolean().optional(),
       optimizationSuggestions: z.boolean().optional(),
     })
     .optional(),

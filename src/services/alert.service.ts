@@ -56,7 +56,6 @@ class AlertService {
       email: {
         costAlerts: boolean;
         optimizationSuggestions: boolean;
-        weeklyReports: boolean;
         monthlyReports: boolean;
         anomalyDetection: boolean;
       };

@@ -5,7 +5,6 @@ interface NotificationSettings {
   email: {
     costAlerts: boolean;
     optimizationSuggestions: boolean;
-    weeklyReports: boolean;
     monthlyReports: boolean;
     anomalyDetection: boolean;
   };
@@ -38,7 +37,6 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
     email: {
       costAlerts: true,
       optimizationSuggestions: true,
-      weeklyReports: true,
       monthlyReports: false,
       anomalyDetection: true,
     },
@@ -126,8 +124,6 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                     "Get notified when costs exceed thresholds"}
                   {key === "optimizationSuggestions" &&
                     "Receive AI-powered optimization tips"}
-                  {key === "weeklyReports" &&
-                    "Weekly summary of usage and savings"}
                   {key === "monthlyReports" &&
                     "Detailed monthly analytics report"}
                   {key === "anomalyDetection" &&

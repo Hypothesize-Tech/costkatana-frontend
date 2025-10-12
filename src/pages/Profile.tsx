@@ -499,16 +499,6 @@ export const Profile: React.FC = () => {
                       </label>
                     </div>
 
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Weekly Reports</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Receive weekly summaries of your usage and savings</p>
-                      </div>
-                      <label className="inline-flex relative items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" />
-                        <div className="w-11 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                      </label>
-                    </div>
                   </div>
                 </div>
               </div>

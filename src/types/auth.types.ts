@@ -38,7 +38,6 @@ export interface Subscription {
 export interface UserPreferences {
   emailAlerts: boolean;
   alertThreshold: number;
-  weeklyReports: boolean;
   optimizationSuggestions: boolean;
   timezone?: string;
 }
