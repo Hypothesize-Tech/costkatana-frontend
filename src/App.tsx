@@ -14,6 +14,7 @@ import { MemoryProvider } from './components/memory';
 import { useGlobalTracking } from './hooks/useGlobalTracking';
 import { useEffect } from 'react';
 import { setupCopyCodeFunction } from './utils/copyToClipboard';
+import { useLaunchDate } from './hooks/useLaunchDate';
 
 // Components
 import { Layout } from './components/common/Layout';
@@ -21,6 +22,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TrackingConfiguration } from './components/analytics/TrackingConfiguration';
 import { OnboardingCheck } from './components/common/OnboardingCheck';
+import { LaunchScreen } from './components/common/LaunchScreen';
 
 // Pages
 import Login from './pages/Login';
@@ -61,6 +63,8 @@ import UnexplainedCosts from './pages/UnexplainedCosts';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
+  const { isLaunched } = useLaunchDate();
+
   // Initialize copy code functionality
   useEffect(() => {
     setupCopyCodeFunction();
@@ -68,6 +72,11 @@ function AppContent() {
 
   // Initialize global tracking for all interactions - temporarily disabled to debug login refresh
   useGlobalTracking();
+
+  // Don't render app content until launched
+  if (!isLaunched) {
+    return null;
+  }
 
   return (
     <ErrorBoundary>
@@ -223,6 +232,7 @@ function App() {
         <NotificationProvider>
           <ProjectProvider>
             <MemoryProvider>
+              <LaunchScreen />
               <AppContent />
             </MemoryProvider>
           </ProjectProvider>
