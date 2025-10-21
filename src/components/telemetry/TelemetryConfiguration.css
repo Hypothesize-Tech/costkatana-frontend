@@ -1,0 +1,268 @@
+.telemetry-config-container {
+    width: 100%;
+}
+
+.telemetry-config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.telemetry-config-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 6px 0;
+}
+
+.telemetry-config-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.telemetry-config-create-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.telemetry-config-create-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+}
+
+.telemetry-config-loading {
+    text-align: center;
+    padding: 48px;
+    font-size: 16px;
+    color: #666;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+}
+
+.telemetry-config-empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.telemetry-config-empty-icon {
+    color: #cbd5e0;
+    margin: 0 auto 20px;
+}
+
+.telemetry-config-empty-state h3 {
+    font-size: 20px;
+    color: #1a1a1a;
+    margin: 0 0 10px 0;
+}
+
+.telemetry-config-empty-state p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px 0;
+}
+
+.telemetry-config-empty-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.telemetry-config-empty-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+}
+
+.telemetry-config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.telemetry-config-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    transition: all 0.2s;
+}
+
+.telemetry-config-card:hover {
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.telemetry-config-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.telemetry-config-card-title {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.telemetry-config-endpoint-type {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.telemetry-config-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #10b981;
+    color: white;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    width: fit-content;
+}
+
+.telemetry-config-card-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.telemetry-config-icon-button {
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.telemetry-config-icon-button:hover {
+    background: #f5f5f5;
+    border-color: #d0d0d0;
+}
+
+.telemetry-config-icon-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.telemetry-config-icon-button-danger {
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #fee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+}
+
+.telemetry-config-icon-button-danger:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.telemetry-config-spinning {
+    animation: telemetry-config-spin 1s linear infinite;
+}
+
+@keyframes telemetry-config-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.telemetry-config-card-content {
+    padding: 18px;
+}
+
+.telemetry-config-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.telemetry-config-info-row:last-child {
+    border-bottom: none;
+}
+
+.telemetry-config-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+.telemetry-config-value {
+    font-size: 13px;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    max-width: 60%;
+    text-align: right;
+    word-break: break-all;
+}
+
+.telemetry-config-status-icon-success {
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.telemetry-config-status-icon-error {
+    color: #ef4444;
+    flex-shrink: 0;
+}
+
+.telemetry-config-status-icon-partial {
+    color: #f59e0b;
+    flex-shrink: 0;
+}
+
+.telemetry-config-status-icon-unknown {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+

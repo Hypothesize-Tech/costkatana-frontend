@@ -1,0 +1,265 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.closeButton {
+    padding: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeButton:hover {
+    background: #f3f4f6;
+    color: #1a1a1a;
+}
+
+.form {
+    padding: 28px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.input,
+.select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    transition: all 0.2s;
+    background: white;
+}
+
+.input:focus,
+.select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input:disabled,
+.select:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.hint {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 6px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.checkboxGroup {
+    margin-bottom: 24px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+}
+
+.checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.checkbox:checked {
+    background: #667eea;
+    border-color: #667eea;
+}
+
+.error {
+    padding: 12px 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.success {
+    padding: 12px 16px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    color: #16a34a;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.warning {
+    padding: 12px 16px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 8px;
+    color: #f59e0b;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.rightActions {
+    display: flex;
+    gap: 12px;
+}
+
+.testButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.testButton:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.testButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelButton:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.submitButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+

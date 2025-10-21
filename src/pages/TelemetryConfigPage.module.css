@@ -1,0 +1,259 @@
+.container {
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.createButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.createButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.loading {
+    text-align: center;
+    padding: 64px;
+    font-size: 16px;
+    color: #666;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 80px 32px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.emptyIcon {
+    color: #cbd5e0;
+    margin-bottom: 24px;
+}
+
+.emptyState h2 {
+    font-size: 24px;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+.emptyState p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 32px 0;
+}
+
+.emptyButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.emptyButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cardTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.endpointType {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #10b981;
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    width: fit-content;
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+}
+
+.iconButton {
+    padding: 8px;
+    background: transparent;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.iconButton:hover {
+    background: #f5f5f5;
+    border-color: #d0d0d0;
+}
+
+.iconButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.iconButtonDanger {
+    padding: 8px;
+    background: transparent;
+    border: 1px solid #fee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+}
+
+.iconButtonDanger:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cardContent {
+    padding: 20px;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.infoRow:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+.value {
+    font-size: 13px;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    max-width: 60%;
+    text-align: right;
+    word-break: break-all;
+}
+
+.statusIconSuccess {
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.statusIconError {
+    color: #ef4444;
+    flex-shrink: 0;
+}
+
+.statusIconPartial {
+    color: #f59e0b;
+    flex-shrink: 0;
+}
+
+.statusIconUnknown {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+

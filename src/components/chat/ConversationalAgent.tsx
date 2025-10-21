@@ -28,6 +28,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { PreviewRenderer } from "../preview/PreviewRenderer";
 import { CodePreview } from "../preview/CodePreview";
+import { DocumentUpload } from "./DocumentUpload";
+import { DocumentMetadata } from "@/services/document.service";
 
 // Configure marked for security
 marked.setOptions({
@@ -141,6 +143,9 @@ export const ConversationalAgent: React.FC = () => {
   const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
   const [useMultiAgent, setUseMultiAgent] = useState<boolean>(true);
   const [showOptimizations, setShowOptimizations] = useState<boolean>(false);
+
+  // Document upload for RAG
+  const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -647,6 +652,9 @@ export const ConversationalAgent: React.FC = () => {
         conversationId: currentConversationId || undefined,
         chatMode: chatMode,
         useMultiAgent: useMultiAgent,
+        documentIds: selectedDocuments.length > 0
+          ? selectedDocuments.map(doc => doc.documentId)
+          : undefined,
       });
 
       // Parse sources from the response text
@@ -1743,25 +1751,39 @@ export const ConversationalAgent: React.FC = () => {
 
         {/* Input Area */}
         <div className="glass backdrop-blur-xl border-t border-primary-200/30 shadow-lg p-4">
-          <div className="flex items-end gap-3 max-w-4xl mx-auto">
-            <div className="flex-1 relative">
-              <textarea
-                ref={textareaRef}
-                value={currentMessage}
-                onChange={(e) => setCurrentMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Ask me anything about your AI costs, projects, or optimizations..."
-                className="input resize-none min-h-[48px] max-h-32 pr-12"
-                rows={1}
-              />
+          <div className="max-w-4xl mx-auto space-y-3">
+            {/* Document Upload Section */}
+            <DocumentUpload
+              onDocumentUploaded={(doc) => setSelectedDocuments(prev => [...prev, doc])}
+              onDocumentRemoved={(docId) => setSelectedDocuments(prev => prev.filter(d => d.documentId !== docId))}
+              selectedDocuments={selectedDocuments}
+            />
+
+            {/* Message Input */}
+            <div className="flex items-end gap-3">
+              <div className="flex-1 relative">
+                <textarea
+                  ref={textareaRef}
+                  value={currentMessage}
+                  onChange={(e) => setCurrentMessage(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder={
+                    selectedDocuments.length > 0
+                      ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
+                      : "Ask me anything about your AI costs, projects, or optimizations..."
+                  }
+                  className="input resize-none min-h-[48px] max-h-32 pr-12"
+                  rows={1}
+                />
+              </div>
+              <button
+                onClick={() => sendMessage()}
+                disabled={!currentMessage.trim() || isLoading}
+                className="btn-primary min-w-[48px] h-12 flex items-center justify-center"
+              >
+                <SparklesIcon className="w-4 h-4" />
+              </button>
             </div>
-            <button
-              onClick={() => sendMessage()}
-              disabled={!currentMessage.trim() || isLoading}
-              className="btn-primary min-w-[48px] h-12 flex items-center justify-center"
-            >
-              <SparklesIcon className="w-4 h-4" />
-            </button>
           </div>
         </div>
       </div>

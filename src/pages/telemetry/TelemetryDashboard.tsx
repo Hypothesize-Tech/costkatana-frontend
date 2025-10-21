@@ -11,8 +11,9 @@ import { TopErrors } from '../../components/telemetry/TopErrors';
 import { TelemetryExplorer } from '../../components/telemetry/TelemetryExplorer';
 import SpanExplorer from '../../components/telemetry/SpanExplorer';
 import { ExclamationTriangleIcon, ArrowPathIcon, CircleStackIcon } from '@heroicons/react/24/solid';
-import { Brain, Activity, Eye, Sparkles } from 'lucide-react';
+import { Brain, Activity, Eye, Sparkles, Settings } from 'lucide-react';
 import { apiClient } from '@/config/api';
+import TelemetryConfiguration from '@/components/telemetry/TelemetryConfiguration';
 
 interface EnhancedDashboardData {
     current: {
@@ -114,7 +115,7 @@ class ErrorBoundary extends React.Component<
 
 // Enhanced Telemetry Dashboard Component
 const EnhancedTelemetryContent: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'ai-insights' | 'explorer' | 'traces'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'ai-insights' | 'explorer' | 'traces' | 'configuration'>('overview');
     const [enhancedData, setEnhancedData] = useState<EnhancedDashboardData | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -213,6 +214,16 @@ const EnhancedTelemetryContent: React.FC = () => {
                     >
                         <Sparkles className="w-4 h-4" />
                         Traces & Dependencies
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('configuration')}
+                        className={`py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-300 ${activeTab === 'configuration'
+                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                            : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
+                            }`}
+                    >
+                        <Settings className="w-4 h-4" />
+                        Configuration
                     </button>
                 </nav>
             </div>
@@ -550,6 +561,10 @@ const EnhancedTelemetryContent: React.FC = () => {
                     <TraceViewer />
                     <ServiceDependencyGraph />
                 </div>
+            )}
+
+            {activeTab === 'configuration' && (
+                <TelemetryConfiguration />
             )}
         </div>
     );

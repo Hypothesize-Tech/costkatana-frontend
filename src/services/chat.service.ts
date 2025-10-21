@@ -42,6 +42,7 @@ export interface SendMessageRequest {
   maxTokens?: number;
   chatMode?: 'fastest' | 'cheapest' | 'balanced';
   useMultiAgent?: boolean;
+  documentIds?: string[]; // Document IDs for RAG context
 }
 
 export interface SendMessageResponse {
