@@ -1,9 +1,11 @@
 // src/components/settings/SecuritySettings.tsx
 import React, { useState, useEffect } from 'react';
-import { ShieldCheckIcon, DevicePhoneMobileIcon, ExclamationTriangleIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { ShieldCheckIcon, DevicePhoneMobileIcon, ExclamationTriangleIcon, ChartBarIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { GatewayService, FirewallAnalytics } from '../../services/gateway.service';
 import { MFASetup } from '../auth/MFASetup';
+import { BackupCodesSection } from '../security/BackupCodesSection';
+import { EmailManagement } from './EmailManagement';
 
 interface SecuritySettings {
   twoFactorEnabled: boolean;
@@ -154,6 +156,19 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
         )}
       </div>
 
+      {/* Email Management */}
+      <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
+            <EnvelopeIcon className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-xl font-display font-bold gradient-text">
+            Email Management
+          </h2>
+        </div>
+        <EmailManagement />
+      </div>
+
       {/* Two-Factor Authentication */}
       <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
         <div className="flex items-center gap-3 mb-6">
@@ -166,6 +181,9 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
         </div>
         <MFASetup />
       </div>
+
+      {/* Backup Codes */}
+      <BackupCodesSection />
 
       {/* Active Sessions */}
       <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">

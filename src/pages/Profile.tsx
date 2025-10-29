@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/user.service';
 import { analyticsService } from '../services/analytics.service';
@@ -26,7 +26,16 @@ export const Profile: React.FC = () => {
   const { showNotification } = useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'preferences' | 'security' | 'subscription'>('overview');
+
+  // Handle URL parameter to set active tab
+  useEffect(() => {
+    const tabParam = searchParams.get('tab') as 'overview' | 'activity' | 'preferences' | 'security' | 'subscription';
+    if (tabParam && ['overview', 'activity', 'preferences', 'security', 'subscription'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const { data: profile, isLoading: profileLoading } = useQuery(
     ['user-profile', user?.id],

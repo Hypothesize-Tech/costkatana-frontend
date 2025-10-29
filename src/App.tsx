@@ -14,7 +14,7 @@ import { MemoryProvider } from './components/memory';
 import { useGlobalTracking } from './hooks/useGlobalTracking';
 import { useEffect } from 'react';
 import { setupCopyCodeFunction } from './utils/copyToClipboard';
-import { useLaunchDate } from './hooks/useLaunchDate';
+// import { useLaunchDate } from './hooks/useLaunchDate';
 
 // Components
 import { Layout } from './components/common/Layout';
@@ -22,13 +22,16 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TrackingConfiguration } from './components/analytics/TrackingConfiguration';
 import { OnboardingCheck } from './components/common/OnboardingCheck';
-import { LaunchScreen } from './components/common/LaunchScreen';
+// import { LaunchScreen } from './components/common/LaunchScreen';
 
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import MagicLinkConnect from './pages/MagicLinkConnect';
+import VerifyEmail from './pages/VerifyEmail';
+import ConfirmAccountClosure from './pages/ConfirmAccountClosure';
+import AcceptInvite from './pages/AcceptInvite';
 import { Dashboard } from './pages/Dashboard';
 import Usage from './pages/Usage';
 import Requests from './pages/Requests';
@@ -52,7 +55,7 @@ import KeyVault from './pages/KeyVault';
 import PredictiveIntelligence from './pages/PredictiveIntelligence';
 import Memory from './pages/Memory';
 import Cache from './pages/Cache';
-import { Sessions } from './pages/Sessions';
+import { SessionsUnified } from './pages/SessionsUnified';
 import { SessionDetail } from './pages/SessionDetail';
 import { TelemetryDashboard } from './pages/telemetry/TelemetryDashboard';
 import CostLake from './pages/CostLake';
@@ -63,7 +66,7 @@ import UnexplainedCosts from './pages/UnexplainedCosts';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
-  const { isLaunched } = useLaunchDate();
+  // const { isLaunched } = useLaunchDate();
 
   // Initialize copy code functionality
   useEffect(() => {
@@ -74,9 +77,9 @@ function AppContent() {
   useGlobalTracking();
 
   // Don't render app content until launched
-  if (!isLaunched) {
-    return null;
-  }
+  // if (!isLaunched) {
+  //   return null;
+  // }
 
   return (
     <ErrorBoundary>
@@ -88,6 +91,9 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/confirm-account-closure/:token" element={<ConfirmAccountClosure />} />
+        <Route path="/accept-invite/:token" element={<AcceptInvite />} />
 
         {/* Protected routes */}
         <Route
@@ -191,7 +197,11 @@ function AppContent() {
           />
           <Route
             path="sessions"
-            element={<Sessions />}
+            element={<SessionsUnified />}
+          />
+          <Route
+            path="sessions/replay/:sessionId"
+            element={<SessionsUnified />}
           />
           <Route
             path="sessions/:id"
@@ -232,7 +242,7 @@ function App() {
         <NotificationProvider>
           <ProjectProvider>
             <MemoryProvider>
-              <LaunchScreen />
+              {/* <LaunchScreen /> */}
               <AppContent />
             </MemoryProvider>
           </ProjectProvider>

@@ -1,3 +1,24 @@
+export interface SecondaryEmail {
+  email: string;
+  verified: boolean;
+  addedAt: string;
+}
+
+export interface AccountClosureStatus {
+  status: 'active' | 'pending_deletion' | 'deleted';
+  requestedAt?: string;
+  scheduledDeletionAt?: string;
+  daysRemaining?: number;
+  confirmationStatus: {
+    passwordConfirmed: boolean;
+    emailConfirmed: boolean;
+    cooldownCompleted: boolean;
+  };
+  cooldownEndsAt?: string;
+  reason?: string;
+  reactivationCount: number;
+}
+
 export interface User {
   data(data: any): unknown;
   id: string;
@@ -5,6 +26,8 @@ export interface User {
   name: string;
   role: "user" | "admin";
   emailVerified: boolean;
+  otherEmails?: SecondaryEmail[];
+  accountClosure?: AccountClosureStatus;
   subscription: Subscription;
   preferences: UserPreferences;
   usage: UserUsage;

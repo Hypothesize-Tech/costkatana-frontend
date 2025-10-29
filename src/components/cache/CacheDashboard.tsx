@@ -32,7 +32,7 @@ export const CacheDashboard: React.FC = () => {
     const fetchMetrics = async () => {
         try {
             const response = await apiClient.get('/gateway/cache/stats', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
             });
             setMetrics(response.data);
         } catch (err) {

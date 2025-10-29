@@ -7,8 +7,17 @@ export interface Session {
     label?: string;
     startedAt: string;
     endedAt?: string;
+    duration?: number;
     status: 'active' | 'completed' | 'error';
+    source?: 'telemetry' | 'manual' | 'unified' | 'in-app' | 'integration';
     metadata?: Record<string, any>;
+    replayData?: {
+        aiInteractions?: Array<any>;
+        userActions?: Array<any>;
+        codeContext?: Array<any>;
+        systemMetrics?: Array<any>;
+        workspaceState?: any;
+    };
     error?: {
         message: string;
         stack?: string;
@@ -100,6 +109,12 @@ class SessionsService {
         label?: string;
         from?: string;
         to?: string;
+        status?: string;
+        source?: string;
+        minCost?: number;
+        maxCost?: number;
+        minSpans?: number;
+        maxSpans?: number;
         page?: number;
         limit?: number;
     }): Promise<SessionsListResponse> {
@@ -134,9 +149,8 @@ class SessionsService {
     /**
      * Get sessions summary
      */
-    async getSessionsSummary(userId?: string): Promise<SessionsSummary> {
-        const params = userId ? { userId } : undefined;
-        const response = await api.get('/v1/sessions/summary', { params });
+    async getSessionsSummary(): Promise<SessionsSummary> {
+        const response = await api.get('/v1/sessions/summary');
         return response.data.data;
     }
 

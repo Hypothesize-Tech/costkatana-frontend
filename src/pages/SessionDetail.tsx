@@ -4,7 +4,9 @@ import { sessionsService, SessionGraph, SessionDetails, TraceNode } from '../ser
 import { SessionTimeline } from '../components/sessions/SessionTimeline';
 import { TraceTree } from '../components/sessions/TraceTree';
 import { SpanDetails } from '../components/sessions/SpanDetails';
+import { SessionDetailsExpanded } from '../components/SessionDetails/SessionDetailsExpanded';
 import { ArrowLeft, Loader, AlertCircle, Activity, CheckCircle, DollarSign, Hash, Cpu } from 'lucide-react';
+import { SessionReplay } from '../types/sessionReplay.types';
 
 export const SessionDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -230,31 +232,46 @@ export const SessionDetail: React.FC = () => {
                     </div>
                 )}
 
-                {/* Main Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Trace Tree */}
-                    <div>
-                        {graph && (
-                            <TraceTree
-                                nodes={graph.nodes}
-                                edges={graph.edges}
-                                selectedNodeId={selectedNodeId}
-                                onNodeSelect={setSelectedNodeId}
-                            />
-                        )}
+                {/* AI Interactions (for in-app sessions) */}
+                {session.source === 'in-app' && session.replayData && session.replayData.aiInteractions && session.replayData.aiInteractions.length > 0 && (
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
+                        <h2 className="text-xl font-display font-bold gradient-text-primary mb-4">AI Interactions</h2>
+                        <SessionDetailsExpanded session={session as any as SessionReplay} />
                     </div>
+                )}
 
-                    {/* Timeline */}
-                    <div>
-                        {graph && (
-                            <SessionTimeline
-                                nodes={graph.nodes}
-                                selectedNodeId={selectedNodeId}
-                                onNodeClick={setSelectedNodeId}
-                            />
-                        )}
+                {/* Trace Tree and Timeline (spans/traces) */}
+                {graph && graph.nodes.length > 0 && (
+                    <div className="mb-6">
+                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-4">
+                            <h2 className="text-xl font-display font-bold gradient-text-primary mb-4">Trace Spans</h2>
+                            <p className="text-secondary-600 dark:text-secondary-300 text-sm mb-4">
+                                Click on any span to view detailed information
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Trace Tree */}
+                            <div>
+                                <TraceTree
+                                    nodes={graph.nodes}
+                                    edges={graph.edges}
+                                    selectedNodeId={selectedNodeId}
+                                    onNodeSelect={setSelectedNodeId}
+                                />
+                            </div>
+
+                            {/* Timeline */}
+                            <div>
+                                <SessionTimeline
+                                    nodes={graph.nodes}
+                                    selectedNodeId={selectedNodeId}
+                                    onNodeClick={setSelectedNodeId}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Span Details Drawer */}

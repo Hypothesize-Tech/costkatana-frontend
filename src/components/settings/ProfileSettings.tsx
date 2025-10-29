@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { User } from "../../types";
 import { LoadingSpinner } from "../common/LoadingSpinner";
+import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { emailService } from "../../services/email.service";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 interface ProfileSettingsProps {
   profile: User | undefined;
@@ -20,6 +23,8 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     timezone: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [resendingVerification, setResendingVerification] = useState(false);
+  const { showNotification } = useNotifications();
 
   useEffect(() => {
     if (profile) {
@@ -41,6 +46,20 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
 
   const handleChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
+  };
+
+  const handleResendVerification = async () => {
+    if (!profile?.email) return;
+
+    try {
+      setResendingVerification(true);
+      await emailService.resendVerification(profile.email);
+      showNotification("Verification email sent! Please check your inbox.", "success");
+    } catch (error: any) {
+      showNotification(error.message || "Failed to send verification email", "error");
+    } finally {
+      setResendingVerification(false);
+    }
   };
 
   if (!profile) return <LoadingSpinner />;
@@ -82,18 +101,42 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               htmlFor="email"
               className="block font-display font-medium gradient-text mb-2"
             >
-              Email Address
+              Email Address (Primary)
             </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              disabled
-              className="input opacity-60 cursor-not-allowed"
-            />
-            <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
-              Email cannot be changed
-            </p>
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                disabled
+                className="input opacity-60 cursor-not-allowed"
+              />
+              {profile.emailVerified ? (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-success-600 dark:text-success-400">
+                  <CheckCircleIcon className="h-5 w-5" />
+                  <span className="text-sm font-body">Verified</span>
+                </div>
+              ) : (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-warning-600 dark:text-warning-400">
+                  <ExclamationCircleIcon className="h-5 w-5" />
+                  <span className="text-sm font-body">Not Verified</span>
+                </div>
+              )}
+            </div>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                This is your primary email. Manage additional emails in Security settings.
+              </p>
+              {!profile.emailVerified && (
+                <button
+                  onClick={handleResendVerification}
+                  disabled={resendingVerification}
+                  className="text-sm font-body text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline disabled:opacity-50 whitespace-nowrap ml-2"
+                >
+                  {resendingVerification ? "Sending..." : "Resend Verification"}
+                </button>
+              )}
+            </div>
           </div>
 
           <div>
@@ -183,8 +226,8 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
               <dd>
                 <span
                   className={`glass px-3 py-1 rounded-full font-display font-semibold border ${profile.subscription?.status === "active"
-                      ? "border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300"
-                      : "border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300"
+                    ? "border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300"
+                    : "border-accent-200/30 bg-gradient-accent/20 text-accent-700 dark:text-accent-300"
                     }`}
                 >
                   {profile.subscription?.status || "Free"}

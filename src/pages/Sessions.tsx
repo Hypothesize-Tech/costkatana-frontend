@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sessionsService, Session, SessionsSummary } from '../services/sessions.service';
-import { useAuth } from '../contexts/AuthContext';
-import { Loader, Search, Calendar, Tag, AlertCircle, Activity, CheckCircle, DollarSign, Hash } from 'lucide-react';
+import { Loader, Search, Calendar, Tag, AlertCircle, Activity, CheckCircle, DollarSign, Hash, ChevronRight, ChevronDown } from 'lucide-react';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { Menu, Transition } from '@headlessui/react';
+import { getSessionDisplayInfo } from '../types/sessionReplay.types';
+import { SessionDetailsExpanded } from '../components/SessionDetails/SessionDetailsExpanded';
+import { SessionAnalyticsCharts } from '../components/sessions/SessionAnalyticsCharts';
+import { exportData } from '../utils/exportSessions';
 
 export const Sessions: React.FC = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [summary, setSummary] = useState<SessionsSummary | null>(null);
     const [loading, setLoading] = useState(true);
@@ -15,10 +19,29 @@ export const Sessions: React.FC = () => {
         label: '',
         from: '',
         to: '',
+        status: '', // 'active' | 'completed' | 'error' | ''
+        source: '', // 'telemetry' | 'manual' | 'in-app' | 'integration' | ''
+        minCost: '',
+        maxCost: '',
+        minSpans: '',
+        maxSpans: '',
         page: 1,
         limit: 20
     });
     const [totalPages, setTotalPages] = useState(1);
+    const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
+
+    const toggleSessionExpansion = (sessionId: string) => {
+        setExpandedSessions(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(sessionId)) {
+                newSet.delete(sessionId);
+            } else {
+                newSet.add(sessionId);
+            }
+            return newSet;
+        });
+    };
 
     useEffect(() => {
         fetchSessions();
@@ -41,10 +64,15 @@ export const Sessions: React.FC = () => {
             };
 
             const response = await sessionsService.listSessions({
-                userId: user?.id || undefined,
                 label: filters.label || undefined,
                 from: formatDateTime(filters.from),
                 to: formatDateTime(filters.to),
+                status: filters.status || undefined,
+                source: filters.source || undefined,
+                minCost: filters.minCost ? parseFloat(filters.minCost) : undefined,
+                maxCost: filters.maxCost ? parseFloat(filters.maxCost) : undefined,
+                minSpans: filters.minSpans ? parseInt(filters.minSpans) : undefined,
+                maxSpans: filters.maxSpans ? parseInt(filters.maxSpans) : undefined,
                 page: filters.page,
                 limit: filters.limit
             });
@@ -60,7 +88,7 @@ export const Sessions: React.FC = () => {
 
     const fetchSummary = async () => {
         try {
-            const summaryData = await sessionsService.getSessionsSummary(user?.id);
+            const summaryData = await sessionsService.getSessionsSummary();
             setSummary(summaryData);
         } catch (err) {
             console.error('Error fetching summary:', err);
@@ -70,6 +98,26 @@ export const Sessions: React.FC = () => {
     const handleSearch = () => {
         setFilters(prev => ({ ...prev, page: 1 }));
         fetchSessions();
+    };
+
+    const handleClearFilters = () => {
+        setFilters({
+            label: '',
+            from: '',
+            to: '',
+            status: '',
+            source: '',
+            minCost: '',
+            maxCost: '',
+            minSpans: '',
+            maxSpans: '',
+            page: 1,
+            limit: 20
+        });
+    };
+
+    const handleExportSessions = (format: 'json' | 'excel') => {
+        exportData(sessions, format, 'sessions', 'sessions-export');
     };
 
     const formatDuration = (ms?: number) => {
@@ -97,12 +145,57 @@ export const Sessions: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
+        <div>
             <div className="max-w-7xl mx-auto">
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
-                    <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">Sessions</h1>
-                    <p className="text-secondary-600 dark:text-secondary-300">Trace and visualize agent flows</p>
-                </div>
+
+                {/* Export Button */}
+                {sessions.length > 0 && (
+                    <div className="flex justify-end mb-6">
+                        <Menu as="div" className="relative inline-block text-left">
+                            <Menu.Button className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300">
+                                <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
+                                Export Sessions
+                            </Menu.Button>
+
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-100"
+                                enterFrom="transform opacity-0 scale-95"
+                                enterTo="transform opacity-100 scale-100"
+                                leave="transition ease-in duration-75"
+                                leaveFrom="transform opacity-100 scale-100"
+                                leaveTo="transform opacity-0 scale-95"
+                            >
+                                <Menu.Items className="absolute right-0 z-10 mt-2 w-48 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel origin-top-right focus:outline-none">
+                                    <div className="py-2">
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <button
+                                                    onClick={() => handleExportSessions('json')}
+                                                    className={`${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
+                                                        } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
+                                                >
+                                                    Export as JSON
+                                                </button>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <button
+                                                    onClick={() => handleExportSessions('excel')}
+                                                    className={`${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
+                                                        } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
+                                                >
+                                                    Export as Excel
+                                                </button>
+                                            )}
+                                        </Menu.Item>
+                                    </div>
+                                </Menu.Items>
+                            </Transition>
+                        </Menu>
+                    </div>
+                )}
 
                 {/* Summary Cards */}
                 {summary && (
@@ -150,7 +243,16 @@ export const Sessions: React.FC = () => {
                                 <div>
                                     <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Avg Duration</p>
                                     <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
-                                        {formatDuration(summary.averageDuration)}
+                                        {formatDuration(
+                                            sessions.length > 0
+                                                ? sessions.reduce((sum, s) => {
+                                                    const duration = s.duration ||
+                                                        (s.endedAt ? new Date(s.endedAt).getTime() - new Date(s.startedAt).getTime() :
+                                                            Date.now() - new Date(s.startedAt).getTime());
+                                                    return sum + duration;
+                                                }, 0) / sessions.length
+                                                : 0
+                                        )}
                                     </p>
                                 </div>
                                 <div className="p-3 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20">
@@ -163,47 +265,138 @@ export const Sessions: React.FC = () => {
 
                 {/* Filters */}
                 <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                            <input
-                                type="text"
-                                placeholder="Search by label..."
-                                className="input pl-10"
-                                value={filters.label}
-                                onChange={(e) => setFilters(prev => ({ ...prev, label: e.target.value }))}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                            />
+                    <div className="space-y-4">
+                        {/* Row 1: Basic Filters */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by label..."
+                                    className="input pl-10"
+                                    value={filters.label}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, label: e.target.value }))}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="datetime-local"
+                                    className="input pl-10"
+                                    value={filters.from}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))}
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="datetime-local"
+                                    className="input pl-10"
+                                    value={filters.to}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))}
+                                />
+                            </div>
+
+                            <select
+                                className="input"
+                                value={filters.status}
+                                onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                            >
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="error">Error</option>
+                            </select>
                         </div>
 
-                        <div className="relative">
-                            <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                            <input
-                                type="datetime-local"
-                                className="input pl-10"
-                                value={filters.from}
-                                onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))}
-                            />
+                        {/* Row 2: Advanced Filters */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <select
+                                className="input"
+                                value={filters.source}
+                                onChange={(e) => setFilters(prev => ({ ...prev, source: e.target.value }))}
+                            >
+                                <option value="">All Sources</option>
+                                <option value="telemetry">Telemetry</option>
+                                <option value="manual">Manual</option>
+                                <option value="in-app">In-App</option>
+                                <option value="integration">Integration</option>
+                            </select>
+
+                            <div className="relative">
+                                <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="number"
+                                    step="0.0001"
+                                    placeholder="Min Cost"
+                                    className="input pl-10"
+                                    value={filters.minCost}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, minCost: e.target.value }))}
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="number"
+                                    step="0.0001"
+                                    placeholder="Max Cost"
+                                    className="input pl-10"
+                                    value={filters.maxCost}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, maxCost: e.target.value }))}
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <Hash className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="number"
+                                    placeholder="Min Spans"
+                                    className="input pl-10"
+                                    value={filters.minSpans}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, minSpans: e.target.value }))}
+                                />
+                            </div>
+
+                            <div className="relative">
+                                <Hash className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <input
+                                    type="number"
+                                    placeholder="Max Spans"
+                                    className="input pl-10"
+                                    value={filters.maxSpans}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, maxSpans: e.target.value }))}
+                                />
+                            </div>
                         </div>
 
-                        <div className="relative">
-                            <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                            <input
-                                type="datetime-local"
-                                className="input pl-10"
-                                value={filters.to}
-                                onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))}
-                            />
+                        {/* Row 3: Action Buttons */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={handleSearch}
+                                className="btn-primary flex-1 md:flex-none"
+                            >
+                                Search
+                            </button>
+                            <button
+                                onClick={handleClearFilters}
+                                className="btn-secondary flex-1 md:flex-none"
+                            >
+                                Clear Filters
+                            </button>
                         </div>
-
-                        <button
-                            onClick={handleSearch}
-                            className="btn-primary"
-                        >
-                            Search
-                        </button>
                     </div>
                 </div>
+
+                {/* Analytics Charts */}
+                {sessions.length > 0 && (
+                    <div className="mb-6">
+                        <SessionAnalyticsCharts sessions={sessions} />
+                    </div>
+                )}
 
                 {/* Sessions List */}
                 <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
@@ -225,6 +418,9 @@ export const Sessions: React.FC = () => {
                             <table className="w-full">
                                 <thead className="glass rounded-lg border border-primary-200/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                                     <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
+
+                                        </th>
                                         <th className="px-6 py-3 text-left text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                                             Status
                                         </th>
@@ -252,56 +448,94 @@ export const Sessions: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20">
-                                    {sessions.map(session => (
-                                        <tr key={session._id} className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-success-500/5 transition-all duration-300">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {getStatusIcon(session.status)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="font-mono text-sm text-secondary-600 dark:text-secondary-300">
-                                                    {session.sessionId.substring(0, 8)}...
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {session.label && (
-                                                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-accent-500/20 to-warning-500/20 text-accent-600 dark:text-accent-400 border border-primary-200/30">
-                                                        <Tag className="w-3 h-3" />
-                                                        {session.label}
-                                                    </span>
+                                    {sessions.map(session => {
+                                        const isExpanded = expandedSessions.has(session.sessionId);
+                                        const displayInfo = getSessionDisplayInfo(session as any);
+
+                                        return (
+                                            <React.Fragment key={session._id}>
+                                                <tr className="hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-success-500/5 transition-all duration-300">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <button
+                                                            onClick={() => toggleSessionExpansion(session.sessionId)}
+                                                            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 transition-colors"
+                                                        >
+                                                            {isExpanded ? (
+                                                                <ChevronDown className="w-4 h-4" />
+                                                            ) : (
+                                                                <ChevronRight className="w-4 h-4" />
+                                                            )}
+                                                        </button>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {getStatusIcon(session.status)}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-lg">{displayInfo.icon}</span>
+                                                            <div className="flex flex-col">
+                                                                <span className="font-mono text-sm text-secondary-600 dark:text-secondary-300">
+                                                                    {session.sessionId.substring(0, 8)}...
+                                                                </span>
+                                                                <span className="text-xs text-secondary-500 dark:text-secondary-400">
+                                                                    {displayInfo.type}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {(session.label || (session.metadata as any)?.label || displayInfo.label) && (
+                                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-accent-500/20 to-warning-500/20 text-accent-600 dark:text-accent-400 border border-primary-200/30">
+                                                                <Tag className="w-3 h-3" />
+                                                                {session.label || (session.metadata as any)?.label || displayInfo.label}
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                                                        {formatDate(session.startedAt)}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                                                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
+                                                            {session.duration ? formatDuration(session.duration) :
+                                                                (session.endedAt ? formatDuration(new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) :
+                                                                    formatDuration(Date.now() - new Date(session.startedAt).getTime()))}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
+                                                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500/20 to-success-500/20 text-primary-600 dark:text-primary-400">
+                                                            {session.summary?.totalSpans || 0}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                        {(session.summary?.totalCost !== undefined && session.summary?.totalCost !== null) ? (
+                                                            <span className="text-success-600 dark:text-success-400 font-bold">
+                                                                ${session.summary.totalCost.toFixed(4)}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-secondary-600 dark:text-secondary-300">$0.0000</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <button
+                                                            onClick={() => navigate(`/sessions/${session.sessionId}`)}
+                                                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300"
+                                                        >
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+
+                                                {/* Expanded Details Row */}
+                                                {isExpanded && (
+                                                    <tr className="bg-secondary-50 dark:bg-secondary-900/30">
+                                                        <td colSpan={9} className="px-6 py-4">
+                                                            <SessionDetailsExpanded session={session as any} />
+                                                        </td>
+                                                    </tr>
                                                 )}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
-                                                {formatDate(session.startedAt)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
-                                                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
-                                                    {formatDuration(session.summary?.totalDuration)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary-700 dark:text-secondary-300">
-                                                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500/20 to-success-500/20 text-primary-600 dark:text-primary-400">
-                                                    {session.summary?.totalSpans || 0}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                {session.summary?.totalCost ? (
-                                                    <span className="text-success-600 dark:text-success-400 font-bold">
-                                                        ${session.summary.totalCost.toFixed(4)}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-secondary-600 dark:text-secondary-300">N/A</span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                    onClick={() => navigate(`/sessions/${session.sessionId}`)}
-                                                    className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300"
-                                                >
-                                                    View Details
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                            </React.Fragment>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
 

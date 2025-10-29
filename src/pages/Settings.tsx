@@ -7,6 +7,9 @@ import {
   KeyIcon,
   BellIcon,
   ShieldCheckIcon,
+  PlayCircleIcon,
+  ExclamationTriangleIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { userService } from '../services/user.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
@@ -14,9 +17,12 @@ import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ApiKeySettings } from '../components/settings/ApiKeySettings';
 import { NotificationSettings } from '../components/settings/NotificationSettings';
 import { SecuritySettings } from '../components/settings/SecuritySettings';
+import SessionReplaySettings from '../components/settings/SessionReplaySettings';
+import { AccountClosure } from '../components/settings/AccountClosure';
+import { TeamManagement } from '../components/team/TeamManagement';
 import { useNotifications } from '../contexts/NotificationContext';
 
-type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security';
+type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security' | 'session-replay' | 'team' | 'account';
 
 export const Settings: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -26,7 +32,7 @@ export const Settings: React.FC = () => {
   // Handle URL parameter to set active tab
   useEffect(() => {
     const tabParam = searchParams.get('tab') as SettingsTab;
-    if (tabParam && ['profile', 'api-keys', 'notifications', 'security'].includes(tabParam)) {
+    if (tabParam && ['profile', 'api-keys', 'notifications', 'security', 'session-replay', 'team', 'account'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -74,6 +80,24 @@ export const Settings: React.FC = () => {
       name: 'Security',
       icon: ShieldCheckIcon,
       component: SecuritySettings,
+    },
+    {
+      id: 'session-replay' as const,
+      name: 'Session Replay',
+      icon: PlayCircleIcon,
+      component: SessionReplaySettings,
+    },
+    {
+      id: 'team' as const,
+      name: 'Team',
+      icon: UserGroupIcon,
+      component: TeamManagement,
+    },
+    {
+      id: 'account' as const,
+      name: 'Account',
+      icon: ExclamationTriangleIcon,
+      component: AccountClosure,
     },
   ];
 
@@ -132,6 +156,15 @@ export const Settings: React.FC = () => {
                   activeSessions: []
                 }}
               />
+            )}
+            {activeTab === 'session-replay' && (
+              <SessionReplaySettings />
+            )}
+            {activeTab === 'team' && (
+              <TeamManagement />
+            )}
+            {activeTab === 'account' && (
+              <AccountClosure />
             )}
           </div>
         </div>

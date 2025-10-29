@@ -28,6 +28,7 @@ import {
   ShieldExclamationIcon,
   RocketLaunchIcon,
   BugAntIcon,
+  PlayCircleIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -73,6 +74,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
       { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
+      { name: 'Sessions', href: '/sessions', icon: PlayCircleIcon, description: 'View session replays and debug AI traces' },
       { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
       { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
       { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
@@ -107,6 +109,7 @@ const navCategories: NavCategory[] = [
       { name: 'Integration', href: '/integration', icon: CogIcon, description: 'Integration settings' },
       { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
       { name: 'Profile', href: '/profile', icon: UserIcon, description: 'User profile settings' },
+      { name: 'Settings', href: '/settings', icon: CogIcon, description: 'Application settings and preferences' },
     ],
   },
 ];

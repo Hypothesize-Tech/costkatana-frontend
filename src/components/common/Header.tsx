@@ -1,23 +1,21 @@
-import { Fragment, useMemo } from "react";
-import { Menu, Transition } from "@headlessui/react";
+import { useMemo } from "react";
 import {
   BellIcon,
   Bars3Icon,
   SunIcon,
   MoonIcon,
-  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth, useTheme, useNotifications } from "../../hooks";
-import { cn } from "../../utils/helpers";
+import { useTheme, useNotifications } from "../../hooks";
 import { APP_NAME } from "../../utils/constant";
 import logo from "../../assets/logo.jpg";
+import { ProfileDropdown } from "./ProfileDropdown";
+
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export const Header = ({ onMenuClick }: HeaderProps) => {
-  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { notifications } = useNotifications();
   const navigate = useNavigate();
@@ -36,10 +34,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
     }
     return notifications.length;
   }, [notifications]);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   return (
     <header className="flex sticky top-0 z-40 gap-x-4 items-center px-4 h-16 glass border-b border-primary-200/30 shadow-lg shrink-0 backdrop-blur-xl sm:gap-x-6 sm:px-6 lg:px-8 light:bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -94,85 +88,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </button>
 
         {/* Profile dropdown */}
-        <Menu as="div" className="relative">
-          <Menu.Button className="flex items-center gap-x-3 p-2 rounded-xl glass hover:bg-primary-500/20 transition-all duration-300 hover:scale-105">
-            <span className="sr-only">Open user menu</span>
-            <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg">
-              <UserCircleIcon className="w-8 h-8 text-white" />
-            </div>
-            <span className="hidden lg:flex lg:items-center">
-              <span className="text-sm font-display font-semibold leading-6 text-light-text-primary dark:text-dark-text-primary">
-                {user?.name}
-              </span>
-            </span>
-          </Menu.Button>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-200"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-150"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 z-10 mt-3 w-56 origin-top-right rounded-2xl glass shadow-2xl border border-primary-200/30 focus:outline-none animate-scale-in backdrop-blur-xl">
-              <div className="px-4 py-3 border-b border-primary-200/20">
-                <p className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted">
-                  Signed in as
-                </p>
-                <p className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate">
-                  {user?.email}
-                </p>
-              </div>
-
-              <div className="py-2">
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link
-                      to="/profile"
-                      className={cn(
-                        active ? "bg-primary-500/10 text-primary-600 dark:text-primary-400" : "text-light-text-primary dark:text-dark-text-primary",
-                        "block px-4 py-3 text-sm font-medium leading-6 transition-all duration-200 hover:bg-primary-500/10 rounded-lg mx-2",
-                      )}
-                    >
-                      Profile Settings
-                    </Link>
-                  )}
-                </Menu.Item>
-
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link
-                      to="/profile?tab=subscription"
-                      className={cn(
-                        active ? "bg-primary-500/10 text-primary-600 dark:text-primary-400" : "text-light-text-primary dark:text-dark-text-primary",
-                        "block px-4 py-3 text-sm font-medium leading-6 transition-all duration-200 hover:bg-primary-500/10 rounded-lg mx-2",
-                      )}
-                    >
-                      Subscription
-                    </Link>
-                  )}
-                </Menu.Item>
-              </div>
-
-              <div className="border-t border-primary-200/20 pt-2">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={handleLogout}
-                      className={cn(
-                        active ? "bg-danger-500/10 text-danger-600 dark:text-danger-400" : "text-light-text-primary dark:text-dark-text-primary",
-                        "block px-4 py-3 w-full text-sm font-medium leading-6 text-left transition-all duration-200 hover:bg-danger-500/10 rounded-lg mx-2 mb-2",
-                      )}
-                    >
-                      Sign out
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Transition>
-        </Menu>
+        <ProfileDropdown />
       </div>
     </header>
   );

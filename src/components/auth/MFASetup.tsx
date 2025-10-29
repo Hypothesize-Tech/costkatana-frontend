@@ -167,13 +167,13 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
   const downloadBackupCodes = () => {
     if (!totpSetup?.backupCodes) return;
 
-    const content = `AI Cost Optimizer - MFA Backup Codes\n\nGenerated: ${new Date().toLocaleString()}\n\nBackup Codes (use each code only once):\n${totpSetup.backupCodes.map((code, i) => `${i + 1}. ${code}`).join('\n')}\n\nKeep these codes in a safe place. You can use them to access your account if you lose your authenticator device.`;
+    const content = `CostKatana - MFA Backup Codes\n\nGenerated: ${new Date().toLocaleString()}\n\nBackup Codes (use each code only once):\n${totpSetup.backupCodes.map((code, i) => `${i + 1}. ${code}`).join('\n')}\n\nKeep these codes in a safe place. You can use them to access your account if you lose your authenticator device.`;
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'ai-cost-optimizer-backup-codes.txt';
+    a.download = 'costkatana-backup-codes.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -260,7 +260,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     <span className="px-3 py-1 text-xs font-display font-bold bg-gradient-success text-white rounded-xl shadow-lg">Enabled</span>
                     <button
                       onClick={() => handleDisableMFA('email')}
-                      className="btn-ghost text-danger-500 hover:bg-danger-500/10"
+                      className="px-4 py-2 text-sm font-medium text-danger-600 dark:text-danger-400 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/50 rounded-xl hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50 transition-all duration-300 shadow-lg backdrop-blur-xl"
                     >
                       Disable
                     </button>
@@ -296,7 +296,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     <span className="px-3 py-1 text-xs font-display font-bold bg-gradient-success text-white rounded-xl shadow-lg">Enabled</span>
                     <button
                       onClick={() => handleDisableMFA('totp')}
-                      className="btn-ghost text-danger-500 hover:bg-danger-500/10"
+                      className="px-4 py-2 text-sm font-medium text-danger-600 dark:text-danger-400 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/50 rounded-xl hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50 transition-all duration-300 shadow-lg backdrop-blur-xl"
                     >
                       Disable
                     </button>

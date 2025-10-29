@@ -21,12 +21,15 @@ import { ServiceBreakdown } from "../components/dashboard/ServiceBreakdown";
 import { RecentActivity } from "../components/dashboard/RecentActivity";
 import { DashboardService, DashboardData } from "../services/dashboard.service";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { AccountClosureBanner } from "../components/common/AccountClosureBanner";
 import { useNotification } from "../contexts/NotificationContext";
 import { formatTimestamp } from "../utils/formatters";
 import logo from "../assets/logo.jpg";
 import { useProject } from "@/contexts/ProjectContext";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { userService } from "../services/user.service";
 
 // Extended DashboardData interface to include projectBreakdown
 interface ExtendedDashboardData extends DashboardData {
@@ -63,6 +66,9 @@ export const Dashboard: React.FC = () => {
     projects,
     getSelectedProjectName,
   } = useProject();
+
+  // Fetch user profile to check account closure status
+  const { data: userProfile } = useQuery(['user-profile'], userService.getProfile);
 
   const fetchDashboardData = async (projectId?: string) => {
     try {
@@ -244,6 +250,11 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen relative bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      {/* Account Closure Banner */}
+      {userProfile?.accountClosure && userProfile.accountClosure.status === 'pending_deletion' && (
+        <AccountClosureBanner closureStatus={userProfile.accountClosure} />
+      )}
+
       {/* Professional Header */}
       <header className="glass backdrop-blur-xl sticky top-0 z-20 border-b border-primary-200/30 bg-gradient-to-r from-light-bg-200/80 to-light-bg-300/80 dark:from-dark-bg-200/80 dark:to-dark-bg-300/80">
         <div className="mx-auto px-6 py-5">

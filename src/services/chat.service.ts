@@ -5,6 +5,12 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  attachedDocuments?: Array<{
+    documentId: string;
+    fileName: string;
+    chunksCount: number;
+    fileType?: string;
+  }>;
   metadata?: {
     cost?: number;
     latency?: number;

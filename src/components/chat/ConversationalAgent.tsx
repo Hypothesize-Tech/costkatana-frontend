@@ -30,6 +30,7 @@ import { PreviewRenderer } from "../preview/PreviewRenderer";
 import { CodePreview } from "../preview/CodePreview";
 import { DocumentUpload } from "./DocumentUpload";
 import { DocumentMetadata } from "@/services/document.service";
+import { useSessionRecording } from "@/hooks/useSessionRecording";
 
 // Configure marked for security
 marked.setOptions({
@@ -44,6 +45,12 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   requestId?: string;
+  attachedDocuments?: Array<{
+    documentId: string;
+    fileName: string;
+    chunksCount: number;
+    fileType?: string;
+  }>;
   metadata?: {
     cost?: number;
     latency?: number;
@@ -124,6 +131,13 @@ export const ConversationalAgent: React.FC = () => {
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [currentSources, setCurrentSources] = useState<ChatMessage['sources']>([]);
+
+  // Session recording hook
+  const { recordComplete, isRecording } = useSessionRecording({
+    feature: 'chat',
+    autoStart: true,
+    label: 'Chat Conversation'
+  });
 
   // Preview functionality
   const [showPreviews, setShowPreviews] = useState<Record<string, boolean>>({});
@@ -522,6 +536,21 @@ export const ConversationalAgent: React.FC = () => {
       const result = await ChatService.getConversationHistory(conversationId);
       setMessages(result.messages);
       setCurrentConversationId(conversationId);
+
+      // Restore attached documents from the last user message
+      const lastUserMessage = [...result.messages].reverse().find((msg) => msg.role === 'user');
+      if (lastUserMessage?.attachedDocuments && lastUserMessage.attachedDocuments.length > 0) {
+        const documentsMetadata = lastUserMessage.attachedDocuments.map((doc: { documentId: string; fileName: string; chunksCount: number; fileType?: string }) => ({
+          documentId: doc.documentId,
+          fileName: doc.fileName,
+          chunksCount: doc.chunksCount,
+          fileType: doc.fileType || 'application/octet-stream',
+          uploadDate: new Date().toISOString() // Use current date as fallback since historical date isn't critical for UI
+        }));
+        setSelectedDocuments(documentsMetadata);
+      } else {
+        setSelectedDocuments([]);
+      }
     } catch (error) {
       console.error("Error loading conversation:", error);
       setError("Failed to load conversation history");
@@ -561,6 +590,7 @@ export const ConversationalAgent: React.FC = () => {
       role: "user",
       content: messageContent,
       timestamp: new Date(),
+      attachedDocuments: selectedDocuments.length > 0 ? selectedDocuments : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -719,6 +749,59 @@ export const ConversationalAgent: React.FC = () => {
       setMessages((prev) => [...prev, assistantMessage]);
       setIsLoading(false);
       setLoadingMessageId(null);
+
+      // Record the interaction for session replay
+      if (isRecording) {
+        try {
+          await recordComplete(
+            {
+              timestamp: new Date().toISOString(),
+              model: selectedModel.id,
+              prompt: messageContent,
+              response: response.response,
+              parameters: {
+                chatMode,
+                useMultiAgent,
+                documentIds: selectedDocuments.map(d => d.documentId)
+              },
+              tokens: {
+                input: response.tokenCount ? Math.floor(response.tokenCount * 0.4) : 0,
+                output: response.tokenCount ? Math.ceil(response.tokenCount * 0.6) : 0
+              },
+              cost: response.cost,
+              latency: response.latency,
+              provider: 'aws-bedrock',
+              requestMetadata: {
+                conversationId: currentConversationId,
+                chatMode,
+                useMultiAgent,
+                hasDocuments: selectedDocuments.length > 0,
+                documentCount: selectedDocuments.length,
+                documentIds: selectedDocuments.map(d => d.documentId)
+              },
+              responseMetadata: {
+                thinking: response.thinking,
+                optimizationsApplied: response.optimizationsApplied,
+                cacheHit: response.cacheHit,
+                agentPath: response.agentPath,
+                riskLevel: response.riskLevel
+              }
+            },
+            {
+              action: 'chat_message_sent',
+              details: {
+                conversationId: currentConversationId,
+                modelId: selectedModel.id,
+                hasDocuments: selectedDocuments.length > 0,
+                optimizationsApplied: response.optimizationsApplied,
+                cacheHit: response.cacheHit
+              }
+            }
+          );
+        } catch (error) {
+          console.error('Failed to record interaction:', error);
+        }
+      }
 
       if (response.conversationId && !currentConversationId) {
         setCurrentConversationId(response.conversationId);
@@ -1568,6 +1651,30 @@ export const ConversationalAgent: React.FC = () => {
             <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
               <div className={`max-w-4xl ${message.role === 'user' ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30'} p-4 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'}`}>
                 {renderMessageContent(message.content, message)}
+
+                {/* Attached Documents Display */}
+                {message.attachedDocuments && message.attachedDocuments.length > 0 && (
+                  <div className={`mt-3 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                    {message.attachedDocuments.map((doc) => (
+                      <div
+                        key={doc.documentId}
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${message.role === 'user'
+                          ? 'bg-white/20 border border-white/30'
+                          : 'bg-blue-50 border border-blue-200'
+                          }`}
+                      >
+                        <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-blue-600'}`} />
+                        <span className={`font-medium max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-gray-700'}`}>
+                          {doc.fileName}
+                        </span>
+                        <span className={`text-xs ${message.role === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
+                          ({doc.chunksCount} chunks)
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-primary-200/20">
                   <div className="flex items-center gap-3 text-xs">
                     <span className={`font-display font-medium ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
