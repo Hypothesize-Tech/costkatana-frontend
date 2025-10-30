@@ -64,6 +64,8 @@ import Webhooks from './pages/Webhooks';
 import { Moderation } from './pages/Moderation';
 import { Security } from './pages/Security';
 import UnexplainedCosts from './pages/UnexplainedCosts';
+import GitHubCallback from './pages/GitHubCallback';
+import GitHubIntegrations from './pages/GitHubIntegrations';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -95,6 +97,8 @@ function AppContent() {
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/confirm-account-closure/:token" element={<ConfirmAccountClosure />} />
         <Route path="/accept-invite/:token" element={<AcceptInvite />} />
+        <Route path="/github/success" element={<GitHubCallback />} />
+        <Route path="/github/error" element={<GitHubCallback />} />
 
         {/* Protected routes */}
         <Route
@@ -230,6 +234,10 @@ function AppContent() {
           <Route
             path="integration"
             element={<Integration />}
+          />
+          <Route
+            path="github"
+            element={<GitHubIntegrations />}
           />
         </Route>
 

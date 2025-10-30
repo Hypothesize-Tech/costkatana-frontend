@@ -31,6 +31,9 @@ import { CodePreview } from "../preview/CodePreview";
 import { DocumentUpload } from "./DocumentUpload";
 import { DocumentMetadata } from "@/services/document.service";
 import { useSessionRecording } from "@/hooks/useSessionRecording";
+import GitHubConnector from "./GitHubConnector";
+import FeatureSelector from "./FeatureSelector";
+import githubService, { GitHubRepository } from "../../services/github.service";
 
 // Configure marked for security
 marked.setOptions({
@@ -160,6 +163,9 @@ export const ConversationalAgent: React.FC = () => {
 
   // Document upload for RAG
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
+  const [showGitHubConnector, setShowGitHubConnector] = useState(false);
+  const [showFeatureSelector, setShowFeatureSelector] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -573,6 +579,48 @@ export const ConversationalAgent: React.FC = () => {
     } catch (error) {
       console.error("Error deleting conversation:", error);
       setError("Failed to delete conversation");
+    }
+  };
+
+  // GitHub integration handlers
+  const handleSelectRepository = (repo: GitHubRepository, connectionId: string) => {
+    setSelectedRepo({ repo, connectionId });
+    setShowGitHubConnector(false);
+    setShowFeatureSelector(true);
+  };
+
+  const handleStartIntegration = async (
+    features: { name: string; enabled: boolean }[],
+    integrationType: 'npm' | 'cli' | 'python'
+  ) => {
+    if (!selectedRepo) return;
+
+    try {
+      const result = await githubService.startIntegration({
+        connectionId: selectedRepo.connectionId,
+        repositoryId: selectedRepo.repo.id,
+        repositoryName: selectedRepo.repo.name,
+        repositoryFullName: selectedRepo.repo.fullName,
+        integrationType,
+        selectedFeatures: features,
+        conversationId: currentConversationId || undefined
+      });
+
+      setShowFeatureSelector(false);
+      setSelectedRepo(null);
+
+      // Add a message to the chat about the integration
+      const integrationMessage: ChatMessage = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: `🚀 Great! I've started integrating CostKatana into **${selectedRepo.repo.fullName}**.\n\nI'm currently:\n1. Analyzing your repository structure\n2. Generating integration code\n3. Creating a pull request\n\nThis usually takes 1-2 minutes. I'll let you know when the PR is ready!\n\nIntegration ID: ${result.integrationId}`,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, integrationMessage]);
+    } catch (error) {
+      console.error('Failed to start integration:', error);
+      setError('Failed to start GitHub integration');
     }
   };
 
@@ -1859,11 +1907,12 @@ export const ConversationalAgent: React.FC = () => {
         {/* Input Area */}
         <div className="glass backdrop-blur-xl border-t border-primary-200/30 shadow-lg p-4">
           <div className="max-w-4xl mx-auto space-y-3">
-            {/* Document Upload Section */}
+            {/* Document Upload Section with GitHub Connect */}
             <DocumentUpload
               onDocumentUploaded={(doc) => setSelectedDocuments(prev => [...prev, doc])}
               onDocumentRemoved={(docId) => setSelectedDocuments(prev => prev.filter(d => d.documentId !== docId))}
               selectedDocuments={selectedDocuments}
+              onGitHubConnect={() => setShowGitHubConnector(true)}
             />
 
             {/* Message Input */}
@@ -1897,6 +1946,26 @@ export const ConversationalAgent: React.FC = () => {
 
       {/* Sources Modal */}
       <SourcesModal />
+
+      {/* GitHub Integration Modals */}
+      {showGitHubConnector && (
+        <GitHubConnector
+          onSelectRepository={handleSelectRepository}
+          onClose={() => setShowGitHubConnector(false)}
+        />
+      )}
+
+      {showFeatureSelector && selectedRepo && (
+        <FeatureSelector
+          onConfirm={handleStartIntegration}
+          onClose={() => {
+            setShowFeatureSelector(false);
+            setSelectedRepo(null);
+          }}
+          repositoryName={selectedRepo.repo.name}
+          detectedLanguage={selectedRepo.repo.language}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { PaperClipIcon, XMarkIcon, DocumentTextIcon, CheckCircleIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PaperClipIcon, XMarkIcon, DocumentTextIcon, CheckCircleIcon, EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { documentService, DocumentMetadata } from '@/services/document.service';
 import { DocumentPreviewModal } from './DocumentPreviewModal';
 
@@ -7,19 +7,35 @@ interface DocumentUploadProps {
     onDocumentUploaded: (document: DocumentMetadata) => void;
     onDocumentRemoved: (documentId: string) => void;
     selectedDocuments: DocumentMetadata[];
+    onGitHubConnect?: () => void;
 }
 
 export const DocumentUpload: React.FC<DocumentUploadProps> = ({
     onDocumentUploaded,
     onDocumentRemoved,
-    selectedDocuments
+    selectedDocuments,
+    onGitHubConnect
 }) => {
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [uploadStage, setUploadStage] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [previewDocument, setPreviewDocument] = useState<{ id: string; name: string } | null>(null);
+    const [showMenu, setShowMenu] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Close menu when clicking outside
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -106,9 +122,9 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
                         Upload documents (PDF, MD, TXT, Code files) to ask questions about them. Max 10MB.
                     </p>
                 )}
-                
-                {/* Upload Button */}
-                <div className="flex items-center gap-2 ml-auto">
+
+                {/* Upload/Connect Menu */}
+                <div className="flex items-center gap-2 ml-auto relative" ref={menuRef}>
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -118,16 +134,70 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
                         className="hidden"
                         id="document-upload"
                     />
-                    <label
-                        htmlFor="document-upload"
-                        className={`btn btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 cursor-pointer ${uploading
-                            ? 'opacity-50 cursor-not-allowed'
-                            : 'hover:shadow-lg hover:scale-[1.02]'
-                            }`}
-                    >
-                        <PaperClipIcon className="w-5 h-5" />
-                        <span>{uploading ? 'Uploading...' : 'Attach Document'}</span>
-                    </label>
+
+                    {/* Plus Button with Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowMenu(!showMenu)}
+                            disabled={uploading}
+                            className={`btn btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 ${uploading ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:scale-[1.02]'
+                                }`}
+                        >
+                            <PlusIcon className="w-5 h-5" />
+                            <span>Add Context</span>
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {showMenu && (
+                            <div className="absolute bottom-full right-0 mb-2 w-64 bg-white dark:bg-dark-card border border-secondary-200 dark:border-secondary-700 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in">
+                                {/* Upload Document Option */}
+                                <button
+                                    onClick={() => {
+                                        setShowMenu(false);
+                                        fileInputRef.current?.click();
+                                    }}
+                                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors text-left border-b border-secondary-200 dark:border-secondary-700"
+                                >
+                                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                                        <PaperClipIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+                                            Upload Document
+                                        </p>
+                                        <p className="text-xs text-light-text-muted dark:text-dark-text-muted">
+                                            Add PDF, code files, or docs
+                                        </p>
+                                    </div>
+                                </button>
+
+                                {/* Connect GitHub Option */}
+                                {onGitHubConnect && (
+                                    <button
+                                        onClick={() => {
+                                            setShowMenu(false);
+                                            onGitHubConnect();
+                                        }}
+                                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors text-left"
+                                    >
+                                        <div className="p-2 bg-gradient-primary rounded-lg">
+                                            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+                                                Connect GitHub
+                                            </p>
+                                            <p className="text-xs text-light-text-muted dark:text-dark-text-muted">
+                                                Auto-integrate into repository
+                                            </p>
+                                        </div>
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
