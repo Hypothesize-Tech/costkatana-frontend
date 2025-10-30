@@ -24,18 +24,16 @@ interface ViewProjectModalProps {
   project: Project;
   onClose: () => void;
   onEdit: (project: Project) => void;
-  onManageMembers: (project: Project) => void;
 }
 
 export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
   project,
   onClose,
   onEdit,
-  onManageMembers,
 }) => {
   const { showNotification } = useNotification();
   const [activeTab, setActiveTab] = useState<
-    "overview" | "members" | "budget" | "settings"
+    "overview" | "budget" | "settings"
   >("overview");
   const [recalculating, setRecalculating] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -93,13 +91,12 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
 
   const tabs = [
     { id: "overview", label: "Overview", icon: FiBarChart },
-    { id: "members", label: "Members", icon: FiUsers },
     { id: "budget", label: "Budget", icon: FiDollarSign },
     { id: "settings", label: "Settings", icon: FiSettings },
   ];
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="" size="xl">
+    <Modal isOpen={true} onClose={onClose} title="" size="6xl">
       <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
         <div className="flex justify-between items-start p-8 border-b border-primary-200/30 glass rounded-t-xl">
@@ -163,10 +160,6 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
 
             <div className="flex gap-6 items-center text-sm text-gray-500 dark:text-gray-400">
               <div className="flex gap-2 items-center">
-                <FiUsers className="w-4 h-4" />
-                <span>{project.members?.length || 0} members</span>
-              </div>
-              <div className="flex gap-2 items-center">
                 <FiCalendar className="w-4 h-4" />
                 <span>Created {formatDate(project.createdAt)}</span>
               </div>
@@ -178,14 +171,6 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
           </div>
 
           <div className="flex gap-3 items-center ml-4">
-            <button
-              onClick={() => onManageMembers(project)}
-              className="flex gap-2 items-center px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg transition-all hover:bg-gray-50 hover:border-gray-400 dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
-              title="Manage members"
-            >
-              <FiUsers className="w-4 h-4" />
-              Members
-            </button>
             <button
               onClick={() => onEdit(project)}
               className="flex gap-2 items-center px-4 py-2 text-white bg-blue-600 rounded-lg transition-all hover:bg-blue-700"
@@ -310,72 +295,6 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {activeTab === "members" && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Project Members
-                </h3>
-                <button
-                  onClick={() => onManageMembers(project)}
-                  className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
-                >
-                  Manage Members
-                </button>
-              </div>
-
-              {project.members && project.members.length > 0 ? (
-                <div className="space-y-3">
-                  {project.members.map((member, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-4 rounded-lg border border-gray-200 dark:border-gray-700"
-                    >
-                      <div className="flex gap-3 items-center">
-                        <div className="flex justify-center items-center w-10 h-10 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                          <span className="font-medium text-blue-600 dark:text-blue-400">
-                            {member.email?.charAt(0).toUpperCase() ||
-                              (typeof member.userId === "object" &&
-                                member.userId.name?.charAt(0).toUpperCase()) ||
-                              "U"}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {member.email ||
-                              (typeof member.userId === "object" &&
-                                member.userId.name) ||
-                              (typeof member.userId === "string"
-                                ? member.userId
-                                : "Unknown User")}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {member.role}
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${member.role === "admin"
-                          ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                          }`}
-                      >
-                        {member.role}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="py-8 text-center">
-                  <FiUsers className="mx-auto mb-4 w-12 h-12 text-gray-400" />
-                  <p className="text-gray-500 dark:text-gray-400">
-                    No members added to this project yet
-                  </p>
-                </div>
-              )}
             </div>
           )}
 

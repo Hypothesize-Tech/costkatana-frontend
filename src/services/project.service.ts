@@ -90,41 +90,6 @@ export class ProjectService {
   }
 
   /**
-   * Add member to project
-   */
-  static async addMember(
-    projectId: string,
-    email: string,
-    role: string = "member",
-  ): Promise<void> {
-    await apiClient.post(`${this.baseUrl}/${projectId}/members`, {
-      email,
-      role,
-    });
-  }
-
-  /**
-   * Remove member from project
-   */
-  static async removeMember(projectId: string, userId: string): Promise<void> {
-    await apiClient.delete(`${this.baseUrl}/${projectId}/members/${userId}`);
-  }
-
-  /**
-   * Update project members (bulk update)
-   */
-  static async updateProjectMembers(
-    projectId: string,
-    members: any[],
-  ): Promise<Project> {
-    const response = await apiClient.put(
-      `${this.baseUrl}/${projectId}/members`,
-      { members },
-    );
-    return response.data.data;
-  }
-
-  /**
    * Get cost allocation
    */
   static async getCostAllocation(
@@ -311,19 +276,6 @@ export class ProjectService {
     console.warn(
       "acknowledgeAlert not implemented - would use alerts endpoint",
     );
-  }
-
-  static async updateMemberRole(
-    projectId: string,
-    userId: string,
-    role: string,
-  ): Promise<void> {
-    // Get current members and update the specific user's role
-    const project = await this.getProject(projectId);
-    const updatedMembers = project.members.map((member) =>
-      member.userId === userId ? { ...member, role } : member,
-    );
-    await this.updateProjectMembers(projectId, updatedMembers);
   }
 
   static async getProjectStats(): Promise<ProjectStats> {

@@ -3,7 +3,7 @@ export interface Project {
   name: string;
   description: string;
   owner: string;
-  members: ProjectMember[];
+  workspaceId: string;
   budget: ProjectBudget;
   spending: ProjectSpending;
   settings: ProjectSettings;
@@ -20,16 +20,6 @@ export interface Project {
     totalRequests: number;
     totalTokens: number;
   };
-}
-
-export interface ProjectMember {
-  userId: string | { _id: string; name: string; email: string };
-  email: string;
-  role: "owner" | "admin" | "member" | "viewer";
-  joinedAt: string;
-  permissions: string[];
-  status: "pending" | "active" | "inactive";
-  invitedAt: string;
 }
 
 export interface ProjectBudget {
@@ -88,11 +78,10 @@ export interface ProjectActivity {
   projectId: string;
   userId: string;
   type:
-    | "member_added"
-    | "member_removed"
     | "budget_updated"
     | "settings_changed"
-    | "spending_alert";
+    | "spending_alert"
+    | "api_request";
   description: string;
   metadata: any;
   createdAt: string;
@@ -109,7 +98,6 @@ export interface CreateProjectRequest {
       thresholds: number[];
     };
   };
-  members: string[];
   tags: string[];
   settings: {
     costOptimization: {
@@ -140,12 +128,6 @@ export interface ProjectDashboard {
   costTrends: {
     date: string;
     amount: number;
-  }[];
-  memberActivity: {
-    userId: string;
-    email: string;
-    lastActive: string;
-    totalSpent: number;
   }[];
 }
 

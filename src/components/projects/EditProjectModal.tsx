@@ -186,7 +186,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Edit Project" size="lg">
+    <Modal isOpen={true} onClose={onClose} title="Edit Project" size="4xl">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col h-full max-h-[90vh]"

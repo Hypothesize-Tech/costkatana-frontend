@@ -695,7 +695,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="" size="xl">
+    <Modal isOpen={true} onClose={onClose} title="" size="5xl">
       <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
         <div className="glass rounded-t-xl p-8 border-b border-primary-200/30">

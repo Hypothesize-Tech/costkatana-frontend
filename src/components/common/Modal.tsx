@@ -39,7 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
   footer
 }) => {
   // Use size as alias for maxWidth (backward compatibility)
-  const modalSize = size || maxWidth || '6xl';
+  const modalSize = size || maxWidth || '4xl';
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {

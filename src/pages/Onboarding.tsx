@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     CheckIcon,
     ArrowRightIcon,
@@ -52,7 +52,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [_onboardingData, setOnboardingData] = useState<any>(null);
 
     // Form states
     const [projectData, setProjectData] = useState<ProjectFormData>({
@@ -233,6 +232,20 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         try {
             setSubmitting(true);
             await OnboardingService.completeOnboarding();
+
+            // Update user in localStorage immediately to prevent race conditions
+            if (user) {
+                const updatedUser = {
+                    ...user,
+                    onboarding: {
+                        ...user.onboarding,
+                        completed: true,
+                        completedAt: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+            }
+
             showNotification('Welcome to Cost Katana! 🎉', 'success');
 
             // Call the completion callback
@@ -251,6 +264,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         try {
             setSubmitting(true);
             await OnboardingService.skipOnboarding();
+
+            if (user) {
+                const updatedUser = {
+                    ...user,
+                    onboarding: {
+                        ...user.onboarding,
+                        skipped: true,
+                        skippedAt: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+            }
+
             showNotification('Onboarding skipped. You can access it later from settings.', 'info');
 
             // Call the completion callback

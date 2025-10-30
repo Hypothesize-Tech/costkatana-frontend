@@ -154,7 +154,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create New Project">
+    <Modal isOpen={isOpen} onClose={onClose} title="Create New Project" size="4xl">
       <form onSubmit={handleSubmit} className="p-8 space-y-8">
         {/* Basic Information */}
         <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">

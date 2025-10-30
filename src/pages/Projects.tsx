@@ -15,7 +15,6 @@ import {
   CreateProjectModal,
   ViewProjectModal,
   EditProjectModal,
-  ProjectMembersModal,
 } from "../components/projects";
 import { useNotification } from "../contexts/NotificationContext";
 
@@ -29,7 +28,6 @@ const Projects: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showMembersModal, setShowMembersModal] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -90,21 +88,6 @@ const Projects: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating project:", error);
       showNotification(error.message || "Failed to update project", "error");
-      throw error; // Re-throw to let modal handle loading state
-    }
-  };
-
-  const handleUpdateMembers = async (projectId: string, members: any[]) => {
-    try {
-      await ProjectService.updateProjectMembers(projectId, members);
-      showNotification("Project members updated successfully!", "success");
-      loadProjects(); // Refresh the list
-    } catch (error: any) {
-      console.error("Error updating project members:", error);
-      showNotification(
-        error.message || "Failed to update project members",
-        "error",
-      );
       throw error; // Re-throw to let modal handle loading state
     }
   };
@@ -291,11 +274,6 @@ const Projects: React.FC = () => {
             setSelectedProject(project);
             setShowEditModal(true);
           }}
-          onManageMembers={(project) => {
-            setShowViewModal(false);
-            setSelectedProject(project);
-            setShowMembersModal(true);
-          }}
         />
       )}
 
@@ -310,17 +288,6 @@ const Projects: React.FC = () => {
         />
       )}
 
-      {showMembersModal && selectedProject && (
-        <ProjectMembersModal
-          project={selectedProject}
-          onClose={() => {
-            setShowMembersModal(false);
-            setSelectedProject(null);
-          }}
-          onUpdateMembers={handleUpdateMembers}
-        />
-      )}
-
       {/* Delete Confirmation Modal */}
       {deleteConfirmOpen && selectedProject && (
         <Modal
@@ -330,12 +297,22 @@ const Projects: React.FC = () => {
             setSelectedProject(null);
           }}
           title="Delete Project"
+          size="lg"
         >
           <div className="p-6">
-            <p className="mb-4 text-secondary-600 dark:text-secondary-300">
-              Are you sure you want to delete "{selectedProject.name}"? This
-              action cannot be undone and will remove all associated data.
-            </p>
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="text-red-800 dark:text-red-200 font-medium">
+                Are you sure you want to delete "{selectedProject.name}"?
+              </p>
+              <p className="mt-2 text-sm text-red-600 dark:text-red-300">
+                This action cannot be undone and will remove all associated data including:
+              </p>
+              <ul className="mt-2 ml-4 text-sm text-red-600 dark:text-red-300 list-disc">
+                <li>All project analytics and usage data</li>
+                <li>Budget and spending history</li>
+                <li>Project settings and configurations</li>
+              </ul>
+            </div>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => {

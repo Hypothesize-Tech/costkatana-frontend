@@ -43,7 +43,11 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
   };
 
   useEffect(() => {
-    loadProjects();
+    const timer = setTimeout(() => {
+      loadProjects();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const getSelectedProjectName = () => {

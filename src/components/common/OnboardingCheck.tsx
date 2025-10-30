@@ -15,6 +15,22 @@ export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fall
     const [needsOnboarding, setNeedsOnboarding] = useState<boolean | null>(null);
 
     useEffect(() => {
+        // Early check: if user has completed or skipped onboarding in localStorage, skip immediately
+        if (user) {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    if (parsedUser.onboarding?.completed || parsedUser.onboarding?.skipped) {
+                        setNeedsOnboarding(false);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error parsing stored user:', error);
+                }
+            }
+        }
+
         // Check if user needs onboarding based on their onboarding status and projects
         if (user && !projectsLoading) {
             // If user already has projects, skip onboarding regardless of onboarding status
