@@ -94,6 +94,7 @@ const navCategories: NavCategory[] = [
     label: 'Security & Compliance',
     items: [
       { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
+      { name: 'Integrations', href: '/integrations', icon: BellIcon, description: 'Connect Slack, Discord & webhooks' },
       { name: 'Webhooks', href: '/webhooks', icon: BellIcon, description: 'Configure webhooks for real-time notifications' },
       { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
       { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },

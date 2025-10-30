@@ -21,18 +21,21 @@ import SessionReplaySettings from '../components/settings/SessionReplaySettings'
 import { AccountClosure } from '../components/settings/AccountClosure';
 import { TeamManagement } from '../components/team/TeamManagement';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useNavigate } from 'react-router-dom';
+import { BellAlertIcon } from '@heroicons/react/24/outline';
 
-type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security' | 'session-replay' | 'team' | 'account';
+type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security' | 'session-replay' | 'team' | 'integrations' | 'account';
 
 export const Settings: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const { showNotification } = useNotifications();
+  const navigate = useNavigate();
 
   // Handle URL parameter to set active tab
   useEffect(() => {
     const tabParam = searchParams.get('tab') as SettingsTab;
-    if (tabParam && ['profile', 'api-keys', 'notifications', 'security', 'session-replay', 'team', 'account'].includes(tabParam)) {
+    if (tabParam && ['profile', 'api-keys', 'notifications', 'security', 'session-replay', 'team', 'integrations', 'account'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -92,6 +95,12 @@ export const Settings: React.FC = () => {
       name: 'Team',
       icon: UserGroupIcon,
       component: TeamManagement,
+    },
+    {
+      id: 'integrations' as const,
+      name: 'Integrations',
+      icon: BellAlertIcon,
+      component: () => null, // Rendered inline below
     },
     {
       id: 'account' as const,
@@ -162,6 +171,23 @@ export const Settings: React.FC = () => {
             )}
             {activeTab === 'team' && (
               <TeamManagement />
+            )}
+            {activeTab === 'integrations' && (
+              <div className="text-center py-8">
+                <BellAlertIcon className="w-16 h-16 mx-auto mb-4 text-primary-500" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Integrations
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  Manage your Slack, Discord, and webhook integrations
+                </p>
+                <button
+                  onClick={() => navigate('/integrations')}
+                  className="inline-flex items-center px-6 py-3 bg-gradient-primary text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300"
+                >
+                  Go to Integrations
+                </button>
+              </div>
             )}
             {activeTab === 'account' && (
               <AccountClosure />

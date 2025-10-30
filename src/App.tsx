@@ -46,6 +46,7 @@ import Projects from './pages/Projects';
 import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
+import { IntegrationsPage } from './pages/IntegrationsPage';
 import Pricing from './pages/Pricing';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
@@ -174,6 +175,10 @@ function AppContent() {
           <Route
             path="key-vault"
             element={<KeyVault />}
+          />
+          <Route
+            path="integrations"
+            element={<IntegrationsPage />}
           />
           <Route
             path="moderation"
