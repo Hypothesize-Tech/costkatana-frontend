@@ -170,7 +170,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 name: projectData.name,
                 description: projectData.description,
                 budget: projectData.budget,
-                members: [],
                 tags: [],
                 settings: {
                     costOptimization: {
