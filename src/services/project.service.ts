@@ -186,7 +186,6 @@ export class ProjectService {
           date: item.date,
           amount: item.cost,
         })) || [],
-      memberActivity: [], // Would be populated from member usage data
     };
   }
 
@@ -422,7 +421,6 @@ export class ProjectService {
           ),
         },
       },
-      members: originalProject.members.map((member) => member.email),
       tags: originalProject.tags,
       settings: {
         costOptimization: {

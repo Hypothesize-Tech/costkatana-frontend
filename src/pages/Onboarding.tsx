@@ -131,12 +131,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
             // Check if user has already completed some steps
             const completedSteps = user.onboarding.stepsCompleted || [];
-            steps.forEach(step => {
-                step.completed = completedSteps.includes(step.id);
-            });
 
             // Set current step based on completed steps
-            const lastCompletedIndex = steps.findIndex(step => !step.completed);
+            const lastCompletedIndex = steps.findIndex(step => !completedSteps.includes(step.id));
             setCurrentStep(lastCompletedIndex === -1 ? steps.length - 1 : lastCompletedIndex);
             setLoading(false);
         } else {
@@ -144,6 +141,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             setCurrentStep(0);
             setLoading(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.onboarding]);
 
     const handleNext = async () => {

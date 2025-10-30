@@ -137,9 +137,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               <FiUsers className="w-4 h-4 text-white" />
             </div>
             <p className="text-lg font-display font-bold gradient-text-secondary">
-              {project.members?.length || 0}
+              {project.tags?.length || 0}
             </p>
-            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Members</p>
+            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Tags</p>
           </div>
           <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl text-center">
             <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg mx-auto mb-2">
