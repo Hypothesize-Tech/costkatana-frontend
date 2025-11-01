@@ -5,30 +5,32 @@ import { usePopper } from 'react-popper';
 import {
   XMarkIcon,
   HomeIcon,
-  CircleStackIcon,
+  ChartBarIcon,
+  BoltIcon,
+  ServerIcon,
+  SignalIcon,
+  FilmIcon,
+  CpuChipIcon,
+  SparklesIcon,
+  BellIcon,
+  QueueListIcon,
   LightBulbIcon,
-  UserIcon,
+  CurrencyDollarIcon,
+  KeyIcon,
+  PuzzlePieceIcon,
+  WifiIcon,
+  ShieldCheckIcon,
+  ExclamationTriangleIcon,
+  BeakerIcon,
   FolderIcon,
   DocumentTextIcon,
-  BellIcon,
-  CogIcon,
-  CurrencyDollarIcon,
-  SparklesIcon,
-  BeakerIcon,
+  Cog6ToothIcon,
+  BanknotesIcon,
+  UserCircleIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
   ChevronDownIcon,
-  ServerIcon,
-  QueueListIcon,
-  KeyIcon,
-  AcademicCapIcon,
-  BoltIcon,
-  CpuChipIcon,
-  ShieldCheckIcon,
-  ShieldExclamationIcon,
-  RocketLaunchIcon,
-  BugAntIcon,
-  PlayCircleIcon,
+  LinkIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 
@@ -56,7 +58,7 @@ export type NavCategory = {
 };
 
 // ------------------------------
-// Grouped Navigation (Helicon-style)
+// Grouped Navigation (Enhanced Design)
 // ------------------------------
 const navCategories: NavCategory[] = [
   {
@@ -64,7 +66,7 @@ const navCategories: NavCategory[] = [
     label: 'Core',
     items: [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
-      { name: 'Usage', href: '/usage', icon: CircleStackIcon, description: 'Monitor your API usage' },
+      { name: 'Usage', href: '/usage', icon: ChartBarIcon, description: 'Monitor your API usage' },
       { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
     ],
   },
@@ -73,8 +75,8 @@ const navCategories: NavCategory[] = [
     label: 'Monitor',
     items: [
       { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
-      { name: 'Telemetry', href: '/telemetry', icon: ServerIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
-      { name: 'Sessions', href: '/sessions', icon: PlayCircleIcon, description: 'View session replays and debug AI traces' },
+      { name: 'Telemetry', href: '/telemetry', icon: SignalIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
+      { name: 'Sessions', href: '/sessions', icon: FilmIcon, description: 'View session replays and debug AI traces' },
       { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
       { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
       { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
@@ -86,7 +88,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
-      { name: 'Unexplained Costs', href: '/unexplained-costs', icon: CircleStackIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
+      { name: 'Unexplained Costs', href: '/unexplained-costs', icon: CurrencyDollarIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
     ],
   },
   {
@@ -94,10 +96,10 @@ const navCategories: NavCategory[] = [
     label: 'Security & Compliance',
     items: [
       { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
-      { name: 'Integrations', href: '/integrations', icon: BellIcon, description: 'Connect Slack, Discord & webhooks' },
-      { name: 'Webhooks', href: '/webhooks', icon: BellIcon, description: 'Configure webhooks for real-time notifications' },
+      { name: 'Integrations', href: '/integrations', icon: PuzzlePieceIcon, description: 'Connect Slack, Discord & webhooks' },
+      { name: 'Webhooks', href: '/webhooks', icon: WifiIcon, description: 'Configure webhooks for real-time notifications' },
       { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
-      { name: 'Security', href: '/security', icon: ShieldExclamationIcon, description: 'LLM security guardrails & threat analysis' },
+      { name: 'Security', href: '/security', icon: ExclamationTriangleIcon, description: 'LLM security guardrails & threat analysis' },
     ],
   },
   {
@@ -107,10 +109,10 @@ const navCategories: NavCategory[] = [
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
       { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
       { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
-      { name: 'Integration', href: '/integration', icon: CogIcon, description: 'Integration settings' },
-      { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon, description: 'View pricing plans' },
-      { name: 'Profile', href: '/profile', icon: UserIcon, description: 'User profile settings' },
-      { name: 'Settings', href: '/settings', icon: CogIcon, description: 'Application settings and preferences' },
+      { name: 'Integration', href: '/integration', icon: LinkIcon, description: 'Integration settings' },
+      { name: 'Pricing', href: '/pricing', icon: BanknotesIcon, description: 'View pricing plans' },
+      { name: 'Profile', href: '/profile', icon: UserCircleIcon, description: 'User profile settings' },
+      { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, description: 'Application settings and preferences' },
     ],
   },
 ];
@@ -177,17 +179,20 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
           ref={setPopperElement}
           style={styles.popper}
           {...attributes.popper}
-          className="z-[99999] px-4 py-3 text-sm font-medium text-white bg-gradient-dark-panel rounded-xl shadow-2xl pointer-events-none min-w-[200px] max-w-[300px] border border-primary-500/20 backdrop-blur-xl"
+          className="z-[99999] px-4 py-3 text-sm font-medium text-white bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl shadow-2xl pointer-events-none min-w-[200px] max-w-[300px] border border-[#06ec9e]/30 backdrop-blur-xl animate-fade-in"
         >
-          {content}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#06ec9e]/10 via-transparent to-[#06ec9e]/10 rounded-lg" />
+            <div className="relative">{content}</div>
+          </div>
           <div
             data-popper-arrow
-            className="absolute w-2 h-2 bg-gradient-to-br from-primary-500 to-secondary-500 transform rotate-45"
+            className="absolute w-3 h-3 bg-gradient-to-br from-[#06ec9e] to-[#009454] transform rotate-45 shadow-lg"
             style={{
-              ...(placement === 'right' && { left: '-4px' }),
-              ...(placement === 'left' && { right: '-4px' }),
-              ...(placement === 'top' && { bottom: '-4px' }),
-              ...(placement === 'bottom' && { top: '-4px' }),
+              ...(placement === 'right' && { left: '-6px' }),
+              ...(placement === 'left' && { right: '-6px' }),
+              ...(placement === 'top' && { bottom: '-6px' }),
+              ...(placement === 'bottom' && { top: '-6px' }),
             }}
           />
         </div>
@@ -252,29 +257,57 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
 
     return (
-      <li key={item.name}>
+      <li key={item.name} className="relative">
         <Tooltip content={tooltipContent} show={collapsed} placement="right">
           <NavLink
             to={item.href}
             onClick={onClose}
             className={cn(
+              'relative flex items-center rounded-xl group transition-all duration-300',
+              'before:absolute before:inset-0 before:rounded-xl before:transition-all before:duration-300',
+              collapsed ? 'mx-2.5 justify-center p-3' : 'gap-x-3 px-4 py-3',
               isActive
-                ? 'bg-gradient-primary text-white shadow-lg glow-primary nav-item active'
-                : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 nav-item',
-              'flex items-center p-3 text-sm font-display font-semibold leading-6 rounded-xl group transition-all duration-300',
-              collapsed ? 'mx-2.5 justify-center' : 'gap-x-3'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white shadow-xl shadow-[#06ec9e]/30'
+                : 'text-secondary-900 dark:text-white hover:text-[#06ec9e] dark:hover:text-emerald-400 hover:bg-primary-500/10 dark:hover:bg-primary-500/20',
+              isActive && 'before:bg-gradient-to-r before:from-[#06ec9e]/20 before:via-emerald-400/20 before:to-[#009454]/20 before:blur-sm',
+              !isActive && 'hover:before:bg-gradient-to-r hover:before:from-[#06ec9e]/5 hover:before:via-emerald-500/5 hover:before:to-[#009454]/5'
             )}
           >
-            <item.icon
-              className={cn(
+            {/* Active indicator */}
+            {isActive && !collapsed && (
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-[#06ec9e] via-emerald-500 to-[#009454] rounded-r-full shadow-lg shadow-[#06ec9e]/50" />
+            )}
+
+            <div className={cn(
+              'relative flex items-center justify-center rounded-lg transition-all duration-300',
+              isActive
+                ? 'bg-white/10 backdrop-blur-sm'
+                : 'group-hover:bg-primary-500/10 dark:group-hover:bg-primary-500/20',
+              collapsed ? 'w-10 h-10' : 'w-9 h-9'
+            )}>
+              <item.icon
+                className={cn(
+                  'shrink-0 transition-all duration-300',
+                  isActive
+                    ? 'text-white scale-110'
+                    : 'text-secondary-700 dark:text-white/70 group-hover:text-[#06ec9e] dark:group-hover:text-emerald-400 group-hover:scale-110',
+                  collapsed ? 'w-5 h-5' : 'w-5 h-5'
+                )}
+                aria-hidden="true"
+              />
+            </div>
+
+            {!collapsed && (
+              <span className={cn(
+                'truncate font-medium transition-all duration-300',
                 isActive
-                  ? 'text-white'
-                  : 'text-light-text-muted dark:text-dark-text-muted group-hover:text-primary-500',
-                'w-6 h-6 shrink-0 transition-all duration-300'
-              )}
-              aria-hidden="true"
-            />
-            {!collapsed && <span className="truncate">{item.name}</span>}
+                  ? 'text-white font-semibold'
+                  : 'text-secondary-900 dark:text-white group-hover:text-[#06ec9e] dark:group-hover:text-emerald-400',
+                'text-sm'
+              )}>
+                {item.name}
+              </span>
+            )}
           </NavLink>
         </Tooltip>
       </li>
@@ -286,15 +319,33 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       type="button"
       onClick={() => toggleCat(id)}
       className={cn(
-        'w-full flex items-center justify-between text-xs font-display font-bold uppercase tracking-wider',
-        'text-light-text-muted dark:text-dark-text-muted px-3 py-2 select-none rounded-lg',
-        'hover:text-primary-500 hover:bg-primary-500/5 transition-all duration-300'
+        'w-full flex items-center justify-between px-3 py-2.5 select-none rounded-lg',
+        'text-xs font-bold uppercase tracking-widest',
+        'text-secondary-600 dark:text-white/60',
+        'hover:text-[#06ec9e] dark:hover:text-emerald-400',
+        'hover:bg-primary-500/5 dark:hover:bg-primary-500/10',
+        'transition-all duration-300',
+        'border border-transparent hover:border-primary-500/20',
+        expanded[id] && 'bg-primary-500/5 dark:bg-primary-500/10 text-[#06ec9e] dark:text-emerald-400 border-primary-500/30'
       )}
       aria-expanded={!!expanded[id]}
     >
-      <span>{label}</span>
+      <span className="flex items-center gap-2">
+        <div className={cn(
+          'w-1.5 h-1.5 rounded-full transition-all duration-300',
+          expanded[id]
+            ? 'bg-[#06ec9e] shadow-lg shadow-[#06ec9e]/50'
+            : 'bg-secondary-400 dark:bg-white/30'
+        )} />
+        <span>{label}</span>
+      </span>
       <ChevronDownIcon
-        className={cn('w-4 h-4 transition-transform duration-200', expanded[id] ? 'rotate-0' : '-rotate-90')}
+        className={cn(
+          'w-4 h-4 transition-all duration-300',
+          expanded[id]
+            ? 'rotate-0 text-[#06ec9e] dark:text-emerald-400'
+            : '-rotate-90 text-secondary-500 dark:text-white/40'
+        )}
       />
     </button>
   );
@@ -303,16 +354,20 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
     <nav className="flex relative flex-col flex-1">
       {/* When collapsed, show a floating expand toggle at top */}
       {collapsed && (
-        <div className="absolute top-0 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
+        <div className="absolute top-4 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
           <Tooltip content="Expand sidebar" show placement="right">
             <button
               onClick={onToggleCollapse}
               className={cn(
-                'p-3 text-light-text-secondary dark:text-dark-text-secondary rounded-xl hover:text-primary-500 glass',
-                'hover:bg-primary-500/20 hover:scale-110',
+                'p-2.5 rounded-xl glass backdrop-blur-md',
+                'border border-primary-500/30 dark:border-primary-500/40',
+                'bg-gradient-light-panel dark:bg-gradient-dark-panel',
+                'text-[#06ec9e] hover:text-[#06ec9e]/80',
+                'hover:bg-primary-500/20 dark:hover:bg-primary-500/30',
+                'hover:scale-110 hover:shadow-lg hover:shadow-[#06ec9e]/30',
                 'flex-shrink-0 transition-all duration-300',
-                'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50',
-                'shadow-lg border border-primary-200/30'
+                'focus:outline-none focus:ring-2 focus:ring-[#06ec9e] focus:ring-opacity-50',
+                'shadow-md'
               )}
               aria-label="Expand sidebar"
             >
@@ -322,12 +377,12 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
         </div>
       )}
 
-      <ul role="list" className={cn('flex flex-col flex-1 gap-y-6', collapsed ? 'pt-14' : 'pt-4')}>
-        {navCategories.map((cat) => (
-          <li key={cat.id}>
+      <ul role="list" className={cn('flex flex-col flex-1 gap-y-5', collapsed ? 'pt-16' : 'pt-6')}>
+        {navCategories.map((cat, index) => (
+          <li key={cat.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
             {/* Category header hidden when collapsed */}
             {!collapsed && (
-              <div className="flex justify-between items-center px-1">
+              <div className="flex justify-between items-center px-1 mb-2">
                 <CategoryHeader id={cat.id} label={cat.label} />
               </div>
             )}
@@ -336,22 +391,33 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             <ul
               role="list"
               className={cn(
-                'mt-2 space-y-1 -mx-2',
-                collapsed ? '' : 'px-1',
+                'space-y-1.5',
+                collapsed ? 'mx-1' : 'px-1',
                 collapsed
                   ? ''
                   : expanded[cat.id]
-                    ? 'max-h-[640px] transition-[max-height] duration-300 ease-in-out'
-                    : 'max-h-0 overflow-hidden transition-[max-height] duration-300 ease-in-out'
+                    ? 'max-h-[800px] transition-all duration-500 ease-out opacity-100'
+                    : 'max-h-0 overflow-hidden transition-all duration-500 ease-in opacity-0'
               )}
             >
-              {cat.items.map((item) => renderItem(item, collapsed))}
+              {cat.items.map((item, itemIndex) => (
+                <div
+                  key={item.name}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${(index * 50) + (itemIndex * 30)}ms` }}
+                >
+                  {renderItem(item, collapsed)}
+                </div>
+              ))}
             </ul>
 
             {/* Divider between categories */}
-            {collapsed ? (
-              <div className="mx-2 my-4 border-t border-primary-200/30" />
-            ) : null}
+            {collapsed && index < navCategories.length - 1 && (
+              <div className="mx-3 my-3 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent" />
+            )}
+            {!collapsed && index < navCategories.length - 1 && (
+              <div className="mx-1 my-2 h-px bg-gradient-to-r from-transparent via-primary-200/20 dark:via-primary-500/20 to-transparent" />
+            )}
           </li>
         ))}
       </ul>
@@ -372,7 +438,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-dark-bg/90 backdrop-blur-sm" />
+            <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md" />
           </Transition.Child>
 
           <div className="flex fixed inset-0">
@@ -403,10 +469,12 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                   </div>
                 </Transition.Child>
 
-                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 pb-2 glass grow light:bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <div className="flex items-center h-16 shrink-0">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-primary shadow-lg glow-primary">
-                      <span className="text-lg font-display font-bold text-white">CK</span>
+                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 pb-6 glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel grow">
+                  <div className="flex items-center h-16 shrink-0 mt-4">
+                    <div className="relative flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-xl shadow-[#06ec9e]/30">
+                      <span className="text-xl font-display font-bold text-white">CK</span>
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
+                      <div className="absolute -inset-0.5 bg-gradient-to-br from-[#06ec9e] to-[#009454] rounded-xl blur opacity-30 animate-pulse" />
                     </div>
                   </div>
                   {sidebarContent(false)}
@@ -426,20 +494,29 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       >
         <div
           className={cn(
-            'flex relative flex-col gap-y-5 glass border-r border-primary-200/30 transition-all duration-300 grow light:bg-gradient-light-panel dark:bg-gradient-dark-panel backdrop-blur-xl',
+            'flex relative flex-col transition-all duration-300 grow',
+            'glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20',
+            'bg-gradient-light-panel dark:bg-gradient-dark-panel',
+            'shadow-xl',
             isCollapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-6'
           )}
         >
           {/* Collapse button (anchored next to the first item when expanded) */}
           {!isCollapsed && (
-            <div className="absolute right-2 top-3">
+            <div className="absolute right-3 top-4 z-20">
               <button
                 onClick={onToggleCollapse}
                 className={cn(
-                  'p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 glass',
-                  'hover:bg-primary-500/20 hover:scale-110',
+                  'p-2 rounded-xl glass backdrop-blur-md',
+                  'border border-primary-200/30 dark:border-primary-500/20',
+                  'bg-gradient-light-panel dark:bg-gradient-dark-panel',
+                  'text-secondary-900 dark:text-white',
+                  'hover:text-[#06ec9e] dark:hover:text-emerald-400',
+                  'hover:bg-primary-500/10 dark:hover:bg-primary-500/20',
+                  'hover:border-primary-300/50 dark:hover:border-primary-500/30',
+                  'hover:scale-110 hover:shadow-lg hover:shadow-[#06ec9e]/20',
                   'transition-all duration-300 flex-shrink-0',
-                  'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50'
+                  'focus:outline-none focus:ring-2 focus:ring-[#06ec9e] focus:ring-opacity-50'
                 )}
                 aria-label="Collapse sidebar"
               >
@@ -448,7 +525,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             </div>
           )}
 
-          <div className="flex-1 pt-4">{sidebarContent(isCollapsed)}</div>
+          <div className="flex-1 pt-2">{sidebarContent(isCollapsed)}</div>
         </div>
       </div>
     </>
