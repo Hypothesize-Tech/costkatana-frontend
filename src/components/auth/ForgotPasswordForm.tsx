@@ -70,7 +70,10 @@ export const ForgotPasswordForm = () => {
         </p>
 
         <div>
-          <Link to="/login" className="btn-primary">
+          <Link
+            to="/login"
+            className="inline-flex items-center justify-center w-full py-3.5 px-6 rounded-xl font-display font-semibold text-base bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+          >
             Back to login
           </Link>
         </div>
@@ -122,9 +125,16 @@ export const ForgotPasswordForm = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="btn-primary w-full"
+          className="w-full py-3.5 px-6 rounded-xl font-display font-semibold text-base bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
         >
-          {isLoading ? "Sending..." : "Send reset instructions"}
+          {isLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Sending...</span>
+            </>
+          ) : (
+            <span>Send reset instructions</span>
+          )}
         </button>
       </div>
 

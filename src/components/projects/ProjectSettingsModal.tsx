@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  FiSettings,
-  FiDollarSign,
-  FiShield,
-  FiUsers,
-  FiAlertTriangle,
-  FiSave,
-  FiX,
-  FiInfo,
-  FiToggleLeft,
-  FiToggleRight,
-  FiPlus,
-  FiTrash2,
-} from "react-icons/fi";
+  Cog6ToothIcon,
+  CurrencyDollarIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  ExclamationTriangleIcon,
+  DocumentArrowDownIcon,
+  InformationCircleIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { Modal } from "../common/Modal";
 import { Project } from "../../types/project.types";
 
@@ -231,11 +229,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
   };
 
   const tabs = [
-    { id: "budget", label: "Budget & Alerts", icon: FiDollarSign },
-    { id: "security", label: "Security", icon: FiShield },
-    { id: "features", label: "Features", icon: FiSettings },
-    { id: "notifications", label: "Notifications", icon: FiAlertTriangle },
-    { id: "advanced", label: "Advanced", icon: FiUsers },
+    { id: "budget", label: "Budget & Alerts", icon: CurrencyDollarIcon },
+    { id: "security", label: "Security", icon: ShieldCheckIcon },
+    { id: "features", label: "Features", icon: Cog6ToothIcon },
+    { id: "notifications", label: "Notifications", icon: ExclamationTriangleIcon },
+    { id: "advanced", label: "Advanced", icon: UserGroupIcon },
   ];
 
   const renderTabContent = () => {
@@ -305,9 +303,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                 </h3>
                 <button
                   onClick={addAlert}
-                  className="btn-secondary"
+                  className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <PlusIcon className="w-4 h-4" />
                   Add Alert
                 </button>
               </div>
@@ -360,9 +358,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                       <div className="flex items-end">
                         <button
                           onClick={() => removeAlert(index)}
-                          className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:bg-danger-900/20 transition-all duration-200 hover:scale-110"
+                          className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                         >
-                          <FiTrash2 className="w-4 h-4" />
+                          <TrashIcon className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -464,14 +462,15 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                   </div>
                   <button
                     onClick={() => handleInputChange(["features", key], !value)}
-                    className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${value ? "text-primary-600 bg-gradient-primary/20" : "text-light-text-secondary dark:text-dark-text-secondary"
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${value ? "bg-gradient-primary" : "bg-secondary-300 dark:bg-secondary-600"
                       }`}
+                    role="switch"
+                    aria-checked={value}
                   >
-                    {value ? (
-                      <FiToggleRight className="w-8 h-8" />
-                    ) : (
-                      <FiToggleLeft className="w-8 h-8" />
-                    )}
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${value ? "translate-x-5" : "translate-x-0"
+                        }`}
+                    />
                   </button>
                 </div>
               </div>
@@ -483,14 +482,14 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         return (
           <div className="space-y-6">
             {Object.entries(settings.notifications).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
+              <div key={key} className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                  <h3 className="text-sm font-display font-semibold text-secondary-900 dark:text-white">
                     {key
                       .replace(/([A-Z])/g, " $1")
                       .replace(/^./, (str) => str.toUpperCase())}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm font-body text-secondary-600 dark:text-secondary-300 mt-1">
                     {getNotificationDescription(key)}
                   </p>
                 </div>
@@ -498,14 +497,15 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                   onClick={() =>
                     handleInputChange(["notifications", key], !value)
                   }
-                  className={`p-1 rounded-full transition-colors ${value ? "text-blue-600" : "text-gray-400"
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${value ? "bg-gradient-primary" : "bg-secondary-300 dark:bg-secondary-600"
                     }`}
+                  role="switch"
+                  aria-checked={value}
                 >
-                  {value ? (
-                    <FiToggleRight className="w-6 h-6" />
-                  ) : (
-                    <FiToggleLeft className="w-6 h-6" />
-                  )}
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${value ? "translate-x-5" : "translate-x-0"
+                      }`}
+                  />
                 </button>
               </div>
             ))}
@@ -574,14 +574,14 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
 
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <h3 className="text-lg font-display font-bold gradient-text-primary">
                   Custom Fields
                 </h3>
                 <button
                   onClick={addCustomField}
-                  className="flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg dark:hover:bg-blue-900/20"
+                  className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <PlusIcon className="w-4 h-4" />
                   Add Field
                 </button>
               </div>
@@ -589,11 +589,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                 {settings.advanced.customFields.map((field, index) => (
                   <div
                     key={index}
-                    className="p-4 border border-gray-200 rounded-lg dark:border-gray-600"
+                    className="glass p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block mb-2 font-display font-medium text-secondary-900 dark:text-white">
                           Field Name
                         </label>
                         <input
@@ -607,11 +607,11 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                               e.target.value,
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="input"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="block mb-2 font-display font-medium text-secondary-900 dark:text-white">
                           Type
                         </label>
                         <select
@@ -624,7 +624,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                               e.target.value,
                             )
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="input"
                         >
                           <option value="text">Text</option>
                           <option value="number">Number</option>
@@ -632,7 +632,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                         </select>
                       </div>
                       <div className="flex items-center">
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={field.required}
@@ -644,9 +644,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                                 e.target.checked,
                               )
                             }
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
                           />
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                          <span className="text-sm font-body text-secondary-900 dark:text-white">
                             Required
                           </span>
                         </label>
@@ -654,9 +654,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                       <div className="flex items-end">
                         <button
                           onClick={() => removeCustomField(index)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg dark:hover:bg-red-900/20"
+                          className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                         >
-                          <FiTrash2 className="w-4 h-4" />
+                          <TrashIcon className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -702,7 +702,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <FiSettings className="w-6 h-6 text-white" />
+                <Cog6ToothIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h2 className="text-2xl font-display font-bold gradient-text-primary">
@@ -715,9 +715,9 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="btn-icon-secondary"
+              className="p-2 rounded-xl text-secondary-600 dark:text-secondary-300 hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
             >
-              <FiX className="w-5 h-5" />
+              <XMarkIcon className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -745,23 +745,23 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         {/* Footer */}
         <div className="glass rounded-b-xl p-6 border-t border-primary-200/30">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
-              <FiInfo className="w-4 h-4" />
+            <div className="flex items-center gap-2 font-body text-secondary-600 dark:text-secondary-300">
+              <InformationCircleIcon className="w-4 h-4" />
               <span>Changes will be applied immediately</span>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="btn-secondary"
+                className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={!hasChanges || loading}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
               >
-                <FiSave className="w-4 h-4" />
+                <DocumentArrowDownIcon className="w-4 h-4" />
                 {loading ? "Saving..." : "Save Changes"}
               </button>
             </div>

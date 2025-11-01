@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { integrationService } from '../services/integration.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { IntegrationCard } from '../components/integrations/IntegrationCard';
 import { SlackIntegrationSetup } from '../components/integrations/SlackIntegrationSetup';
 import { DiscordIntegrationSetup } from '../components/integrations/DiscordIntegrationSetup';
 import { WebhookIntegrationSetup } from '../components/integrations/WebhookIntegrationSetup';
 import { IntegrationLogs } from '../components/integrations/IntegrationLogs';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import {
+    PlusIcon,
+    XMarkIcon,
+    Cog6ToothIcon
+} from '@heroicons/react/24/outline';
+import {
+    CheckCircleIcon as CheckCircleSolidIcon
+} from '@heroicons/react/24/solid';
 import GitHubConnector from '../components/chat/GitHubConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
-import githubService, { GitHubRepository } from '../services/github.service';
+import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
 
 type SetupModal = 'slack' | 'discord' | 'webhook' | 'github' | null;
 
 export const IntegrationsPage: React.FC = () => {
+    const navigate = useNavigate();
     const [setupModal, setSetupModal] = useState<SetupModal>(null);
     const [showLogs, setShowLogs] = useState(false);
     const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
     const [showFeatureSelector, setShowFeatureSelector] = useState(false);
+    const [githubConnections, setGithubConnections] = useState<GitHubConnection[]>([]);
+    const [githubIntegrations, setGithubIntegrations] = useState<Array<{ _id: string; repositoryName: string; status: string }>>([]);
 
     const { data: integrationsData, isLoading, error, refetch } = useQuery(
         ['integrations'],
@@ -33,6 +43,23 @@ export const IntegrationsPage: React.FC = () => {
     );
 
     const integrations = integrationsData?.data || [];
+
+    // Load GitHub connections and integrations
+    useEffect(() => {
+        const loadGitHubData = async () => {
+            try {
+                const [connections, gitIntegrations] = await Promise.all([
+                    githubService.listConnections(),
+                    githubService.listIntegrations()
+                ]);
+                setGithubConnections(connections);
+                setGithubIntegrations(gitIntegrations);
+            } catch (error) {
+                console.error('Failed to load GitHub data:', error);
+            }
+        };
+        loadGitHubData();
+    }, []);
 
     const handleSetupComplete = () => {
         setSetupModal(null);
@@ -64,10 +91,55 @@ export const IntegrationsPage: React.FC = () => {
             setShowFeatureSelector(false);
             setSelectedRepo(null);
             refetch();
+            // Reload GitHub data
+            const [connections, gitIntegrations] = await Promise.all([
+                githubService.listConnections(),
+                githubService.listIntegrations()
+            ]);
+            setGithubConnections(connections);
+            setGithubIntegrations(gitIntegrations);
         } catch (error) {
             console.error('Failed to start integration:', error);
         }
     };
+
+    const handleDisconnectGitHub = async (connectionId: string) => {
+        if (window.confirm('Are you sure you want to disconnect GitHub? This will remove all your GitHub connections and integrations.')) {
+            try {
+                await githubService.disconnectConnection(connectionId);
+                const [connections, gitIntegrations] = await Promise.all([
+                    githubService.listConnections(),
+                    githubService.listIntegrations()
+                ]);
+                setGithubConnections(connections);
+                setGithubIntegrations(gitIntegrations);
+            } catch (error) {
+                console.error('Failed to disconnect GitHub:', error);
+            }
+        }
+    };
+
+    // Check if an integration type is connected
+    const isIntegrationConnected = (type: string): boolean => {
+        if (type === 'github') {
+            return githubConnections.some(conn => conn.isActive);
+        }
+
+        // For other integrations, check if there's an active integration
+        return integrations.some(integ => {
+            if (type === 'slack') {
+                return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
+            }
+            if (type === 'discord') {
+                return integ.type === 'discord_webhook' || integ.type === 'discord_oauth';
+            }
+            if (type === 'webhook') {
+                return integ.type === 'custom_webhook';
+            }
+            return false;
+        });
+    };
+
 
     const availableIntegrations = [
         {
@@ -166,54 +238,168 @@ export const IntegrationsPage: React.FC = () => {
                                     </div>
                                 )}
 
-                                {/* Existing Integrations */}
-                                {integrations.length > 0 && (
-                                    <div className="mb-8">
-                                        <h2 className="text-2xl font-display font-bold gradient-text-primary mb-6">Your Integrations</h2>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {integrations.map((integration) => (
-                                                <IntegrationCard
-                                                    key={integration.id}
-                                                    integration={integration}
-                                                    onUpdate={refetch}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Available Integrations */}
+                                {/* Unified Integrations List */}
                                 <div>
-                                    <h2 className="text-2xl font-display font-bold gradient-text-primary mb-6">Add New Integration</h2>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-display font-bold gradient-text-primary">Integrations</h2>
+                                        <span className="px-3 py-1 bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700 rounded-full text-sm font-display font-semibold">
+                                            {integrations.length + (githubConnections.filter(c => c.isActive).length)} Connected
+                                        </span>
+                                    </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {availableIntegrations.map((integration) => (
-                                            <div
-                                                key={integration.type}
-                                                onClick={() => setSetupModal(integration.type)}
-                                                className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300 hover:border-primary-300/50"
-                                            >
-                                                <div className="flex flex-col items-center text-center">
-                                                    <div
-                                                        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg"
-                                                        style={{ backgroundColor: `${integration.color}20` }}
-                                                    >
-                                                        <div style={{ color: integration.color, width: '32px', height: '32px' }}>
-                                                            {integration.icon}
+                                        {availableIntegrations.map((integration) => {
+                                            const isConnected = isIntegrationConnected(integration.type);
+
+                                            // Get GitHub connection details if connected
+                                            const githubConnection = isConnected && integration.type === 'github'
+                                                ? githubConnections.find(c => c.isActive)
+                                                : null;
+
+                                            // Get regular integrations for this type
+                                            const regularIntegrations = integrations.filter(integ => {
+                                                if (integration.type === 'slack') return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
+                                                if (integration.type === 'discord') return integ.type === 'discord_webhook' || integ.type === 'discord_oauth';
+                                                if (integration.type === 'webhook') return integ.type === 'custom_webhook';
+                                                return false;
+                                            });
+
+                                            return (
+                                                <div
+                                                    key={integration.type}
+                                                    className={`glass rounded-xl border ${isConnected
+                                                        ? 'border-success-200/50 dark:border-success-500/30'
+                                                        : 'border-primary-200/30 dark:border-primary-500/20'
+                                                        } shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:shadow-xl transition-all duration-300 flex flex-col h-full`}
+                                                >
+                                                    {/* Header */}
+                                                    <div className="flex items-start justify-between mb-4">
+                                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                            <div
+                                                                className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"
+                                                                style={{ backgroundColor: `${integration.color}20` }}
+                                                            >
+                                                                <div style={{ color: integration.color, width: '24px', height: '24px' }}>
+                                                                    {integration.icon}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <h3 className="text-lg font-display font-bold text-secondary-900 dark:text-white mb-1 truncate">
+                                                                    {integration.name}
+                                                                </h3>
+                                                                {githubConnection && (
+                                                                    <p className="text-sm text-secondary-600 dark:text-secondary-300 truncate">
+                                                                        @{githubConnection.githubUsername}
+                                                                    </p>
+                                                                )}
+                                                                {regularIntegrations.length > 0 && !githubConnection && (
+                                                                    <p className="text-xs text-secondary-500 dark:text-secondary-400">
+                                                                        {regularIntegrations.length} {regularIntegrations.length === 1 ? 'integration' : 'integrations'}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                            {isConnected && (
+                                                                <span className="px-2.5 py-1 bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700 rounded-full text-xs font-display font-semibold flex items-center gap-1 flex-shrink-0">
+                                                                    <CheckCircleSolidIcon className="w-3.5 h-3.5" />
+                                                                    Connected
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     </div>
-                                                    <h3 className="text-xl font-display font-semibold text-gray-900 dark:text-white mb-2">
-                                                        {integration.name}
-                                                    </h3>
-                                                    <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4">
+
+                                                    {/* Description */}
+                                                    <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4 font-body flex-grow">
                                                         {integration.description}
                                                     </p>
-                                                    <button className="w-full px-4 py-2 bg-gradient-primary text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center">
-                                                        <PlusIcon className="w-5 h-5 mr-2" />
-                                                        Connect
-                                                    </button>
+
+                                                    {/* GitHub Specific Info */}
+                                                    {isConnected && githubConnection && (
+                                                        <div className="mb-4 p-3 glass rounded-lg border border-primary-200/20 dark:border-primary-500/10">
+                                                            <p className="text-xs text-secondary-500 dark:text-secondary-400 font-medium">
+                                                                {githubConnection.repositories?.length || 0} {githubConnection.repositories?.length === 1 ? 'Repository' : 'Repositories'}
+                                                                {githubIntegrations.length > 0 && (
+                                                                    <> • {githubIntegrations.length} {githubIntegrations.length === 1 ? 'Integration' : 'Integrations'}</>
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Spacer to push buttons to bottom */}
+                                                    {!isConnected || !githubConnection ? <div className="flex-grow"></div> : null}
+
+                                                    {/* Actions - Always at bottom */}
+                                                    <div className="mt-auto">
+                                                        {isConnected ? (
+                                                            <div className="flex gap-2">
+                                                                {integration.type === 'github' ? (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => navigate('/github')}
+                                                                            className="flex-1 px-3 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm"
+                                                                        >
+                                                                            <Cog6ToothIcon className="w-4 h-4" />
+                                                                            Manage
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                if (githubConnection && window.confirm('Are you sure you want to disconnect GitHub?')) {
+                                                                                    await handleDisconnectGitHub(githubConnection._id);
+                                                                                }
+                                                                            }}
+                                                                            className="px-3 py-2.5 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md"
+                                                                            title="Disconnect GitHub"
+                                                                        >
+                                                                            <XMarkIcon className="w-4 h-4" />
+                                                                        </button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                // For regular integrations, show management or add more
+                                                                                setSetupModal(integration.type);
+                                                                            }}
+                                                                            className="flex-1 px-3 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm"
+                                                                        >
+                                                                            <Cog6ToothIcon className="w-4 h-4" />
+                                                                            {regularIntegrations.length > 1 ? 'Manage' : 'View'}
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                if (window.confirm(`Are you sure you want to disconnect all ${integration.name} integrations?`)) {
+                                                                                    try {
+                                                                                        for (const integ of regularIntegrations) {
+                                                                                            await integrationService.deleteIntegration(integ.id);
+                                                                                        }
+                                                                                        refetch();
+                                                                                    } catch (error) {
+                                                                                        console.error('Failed to delete integrations:', error);
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            className="px-3 py-2.5 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md"
+                                                                            title={`Disconnect ${integration.name}`}
+                                                                        >
+                                                                            <XMarkIcon className="w-4 h-4" />
+                                                                        </button>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSetupModal(integration.type);
+                                                                }}
+                                                                className="w-full px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2"
+                                                            >
+                                                                <PlusIcon className="w-5 h-5" />
+                                                                Connect
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </>

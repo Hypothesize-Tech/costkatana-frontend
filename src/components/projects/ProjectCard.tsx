@@ -1,13 +1,13 @@
 import React from "react";
 import {
-  FiUsers,
-  FiDollarSign,
-  FiTrendingUp,
-  FiEdit3,
-  FiTrash2,
-  FiEye,
-  FiAlertCircle,
-} from "react-icons/fi";
+  UserGroupIcon,
+  CurrencyDollarIcon,
+  ArrowTrendingUpIcon,
+  PencilIcon,
+  TrashIcon,
+  EyeIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 import { Project } from "../../types/project.types";
 
 interface ProjectCardProps {
@@ -80,24 +80,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="flex gap-2 ml-4">
             <button
               onClick={onView}
-              className="glass p-2 rounded-lg border border-primary-200/30 text-primary-600 dark:text-primary-400 hover:scale-110 transition-all duration-200"
+              className="p-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
               title="View project"
             >
-              <FiEye className="w-4 h-4" />
+              <EyeIcon className="w-5 h-5" />
             </button>
             <button
               onClick={onEdit}
-              className="glass p-2 rounded-lg border border-success-200/30 text-success-600 dark:text-success-400 hover:scale-110 transition-all duration-200"
+              className="p-2.5 glass border border-success-200/30 dark:border-success-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-success-600 dark:text-success-400 rounded-lg hover:bg-success-500/10 dark:hover:bg-success-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
               title="Edit project"
             >
-              <FiEdit3 className="w-4 h-4" />
+              <PencilIcon className="w-5 h-5" />
             </button>
             <button
               onClick={onDelete}
-              className="glass p-2 rounded-lg border border-danger-200/30 text-danger-600 dark:text-danger-400 hover:scale-110 transition-all duration-200"
+              className="p-2.5 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
               title="Delete project"
             >
-              <FiTrash2 className="w-4 h-4" />
+              <TrashIcon className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -113,7 +113,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             >
               {budgetUsagePercentage.toFixed(0)}%
               {isOverBudget && (
-                <FiAlertCircle className="inline ml-1 w-3 h-3" />
+                <ExclamationTriangleIcon className="inline ml-1 w-3 h-3" />
               )}
             </span>
           </div>
@@ -132,32 +132,32 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="glass rounded-lg p-4 border border-secondary-200/30 shadow-lg backdrop-blur-xl text-center">
+          <div className="glass rounded-lg p-4 border border-secondary-200/30 dark:border-secondary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
             <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg mx-auto mb-2">
-              <FiUsers className="w-4 h-4 text-white" />
+              <UserGroupIcon className="w-4 h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold gradient-text-secondary">
+            <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">
               {project.tags?.length || 0}
             </p>
-            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Tags</p>
+            <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Tags</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl text-center">
+          <div className="glass rounded-lg p-4 border border-success-200/30 dark:border-success-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
             <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg mx-auto mb-2">
-              <FiDollarSign className="w-4 h-4 text-white" />
+              <CurrencyDollarIcon className="w-4 h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold gradient-text-success">
+            <p className="text-lg font-display font-bold text-success-600 dark:text-success-400">
               {formatCurrency(budgetAmount)}
             </p>
-            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Budget</p>
+            <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Budget</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
+          <div className="glass rounded-lg p-4 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
             <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg mx-auto mb-2">
-              <FiTrendingUp className="w-4 h-4 text-white" />
+              <ArrowTrendingUpIcon className="w-4 h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold gradient-text-accent">
+            <p className="text-lg font-display font-bold text-accent-600 dark:text-accent-400">
               {formatCurrency(budgetSpent)}
             </p>
-            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Spent</p>
+            <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Spent</p>
           </div>
         </div>
 

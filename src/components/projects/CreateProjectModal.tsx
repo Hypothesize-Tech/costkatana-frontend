@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { FiPlus, FiMinus } from "react-icons/fi";
+import {
+  PlusIcon,
+  MinusIcon,
+  DocumentTextIcon,
+  CurrencyDollarIcon,
+  UserGroupIcon,
+  TagIcon,
+  Cog6ToothIcon,
+} from "@heroicons/react/24/outline";
 import { Modal } from "../common/Modal";
 
 interface CreateProjectModalProps {
@@ -160,7 +168,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">📋</span>
+              <DocumentTextIcon className="w-6 h-6 text-white" />
             </div>
             <h3 className="text-xl font-display font-bold gradient-text-primary">
               Basic Information
@@ -199,9 +207,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">💰</span>
+              <CurrencyDollarIcon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-success">
+            <h3 className="text-xl font-display font-bold gradient-text-primary">
               Budget Settings
             </h3>
           </div>
@@ -247,9 +255,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">👥</span>
+              <UserGroupIcon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-secondary">
+            <h3 className="text-xl font-display font-bold gradient-text-primary">
               Team Members
             </h3>
           </div>
@@ -270,9 +278,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <button
                     type="button"
                     onClick={() => removeArrayItem("members", index)}
-                    className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
+                    className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                   >
-                    <FiMinus />
+                    <MinusIcon className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -281,9 +289,10 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <button
               type="button"
               onClick={() => addArrayItem("members")}
-              className="flex gap-2 items-center font-display font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <FiPlus /> Add Member
+              <PlusIcon className="w-4 h-4" />
+              Add Member
             </button>
           </div>
         </div>
@@ -292,9 +301,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🏷️</span>
+              <TagIcon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-accent">
+            <h3 className="text-xl font-display font-bold gradient-text-primary">
               Tags
             </h3>
           </div>
@@ -315,9 +324,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <button
                     type="button"
                     onClick={() => removeArrayItem("tags", index)}
-                    className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
+                    className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                   >
-                    <FiMinus />
+                    <MinusIcon className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -326,9 +335,10 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <button
               type="button"
               onClick={() => addArrayItem("tags")}
-              className="flex gap-2 items-center font-display font-medium text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 transition-colors"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <FiPlus /> Add Tag
+              <PlusIcon className="w-4 h-4" />
+              Add Tag
             </button>
           </div>
         </div>
@@ -337,9 +347,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">⚙️</span>
+              <Cog6ToothIcon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-warning">
+            <h3 className="text-xl font-display font-bold gradient-text-primary">
               Project Settings
             </h3>
           </div>
@@ -391,16 +401,23 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="btn-secondary"
+            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading || !formData.name.trim()}
-            className="btn-primary"
+            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
           >
-            {loading ? "Creating..." : "Create Project"}
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Creating...</span>
+              </>
+            ) : (
+              <span>Create Project</span>
+            )}
           </button>
         </div>
       </form>

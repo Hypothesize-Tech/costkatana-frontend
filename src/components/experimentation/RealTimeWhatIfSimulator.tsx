@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExperimentationService } from '../../services/experimentation.service';
 import { AWS_BEDROCK_PRICING } from '../../utils/pricing';
-import { BeakerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { BeakerIcon, ExclamationTriangleIcon, SparklesIcon, LightBulbIcon, CurrencyDollarIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 
 interface OptimizationOption {
     type: string;
@@ -91,10 +91,10 @@ const RealTimeWhatIfSimulator: React.FC = () => {
     }, [availableModels, currentModel]);
 
     const simulationTypes = [
-        { value: 'real_time_analysis', label: '🎯 Complete Analysis', description: 'Full optimization suite' },
-        { value: 'prompt_optimization', label: '🔥 Prompt Optimization', description: 'Optimize prompt structure' },
-        { value: 'context_trimming', label: '✂️ Context Trimming', description: 'Smart context reduction' },
-        { value: 'model_comparison', label: '⚡ Model Comparison', description: 'Compare across models' },
+        { value: 'real_time_analysis', label: 'Complete Analysis', description: 'Full optimization suite', icon: 'target' },
+        { value: 'prompt_optimization', label: 'Prompt Optimization', description: 'Optimize prompt structure', icon: 'sparkles' },
+        { value: 'context_trimming', label: 'Context Trimming', description: 'Smart context reduction', icon: 'scissors' },
+        { value: 'model_comparison', label: 'Model Comparison', description: 'Compare across models', icon: 'bolt' },
     ];
 
     const runSimulation = useCallback(async () => {
@@ -215,15 +215,17 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                 <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-20 h-20 mx-auto mb-6 flex items-center justify-center">
                     <BeakerIcon className="h-10 w-10 text-white" />
                 </div>
-                <h1 className="text-4xl font-display font-bold gradient-text mb-4">
-                    🚀 Real-Time What-If Cost Simulator
+                <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4 flex items-center justify-center gap-3">
+                    <SparklesIcon className="h-10 w-10 text-primary-600 dark:text-primary-400" />
+                    Real-Time What-If Cost Simulator
                 </h1>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto text-lg leading-relaxed">
                     See instant cost optimizations for your prompts using AWS Bedrock models. Compare models, trim context, optimize structure - all in real-time with confidence scores.
                 </p>
-                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 mt-6 max-w-3xl mx-auto backdrop-blur-xl">
+                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 mt-6 max-w-3xl mx-auto backdrop-blur-xl flex items-center gap-2">
+                    <LightBulbIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                     <div className="font-body text-primary-700 dark:text-primary-300">
-                        💡 <span className="font-display font-bold">Bedrock Focus:</span> All models shown have verified pricing data and are available through AWS Bedrock
+                        <span className="font-display font-bold">Bedrock Focus:</span> All models shown have verified pricing data and are available through AWS Bedrock
                     </div>
                 </div>
             </div>
@@ -312,9 +314,11 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                         {/* Advanced Parameters */}
                         <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
-                            <h4 className="text-sm font-display font-bold gradient-text flex items-center">
+                            <h4 className="text-sm font-display font-bold gradient-text-primary flex items-center">
                                 <div className="bg-gradient-primary p-2 rounded-lg glow-primary shadow-lg mr-3">
-                                    <span className="text-white text-lg">🎛️</span>
+                                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                    </svg>
                                 </div>
                                 Advanced Parameters
                             </h4>
@@ -440,21 +444,33 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                             <h3 className="text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg">
-                                <div className="text-2xl font-bold text-gray-900">{formatCost(results.currentCost.totalCost)}</div>
-                                <div className="text-sm text-gray-600">Total Cost</div>
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                <div className="flex items-center justify-center mb-2">
+                                    <CurrencyDollarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                </div>
+                                <div className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{formatCost(results.currentCost.totalCost)}</div>
+                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Cost</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg">
-                                <div className="text-2xl font-bold text-blue-600">{formatTokens(results.currentCost.totalTokens)}</div>
-                                <div className="text-sm text-gray-600">Total Tokens</div>
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                <div className="flex items-center justify-center mb-2">
+                                    <ChartBarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                </div>
+                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{formatTokens(results.currentCost.totalTokens)}</div>
+                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Tokens</div>
                             </div>
-                            <div className="text-center p-3 bg-green-50 rounded-lg">
-                                <div className="text-2xl font-bold text-green-600">{results.potentialSavings.toFixed(1)}%</div>
-                                <div className="text-sm text-gray-600">Max Savings</div>
+                            <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg bg-gradient-success/10">
+                                <div className="flex items-center justify-center mb-2">
+                                    <CurrencyDollarIcon className="h-5 w-5 text-success-600 dark:text-success-400" />
+                                </div>
+                                <div className="text-2xl font-display font-bold text-success-600 dark:text-success-400">{results.potentialSavings.toFixed(1)}%</div>
+                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Max Savings</div>
                             </div>
-                            <div className="text-center p-3 bg-blue-50 rounded-lg">
-                                <div className="text-2xl font-bold text-blue-600">{results.confidence}%</div>
-                                <div className="text-sm text-gray-600">Confidence</div>
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-primary/10">
+                                <div className="flex items-center justify-center mb-2">
+                                    <ChartBarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                                </div>
+                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{results.confidence}%</div>
+                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Confidence</div>
                             </div>
                         </div>
                     </div>

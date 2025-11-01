@@ -975,9 +975,9 @@ const ModelComparison: React.FC = () => {
           {results.length > 0 && (
             <button
               onClick={exportResults}
-              className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <DocumentArrowDownIcon className="mr-2 w-4 h-4" />
+              <DocumentArrowDownIcon className="w-4 h-4" />
               Export Results
             </button>
           )}
@@ -986,17 +986,17 @@ const ModelComparison: React.FC = () => {
             disabled={
               isRunning || !prompt.trim() || selectedModels.length === 0
             }
-            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
           >
             {isRunning ? (
               <>
-                <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                {realTimeMode ? "Executing Models..." : "Running..."}
+                <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                <span>{realTimeMode ? "Executing Models..." : "Running..."}</span>
               </>
             ) : (
               <>
-                <PlayIcon className="h-4 w-4 mr-2" />
-                {realTimeMode ? "Run Real-time Comparison" : "Run Comparison"}
+                <PlayIcon className="w-4 h-4" />
+                <span>{realTimeMode ? "Run Real-time Comparison" : "Run Comparison"}</span>
               </>
             )}
           </button>
@@ -1069,11 +1069,11 @@ const ModelComparison: React.FC = () => {
                     className="input text-sm"
                   >
                     <option value="comprehensive">
-                      🎯 Comprehensive Analysis
+                      Comprehensive Analysis
                     </option>
-                    <option value="quality">🏆 Quality Focus</option>
-                    <option value="cost">💰 Cost Focus</option>
-                    <option value="speed">⚡ Speed Focus</option>
+                    <option value="quality">Quality Focus</option>
+                    <option value="cost">Cost Focus</option>
+                    <option value="speed">Speed Focus</option>
                   </select>
                 </div>
 
@@ -1123,9 +1123,9 @@ const ModelComparison: React.FC = () => {
             <button
               onClick={addModel}
               disabled={selectedModels.length >= availableModels.length}
-              className="btn-secondary text-sm font-display font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <PlusIcon className="mr-2 w-4 h-4" />
+              <PlusIcon className="w-4 h-4" />
               Add Model
             </button>
           </div>
@@ -1372,7 +1372,7 @@ const ModelComparison: React.FC = () => {
                         setSelectedResult(result);
                         setShowResultsModal(true);
                       }}
-                      className="btn-secondary text-sm font-display font-medium hover:scale-105 transition-all duration-300"
+                      className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                     >
                       View Details
                     </button>
@@ -1514,8 +1514,8 @@ const ModelComparison: React.FC = () => {
                                   {result.analysis.considerations.map(
                                     (consideration: string, i: number) => (
                                       <li key={i} className="flex items-start">
-                                        <span className="text-accent-500 mr-2">⚠</span>
-                                        {consideration}
+                                        <ExclamationTriangleIcon className="w-4 h-4 text-accent-500 mr-2 flex-shrink-0 mt-0.5" />
+                                        <span>{consideration}</span>
                                       </li>
                                     ),
                                   )}

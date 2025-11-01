@@ -5,7 +5,9 @@ import {
     CurrencyDollarIcon,
     SparklesIcon,
     CalendarIcon,
-    UsersIcon
+    UsersIcon,
+    ArrowPathIcon,
+    ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import { formatCurrency } from '../../utils/formatters';
 import { SimulationTrackingService, LeaderboardEntry } from '../../services/simulationTracking.service';
@@ -167,12 +169,16 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
         return (
             <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl p-8">
                 <div className="text-center">
-                    <div className="text-danger-600 dark:text-danger-400 mb-2 font-display font-bold">⚠️ Error Loading Leaderboard</div>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                        <ExclamationTriangleIcon className="h-5 w-5 text-danger-600 dark:text-danger-400" />
+                        <div className="text-danger-600 dark:text-danger-400 font-display font-bold">Error Loading Leaderboard</div>
+                    </div>
                     <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4 font-body">{error}</p>
                     <button
                         onClick={loadLeaderboard}
-                        className="btn-primary"
+                        className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
                     >
+                        <ArrowPathIcon className="w-4 h-4" />
                         Try Again
                     </button>
                 </div>

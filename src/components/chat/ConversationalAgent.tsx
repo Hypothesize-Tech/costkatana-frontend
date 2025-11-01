@@ -16,6 +16,8 @@ import {
   LinkIcon,
   AcademicCapIcon,
   QuestionMarkCircleIcon,
+  XMarkIcon,
+  PaperClipIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
@@ -28,13 +30,13 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { PreviewRenderer } from "../preview/PreviewRenderer";
 import { CodePreview } from "../preview/CodePreview";
-import { DocumentUpload } from "./DocumentUpload";
-import { DocumentMetadata } from "@/services/document.service";
+import { DocumentMetadata, documentService } from "@/services/document.service";
 import { useSessionRecording } from "@/hooks/useSessionRecording";
 import GitHubConnector from "./GitHubConnector";
 import FeatureSelector from "./FeatureSelector";
 import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
+import { Send } from "lucide-react";
 
 // Configure marked for security
 marked.setOptions({
@@ -169,9 +171,13 @@ export const ConversationalAgent: React.FC = () => {
   const [showFeatureSelector, setShowFeatureSelector] = useState(false);
   const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
   const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
+  const [githubConnection, setGithubConnection] = useState<{ avatarUrl?: string; username?: string; hasConnection: boolean }>({ hasConnection: false });
+  const [showAttachmentsPopover, setShowAttachmentsPopover] = useState(false);
+  const [showAllModelsDropdown, setShowAllModelsDropdown] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const hiddenFileInputRef = useRef<HTMLInputElement>(null);
 
   // Data-driven suggestions state
   const [suggestedQuestions, setSuggestedQuestions] = useState<
@@ -508,6 +514,7 @@ export const ConversationalAgent: React.FC = () => {
     loadAvailableModels();
     loadConversations();
     loadDataDrivenSuggestions();
+    loadGitHubConnection();
 
     // Restore last conversation from localStorage
     const savedConversationId = localStorage.getItem('currentConversationId');
@@ -515,6 +522,24 @@ export const ConversationalAgent: React.FC = () => {
       loadConversationHistory(savedConversationId);
     }
   }, []);
+
+  const loadGitHubConnection = async () => {
+    try {
+      const connections = await githubService.listConnections();
+      if (connections.length > 0 && connections[0].isActive) {
+        setGithubConnection({
+          avatarUrl: connections[0].avatarUrl,
+          username: connections[0].githubUsername,
+          hasConnection: true
+        });
+      } else {
+        setGithubConnection({ hasConnection: false });
+      }
+    } catch (error) {
+      console.error('Failed to load GitHub connections:', error);
+      setGithubConnection({ hasConnection: false });
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -528,13 +553,70 @@ export const ConversationalAgent: React.FC = () => {
     try {
       const models = await ChatService.getAvailableModels();
       setAvailableModels(models);
+
+      // Auto-select most relevant model if none selected
       if (models.length > 0 && !selectedModel) {
-        setSelectedModel(models[0]);
+        // Prioritize: Claude 3.5 Sonnet > GPT-4 > Claude Haiku > Nova Pro > first available
+        const preferredModelIds = [
+          'anthropic.claude-3-5-sonnet-20241022-v1:0',
+          'anthropic.claude-3-7-sonnet-20250219-v1:0',
+          'gpt-4',
+          'anthropic.claude-3-5-haiku-20241022-v1:0',
+          'amazon.nova-pro-v1:0'
+        ];
+
+        const preferredModel = preferredModelIds
+          .map(id => models.find(m => m.id === id))
+          .find(Boolean);
+
+        setSelectedModel(preferredModel || models[0]);
       }
     } catch (error) {
       console.error("Error loading models:", error);
       setError("Failed to load available models");
     }
+  };
+
+  // Get top 5 models for quick selection
+  const getTopModels = (): AvailableModel[] => {
+    if (availableModels.length <= 5) return availableModels;
+
+    // Prioritize: Claude 3.5 Sonnet, GPT-4, Claude Haiku, Nova Pro, and one more popular
+    const preferredIds = [
+      'anthropic.claude-3-5-sonnet-20241022-v1:0',
+      'anthropic.claude-3-7-sonnet-20250219-v1:0',
+      'gpt-4',
+      'anthropic.claude-3-5-haiku-20241022-v1:0',
+      'amazon.nova-pro-v1:0'
+    ];
+
+    const topModels: AvailableModel[] = [];
+    const usedIds = new Set<string>();
+
+    // Add preferred models first
+    preferredIds.forEach(id => {
+      const model = availableModels.find(m => m.id === id);
+      if (model) {
+        topModels.push(model);
+        usedIds.add(model.id);
+      }
+    });
+
+    // Fill remaining slots with other models
+    availableModels.forEach(model => {
+      if (topModels.length < 5 && !usedIds.has(model.id)) {
+        topModels.push(model);
+        usedIds.add(model.id);
+      }
+    });
+
+    return topModels.slice(0, 5);
+  };
+
+  // Get all other models (not in top 5)
+  const getOtherModels = (): AvailableModel[] => {
+    const topModelIds = new Set(getTopModels().map(m => m.id));
+    return availableModels.filter(m => !topModelIds.has(m.id));
   };
 
   const loadConversations = async () => {
@@ -1129,6 +1211,18 @@ export const ConversationalAgent: React.FC = () => {
     }
   };
 
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      const scrollHeight = textareaRef.current.scrollHeight;
+      const maxHeight = 160; // max-h-40 = 160px
+      const minHeight = 56; // min-h-[56px]
+      const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+      textareaRef.current.style.height = `${newHeight}px`;
+    }
+  }, [currentMessage]);
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedCode(text);
@@ -1694,60 +1788,14 @@ export const ConversationalAgent: React.FC = () => {
         {/* Header */}
         <div className="glass backdrop-blur-xl border-b border-primary-200/30 shadow-lg p-4">
           <div className="flex items-center justify-between">
-            <div className="relative">
-              <button
-                onClick={() => setShowModelDropdown(!showModelDropdown)}
-                className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-3 p-3 rounded-xl border border-primary-200/30 shadow-lg"
-              >
-                <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
-                  <SparklesIcon className="w-4 h-4 text-white" />
-                </div>
-                <div className="text-left">
-                  <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
-                    {selectedModel?.name || "Select Model"}
-                  </div>
-                  <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                    {selectedModel?.provider}
-                  </div>
-                </div>
-                <ChevronDownIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-              </button>
-
-              {/* Model Dropdown */}
-              {showModelDropdown && (
-                <div className="absolute top-full left-0 mt-2 w-80 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 z-50 max-h-80 overflow-y-auto animate-scale-in">
-                  {availableModels.map((model) => (
-                    <button
-                      key={model.id}
-                      onClick={() => {
-                        setSelectedModel(model);
-                        setShowModelDropdown(false);
-                      }}
-                      className={`w-full p-4 text-left hover:bg-primary-500/10 transition-all duration-300 flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-l-3 border-l-primary-500" : ""
-                        }`}
-                    >
-                      <div className="flex-1">
-                        <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
-                          {model.name}
-                        </div>
-                        <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                          {model.provider}
-                        </div>
-                        {model.description && (
-                          <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1">
-                            {model.description}
-                          </div>
-                        )}
-                      </div>
-                      {model.pricing && (
-                        <div className="text-xs gradient-text font-display font-semibold bg-gradient-success/10 px-2 py-1 rounded-lg">
-                          ${model.pricing.input}/1M tokens
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
+                <SparklesIcon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="font-display font-bold text-xl gradient-text-primary">AI Assistant</h2>
+                <p className="text-xs text-secondary-600 dark:text-secondary-300">Chat with your AI cost optimization assistant</p>
+              </div>
             </div>
 
             {/* Chat Mode Controls */}
@@ -2110,40 +2158,22 @@ export const ConversationalAgent: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="glass backdrop-blur-xl border-t border-primary-200/30 shadow-lg p-4">
-          <div className="max-w-4xl mx-auto space-y-3">
-            {/* Document Upload Section with GitHub Connect */}
-            <DocumentUpload
-              onDocumentUploaded={(doc) => setSelectedDocuments(prev => [...prev, doc])}
-              onDocumentRemoved={(docId) => setSelectedDocuments(prev => prev.filter(d => d.documentId !== docId))}
-              selectedDocuments={selectedDocuments}
-              onGitHubConnect={() => {
-                setGitHubConnectorMode('chat');
-                setShowGitHubConnector(true);
-              }}
-            />
-            {/* Add Integration Button */}
-            {!selectedRepo && (
-              <button
-                onClick={() => {
-                  setGitHubConnectorMode('integration');
-                  setShowGitHubConnector(true);
-                }}
-                className="w-full px-4 py-2 bg-gradient-primary text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm font-medium"
-              >
-                <PlusIcon className="w-4 h-4" />
-                Add CostKatana Integration
-              </button>
-            )}
-
-            {/* Selected Repository Indicator */}
+        <div className="glass backdrop-blur-xl border-t border-primary-200/30 dark:border-primary-500/20 shadow-2xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="max-w-4xl mx-auto p-4 space-y-3">
+            {/* Selected Repository Indicator - Right Aligned */}
             {selectedRepo && (
-              <div className="flex items-center justify-between px-4 py-2 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <span className="text-primary-600 dark:text-primary-400">📦</span>
-                  <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                    Working with: <strong>{selectedRepo.repo.fullName}</strong>
-                  </span>
+              <div className="flex items-center justify-between px-4 py-2.5 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-md ml-auto animate-fade-in">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0 shadow-lg glow-primary">
+                    <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                  </div>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-xs font-display font-semibold text-secondary-700 dark:text-secondary-300 truncate">
+                      {selectedRepo.repo.fullName}
+                    </span>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
@@ -2156,37 +2186,394 @@ export const ConversationalAgent: React.FC = () => {
                     };
                     setMessages(prev => [...prev, clearMessage]);
                   }}
-                  className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-2 py-1 rounded hover:bg-primary-100 dark:hover:bg-primary-900/30"
+                  className="p-1.5 text-secondary-500 dark:text-secondary-400 hover:text-danger-500 dark:hover:text-danger-400 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded-lg transition-all duration-200"
+                  title="Clear repository"
                 >
-                  Clear
+                  <XMarkIcon className="w-4 h-4" />
                 </button>
               </div>
             )}
 
-            {/* Message Input */}
-            <div className="flex items-end gap-3">
-              <div className="flex-1 relative">
-                <textarea
-                  ref={textareaRef}
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder={
-                    selectedDocuments.length > 0
-                      ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
-                      : "Ask me anything about your AI costs, projects, or optimizations..."
-                  }
-                  className="input resize-none min-h-[48px] max-h-32 pr-12"
-                  rows={1}
-                />
+            {/* Selected Documents Display - Right Aligned */}
+            {selectedDocuments.length > 0 && (
+              <div className="flex flex-wrap gap-2 justify-end">
+                {selectedDocuments.map((doc) => (
+                  <div
+                    key={doc.documentId}
+                    className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-secondary-50 dark:bg-secondary-800/30 rounded-lg border border-secondary-200/50 dark:border-secondary-700/50 text-xs hover:shadow-sm transition-all"
+                  >
+                    <DocumentTextIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                    <span className="text-secondary-700 dark:text-secondary-300 font-medium max-w-[120px] truncate">
+                      {doc.fileName}
+                    </span>
+                    <span className="text-secondary-500 dark:text-secondary-400">
+                      {doc.chunksCount}
+                    </span>
+                    <button
+                      onClick={() => setSelectedDocuments(prev => prev.filter(d => d.documentId !== doc.documentId))}
+                      className="p-0.5 hover:bg-danger-100 dark:hover:bg-danger-900/30 rounded transition-colors"
+                      title="Remove"
+                    >
+                      <XMarkIcon className="w-3 h-3 text-secondary-500 dark:text-secondary-400 hover:text-danger-500" />
+                    </button>
+                  </div>
+                ))}
               </div>
-              <button
-                onClick={() => sendMessage()}
-                disabled={!currentMessage.trim() || isLoading}
-                className="btn-primary min-w-[48px] h-12 flex items-center justify-center"
-              >
-                <SparklesIcon className="w-4 h-4" />
-              </button>
+            )}
+
+            {/* Message Input Container */}
+            <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
+              <div className="flex items-end gap-3">
+                {/* Attachments Popover Button */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowAttachmentsPopover(!showAttachmentsPopover)}
+                    className="w-11 h-11 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 shadow-sm hover:shadow-md"
+                    title="Attach files, GitHub, or integrations"
+                  >
+                    <PlusIcon className="w-5 h-5" />
+                  </button>
+
+                  {/* Attachments Popover */}
+                  {showAttachmentsPopover && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowAttachmentsPopover(false)}
+                      />
+                      <div className="absolute bottom-full left-0 mb-2 w-64 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-50 animate-scale-in overflow-hidden">
+                        <div className="p-2">
+                          {/* Document Upload in Popover */}
+                          <div className="mb-2">
+                            <input
+                              ref={hiddenFileInputRef}
+                              type="file"
+                              accept=".pdf,.txt,.md,.json,.csv,.doc,.docx,.ts,.js,.py,.java,.cpp,.go,.rs,.rb"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  setShowAttachmentsPopover(false);
+                                  try {
+                                    const validation = documentService.validateFile(file);
+                                    if (!validation.valid) {
+                                      setError(validation.error || 'Invalid file');
+                                      return;
+                                    }
+
+                                    const result = await documentService.uploadDocument(file, {
+                                      onProgress: () => { } // Silent upload in popover
+                                    });
+
+                                    const docMetadata: DocumentMetadata = {
+                                      documentId: result.documentId,
+                                      fileName: result.fileName,
+                                      fileType: file.name.split('.').pop() || 'unknown',
+                                      uploadDate: new Date().toISOString(),
+                                      chunksCount: result.documentsCreated || 0,
+                                      s3Key: result.s3Key
+                                    };
+
+                                    setSelectedDocuments(prev => [...prev, docMetadata]);
+
+                                    // Reset input
+                                    if (hiddenFileInputRef.current) {
+                                      hiddenFileInputRef.current.value = '';
+                                    }
+                                  } catch (err) {
+                                    setError(err instanceof Error ? err.message : 'Upload failed');
+                                  }
+                                }
+                              }}
+                              className="hidden"
+                            />
+                            <button
+                              onClick={() => hiddenFileInputRef.current?.click()}
+                              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                            >
+                              <PaperClipIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                              <span className="text-sm font-medium text-secondary-900 dark:text-white">Upload Document</span>
+                            </button>
+                          </div>
+
+                          {/* GitHub Connect in Popover */}
+                          <div className="mb-2">
+                            <button
+                              onClick={async () => {
+                                setShowAttachmentsPopover(false);
+                                setGitHubConnectorMode('chat');
+                                setShowGitHubConnector(true);
+                                setTimeout(() => loadGitHubConnection(), 500);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                            >
+                              {githubConnection?.hasConnection && githubConnection?.avatarUrl ? (
+                                <>
+                                  <img
+                                    src={githubConnection.avatarUrl}
+                                    alt={githubConnection.username || 'GitHub'}
+                                    className="w-4 h-4 rounded-full"
+                                  />
+                                  <span className="text-sm font-medium text-secondary-900 dark:text-white">View GitHub Repos</span>
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                  </svg>
+                                  <span className="text-sm font-medium text-secondary-900 dark:text-white">Connect GitHub</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          {/* View Integrations */}
+                          {githubConnection.hasConnection && (
+                            <div className="mb-2">
+                              <button
+                                onClick={() => {
+                                  setShowAttachmentsPopover(false);
+                                  navigate('/github');
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                              >
+                                <ChartBarIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                                <span className="text-sm font-medium text-secondary-900 dark:text-white">View Integrations</span>
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Add Integration in Popover */}
+                          {!selectedRepo && githubConnection.hasConnection && (
+                            <div className="mb-2">
+                              <button
+                                onClick={() => {
+                                  setShowAttachmentsPopover(false);
+                                  setGitHubConnectorMode('integration');
+                                  setShowGitHubConnector(true);
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                              >
+                                <PlusIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                                <span className="text-sm font-medium text-secondary-900 dark:text-white">Add Integration</span>
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Disconnect GitHub */}
+                          {githubConnection.hasConnection && (
+                            <div className="pt-2 border-t border-primary-200/30 dark:border-primary-500/20">
+                              <button
+                                onClick={async () => {
+                                  setShowAttachmentsPopover(false);
+                                  if (window.confirm('Are you sure you want to disconnect GitHub? This will remove all your GitHub connections.')) {
+                                    try {
+                                      const connections = await githubService.listConnections();
+                                      for (const conn of connections) {
+                                        if (conn.isActive) {
+                                          await githubService.disconnectConnection(conn._id);
+                                        }
+                                      }
+                                      await loadGitHubConnection();
+                                      setMessages(prev => [...prev, {
+                                        id: Date.now().toString(),
+                                        role: 'assistant',
+                                        content: '✅ GitHub has been disconnected successfully.',
+                                        timestamp: new Date()
+                                      }]);
+                                    } catch (error) {
+                                      console.error('Failed to disconnect GitHub:', error);
+                                      setError('Failed to disconnect GitHub. Please try again.');
+                                    }
+                                  }
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded-lg transition-colors text-danger-600 dark:text-danger-400"
+                              >
+                                <XMarkIcon className="w-4 h-4" />
+                                <span className="text-sm font-medium">Disconnect GitHub</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex-1 relative">
+                  <textarea
+                    ref={textareaRef}
+                    value={currentMessage}
+                    onChange={(e) => setCurrentMessage(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    placeholder={
+                      selectedDocuments.length > 0
+                        ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
+                        : "Ask me anything about your AI costs, projects, or optimizations..."
+                    }
+                    className="w-full px-4 pt-6 pb-2 pr-14 resize-none min-h-[56px] max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none"
+                    rows={1}
+                    style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: 'rgba(156, 163, 175, 0.5) transparent',
+                      height: '56px'
+                    }}
+                  />
+                </div>
+
+                {/* Model Selector - Next to Send Button */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowModelDropdown(!showModelDropdown)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-secondary-50 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-200 shadow-sm hover:shadow-md"
+                    title="Select model"
+                  >
+                    <div className="bg-gradient-primary p-1 rounded glow-primary">
+                      <SparklesIcon className="w-3 h-3 text-white" />
+                    </div>
+                    <span className="text-xs font-display font-semibold text-secondary-900 dark:text-white max-w-[100px] truncate">
+                      {selectedModel?.name || "Select Model"}
+                    </span>
+                    <ChevronDownIcon className="w-3 h-3 text-secondary-600 dark:text-secondary-400" />
+                  </button>
+
+                  {/* Model Dropdown - Top 5 + More Models */}
+                  {showModelDropdown && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => {
+                          setShowModelDropdown(false);
+                          setShowAllModelsDropdown(false);
+                        }}
+                      />
+                      <div className="absolute bottom-full right-0 mb-2 w-72 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 z-50 max-h-96 overflow-y-auto animate-scale-in rounded-xl">
+                        {/* Top 5 Models */}
+                        <div className="p-2">
+                          {getTopModels().map((model) => (
+                            <button
+                              key={model.id}
+                              onClick={() => {
+                                setSelectedModel(model);
+                                setShowModelDropdown(false);
+                                setShowAllModelsDropdown(false);
+                              }}
+                              className={`w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border border-primary-300 dark:border-primary-600" : ""
+                                }`}
+                            >
+                              <div className="flex-1 min-w-0">
+                                <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
+                                  {model.name}
+                                </div>
+                                <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium truncate">
+                                  {model.provider}
+                                </div>
+                              </div>
+                              {selectedModel?.id === model.id && (
+                                <div className="w-2 h-2 rounded-full bg-gradient-primary ml-2 flex-shrink-0" />
+                              )}
+                            </button>
+                          ))}
+
+                          {/* More Models Section */}
+                          {getOtherModels().length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-primary-200/30 dark:border-primary-500/20">
+                              <div className="relative">
+                                <button
+                                  onClick={() => setShowAllModelsDropdown(!showAllModelsDropdown)}
+                                  className="w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between"
+                                >
+                                  <span className="font-display font-semibold text-sm text-secondary-900 dark:text-white">
+                                    More Models ({getOtherModels().length})
+                                  </span>
+                                  <ChevronDownIcon
+                                    className={`w-4 h-4 text-secondary-600 dark:text-secondary-400 transition-transform duration-300 ${showAllModelsDropdown ? 'rotate-180' : ''
+                                      }`}
+                                  />
+                                </button>
+
+                                {/* Nested Dropdown for Other Models */}
+                                {showAllModelsDropdown && (
+                                  <div className="mt-1 ml-4 pl-2 border-l-2 border-primary-200/30 dark:border-primary-500/20 space-y-1">
+                                    {getOtherModels().map((model) => (
+                                      <button
+                                        key={model.id}
+                                        onClick={() => {
+                                          setSelectedModel(model);
+                                          setShowModelDropdown(false);
+                                          setShowAllModelsDropdown(false);
+                                        }}
+                                        className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border border-primary-300 dark:border-primary-600" : ""
+                                          }`}
+                                      >
+                                        <div className="flex-1 min-w-0">
+                                          <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
+                                            {model.name}
+                                          </div>
+                                          <div className="text-xs text-secondary-500 dark:text-secondary-400 truncate">
+                                            {model.provider}
+                                          </div>
+                                        </div>
+                                        {selectedModel?.id === model.id && (
+                                          <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary ml-2 flex-shrink-0" />
+                                        )}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => sendMessage()}
+                  disabled={!currentMessage.trim() || isLoading}
+                  className={`relative flex items-center justify-center transition-all duration-300 ${!currentMessage.trim() || isLoading
+                    ? 'w-11 h-11 bg-secondary-200/50 dark:bg-secondary-700/50 text-secondary-400 dark:text-secondary-500 cursor-not-allowed rounded-full'
+                    : 'w-11 h-11 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-full hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl glow-primary'
+                    }`}
+                  title={!currentMessage.trim() ? "Enter a message to send" : "Send message"}
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Send
+                      className={`w-5 h-5 ${!currentMessage.trim()
+                        ? 'opacity-50'
+                        : ''
+                        }`}
+                      strokeWidth={2.5}
+                    />
+                  )}
+                </button>
+              </div>
+              {/* Helper text */}
+              <div className="flex items-center justify-between mt-2 px-1">
+                <div className="text-xs text-secondary-400 dark:text-secondary-500 font-medium">
+                  {currentMessage.length > 0 && (
+                    <span className="text-primary-500 dark:text-primary-400">
+                      {currentMessage.length} character{currentMessage.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs pt-2 text-secondary-400 dark:text-secondary-500 font-medium flex items-center gap-1">
+                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
+                    Enter
+                  </kbd>
+                  <span>to send</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs ml-2">
+                    Shift
+                  </kbd>
+                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
+                    Enter
+                  </kbd>
+                  <span>for new line</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2199,7 +2586,10 @@ export const ConversationalAgent: React.FC = () => {
       {showGitHubConnector && (
         <GitHubConnector
           onSelectRepository={gitHubConnectorMode === 'integration' ? handleSelectRepository : handleSelectRepoForChat}
-          onClose={() => setShowGitHubConnector(false)}
+          onClose={async () => {
+            setShowGitHubConnector(false);
+            await loadGitHubConnection();
+          }}
         />
       )}
 

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FiPlus, FiMinus, FiSave } from "react-icons/fi";
+import {
+  PlusIcon,
+  MinusIcon,
+  DocumentArrowDownIcon,
+  DocumentTextIcon,
+  CurrencyDollarIcon,
+  Cog6ToothIcon,
+} from "@heroicons/react/24/outline";
 import { Modal } from "../common/Modal";
 import { Project } from "../../types/project.types";
 
@@ -196,7 +203,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <span className="text-white text-lg">📋</span>
+                <DocumentTextIcon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-primary">
                 Basic Information
@@ -249,18 +256,18 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       <button
                         type="button"
                         onClick={() => removeTag(index)}
-                        className="glass p-3 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
+                        className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                       >
-                        <FiMinus className="w-4 h-4" />
+                        <MinusIcon className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
                   <button
                     type="button"
                     onClick={addTag}
-                    className="flex gap-2 items-center font-display font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                    className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                   >
-                    <FiPlus className="w-4 h-4" />
+                    <PlusIcon className="w-4 h-4" />
                     Add Tag
                   </button>
                 </div>
@@ -272,9 +279,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                <span className="text-white text-lg">💰</span>
+                <CurrencyDollarIcon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-success">
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
                 Budget Configuration
               </h3>
             </div>
@@ -364,9 +371,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       <button
                         type="button"
                         onClick={() => removeAlert(index)}
-                        className="glass p-2 rounded-lg border border-danger-200/30 shadow-lg backdrop-blur-xl text-danger-600 hover:scale-110 transition-all duration-200"
+                        className="p-3 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-lg hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                       >
-                        <FiMinus className="w-4 h-4" />
+                        <MinusIcon className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -374,9 +381,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 <button
                   type="button"
                   onClick={addAlert}
-                  className="flex gap-2 items-center font-display font-medium text-success-600 dark:text-success-400 hover:text-success-700 dark:hover:text-success-300 transition-colors"
+                  className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <PlusIcon className="w-4 h-4" />
                   Add Alert
                 </button>
               </div>
@@ -387,9 +394,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                <span className="text-white text-lg">⚙️</span>
+                <Cog6ToothIcon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-warning">
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
                 Project Settings
               </h3>
             </div>
@@ -493,24 +500,24 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="btn-secondary"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !hasChanges}
-              className="btn-primary"
+              className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 rounded-full border-2 border-white animate-spin border-t-transparent"></div>
-                  Saving...
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Saving...</span>
                 </>
               ) : (
                 <>
-                  <FiSave className="w-4 h-4" />
-                  Save Changes
+                  <DocumentArrowDownIcon className="w-4 h-4" />
+                  <span>Save Changes</span>
                 </>
               )}
             </button>

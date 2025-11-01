@@ -6,6 +6,8 @@ import {
     ChartBarIcon,
     XMarkIcon,
     SparklesIcon,
+    LightBulbIcon,
+    BellAlertIcon,
 } from '@heroicons/react/24/outline';
 import { Usage } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
@@ -182,8 +184,8 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                                 <ExclamationTriangleIcon className="h-6 w-6 text-white" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
-                                    🚨 High-Cost Optimization Opportunities
+                                <h3 className="text-xl font-display font-bold gradient-text-primary">
+                                    High-Cost Optimization Opportunities
                                 </h3>
                                 <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                     We found {suggestions.length} expensive requests that could save you money
@@ -239,17 +241,18 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                                 </div>
 
                                 <div className="flex items-center justify-between">
-                                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-gradient-success/10">
+                                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-gradient-success/10 flex items-center gap-2">
+                                        <CurrencyDollarIcon className="h-4 w-4 text-success-600 dark:text-success-400" />
                                         <span className="text-sm font-display font-bold text-success-600 dark:text-success-400">
-                                            💰 {suggestion.potentialSavings}
+                                            {suggestion.potentialSavings}
                                         </span>
                                     </div>
                                     <div className="flex space-x-3">
                                         <button
                                             onClick={() => onSimulate(suggestion.usage)}
-                                            className="btn-primary text-sm font-display font-semibold hover:scale-105 transition-all duration-300"
+                                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
                                         >
-                                            <BeakerIcon className="h-4 w-4 mr-2" />
+                                            <BeakerIcon className="h-4 w-4" />
                                             Simulate
                                         </button>
                                         <button
@@ -267,9 +270,10 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
 
                 {suggestions.length > 0 && (
                     <div className="text-center pt-4">
-                        <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5">
+                        <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 flex items-center gap-2">
+                            <LightBulbIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                             <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                                💡 <span className="font-display font-semibold">Tip:</span> Run simulations to see exact savings potential for your specific use case
+                                <span className="font-display font-semibold">Tip:</span> Run simulations to see exact savings potential for your specific use case
                             </p>
                         </div>
                     </div>
@@ -288,9 +292,15 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                         <span className="font-display font-bold text-lg">
                             {suggestions.length} Savings
                         </span>
-                        <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl text-sm font-display font-semibold animate-pulse">
-                            {highPriorityCount > 0 ? '🚨' : '💰'}
-                        </div>
+                        {highPriorityCount > 0 ? (
+                            <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl flex items-center justify-center">
+                                <BellAlertIcon className="h-4 w-4 text-white animate-pulse" />
+                            </div>
+                        ) : (
+                            <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl flex items-center justify-center">
+                                <CurrencyDollarIcon className="h-4 w-4 text-white" />
+                            </div>
+                        )}
                     </button>
                 </div>
             )}

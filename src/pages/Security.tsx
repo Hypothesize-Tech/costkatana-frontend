@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { securityService, SecurityAnalytics, SecurityMetrics, HumanReviewRequest } from '../services/security.service';
+import {
+    ArrowPathIcon,
+    DocumentTextIcon,
+    TableCellsIcon,
+    EyeIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+    XMarkIcon
+} from '@heroicons/react/24/outline';
 
 export const Security: React.FC = () => {
     const [metrics, setMetrics] = useState<SecurityMetrics | null>(null);
@@ -86,11 +94,12 @@ export const Security: React.FC = () => {
             <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md mx-auto">
                     <div className="glass rounded-xl border border-danger-200/30 bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-6">
-                        <div className="text-danger-600 dark:text-danger-400 text-sm mb-4">{error}</div>
+                        <div className="text-danger-600 dark:text-danger-400 text-sm mb-4 font-body">{error}</div>
                         <button
                             onClick={loadSecurityData}
-                            className="btn-primary"
+                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
                         >
+                            <ArrowPathIcon className="w-4 h-4" />
                             Retry
                         </button>
                     </div>
@@ -111,14 +120,16 @@ export const Security: React.FC = () => {
                     <div className="flex gap-4">
                         <button
                             onClick={() => exportSecurityReport('json')}
-                            className="btn-secondary"
+                            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                         >
+                            <DocumentTextIcon className="w-4 h-4" />
                             Export JSON Report
                         </button>
                         <button
                             onClick={() => exportSecurityReport('csv')}
-                            className="btn-secondary"
+                            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                         >
+                            <TableCellsIcon className="w-4 h-4" />
                             Export CSV Report
                         </button>
                     </div>
@@ -229,8 +240,9 @@ export const Security: React.FC = () => {
                                             <div className="flex gap-2 ml-4">
                                                 <button
                                                     onClick={() => setSelectedReview(review)}
-                                                    className="btn-outline text-sm"
+                                                    className="px-3 py-2 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                                                 >
+                                                    <EyeIcon className="w-4 h-4" />
                                                     Review
                                                 </button>
                                             </div>
@@ -372,23 +384,26 @@ export const Security: React.FC = () => {
                                 </p>
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex gap-3">
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'approved')}
-                                    className="btn-success"
+                                    className="flex-1 px-4 py-2.5 bg-gradient-success hover:bg-gradient-success/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-success transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
                                 >
+                                    <CheckCircleIcon className="w-4 h-4" />
                                     Approve Request
                                 </button>
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'denied')}
-                                    className="btn-danger"
+                                    className="flex-1 px-4 py-2.5 bg-gradient-danger hover:bg-gradient-danger/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-danger transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
                                 >
+                                    <XCircleIcon className="w-4 h-4" />
                                     Deny Request
                                 </button>
                                 <button
                                     onClick={() => setSelectedReview(null)}
-                                    className="btn-outline"
+                                    className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
                                 >
+                                    <XMarkIcon className="w-4 h-4" />
                                     Cancel
                                 </button>
                             </div>

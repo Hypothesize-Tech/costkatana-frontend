@@ -67,9 +67,9 @@ const WhatIfScenarios: React.FC = () => {
   });
 
   const scenarioTemplates: ScenarioTemplate[] = [
-    // 🚀 REAL-TIME COST SIMULATOR TEMPLATES
+    // REAL-TIME COST SIMULATOR TEMPLATES
     {
-      name: "🔥 Prompt Cost Optimizer",
+      name: "Prompt Cost Optimizer",
       description: "Real-time cost optimization for your specific prompt - see instant savings!",
       category: "optimization",
       changes: [
@@ -83,7 +83,7 @@ const WhatIfScenarios: React.FC = () => {
       ],
     },
     {
-      name: "✂️ Context Trimmer",
+      name: "Context Trimmer",
       description: "Smart context trimming - maintain quality while cutting costs by up to 60%",
       category: "optimization",
       changes: [
@@ -97,7 +97,7 @@ const WhatIfScenarios: React.FC = () => {
       ],
     },
     {
-      name: "⚡ Model Comparison Dashboard",
+      name: "Model Comparison Dashboard",
       description: "Compare your prompt across 5+ models simultaneously - find the best value",
       category: "model_switch",
       changes: [
@@ -111,7 +111,7 @@ const WhatIfScenarios: React.FC = () => {
       ],
     },
     {
-      name: "🎯 Complete Optimization Suite",
+      name: "Complete Optimization Suite",
       description: "The full treatment - prompt optimization + model switch + context trimming",
       category: "optimization",
       changes: [
@@ -189,10 +189,10 @@ const WhatIfScenarios: React.FC = () => {
     volume_change: "Volume Change",
     feature_addition: "Feature Addition",
     optimization_applied: "Optimization Applied",
-    prompt_optimization: "🔥 Prompt Optimization",
-    context_trimming: "✂️ Context Trimming",
-    model_comparison: "⚡ Model Comparison",
-    real_time_analysis: "🎯 Real-time Analysis",
+    prompt_optimization: "Prompt Optimization",
+    context_trimming: "Context Trimming",
+    model_comparison: "Model Comparison",
+    real_time_analysis: "Real-time Analysis",
   };
 
   const riskLevelColors = {
@@ -391,16 +391,16 @@ const WhatIfScenarios: React.FC = () => {
         <div className="flex space-x-3">
           <button
             onClick={() => setShowTemplatesModal(true)}
-            className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
+            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
           >
-            <BeakerIcon className="h-4 w-4 mr-2" />
+            <BeakerIcon className="w-4 h-4" />
             Templates
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
+            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
           >
-            <PlusIcon className="h-4 w-4 mr-2" />
+            <PlusIcon className="w-4 h-4" />
             Create Scenario
           </button>
         </div>
@@ -432,8 +432,9 @@ const WhatIfScenarios: React.FC = () => {
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
+              className="px-6 py-3 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold"
             >
+              <PlusIcon className="w-5 h-5" />
               Create your first scenario
             </button>
           </div>
@@ -469,17 +470,17 @@ const WhatIfScenarios: React.FC = () => {
                   <button
                     onClick={() => runAnalysis(scenario)}
                     disabled={isAnalyzing[scenario.name]}
-                    className="btn-primary text-sm font-display font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
                   >
                     {isAnalyzing[scenario.name] ? (
                       <>
-                        <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                        Analyzing...
+                        <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                        <span>Analyzing...</span>
                       </>
                     ) : (
                       <>
-                        <PlayIcon className="h-4 w-4 mr-2" />
-                        Analyze
+                        <PlayIcon className="w-4 h-4" />
+                        <span>Analyze</span>
                       </>
                     )}
                   </button>

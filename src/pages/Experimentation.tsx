@@ -63,7 +63,7 @@ const Experimentation: React.FC = () => {
   const tabs = [
     {
       id: "cost-simulator" as Tab,
-      name: "🚀 Cost Simulator",
+      name: "Cost Simulator",
       icon: <SparklesIcon className="h-5 w-5" />,
       description:
         "Real-time prompt optimization - see instant cost savings up to 95%",
@@ -86,7 +86,7 @@ const Experimentation: React.FC = () => {
     },
     {
       id: "leaderboard" as Tab,
-      name: "🏆 Leaderboard",
+      name: "Leaderboard",
       icon: <ArrowTrendingUpIcon className="h-5 w-5" />,
       description: "Top optimization wins and cost savings champions",
       color: "text-yellow-600",

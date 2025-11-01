@@ -327,8 +327,9 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                             </span>
                                                                         )}
                                                                         {recommendation.savings && (
-                                                                            <div className="font-body text-success-600 mt-1">
-                                                                                💰 Potential savings: {(() => {
+                                                                            <div className="font-body text-success-600 dark:text-success-400 mt-1 flex items-center gap-1">
+                                                                                <CurrencyDollarIcon className="h-4 w-4" />
+                                                                                <span>Potential savings: {(() => {
                                                                                     if (typeof recommendation.savings === 'number') {
                                                                                         return `$${recommendation.savings.toFixed(4)}`;
                                                                                     } else if (typeof recommendation.savings === 'object' && recommendation.savings !== null) {
@@ -343,7 +344,7 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                                                                     } else {
                                                                                         return String(recommendation.savings || '');
                                                                                     }
-                                                                                })()}
+                                                                                })()}</span>
                                                                             </div>
                                                                         )}
                                                                     </div>
@@ -361,16 +362,16 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-primary-200/30">
                                     <button
                                         onClick={onClose}
-                                        className="btn-secondary font-display font-medium hover:scale-105 transition-all duration-300"
+                                        className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                                     >
                                         Close
                                     </button>
                                     {simulationResult && (
                                         <button
                                             onClick={runSimulation}
-                                            className="btn-primary font-display font-semibold hover:scale-105 transition-all duration-300"
+                                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
                                         >
-                                            <BeakerIcon className="h-4 w-4 mr-2 inline" />
+                                            <BeakerIcon className="w-4 h-4" />
                                             Rerun Simulation
                                         </button>
                                     )}

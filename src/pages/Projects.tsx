@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
-  FiPlus,
-  FiUsers,
-  FiDollarSign,
-  FiTrendingUp,
-  FiRefreshCw,
-} from "react-icons/fi";
+  PlusIcon,
+  UserGroupIcon,
+  CurrencyDollarIcon,
+  ArrowTrendingUpIcon,
+  ArrowPathIcon,
+  TrashIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 import { ProjectService } from "../services/project.service";
 import { Project } from "../types/project.types";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
@@ -144,18 +146,18 @@ const Projects: React.FC = () => {
             <button
               onClick={handleRefreshSpending}
               disabled={refreshing}
-              className="btn-secondary flex gap-2 items-center disabled:opacity-50"
+              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <FiRefreshCw
+              <ArrowPathIcon
                 className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
               />
               {refreshing ? "Refreshing..." : "Refresh Spending"}
             </button>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn-primary flex gap-2 items-center"
+              className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
             >
-              <FiPlus />
+              <PlusIcon className="w-4 h-4" />
               New Project
             </button>
           </div>
@@ -164,32 +166,32 @@ const Projects: React.FC = () => {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 mr-4">
-              <FiUsers className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30 dark:border-primary-500/20 mr-4 shadow-lg">
+              <UserGroupIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
                 Total Projects
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-display font-bold gradient-text-primary">
                 {safeProjects.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="glass rounded-xl border border-success-200/30 dark:border-success-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 mr-4">
-              <FiDollarSign className="w-6 h-6 text-success-600 dark:text-success-400" />
+            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-success-200/30 dark:border-success-500/20 mr-4 shadow-lg">
+              <CurrencyDollarIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
                 Total Budget
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-display font-bold gradient-text-success">
                 $
                 {safeProjects
                   .reduce((sum, p) => sum + (p.budget?.amount || 0), 0)
@@ -199,16 +201,16 @@ const Projects: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="glass rounded-xl border border-accent-200/30 dark:border-accent-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 mr-4">
-              <FiTrendingUp className="w-6 h-6 text-highlight-600 dark:text-highlight-400" />
+            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-accent-200/30 dark:border-accent-500/20 mr-4 shadow-lg">
+              <ArrowTrendingUpIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
                 Active Projects
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-display font-bold gradient-text-accent">
                 {safeProjects.filter((p) => p.isActive !== false).length}
               </p>
             </div>
@@ -218,21 +220,21 @@ const Projects: React.FC = () => {
 
       {/* Projects Grid */}
       {safeProjects.length === 0 ? (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel py-16 text-center">
-          <div className="p-4 rounded-full bg-gradient-to-br from-primary-500/20 to-primary-600/20 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-            <FiUsers className="w-10 h-10 text-primary-600 dark:text-primary-400" />
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel py-16 text-center">
+          <div className="p-4 rounded-full glass border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
+            <UserGroupIcon className="w-10 h-10 text-primary-600 dark:text-primary-400" />
           </div>
-          <h3 className="mb-4 text-2xl font-display font-bold text-secondary-900 dark:text-white">
+          <h3 className="mb-4 text-2xl font-display font-bold gradient-text-primary">
             No projects yet
           </h3>
-          <p className="mb-8 text-secondary-600 dark:text-secondary-300 max-w-md mx-auto">
+          <p className="mb-8 font-body text-secondary-600 dark:text-secondary-300 max-w-md mx-auto">
             Create your first project to start managing AI costs as a team
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-primary inline-flex gap-2 items-center"
+            className="px-6 py-3 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 font-display font-semibold"
           >
-            <FiPlus />
+            <PlusIcon className="w-5 h-5" />
             Create Project
           </button>
         </div>
@@ -300,33 +302,43 @@ const Projects: React.FC = () => {
           size="lg"
         >
           <div className="p-6">
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-red-800 dark:text-red-200 font-medium">
-                Are you sure you want to delete "{selectedProject.name}"?
-              </p>
-              <p className="mt-2 text-sm text-red-600 dark:text-red-300">
-                This action cannot be undone and will remove all associated data including:
-              </p>
-              <ul className="mt-2 ml-4 text-sm text-red-600 dark:text-red-300 list-disc">
-                <li>All project analytics and usage data</li>
-                <li>Budget and spending history</li>
-                <li>Project settings and configurations</li>
-              </ul>
+            <div className="mb-6 glass p-6 rounded-xl border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="p-3 rounded-xl bg-gradient-danger/20 border border-danger-200/30">
+                    <ExclamationTriangleIcon className="w-6 h-6 text-danger-600 dark:text-danger-400" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="text-danger-900 dark:text-danger-100 font-display font-bold text-lg mb-2">
+                    Are you sure you want to delete "{selectedProject.name}"?
+                  </p>
+                  <p className="mt-2 text-sm font-body text-danger-700 dark:text-danger-300">
+                    This action cannot be undone and will remove all associated data including:
+                  </p>
+                  <ul className="mt-3 ml-4 text-sm font-body text-danger-700 dark:text-danger-300 list-disc space-y-1">
+                    <li>All project analytics and usage data</li>
+                    <li>Budget and spending history</li>
+                    <li>Project settings and configurations</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3 justify-end">
+            <div className="flex gap-3 justify-end pt-4 border-t border-primary-200/30">
               <button
                 onClick={() => {
                   setDeleteConfirmOpen(false);
                   setSelectedProject(null);
                 }}
-                className="btn-outline"
+                className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteProject}
-                className="btn-danger"
+                className="px-4 py-2.5 bg-gradient-danger hover:bg-gradient-danger/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-danger transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
               >
+                <TrashIcon className="w-4 h-4" />
                 Delete Project
               </button>
             </div>
