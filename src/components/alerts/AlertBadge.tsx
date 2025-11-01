@@ -38,17 +38,17 @@ export const AlertBadge: React.FC<AlertBadgeProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`relative ${classes.container} text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-xl glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-xl border border-primary-200/30`}
+      className={`relative ${classes.container} text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-xl glass hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20`}
     >
       {showIcon && <BellIcon className={classes.icon} />}
       {count > 0 && (
         <span
-          className={`absolute -top-1 -right-1 inline-flex items-center justify-center ${classes.badge} rounded-full bg-gradient-danger text-white font-display font-bold shadow-lg animate-pulse glow-danger`}
+          className={`absolute -top-1 -right-1 inline-flex items-center justify-center ${classes.badge} rounded-full bg-gradient-danger text-white font-display font-bold shadow-lg animate-pulse`}
         >
           {count > 99 ? "99+" : count}
         </span>
       )}
-      <span className="sr-only">🔔 {count} unread alerts</span>
+      <span className="sr-only">{count} unread alerts</span>
     </button>
   );
 };

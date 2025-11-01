@@ -5,7 +5,9 @@ import { MetricsResponse } from '../../types/telemetry';
 import {
     ArrowUpIcon,
     ArrowDownIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
+    ExclamationTriangleIcon,
+    ChartBarIcon
 } from '@heroicons/react/24/solid';
 
 const getTrendIndicator = (current: number, previous: number) => {
@@ -14,19 +16,19 @@ const getTrendIndicator = (current: number, previous: number) => {
 
     if (percentChange > 10) return {
         icon: ArrowUpIcon,
-        color: 'text-emerald-600',
+        color: 'text-success-600 dark:text-success-400',
         percentage: percentChange.toFixed(1)
     };
 
     if (percentChange < -10) return {
         icon: ArrowDownIcon,
-        color: 'text-rose-600',
+        color: 'text-danger-600 dark:text-danger-400',
         percentage: Math.abs(percentChange).toFixed(1)
     };
 
     return {
         icon: ArrowRightIcon,
-        color: 'text-gray-500',
+        color: 'text-secondary-500 dark:text-secondary-400',
         percentage: percentChange.toFixed(1)
     };
 };
@@ -49,12 +51,12 @@ export const PerformanceOverview: React.FC = () => {
     );
 
     if (error) return (
-        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+        <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
             <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                    <span className="text-white text-sm">⚠️</span>
+                    <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                <span className="font-body text-secondary-900 dark:text-white">
                     Error loading performance metrics
                 </span>
             </div>
@@ -79,7 +81,7 @@ export const PerformanceOverview: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-highlight flex items-center justify-center shadow-lg">
-                        <span className="text-white text-lg">📊</span>
+                        <ChartBarIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">Performance Overview</h2>
                 </div>
@@ -88,7 +90,7 @@ export const PerformanceOverview: React.FC = () => {
                         <button
                             key={frame}
                             onClick={() => setTimeframe(frame)}
-                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/10'}`}
+                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
                         >
                             {frame}
                         </button>
@@ -107,12 +109,12 @@ export const PerformanceOverview: React.FC = () => {
                             <rpmTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
                         {rpmTrend.percentage}% {rpmTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                     <div className="flex justify-between items-center mb-4">
                         <div>
                             <p className="font-display font-medium gradient-text-danger text-sm uppercase tracking-wide">Error Rate</p>
@@ -122,12 +124,12 @@ export const PerformanceOverview: React.FC = () => {
                             <errorRateTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
                         {errorRateTrend.percentage}% {errorRateTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="glass rounded-xl p-6 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                     <div className="flex justify-between items-center mb-4">
                         <div>
                             <p className="font-display font-medium gradient-text-accent text-sm uppercase tracking-wide">Avg Latency</p>
@@ -137,12 +139,12 @@ export const PerformanceOverview: React.FC = () => {
                             <latencyTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
                         {latencyTrend.percentage}% {latencyTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="glass rounded-xl p-6 border border-secondary-200/30 dark:border-secondary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
                     <div className="flex justify-between items-center mb-4">
                         <div>
                             <p className="font-display font-medium gradient-text-secondary text-sm uppercase tracking-wide">P95 Latency</p>
@@ -152,7 +154,7 @@ export const PerformanceOverview: React.FC = () => {
                             <ArrowRightIcon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
                         Performance Threshold
                     </p>
                 </div>

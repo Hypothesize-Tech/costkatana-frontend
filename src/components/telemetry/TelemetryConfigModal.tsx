@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Loader } from 'lucide-react';
+import { X, Loader, CheckCircle, XCircle } from 'lucide-react';
 import { telemetryConfigApi } from '../../services/telemetryConfigApi';
-import styles from './TelemetryConfigModal.module.css';
+import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 
 interface TelemetryConfigModalProps {
     config: any | null;
@@ -93,25 +93,37 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
     };
 
     return (
-        <div className={styles.overlay} onClick={() => onClose(false)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                <div className={styles.header}>
-                    <h2 className={styles.title}>
-                        {config ? 'Edit' : 'Add'} Telemetry Configuration
-                    </h2>
-                    <button onClick={() => onClose(false)} className={styles.closeButton}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => onClose(false)}>
+            <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex justify-between items-center p-6 border-b border-primary-200/30 dark:border-primary-500/20">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                            <Cog6ToothIcon className="w-6 h-6 text-white" />
+                        </div>
+                        <h2 className="text-xl font-display font-bold gradient-text-primary">
+                            {config ? 'Edit' : 'Add'} Telemetry Configuration
+                        </h2>
+                    </div>
+                    <button 
+                        onClick={() => onClose(false)} 
+                        className="btn-icon p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
+                    >
                         <X size={24} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>Endpoint Type *</label>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className="space-y-2">
+                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            Endpoint Type *
+                        </label>
                         <select
                             name="endpointType"
                             value={formData.endpointType}
                             onChange={handleChange}
-                            className={styles.select}
+                            className="input"
                             required
                             disabled={!!config}
                         >
@@ -122,32 +134,36 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             <option value="prometheus">Prometheus</option>
                             <option value="custom">Custom</option>
                         </select>
-                        <span className={styles.hint}>Select your telemetry backend type</span>
+                        <span className="text-xs text-secondary-600 dark:text-secondary-300">Select your telemetry backend type</span>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>Endpoint URL *</label>
+                    <div className="space-y-2">
+                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            Endpoint URL *
+                        </label>
                         <input
                             type="url"
                             name="endpoint"
                             value={formData.endpoint}
                             onChange={handleChange}
-                            className={styles.input}
+                            className="input"
                             placeholder="https://tempo.example.com"
                             required
                         />
-                        <span className={styles.hint}>
+                        <span className="text-xs text-secondary-600 dark:text-secondary-300">
                             Full URL to your telemetry endpoint (e.g., https://tempo.example.com)
                         </span>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>Authentication Type</label>
+                    <div className="space-y-2">
+                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            Authentication Type
+                        </label>
                         <select
                             name="authType"
                             value={formData.authType}
                             onChange={handleChange}
-                            className={styles.select}
+                            className="input"
                         >
                             <option value="none">None</option>
                             <option value="bearer">Bearer Token</option>
@@ -157,8 +173,8 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                     </div>
 
                     {formData.authType !== 'none' && (
-                        <div className={styles.formGroup}>
-                            <label className={styles.label}>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
                                 {formData.authType === 'bearer' ? 'Bearer Token' : 'API Key'}
                             </label>
                             <input
@@ -166,103 +182,121 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                                 name="authToken"
                                 value={formData.authToken}
                                 onChange={handleChange}
-                                className={styles.input}
+                                className="input"
                                 placeholder={config ? 'Leave blank to keep existing' : 'Enter token'}
                             />
-                            <span className={styles.hint}>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-300">
                                 {config ? 'Leave empty to keep existing token' : 'Your authentication token'}
                             </span>
                         </div>
                     )}
 
-                    <div className={styles.row}>
-                        <div className={styles.formGroup}>
-                            <label className={styles.label}>Sync Interval (minutes)</label>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                                Sync Interval (minutes)
+                            </label>
                             <input
                                 type="number"
                                 name="syncIntervalMinutes"
                                 value={formData.syncIntervalMinutes}
                                 onChange={handleChange}
-                                className={styles.input}
+                                className="input"
                                 min="1"
                                 max="1440"
                                 required
                             />
-                            <span className={styles.hint}>How often to poll (1-1440)</span>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-300">How often to poll (1-1440)</span>
                         </div>
 
-                        <div className={styles.formGroup}>
-                            <label className={styles.label}>Query Range (minutes)</label>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                                Query Range (minutes)
+                            </label>
                             <input
                                 type="number"
                                 name="queryTimeRangeMinutes"
                                 value={formData.queryTimeRangeMinutes}
                                 onChange={handleChange}
-                                className={styles.input}
+                                className="input"
                                 min="1"
                                 max="1440"
                                 required
                             />
-                            <span className={styles.hint}>How far back to query</span>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-300">How far back to query</span>
                         </div>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>Service Name Filter (optional)</label>
+                    <div className="space-y-2">
+                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            Service Name Filter (optional)
+                        </label>
                         <input
                             type="text"
                             name="serviceName"
                             value={formData.serviceName}
                             onChange={handleChange}
-                            className={styles.input}
+                            className="input"
                             placeholder="my-ai-service"
                         />
-                        <span className={styles.hint}>Only sync data from this service</span>
+                        <span className="text-xs text-secondary-600 dark:text-secondary-300">Only sync data from this service</span>
                     </div>
 
-                    <div className={styles.checkboxGroup}>
-                        <label className={styles.checkboxLabel}>
-                            <input
-                                type="checkbox"
-                                name="syncEnabled"
-                                checked={formData.syncEnabled}
-                                onChange={handleChange}
-                                className={styles.checkbox}
-                            />
-                            <span>Enable automatic syncing</span>
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="checkbox"
+                            name="syncEnabled"
+                            checked={formData.syncEnabled}
+                            onChange={handleChange}
+                            className="toggle-switch-sm"
+                        />
+                        <label className="text-sm font-display font-medium text-secondary-900 dark:text-white cursor-pointer">
+                            Enable automatic syncing
                         </label>
                     </div>
 
                     {error && (
-                        <div className={styles.error}>
-                            {error}
+                        <div className="glass rounded-lg p-4 border border-danger-200/30 dark:border-danger-500/20 bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                            <div className="flex items-center gap-2">
+                                <XCircle className="w-5 h-5 text-danger-600 dark:text-danger-400" />
+                                <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
+                            </div>
                         </div>
                     )}
 
                     {testResult && (
-                        <div className={testResult.reachable ? styles.success : styles.warning}>
-                            {testResult.reachable ? (
-                                <>
-                                    ✓ Endpoint is reachable (Response time: {testResult.responseTime}ms)
-                                </>
-                            ) : (
-                                <>
-                                    ✗ {testResult.message}
-                                </>
-                            )}
+                        <div className={`glass rounded-lg p-4 border ${testResult.reachable ? 'border-success-200/30 dark:border-success-500/20 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20' : 'border-warning-200/30 dark:border-warning-500/20 bg-gradient-to-r from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20'}`}>
+                            <div className="flex items-center gap-2">
+                                {testResult.reachable ? (
+                                    <>
+                                        <CheckCircle className="w-5 h-5 text-success-600 dark:text-success-400" />
+                                        <span className="text-sm font-body text-success-700 dark:text-success-300">
+                                            Endpoint is reachable (Response time: {testResult.responseTime}ms)
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <XCircle className="w-5 h-5 text-warning-600 dark:text-warning-400" />
+                                        <span className="text-sm font-body text-warning-700 dark:text-warning-300">
+                                            {testResult.message}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     )}
 
-                    <div className={styles.actions}>
+                    {/* Actions */}
+                    <div className="flex justify-between items-center pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
                         <button
                             type="button"
                             onClick={handleTest}
-                            className={styles.testButton}
+                            className="btn-secondary inline-flex items-center gap-2"
                             disabled={testing || !formData.endpoint}
                         >
                             {testing ? (
                                 <>
-                                    <Loader size={16} className={styles.spinning} />
+                                    <Loader size={16} className="animate-spin" />
                                     Testing...
                                 </>
                             ) : (
@@ -270,22 +304,22 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             )}
                         </button>
 
-                        <div className={styles.rightActions}>
+                        <div className="flex gap-3">
                             <button
                                 type="button"
                                 onClick={() => onClose(false)}
-                                className={styles.cancelButton}
+                                className="btn-secondary"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className={styles.submitButton}
+                                className="btn-primary inline-flex items-center gap-2"
                                 disabled={saving}
                             >
                                 {saving ? (
                                     <>
-                                        <Loader size={16} className={styles.spinning} />
+                                        <Loader size={16} className="animate-spin" />
                                         Saving...
                                     </>
                                 ) : (
@@ -301,4 +335,3 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
 };
 
 export default TelemetryConfigModal;
-

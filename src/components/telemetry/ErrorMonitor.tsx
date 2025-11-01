@@ -68,11 +68,11 @@ export const ErrorMonitor: React.FC = () => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <span className="text-white text-sm">⚠️</span>
+                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-body text-light-text-primary dark:text-dark-text-primary">
-                        Error loading error monitor
-                    </span>
+                <span className="font-body text-secondary-900 dark:text-white">
+                    Error loading error monitor
+                </span>
                 </div>
                 <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
                     <ArrowPathIcon className="w-4 h-4" /> Retry
@@ -105,7 +105,7 @@ export const ErrorMonitor: React.FC = () => {
                         <ExclamationTriangleIcon className="w-8 h-8 text-white" />
                     </div>
                     <p className="font-display font-semibold gradient-text-success mb-2">No errors detected</p>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Your system is running smoothly</p>
+                    <p className="font-body text-secondary-600 dark:text-secondary-300">Your system is running smoothly</p>
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -116,11 +116,11 @@ export const ErrorMonitor: React.FC = () => {
                                     <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
                                         <ExclamationTriangleIcon className="w-4 h-4 text-white" />
                                     </div>
-                                    <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[260px]">
+                                    <p className="font-display font-semibold text-secondary-900 dark:text-white truncate max-w-[260px]">
                                         {errorSpan.error_message}
                                     </p>
                                 </div>
-                                <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm flex flex-wrap gap-3 ml-9">
+                                <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm flex flex-wrap gap-3 ml-9">
                                     <span className="glass px-2 py-1 rounded-full border border-accent-200/30 shadow-lg backdrop-blur-xl truncate max-w-[180px]">
                                         Route: {errorSpan.route}
                                     </span>

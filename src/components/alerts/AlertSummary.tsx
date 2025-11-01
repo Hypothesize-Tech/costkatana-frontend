@@ -5,6 +5,9 @@ import {
   InformationCircleIcon,
   CheckCircleIcon,
   XCircleIcon,
+  ChartBarIcon,
+  ClipboardDocumentIcon,
+  BellIcon,
 } from "@heroicons/react/24/outline";
 
 interface AlertSummaryProps {
@@ -56,45 +59,49 @@ export const AlertSummary: React.FC<AlertSummaryProps> = ({ summary }) => {
   ];
 
   return (
-    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+    <div className="glass rounded-xl p-8 border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mb-8">
       <div className="flex items-center mb-6">
-        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
+        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+          <ChartBarIcon className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl font-display font-bold gradient-text">📊 Alert Summary</h2>
+        <h2 className="text-2xl font-display font-bold gradient-text-primary">Alert Summary</h2>
       </div>
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 gap-6 mb-8">
-        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105">
-          <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">📋 Total Alerts</p>
-          <p className="text-3xl font-display font-bold gradient-text">{summary.total}</p>
+        <div className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-500/20 hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-3 mb-2">
+            <ClipboardDocumentIcon className="w-5 h-5 text-primary-500" />
+            <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Alerts</p>
+          </div>
+          <p className="text-3xl font-display font-bold gradient-text-primary">{summary.total}</p>
         </div>
-        <div className="glass rounded-2xl p-6 border border-primary-200/30 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105">
-          <p className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400 mb-2">🔔 Unread</p>
+        <div className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-500/20 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+          <div className="flex items-center gap-3 mb-2">
+            <BellIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <p className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400">Unread</p>
+          </div>
           <p className="text-3xl font-display font-bold text-primary-700 dark:text-primary-300">{summary.unread}</p>
         </div>
       </div>
 
       {/* Severity Breakdown */}
       <div className="space-y-4">
-        <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">By Severity</h3>
+        <h3 className="text-lg font-display font-semibold gradient-text-secondary">By Severity</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {severityCards.map((card) => (
             <div
               key={card.label}
-              className={`glass rounded-2xl p-4 ${card.bgColor} border border-primary-200/30 backdrop-blur-xl hover:scale-105 transition-all duration-300 shadow-lg`}
+              className={`glass rounded-xl p-4 border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl hover:scale-105 transition-all duration-300 shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel`}
             >
               <div className="flex flex-col items-center text-center">
-                <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center mb-3 shadow-lg glow-${card.label.toLowerCase()}`}>
+                <div className={`w-12 h-12 rounded-xl ${card.gradient} flex items-center justify-center mb-3 shadow-lg`}>
                   <card.icon className="h-6 w-6 text-white" />
                 </div>
-                <p className="text-xs font-display font-bold uppercase tracking-wider text-light-text-muted dark:text-dark-text-muted mb-1">
+                <p className="text-xs font-display font-bold uppercase tracking-wider text-secondary-600 dark:text-secondary-300 mb-1">
                   {card.label}
                 </p>
-                <p className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
                   {card.count}
                 </p>
               </div>
@@ -106,17 +113,20 @@ export const AlertSummary: React.FC<AlertSummaryProps> = ({ summary }) => {
       {/* Type Breakdown */}
       {Object.keys(summary.byType).length > 0 && (
         <div className="mt-8">
-          <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">📋 By Type</h3>
+          <div className="flex items-center gap-3 mb-4">
+            <ClipboardDocumentIcon className="w-5 h-5 text-primary-500" />
+            <h3 className="text-lg font-display font-semibold gradient-text-secondary">By Type</h3>
+          </div>
           <div className="space-y-3">
             {Object.entries(summary.byType).map(([type, count]) => (
-              <div key={type} className="flex items-center justify-between p-3 glass rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-200 shadow-sm backdrop-blur-xl">
-                <span className="text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              <div key={type} className="flex items-center justify-between p-3 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-200 shadow-sm backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <span className="text-sm font-display font-medium text-secondary-900 dark:text-white">
                   {type
                     .split("_")
                     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                     .join(" ")}
                 </span>
-                <span className="text-sm font-display font-bold gradient-text">
+                <span className="text-sm font-display font-bold gradient-text-primary">
                   {count}
                 </span>
               </div>

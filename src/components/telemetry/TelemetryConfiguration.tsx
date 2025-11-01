@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Activity, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 import { telemetryConfigApi } from '../../services/telemetryConfigApi';
 import TelemetryConfigModal from './TelemetryConfigModal';
-import './TelemetryConfiguration.css';
 
 interface TelemetryConfig {
     _id: string;
@@ -91,13 +90,13 @@ const TelemetryConfiguration: React.FC = () => {
     const getStatusIcon = (status?: 'success' | 'error' | 'partial') => {
         switch (status) {
             case 'success':
-                return <CheckCircle className="telemetry-config-status-icon-success" size={16} />;
+                return <CheckCircle className="text-success-600 dark:text-success-400 flex-shrink-0" size={16} />;
             case 'error':
-                return <XCircle className="telemetry-config-status-icon-error" size={16} />;
+                return <XCircle className="text-danger-600 dark:text-danger-400 flex-shrink-0" size={16} />;
             case 'partial':
-                return <Activity className="telemetry-config-status-icon-partial" size={16} />;
+                return <Activity className="text-warning-600 dark:text-warning-400 flex-shrink-0" size={16} />;
             default:
-                return <Activity className="telemetry-config-status-icon-unknown" size={16} />;
+                return <Activity className="text-secondary-500 dark:text-secondary-400 flex-shrink-0" size={16} />;
         }
     };
 
@@ -115,105 +114,145 @@ const TelemetryConfiguration: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="telemetry-config-container">
-                <div className="telemetry-config-loading">Loading configurations...</div>
+            <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+                    <p className="text-secondary-600 dark:text-secondary-300">Loading configurations...</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="telemetry-config-container">
-            <div className="telemetry-config-header">
-                <div>
-                    <h2 className="telemetry-config-title">External Telemetry Sources</h2>
-                    <p className="telemetry-config-subtitle">
-                        Configure external telemetry endpoints to pull your AI usage data into Cost Katana
-                    </p>
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div>
+                        <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-2">
+                            External Telemetry Sources
+                        </h2>
+                        <p className="text-secondary-600 dark:text-secondary-300">
+                            Configure external telemetry endpoints to pull your AI usage data into Cost Katana
+                        </p>
+                    </div>
+                    <button
+                        onClick={handleCreate}
+                        className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap"
+                    >
+                        <Plus size={20} />
+                        Add Source
+                    </button>
                 </div>
-                <button onClick={handleCreate} className="telemetry-config-create-button">
-                    <Plus size={20} />
-                    Add Source
-                </button>
             </div>
 
+            {/* Empty State */}
             {configs.length === 0 ? (
-                <div className="telemetry-config-empty-state">
-                    <Activity size={48} className="telemetry-config-empty-icon" />
-                    <h3>No External Telemetry Sources</h3>
-                    <p>Add your first telemetry endpoint to start tracking external AI usage</p>
-                    <button onClick={handleCreate} className="telemetry-config-empty-button">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
+                    <div className="flex justify-center mb-4">
+                        <Activity size={48} className="text-secondary-400 dark:text-secondary-600" />
+                    </div>
+                    <h3 className="text-xl font-display font-bold text-secondary-900 dark:text-white mb-2">
+                        No External Telemetry Sources
+                    </h3>
+                    <p className="text-secondary-600 dark:text-secondary-300 mb-6">
+                        Add your first telemetry endpoint to start tracking external AI usage
+                    </p>
+                    <button
+                        onClick={handleCreate}
+                        className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 mx-auto"
+                    >
                         <Plus size={20} />
                         Add Source
                     </button>
                 </div>
             ) : (
-                <div className="telemetry-config-grid">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {configs.map((config) => (
-                        <div key={config._id} className="telemetry-config-card">
-                            <div className="telemetry-config-card-header">
-                                <div className="telemetry-config-card-title">
-                                    <span className="telemetry-config-endpoint-type">
-                                        {getEndpointTypeLabel(config.endpointType)}
-                                    </span>
-                                    {config.syncEnabled && (
-                                        <span className="telemetry-config-badge">Active</span>
-                                    )}
-                                </div>
-                                <div className="telemetry-config-card-actions">
-                                    <button
-                                        onClick={() => handleSync(config._id)}
-                                        className="telemetry-config-icon-button"
-                                        disabled={syncing === config._id}
-                                        title="Trigger manual sync"
-                                    >
-                                        <RefreshCw
-                                            size={16}
-                                            className={syncing === config._id ? 'telemetry-config-spinning' : ''}
-                                        />
-                                    </button>
-                                    <button
-                                        onClick={() => handleEdit(config)}
-                                        className="telemetry-config-icon-button"
-                                        title="Edit"
-                                    >
-                                        <Edit2 size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(config._id)}
-                                        className="telemetry-config-icon-button-danger"
-                                        title="Delete"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
+                        <div
+                            key={config._id}
+                            className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover transition-all duration-300"
+                        >
+                            {/* Card Header */}
+                            <div className="p-6 border-b border-primary-200/20 dark:border-primary-500/10">
+                                <div className="flex items-start justify-between gap-4 mb-3">
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-lg font-display font-bold text-secondary-900 dark:text-white truncate">
+                                            {getEndpointTypeLabel(config.endpointType)}
+                                        </h3>
+                                        {config.syncEnabled && (
+                                            <span className="inline-block mt-2 px-3 py-1 rounded-full bg-success-500/20 dark:bg-success-500/20 text-success-700 dark:text-success-300 text-xs font-semibold border border-success-200/30 dark:border-success-500/20">
+                                                Active
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                        <button
+                                            onClick={() => handleSync(config._id)}
+                                            disabled={syncing === config._id}
+                                            className="p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            title="Trigger manual sync"
+                                        >
+                                            <RefreshCw
+                                                size={16}
+                                                className={syncing === config._id ? 'animate-spin' : ''}
+                                            />
+                                        </button>
+                                        <button
+                                            onClick={() => handleEdit(config)}
+                                            className="p-2 rounded-lg bg-primary-500/10 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 hover:bg-primary-500/20 dark:hover:bg-primary-500/30 transition-colors"
+                                            title="Edit"
+                                        >
+                                            <Edit2 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(config._id)}
+                                            className="p-2 rounded-lg bg-danger-500/10 dark:bg-danger-500/20 text-danger-700 dark:text-danger-300 hover:bg-danger-500/20 dark:hover:bg-danger-500/30 transition-colors"
+                                            title="Delete"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="telemetry-config-card-content">
-                                <div className="telemetry-config-info-row">
-                                    <span className="telemetry-config-label">Endpoint:</span>
-                                    <span className="telemetry-config-value">{config.endpoint}</span>
+                            {/* Card Content */}
+                            <div className="p-6 space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
+                                        Endpoint:
+                                    </span>
+                                    <span className="text-sm font-semibold text-secondary-900 dark:text-white text-right max-w-[60%] break-words">
+                                        {config.endpoint}
+                                    </span>
                                 </div>
 
-                                <div className="telemetry-config-info-row">
-                                    <span className="telemetry-config-label">Sync Interval:</span>
-                                    <span className="telemetry-config-value">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
+                                        Sync Interval:
+                                    </span>
+                                    <span className="text-sm font-semibold text-secondary-900 dark:text-white">
                                         Every {config.syncIntervalMinutes} minutes
                                     </span>
                                 </div>
 
                                 {config.lastSyncAt && (
-                                    <div className="telemetry-config-info-row">
-                                        <span className="telemetry-config-label">Last Sync:</span>
-                                        <span className="telemetry-config-value">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
+                                            Last Sync:
+                                        </span>
+                                        <span className="text-sm font-semibold text-secondary-900 dark:text-white flex items-center gap-2">
                                             {getStatusIcon(config.lastSyncStatus)}
                                             {new Date(config.lastSyncAt).toLocaleString()}
                                         </span>
                                     </div>
                                 )}
 
-                                <div className="telemetry-config-info-row">
-                                    <span className="telemetry-config-label">Records Synced:</span>
-                                    <span className="telemetry-config-value">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
+                                        Records Synced:
+                                    </span>
+                                    <span className="text-sm font-semibold text-secondary-900 dark:text-white">
                                         {config.totalRecordsSynced.toLocaleString()}
                                     </span>
                                 </div>
@@ -234,4 +273,3 @@ const TelemetryConfiguration: React.FC = () => {
 };
 
 export default TelemetryConfiguration;
-

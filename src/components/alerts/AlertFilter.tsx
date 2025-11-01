@@ -1,6 +1,6 @@
 // src/components/alerts/AlertFilter.tsx
 import React from "react";
-import { FunnelIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface AlertFilterProps {
   filters: {
@@ -18,23 +18,26 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
   onReset,
 }) => {
   return (
-    <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+    <div className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="flex items-center mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg glow-primary">
+        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
           <FunnelIcon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary">🔍 Filters</h3>
+        <div className="flex items-center gap-2">
+          <MagnifyingGlassIcon className="w-5 h-5 text-primary-500" />
+          <h3 className="text-lg font-display font-semibold gradient-text-primary">Filters</h3>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <label className="label mb-2">
+          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Type
           </label>
           <select
             value={filters.type}
             onChange={(e) => onFilterChange("type", e.target.value)}
-            className="select"
+            className="input"
           >
             <option value="">All Types</option>
             <option value="cost_alert">Cost Alert</option>
@@ -48,13 +51,13 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
 
         <div>
-          <label className="label mb-2">
+          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Severity
           </label>
           <select
             value={filters.severity}
             onChange={(e) => onFilterChange("severity", e.target.value)}
-            className="select"
+            className="input"
           >
             <option value="">All Severities</option>
             <option value="critical">Critical</option>
@@ -65,15 +68,15 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
 
         <div>
-          <label className="label mb-2">
+          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Status
           </label>
           <select
             value={filters.read}
             onChange={(e) => onFilterChange("read", e.target.value)}
-            className="select"
+            className="input"
           >
-            <option value="">All</option>
+            <option value="all">All</option>
             <option value="unread">Unread</option>
             <option value="read">Read</option>
           </select>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Zap, Eye, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
+import { Database, Zap, Eye, ArrowRight, CheckCircle, XCircle, X, Brain } from 'lucide-react';
 import { apiClient } from '../../config/api';
 
 interface TelemetryRecord {
@@ -108,7 +108,7 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                         </div>
                         <div>
                             <h2 className="text-2xl font-display font-bold gradient-text-primary">Telemetry Data</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <p className="font-body text-secondary-600 dark:text-secondary-300">
                                 View and vectorize telemetry records for semantic search
                             </p>
                         </div>
@@ -172,7 +172,7 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                 {loading ? (
                     <div className="flex items-center justify-center h-32">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mr-3"></div>
-                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Loading telemetry data...</div>
+                        <div className="font-body text-secondary-600 dark:text-secondary-300">Loading telemetry data...</div>
                     </div>
                 ) : records.length === 0 ? (
                     <div className="text-center py-12">
@@ -180,7 +180,7 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                             <Database className="w-8 h-8 text-primary-500" />
                         </div>
                         <h3 className="text-xl font-display font-bold gradient-text mb-2">No telemetry data found</h3>
-                        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Try adjusting your filters or check back later</p>
+                        <p className="font-body text-secondary-600 dark:text-secondary-300">Try adjusting your filters or check back later</p>
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -214,10 +214,10 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                                 />
 
                                 <div className="flex-1">
-                                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                    <div className="font-display font-semibold text-secondary-900 dark:text-white">
                                         {record.operation_name || 'Unknown Operation'}
                                     </div>
-                                    <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                                    <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
                                         {new Date(record.timestamp).toLocaleString()}
                                     </div>
                                     {record.gen_ai_model && (
@@ -239,7 +239,7 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                                             ${record.cost_usd.toFixed(4)}
                                         </span>
                                     ) : (
-                                        <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">-</span>
+                                        <span className="font-body text-secondary-600 dark:text-secondary-300">-</span>
                                     )}
                                 </div>
 
@@ -284,25 +284,25 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                     <div className="grid grid-cols-4 gap-6 text-center">
                         <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                             <div className="text-3xl font-display font-bold gradient-text-primary">{records.length}</div>
-                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Total Records</div>
+                            <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Total Records</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="glass rounded-lg p-4 border border-success-200/30 dark:border-success-500/20 shadow-lg backdrop-blur-xl">
                             <div className="text-3xl font-display font-bold gradient-text-success">
                                 {records.filter(r => isVectorized(r)).length}
                             </div>
-                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Vectorized</div>
+                            <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Vectorized</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-accent-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="glass rounded-lg p-4 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl">
                             <div className="text-3xl font-display font-bold gradient-text-accent">
                                 {records.filter(r => !isVectorized(r)).length}
                             </div>
-                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Not Vectorized</div>
+                            <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Not Vectorized</div>
                         </div>
-                        <div className="glass rounded-lg p-4 border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="glass rounded-lg p-4 border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl">
                             <div className="text-3xl font-display font-bold gradient-text-highlight">
                                 {records.filter(r => r.cost_usd && r.cost_usd > 0).length}
                             </div>
-                            <div className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">With Costs</div>
+                            <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm">With Costs</div>
                         </div>
                     </div>
                 </div>
@@ -311,22 +311,22 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                 <div className="mt-8 glass p-6 rounded-xl border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-8 h-8 rounded-lg bg-gradient-highlight flex items-center justify-center shadow-lg">
-                            <span className="text-white text-sm">🧠</span>
+                            <Brain className="w-5 h-5 text-white" />
                         </div>
                         <h4 className="font-display font-semibold gradient-text-highlight">How Vectorization Works</h4>
                     </div>
                     <div className="flex items-center gap-3 text-sm mb-4 flex-wrap">
-                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Telemetry Data</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl font-display font-medium text-secondary-900 dark:text-white">Telemetry Data</span>
                         <ArrowRight className="w-4 h-4 text-highlight-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">AI Analysis</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl font-display font-medium text-secondary-900 dark:text-white">AI Analysis</span>
                         <ArrowRight className="w-4 h-4 text-highlight-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Vector Embeddings</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl font-display font-medium text-secondary-900 dark:text-white">Vector Embeddings</span>
                         <ArrowRight className="w-4 h-4 text-highlight-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Semantic Search</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl font-display font-medium text-secondary-900 dark:text-white">Semantic Search</span>
                         <ArrowRight className="w-4 h-4 text-highlight-500" />
-                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 shadow-lg backdrop-blur-xl font-display font-medium text-light-text-primary dark:text-dark-text-primary">Smart Insights</span>
+                        <span className="glass px-3 py-2 rounded-lg border border-highlight-200/30 dark:border-highlight-500/20 shadow-lg backdrop-blur-xl font-display font-medium text-secondary-900 dark:text-white">Smart Insights</span>
                     </div>
-                    <p className="font-body text-light-text-primary dark:text-dark-text-primary">
+                    <p className="font-body text-secondary-900 dark:text-white">
                         Vectorized records can be found using natural language queries like "expensive AI operations" or "slow database calls"
                     </p>
                 </div>
@@ -334,16 +334,16 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
 
             {/* Details Modal */}
             {showDetailsModal && selectedRecord && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-                        <div className="p-6 border-b border-gray-200">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowDetailsModal(false)}>
+                    <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6 border-b border-primary-200/30 dark:border-primary-500/20">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-gray-900">Telemetry Record Details</h3>
+                                <h3 className="text-lg font-display font-bold gradient-text-primary">Telemetry Record Details</h3>
                                 <button
                                     onClick={() => setShowDetailsModal(false)}
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="btn-icon p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
                                 >
-                                    ×
+                                    <X size={24} />
                                 </button>
                             </div>
                         </div>
@@ -351,40 +351,40 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                         <div className="p-6 space-y-4">
                             {/* Basic Information */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Basic Information</h4>
+                                <h4 className="font-display font-semibold gradient-text-primary mb-2">Basic Information</h4>
                                 <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="text-gray-500">Operation:</span>
-                                        <div className="font-medium">{selectedRecord.operation_name}</div>
+                                    <div className="glass rounded-lg p-3 border border-primary-200/30 dark:border-primary-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Operation:</span>
+                                        <div className="font-display font-semibold text-secondary-900 dark:text-white mt-1">{selectedRecord.operation_name}</div>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Service:</span>
-                                        <div className="font-medium">{selectedRecord.service_name || 'N/A'}</div>
+                                    <div className="glass rounded-lg p-3 border border-primary-200/30 dark:border-primary-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Service:</span>
+                                        <div className="font-display font-semibold text-secondary-900 dark:text-white mt-1">{selectedRecord.service_name || 'N/A'}</div>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Status:</span>
-                                        <div className={`font-medium ${getStatusColor(selectedRecord.status)}`}>
+                                    <div className="glass rounded-lg p-3 border border-primary-200/30 dark:border-primary-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Status:</span>
+                                        <div className={`font-display font-semibold mt-1 ${getStatusColor(selectedRecord.status)}`}>
                                             {selectedRecord.status}
                                         </div>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Timestamp:</span>
-                                        <div className="font-medium">{new Date(selectedRecord.timestamp).toLocaleString()}</div>
+                                    <div className="glass rounded-lg p-3 border border-primary-200/30 dark:border-primary-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Timestamp:</span>
+                                        <div className="font-display font-semibold text-secondary-900 dark:text-white mt-1">{new Date(selectedRecord.timestamp).toLocaleString()}</div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Performance Metrics */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Performance Metrics</h4>
+                                <h4 className="font-display font-semibold gradient-text-accent mb-2">Performance Metrics</h4>
                                 <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="text-gray-500">Duration:</span>
-                                        <div className="font-medium">{selectedRecord.duration_ms}ms</div>
+                                    <div className="glass rounded-lg p-3 border border-accent-200/30 dark:border-accent-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Duration:</span>
+                                        <div className="font-display font-semibold gradient-text-accent mt-1">{selectedRecord.duration_ms}ms</div>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-500">Cost:</span>
-                                        <div className="font-medium text-green-600">
+                                    <div className="glass rounded-lg p-3 border border-success-200/30 dark:border-success-500/20">
+                                        <span className="text-secondary-600 dark:text-secondary-300 font-medium">Cost:</span>
+                                        <div className="font-display font-semibold gradient-text-success mt-1">
                                             {selectedRecord.cost_usd ? `$${selectedRecord.cost_usd.toFixed(4)}` : 'N/A'}
                                         </div>
                                     </div>
@@ -394,15 +394,15 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
                             {/* AI Model Information */}
                             {selectedRecord.gen_ai_model && (
                                 <div>
-                                    <h4 className="font-medium text-gray-900 mb-2">AI Model Information</h4>
+                                    <h4 className="font-display font-semibold gradient-text-secondary mb-2">AI Model Information</h4>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                            <span className="text-gray-500">Model:</span>
-                                            <div className="font-medium text-purple-600">{selectedRecord.gen_ai_model}</div>
+                                        <div className="glass rounded-lg p-3 border border-secondary-200/30 dark:border-secondary-500/20">
+                                            <span className="text-secondary-600 dark:text-secondary-300 font-medium">Model:</span>
+                                            <div className="font-display font-semibold gradient-text-secondary mt-1">{selectedRecord.gen_ai_model}</div>
                                         </div>
-                                        <div>
-                                            <span className="text-gray-500">System:</span>
-                                            <div className="font-medium">{selectedRecord.gen_ai_system || 'N/A'}</div>
+                                        <div className="glass rounded-lg p-3 border border-secondary-200/30 dark:border-secondary-500/20">
+                                            <span className="text-secondary-600 dark:text-secondary-300 font-medium">System:</span>
+                                            <div className="font-display font-semibold text-secondary-900 dark:text-white mt-1">{selectedRecord.gen_ai_system || 'N/A'}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -410,48 +410,52 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
 
                             {/* Vectorization Status */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Vectorization Status</h4>
-                                <div className="flex items-center gap-2">
-                                    {isVectorized(selectedRecord) ? (
-                                        <>
-                                            <CheckCircle className="w-5 h-5 text-green-500" />
-                                            <span className="text-green-700">Vectorized</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <XCircle className="w-5 h-5 text-gray-400" />
-                                            <span className="text-gray-600">Not Vectorized</span>
-                                        </>
-                                    )}
+                                <h4 className="font-display font-semibold gradient-text-info mb-2">Vectorization Status</h4>
+                                <div className="glass rounded-lg p-3 border border-info-200/30 dark:border-info-500/20 mb-3">
+                                    <div className="flex items-center gap-2">
+                                        {isVectorized(selectedRecord) ? (
+                                            <>
+                                                <CheckCircle className="w-5 h-5 text-success-600 dark:text-success-400" />
+                                                <span className="font-display font-semibold text-success-700 dark:text-success-300">Vectorized</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <XCircle className="w-5 h-5 text-secondary-400 dark:text-secondary-600" />
+                                                <span className="font-display font-semibold text-secondary-600 dark:text-secondary-400">Not Vectorized</span>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                                 {selectedRecord.semantic_content && (
-                                    <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
-                                        <strong>Semantic Content:</strong> {selectedRecord.semantic_content}
+                                    <div className="glass rounded-lg p-3 border border-info-200/30 dark:border-info-500/20 mb-3">
+                                        <strong className="font-display font-semibold text-secondary-900 dark:text-white">Semantic Content:</strong>
+                                        <p className="text-xs text-secondary-600 dark:text-secondary-300 mt-1">{selectedRecord.semantic_content}</p>
                                     </div>
                                 )}
                                 {selectedRecord.cost_narrative && (
-                                    <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
-                                        <strong>Cost Narrative:</strong> {selectedRecord.cost_narrative}
+                                    <div className="glass rounded-lg p-3 border border-accent-200/30 dark:border-accent-500/20">
+                                        <strong className="font-display font-semibold text-secondary-900 dark:text-white">Cost Narrative:</strong>
+                                        <p className="text-xs text-secondary-600 dark:text-secondary-300 mt-1">{selectedRecord.cost_narrative}</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Technical Details */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Technical Details</h4>
-                                <div className="bg-gray-50 rounded p-3 text-xs font-mono">
-                                    <div><strong>Trace ID:</strong> {selectedRecord.trace_id}</div>
-                                    <div><strong>Span ID:</strong> {selectedRecord.span_id}</div>
+                                <h4 className="font-display font-semibold gradient-text-secondary mb-2">Technical Details</h4>
+                                <div className="glass rounded-lg p-3 border border-secondary-200/30 dark:border-secondary-500/20 text-xs font-mono">
+                                    <div className="text-secondary-900 dark:text-white"><strong>Trace ID:</strong> {selectedRecord.trace_id}</div>
+                                    <div className="text-secondary-900 dark:text-white"><strong>Span ID:</strong> {selectedRecord.span_id}</div>
                                     {selectedRecord.parent_span_id && (
-                                        <div><strong>Parent Span:</strong> {selectedRecord.parent_span_id}</div>
+                                        <div className="text-secondary-900 dark:text-white"><strong>Parent Span:</strong> {selectedRecord.parent_span_id}</div>
                                     )}
                                 </div>
                             </div>
 
                             {/* Detailed Logs */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Detailed Logs</h4>
-                                <div className="bg-gray-900 rounded p-4 text-green-400 text-xs font-mono max-h-64 overflow-y-auto">
+                                <h4 className="font-display font-semibold gradient-text-secondary mb-2">Detailed Logs</h4>
+                                <div className="glass rounded-lg p-4 border border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-dark-panel text-success-400 text-xs font-mono max-h-64 overflow-y-auto">
                                     <div className="space-y-1">
                                         <div className="text-blue-400">[{new Date(selectedRecord.timestamp).toISOString()}] INFO</div>
                                         <div>Operation: {selectedRecord.operation_name}</div>
@@ -488,9 +492,9 @@ export const TelemetryViewer: React.FC<TelemetryViewerProps> = ({
 
                             {/* Raw Data */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Raw Telemetry Data</h4>
-                                <div className="bg-gray-100 rounded p-3 text-xs">
-                                    <pre className="whitespace-pre-wrap text-gray-700 max-h-32 overflow-y-auto">
+                                <h4 className="font-display font-semibold gradient-text-secondary mb-2">Raw Telemetry Data</h4>
+                                <div className="glass rounded-lg p-3 border border-secondary-200/30 dark:border-secondary-500/20 text-xs">
+                                    <pre className="whitespace-pre-wrap text-secondary-900 dark:text-white max-h-32 overflow-y-auto">
                                         {JSON.stringify(selectedRecord, null, 2)}
                                     </pre>
                                 </div>

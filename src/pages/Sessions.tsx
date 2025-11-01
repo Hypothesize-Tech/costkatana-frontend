@@ -392,9 +392,13 @@ export const Sessions: React.FC = () => {
                 </div>
 
                 {/* Analytics Charts */}
-                {sessions.length > 0 && (
+                {(sessions.length > 0 || (filters.from && filters.to)) && (
                     <div className="mb-6">
-                        <SessionAnalyticsCharts sessions={sessions} />
+                        <SessionAnalyticsCharts
+                            sessions={sessions}
+                            dateFrom={filters.from || undefined}
+                            dateTo={filters.to || undefined}
+                        />
                     </div>
                 )}
 

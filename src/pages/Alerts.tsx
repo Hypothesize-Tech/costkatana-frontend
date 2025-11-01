@@ -1,6 +1,7 @@
 // src/pages/Alerts.tsx
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { BellIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 import { alertService } from "../services/alert.service";
 import { Alert } from "../types";
@@ -31,7 +32,7 @@ export const Alerts: React.FC = () => {
       alertService.getAlerts({
         page,
         ...filters,
-        severity: (filters.severity as any) || undefined,
+        severity: filters.severity ? (filters.severity as "low" | "medium" | "high" | "critical") : undefined,
         read:
           filters.read === "all"
             ? undefined
@@ -122,12 +123,17 @@ export const Alerts: React.FC = () => {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <h1 className="text-2xl font-display font-bold gradient-text-primary">
-              Alerts
-            </h1>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
+                <BellIcon className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-2xl font-display font-bold gradient-text-primary">
+                Alerts
+              </h1>
+            </div>
             <p className="my-2 text-sm text-secondary-600 dark:text-secondary-300">
               Manage and review system alerts and notifications.
             </p>
@@ -136,9 +142,11 @@ export const Alerts: React.FC = () => {
             <button
               type="button"
               onClick={() => markAllAsReadMutation.mutate()}
-              className="btn-primary inline-flex items-center"
+              className="glass px-4 py-2 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-primary hover:bg-gradient-primary/90 transition-all duration-300 inline-flex items-center gap-2 font-display font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={markAllAsReadMutation.isPending}
             >
-              Mark all as read
+              <BellIcon className="w-4 h-4" />
+              {markAllAsReadMutation.isPending ? 'Marking...' : 'Mark all as read'}
             </button>
           </div>
         </div>
@@ -146,7 +154,7 @@ export const Alerts: React.FC = () => {
 
       <AlertSummary summary={summary} />
 
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
+      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6">
         <AlertFilter
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -158,24 +166,35 @@ export const Alerts: React.FC = () => {
             <LoadingSpinner />
           </div>
         ) : isError || !alerts ? (
-          <div className="p-8 text-center text-danger-500">
-            Failed to load alerts. Please try again.
+          <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-body text-secondary-900 dark:text-white">
+                Failed to load alerts. Please try again.
+              </span>
+            </div>
           </div>
         ) : alerts.data.length === 0 ? (
-          <div className="p-8 text-center text-secondary-500 dark:text-secondary-400">No alerts found.</div>
+          <div className="p-8 text-center text-secondary-600 dark:text-secondary-300">No alerts found.</div>
         ) : (
           <>
-            <AlertList
-              alerts={alerts.data}
-              onMarkAsRead={handleMarkAsRead}
-              onDelete={handleDelete}
-              onSnooze={handleSnooze}
-            />
-            <Pagination
-              currentPage={page}
-              totalPages={alerts.pagination.pages}
-              onPageChange={setPage}
-            />
+            <div className="mt-6">
+              <AlertList
+                alerts={alerts.data}
+                onMarkAsRead={handleMarkAsRead}
+                onDelete={handleDelete}
+                onSnooze={handleSnooze}
+              />
+            </div>
+            <div className="mt-6">
+              <Pagination
+                currentPage={page}
+                totalPages={alerts.pagination.pages}
+                onPageChange={setPage}
+              />
+            </div>
           </>
         )}
       </div>

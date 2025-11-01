@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { BackendMetrics, ModelCost } from '../../types/telemetry';
+import { CurrencyDollarIcon, ChartBarIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 const COLORS = [
     '#0ea5e9', '#22c55e', '#f59e0b', '#ef4444',
@@ -38,12 +39,12 @@ export const CostAnalytics: React.FC = () => {
     );
 
     if (error) return (
-        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+        <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
             <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                    <span className="text-white text-sm">⚠️</span>
+                    <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-body text-light-text-primary dark:text-dark-text-primary">
+                <span className="font-body text-secondary-900 dark:text-white">
                     Error loading cost analytics
                 </span>
             </div>
@@ -71,7 +72,7 @@ export const CostAnalytics: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                        <span className="text-white text-lg">💰</span>
+                        <CurrencyDollarIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-display font-bold gradient-text-primary">AI Cost Analytics</h2>
                 </div>
@@ -80,7 +81,7 @@ export const CostAnalytics: React.FC = () => {
                         <button
                             key={frame}
                             onClick={() => setTimeframe(frame)}
-                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-gradient-primary/10'}`}
+                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
                         >
                             {frame}
                         </button>
@@ -89,11 +90,11 @@ export const CostAnalytics: React.FC = () => {
             </div>
 
             {chartData.length === 0 ? (
-                <div className="glass rounded-xl p-8 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+                <div className="glass rounded-xl p-8 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                     <div className="w-16 h-16 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl">📊</span>
+                        <ChartBarIcon className="w-8 h-8 text-accent-500" />
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="font-body text-secondary-600 dark:text-secondary-300">
                         No cost data available for the selected timeframe
                     </p>
                 </div>
@@ -133,7 +134,7 @@ export const CostAnalytics: React.FC = () => {
                                 {chartData.map((m, index) => (
                                     <div key={`${m.display_name}-${index}`} className="glass rounded-lg p-2 border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center max-w-[180px]">
                                         <span className="inline-block w-4 h-4 rounded-full mr-2 shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                        <span className="font-body text-light-text-primary dark:text-dark-text-primary text-sm truncate" title={m.model_name}>{m.display_name}</span>
+                                        <span className="font-body text-secondary-900 dark:text-white text-sm truncate" title={m.model_name}>{m.display_name}</span>
                                     </div>
                                 ))}
                             </div>
@@ -141,11 +142,11 @@ export const CostAnalytics: React.FC = () => {
                     </div>
 
                     {/* Cost Breakdown Table */}
-                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="glass rounded-xl p-6 border border-success-200/30 dark:border-success-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                                    <span className="text-white text-sm">💵</span>
+                                    <CurrencyDollarIcon className="w-5 h-5 text-white" />
                                 </div>
                                 <h3 className="font-display font-semibold gradient-text-success">Total Cost</h3>
                             </div>
@@ -170,11 +171,11 @@ export const CostAnalytics: React.FC = () => {
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center gap-3">
                                                         <span className="inline-block w-4 h-4 rounded-full shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                        <span className="font-body text-light-text-primary dark:text-dark-text-primary truncate max-w-[220px]" title={model.model_name}>{formatModelLabel(model.model_name)}</span>
+                                                        <span className="font-body text-secondary-900 dark:text-white truncate max-w-[220px]" title={model.model_name}>{formatModelLabel(model.model_name)}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3 font-display font-semibold gradient-text-success">${(model.total_cost_usd || 0).toFixed(2)}</td>
-                                                <td className="px-4 py-3 font-body text-light-text-primary dark:text-dark-text-primary">{model.request_count || 0}</td>
+                                                <td className="px-4 py-3 font-body text-secondary-900 dark:text-white">{model.request_count || 0}</td>
                                                 <td className="px-4 py-3 font-display font-semibold gradient-text-accent">{pct}%</td>
                                             </tr>
                                         );
