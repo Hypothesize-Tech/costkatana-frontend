@@ -63,7 +63,7 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
     onPreviewToggle,
     onCodeCopy,
     onCodeDownload,
-    maxHeight = '500px',
+    maxHeight: _maxHeight = '500px',
     allowFullscreen = true,
     sandboxMode = 'strict',
     theme = 'auto'
@@ -86,7 +86,6 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
         const content = message.content;
         const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
         let match;
-        let index = 0;
 
         while ((match = codeBlockRegex.exec(content)) !== null) {
             const language = match[1] || 'text';
@@ -155,29 +154,9 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
         setIsFullscreen(!isFullscreen);
     }, [isFullscreen]);
 
-    // Get preview component for a code block
-    const getPreviewComponent = (block: typeof codeBlocks[0]) => {
-        if (!block.hasPreview) return null;
-
-        return (
-            <div key={`preview-${block.startIndex}`} className="mt-4">
-                <PreviewRenderer
-                    content={block.code}
-                    language={block.language}
-                    showPreview={showPreviewForMessage}
-                    onPreviewToggle={(show) => onPreviewToggle?.(message.id, show)}
-                    maxHeight={maxHeight}
-                    allowFullscreen={allowFullscreen}
-                    sandboxMode={sandboxMode}
-                    theme={theme}
-                />
-            </div>
-        );
-    };
-
     // Custom markdown components
     const markdownComponents = {
-        code({ className, children, ...props }: any) {
+        code({ className, children }: { className?: string; children?: React.ReactNode }) {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : 'text';
             const code = String(children).replace(/\n$/, '');
@@ -187,13 +166,13 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
             return (
                 <div className="relative">
                     <div className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
-                        <div className="flex items-center justify-between px-4 py-2 glass border-b border-primary-200/30">
+                        <div className="flex items-center justify-between px-4 py-2.5 glass border-b border-primary-200/30 bg-gradient-to-r from-primary-50/30 to-transparent dark:from-primary-900/10">
                             <div className="flex items-center space-x-2">
-                                <span className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                                <span className="font-display font-bold text-sm text-light-text-primary dark:text-dark-text-primary capitalize px-2 py-0.5 bg-primary-500/10 rounded-lg">
                                     {language}
                                 </span>
                                 {hasPreview && (
-                                    <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
+                                    <span className="px-2 py-0.5 text-xs font-display font-bold bg-gradient-to-r from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 border border-success-500/30 rounded-lg">
                                         PREVIEW
                                     </span>
                                 )}
@@ -202,25 +181,25 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
                                 {hasPreview && (
                                     <button
                                         onClick={() => setSelectedCodeBlock(blockIndex === -1 ? null : blockIndex)}
-                                        className="p-1 text-xs font-display font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                        className="btn btn-ghost p-1.5 rounded-lg hover:bg-primary-500/10 transition-all"
                                         title="Toggle Preview"
                                     >
-                                        <Eye className="w-3 h-3" />
+                                        <Eye className="w-3.5 h-3.5 text-primary-500" />
                                     </button>
                                 )}
                                 <button
                                     onClick={() => copyCode(code)}
-                                    className="p-1 text-xs font-display font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                    className="btn btn-ghost p-1.5 rounded-lg hover:bg-primary-500/10 transition-all"
                                     title="Copy Code"
                                 >
-                                    {copiedCode === code ? <CheckCircle className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                                    {copiedCode === code ? <CheckCircle className="w-3.5 h-3.5 text-success-500" /> : <Copy className="w-3.5 h-3.5 text-primary-500" />}
                                 </button>
                                 <button
                                     onClick={() => downloadCode(code, language)}
-                                    className="p-1 text-xs font-display font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                    className="btn btn-ghost p-1.5 rounded-lg hover:bg-primary-500/10 transition-all"
                                     title="Download Code"
                                 >
-                                    <Download className="w-3 h-3" />
+                                    <Download className="w-3.5 h-3.5 text-primary-500" />
                                 </button>
                             </div>
                         </div>
@@ -256,23 +235,25 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
     };
 
     return (
-        <div className={`enhanced-chat-message ${className} ${isFullscreen ? 'fixed inset-0 z-50 bg-white dark:bg-gray-900' : ''}`}>
+        <div className={`enhanced-chat-message ${className} ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-light-ambient dark:bg-gradient-dark-ambient' : ''}`}>
             {/* Message Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div className="flex items-center justify-between p-4 glass backdrop-blur-xl border-b border-primary-200/30 shadow-lg">
                 <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${message.role === 'user'
-                            ? 'bg-blue-500 text-white'
-                            : message.role === 'assistant'
-                                ? 'bg-green-500 text-white'
-                                : 'bg-gray-500 text-white'
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${message.role === 'user'
+                        ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
+                        : message.role === 'assistant'
+                            ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white'
+                            : 'bg-gradient-to-br from-secondary-500 to-secondary-600 text-white'
                         }`}>
-                        {message.role === 'user' ? 'U' : message.role === 'assistant' ? 'A' : 'S'}
+                        <span className="font-display font-bold text-sm">
+                            {message.role === 'user' ? 'U' : message.role === 'assistant' ? 'A' : 'S'}
+                        </span>
                     </div>
                     <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">
-                            {message.role === 'user' ? 'You' : message.role === 'assistant' ? 'Assistant' : 'System'}
+                        <h4 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                            {message.role === 'user' ? 'You' : message.role === 'assistant' ? 'AI Assistant' : 'System'}
                         </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                             {message.timestamp.toLocaleTimeString()}
                         </p>
                     </div>
@@ -281,9 +262,9 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
                 <div className="flex items-center space-x-2">
                     {/* Code blocks indicator */}
                     {codeBlocks.length > 0 && (
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                            <Code2 className="w-4 h-4" />
-                            <span>{codeBlocks.length} code block{codeBlocks.length !== 1 ? 's' : ''}</span>
+                        <div className="glass px-3 py-1.5 rounded-lg border border-primary-200/30 flex items-center space-x-1.5 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                            <Code2 className="w-3.5 h-3.5 text-primary-500" />
+                            <span>{codeBlocks.length} block{codeBlocks.length !== 1 ? 's' : ''}</span>
                         </div>
                     )}
 
@@ -291,10 +272,10 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
                     {codeBlocks.some(block => block.hasPreview) && (
                         <button
                             onClick={togglePreview}
-                            className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            className="btn btn-ghost p-2 rounded-lg hover:bg-primary-500/10 transition-all"
                             title={showPreviewForMessage ? 'Hide Previews' : 'Show Previews'}
                         >
-                            {showPreviewForMessage ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showPreviewForMessage ? <EyeOff className="w-4 h-4 text-primary-500" /> : <Eye className="w-4 h-4 text-primary-500" />}
                         </button>
                     )}
 
@@ -302,25 +283,27 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
                     {allowFullscreen && (
                         <button
                             onClick={toggleFullscreen}
-                            className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            className="btn btn-ghost p-2 rounded-lg hover:bg-primary-500/10 transition-all"
                             title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
                         >
-                            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                            {isFullscreen ? <Minimize2 className="w-4 h-4 text-primary-500" /> : <Maximize2 className="w-4 h-4 text-primary-500" />}
                         </button>
                     )}
                 </div>
             </div>
 
             {/* Message Content */}
-            <div className="p-4" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 'auto' }}>
+            <div className="p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 'auto' }}>
                 {/* Thinking section */}
                 {message.thinking && (
-                    <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-2">
-                            <Zap className="w-4 h-4 text-blue-600" />
-                            <span className="font-semibold text-blue-900 dark:text-blue-100">Thinking Process</span>
+                    <div className="mb-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl p-4 shadow-lg">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg">
+                                <Zap className="w-4 h-4 text-primary-500" />
+                            </div>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">Thinking Process</span>
                         </div>
-                        <div className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary whitespace-pre-wrap leading-relaxed">
                             {message.thinking}
                         </div>
                     </div>
@@ -335,25 +318,29 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
 
                 {/* Sources */}
                 {message.sources && message.sources.length > 0 && (
-                    <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-3">
-                            <Layers className="w-4 h-4 text-gray-600" />
-                            <span className="font-semibold text-gray-900 dark:text-white">Sources</span>
+                    <div className="mt-6 glass rounded-xl border border-primary-200/30 backdrop-blur-xl p-4 shadow-lg">
+                        <div className="flex items-center space-x-2 mb-4">
+                            <div className="p-1.5 bg-gradient-to-br from-accent-500/20 to-accent-600/20 rounded-lg">
+                                <Layers className="w-4 h-4 text-accent-500" />
+                            </div>
+                            <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">Sources & References</span>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             {message.sources.map((source, index) => (
-                                <div key={index} className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <div key={index} className="glass rounded-lg border border-primary-200/20 p-3 hover:border-primary-300/40 transition-all cursor-pointer group">
                                     <a
                                         href={source.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                                        className="block"
                                     >
-                                        {source.title}
+                                        <div className="font-display font-semibold text-sm text-primary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-1">
+                                            {source.title}
+                                        </div>
+                                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
+                                            {source.snippet}
+                                        </p>
                                     </a>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                                        {source.snippet}
-                                    </p>
                                 </div>
                             ))}
                         </div>

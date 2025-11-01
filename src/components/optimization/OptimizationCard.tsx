@@ -371,7 +371,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 {!showFeedback && (
                   <button
                     onClick={() => setShowFeedback(true)}
-                    className="btn-secondary"
+                    className="btn btn-secondary"
                   >
                     Provide Feedback
                   </button>

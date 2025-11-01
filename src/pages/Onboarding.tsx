@@ -688,7 +688,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                         <button
                             onClick={handlePrev}
                             disabled={currentStep === 0}
-                            className={`flex items-center px-6 lg:px-8 py-3 lg:py-4 font-semibold rounded-xl lg:rounded-2xl transition-all duration-300 ${currentStep === 0
+                            className={`btn btn-primary flex items-center px-6 lg:px-8 py-3 lg:py-4 font-semibold rounded-xl lg:rounded-2xl transition-all duration-300 ${currentStep === 0
                                 ? 'opacity-50 cursor-not-allowed text-secondary-400 dark:text-secondary-500 bg-secondary-100 dark:bg-secondary-800'
                                 : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-primary-300 dark:hover:border-primary-600'
                                 }`}
@@ -716,7 +716,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                 <button
                                     onClick={handleSkipOnboarding}
                                     disabled={submitting}
-                                    className="flex items-center px-4 lg:px-6 py-2 lg:py-3 font-medium text-secondary-600 dark:text-secondary-300 hover:text-secondary-800 dark:hover:text-secondary-100 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg lg:rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="btn btn-secondary flex items-center px-4 lg:px-6 py-2 lg:py-3 font-medium text-secondary-600 dark:text-secondary-300 hover:text-secondary-800 dark:hover:text-secondary-100 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg lg:rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Skip Setup
                                 </button>

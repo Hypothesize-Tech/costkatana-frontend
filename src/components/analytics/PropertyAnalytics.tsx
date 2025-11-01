@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChartBarIcon, CurrencyDollarIcon, ClockIcon, HashtagIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, CurrencyDollarIcon, ClockIcon, HashtagIcon, TableCellsIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { useProject } from '@/contexts/ProjectContext';
 import { formatCurrency, formatNumber } from '@/utils/formatters';
@@ -82,13 +82,13 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
 
     if (!availableProperties.length) {
         return (
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
-                <div className="text-center py-12">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
-                        <ChartBarIcon className="h-10 w-10 text-white" />
+            <div className="glass backdrop-blur-xl rounded-xl p-6 border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
+                <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 glow-primary shadow-lg">
+                        <ChartBarIcon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text mb-2">📊 No Custom Properties</h3>
-                    <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <h3 className="text-lg font-display font-bold gradient-text-primary mb-2">No Custom Properties</h3>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                         Start using custom properties in your API calls to see analytics here.
                     </p>
                 </div>
@@ -97,22 +97,27 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-5">
             {/* Property Selector */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-                            <ChartBarIcon className="h-6 w-6 text-white" />
+            <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                            <ChartBarIcon className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">📊 Property Analytics</h3>
+                        <div>
+                            <h3 className="text-lg font-display font-bold gradient-text-primary">Property Analytics</h3>
+                            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                                Analyze usage by custom properties
+                            </p>
+                        </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <label className="label">Group by:</label>
+                    <div className="flex items-center gap-3">
+                        <label className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Group by:</label>
                         <select
                             value={selectedProperty}
                             onChange={(e) => setSelectedProperty(e.target.value)}
-                            className="select"
+                            className="input text-xs py-2 px-3 min-w-[200px] bg-white/80 dark:bg-gray-800/80 border-primary-200/30"
                         >
                             {availableProperties.map((prop) => (
                                 <option key={prop.property} value={prop.property}>
@@ -127,57 +132,57 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
             {/* Analytics Summary */}
             {analytics && (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary">
-                                    <HashtagIcon className="h-6 w-6 text-white" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-lg glow-primary shadow-lg shrink-0">
+                                    <HashtagIcon className="w-5 h-5 text-white" />
                                 </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🔢 Unique Values</p>
-                                    <p className="text-3xl font-display font-bold gradient-text">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Unique Values</p>
+                                    <p className="text-xl font-display font-bold gradient-text-primary truncate">
                                         {analytics.summary.uniqueValues}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg glow-success">
-                                    <CurrencyDollarIcon className="h-6 w-6 text-white" />
+                        <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-lg glow-success shadow-lg shrink-0">
+                                    <CurrencyDollarIcon className="w-5 h-5 text-white" />
                                 </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">💰 Total Cost</p>
-                                    <p className="text-3xl font-display font-bold gradient-text-success">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Cost</p>
+                                    <p className="text-xl font-display font-bold gradient-text-success truncate">
                                         {formatCurrency(analytics.summary.totalCost)}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="glass p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border border-secondary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center shadow-lg">
-                                    <HashtagIcon className="h-6 w-6 text-white" />
+                        <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-secondary-500 to-secondary-600 p-2.5 rounded-lg shadow-lg shrink-0">
+                                    <HashtagIcon className="w-5 h-5 text-white" />
                                 </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🔤 Total Tokens</p>
-                                    <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Tokens</p>
+                                    <p className="text-xl font-display font-bold text-secondary-600 dark:text-secondary-400 truncate">
                                         {formatNumber(analytics.summary.totalTokens)}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="glass p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border border-accent-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg glow-accent">
-                                    <ClockIcon className="h-6 w-6 text-white" />
+                        <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-2.5 rounded-lg glow-accent shadow-lg shrink-0">
+                                    <ClockIcon className="w-5 h-5 text-white" />
                                 </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📊 Total Requests</p>
-                                    <p className="text-3xl font-display font-bold gradient-text-accent">
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Requests</p>
+                                    <p className="text-xl font-display font-bold gradient-text-accent truncate">
                                         {formatNumber(analytics.summary.totalRequests)}
                                     </p>
                                 </div>
@@ -186,17 +191,20 @@ export const PropertyAnalytics: React.FC<PropertyAnalyticsProps> = ({ dateRange 
                     </div>
 
                     {/* Detailed Breakdown */}
-                    <div className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30">
-                        <div className="px-8 py-6 border-b border-primary-200/30">
-                            <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                    </svg>
+                    <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
+                        <div className="px-5 py-4 border-b border-primary-200/30">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
+                                    <TableCellsIcon className="w-4 h-4 text-white" />
                                 </div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
-                                    Breakdown by {selectedProperty}
-                                </h3>
+                                <div>
+                                    <h3 className="text-lg font-display font-bold gradient-text-primary">
+                                        Breakdown by {selectedProperty}
+                                    </h3>
+                                    <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                                        Detailed analytics by property value
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div className="overflow-hidden">

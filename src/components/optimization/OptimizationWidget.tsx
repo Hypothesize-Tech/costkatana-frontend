@@ -78,7 +78,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
       <button
         onClick={handleOptimize}
         disabled={optimizeMutation.isPending || !prompt.trim()}
-        className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {optimizeMutation.isPending ? (
           <>

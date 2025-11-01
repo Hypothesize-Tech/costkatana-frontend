@@ -541,14 +541,14 @@ export const Moderation: React.FC = () => {
                                 <button
                                     onClick={() => setThreatPage(prev => Math.max(1, prev - 1))}
                                     disabled={!threats.data.pagination.hasPrev}
-                                    className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="btn btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Previous
                                 </button>
                                 <button
                                     onClick={() => setThreatPage(prev => prev + 1)}
                                     disabled={!threats.data.pagination.hasNext}
-                                    className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="btn btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Next
                                 </button>

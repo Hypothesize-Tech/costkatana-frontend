@@ -3,6 +3,13 @@ import {
   CalendarIcon,
   ChartBarIcon,
   CurrencyDollarIcon,
+  ArrowPathIcon,
+  ArrowsRightLeftIcon,
+  LightBulbIcon,
+  BoltIcon,
+  FolderIcon,
+  ExclamationTriangleIcon,
+  TableCellsIcon,
 } from '@heroicons/react/24/outline';
 import { LoadingSpinner, ErrorBoundary } from '../components/common';
 import { analyticsService, AnalyticsService } from '../services/analytics.service';
@@ -412,73 +419,88 @@ export const Analytics: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
+      <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-6">
+        <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 glow-primary shadow-lg">
+            <ChartBarIcon className="w-8 h-8 text-white" />
+          </div>
+          <LoadingSpinner />
+          <p className="mt-4 text-base font-display font-semibold gradient-text-primary">
+            Loading analytics...
+          </p>
+          <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            Preparing your insights
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <ErrorBoundary>
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen animate-fade-in">
+      <div className="px-5 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen">
         {/* Header */}
-        <div className="mb-8">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center mr-4 shadow-lg">
-                <ChartBarIcon className="h-7 w-7 text-white" />
-              </div>
-              <h1 className="text-4xl font-display font-bold gradient-text-primary">Analytics Dashboard</h1>
-            </div>
-            <div className="flex flex-wrap gap-4 justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-3 glass p-3 rounded-xl border border-primary-200/30">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <CalendarIcon className="w-4 h-4 text-white" />
-                  </div>
-                  <input
-                    type="date"
-                    value={
-                      // If timeRange is a preset, show empty, else show the date string
-                      ['7d', '30d', '90d', '1y'].includes(timeRange)
-                        ? ''
-                        : timeRange
-                    }
-                    onChange={(e) => {
-                      // If user picks a date, set as ISO string
-                      handleTimeRangeChange(e.target.value);
-                    }}
-                    className="input text-sm"
-                  />
-                  <select
-                    value={['7d', '30d', '90d', '1y'].includes(timeRange) ? timeRange : ''}
-                    onChange={e => handleTimeRangeChange(e.target.value)}
-                    className="input text-sm"
-                  >
-                    <option value="">Custom</option>
-                    <option value="7d">Last 7 days</option>
-                    <option value="30d">Last 30 days</option>
-                    <option value="90d">Last 90 days</option>
-                    <option value="1y">Last 1 year</option>
-                  </select>
+        <div className="mb-6">
+          <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-5">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                  <ChartBarIcon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-display font-bold gradient-text-primary">Analytics Dashboard</h1>
+                  <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                    Real-time insights and performance metrics
+                  </p>
                 </div>
               </div>
-              <div className="flex space-x-3">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowComparison(!showComparison)}
-                  className={`px-4 py-2 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${showComparison
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-display font-semibold text-sm transition-all duration-300 hover:scale-105 shrink-0 ${showComparison
                     ? 'btn-primary'
                     : 'btn-secondary'
                     }`}
+                  title="Compare Projects"
                 >
-                  📊 Compare Periods
+                  <ArrowsRightLeftIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Compare</span>
                 </button>
                 <button
                   onClick={handleRefresh}
-                  className="btn-ghost px-4 py-2 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105"
+                  className="btn btn-ghost px-3 py-2 rounded-lg font-display font-semibold text-sm transition-all duration-300 hover:scale-105 shrink-0"
+                  title="Refresh Data"
                 >
-                  🔄 Refresh
+                  <ArrowPathIcon className="w-4 h-4" />
                 </button>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-primary-200/30">
+              <div className="flex items-center gap-2 glass rounded-lg p-2 border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg">
+                  <CalendarIcon className="w-4 h-4 text-primary-500" />
+                </div>
+                <input
+                  type="date"
+                  value={
+                    ['7d', '30d', '90d', '1y'].includes(timeRange)
+                      ? ''
+                      : timeRange
+                  }
+                  onChange={(e) => handleTimeRangeChange(e.target.value)}
+                  className="input text-xs py-1.5 px-3 min-w-[140px] bg-white/80 dark:bg-gray-800/80 border-primary-200/30"
+                />
+                <select
+                  value={['7d', '30d', '90d', '1y'].includes(timeRange) ? timeRange : ''}
+                  onChange={e => handleTimeRangeChange(e.target.value)}
+                  className="input text-xs py-1.5 px-3 min-w-[130px] bg-white/80 dark:bg-gray-800/80 border-primary-200/30"
+                >
+                  <option value="">Custom</option>
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                  <option value="90d">Last 90 days</option>
+                  <option value="1y">Last 1 year</option>
+                </select>
               </div>
             </div>
           </div>
@@ -486,38 +508,42 @@ export const Analytics: React.FC = () => {
 
         {/* Project Selection (Comparison Mode) */}
         {showComparison && (
-          <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+          <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-5 mb-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                  <ArrowsRightLeftIcon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-2xl font-display font-bold gradient-text">
-                  Project Comparison
-                </h3>
+                <div>
+                  <h3 className="text-lg font-display font-bold gradient-text-primary">
+                    Project Comparison
+                  </h3>
+                  <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                    Select 2+ projects to compare
+                  </p>
+                </div>
               </div>
-              <span className="text-sm font-medium text-secondary-600 dark:text-secondary-300 bg-gradient-to-r from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 px-3 py-1 rounded-lg border border-accent-200/30">
-                Select 2+ projects to compare
+              <span className="flex items-center gap-2 text-xs font-display font-semibold text-primary-600 dark:text-primary-400 glass px-3 py-1.5 rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                <FolderIcon className="w-3.5 h-3.5" />
+                {selectedProjects.length} selected
               </span>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {projects.map((project) => (
-                <label key={project._id} className="card card-hover p-4 cursor-pointer transition-all duration-300 hover:scale-105">
-                  <div className="flex items-start space-x-3">
+                <label key={project._id} className="glass backdrop-blur-sm rounded-lg border border-primary-200/30 p-3 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-102 bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30">
+                  <div className="flex items-start gap-2.5">
                     <input
                       type="checkbox"
                       checked={selectedProjects.includes(project._id)}
                       onChange={() => handleProjectSelectionToggle(project._id)}
-                      className="mt-1 w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2"
+                      className="mt-1 w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2 shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-display font-semibold text-secondary-900 dark:text-white truncate block">
+                      <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate block">
                         {project.name}
                       </span>
                       {project.description && (
-                        <span className="text-xs font-body text-secondary-600 dark:text-secondary-300 truncate block mt-1">
+                        <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary truncate block mt-1">
                           {project.description}
                         </span>
                       )}
@@ -527,11 +553,9 @@ export const Analytics: React.FC = () => {
               ))}
             </div>
             {selectedProjects.length < 2 && (
-              <div className="mt-4 p-3 bg-gradient-to-r from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 border border-accent-200/30 rounded-xl">
-                <p className="text-sm font-medium text-accent-700 dark:text-accent-400 flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
+              <div className="mt-4 p-3 glass rounded-lg border border-warning-200/50 bg-gradient-to-br from-warning-50/50 to-transparent dark:from-warning-900/10">
+                <p className="text-xs font-display font-semibold text-warning-700 dark:text-warning-400 flex items-center gap-2">
+                  <ExclamationTriangleIcon className="w-4 h-4 shrink-0" />
                   Select at least 2 projects to compare
                 </p>
               </div>
@@ -545,61 +569,57 @@ export const Analytics: React.FC = () => {
           data && (
             <>
               {/* Summary Cards */}
-              <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-                <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                      <CurrencyDollarIcon className="h-6 w-6 text-white" />
+              <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-lg glow-success shadow-lg shrink-0">
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Cost</p>
-                      <p className="text-3xl font-display font-bold gradient-text-success">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Cost</p>
+                      <p className="text-xl font-display font-bold gradient-text-success truncate">
                         {formatCurrency(data.summary.totalCost)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                      <ChartBarIcon className="h-6 w-6 text-white" />
+                <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-lg glow-primary shadow-lg shrink-0">
+                      <ChartBarIcon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Tokens</p>
-                      <p className="text-3xl font-display font-bold gradient-text">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Tokens</p>
+                      <p className="text-xl font-display font-bold gradient-text-primary truncate">
                         {data.summary.totalTokens.toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center shadow-lg">
-                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
+                <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-secondary-500 to-secondary-600 p-2.5 rounded-lg shadow-lg shrink-0">
+                      <BoltIcon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">API Requests</p>
-                      <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">API Requests</p>
+                      <p className="text-xl font-display font-bold text-secondary-600 dark:text-secondary-400 truncate">
                         {data.summary.totalRequests.toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                      </svg>
+                <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-2.5 rounded-lg glow-accent shadow-lg shrink-0">
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Avg Cost/Request</p>
-                      <p className="text-3xl font-display font-bold gradient-text-accent">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Avg Cost/Request</p>
+                      <p className="text-xl font-display font-bold gradient-text-accent truncate">
                         {formatCurrency(data.summary.averageCostPerRequest)}
                       </p>
                     </div>
@@ -609,30 +629,32 @@ export const Analytics: React.FC = () => {
 
               {/* Budget Utilization (Project View) */}
               {data.project && data.summary.budgetUtilization !== undefined && (
-                <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl mb-8">
-                  <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-                      <CurrencyDollarIcon className="h-5 w-5 text-white" />
+                <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 mb-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                      <CurrencyDollarIcon className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">
-                      Budget Utilization
-                    </h3>
+                    <div>
+                      <h3 className="text-lg font-display font-bold gradient-text-primary">
+                        Budget Utilization
+                      </h3>
+                      <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                        {data.summary.budgetUtilization.toFixed(1)}% of budget used
+                      </p>
+                    </div>
+                    <div className="ml-auto text-right">
+                      <span className="text-base font-display font-bold gradient-text-primary">
+                        {formatCurrency(data.summary.totalCost)} / {data.project.budget?.amount?.toFixed(2) || '0.00'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-display font-semibold text-secondary-900 dark:text-white">
-                      {data.summary.budgetUtilization.toFixed(1)}% of budget used
-                    </span>
-                    <span className="text-lg font-display font-bold gradient-text">
-                      {formatCurrency(data.summary.totalCost)} / {data.project.budget?.amount?.toFixed(2) || '0.00'}
-                    </span>
-                  </div>
-                  <div className="w-full h-4 bg-primary-200/30 rounded-full overflow-hidden">
+                  <div className="w-full h-3 glass rounded-full overflow-hidden border border-primary-200/30">
                     <div
-                      className={`h-4 rounded-full transition-all duration-500 ${data.summary.budgetUtilization > 90
-                        ? 'bg-gradient-danger glow-danger'
+                      className={`h-3 rounded-full transition-all duration-500 ${data.summary.budgetUtilization > 90
+                        ? 'bg-gradient-to-r from-red-500 to-red-600 glow-danger'
                         : data.summary.budgetUtilization > 75
-                          ? 'bg-gradient-warning glow-warning'
-                          : 'bg-gradient-success glow-success'
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 glow-warning'
+                          : 'bg-gradient-to-r from-success-500 to-success-600 glow-success'
                         }`}
                       style={{ width: `${Math.min(data.summary.budgetUtilization, 100)}%` }}
                     />
@@ -641,9 +663,13 @@ export const Analytics: React.FC = () => {
               )}
 
               {/* Charts */}
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <CostTrendChart data={data.timeline} />
-                <ServiceAnalytics data={data.breakdown.services} />
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-6">
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <CostTrendChart data={data.timeline} />
+                </div>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                  <ServiceAnalytics data={data.breakdown.services} />
+                </div>
               </div>
 
               {/* Model Comparison */}
@@ -659,23 +685,21 @@ export const Analytics: React.FC = () => {
 
               {/* Insights */}
               {data?.trends?.insights && data.trends.insights.length > 0 && (
-                <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
-                  <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
+                <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 mb-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                      <LightBulbIcon className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">
-                      💡 Insights & Recommendations
+                    <h3 className="text-lg font-display font-bold gradient-text-primary">
+                      Insights & Recommendations
                     </h3>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {data.trends.insights.map((insight, index) => (
-                      <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
-                        <div className="flex items-start space-x-3">
-                          <div className="flex-shrink-0 mt-1 w-3 h-3 bg-gradient-primary rounded-full shadow-lg glow-primary" />
-                          <p className="font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{insight}</p>
+                      <div key={index} className="glass backdrop-blur-sm rounded-lg p-3.5 border border-primary-200/30 hover:from-primary-50/50 hover:to-primary-100/30 dark:hover:from-primary-900/20 dark:hover:to-primary-800/20 transition-all duration-300 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                        <div className="flex items-start gap-2.5">
+                          <div className="flex-shrink-0 mt-1 w-2 h-2 bg-gradient-primary rounded-full shadow-lg glow-primary" />
+                          <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{insight}</p>
                         </div>
                       </div>
                     ))}
@@ -689,71 +713,67 @@ export const Analytics: React.FC = () => {
           comparison && selectedProjects.length >= 2 && (
             <>
               {/* Comparison Summary */}
-              <div className="mb-8">
-                <div className="card card-gradient p-8 shadow-2xl backdrop-blur-xl">
-                  <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg glow-primary">
-                      <ChartBarIcon className="h-5 w-5 text-white" />
+              <div className="mb-6">
+                <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                      <ChartBarIcon className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text">
+                    <h3 className="text-lg font-display font-bold gradient-text-primary">
                       Comparison Summary
                     </h3>
                   </div>
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="card card-hover p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border-primary-200/30">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                          </svg>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="glass backdrop-blur-sm rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/60 to-white/40 dark:from-dark-card/60 dark:to-dark-card/40 hover:shadow-xl transition-all duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-lg glow-primary shadow-lg shrink-0">
+                          <FolderIcon className="w-4 h-4 text-white" />
                         </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Projects</p>
-                          <p className="text-3xl font-display font-bold gradient-text">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Projects</p>
+                          <p className="text-xl font-display font-bold gradient-text-primary">
                             {comparison.summary?.totalProjects ?? 0}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="card card-hover p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                          <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-sm rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/60 to-white/40 dark:from-dark-card/60 dark:to-dark-card/40 hover:shadow-xl transition-all duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-lg glow-success shadow-lg shrink-0">
+                          <CurrencyDollarIcon className="w-4 h-4 text-white" />
                         </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Cost</p>
-                          <p className="text-3xl font-display font-bold gradient-text-success">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Cost</p>
+                          <p className="text-xl font-display font-bold gradient-text-success truncate">
                             {formatCurrency(comparison.summary?.totalCost ?? 0)}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="card card-hover p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 border-secondary-200/30">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center shadow-lg">
-                          <ChartBarIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-sm rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/60 to-white/40 dark:from-dark-card/60 dark:to-dark-card/40 hover:shadow-xl transition-all duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-secondary-500 to-secondary-600 p-2.5 rounded-lg shadow-lg shrink-0">
+                          <ChartBarIcon className="w-4 h-4 text-white" />
                         </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Tokens</p>
-                          <p className="text-3xl font-display font-bold text-secondary-600 dark:text-secondary-400">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Tokens</p>
+                          <p className="text-xl font-display font-bold text-secondary-600 dark:text-secondary-400 truncate">
                             {(comparison.summary?.totalTokens ?? 0).toLocaleString()}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="card card-hover p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 border-accent-200/30">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
+                    <div className="glass backdrop-blur-sm rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/60 to-white/40 dark:from-dark-card/60 dark:to-dark-card/40 hover:shadow-xl transition-all duration-300">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-2.5 rounded-lg glow-accent shadow-lg shrink-0">
+                          <BoltIcon className="w-4 h-4 text-white" />
                         </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-display font-semibold text-secondary-600 dark:text-secondary-300">Total Requests</p>
-                          <p className="text-3xl font-display font-bold gradient-text-accent">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Requests</p>
+                          <p className="text-xl font-display font-bold gradient-text-accent truncate">
                             {(comparison.summary?.totalRequests ?? 0).toLocaleString()}
                           </p>
                         </div>
@@ -764,19 +784,17 @@ export const Analytics: React.FC = () => {
               </div>
 
               {/* Project Comparison Table */}
-              <div className="card card-gradient shadow-2xl backdrop-blur-xl">
-                <div className="px-8 py-6 border-b border-primary-200/30">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z" />
-                      </svg>
+              <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
+                <div className="px-5 py-4 border-b border-primary-200/30">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
+                      <TableCellsIcon className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-display font-bold gradient-text">
+                      <h3 className="text-lg font-display font-bold gradient-text-primary">
                         Project Details
                       </h3>
-                      <p className="mt-1 text-sm font-body text-secondary-600 dark:text-secondary-300">
+                      <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
                         Detailed comparison of selected projects
                       </p>
                     </div>
@@ -807,7 +825,7 @@ export const Analytics: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-primary-200/20">
-                      {(comparison?.projects || []).map((project, index) => (
+                      {(comparison?.projects || []).map((project) => (
                         <tr key={project?.projectId} className="hover:bg-primary-500/5 transition-colors duration-200">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -873,12 +891,12 @@ export const Analytics: React.FC = () => {
 
         {/* No Data State */}
         {!data && !comparison && (
-          <div className="card card-gradient p-12 shadow-2xl backdrop-blur-xl text-center">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-2xl glow-primary animate-pulse">
-              <ChartBarIcon className="h-10 w-10 text-white" />
+          <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-12 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 glow-primary shadow-lg">
+              <ChartBarIcon className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text mb-2">No Analytics Data</h3>
-            <p className="text-lg font-body text-secondary-600 dark:text-secondary-300">
+            <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No Analytics Data</h3>
+            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Start using your AI services to see analytics here.
             </p>
           </div>

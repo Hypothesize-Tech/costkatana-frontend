@@ -549,7 +549,7 @@ export const Sessions: React.FC = () => {
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, page: prev.page - 1 }))}
                                         disabled={filters.page === 1}
-                                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="btn btn-primary inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Previous
                                     </button>
@@ -559,7 +559,7 @@ export const Sessions: React.FC = () => {
                                     <button
                                         onClick={() => setFilters(prev => ({ ...prev, page: prev.page + 1 }))}
                                         disabled={filters.page === totalPages}
-                                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="btn btn-primary inline-flex items-center px-4 py-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Next
                                     </button>

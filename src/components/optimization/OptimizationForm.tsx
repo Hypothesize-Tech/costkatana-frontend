@@ -172,7 +172,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="glass rounded-lg p-3 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
+            className="btn btn-ghost glass rounded-lg p-3 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
           >
             <XMarkIcon className="w-6 h-6 text-light-text-primary dark:text-dark-text-primary" />
           </button>
@@ -304,7 +304,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   disabled={
                     previewMutation.isPending || !formData.prompt.trim()
                   }
-                  className="btn-secondary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn btn-secondary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {previewMutation.isPending ? (
                     <>
@@ -323,7 +323,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   type="button"
                   onClick={handleCreate}
                   disabled={createMutation.isPending || !formData.prompt.trim()}
-                  className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {createMutation.isPending ? (
                     <>
@@ -355,7 +355,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                 </div>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className="glass rounded-lg p-2 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
+                  className="btn btn-ghost glass rounded-lg p-2 border border-primary-200/30 hover:border-primary-300/50 hover:scale-110 transition-all duration-200"
                 >
                   <XMarkIcon className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary" />
                 </button>

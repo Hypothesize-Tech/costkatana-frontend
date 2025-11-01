@@ -180,7 +180,7 @@ export const SessionReplayPage: React.FC = () => {
                                     <button
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
+                                        className="btn btn-primary px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
                                     >
                                         Previous
                                     </button>
@@ -190,7 +190,7 @@ export const SessionReplayPage: React.FC = () => {
                                     <button
                                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
+                                        className="btn btn-primary px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
                                     >
                                         Next
                                     </button>

@@ -707,7 +707,7 @@ const ConversationsTab: React.FC<{ userId: string }> = ({ userId }) => {
                             <button
                                 disabled={page === 1}
                                 onClick={() => setPage(page - 1)}
-                                className="p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                                className="btn btn-secondary p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                             >
                                 <ChevronLeftIcon className="w-5 h-5" />
                                 Previous
@@ -718,7 +718,7 @@ const ConversationsTab: React.FC<{ userId: string }> = ({ userId }) => {
                             <button
                                 disabled={page === totalPages}
                                 onClick={() => setPage(page + 1)}
-                                className="p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                                className="btn btn-secondary p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                             >
                                 Next
                                 <ChevronRightIcon className="w-5 h-5" />

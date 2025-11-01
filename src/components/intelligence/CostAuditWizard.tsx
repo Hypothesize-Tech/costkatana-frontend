@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
-  FiChevronRight,
-  FiChevronLeft,
-  FiCheck,
-  FiAlertCircle,
-  FiDollarSign,
-  FiSettings,
-  FiZap,
-  FiTrendingUp,
-} from "react-icons/fi";
+  CheckIcon,
+  ExclamationCircleIcon,
+  CurrencyDollarIcon,
+  Cog6ToothIcon,
+  BoltIcon,
+  ArrowTrendingUpIcon,
+  ChartBarIcon,
+  CpuChipIcon,
+  HashtagIcon,
+  LightBulbIcon,
+  ClipboardDocumentCheckIcon,
+} from "@heroicons/react/24/outline";
 import { optimizationService } from "../../services/optimization.service";
 import { intelligenceService } from "../../services/intelligence.service";
 import { ProactiveTip } from "./ProactiveTip";
 import { LoadingSpinner } from "../common/LoadingSpinner";
+import { ChevronLeftIcon, ChevronRightIcon, SparklesIcon, TargetIcon } from "lucide-react";
 
 interface WizardStep {
   id: string;
@@ -30,25 +34,25 @@ const wizardSteps: WizardStep[] = [
     id: "analyze",
     title: "Analyze Usage",
     description: "We'll analyze your recent AI usage patterns",
-    icon: <FiTrendingUp />,
+    icon: <ArrowTrendingUpIcon className="w-5 h-5" />,
   },
   {
     id: "identify",
     title: "Identify Opportunities",
     description: "Find potential areas for cost optimization",
-    icon: <FiAlertCircle />,
+    icon: <ExclamationCircleIcon className="w-5 h-5" />,
   },
   {
     id: "configure",
     title: "Configure Optimizations",
     description: "Select and configure optimization strategies",
-    icon: <FiSettings />,
+    icon: <Cog6ToothIcon className="w-5 h-5" />,
   },
   {
     id: "review",
     title: "Review & Apply",
     description: "Review recommendations and apply changes",
-    icon: <FiCheck />,
+    icon: <CheckIcon className="w-5 h-5" />,
   },
 ];
 
@@ -348,9 +352,12 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                 <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center animate-pulse shadow-lg">
                   <LoadingSpinner size="large" />
                 </div>
-                <p className="text-xl font-display font-semibold gradient-text-primary mb-2">
-                  🧠 Analyzing Usage Patterns
-                </p>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <CpuChipIcon className="w-5 h-5 text-primary-500" />
+                  <p className="text-xl font-display font-semibold gradient-text-primary">
+                    Analyzing Usage Patterns
+                  </p>
+                </div>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Generating intelligent cost optimization recommendations...
                 </p>
@@ -358,10 +365,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
             ) : analysisResults ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                  <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
+                  <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                        <span className="text-white text-lg">💰</span>
+                      <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-lg glow-success shadow-lg">
+                        <CurrencyDollarIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="font-body text-sm text-success-600 dark:text-success-400">
                         Total Cost (30 days)
@@ -371,10 +378,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                       ${(analysisResults.totalCost || 0).toFixed(2)}
                     </div>
                   </div>
-                  <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
+                  <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                        <span className="text-white text-lg">🔤</span>
+                      <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-lg glow-primary shadow-lg">
+                        <HashtagIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="font-body text-sm text-primary-600 dark:text-primary-400">Average Tokens</div>
                     </div>
@@ -387,10 +394,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                         ).toLocaleString()}
                     </div>
                   </div>
-                  <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
+                  <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                        <span className="text-white text-lg">📊</span>
+                      <div className="bg-gradient-to-br from-secondary-500 to-secondary-600 p-2.5 rounded-lg shadow-lg">
+                        <ChartBarIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="font-body text-sm text-secondary-600 dark:text-secondary-400">API Calls</div>
                     </div>
@@ -401,10 +408,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                 </div>
 
                 {analysisResults.usageCount === 0 ? (
-                  <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-6">
+                  <div className="glass backdrop-blur-xl rounded-xl border border-warning-200/30 shadow-xl bg-gradient-to-br from-yellow-50/50 to-yellow-100/30 dark:from-yellow-900/10 p-4">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                        <span className="text-white text-xl">📊</span>
+                      <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2.5 rounded-xl shadow-lg">
+                        <ChartBarIcon className="w-5 h-5 text-white" />
                       </div>
                       <h4 className="text-xl font-display font-bold gradient-text-warning">
                         No Usage Data Found
@@ -425,10 +432,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                     </a>
                   </div>
                 ) : (
-                  <div className="glass rounded-xl border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-success/10 p-6">
+                  <div className="glass backdrop-blur-xl rounded-xl border border-success-200/30 shadow-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/10 p-4">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg animate-pulse">
-                        <span className="text-white text-xl">✅</span>
+                      <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-xl shadow-lg">
+                        <CheckIcon className="w-5 h-5 text-white" />
                       </div>
                       <h4 className="text-xl font-display font-bold gradient-text-success">
                         Analysis Complete
@@ -449,9 +456,9 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       case 1: // Identify
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl">🎯</span>
+            <div className="text-center mb-6">
+              <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-primary shadow-lg">
+                <TargetIcon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-display font-bold gradient-text-primary mb-2">
                 Optimization Opportunities Found
@@ -482,15 +489,27 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                     className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-[1.02] transition-transform duration-300"
                   >
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                        <FiZap className="w-6 h-6 text-white" />
+                      <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                        <BoltIcon className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-display font-bold gradient-text-primary mb-2">
-                          ⚡ Optimization Available
-                        </h4>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="text-lg font-display font-bold gradient-text-primary">
+                            Optimization Available
+                          </h4>
+                        </div>
                         <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-3">
-                          {suggestion.applied ? "✅ Applied: " : "💡 Available: "}
+                          {suggestion.applied ? (
+                            <>
+                              <CheckIcon className="w-4 h-4 inline text-success-500 mr-1" />
+                              Applied:{" "}
+                            </>
+                          ) : (
+                            <>
+                              <LightBulbIcon className="w-4 h-4 inline text-primary-500 mr-1" />
+                              Available:{" "}
+                            </>
+                          )}
                           Save <span className="font-semibold gradient-text-success">${(suggestion.costSaved || 0).toFixed(2)}</span>
                           <span className="ml-2 px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 text-sm font-medium">
                             {(suggestion.improvementPercentage || 0).toFixed(1)}% improvement
@@ -512,9 +531,9 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                   </div>
                 ))
             ) : (
-              <div className="glass rounded-xl border border-secondary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-secondary mx-auto mb-4 flex items-center justify-center shadow-lg">
-                  <span className="text-white text-2xl">🔍</span>
+              <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8 text-center">
+                <div className="bg-gradient-to-br from-secondary-500 to-secondary-600 p-3 rounded-xl mx-auto mb-4 inline-flex items-center justify-center shadow-lg">
+                  <ExclamationCircleIcon className="w-6 h-6 text-white" />
                 </div>
                 <h4 className="text-xl font-display font-bold gradient-text-secondary mb-2">
                   No Opportunities Found
@@ -525,10 +544,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
               </div>
             )}
 
-            <div className="glass rounded-xl border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-success/10 p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                  <FiDollarSign className="w-6 h-6 text-white" />
+            <div className="glass backdrop-blur-xl rounded-xl border border-success-200/30 shadow-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/10 p-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-xl glow-success shadow-lg">
+                  <CurrencyDollarIcon className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h4 className="text-xl font-display font-bold gradient-text-success">
@@ -559,7 +578,8 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                   .length > 0 && (
                   <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                     <p className="font-body text-success-700 dark:text-success-300">
-                      💡 From{" "}
+                      <LightBulbIcon className="w-4 h-4 inline mr-1" />
+                      From{" "}
                       <span className="font-semibold">
                         {
                           analysisResults.suggestions.filter((s: any) => !s.applied)
@@ -581,9 +601,9 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       case 2: // Configure
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl">⚙️</span>
+            <div className="text-center mb-6">
+              <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-primary shadow-lg">
+                <Cog6ToothIcon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-display font-bold gradient-text-primary mb-2">
                 Select Optimizations to Apply
@@ -608,7 +628,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                     : "border-primary-200 hover:border-primary-400"
                     }`}>
                     {selectedOptimizations.has(rec.id) && (
-                      <span className="text-white text-sm">✓</span>
+                      <CheckIcon className="w-4 h-4 text-white" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -617,8 +637,8 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                       {rec.description}
                     </p>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                        <FiTrendingUp className="w-4 h-4 text-white" />
+                      <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-lg glow-success shadow-lg">
+                        <ArrowTrendingUpIcon className="w-4 h-4 text-white" />
                       </div>
                       <span className="font-display font-semibold gradient-text-success">
                         Save ${rec.savings.toFixed(2)}/month
@@ -629,9 +649,9 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
               </div>
             ))}
 
-            <div className="glass rounded-xl border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-success/10 p-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-success mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl">💰</span>
+            <div className="glass backdrop-blur-xl rounded-xl border border-success-200/30 shadow-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/10 p-4 text-center">
+              <div className="bg-gradient-to-br from-success-500 to-success-600 p-3 rounded-xl mx-auto mb-4 inline-flex items-center justify-center glow-success shadow-lg">
+                <CurrencyDollarIcon className="w-6 h-6 text-white" />
               </div>
               <div className="font-body text-success-600 dark:text-success-400 mb-2">
                 Total Estimated Savings
@@ -646,9 +666,9 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       case 3: // Review
         return (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-gradient-success mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl">📋</span>
+            <div className="text-center mb-6">
+              <div className="bg-gradient-to-br from-success-500 to-success-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-success shadow-lg">
+                <ClipboardDocumentCheckIcon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-2xl font-display font-bold gradient-text-primary mb-2">
                 Review Your Selections
@@ -663,20 +683,20 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                 .filter((rec) => selectedOptimizations.has(rec.id))
                 .map((rec) => (
                   <div key={rec.id} className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                      <FiCheck className="w-4 h-4 text-white" />
+                    <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-lg glow-success shadow-lg">
+                      <CheckIcon className="w-4 h-4 text-white" />
                     </div>
                     <span className="font-display font-semibold gradient-text-primary">{rec.title}</span>
                   </div>
                 ))}
             </div>
 
-            <div className="glass rounded-xl border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-success/10 p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-success mx-auto mb-6 flex items-center justify-center shadow-lg animate-pulse">
-                <FiZap className="w-10 h-10 text-white" />
+            <div className="glass backdrop-blur-xl rounded-xl border border-success-200/30 shadow-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/10 p-6 text-center">
+              <div className="bg-gradient-to-br from-success-500 to-success-600 p-4 rounded-xl mx-auto mb-4 inline-flex items-center justify-center glow-success shadow-lg">
+                <BoltIcon className="w-8 h-8 text-white" />
               </div>
-              <h4 className="text-2xl font-display font-bold gradient-text-success mb-4">
-                🚀 Ready to Optimize!
+              <h4 className="text-xl font-display font-bold gradient-text-success mb-3">
+                Ready to Optimize!
               </h4>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">
                 You'll save approximately <span className="font-semibold gradient-text-success">${potentialSavings.toFixed(2)}</span> per
@@ -694,7 +714,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
-                    <span>⚡</span>
+                    <BoltIcon className="w-4 h-4" />
                     Apply Optimizations
                   </span>
                 )}
@@ -710,8 +730,8 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
       {/* Header */}
       <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
         <div className="text-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center shadow-lg">
-            <span className="text-white text-3xl">🧙‍♂️</span>
+          <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-4 rounded-2xl mx-auto mb-4 inline-flex items-center justify-center glow-primary shadow-lg">
+            <SparklesIcon className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">
             Cost Audit Wizard
@@ -738,7 +758,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                     }`}
                 >
                   {index < currentStep ? (
-                    <FiCheck size={20} />
+                    <CheckIcon className="w-5 h-5" />
                   ) : (
                     <span className="font-display font-bold">{index + 1}</span>
                   )}
@@ -774,7 +794,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
           disabled={currentStep === 0 || loading}
           className="btn-ghost flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300"
         >
-          <FiChevronLeft />
+          <ChevronLeftIcon className="w-4 h-4" />
           <span>Previous</span>
         </button>
 
@@ -784,10 +804,10 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
               setCurrentStep(Math.min(wizardSteps.length - 1, currentStep + 1))
             }
             disabled={loading || (currentStep === 0 && !analysisResults)}
-            className="btn-primary flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300"
+            className="btn btn-primary flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300"
           >
             <span>Next</span>
-            <FiChevronRight />
+            <ChevronRightIcon className="w-4 h-4" />
           </button>
         )}
       </div>

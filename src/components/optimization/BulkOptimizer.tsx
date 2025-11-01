@@ -120,7 +120,7 @@ export const BulkOptimizer: React.FC = () => {
           </div>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`btn-primary ml-6 ${isOpen ? 'btn-secondary' : ''}`}
+            className={`btn btn-primary ml-6 ${isOpen ? 'btn-secondary' : ''}`}
           >
             {isOpen ? "Cancel" : "Start Analysis"}
           </button>

@@ -19,6 +19,9 @@ import {
   XMarkIcon,
   PaperClipIcon,
   EyeIcon,
+  ShieldCheckIcon,
+  AdjustmentsHorizontalIcon,
+  LockOpenIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
@@ -1327,52 +1330,54 @@ export const ConversationalAgent: React.FC = () => {
       <>
         {/* Thinking Section */}
         {message?.thinking && (
-          <div className="mb-4 glass rounded-xl border border-primary-200/30 overflow-hidden">
+          <div className="mb-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl overflow-hidden shadow-lg">
             <button
               onClick={() =>
                 setExpandedThinking(
                   expandedThinking === message.id ? null : message.id,
                 )
               }
-              className="w-full flex items-center gap-3 p-4 hover:bg-primary-500/5 transition-all duration-300"
+              className="w-full flex items-center gap-3 p-4 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-transparent transition-all duration-300"
             >
-              <div className="text-lg">🤔</div>
-              <div className="flex-1 text-left font-display font-medium text-light-text-primary dark:text-dark-text-primary">
-                {message.thinking.title || "Thinking..."}
+              <div className="p-2 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg">
+                <span className="text-lg">🤔</span>
+              </div>
+              <div className="flex-1 text-left font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                {message.thinking.title || "Thinking Process"}
               </div>
               <ChevronDownIcon
-                className={`w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary transition-transform duration-300 ${expandedThinking === message.id ? "rotate-180" : ""
+                className={`w-5 h-5 text-primary-500 transition-transform duration-300 ${expandedThinking === message.id ? "rotate-180" : ""
                   }`}
               />
             </button>
 
             {expandedThinking === message.id && (
-              <div className="p-4 border-t border-primary-200/30 animate-fade-in">
+              <div className="p-5 border-t border-primary-200/30 animate-fade-in bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
                 {message.thinking.summary && (
-                  <div className="mb-4 p-3 glass rounded-lg border-l-3 border-l-primary-500">
-                    <strong className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Summary:</strong>{" "}
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary">{message.thinking.summary}</span>
+                  <div className="mb-4 p-4 glass rounded-lg border-l-4 border-l-primary-500 shadow-md">
+                    <strong className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">Summary:</strong>{" "}
+                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">{message.thinking.summary}</span>
                   </div>
                 )}
 
                 <div className="space-y-3">
                   {message.thinking.steps.map((step, index) => (
-                    <div key={index} className="p-3 glass rounded-lg border border-primary-200/20">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="bg-gradient-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-display font-bold">
+                    <div key={index} className="p-4 glass rounded-lg border border-primary-200/30 shadow-md hover:border-primary-300/50 transition-all">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="bg-gradient-to-br from-primary-500 to-primary-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm font-display font-bold shadow-lg">
                           {step.step}
                         </span>
-                        <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                        <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                           {step.description}
                         </span>
                       </div>
-                      <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2 ml-9">
+                      <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 ml-11 leading-relaxed">
                         {step.reasoning}
                       </div>
                       {step.outcome && (
-                        <div className="ml-9 p-2 bg-gradient-success/10 rounded-lg border border-success-200/30">
-                          <strong className="font-display font-semibold text-success-600">Outcome:</strong>{" "}
-                          <span className="text-success-700 dark:text-success-400">{step.outcome}</span>
+                        <div className="ml-11 p-3 glass rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20">
+                          <strong className="font-display font-bold text-success-600 dark:text-success-400">Outcome:</strong>{" "}
+                          <span className="font-body text-success-700 dark:text-success-300">{step.outcome}</span>
                         </div>
                       )}
                     </div>
@@ -1787,90 +1792,118 @@ export const ConversationalAgent: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="glass backdrop-blur-xl border-b border-primary-200/30 shadow-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
-                <SparklesIcon className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h2 className="font-display font-bold text-xl gradient-text-primary">AI Assistant</h2>
-                <p className="text-xs text-secondary-600 dark:text-secondary-300">Chat with your AI cost optimization assistant</p>
-              </div>
-            </div>
-
-            {/* Chat Mode Controls */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-3">
-                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
-                  Chat Mode:
-                </label>
-                <div className="relative">
-                  <select
-                    value={chatMode}
-                    onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
-                    className="input text-sm py-2 px-3 pr-8 min-w-[120px] appearance-none bg-white dark:bg-gray-800"
-                  >
-                    <option value="fastest">Fastest</option>
-                    <option value="balanced">Balanced</option>
-                    <option value="cheapest">Cheapest</option>
-                  </select>
-                  <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary pointer-events-none" />
+        <div className="glass backdrop-blur-xl border-b border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 shrink-0">
+          <div className="px-5 py-3.5">
+            <div className="flex items-center justify-between gap-4">
+              {/* Left: Title */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg shrink-0">
+                  <SparklesIcon className="w-5 h-5 text-white" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-display font-bold text-xl gradient-text-primary truncate">
+                    AI Assistant
+                  </h2>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={useMultiAgent}
-                    onChange={(e) => setUseMultiAgent(e.target.checked)}
-                    className="w-4 h-4 text-primary-500 border-primary-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <CpuChipIcon className="w-4 h-4 text-primary-500" />
-                  Multi-Agent
-                </label>
-              </div>
-
-              {/* Preview Settings */}
-              <div className="flex items-center gap-3">
-                <label className="font-display font-medium text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
-                  Preview:
-                </label>
-                <div className="relative">
-                  <select
-                    value={previewMode}
-                    onChange={(e) => handlePreviewModeChange(e.target.value as 'strict' | 'moderate' | 'permissive')}
-                    className="input text-sm py-2 px-3 pr-8 min-w-[120px] appearance-none bg-white dark:bg-gray-800"
-                  >
-                    <option value="strict">Strict</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="permissive">Permissive</option>
-                  </select>
-                  <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary pointer-events-none" />
+              {/* Right: Controls and Actions */}
+              <div className="flex items-center gap-2.5 shrink-0">
+                {/* Chat Mode Selector */}
+                <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                  <div className="relative">
+                    <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                      {chatMode === 'fastest' && <BoltIcon className="w-3.5 h-3.5 text-primary-500" />}
+                      {chatMode === 'balanced' && <AdjustmentsHorizontalIcon className="w-3.5 h-3.5 text-primary-500" />}
+                      {chatMode === 'cheapest' && <CurrencyDollarIcon className="w-3.5 h-3.5 text-primary-500" />}
+                    </div>
+                    <select
+                      value={chatMode}
+                      onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
+                      className="input text-xs py-1.5 pl-8 pr-7 min-w-[100px] appearance-none bg-white/80 dark:bg-gray-800/80 border-primary-200/30 font-display font-semibold cursor-pointer hover:border-primary-400/50 transition-all"
+                    >
+                      <option value="fastest">Fastest</option>
+                      <option value="balanced">Balanced</option>
+                      <option value="cheapest">Cheapest</option>
+                    </select>
+                    <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-primary-500 pointer-events-none" />
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
-                  className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
-                  title="View Optimizations"
-                >
-                  <ChartBarIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">Optimizations</span>
-                </button>
+                {/* Multi-Agent Toggle */}
+                <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10" title={useMultiAgent ? "Multi-Agent Mode: ON" : "Multi-Agent Mode: OFF"}>
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={useMultiAgent}
+                        onChange={(e) => setUseMultiAgent(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div className={`w-9 h-5 rounded-full transition-all duration-300 ${useMultiAgent
+                        ? 'bg-gradient-to-r from-primary-500 to-primary-600'
+                        : 'bg-gray-300 dark:bg-gray-600'
+                        }`}>
+                        <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 mt-0.5 ${useMultiAgent ? 'translate-x-4' : 'translate-x-0.5'
+                          }`} />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CpuChipIcon className={`w-4 h-4 transition-colors shrink-0 ${useMultiAgent ? 'text-primary-500' : 'text-light-text-secondary dark:text-dark-text-secondary'
+                        }`} />
+                      <span className={`hidden lg:inline text-xs font-display font-semibold whitespace-nowrap transition-colors ${useMultiAgent
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary'
+                        }`}>
+                        Multi-Agent
+                      </span>
+                    </div>
+                  </label>
+                </div>
 
-                <button
-                  onClick={() => navigate('/memory')}
-                  className="glass hover:bg-primary-500/10 transition-all duration-300 hover:scale-105 flex items-center gap-2 px-3 py-2 rounded-lg border border-primary-200/30 text-sm font-display font-medium text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500"
-                  title="Manage AI Memory & Personalization"
-                >
-                  <BoltIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">Memory</span>
-                </button>
+                {/* Preview Mode Selector */}
+                <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                  <div className="relative">
+                    <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                      {previewMode === 'strict' && <ShieldCheckIcon className="w-3.5 h-3.5 text-primary-500" />}
+                      {previewMode === 'moderate' && <AdjustmentsHorizontalIcon className="w-3.5 h-3.5 text-primary-500" />}
+                      {previewMode === 'permissive' && <LockOpenIcon className="w-3.5 h-3.5 text-primary-500" />}
+                    </div>
+                    <select
+                      value={previewMode}
+                      onChange={(e) => handlePreviewModeChange(e.target.value as 'strict' | 'moderate' | 'permissive')}
+                      className="input text-xs py-1.5 pl-8 pr-7 min-w-[100px] appearance-none bg-white/80 dark:bg-gray-800/80 border-primary-200/30 font-display font-semibold cursor-pointer hover:border-primary-400/50 transition-all"
+                    >
+                      <option value="strict">Strict</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="permissive">Permissive</option>
+                    </select>
+                    <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-primary-500 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-1.5 ml-1">
+                  <button
+                    onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
+                    className="glass hover:bg-gradient-to-br hover:from-primary-500/20 hover:to-primary-600/20 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/30 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-primary-600 dark:hover:text-primary-400 group"
+                    title="View Optimizations"
+                  >
+                    <ChartBarIcon className="w-4 h-4 text-primary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors shrink-0" />
+                    <span className="hidden xl:inline whitespace-nowrap">Optimizations</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/memory')}
+                    className="glass hover:bg-gradient-to-br hover:from-primary-500/20 hover:to-primary-600/20 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/30 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-primary-600 dark:hover:text-primary-400 group"
+                    title="Manage AI Memory & Personalization"
+                  >
+                    <BoltIcon className="w-4 h-4 text-primary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors shrink-0" />
+                    <span className="hidden xl:inline whitespace-nowrap">Memory</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1879,12 +1912,12 @@ export const ConversationalAgent: React.FC = () => {
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {error && (
-            <div className="glass bg-gradient-danger/10 border border-danger-200/30 p-4 animate-scale-in shadow-2xl backdrop-blur-xl">
+            <div className="glass border border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 p-5 animate-scale-in shadow-2xl backdrop-blur-xl rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-danger p-2 rounded-lg">
-                  <SparklesIcon className="w-4 h-4 text-white" />
+                <div className="bg-gradient-to-br from-danger-500 to-danger-600 p-2.5 rounded-xl shadow-lg">
+                  <SparklesIcon className="w-5 h-5 text-white" />
                 </div>
-                <p className="font-display font-medium text-danger-600 dark:text-danger-400">{error}</p>
+                <p className="font-display font-semibold text-danger-600 dark:text-danger-400">{error}</p>
               </div>
             </div>
           )}
@@ -1892,13 +1925,13 @@ export const ConversationalAgent: React.FC = () => {
           {messages.length === 0 && !isLoading && (
             <div className="text-center max-w-4xl mx-auto animate-fade-in">
               <div className="mb-12">
-                <div className="bg-gradient-primary p-4 rounded-2xl w-16 h-16 mx-auto mb-4 glow-primary animate-pulse">
-                  <SparklesIcon className="w-8 h-8 text-white" />
+                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-5 rounded-3xl w-20 h-20 mx-auto mb-6 glow-primary animate-pulse shadow-2xl flex items-center justify-center">
+                  <SparklesIcon className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="font-display font-bold text-2xl gradient-text mb-3">
+                <h3 className="font-display font-bold text-3xl gradient-text-primary mb-4">
                   Welcome to your AI Assistant
                 </h3>
-                <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-lg mx-auto leading-relaxed font-body">
+                <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-lg mx-auto leading-relaxed font-body text-base">
                   I'm here to help you manage your AI costs, create projects,
                   analyze usage patterns, and optimize your AI operations. Ask
                   me anything!
@@ -1926,21 +1959,21 @@ export const ConversationalAgent: React.FC = () => {
                         <button
                           key={index}
                           onClick={() => sendMessage(question.text)}
-                          className="glass p-4 text-left transition-all duration-300 hover:scale-105 group shadow-lg backdrop-blur-xl border border-primary-200/30 hover:border-primary-300/50"
+                          className="glass p-5 text-left transition-all duration-300 hover:scale-105 hover:-translate-y-1 group shadow-xl backdrop-blur-xl border border-primary-200/30 hover:border-primary-400/50 hover:shadow-2xl rounded-xl bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50"
                         >
                           <div className="flex items-start gap-3">
-                            <div className="bg-gradient-primary/10 p-2 rounded-lg group-hover:bg-gradient-primary group-hover:glow-primary transition-all duration-300">
+                            <div className="bg-gradient-to-br from-primary-500/20 to-primary-600/20 p-2.5 rounded-xl group-hover:from-primary-500 group-hover:to-primary-600 group-hover:glow-primary transition-all duration-300 shadow-md">
                               <IconComponent className="w-5 h-5 text-primary-500 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
+                              <p className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-1.5 line-clamp-2 leading-snug">
                                 {question.text}
                               </p>
-                              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium uppercase tracking-wider">
+                              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-display font-medium uppercase tracking-wider">
                                 {question.category}
                               </p>
                             </div>
-                            <ArrowUpIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary transform rotate-45 group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110" />
+                            <ArrowUpIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary transform rotate-45 group-hover:text-primary-500 transition-all duration-300 group-hover:scale-110 flex-shrink-0" />
                           </div>
                         </button>
                       );
@@ -1953,32 +1986,43 @@ export const ConversationalAgent: React.FC = () => {
 
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-              <div className={`max-w-4xl ${message.role === 'user' ? 'bg-gradient-primary text-white shadow-lg glow-primary' : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30'} p-4 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'}`}>
+              <div className={`max-w-4xl ${message.role === 'user'
+                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-xl glow-primary'
+                : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
+                } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
                 {renderMessageContent(message.content, message)}
 
                 {/* Attached Documents Display */}
                 {message.attachedDocuments && message.attachedDocuments.length > 0 && (
-                  <div className={`mt-3 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                  <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
                     {message.attachedDocuments.map((doc) => (
                       <div
                         key={doc.documentId}
-                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${message.role === 'user'
-                          ? 'bg-white/20 border border-white/30'
-                          : 'bg-blue-50 border border-blue-200'
+                        className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
+                          ? 'border-white/30 bg-white/20 hover:bg-white/30'
+                          : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
                           }`}
                       >
-                        <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-blue-600'}`} />
-                        <span className={`font-medium max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-gray-700'}`}>
+                        <div className={`p-1.5 rounded-lg ${message.role === 'user'
+                          ? 'bg-white/20'
+                          : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                          }`}>
+                          <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                        </div>
+                        <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
                           {doc.fileName}
                         </span>
-                        <span className={`text-xs ${message.role === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
-                          ({doc.chunksCount} chunks)
+                        <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
+                          ? 'bg-white/20 text-white/90'
+                          : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                          }`}>
+                          {doc.chunksCount} chunks
                         </span>
                         <button
                           onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
-                          className={`ml-1 p-1 rounded transition-colors ${message.role === 'user'
-                            ? 'hover:bg-white/20 text-white/80 hover:text-white'
-                            : 'hover:bg-blue-100 text-blue-600 hover:text-blue-700'
+                          className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                            ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                            : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
                             }`}
                           title="Preview document"
                           aria-label="Preview document"
@@ -1990,25 +2034,28 @@ export const ConversationalAgent: React.FC = () => {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t border-primary-200/20">
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className={`font-display font-medium ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
+                <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
                       {formatTimestamp(message.timestamp)}
                     </span>
                     {message.metadata?.cost && (
-                      <span className="gradient-text font-display font-semibold bg-gradient-success/10 px-2 py-1 rounded-lg">
+                      <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
+                        ? 'border-white/30 bg-white/20 text-white'
+                        : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
+                        } font-display font-bold text-xs`}>
                         ${message.metadata.cost.toFixed(4)}
                       </span>
                     )}
                     {message.cacheHit && (
-                      <span className="bg-gradient-success text-white px-2 py-1 rounded-lg font-display font-semibold animate-pulse">
+                      <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse">
                         ⚡ Cached
                       </span>
                     )}
                     {message.riskLevel && message.riskLevel !== 'low' && (
-                      <span className={`px-2 py-1 rounded-lg font-display font-semibold text-xs ${message.riskLevel === 'high'
-                        ? 'bg-gradient-danger text-white'
-                        : 'bg-gradient-warning text-white'
+                      <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs ${message.riskLevel === 'high'
+                        ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
+                        : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
                         }`}>
                         {message.riskLevel === 'high' ? '🔴' : '🟡'} {message.riskLevel.toUpperCase()} RISK
                       </span>
@@ -2016,7 +2063,7 @@ export const ConversationalAgent: React.FC = () => {
                     {message.sources && message.sources.length > 0 && (
                       <button
                         onClick={() => openSourcesModal(message.sources)}
-                        className="px-2 py-1 rounded-lg font-display font-semibold text-xs bg-gradient-accent/20 text-accent-600 hover:bg-gradient-accent/30 transition-all duration-300"
+                        className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs"
                       >
                         📚 {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
                       </button>
@@ -2040,11 +2087,11 @@ export const ConversationalAgent: React.FC = () => {
                   message.cacheHit ||
                   message.riskLevel
                 ) && (
-                    <div className="mt-4 p-4 glass rounded-xl border border-primary-200/30 animate-fade-in">
+                    <div className="mt-4 p-5 glass rounded-xl border border-primary-200/30 backdrop-blur-xl animate-fade-in shadow-lg bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10">
                       {/* Cache Hit Indicator */}
                       {message.cacheHit && (
-                        <div className="mb-3">
-                          <span className="bg-gradient-success text-white px-3 py-1 rounded-full text-xs font-display font-semibold animate-pulse">
+                        <div className="mb-4">
+                          <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md">
                             ⚡ Semantic Cache Hit - Instant Response
                           </span>
                         </div>
@@ -2061,25 +2108,35 @@ export const ConversationalAgent: React.FC = () => {
                           <div className="flex flex-wrap gap-2">
                             {message.optimizationsApplied.map((opt, idx) => {
                               // Determine color and icon based on optimization type
-                              let colorClass = 'bg-gradient-primary/20 text-primary-600';
+                              let borderClass = 'border-primary-200/30';
+                              let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                              let textClass = 'text-primary-600 dark:text-primary-400';
                               let icon = '⚙️';
 
                               if (opt.includes('cache')) {
-                                colorClass = 'bg-gradient-success/20 text-success-600';
+                                borderClass = 'border-success-200/30';
+                                bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                textClass = 'text-success-600 dark:text-success-400';
                                 icon = '⚡';
                               } else if (opt.includes('prompt') || opt.includes('system')) {
-                                colorClass = 'bg-gradient-warning/20 text-warning-600';
+                                borderClass = 'border-warning-200/30';
+                                bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                textClass = 'text-warning-600 dark:text-warning-400';
                                 icon = '🧠';
                               } else if (opt.includes('multi_turn') || opt.includes('context')) {
-                                colorClass = 'bg-gradient-primary/20 text-primary-600';
+                                borderClass = 'border-primary-200/30';
+                                bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                textClass = 'text-primary-600 dark:text-primary-400';
                                 icon = '💬';
                               } else if (opt.includes('summarization')) {
-                                colorClass = 'bg-gradient-accent/20 text-accent-600';
+                                borderClass = 'border-accent-200/30';
+                                bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                                textClass = 'text-accent-600 dark:text-accent-400';
                                 icon = '📝';
                               }
 
                               return (
-                                <span key={idx} className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${colorClass}`} title={opt}>
+                                <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`} title={opt}>
                                   {icon} {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </span>
                               );
@@ -2097,47 +2154,68 @@ export const ConversationalAgent: React.FC = () => {
                             </span>
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
-                            {message.agentPath.map((agent, idx) => (
-                              <div key={idx} className="flex items-center gap-2">
-                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-medium ${agent.includes('master') ? 'bg-gradient-primary/20 text-primary-600' :
-                                  agent.includes('cost') ? 'bg-gradient-warning/20 text-warning-600' :
-                                    agent.includes('quality') ? 'bg-gradient-success/20 text-success-600' :
-                                      'bg-gradient-accent/20 text-accent-600'
-                                  }`}>
-                                  {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </span>
-                                {idx < message.agentPath!.length - 1 && (
-                                  <span className="text-light-text-secondary dark:text-dark-text-secondary font-bold">→</span>
-                                )}
-                              </div>
-                            ))}
+                            {message.agentPath.map((agent, idx) => {
+                              let borderClass = 'border-accent-200/30';
+                              let bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                              let textClass = 'text-accent-600 dark:text-accent-400';
+
+                              if (agent.includes('master')) {
+                                borderClass = 'border-primary-200/30';
+                                bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                textClass = 'text-primary-600 dark:text-primary-400';
+                              } else if (agent.includes('cost')) {
+                                borderClass = 'border-warning-200/30';
+                                bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                textClass = 'text-warning-600 dark:text-warning-400';
+                              } else if (agent.includes('quality')) {
+                                borderClass = 'border-success-200/30';
+                                bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                textClass = 'text-success-600 dark:text-success-400';
+                              }
+
+                              return (
+                                <div key={idx} className="flex items-center gap-2">
+                                  <span className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`}>
+                                    {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  </span>
+                                  {idx < message.agentPath!.length - 1 && (
+                                    <span className="text-primary-500 font-bold">→</span>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
 
                       {/* Performance Metrics */}
-                      <div className="flex flex-wrap gap-2 pt-3 border-t border-primary-200/20">
+                      <div className="flex flex-wrap gap-2 pt-4 border-t border-primary-200/30">
                         {message.riskLevel && (
-                          <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${message.riskLevel === 'high' ? 'bg-gradient-danger/20 text-danger-600' :
-                            message.riskLevel === 'medium' ? 'bg-gradient-warning/20 text-warning-600' :
-                              'bg-gradient-success/20 text-success-600'
+                          <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${message.riskLevel === 'high'
+                            ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400' :
+                            message.riskLevel === 'medium'
+                              ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                              'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
                             }`}>
                             📊 Risk: {message.riskLevel.toUpperCase()}
                           </span>
                         )}
 
                         {message.metadata?.qualityScore && (
-                          <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${getQualityLevel(message.metadata.qualityScore) === 'excellent' ? 'bg-gradient-success/20 text-success-600' :
-                            getQualityLevel(message.metadata.qualityScore) === 'good' ? 'bg-gradient-primary/20 text-primary-600' :
-                              getQualityLevel(message.metadata.qualityScore) === 'fair' ? 'bg-gradient-warning/20 text-warning-600' :
-                                'bg-gradient-danger/20 text-danger-600'
+                          <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${getQualityLevel(message.metadata.qualityScore) === 'excellent'
+                            ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
+                            getQualityLevel(message.metadata.qualityScore) === 'good'
+                              ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
+                              getQualityLevel(message.metadata.qualityScore) === 'fair'
+                                ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                                'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
                             }`}>
                             ⭐ Quality: {message.metadata.qualityScore}/10
                           </span>
                         )}
 
                         {message.metadata?.processingTime && (
-                          <span className="px-2 py-1 rounded-lg text-xs font-display font-semibold bg-gradient-accent/20 text-accent-600">
+                          <span className="glass px-3 py-1.5 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 text-xs font-display font-bold shadow-sm">
                             ⏱️ {message.metadata.processingTime}ms
                           </span>
                         )}
@@ -2150,18 +2228,18 @@ export const ConversationalAgent: React.FC = () => {
 
           {isLoading && loadingMessageId && (
             <div className="flex justify-start animate-fade-in">
-              <div className="glass p-4 rounded-2xl rounded-bl-sm shadow-2xl backdrop-blur-xl border border-primary-200/30">
+              <div className="glass p-5 rounded-2xl rounded-bl-sm shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-primary p-2 rounded-lg animate-pulse glow-primary">
-                    <SparklesIcon className="w-4 h-4 text-white" />
+                  <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl animate-pulse glow-primary shadow-lg">
+                    <SparklesIcon className="w-5 h-5 text-white" />
                   </div>
-                  <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                     AI Assistant is thinking...
                   </span>
-                  <div className="flex space-x-1">
-                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce"></div>
-                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-1 h-1 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="flex space-x-1.5">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>

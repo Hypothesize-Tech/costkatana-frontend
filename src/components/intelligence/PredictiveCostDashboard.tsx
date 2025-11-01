@@ -1,6 +1,21 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import {
+    CpuChipIcon,
+    ExclamationTriangleIcon,
+    CurrencyDollarIcon,
+    ChartBarIcon,
+    ArrowTrendingUpIcon,
+    HomeIcon,
+    BoltIcon,
+    BeakerIcon,
+    XCircleIcon,
+    ClockIcon,
+    ArrowPathIcon,
+    LightBulbIcon,
+    ShieldExclamationIcon,
+} from '@heroicons/react/24/outline';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 import { predictiveIntelligenceService, PredictiveIntelligenceData } from '../../services/predictiveIntelligence.service';
-import './PredictiveCostDashboard.css';
 
 interface PredictiveCostDashboardProps {
     scope?: 'user' | 'project' | 'team';
@@ -76,7 +91,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
             // Show success message
             if (result.success) {
-                alert(`✅ Auto-optimization completed successfully!\n\n` +
+                alert(`Auto-optimization completed successfully!\n\n` +
                     `Actions Applied:\n${result.data.actionsApplied.join('\n')}\n\n` +
                     `Estimated Savings: $${result.data.estimatedSavings.toFixed(2)}\n\n` +
                     `Status: ${result.data.implementationStatus}`);
@@ -86,7 +101,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             window.location.reload();
         } catch (err) {
             console.error('Auto-optimization failed:', err);
-            alert(`❌ Auto-optimization failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            alert(`Auto-optimization failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
         } finally {
             setLoading(false);
         }
@@ -122,12 +137,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (loading) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-6 flex items-center justify-center animate-pulse shadow-lg">
-                        <span className="text-white text-3xl">🧠</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl mx-auto mb-4 flex items-center justify-center glow-primary shadow-lg">
+                        <CpuChipIcon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">Generating Predictive Intelligence...</h3>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns and identifying optimization opportunities</p>
+                    <LoadingSpinner />
+                    <h3 className="text-xl font-display font-bold gradient-text-primary mb-2 mt-4">Generating Predictive Intelligence...</h3>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns and identifying optimization opportunities</p>
                 </div>
             </div>
         );
@@ -136,16 +152,17 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (error) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-danger mx-auto mb-4 flex items-center justify-center shadow-lg">
-                        <span className="text-white text-2xl">❌</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-danger-200/30 shadow-xl bg-gradient-to-br from-danger-50/50 to-danger-100/50 p-8 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                        <XCircleIcon className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-xl font-display font-bold gradient-text-danger mb-3">Intelligence Generation Failed</h3>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">{error}</p>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="btn-danger hover:scale-105 transition-transform duration-300"
+                        className="btn btn-primary px-6 py-3 hover:scale-105 transition-transform duration-300"
                     >
+                        <ArrowPathIcon className="w-4 h-4 mr-2" />
                         Retry
                     </button>
                 </div>
@@ -156,64 +173,76 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
     if (!intelligenceData || !keyMetrics) {
         return (
             <div className={`max-w-7xl mx-auto p-6 ${className}`}>
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-secondary mx-auto mb-6 flex items-center justify-center shadow-lg">
-                        <span className="text-white text-3xl">📊</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl mx-auto mb-4 flex items-center justify-center glow-primary shadow-lg">
+                        <ChartBarIcon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text-primary mb-4">No Intelligence Data Available</h3>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Insufficient historical data for predictive analysis</p>
+                    <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No Intelligence Data Available</h3>
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Insufficient historical data for predictive analysis</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className={`max-w-7xl mx-auto p-6 space-y-8 ${className}`}>
+        <div className={`max-w-7xl mx-auto p-5 space-y-5 ${className}`}>
             {/* Header */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <span className="text-white text-2xl">🧠</span>
+            <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-5">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                            <CpuChipIcon className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">Predictive Cost Intelligence</h1>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered proactive optimization and intelligence</p>
-                            <div className="flex items-center gap-3 mt-3">
-                                <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Confidence Score:</span>
-                                <div className="w-32 h-2 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-full overflow-hidden">
+                            <h1 className="text-2xl font-display font-bold gradient-text-primary mb-1">Predictive Cost Intelligence</h1>
+                            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">AI-powered proactive optimization and intelligence</p>
+                            <div className="flex items-center gap-2.5">
+                                <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Confidence:</span>
+                                <div className="w-24 h-2 glass rounded-full overflow-hidden border border-primary-200/30">
                                     <div
-                                        className="h-full bg-gradient-primary rounded-full transition-all duration-500 shadow-lg"
+                                        className="h-full bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-500 shadow-lg"
                                         style={{ width: `${keyMetrics.confidenceScore * 100}%` }}
                                     ></div>
                                 </div>
-                                <span className="font-display font-semibold gradient-text-primary">{Math.round(keyMetrics.confidenceScore * 100)}%</span>
+                                <span className="text-xs font-display font-semibold gradient-text-primary">{Math.round(keyMetrics.confidenceScore * 100)}%</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <select
-                            value={selectedTimeHorizon}
-                            onChange={(e) => setSelectedTimeHorizon(parseInt(e.target.value))}
-                            className="input px-4 py-3 font-display font-medium"
-                        >
-                            <option value={7}>7 Days</option>
-                            <option value={14}>14 Days</option>
-                            <option value={30}>30 Days</option>
-                            <option value={60}>60 Days</option>
-                            <option value={90}>90 Days</option>
-                        </select>
+                    <div className="flex items-center gap-2">
+                        <div className="glass rounded-lg border border-primary-200/30 p-1 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                            <div className="relative">
+                                <ClockIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary-500 pointer-events-none z-10" />
+                                <select
+                                    value={selectedTimeHorizon}
+                                    onChange={(e) => setSelectedTimeHorizon(parseInt(e.target.value))}
+                                    className="input text-xs py-1.5 pl-8 pr-7 min-w-[100px] appearance-none bg-white/80 dark:bg-gray-800/80 border-primary-200/30 font-display font-semibold"
+                                >
+                                    <option value={7}>7 Days</option>
+                                    <option value={14}>14 Days</option>
+                                    <option value={30}>30 Days</option>
+                                    <option value={60}>60 Days</option>
+                                    <option value={90}>90 Days</option>
+                                </select>
+                            </div>
+                        </div>
 
-                        <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center gap-3">
+                        <div className="glass p-2 rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                     type="checkbox"
                                     checked={autoOptimizeEnabled}
                                     onChange={(e) => setAutoOptimizeEnabled(e.target.checked)}
-                                    className="w-5 h-5 rounded border-2 border-primary-300 text-primary-600 focus:ring-primary-500"
+                                    className="sr-only"
                                 />
-                                <span className="font-display font-medium gradient-text-primary">Auto-Optimize</span>
+                                <div className={`relative w-9 h-5 rounded-full transition-all duration-300 ${autoOptimizeEnabled
+                                    ? 'bg-gradient-to-r from-primary-500 to-primary-600'
+                                    : 'bg-gray-300 dark:bg-gray-600'
+                                    }`}>
+                                    <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 mt-0.5 ${autoOptimizeEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                                        }`} />
+                                </div>
+                                <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Auto-Optimize</span>
                             </label>
                         </div>
                     </div>
@@ -221,17 +250,17 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             </div>
 
             {/* Key Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
-                            <span className="text-white text-xl">🚨</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-lg shadow-lg shrink-0">
+                            <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                         </div>
-                        <div>
-                            <h3 className="text-3xl font-display font-bold gradient-text-danger">{keyMetrics.criticalAlerts}</h3>
-                            <p className="font-body text-danger-600 dark:text-danger-400">Critical Alerts</p>
+                        <div className="min-w-0 flex-1">
+                            <h3 className="text-xl font-display font-bold gradient-text-danger">{keyMetrics.criticalAlerts}</h3>
+                            <p className="text-xs font-body text-danger-600 dark:text-danger-400 mb-1">Critical Alerts</p>
                             {keyMetrics.urgentAlerts > 0 && (
-                                <span className="inline-block mt-1 px-2 py-1 rounded-full bg-gradient-danger/20 text-danger-700 dark:text-danger-300 text-xs font-medium">
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-gradient-to-r from-red-500/20 to-red-600/20 text-red-700 dark:text-red-300 text-xs font-medium">
                                     {keyMetrics.urgentAlerts} urgent
                                 </span>
                             )}
@@ -239,31 +268,31 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                            <span className="text-white text-xl">💰</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-lg glow-success shadow-lg shrink-0">
+                            <CurrencyDollarIcon className="w-5 h-5 text-white" />
                         </div>
-                        <div>
-                            <h3 className="text-3xl font-display font-bold gradient-text-success">{formatCurrency(keyMetrics.totalPotentialSavings)}</h3>
-                            <p className="font-body text-success-600 dark:text-success-400">Potential Monthly Savings</p>
-                            <span className="inline-block mt-1 px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 text-xs font-medium">
+                        <div className="min-w-0 flex-1">
+                            <h3 className="text-xl font-display font-bold gradient-text-success truncate">{formatCurrency(keyMetrics.totalPotentialSavings)}</h3>
+                            <p className="text-xs font-body text-success-600 dark:text-success-400 mb-1">Potential Monthly Savings</p>
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-gradient-to-r from-success-500/20 to-success-600/20 text-success-700 dark:text-success-300 text-xs font-medium">
                                 {keyMetrics.easyOptimizations} easy wins
                             </span>
                         </div>
                     </div>
                 </div>
 
-                <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                            <span className="text-white text-xl">📊</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2.5 rounded-lg shadow-lg shrink-0">
+                            <ShieldExclamationIcon className="w-5 h-5 text-white" />
                         </div>
-                        <div>
-                            <h3 className="text-3xl font-display font-bold gradient-text-warning">{keyMetrics.budgetRiskProjects}</h3>
-                            <p className="font-body text-warning-600 dark:text-warning-400">Projects at Budget Risk</p>
+                        <div className="min-w-0 flex-1">
+                            <h3 className="text-xl font-display font-bold gradient-text-warning">{keyMetrics.budgetRiskProjects}</h3>
+                            <p className="text-xs font-body text-warning-600 dark:text-warning-400 mb-1">Projects at Budget Risk</p>
                             {keyMetrics.nextBudgetExceedance && (
-                                <span className="inline-block mt-1 px-2 py-1 rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 text-xs font-medium">
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 text-warning-700 dark:text-warning-300 text-xs font-medium">
                                     Next: {keyMetrics.nextBudgetExceedance.daysUntilExceedance} days
                                 </span>
                             )}
@@ -271,19 +300,19 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <span className="text-white text-xl">📈</span>
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-lg glow-primary shadow-lg shrink-0">
+                            <ArrowTrendingUpIcon className="w-5 h-5 text-white" />
                         </div>
-                        <div>
-                            <h3 className="text-3xl font-display font-bold gradient-text-primary">{intelligenceData.promptLengthGrowth.growthRatePerWeek.toFixed(1)}%</h3>
-                            <p className="font-body text-primary-600 dark:text-primary-400">Weekly Prompt Growth</p>
-                            <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${intelligenceData.historicalTokenTrends.tokenEfficiencyTrend === 'improving'
-                                ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
+                        <div className="min-w-0 flex-1">
+                            <h3 className="text-xl font-display font-bold gradient-text-primary">{intelligenceData.promptLengthGrowth.growthRatePerWeek.toFixed(1)}%</h3>
+                            <p className="text-xs font-body text-primary-600 dark:text-primary-400 mb-1">Weekly Prompt Growth</p>
+                            <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${intelligenceData.historicalTokenTrends.tokenEfficiencyTrend === 'improving'
+                                ? 'bg-gradient-to-r from-success-500/20 to-success-600/20 text-success-700 dark:text-success-300'
                                 : intelligenceData.historicalTokenTrends.tokenEfficiencyTrend === 'stable'
-                                    ? 'bg-gradient-primary/20 text-primary-700 dark:text-primary-300'
-                                    : 'bg-gradient-danger/20 text-danger-700 dark:text-danger-300'
+                                    ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-700 dark:text-primary-300'
+                                    : 'bg-gradient-to-r from-red-500/20 to-red-600/20 text-red-700 dark:text-red-300'
                                 }`}>
                                 {intelligenceData.historicalTokenTrends.tokenEfficiencyTrend}
                             </span>
@@ -293,49 +322,52 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             </div>
 
             {/* Navigation Tabs */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2">
+            <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-2">
                 <div className="flex flex-wrap gap-2">
                     {[
-                        { id: 'overview', label: 'Overview', icon: '🏠' },
-                        { id: 'alerts', label: 'Proactive Alerts', icon: '🚨' },
-                        { id: 'optimizations', label: 'Smart Optimizations', icon: '⚡' },
-                        { id: 'scenarios', label: 'Future Scenarios', icon: '🔮' }
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            className={`flex items-center gap-2 px-4 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === tab.id
-                                ? 'bg-gradient-primary text-white shadow-2xl'
-                                : 'glass hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30 shadow-lg backdrop-blur-xl'
-                                }`}
-                            onClick={() => setActiveTab(tab.id as any)}
-                        >
-                            <span className="text-lg">{tab.icon}</span>
-                            <span className="whitespace-nowrap">{tab.label}</span>
-                        </button>
-                    ))}
+                        { id: 'overview', label: 'Overview', icon: HomeIcon },
+                        { id: 'alerts', label: 'Alerts', icon: ExclamationTriangleIcon },
+                        { id: 'optimizations', label: 'Optimizations', icon: BoltIcon },
+                        { id: 'scenarios', label: 'Scenarios', icon: BeakerIcon }
+                    ].map(tab => {
+                        const IconComponent = tab.icon;
+                        return (
+                            <button
+                                key={tab.id}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-display font-semibold text-sm transition-all duration-300 hover:scale-105 shrink-0 ${activeTab === tab.id
+                                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg glow-primary'
+                                    : 'glass hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30'
+                                    }`}
+                                onClick={() => setActiveTab(tab.id as any)}
+                            >
+                                <IconComponent className="w-4 h-4 shrink-0" />
+                                <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
             {/* Tab Content */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 min-h-[600px]">
+            <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-5 min-h-[500px]">
                 {activeTab === 'overview' && (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center shadow-lg">
-                                <span className="text-white text-2xl">🏠</span>
+                    <div className="space-y-5">
+                        <div className="text-center mb-6">
+                            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-primary shadow-lg">
+                                <HomeIcon className="w-6 h-6 text-white" />
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text-primary mb-2">Intelligence Overview</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Key insights and upcoming challenges</p>
+                            <h2 className="text-xl font-display font-bold gradient-text-primary mb-1">Intelligence Overview</h2>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Key insights and upcoming challenges</p>
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                             {/* Next Budget Exceedance */}
                             {keyMetrics.nextBudgetExceedance && (
-                                <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-warning/10 p-6">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                                            <span className="text-white text-xl">⚠️</span>
+                                <div className="glass backdrop-blur-xl rounded-xl border border-warning-200/30 shadow-lg bg-gradient-to-br from-yellow-50/50 to-yellow-100/30 dark:from-yellow-900/10 p-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2.5 rounded-xl shadow-lg">
+                                            <ShieldExclamationIcon className="w-5 h-5 text-white" />
                                         </div>
-                                        <h3 className="text-xl font-display font-bold gradient-text-warning">Upcoming Budget Exceedance</h3>
+                                        <h3 className="text-lg font-display font-bold gradient-text-warning">Upcoming Budget Exceedance</h3>
                                     </div>
                                     <div className="text-center mb-6">
                                         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
@@ -364,12 +396,12 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
                             {/* Top Optimization Opportunity */}
                             {intelligenceData.optimizationRecommendations.length > 0 && (
-                                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 p-6">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                                            <span className="text-white text-xl">💡</span>
+                                <div className="glass backdrop-blur-xl rounded-xl border border-success-200/30 shadow-lg bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/10 p-4">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-gradient-to-br from-success-500 to-success-600 p-2.5 rounded-xl shadow-lg">
+                                            <LightBulbIcon className="w-5 h-5 text-white" />
                                         </div>
-                                        <h3 className="text-xl font-display font-bold gradient-text-success">Top Optimization Opportunity</h3>
+                                        <h3 className="text-lg font-display font-bold gradient-text-success">Top Optimization Opportunity</h3>
                                     </div>
                                     <div className="space-y-4">
                                         <h4 className="text-lg font-display font-semibold gradient-text-primary">{intelligenceData.optimizationRecommendations[0].title}</h4>
@@ -403,20 +435,21 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                         </div>
                                     </div>
                                     {intelligenceData.optimizationRecommendations[0].implementationDifficulty === 'easy' && (
-                                        <button className="btn-success w-full mt-6 hover:scale-105 transition-transform duration-300">
-                                            ✅ Auto-Optimize Now
+                                        <button className="btn btn-primary w-full mt-4 hover:scale-105 transition-transform duration-300">
+                                            <BoltIcon className="w-4 h-4 mr-2 inline" />
+                                            Auto-Optimize Now
                                         </button>
                                     )}
                                 </div>
                             )}
 
                             {/* Token Growth Trend */}
-                            <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 p-6">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                                        <span className="text-white text-xl">📈</span>
+                            <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/10 p-4">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                        <ArrowTrendingUpIcon className="w-5 h-5 text-white" />
                                     </div>
-                                    <h3 className="text-xl font-display font-bold gradient-text-primary">Token Usage Trends</h3>
+                                    <h3 className="text-lg font-display font-bold gradient-text-primary">Token Usage Trends</h3>
                                 </div>
                                 <div className="space-y-4">
                                     <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl flex justify-between items-center">
@@ -450,13 +483,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                 )}
 
                 {activeTab === 'alerts' && (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-danger mx-auto mb-4 flex items-center justify-center glow-danger">
-                                <span className="text-white text-2xl">🚨</span>
+                    <div className="space-y-5">
+                        <div className="text-center mb-6">
+                            <div className="bg-gradient-to-br from-red-500 to-red-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-danger shadow-lg">
+                                <ExclamationTriangleIcon className="w-6 h-6 text-white" />
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text mb-2">Proactive Alerts</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-detected issues and opportunities requiring attention</p>
+                            <h2 className="text-xl font-display font-bold gradient-text-danger mb-1">Proactive Alerts</h2>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">AI-detected issues and opportunities requiring attention</p>
                         </div>
 
                         <div className="space-y-6">
@@ -522,12 +555,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                     </div>
 
                                     {alert.autoOptimizationAvailable && autoOptimizeEnabled && (
-                                        <div className="mt-6">
+                                        <div className="mt-4">
                                             <button
-                                                className="btn-primary w-full hover:scale-105 transition-transform duration-300"
+                                                className="btn btn-primary w-full hover:scale-105 transition-transform duration-300"
                                                 onClick={() => handleAutoOptimize(alert.id)}
                                             >
-                                                ⚡ Auto-Optimize
+                                                <BoltIcon className="w-4 h-4 mr-2 inline" />
+                                                Auto-Optimize
                                             </button>
                                         </div>
                                     )}
@@ -539,13 +573,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
 
                 {activeTab === 'optimizations' && (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center glow-primary">
-                                <span className="text-white text-2xl">⚡</span>
+                    <div className="space-y-5">
+                        <div className="text-center mb-6">
+                            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-primary shadow-lg">
+                                <BoltIcon className="w-6 h-6 text-white" />
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text mb-2">Smart Optimizations</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered recommendations to reduce costs while maintaining quality</p>
+                            <h2 className="text-xl font-display font-bold gradient-text-primary mb-1">Smart Optimizations</h2>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">AI-powered recommendations to reduce costs while maintaining quality</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -648,12 +682,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                     </div>
 
                                     {optimization.implementationDifficulty === 'easy' && (
-                                        <div className="mt-6">
+                                        <div className="mt-4">
                                             <button
-                                                className="btn-success w-full hover:scale-105 transition-transform duration-300"
+                                                className="btn btn-primary w-full hover:scale-105 transition-transform duration-300"
                                                 onClick={() => handleAutoOptimize(`opt_${index}`)}
                                             >
-                                                🚀 Implement Now
+                                                <BoltIcon className="w-4 h-4 mr-2 inline" />
+                                                Implement Now
                                             </button>
                                         </div>
                                     )}
@@ -664,13 +699,13 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                 )}
 
                 {activeTab === 'scenarios' && (
-                    <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 rounded-full bg-gradient-accent mx-auto mb-4 flex items-center justify-center glow-accent">
-                                <span className="text-white text-2xl">🔮</span>
+                    <div className="space-y-5">
+                        <div className="text-center mb-6">
+                            <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-3 rounded-xl mx-auto mb-3 inline-flex items-center justify-center glow-accent shadow-lg">
+                                <BeakerIcon className="w-6 h-6 text-white" />
                             </div>
-                            <h2 className="text-2xl font-display font-bold gradient-text mb-2">Future Scenarios</h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Strategic cost planning with different growth and optimization scenarios</p>
+                            <h2 className="text-xl font-display font-bold gradient-text-primary mb-1">Future Scenarios</h2>
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Strategic cost planning with different growth and optimization scenarios</p>
                         </div>
 
                         <div className="card p-6 bg-gradient-to-br from-accent-50/30 to-accent-100/30 border border-accent-200/30 shadow-lg backdrop-blur-xl mb-8">

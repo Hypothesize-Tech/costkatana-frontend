@@ -202,7 +202,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <button
               onClick={handleOptimize}
               disabled={isOptimizing || !prompt.trim()}
-              className="btn-primary w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isOptimizing ? (
                 <>

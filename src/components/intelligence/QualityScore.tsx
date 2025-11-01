@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import {
-  FiCheckCircle,
-  FiAlertCircle,
-  FiXCircle,
-  FiThumbsUp,
-  FiThumbsDown,
-  FiBarChart2,
-  FiDollarSign,
-} from "react-icons/fi";
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  XCircleIcon,
+  HandThumbUpIcon,
+  HandThumbDownIcon,
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  ChatBubbleLeftRightIcon,
+  CheckIcon,
+} from "@heroicons/react/24/outline";
 import { intelligenceService } from "../../services/intelligence.service";
 
 export interface QualityData {
@@ -61,20 +63,20 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
     switch (qualityData.recommendation) {
       case "accept":
         return (
-          <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-            <FiCheckCircle className="text-white" size={16} />
+          <div className="bg-gradient-to-br from-success-500 to-success-600 p-2 rounded-lg glow-success shadow-lg">
+            <CheckCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
       case "review":
         return (
-          <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-            <FiAlertCircle className="text-white" size={16} />
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2 rounded-lg shadow-lg">
+            <ExclamationCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
       case "reject":
         return (
-          <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-            <FiXCircle className="text-white" size={16} />
+          <div className="bg-gradient-to-br from-red-500 to-red-600 p-2 rounded-lg shadow-lg">
+            <XCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
       default:
@@ -85,11 +87,11 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
   const getRecommendationText = () => {
     switch (qualityData.recommendation) {
       case "accept":
-        return "✅ Quality maintained - Safe to use";
+        return "Quality maintained - Safe to use";
       case "review":
-        return "⚠️ Minor quality impact - Review recommended";
+        return "Minor quality impact - Review recommended";
       case "reject":
-        return "❌ Significant quality loss - Not recommended";
+        return "Significant quality loss - Not recommended";
       default:
         return "";
     }
@@ -176,8 +178,8 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
         <div className="text-right">
           <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                <FiDollarSign className="w-3 h-3 text-white" />
+              <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-lg glow-success shadow-lg">
+                <CurrencyDollarIcon className="w-3 h-3 text-white" />
               </div>
               <span className="font-display font-bold gradient-text-success">
                 ${qualityData.costSavings.amount.toFixed(2)}
@@ -208,8 +210,8 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
       {showDetails && qualityData.criteria && (
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-              <FiBarChart2 className="w-4 h-4 text-white" />
+            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
+              <ChartBarIcon className="w-4 h-4 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-primary">Quality Breakdown</span>
           </div>
@@ -237,8 +239,8 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
       {showFeedback && !feedbackGiven && (
         <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">💬</span>
+            <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-2 rounded-lg glow-accent shadow-lg">
+              <ChatBubbleLeftRightIcon className="w-4 h-4 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-primary">
               Was this optimization acceptable?
@@ -271,16 +273,16 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
           <div className="flex gap-3">
             <button
               onClick={() => handleFeedback(true)}
-              className="btn-success flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
+              className="btn btn-primary flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
             >
-              <FiThumbsUp size={16} />
+              <HandThumbUpIcon className="w-4 h-4" />
               <span>Acceptable</span>
             </button>
             <button
               onClick={() => handleFeedback(false)}
-              className="btn-danger flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
+              className="btn btn-danger flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
             >
-              <FiThumbsDown size={16} />
+              <HandThumbDownIcon className="w-4 h-4" />
               <span>Not Acceptable</span>
             </button>
           </div>
@@ -290,8 +292,8 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
       {feedbackGiven && (
         <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 text-center">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">✓</span>
+            <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-full glow-success shadow-lg">
+              <CheckIcon className="w-3 h-3 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-success">
               Thank you for your feedback!
