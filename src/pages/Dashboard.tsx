@@ -14,6 +14,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   FolderIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 import { ConversationalAgent } from "../components/chat/ConversationalAgent";
 import { StatsCard } from "../components/dashboard/StatsCard";
@@ -364,24 +365,36 @@ export const Dashboard: React.FC = () => {
                   leaveFrom="transform opacity-100 scale-100 translate-y-0"
                   leaveTo="transform opacity-0 scale-95 translate-y-1"
                 >
-                  <Menu.Items className="absolute right-0 z-30 mt-2 w-72 glass bg-white/95 dark:bg-secondary-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-primary-200/50 dark:border-secondary-700/50 overflow-hidden ring-1 ring-black/5 dark:ring-white/5">
-                    <div className="py-2">
-                      <div className="px-4 py-2 border-b border-primary-200/30 dark:border-secondary-700/30">
-                        <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider flex items-center gap-2">
-                          <FolderIcon className="w-3.5 h-3.5 text-primary-500" />
-                          Select Project
-                        </p>
+                  <Menu.Items className="absolute right-0 z-30 mt-2 w-64 backdrop-blur-xl rounded-lg shadow-xl border border-primary-200/30 bg-white dark:bg-gray-800 overflow-hidden">
+                    <div className="py-1.5">
+                      <div className="px-3 py-2 border-b border-primary-200/30 dark:border-primary-700/30">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 rounded-lg glow-primary shadow-sm">
+                            <FolderIcon className="w-3 h-3 text-white" />
+                          </div>
+                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
+                            Select Project
+                          </p>
+                        </div>
                       </div>
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             onClick={() => setSelectedProject("all")}
-                            className={`${active ? "bg-primary-50/80 dark:bg-primary-900/30" : ""
-                              } ${selectedProject === "all" ? "text-primary-600 dark:text-primary-400 font-semibold bg-primary-50/50 dark:bg-primary-900/20" : "text-light-text-primary dark:text-dark-text-primary"} 
-                              flex items-center w-full text-left px-4 py-2.5 text-sm transition-all duration-200 hover:scale-102`}
+                            className={`${active ? "bg-primary-500/10 dark:bg-primary-900/20" : ""
+                              } ${selectedProject === "all"
+                                ? "text-primary-600 dark:text-primary-400 font-semibold bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 border-l-2 border-primary-500"
+                                : "text-light-text-primary dark:text-dark-text-primary"} 
+                              flex items-center w-full text-left px-3 py-2 text-xs transition-all duration-200 hover:bg-primary-500/5 dark:hover:bg-primary-900/10`}
                           >
-                            <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 shadow-sm shrink-0"></div>
-                            All Projects
+                            <div className={`w-2 h-2 rounded-full mr-2.5 shrink-0 ${selectedProject === "all"
+                              ? "bg-gradient-to-br from-primary-500 to-primary-600 shadow-sm"
+                              : "bg-primary-300 dark:bg-primary-700"
+                              }`}></div>
+                            <span className="truncate">All Projects</span>
+                            {selectedProject === "all" && (
+                              <CheckIcon className="w-3.5 h-3.5 ml-auto text-primary-500 shrink-0" />
+                            )}
                           </button>
                         )}
                       </Menu.Item>
@@ -390,12 +403,20 @@ export const Dashboard: React.FC = () => {
                           {({ active }) => (
                             <button
                               onClick={() => setSelectedProject(project._id)}
-                              className={`${active ? "bg-primary-50/80 dark:bg-primary-900/30" : ""
-                                } ${selectedProject === project._id ? "text-primary-600 dark:text-primary-400 font-semibold bg-primary-50/50 dark:bg-primary-900/20" : "text-light-text-primary dark:text-dark-text-primary"} 
-                                flex items-center w-full text-left px-4 py-2.5 text-sm transition-all duration-200 hover:scale-102`}
+                              className={`${active ? "bg-primary-500/10 dark:bg-primary-900/20" : ""
+                                } ${selectedProject === project._id
+                                  ? "text-primary-600 dark:text-primary-400 font-semibold bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 border-l-2 border-primary-500"
+                                  : "text-light-text-primary dark:text-dark-text-primary"} 
+                                flex items-center w-full text-left px-3 py-2 text-xs transition-all duration-200 hover:bg-primary-500/5 dark:hover:bg-primary-900/10`}
                             >
-                              <div className="w-2 h-2 bg-gradient-accent rounded-full mr-3 shadow-sm shrink-0"></div>
-                              <span className="truncate">{project.name}</span>
+                              <div className={`w-2 h-2 rounded-full mr-2.5 shrink-0 ${selectedProject === project._id
+                                ? "bg-gradient-to-br from-accent-500 to-accent-600 shadow-sm"
+                                : "bg-accent-300 dark:bg-accent-700"
+                                }`}></div>
+                              <span className="truncate flex-1">{project.name}</span>
+                              {selectedProject === project._id && (
+                                <CheckIcon className="w-3.5 h-3.5 ml-auto text-primary-500 shrink-0" />
+                              )}
                             </button>
                           )}
                         </Menu.Item>
