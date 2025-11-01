@@ -18,6 +18,7 @@ import {
   QuestionMarkCircleIcon,
   XMarkIcon,
   PaperClipIcon,
+  EyeIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
@@ -37,6 +38,7 @@ import FeatureSelector from "./FeatureSelector";
 import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import { Send } from "lucide-react";
+import { DocumentPreviewModal } from "./DocumentPreviewModal";
 
 // Configure marked for security
 marked.setOptions({
@@ -174,6 +176,7 @@ export const ConversationalAgent: React.FC = () => {
   const [githubConnection, setGithubConnection] = useState<{ avatarUrl?: string; username?: string; hasConnection: boolean }>({ hasConnection: false });
   const [showAttachmentsPopover, setShowAttachmentsPopover] = useState(false);
   const [showAllModelsDropdown, setShowAllModelsDropdown] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<{ documentId: string; fileName: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -1971,6 +1974,17 @@ export const ConversationalAgent: React.FC = () => {
                         <span className={`text-xs ${message.role === 'user' ? 'text-white/70' : 'text-gray-500'}`}>
                           ({doc.chunksCount} chunks)
                         </span>
+                        <button
+                          onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
+                          className={`ml-1 p-1 rounded transition-colors ${message.role === 'user'
+                            ? 'hover:bg-white/20 text-white/80 hover:text-white'
+                            : 'hover:bg-blue-100 text-blue-600 hover:text-blue-700'
+                            }`}
+                          title="Preview document"
+                          aria-label="Preview document"
+                        >
+                          <EyeIcon className="w-4 h-4" />
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -2581,6 +2595,15 @@ export const ConversationalAgent: React.FC = () => {
 
       {/* Sources Modal */}
       <SourcesModal />
+
+      {/* Document Preview Modal */}
+      {previewDocument && (
+        <DocumentPreviewModal
+          documentId={previewDocument.documentId}
+          fileName={previewDocument.fileName}
+          onClose={() => setPreviewDocument(null)}
+        />
+      )}
 
       {/* GitHub Integration Modals */}
       {showGitHubConnector && (
