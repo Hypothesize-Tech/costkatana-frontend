@@ -33,6 +33,7 @@ import { DocumentMetadata } from "@/services/document.service";
 import { useSessionRecording } from "@/hooks/useSessionRecording";
 import GitHubConnector from "./GitHubConnector";
 import FeatureSelector from "./FeatureSelector";
+import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
 
 // Configure marked for security
@@ -164,8 +165,10 @@ export const ConversationalAgent: React.FC = () => {
   // Document upload for RAG
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
   const [showGitHubConnector, setShowGitHubConnector] = useState(false);
+  const [gitHubConnectorMode, setGitHubConnectorMode] = useState<'integration' | 'chat'>('chat');
   const [showFeatureSelector, setShowFeatureSelector] = useState(false);
   const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
+  const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -505,6 +508,12 @@ export const ConversationalAgent: React.FC = () => {
     loadAvailableModels();
     loadConversations();
     loadDataDrivenSuggestions();
+
+    // Restore last conversation from localStorage
+    const savedConversationId = localStorage.getItem('currentConversationId');
+    if (savedConversationId) {
+      loadConversationHistory(savedConversationId);
+    }
   }, []);
 
   useEffect(() => {
@@ -543,6 +552,31 @@ export const ConversationalAgent: React.FC = () => {
       setMessages(result.messages);
       setCurrentConversationId(conversationId);
 
+      // Save to localStorage
+      localStorage.setItem('currentConversationId', conversationId);
+
+      // Restore GitHub repository context if exists
+      if (result.conversation?.githubContext && result.conversation.githubContext.connectionId && result.conversation.githubContext.repositoryFullName) {
+        try {
+          // Fetch repository details to restore selectedRepo
+          const connections = await githubService.listConnections();
+          const connection = connections.find(c => c._id === result.conversation!.githubContext!.connectionId);
+          if (connection) {
+            const repos = await githubService.getRepositories(connection._id);
+            const repo = repos.repositories.find(r => r.fullName === result.conversation!.githubContext!.repositoryFullName);
+            if (repo) {
+              setSelectedRepo({
+                repo,
+                connectionId: connection._id
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Failed to restore repository context:', error);
+          // Continue without repository context
+        }
+      }
+
       // Restore attached documents from the last user message
       const lastUserMessage = [...result.messages].reverse().find((msg) => msg.role === 'user');
       if (lastUserMessage?.attachedDocuments && lastUserMessage.attachedDocuments.length > 0) {
@@ -567,6 +601,7 @@ export const ConversationalAgent: React.FC = () => {
     setMessages([]);
     setCurrentConversationId(null);
     setError(null);
+    localStorage.removeItem('currentConversationId');
   };
 
   const deleteConversation = async (conversationId: string) => {
@@ -583,24 +618,58 @@ export const ConversationalAgent: React.FC = () => {
   };
 
   // GitHub integration handlers
+  // Select repository for integration
   const handleSelectRepository = (repo: GitHubRepository, connectionId: string) => {
     setSelectedRepo({ repo, connectionId });
     setShowGitHubConnector(false);
     setShowFeatureSelector(true);
   };
 
+  // Select repository for chat context (without integration)
+  const handleSelectRepoForChat = async (repo: GitHubRepository, connectionId: string) => {
+    setSelectedRepo({ repo, connectionId });
+    setShowGitHubConnector(false);
+
+    // Save repository context to conversation if we have an active conversation
+    if (currentConversationId) {
+      try {
+        await apiClient.patch(`/chat/conversations/${currentConversationId}/github-context`, {
+          githubContext: {
+            connectionId,
+            repositoryId: repo.id,
+            repositoryName: repo.name,
+            repositoryFullName: repo.fullName
+          }
+        });
+      } catch (error) {
+        console.error('Failed to save repository context:', error);
+        // Continue anyway - it's not critical
+      }
+    }
+
+    // Add a message to chat indicating repository is selected
+    const repoMessage: ChatMessage = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `✅ Repository selected: **${repo.fullName}**\n\nI can now help you make changes to this repository. Just ask me what you'd like to modify!\n\n**Examples:**\n- "Add a new API endpoint for user registration"\n- "Fix the bug in the login function"\n- "Create a new component for the dashboard"`,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, repoMessage]);
+  };
+
   const handleStartIntegration = async (
     features: { name: string; enabled: boolean }[],
-    integrationType: 'npm' | 'cli' | 'python'
+    integrationType: 'npm' | 'cli' | 'python' | 'http-headers'
   ) => {
     if (!selectedRepo) return;
 
     try {
+      const repoFullName = selectedRepo.repo.fullName;
       const result = await githubService.startIntegration({
         connectionId: selectedRepo.connectionId,
         repositoryId: selectedRepo.repo.id,
         repositoryName: selectedRepo.repo.name,
-        repositoryFullName: selectedRepo.repo.fullName,
+        repositoryFullName: repoFullName,
         integrationType,
         selectedFeatures: features,
         conversationId: currentConversationId || undefined
@@ -609,15 +678,56 @@ export const ConversationalAgent: React.FC = () => {
       setShowFeatureSelector(false);
       setSelectedRepo(null);
 
+      // Show progress panel
+      setSelectedIntegration(result.integrationId);
+
       // Add a message to the chat about the integration
       const integrationMessage: ChatMessage = {
         id: Date.now().toString(),
         role: "assistant",
-        content: `🚀 Great! I've started integrating CostKatana into **${selectedRepo.repo.fullName}**.\n\nI'm currently:\n1. Analyzing your repository structure\n2. Generating integration code\n3. Creating a pull request\n\nThis usually takes 1-2 minutes. I'll let you know when the PR is ready!\n\nIntegration ID: ${result.integrationId}`,
+        content: `🚀 Great! I've started integrating CostKatana into **${repoFullName}**.\n\nI'm currently:\n1. Analyzing your repository structure\n2. Generating integration code\n3. Creating a pull request\n\nThis usually takes 1-2 minutes. I'll let you know when the PR is ready!\n\n[View Progress](#integration:${result.integrationId})`,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, integrationMessage]);
+
+      // Poll for status updates
+      const pollStatus = async () => {
+        try {
+          const status = await githubService.getIntegrationStatus(result.integrationId);
+          if (status.prUrl || status.status === 'open' || status.status === 'merged') {
+            // Update the message with PR link
+            const updatedMessage = `✅ Integration complete for **${repoFullName}**!\n\n${status.prUrl ? `🔗 [View Pull Request](${status.prUrl})` : 'Pull request created successfully!'}\n\nStatus: ${status.status}`;
+
+            setMessages(prev => prev.map(msg =>
+              msg.id === integrationMessage.id
+                ? { ...msg, content: updatedMessage }
+                : msg
+            ));
+
+            if (status.prUrl) {
+              // Close progress panel after a delay
+              setTimeout(() => {
+                setSelectedIntegration(null);
+              }, 5000);
+            }
+          } else if (status.status === 'failed') {
+            setMessages(prev => prev.map(msg =>
+              msg.id === integrationMessage.id
+                ? { ...msg, content: `❌ Integration failed for **${repoFullName}**.\n\n${status.errorMessage || 'Please try again or check the logs.'}` }
+                : msg
+            ));
+          } else {
+            // Continue polling
+            setTimeout(pollStatus, 3000);
+          }
+        } catch (error) {
+          console.error('Failed to poll integration status:', error);
+        }
+      };
+
+      // Start polling after 3 seconds
+      setTimeout(pollStatus, 3000);
     } catch (error) {
       console.error('Failed to start integration:', error);
       setError('Failed to start GitHub integration');
@@ -733,6 +843,15 @@ export const ConversationalAgent: React.FC = () => {
         documentIds: selectedDocuments.length > 0
           ? selectedDocuments.map(doc => doc.documentId)
           : undefined,
+        // Include GitHub repository context if a repo is selected
+        ...(selectedRepo ? {
+          githubContext: {
+            connectionId: selectedRepo.connectionId,
+            repositoryId: selectedRepo.repo.id,
+            repositoryName: selectedRepo.repo.name,
+            repositoryFullName: selectedRepo.repo.fullName
+          }
+        } : {})
       });
 
       // Parse sources from the response text
@@ -795,6 +914,89 @@ export const ConversationalAgent: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      // Handle GitHub integration polling if integration data is present
+      if (response.githubIntegrationData?.integrationId) {
+        const integrationId = response.githubIntegrationData.integrationId;
+
+        // Show PR status panel if integration is starting
+        if (response.githubIntegrationData.status !== 'open' && response.githubIntegrationData.status !== 'merged') {
+          setSelectedIntegration(integrationId);
+        }
+
+        // Poll for integration status updates with visual progress
+        const pollIntegrationStatus = async () => {
+          try {
+            const status = await githubService.getIntegrationStatus(integrationId);
+
+            // Update message with progress
+            const progressEmojis: Record<string, string> = {
+              'initializing': '⚙️',
+              'analyzing': '🔍',
+              'generating': '✨',
+              'draft': '📝',
+              'open': '✅',
+              'merged': '🎉',
+              'failed': '❌'
+            };
+
+            const emoji = progressEmojis[status.status] || '⏳';
+            let progressMessage = `${emoji} **Integration Status**: ${status.status.toUpperCase()}\n📊 **Progress**: ${status.progress}%\n\n**Current Step**: ${status.currentStep}`;
+
+            // Add progress steps
+            const steps = [
+              { name: 'Analyzing repository', done: ['open', 'merged', 'generating', 'draft'].includes(status.status) },
+              { name: 'Generating integration code', done: ['open', 'merged', 'draft'].includes(status.status) },
+              { name: 'Creating pull request', done: ['open', 'merged'].includes(status.status) },
+              { name: 'Pull request ready', done: ['open', 'merged'].includes(status.status) }
+            ];
+
+            progressMessage += `\n\n**Progress Steps:**\n`;
+            steps.forEach(step => {
+              progressMessage += `${step.done ? '✅' : '⏳'} ${step.name}\n`;
+            });
+
+            if (status.prUrl) {
+              progressMessage += `\n\n🎉 **Pull Request Created Successfully!**\n\n🔗 **[View & Review Pull Request](${status.prUrl})**\n\n*Click the link above to review and merge the changes when ready!*`;
+            }
+
+            if (status.errorMessage) {
+              progressMessage += `\n\n⚠️ **Error**: ${status.errorMessage}`;
+            }
+
+            // Update the message in real-time
+            setMessages(prev => prev.map(msg =>
+              msg.id === assistantMessage.id
+                ? { ...msg, content: progressMessage }
+                : msg
+            ));
+
+            // Update selected integration to show PR status panel
+            if (status.status === 'open' || status.status === 'merged') {
+              setSelectedIntegration(integrationId);
+
+              // Auto-close panel after 10 seconds if PR is ready
+              if (status.prUrl) {
+                setTimeout(() => {
+                  setSelectedIntegration(null);
+                }, 10000);
+              }
+            } else if (status.status === 'failed') {
+              setSelectedIntegration(null);
+            } else {
+              // Continue polling
+              setTimeout(pollIntegrationStatus, 3000);
+            }
+          } catch (error) {
+            console.error('Failed to poll integration status:', error);
+            // Retry after 5 seconds on error
+            setTimeout(pollIntegrationStatus, 5000);
+          }
+        };
+
+        // Start polling after 2 seconds
+        setTimeout(pollIntegrationStatus, 2000);
+      }
       setIsLoading(false);
       setLoadingMessageId(null);
 
@@ -851,8 +1053,11 @@ export const ConversationalAgent: React.FC = () => {
         }
       }
 
-      if (response.conversationId && !currentConversationId) {
-        setCurrentConversationId(response.conversationId);
+      if (response.conversationId) {
+        if (!currentConversationId) {
+          setCurrentConversationId(response.conversationId);
+          localStorage.setItem('currentConversationId', response.conversationId);
+        }
         await loadConversations();
       }
     } catch (error) {
@@ -1912,8 +2117,51 @@ export const ConversationalAgent: React.FC = () => {
               onDocumentUploaded={(doc) => setSelectedDocuments(prev => [...prev, doc])}
               onDocumentRemoved={(docId) => setSelectedDocuments(prev => prev.filter(d => d.documentId !== docId))}
               selectedDocuments={selectedDocuments}
-              onGitHubConnect={() => setShowGitHubConnector(true)}
+              onGitHubConnect={() => {
+                setGitHubConnectorMode('chat');
+                setShowGitHubConnector(true);
+              }}
             />
+            {/* Add Integration Button */}
+            {!selectedRepo && (
+              <button
+                onClick={() => {
+                  setGitHubConnectorMode('integration');
+                  setShowGitHubConnector(true);
+                }}
+                className="w-full px-4 py-2 bg-gradient-primary text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm font-medium"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Add CostKatana Integration
+              </button>
+            )}
+
+            {/* Selected Repository Indicator */}
+            {selectedRepo && (
+              <div className="flex items-center justify-between px-4 py-2 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-primary-600 dark:text-primary-400">📦</span>
+                  <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                    Working with: <strong>{selectedRepo.repo.fullName}</strong>
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    setSelectedRepo(null);
+                    const clearMessage: ChatMessage = {
+                      id: Date.now().toString(),
+                      role: "assistant",
+                      content: "Repository context cleared. You can select a new repository anytime.",
+                      timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, clearMessage]);
+                  }}
+                  className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-2 py-1 rounded hover:bg-primary-100 dark:hover:bg-primary-900/30"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
 
             {/* Message Input */}
             <div className="flex items-end gap-3">
@@ -1950,7 +2198,7 @@ export const ConversationalAgent: React.FC = () => {
       {/* GitHub Integration Modals */}
       {showGitHubConnector && (
         <GitHubConnector
-          onSelectRepository={handleSelectRepository}
+          onSelectRepository={gitHubConnectorMode === 'integration' ? handleSelectRepository : handleSelectRepoForChat}
           onClose={() => setShowGitHubConnector(false)}
         />
       )}
@@ -1965,6 +2213,23 @@ export const ConversationalAgent: React.FC = () => {
           repositoryName={selectedRepo.repo.name}
           detectedLanguage={selectedRepo.repo.language}
         />
+      )}
+
+      {selectedIntegration && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="max-w-2xl w-full">
+            <PRStatusPanel
+              integrationId={selectedIntegration}
+              onClose={() => setSelectedIntegration(null)}
+            />
+            <button
+              onClick={() => setSelectedIntegration(null)}
+              className="mt-4 w-full py-2 bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors focus-ring"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

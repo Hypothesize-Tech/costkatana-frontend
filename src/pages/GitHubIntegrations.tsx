@@ -32,6 +32,24 @@ const GitHubIntegrations: React.FC = () => {
         loadData();
     }, []);
 
+    // Auto-refresh for in-progress integrations
+    useEffect(() => {
+        const hasInProgress = integrations.some(
+            int => int.status === 'initializing' ||
+                int.status === 'analyzing' ||
+                int.status === 'generating'
+        );
+
+        if (hasInProgress) {
+            const interval = setInterval(() => {
+                loadData();
+            }, 3000); // Refresh every 3 seconds
+
+            return () => clearInterval(interval);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [integrations]);
+
     const loadData = async () => {
         try {
             setLoading(true);
@@ -56,7 +74,7 @@ const GitHubIntegrations: React.FC = () => {
 
     const handleStartIntegration = async (
         features: { name: string; enabled: boolean }[],
-        integrationType: 'npm' | 'cli' | 'python'
+        integrationType: 'npm' | 'cli' | 'python' | 'http-headers'
     ) => {
         if (!selectedRepo) return;
 
@@ -72,12 +90,17 @@ const GitHubIntegrations: React.FC = () => {
 
             setShowFeatureSelector(false);
             setSelectedRepo(null);
+
+            // Immediately show progress panel
             setSelectedIntegration(result.integrationId);
 
-            // Reload integrations
-            setTimeout(() => loadData(), 1000);
+            // Reload integrations immediately and then after delay
+            await loadData();
+            setTimeout(() => loadData(), 2000);
+            setTimeout(() => loadData(), 5000);
         } catch (error) {
             console.error('Failed to start integration:', error);
+            alert('Failed to start integration. Please try again.');
         }
     };
 
@@ -292,17 +315,25 @@ const GitHubIntegrations: React.FC = () => {
                                         </p>
                                     </div>
 
-                                    {integration.prUrl && (
-                                        <a
-                                            href={integration.prUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors flex items-center gap-2 text-sm font-medium focus-ring"
+                                    <div className="flex items-center gap-2">
+                                        {integration.prUrl && (
+                                            <a
+                                                href={integration.prUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors flex items-center gap-2 text-sm font-medium focus-ring"
+                                            >
+                                                View PR
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
+                                        )}
+                                        <button
+                                            onClick={() => setSelectedIntegration(integration._id)}
+                                            className="px-4 py-2 bg-secondary-100 dark:bg-secondary-800 text-light-text-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors flex items-center gap-2 text-sm font-medium focus-ring"
                                         >
-                                            View PR
-                                            <ExternalLink className="w-4 h-4" />
-                                        </a>
-                                    )}
+                                            View Details
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="flex items-center gap-6 text-sm text-light-text-muted dark:text-dark-text-muted">
@@ -338,12 +369,18 @@ const GitHubIntegrations: React.FC = () => {
                                 )}
 
                                 {(integration.status === 'initializing' || integration.status === 'analyzing' || integration.status === 'generating') && (
-                                    <button
-                                        onClick={() => setSelectedIntegration(integration._id)}
-                                        className="mt-4 w-full py-2 bg-secondary-100 dark:bg-secondary-800 text-light-text-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors text-sm font-medium focus-ring"
-                                    >
-                                        View Progress
-                                    </button>
+                                    <div className="mt-4 pt-4 border-t border-secondary-200 dark:border-secondary-700">
+                                        <div className="flex items-center gap-2 text-sm text-light-text-muted dark:text-dark-text-muted mb-2">
+                                            <Clock className="w-4 h-4 animate-pulse" />
+                                            <span>Integration in progress...</span>
+                                        </div>
+                                        <button
+                                            onClick={() => setSelectedIntegration(integration._id)}
+                                            className="w-full py-2 bg-secondary-100 dark:bg-secondary-800 text-light-text-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors text-sm font-medium focus-ring"
+                                        >
+                                            View Progress
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         ))}

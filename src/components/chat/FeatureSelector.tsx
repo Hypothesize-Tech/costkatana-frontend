@@ -11,7 +11,7 @@ interface Feature {
 }
 
 interface FeatureSelectorProps {
-    onConfirm: (features: { name: string; enabled: boolean }[], integrationType: 'npm' | 'cli' | 'python') => void;
+    onConfirm: (features: { name: string; enabled: boolean }[], integrationType: 'npm' | 'cli' | 'python' | 'http-headers') => void;
     onClose?: () => void;
     repositoryName?: string;
     detectedLanguage?: string;
@@ -23,7 +23,7 @@ const FeatureSelector: React.FC<FeatureSelectorProps> = ({
     repositoryName,
     detectedLanguage
 }) => {
-    const [integrationType, setIntegrationType] = useState<'npm' | 'cli' | 'python'>(
+    const [integrationType, setIntegrationType] = useState<'npm' | 'cli' | 'python' | 'http-headers'>(
         detectedLanguage === 'python' ? 'python' : 'npm'
     );
 
@@ -114,7 +114,7 @@ const FeatureSelector: React.FC<FeatureSelectorProps> = ({
                         <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
                             Integration Type
                         </label>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                             <button
                                 onClick={() => setIntegrationType('npm')}
                                 className={`p-4 border-2 rounded-xl transition-all focus-ring ${integrationType === 'npm'
@@ -159,6 +159,22 @@ const FeatureSelector: React.FC<FeatureSelectorProps> = ({
                                     <div className="font-semibold text-light-text-primary dark:text-dark-text-primary">Python SDK</div>
                                     <div className="text-xs text-light-text-muted dark:text-dark-text-muted mt-1">
                                         cost-katana
+                                    </div>
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => setIntegrationType('http-headers')}
+                                className={`p-4 border-2 rounded-xl transition-all focus-ring ${integrationType === 'http-headers'
+                                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                                    : 'border-secondary-200 dark:border-secondary-700 hover:border-primary-300'
+                                    }`}
+                            >
+                                <div className="text-center">
+                                    <div className="text-2xl mb-2">🌐</div>
+                                    <div className="font-semibold text-light-text-primary dark:text-dark-text-primary">HTTP Headers</div>
+                                    <div className="text-xs text-light-text-muted dark:text-dark-text-muted mt-1">
+                                        Any language
                                     </div>
                                 </div>
                             </button>

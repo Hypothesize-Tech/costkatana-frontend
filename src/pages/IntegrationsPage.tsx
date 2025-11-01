@@ -47,7 +47,7 @@ export const IntegrationsPage: React.FC = () => {
 
     const handleStartIntegration = async (
         features: { name: string; enabled: boolean }[],
-        integrationType: 'npm' | 'cli' | 'python'
+        integrationType: 'npm' | 'cli' | 'python' | 'http-headers'
     ) => {
         if (!selectedRepo) return;
 

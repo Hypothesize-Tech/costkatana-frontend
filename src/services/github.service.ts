@@ -28,7 +28,7 @@ export interface StartIntegrationRequest {
     repositoryId: number;
     repositoryName: string;
     repositoryFullName: string;
-    integrationType: 'npm' | 'cli' | 'python';
+    integrationType: 'npm' | 'cli' | 'python' | 'http-headers';
     selectedFeatures: { name: string; enabled: boolean; config?: any }[];
     conversationId?: string;
 }

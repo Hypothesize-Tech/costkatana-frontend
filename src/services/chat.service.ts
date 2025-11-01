@@ -25,6 +25,14 @@ export interface Conversation {
   messageCount: number;
   updatedAt: Date;
   totalCost?: number;
+  githubContext?: {
+    connectionId?: string;
+    repositoryId?: number;
+    repositoryName?: string;
+    repositoryFullName?: string;
+    integrationId?: string;
+    branchName?: string;
+  };
 }
 
 export interface AvailableModel {
@@ -49,6 +57,12 @@ export interface SendMessageRequest {
   chatMode?: 'fastest' | 'cheapest' | 'balanced';
   useMultiAgent?: boolean;
   documentIds?: string[]; // Document IDs for RAG context
+  githubContext?: {
+    connectionId: string;
+    repositoryId: number;
+    repositoryName: string;
+    repositoryFullName: string;
+  };
 }
 
 export interface SendMessageResponse {
@@ -74,6 +88,14 @@ export interface SendMessageResponse {
   cacheHit?: boolean;
   agentPath?: string[];
   riskLevel?: string;
+  // GitHub integration data
+  githubIntegrationData?: {
+    integrationId?: string;
+    status?: string;
+    progress?: number;
+    currentStep?: string;
+    prUrl?: string;
+  };
 }
 
 export interface ConversationHistoryResponse {
