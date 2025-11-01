@@ -70,9 +70,10 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
                     {/* Close Button */}
                     <button
                         onClick={handleClose}
-                        className="absolute top-4 right-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 transition-colors"
+                        className="btn btn-ghost p-2 rounded-lg absolute top-4 right-4 hover:bg-danger-500/10 hover:text-danger-500 transition-all"
+                        aria-label="Close modal"
                     >
-                        <XMarkIcon className="h-6 w-6" />
+                        <XMarkIcon className="h-5 w-5" />
                     </button>
 
                     {/* Header */}
@@ -100,9 +101,9 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
                                 setConfirmPassword('');
                                 setError('');
                             }}
-                            className={`w-full glass rounded-lg p-4 border transition-all duration-300 text-left ${selectedOption === 'plain'
-                                ? 'border-primary-400/50 bg-primary-50/50 dark:bg-primary-900/20'
-                                : 'border-secondary-200/30 hover:border-primary-300/50'
+                            className={`w-full glass rounded-lg p-4 border transition-all duration-300 text-left cursor-pointer ${selectedOption === 'plain'
+                                ? 'border-primary-400/50 bg-primary-50/50 dark:bg-primary-900/20 ring-2 ring-primary-400/30'
+                                : 'border-secondary-200/30 hover:border-primary-300/50 hover:bg-primary-50/30 dark:hover:bg-primary-900/10'
                                 }`}
                         >
                             <div className="flex items-start gap-3">
@@ -127,9 +128,9 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
                                 setSelectedOption('protected');
                                 setError('');
                             }}
-                            className={`w-full glass rounded-lg p-4 border transition-all duration-300 text-left ${selectedOption === 'protected'
-                                ? 'border-success-400/50 bg-success-50/50 dark:bg-success-900/20'
-                                : 'border-secondary-200/30 hover:border-success-300/50'
+                            className={`w-full glass rounded-lg p-4 border transition-all duration-300 text-left cursor-pointer ${selectedOption === 'protected'
+                                ? 'border-success-400/50 bg-success-50/50 dark:bg-success-900/20 ring-2 ring-success-400/30'
+                                : 'border-secondary-200/30 hover:border-success-300/50 hover:bg-success-50/30 dark:hover:bg-success-900/10'
                                 }`}
                         >
                             <div className="flex items-start gap-3">
@@ -205,7 +206,8 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
                     {/* Error Message */}
                     {error && (
                         <div className="mb-4 glass rounded-lg p-3 border border-danger-200/30 bg-danger-50/50 dark:bg-danger-900/20">
-                            <p className="text-sm text-danger-700 dark:text-danger-300">
+                            <p className="text-sm text-danger-700 dark:text-danger-300 flex items-center gap-2">
+                                <ExclamationTriangleIcon className="h-4 w-4 flex-shrink-0" />
                                 {error}
                             </p>
                         </div>
@@ -215,13 +217,13 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
                     <div className="flex gap-3">
                         <button
                             onClick={handleClose}
-                            className="btn-secondary flex-1"
+                            className="btn btn-secondary flex-1"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleDownload}
-                            className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={!selectedOption}
                         >
                             Download
@@ -230,8 +232,9 @@ const DownloadOptionsModal: React.FC<DownloadOptionsModalProps> = ({
 
                     {/* Security Note */}
                     <div className="mt-4 pt-4 border-t border-primary-200/30">
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">
-                            🔒 Password-protected files use AES-256 encryption for maximum security.
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400 flex items-center gap-2">
+                            <LockClosedIcon className="h-3 w-3 flex-shrink-0" />
+                            Password-protected files use AES-256 encryption for maximum security.
                         </p>
                     </div>
                 </div>
@@ -346,9 +349,12 @@ export const BackupCodesSection: React.FC = () => {
     if (loading) {
         return (
             <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-                <div className="animate-pulse">
-                    <div className="h-6 bg-gradient-primary/20 rounded w-1/4 mb-4"></div>
-                    <div className="h-4 bg-gradient-primary/20 rounded w-1/2"></div>
+                <div className="animate-pulse space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 bg-gradient-primary/20 rounded-xl"></div>
+                        <div className="h-6 bg-gradient-primary/20 rounded w-1/3"></div>
+                    </div>
+                    <div className="h-4 bg-gradient-primary/20 rounded w-3/4"></div>
                 </div>
             </div>
         );
@@ -359,17 +365,22 @@ export const BackupCodesSection: React.FC = () => {
             <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary-600 to-secondary-700 flex items-center justify-center shadow-lg">
                         <KeyIcon className="h-6 w-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text-secondary">
-                        Backup Codes
-                    </h2>
+                    <div>
+                        <h2 className="text-xl font-display font-bold gradient-text-secondary">
+                            Backup Codes
+                        </h2>
+                        <p className="text-sm text-secondary-600 dark:text-secondary-400 mt-1">
+                            Secure recovery codes for your account
+                        </p>
+                    </div>
                 </div>
 
                 {/* Description */}
-                <div className="glass rounded-lg p-4 border border-info-200/30 bg-info-50/50 dark:bg-info-900/20 mb-6">
-                    <p className="text-sm text-secondary-700 dark:text-secondary-300">
+                <div className="glass rounded-lg p-4 border border-info-200/30 bg-gradient-to-br from-info-50/50 to-info-100/50 dark:from-info-900/20 dark:to-info-800/20 mb-6">
+                    <p className="text-sm text-info-700 dark:text-info-300">
                         Backup codes can be used to access your account if you lose access to your authenticator app.
                         Each code can only be used once. Store them in a safe place.
                     </p>
@@ -379,7 +390,7 @@ export const BackupCodesSection: React.FC = () => {
                 {backupCodes ? (
                     <div className="space-y-4">
                         {/* Warning Banner */}
-                        <div className="glass rounded-lg p-4 border border-warning-200/30 bg-warning-50/50 dark:bg-warning-900/20">
+                        <div className="glass rounded-lg p-4 border border-warning-200/30 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                             <div className="flex items-start gap-3">
                                 <ExclamationTriangleIcon className="h-5 w-5 text-warning-600 dark:text-warning-400 flex-shrink-0 mt-0.5" />
                                 <div className="flex-1">
@@ -395,21 +406,21 @@ export const BackupCodesSection: React.FC = () => {
                         </div>
 
                         {/* Codes Grid */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             {backupCodes.map((code, index) => (
                                 <button
                                     key={index}
                                     onClick={() => handleCopyCode(code)}
-                                    className="glass rounded-lg p-4 border border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-400/50 transition-all duration-300 group"
+                                    className="glass rounded-lg p-4 border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/10 dark:to-primary-800/10 hover:border-primary-400/50 hover:shadow-lg transition-all duration-300 group"
                                 >
                                     <div className="text-center">
-                                        <div className="text-xs text-secondary-500 dark:text-secondary-400 mb-1">
+                                        <div className="text-xs text-secondary-500 dark:text-secondary-400 mb-2 font-medium">
                                             Code {index + 1}
                                         </div>
-                                        <div className="font-mono text-sm font-bold text-primary-600 dark:text-primary-400">
+                                        <div className="font-mono text-base font-bold text-primary-600 dark:text-primary-400 tracking-wider">
                                             {code}
                                         </div>
-                                        <div className="text-xs text-secondary-400 dark:text-secondary-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="text-xs text-primary-500 dark:text-primary-400 mt-2 opacity-0 group-hover:opacity-100 transition-opacity font-medium">
                                             Click to copy
                                         </div>
                                     </div>
@@ -418,17 +429,17 @@ export const BackupCodesSection: React.FC = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3 pt-2">
                             <button
                                 onClick={handleDownloadClick}
-                                className="btn-primary flex-1 flex items-center justify-center gap-2"
+                                className="btn btn-primary flex-1 flex items-center justify-center gap-2"
                             >
                                 <ArrowDownTrayIcon className="h-5 w-5" />
                                 Download Securely
                             </button>
                             <button
                                 onClick={handleCloseCodesView}
-                                className="btn-secondary flex-1"
+                                className="btn btn-secondary flex-1"
                             >
                                 I've Saved My Codes
                             </button>
@@ -438,25 +449,31 @@ export const BackupCodesSection: React.FC = () => {
                     <div className="space-y-4">
                         {/* Status Info */}
                         {metadata?.hasBackupCodes ? (
-                            <div className="glass rounded-lg p-4 border border-success-200/30 bg-success-50/50 dark:bg-success-900/20">
+                            <div className="glass rounded-lg p-4 border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                                 <div className="flex items-start gap-3">
                                     <CheckCircleIcon className="h-5 w-5 text-success-600 dark:text-success-400 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <p className="text-sm font-medium text-success-800 dark:text-success-200 mb-1">
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium text-success-800 dark:text-success-200 mb-2">
                                             Backup codes configured
                                         </p>
                                         <div className="text-xs text-success-700 dark:text-success-300 space-y-1">
-                                            <p>You have {metadata.codesCount} backup codes available</p>
-                                            <p>Last generated: {formatDate(metadata.lastGenerated)}</p>
+                                            <p className="flex items-center gap-2">
+                                                <span className="font-semibold">Available:</span>
+                                                <span>{metadata.codesCount} backup codes</span>
+                                            </p>
+                                            <p className="flex items-center gap-2">
+                                                <span className="font-semibold">Last generated:</span>
+                                                <span>{formatDate(metadata.lastGenerated)}</span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="glass rounded-lg p-4 border border-warning-200/30 bg-warning-50/50 dark:bg-warning-900/20">
+                            <div className="glass rounded-lg p-4 border border-warning-200/30 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                                 <div className="flex items-start gap-3">
                                     <ExclamationTriangleIcon className="h-5 w-5 text-warning-600 dark:text-warning-400 flex-shrink-0 mt-0.5" />
-                                    <div>
+                                    <div className="flex-1">
                                         <p className="text-sm font-medium text-warning-800 dark:text-warning-200 mb-1">
                                             No backup codes configured
                                         </p>
@@ -469,10 +486,10 @@ export const BackupCodesSection: React.FC = () => {
                         )}
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
                             <button
                                 onClick={handleGenerateClick}
-                                className="btn-primary flex-1"
+                                className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={generating}
                             >
                                 {generating ? (
@@ -504,9 +521,10 @@ export const BackupCodesSection: React.FC = () => {
                         </div>
 
                         {/* Security Note */}
-                        <div className="glass rounded-lg p-3 border border-secondary-200/20">
-                            <p className="text-xs text-secondary-600 dark:text-secondary-400">
-                                🔒 Generating new codes will invalidate all previous codes. Make sure to save the new codes securely.
+                        <div className="glass rounded-lg p-3 border border-secondary-200/20 bg-secondary-50/30 dark:bg-secondary-900/10">
+                            <p className="text-xs text-secondary-600 dark:text-secondary-400 flex items-start gap-2">
+                                <LockClosedIcon className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                                <span>Generating new codes will invalidate all previous codes. Make sure to save the new codes securely.</span>
                             </p>
                         </div>
                     </div>

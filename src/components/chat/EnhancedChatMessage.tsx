@@ -14,18 +14,9 @@ import {
     Maximize2,
     Minimize2,
     Code2,
-    Play,
-    Square,
-    Settings,
-    Shield,
-    AlertTriangle,
     CheckCircle,
     Zap,
-    Terminal,
     Layers,
-    Monitor,
-    Smartphone,
-    Tablet
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

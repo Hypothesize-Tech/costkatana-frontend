@@ -121,7 +121,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         },
     ];
 
-    // Initialize onboarding based on user data - no need for API calls
+    // Initialize onboarding based on user data - only once, no need for API calls
     useEffect(() => {
         if (user?.onboarding) {
             // Ensure onboarding field has proper structure
@@ -135,14 +135,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             // Set current step based on completed steps
             const lastCompletedIndex = steps.findIndex(step => !completedSteps.includes(step.id));
             setCurrentStep(lastCompletedIndex === -1 ? steps.length - 1 : lastCompletedIndex);
-            setLoading(false);
         } else {
             // User doesn't have onboarding data, start from beginning
             setCurrentStep(0);
-            setLoading(false);
         }
+        setLoading(false);
+        // Only run once when component mounts
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.onboarding]);
+    }, []);
 
     const handleNext = async () => {
         if (currentStep < steps.length - 1) {
@@ -272,6 +272,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                     }
                 };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
+                // Update sessionStorage to prevent re-checking
+                sessionStorage.setItem(`onboarding_check_completed_${user.id}`, 'false');
             }
 
             showNotification('Onboarding skipped. You can access it later from settings.', 'info');

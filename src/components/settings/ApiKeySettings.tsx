@@ -355,14 +355,14 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
                   setShowAddForm(false);
                   setNewKey({ name: "", permissions: ["read"], expiresAt: "" });
                 }}
-                className="btn-secondary"
+                className="btn-secondary btn"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={createKeyMutation.isLoading}
-                className="btn-primary"
+                className="btn-primary btn"
               >
                 {createKeyMutation.isLoading ? "Creating..." : "Create API Key"}
               </button>
@@ -372,7 +372,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
       ) : (
         <button
           onClick={() => setShowAddForm(true)}
-          className="btn-primary inline-flex items-center gap-2"
+          className="btn-primary inline-flex items-center gap-2 btn"
         >
           <PlusIcon className="w-4 h-4" />
           Create API Key

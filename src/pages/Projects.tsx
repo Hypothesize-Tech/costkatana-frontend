@@ -25,6 +25,7 @@ const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -108,6 +109,7 @@ const Projects: React.FC = () => {
     if (!selectedProject) return;
 
     try {
+      setDeleting(true);
       await ProjectService.deleteProject(selectedProject._id);
       showNotification("Project deleted successfully!", "success");
       loadProjects(); // Refresh the list
@@ -116,6 +118,8 @@ const Projects: React.FC = () => {
     } catch (error: any) {
       console.error("Error deleting project:", error);
       showNotification(error.message || "Failed to delete project", "error");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -330,16 +334,27 @@ const Projects: React.FC = () => {
                   setDeleteConfirmOpen(false);
                   setSelectedProject(null);
                 }}
-                className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                disabled={deleting}
+                className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteProject}
-                className="px-4 py-2.5 bg-gradient-danger hover:bg-gradient-danger/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-danger transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+                disabled={deleting}
+                className="px-4 py-2.5 bg-gradient-danger hover:bg-gradient-danger/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-danger transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
               >
-                <TrashIcon className="w-4 h-4" />
-                Delete Project
+                {deleting ? (
+                  <>
+                    <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <TrashIcon className="w-4 h-4" />
+                    Delete Project
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -137,7 +137,7 @@ export const EmailManagement: React.FC = () => {
                                             <button
                                                 onClick={() => handleResendVerification(primaryEmail.email)}
                                                 disabled={resendingEmail === primaryEmail.email}
-                                                className="text-sm font-body text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline disabled:opacity-50"
+                                                className="btn btn-ghost text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 {resendingEmail === primaryEmail.email ? 'Sending...' : 'Resend Verification'}
                                             </button>
@@ -203,7 +203,7 @@ export const EmailManagement: React.FC = () => {
                                                     <button
                                                         onClick={() => handleResendVerification(email.email)}
                                                         disabled={resendingEmail === email.email}
-                                                        className="text-sm font-body text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline disabled:opacity-50"
+                                                        className="btn btn-ghost text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         {resendingEmail === email.email ? 'Sending...' : 'Resend'}
                                                     </button>
@@ -217,7 +217,7 @@ export const EmailManagement: React.FC = () => {
                                     {email.verified && (
                                         <button
                                             onClick={() => setConfirmPrimaryEmail(email.email)}
-                                            className="btn-secondary text-sm"
+                                            className="btn btn-secondary text-sm"
                                         >
                                             Set as Primary
                                         </button>
@@ -225,7 +225,7 @@ export const EmailManagement: React.FC = () => {
                                     <button
                                         onClick={() => setConfirmRemoveEmail(email.email)}
                                         disabled={removingEmail === email.email}
-                                        className="p-2 rounded-lg hover:bg-danger-100 dark:hover:bg-danger-900/20 text-danger-600 dark:text-danger-400 transition-colors disabled:opacity-50"
+                                        className="btn btn-ghost p-2 text-danger-600 dark:text-danger-400 hover:bg-danger-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Remove email"
                                     >
                                         {removingEmail === email.email ? (
@@ -258,7 +258,7 @@ export const EmailManagement: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={addingEmail || !newEmail}
-                                className="btn-primary whitespace-nowrap"
+                                className="btn btn-primary whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {addingEmail ? 'Adding...' : 'Add Email'}
                             </button>
@@ -283,13 +283,13 @@ export const EmailManagement: React.FC = () => {
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={() => setConfirmRemoveEmail(null)}
-                                className="btn-secondary"
+                                className="btn btn-secondary"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleRemoveEmail(confirmRemoveEmail)}
-                                className="btn-danger"
+                                className="btn btn-danger"
                             >
                                 Remove
                             </button>
@@ -314,13 +314,13 @@ export const EmailManagement: React.FC = () => {
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={() => setConfirmPrimaryEmail(null)}
-                                className="btn-secondary"
+                                className="btn btn-secondary"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleSetPrimary(confirmPrimaryEmail)}
-                                className="btn-primary"
+                                className="btn btn-primary"
                             >
                                 Confirm
                             </button>

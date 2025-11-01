@@ -174,7 +174,8 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+              className="btn btn-ghost p-2 rounded-lg hover:bg-danger-500/10 hover:text-danger-500 transition-all"
+              aria-label="Close modal"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -421,7 +422,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                       <button
                         type="button"
                         onClick={addIP}
-                        className="btn-ghost w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform duration-300"
+                        className="btn btn-ghost w-12 h-12 flex items-center justify-center"
                       >
                         <PlusIcon className="h-5 w-5" />
                       </button>
@@ -437,7 +438,8 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                             <button
                               type="button"
                               onClick={() => removeIP(ip)}
-                              className="text-primary-600 hover:text-danger-500 transition-colors duration-300"
+                              className="btn btn-ghost p-1 h-auto min-w-0 text-primary-600 hover:text-danger-500"
+                              aria-label="Remove IP"
                             >
                               <TrashIcon className="h-3 w-3" />
                             </button>
@@ -463,7 +465,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                       <button
                         type="button"
                         onClick={addDomain}
-                        className="btn-ghost w-12 h-12 flex items-center justify-center hover:scale-110 transition-transform duration-300"
+                        className="btn btn-ghost w-12 h-12 flex items-center justify-center"
                       >
                         <PlusIcon className="h-5 w-5" />
                       </button>
@@ -479,7 +481,8 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                             <button
                               type="button"
                               onClick={() => removeDomain(domain)}
-                              className="text-success-600 hover:text-danger-500 transition-colors duration-300"
+                              className="btn btn-ghost p-1 h-auto min-w-0 text-success-600 hover:text-danger-500"
+                              aria-label="Remove domain"
                             >
                               <TrashIcon className="h-3 w-3" />
                             </button>
@@ -507,14 +510,14 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="btn-ghost hover:scale-105 transition-transform duration-300"
+                    className="btn btn-ghost"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createProxyKeyMutation.isPending}
-                    className="btn-secondary hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {createProxyKeyMutation.isPending ? (
                       <span className="flex items-center gap-2">

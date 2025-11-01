@@ -129,7 +129,7 @@ export const AccountClosure: React.FC = () => {
                             <button
                                 onClick={handleReactivate}
                                 disabled={isLoading}
-                                className="btn-success text-sm disabled:opacity-50"
+                                className="btn btn-success disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? 'Reactivating...' : 'Reactivate My Account'}
                             </button>
@@ -156,7 +156,7 @@ export const AccountClosure: React.FC = () => {
                             <button
                                 onClick={handleCancelClosure}
                                 disabled={isLoading}
-                                className="btn-secondary text-sm disabled:opacity-50"
+                                className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? 'Cancelling...' : 'Cancel Closure'}
                             </button>
@@ -168,7 +168,7 @@ export const AccountClosure: React.FC = () => {
             {/* Danger Zone */}
             <div className="glass rounded-xl p-6 border border-danger-200/30 bg-danger-500/5">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center shadow-lg">
                         <ExclamationTriangleIcon className="h-6 w-6 text-white" />
                     </div>
                     <h2 className="text-xl font-display font-bold gradient-text-danger">
@@ -184,10 +184,10 @@ export const AccountClosure: React.FC = () => {
                 {!isPending && !isInProcess && (
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="btn-danger flex items-center gap-2"
+                        className="btn btn-danger flex items-center gap-2"
                     >
                         <TrashIcon className="h-5 w-5" />
-                        Close Account
+                        <span>Close Account</span>
                     </button>
                 )}
             </div>
@@ -204,9 +204,10 @@ export const AccountClosure: React.FC = () => {
                             </h3>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                                className="btn btn-ghost p-2 rounded-lg hover:bg-danger-500/10 hover:text-danger-500 transition-colors"
+                                aria-label="Close modal"
                             >
-                                <XMarkIcon className="h-6 w-6" />
+                                <XMarkIcon className="h-5 w-5" />
                             </button>
                         </div>
 
@@ -266,14 +267,14 @@ export const AccountClosure: React.FC = () => {
                                 <div className="flex gap-3">
                                     <button
                                         onClick={() => setIsModalOpen(false)}
-                                        className="btn-secondary flex-1"
+                                        className="btn btn-secondary flex-1"
                                         disabled={isLoading}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleInitiateClosure}
-                                        className="btn-danger flex-1"
+                                        className="btn btn-danger flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={isLoading || !password.trim()}
                                     >
                                         {isLoading ? 'Processing...' : 'Continue'}
@@ -285,8 +286,8 @@ export const AccountClosure: React.FC = () => {
                         {/* Step 2: Email Sent */}
                         {modalStep === 'email-sent' && (
                             <div className="space-y-4 text-center">
-                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-success/20 flex items-center justify-center">
-                                    <CheckCircleIcon className="h-10 w-10 text-success-500" />
+                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center ring-2 ring-green-500/30">
+                                    <CheckCircleIcon className="h-10 w-10 text-green-500" />
                                 </div>
                                 <div>
                                     <h4 className="font-display font-semibold text-lg mb-2">
@@ -299,7 +300,7 @@ export const AccountClosure: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => setIsModalOpen(false)}
-                                    className="btn-primary w-full"
+                                    className="btn btn-primary w-full"
                                 >
                                     Got It
                                 </button>
@@ -309,8 +310,8 @@ export const AccountClosure: React.FC = () => {
                         {/* Step 3: Cooldown */}
                         {modalStep === 'cooldown' && cooldownEndsAt && (
                             <div className="space-y-4 text-center">
-                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-warning/20 flex items-center justify-center">
-                                    <ClockIcon className="h-10 w-10 text-warning-500" />
+                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 flex items-center justify-center ring-2 ring-yellow-500/30">
+                                    <ClockIcon className="h-10 w-10 text-yellow-500" />
                                 </div>
                                 <div>
                                     <h4 className="font-display font-semibold text-lg mb-2">
@@ -326,7 +327,7 @@ export const AccountClosure: React.FC = () => {
                                 <button
                                     onClick={handleCancelClosure}
                                     disabled={isLoading}
-                                    className="btn-secondary w-full"
+                                    className="btn btn-secondary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? 'Cancelling...' : 'Cancel Closure'}
                                 </button>

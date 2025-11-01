@@ -274,7 +274,7 @@ export const SessionReplaySettings: React.FC = () => {
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="btn-primary px-6 py-2.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary px-6 py-2.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {saving ? (
                         <>

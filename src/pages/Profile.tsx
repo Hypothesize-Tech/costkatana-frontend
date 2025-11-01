@@ -17,7 +17,8 @@ import { UsageTrendChart } from '../components/guardrails/UsageTrendChart';
 import {
   ShieldCheckIcon,
   CreditCardIcon,
-  ChartBarIcon
+  ChartBarIcon,
+  BellIcon,
 } from '@heroicons/react/24/outline';
 import { MFASetup } from '../components/auth/MFASetup';
 
@@ -217,15 +218,18 @@ export const Profile: React.FC = () => {
         />
 
         <div className="mt-8">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2 mb-6">
-            <nav className="flex space-x-2">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2 mb-6">
+            <nav className="flex space-x-2 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-3 px-4 rounded-xl font-display font-semibold text-sm transition-all duration-300 ${activeTab === tab.id
-                    ? 'bg-gradient-primary text-white shadow-lg'
-                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    navigate(`/profile?tab=${tab.id}`, { replace: true });
+                  }}
+                  className={`py-3 px-4 rounded-xl font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
+                    ? 'bg-gradient-primary text-white shadow-lg glow-primary transform scale-105'
+                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                     }`}
                 >
                   {tab.label}
@@ -305,36 +309,38 @@ export const Profile: React.FC = () => {
 
             {activeTab === 'security' && (
               <div className="space-y-6">
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                   <div className="flex items-center mb-4">
                     <ShieldCheckIcon className="mr-3 w-6 h-6 text-success-600 dark:text-success-400" />
                     <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Security Settings</h3>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
+                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
                       <div>
                         <h4 className="font-medium text-secondary-900 dark:text-white">Email Verification</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Verify your email address for enhanced security</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${profileData?.emailVerified ? 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300' : 'bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300'
+                      <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${profileData?.emailVerified
+                        ? 'bg-gradient-success text-white shadow-md'
+                        : 'bg-gradient-warning text-white shadow-md'
                         }`}>
                         {profileData?.emailVerified ? 'Verified' : 'Not Verified'}
                       </span>
                     </div>
 
-                    <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
+                    <div className="p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
                       <MFASetup />
                     </div>
 
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
+                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
                       <div>
                         <h4 className="font-medium text-secondary-900 dark:text-white">API Keys</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Manage your API keys and access tokens</p>
                       </div>
                       <button
                         onClick={() => navigate('/settings?tab=api-keys')}
-                        className="btn-secondary"
+                        className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
                       >
                         Manage Keys
                       </button>
@@ -346,114 +352,120 @@ export const Profile: React.FC = () => {
 
             {activeTab === 'subscription' && (
               <div className="space-y-6">
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                   <div className="flex items-center mb-4">
                     <CreditCardIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
                     <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Subscription Details</h3>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
+                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
                       <div>
                         <h4 className="font-medium text-secondary-900 dark:text-white">Current Plan</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Your current subscription plan and features</p>
                       </div>
-                      <span className="px-3 py-1 text-sm font-medium text-primary-800 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/30 rounded-full">
+                      <span className="px-4 py-1.5 text-sm font-semibold bg-gradient-primary text-white rounded-full shadow-md">
                         {profileData?.subscription?.plan || 'Free'} Plan
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">API Calls</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">API Calls</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '10,000'}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">calls per month</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">calls per month</p>
                       </div>
 
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">Tokens</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Tokens</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {(profileData?.subscription?.limits?.tokensPerMonth || 1000000).toLocaleString()}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">tokens per month</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">tokens per month</p>
                       </div>
 
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">Projects</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Projects</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {profileData?.subscription?.limits?.projects || 5}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">projects</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">projects</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">Workflows</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Workflows</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {profileData?.subscription?.limits?.workflows || 10}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">AI workflows</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">AI workflows</p>
                       </div>
 
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">Logs</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Logs</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {(profileData?.subscription?.limits?.logsPerMonth || 15000).toLocaleString()}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">logs per month</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">logs per month</p>
                       </div>
 
-                      <div className="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                        <h4 className="mb-2 font-medium text-secondary-900 dark:text-white">Models</h4>
-                        <p className="text-2xl font-bold text-secondary-900 dark:text-white">
+                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
+                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Models</h4>
+                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
                           {profileData?.subscription?.plan === 'free' ? '3' : 'All'}
                         </p>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">AI models</p>
+                        <p className="text-xs text-secondary-500 dark:text-secondary-400">AI models</p>
                       </div>
                     </div>
 
                     {/* Free Plan Features */}
                     {profileData?.subscription?.plan === 'free' && (
-                      <div className="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-700">
-                        <h4 className="mb-3 font-medium text-primary-900 dark:text-primary-300">Free Plan Features</h4>
+                      <div className="p-5 glass border border-primary-300/50 dark:border-primary-600/50 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl">
+                        <h4 className="mb-4 font-semibold text-primary-900 dark:text-primary-200 flex items-center gap-2">
+                          <span className="text-lg">✨</span>
+                          Free Plan Features
+                        </h4>
                         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">1M tokens per month</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">1M tokens per month</span>
                           </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">10K API requests per month</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">10K API requests per month</span>
                           </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">15K logs per month</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">15K logs per month</span>
                           </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">5 projects</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">5 projects</span>
                           </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">10 AI workflows</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">10 AI workflows</span>
                           </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-success-600 dark:text-success-400">✓</span>
-                            <span className="text-primary-800 dark:text-primary-300">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
+                            <span className="text-primary-800 dark:text-primary-200">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
                           </div>
                         </div>
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
                       <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Upgrade Plan</h4>
+                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Upgrade Plan</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Get more features and higher limits</p>
                       </div>
-                      <button className="btn-success">
+                      <button
+                        onClick={() => navigate('/pricing')}
+                        className="px-6 py-2.5 bg-gradient-success text-white rounded-xl font-display font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 whitespace-nowrap"
+                      >
                         Upgrade Now
                       </button>
                     </div>
@@ -461,7 +473,7 @@ export const Profile: React.FC = () => {
                 </div>
 
                 {/* Usage Guardrails */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                   <div className="flex items-center mb-4">
                     <ChartBarIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
                     <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Usage Guardrails</h3>
@@ -475,39 +487,34 @@ export const Profile: React.FC = () => {
                 </div>
 
                 {/* Notification Settings */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                  <div className="flex items-center mb-4">
-                    <svg className="mr-3 w-6 h-6 text-accent-600 dark:text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Notification Settings</h3>
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+                  <div className="flex items-center mb-6">
+                    <BellIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
+                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">Notification Settings</h3>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Email Notifications</h4>
+                    <div className="flex justify-between items-center p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Email Notifications</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Receive updates about your usage and optimizations</p>
                       </div>
-                      <label className="inline-flex relative items-center cursor-pointer">
+                      <label className="inline-flex relative items-center cursor-pointer ml-4">
                         <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-11 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                        <div className="w-12 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-500 peer-focus:ring-opacity-50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-primary shadow-inner"></div>
                       </label>
                     </div>
 
-                    <div className="flex justify-between items-center p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Cost Alerts</h4>
+                    <div className="flex justify-between items-center p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Cost Alerts</h4>
                         <p className="text-sm text-secondary-600 dark:text-secondary-300">Get notified when you reach cost thresholds</p>
                       </div>
-                      <label className="inline-flex relative items-center cursor-pointer">
+                      <label className="inline-flex relative items-center cursor-pointer ml-4">
                         <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-11 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                        <div className="w-12 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-500 peer-focus:ring-opacity-50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-primary shadow-inner"></div>
                       </label>
                     </div>
-
                   </div>
                 </div>
               </div>

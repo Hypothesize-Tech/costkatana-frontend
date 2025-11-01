@@ -275,7 +275,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="btn-primary"
+              className="btn-primary btn"
             >
               Edit Profile
             </button>

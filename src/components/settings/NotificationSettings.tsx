@@ -269,7 +269,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          className="btn-primary"
+          className="btn-primary btn"
         >
           Save Preferences
         </button>

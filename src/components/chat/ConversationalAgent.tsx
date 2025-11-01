@@ -1703,7 +1703,7 @@ export const ConversationalAgent: React.FC = () => {
           <div className="p-3">
             <button
               onClick={startNewConversation}
-              className="btn-primary w-full flex items-center justify-center text-sm py-2 font-display font-semibold"
+              className="btn btn-primary w-full flex items-center justify-center text-sm py-2 font-display font-semibold"
             >
               <PlusIcon className="w-4 h-4 mr-2" />
               New Chat

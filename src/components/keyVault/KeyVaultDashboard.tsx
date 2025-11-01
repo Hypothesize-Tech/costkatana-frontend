@@ -101,7 +101,7 @@ export const KeyVaultDashboard: React.FC = () => {
             </p>
             <button
               onClick={() => refetch()}
-              className="btn-danger hover:scale-105 transition-transform duration-300"
+              className="btn btn-danger"
             >
               Retry
             </button>
@@ -133,14 +133,14 @@ export const KeyVaultDashboard: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowCreateProviderModal(true)}
-                className="btn-primary flex items-center gap-2 hover:scale-105 transition-transform duration-300"
+                className="btn btn-primary flex items-center gap-2"
               >
                 <PlusIcon className="h-5 w-5" />
                 Add Provider Key
               </button>
               <button
                 onClick={() => setShowCreateProxyModal(true)}
-                className="btn-secondary flex items-center gap-2 hover:scale-105 transition-transform duration-300"
+                className="btn btn-secondary flex items-center gap-2"
               >
                 <KeyIcon className="h-5 w-5" />
                 Create Proxy Key
@@ -230,7 +230,7 @@ export const KeyVaultDashboard: React.FC = () => {
               </p>
               <button
                 onClick={() => setShowCreateProviderModal(true)}
-                className="btn-primary flex items-center gap-2 mx-auto hover:scale-105 transition-transform duration-300"
+                className="btn btn-primary flex items-center gap-2 mx-auto"
               >
                 <PlusIcon className="h-5 w-5" />
                 Add Provider Key
@@ -275,7 +275,7 @@ export const KeyVaultDashboard: React.FC = () => {
               </p>
               <button
                 onClick={() => setShowCreateProxyModal(true)}
-                className="btn-secondary flex items-center gap-2 mx-auto hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="btn btn-secondary flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!dashboardData?.providerKeys.length}
               >
                 <PlusIcon className="h-5 w-5" />
