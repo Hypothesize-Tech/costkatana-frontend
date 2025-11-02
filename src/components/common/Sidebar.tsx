@@ -120,7 +120,8 @@ const navCategories: NavCategory[] = [
     id: 'admin',
     label: 'Admin',
     items: [
-      { name: 'User Spending', href: '/admin/user-spending', icon: ChartBarIcon, description: 'Track user spending and analytics' },
+      { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Comprehensive platform analytics and monitoring' },
+      { name: 'User Spending', href: '/admin/user-spending', icon: CurrencyDollarIcon, description: 'Track user spending and analytics' },
     ],
   },
 ];

@@ -67,6 +67,7 @@ import UnexplainedCosts from './pages/UnexplainedCosts';
 import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
+import { AdminDashboard } from './pages/AdminDashboard';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -245,6 +246,14 @@ function AppContent() {
             element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminUserSpending />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/dashboard"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />
