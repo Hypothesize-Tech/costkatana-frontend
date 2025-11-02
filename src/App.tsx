@@ -66,6 +66,7 @@ import { Security } from './pages/Security';
 import UnexplainedCosts from './pages/UnexplainedCosts';
 import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
+import { AdminUserSpending } from './pages/AdminUserSpending';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -238,6 +239,14 @@ function AppContent() {
           <Route
             path="github"
             element={<GitHubIntegrations />}
+          />
+          <Route
+            path="admin/user-spending"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminUserSpending />
+              </ProtectedRoute>
+            }
           />
         </Route>
 

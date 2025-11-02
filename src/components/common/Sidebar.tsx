@@ -33,6 +33,7 @@ import {
   LinkIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
+import { useAuth } from '../../hooks';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -113,6 +114,13 @@ const navCategories: NavCategory[] = [
       { name: 'Pricing', href: '/pricing', icon: BanknotesIcon, description: 'View pricing plans' },
       { name: 'Profile', href: '/profile', icon: UserCircleIcon, description: 'User profile settings' },
       { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, description: 'Application settings and preferences' },
+    ],
+  },
+  {
+    id: 'admin',
+    label: 'Admin',
+    items: [
+      { name: 'User Spending', href: '/admin/user-spending', icon: ChartBarIcon, description: 'Track user spending and analytics' },
     ],
   },
 ];
@@ -206,6 +214,8 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
 // ------------------------------
 export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) => {
   const location = useLocation();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   // expanded state per category; persisted so it feels sticky
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -378,7 +388,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       )}
 
       <ul role="list" className={cn('flex flex-col flex-1 gap-y-5', collapsed ? 'pt-16' : 'pt-6')}>
-        {navCategories.map((cat, index) => (
+        {navCategories.filter(cat => cat.id !== 'admin' || isAdmin).map((cat, index) => (
           <li key={cat.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
             {/* Category header hidden when collapsed */}
             {!collapsed && (
