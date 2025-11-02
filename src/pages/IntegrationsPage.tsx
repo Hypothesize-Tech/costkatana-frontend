@@ -5,8 +5,10 @@ import { integrationService } from '../services/integration.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { SlackIntegrationSetup } from '../components/integrations/SlackIntegrationSetup';
 import { DiscordIntegrationSetup } from '../components/integrations/DiscordIntegrationSetup';
+import { LinearIntegrationSetup } from '../components/integrations/LinearIntegrationSetup';
 import { WebhookIntegrationSetup } from '../components/integrations/WebhookIntegrationSetup';
 import { IntegrationLogs } from '../components/integrations/IntegrationLogs';
+import { LinearIntegrationViewModal } from '../components/integrations/LinearIntegrationViewModal';
 import {
     PlusIcon,
     XMarkIcon,
@@ -18,12 +20,15 @@ import {
 import GitHubConnector from '../components/chat/GitHubConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
+import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
 
-type SetupModal = 'slack' | 'discord' | 'webhook' | 'github' | null;
+type SetupModal = 'slack' | 'discord' | 'linear' | 'webhook' | 'github' | null;
+type ViewModal = { type: 'linear'; integrationId: string } | null;
 
 export const IntegrationsPage: React.FC = () => {
     const navigate = useNavigate();
     const [setupModal, setSetupModal] = useState<SetupModal>(null);
+    const [viewModal, setViewModal] = useState<ViewModal>(null);
     const [showLogs, setShowLogs] = useState(false);
     const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
     const [showFeatureSelector, setShowFeatureSelector] = useState(false);
@@ -133,6 +138,9 @@ export const IntegrationsPage: React.FC = () => {
             if (type === 'discord') {
                 return integ.type === 'discord_webhook' || integ.type === 'discord_oauth';
             }
+            if (type === 'linear') {
+                return integ.type === 'linear_oauth';
+            }
             if (type === 'webhook') {
                 return integ.type === 'custom_webhook';
             }
@@ -176,6 +184,15 @@ export const IntegrationsPage: React.FC = () => {
             color: '#5865F2',
         },
         {
+            type: 'linear' as const,
+            name: 'Linear',
+            description: 'Send alerts as comments or create issues in Linear',
+            icon: (
+                <img src={linearIcon} alt="Linear" className="integration-icon" style={{ width: '24px', height: '24px' }} />
+            ),
+            color: '#5E6AD2',
+        },
+        {
             type: 'webhook' as const,
             name: 'Custom Webhook',
             description: 'Send alerts to any custom webhook endpoint',
@@ -197,7 +214,7 @@ export const IntegrationsPage: React.FC = () => {
                         <div>
                             <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">Integrations</h1>
                             <p className="text-secondary-600 dark:text-secondary-300">
-                                Connect Cost Katana with GitHub, Slack, Discord, and custom webhooks
+                                Connect Cost Katana with GitHub, Slack, Discord, Linear, and custom webhooks
                             </p>
                         </div>
                         <button
@@ -259,6 +276,7 @@ export const IntegrationsPage: React.FC = () => {
                                             const regularIntegrations = integrations.filter(integ => {
                                                 if (integration.type === 'slack') return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
                                                 if (integration.type === 'discord') return integ.type === 'discord_webhook' || integ.type === 'discord_oauth';
+                                                if (integration.type === 'linear') return integ.type === 'linear_oauth';
                                                 if (integration.type === 'webhook') return integ.type === 'custom_webhook';
                                                 return false;
                                             });
@@ -355,8 +373,15 @@ export const IntegrationsPage: React.FC = () => {
                                                                     <>
                                                                         <button
                                                                             onClick={() => {
-                                                                                // For regular integrations, show management or add more
-                                                                                setSetupModal(integration.type);
+                                                                                // For Linear, show integration details instead of setup
+                                                                                if (integration.type === 'linear' && regularIntegrations.length > 0) {
+                                                                                    // Show details for the first integration or allow selection
+                                                                                    const firstIntegration = regularIntegrations[0];
+                                                                                    setViewModal({ type: 'linear', integrationId: firstIntegration.id });
+                                                                                } else {
+                                                                                    // For other integrations, show setup to add more
+                                                                                    setSetupModal(integration.type);
+                                                                                }
                                                                             }}
                                                                             className="flex-1 px-3 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm"
                                                                         >
@@ -426,10 +451,28 @@ export const IntegrationsPage: React.FC = () => {
                         onComplete={handleSetupComplete}
                     />
                 )}
+                {setupModal === 'linear' && (
+                    <LinearIntegrationSetup
+                        onClose={() => setSetupModal(null)}
+                        onComplete={handleSetupComplete}
+                    />
+                )}
                 {setupModal === 'webhook' && (
                     <WebhookIntegrationSetup
                         onClose={() => setSetupModal(null)}
                         onComplete={handleSetupComplete}
+                    />
+                )}
+
+                {/* Linear Integration View Modal */}
+                {viewModal && viewModal.type === 'linear' && (
+                    <LinearIntegrationViewModal
+                        integrationId={viewModal.integrationId}
+                        onClose={() => setViewModal(null)}
+                        onEdit={() => {
+                            setViewModal(null);
+                            setSetupModal('linear');
+                        }}
                     />
                 )}
 

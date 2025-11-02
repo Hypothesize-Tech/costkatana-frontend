@@ -3,6 +3,7 @@ export type IntegrationType =
     | 'slack_oauth' 
     | 'discord_webhook' 
     | 'discord_oauth' 
+    | 'linear_oauth'
     | 'custom_webhook';
 
 export type IntegrationStatus = 'active' | 'inactive' | 'error' | 'pending';
@@ -39,6 +40,8 @@ export interface IntegrationCredentials {
     guildName?: string;
     teamId?: string;
     teamName?: string;
+    projectId?: string;
+    issueId?: string;
     scope?: string;
 }
 
@@ -60,6 +63,7 @@ export interface IntegrationStats {
     successRate?: number;
     healthStatus?: 'healthy' | 'degraded' | 'unhealthy';
     lastHealthCheck?: string;
+    totalNotifications?: number;
 }
 
 export interface Integration {
@@ -76,6 +80,9 @@ export interface Integration {
     errorMessage?: string;
     createdAt: string;
     updatedAt: string;
+    credentials?: IntegrationCredentials;
+    metadata?: Record<string, any>;
+    isActive?: boolean;
 }
 
 export interface CreateIntegrationDto {
@@ -85,6 +92,7 @@ export interface CreateIntegrationDto {
     credentials: IntegrationCredentials;
     alertRouting?: Record<string, AlertRoutingRule>;
     deliveryConfig?: Partial<DeliveryConfig>;
+    metadata?: Record<string, any>;
 }
 
 export interface UpdateIntegrationDto {
@@ -127,6 +135,20 @@ export interface DiscordChannel {
     id: string;
     name: string;
     type: number;
+}
+
+export interface LinearTeam {
+    id: string;
+    name: string;
+    key: string;
+    description?: string;
+}
+
+export interface LinearProject {
+    id: string;
+    name: string;
+    description?: string;
+    icon?: string;
 }
 
 // Slack Block Kit Types
