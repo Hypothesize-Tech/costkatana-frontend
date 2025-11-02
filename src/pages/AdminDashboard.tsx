@@ -25,12 +25,24 @@ import {
     CubeIcon,
     BuildingOfficeIcon,
     BoltIcon,
+    CurrencyDollarIcon,
+    KeyIcon,
+    RectangleStackIcon,
+    GlobeAltIcon,
+    WalletIcon,
+    SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 import {
     ChartBarIcon as ChartBarIconSolid,
     UsersIcon as UsersIconSolid,
     FireIcon as FireIconSolid,
     ExclamationTriangleIcon as ExclamationTriangleIconSolid,
+    CurrencyDollarIcon as CurrencyDollarIconSolid,
+    KeyIcon as KeyIconSolid,
+    RectangleStackIcon as RectangleStackIconSolid,
+    GlobeAltIcon as GlobeAltIconSolid,
+    WalletIcon as WalletIconSolid,
+    SquaresPlusIcon as SquaresPlusIconSolid,
 } from '@heroicons/react/24/solid';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
@@ -47,6 +59,27 @@ import {
     ProjectStats,
     WorkspaceStats,
     AdminDashboardFilters,
+    RevenueMetrics,
+    SubscriptionMetrics,
+    ConversionMetrics,
+    UpcomingRenewal,
+    ApiKeyStats,
+    ApiKeyUsage,
+    ApiKeyTopUsage,
+    EndpointPerformance,
+    EndpointTrend,
+    TopEndpoint,
+    GeographicUsage,
+    PeakUsageTime,
+    UsagePattern,
+    GeographicCostDistribution,
+    BudgetOverview,
+    BudgetAlert,
+    ProjectBudgetStatus,
+    BudgetTrend,
+    IntegrationStats,
+    IntegrationTrend,
+    IntegrationHealth,
 } from '../services/adminDashboard.service';
 import { Line, Doughnut } from 'react-chartjs-2';
 import {
@@ -89,7 +122,8 @@ ChartJS.register(
 
 export const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<
-        'overview' | 'growth' | 'alerts' | 'models' | 'features' | 'projects' | 'activity' | 'users'
+        'overview' | 'growth' | 'alerts' | 'models' | 'features' | 'projects' | 'activity' | 'users' |
+        'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations'
     >('overview');
 
     const [engagementMetrics, setEngagementMetrics] = useState<EngagementMetrics | null>(null);
@@ -101,6 +135,29 @@ export const AdminDashboard: React.FC = () => {
     const [featureAdoption, setFeatureAdoption] = useState<FeatureAdoption[]>([]);
     const [projectStats, setProjectStats] = useState<ProjectStats[]>([]);
     const [workspaceStats, setWorkspaceStats] = useState<WorkspaceStats[]>([]);
+
+    // New feature states
+    const [revenueMetrics, setRevenueMetrics] = useState<RevenueMetrics | null>(null);
+    const [subscriptionMetrics, setSubscriptionMetrics] = useState<SubscriptionMetrics | null>(null);
+    const [conversionMetrics, setConversionMetrics] = useState<ConversionMetrics | null>(null);
+    const [upcomingRenewals, setUpcomingRenewals] = useState<UpcomingRenewal[]>([]);
+    const [apiKeyStats, setApiKeyStats] = useState<ApiKeyStats | null>(null);
+    const [apiKeyUsage, setApiKeyUsage] = useState<ApiKeyUsage[]>([]);
+    const [topApiKeys, setTopApiKeys] = useState<ApiKeyTopUsage[]>([]);
+    const [endpointPerformance, setEndpointPerformance] = useState<EndpointPerformance[]>([]);
+    const [endpointTrends, setEndpointTrends] = useState<EndpointTrend[]>([]);
+    const [topEndpoints, setTopEndpoints] = useState<TopEndpoint[]>([]);
+    const [geographicUsage, setGeographicUsage] = useState<GeographicUsage[]>([]);
+    const [peakUsageTimes, setPeakUsageTimes] = useState<PeakUsageTime[]>([]);
+    const [usagePatterns, setUsagePatterns] = useState<UsagePattern[]>([]);
+    const [geographicCostDistribution, setGeographicCostDistribution] = useState<GeographicCostDistribution[]>([]);
+    const [budgetOverview, setBudgetOverview] = useState<BudgetOverview | null>(null);
+    const [budgetAlerts, setBudgetAlerts] = useState<BudgetAlert[]>([]);
+    const [projectBudgetStatus, setProjectBudgetStatus] = useState<ProjectBudgetStatus[]>([]);
+    const [budgetTrends, setBudgetTrends] = useState<BudgetTrend[]>([]);
+    const [integrationStats, setIntegrationStats] = useState<IntegrationStats[]>([]);
+    const [integrationTrends, setIntegrationTrends] = useState<IntegrationTrend[]>([]);
+    const [integrationHealth, setIntegrationHealth] = useState<IntegrationHealth[]>([]);
 
     const [filters, setFilters] = useState<AdminDashboardFilters>({
         period: 'daily',
@@ -148,6 +205,63 @@ export const AdminDashboard: React.FC = () => {
                 );
             }
 
+            // Revenue & Billing
+            if (activeTab === 'revenue') {
+                promises.push(
+                    AdminDashboardService.getRevenueMetrics(filters.startDate, filters.endDate),
+                    AdminDashboardService.getSubscriptionMetrics(filters.startDate, filters.endDate),
+                    AdminDashboardService.getConversionMetrics(filters.startDate, filters.endDate),
+                    AdminDashboardService.getUpcomingRenewals(30)
+                );
+            }
+
+            // API Keys
+            if (activeTab === 'api-keys') {
+                promises.push(
+                    AdminDashboardService.getApiKeyStats(),
+                    AdminDashboardService.getApiKeyUsage(filters.startDate, filters.endDate),
+                    AdminDashboardService.getTopApiKeys(10)
+                );
+            }
+
+            // Endpoints
+            if (activeTab === 'endpoints') {
+                promises.push(
+                    AdminDashboardService.getEndpointPerformance(filters.startDate, filters.endDate),
+                    AdminDashboardService.getEndpointTrends(undefined, filters.startDate, filters.endDate),
+                    AdminDashboardService.getTopEndpoints('requests', 10)
+                );
+            }
+
+            // Geographic
+            if (activeTab === 'geographic') {
+                promises.push(
+                    AdminDashboardService.getGeographicUsage(filters.startDate, filters.endDate),
+                    AdminDashboardService.getPeakUsageTimes(filters.startDate, filters.endDate),
+                    AdminDashboardService.getUsagePatterns(filters.startDate, filters.endDate),
+                    AdminDashboardService.getGeographicCostDistribution(filters.startDate, filters.endDate)
+                );
+            }
+
+            // Budget
+            if (activeTab === 'budget') {
+                promises.push(
+                    AdminDashboardService.getBudgetOverview(filters.startDate, filters.endDate),
+                    AdminDashboardService.getBudgetAlerts(filters.startDate, filters.endDate),
+                    AdminDashboardService.getProjectBudgetStatus(undefined, filters.startDate, filters.endDate),
+                    AdminDashboardService.getBudgetTrends(undefined, filters.startDate, filters.endDate)
+                );
+            }
+
+            // Integrations
+            if (activeTab === 'integrations') {
+                promises.push(
+                    AdminDashboardService.getIntegrationStats(filters.startDate, filters.endDate),
+                    AdminDashboardService.getIntegrationTrends(undefined, filters.startDate, filters.endDate),
+                    AdminDashboardService.getIntegrationHealth()
+                );
+            }
+
             const results: unknown[] = await Promise.all(promises);
 
             let idx = 0;
@@ -175,6 +289,46 @@ export const AdminDashboard: React.FC = () => {
                 setProjectStats((results[idx++] as ProjectStats[]) || []);
                 setWorkspaceStats((results[idx++] as WorkspaceStats[]) || []);
             }
+
+            // Set new feature data
+            if (activeTab === 'revenue') {
+                setRevenueMetrics((results[idx++] as RevenueMetrics) || null);
+                setSubscriptionMetrics((results[idx++] as SubscriptionMetrics) || null);
+                setConversionMetrics((results[idx++] as ConversionMetrics) || null);
+                setUpcomingRenewals((results[idx++] as UpcomingRenewal[]) || []);
+            }
+
+            if (activeTab === 'api-keys') {
+                setApiKeyStats((results[idx++] as ApiKeyStats) || null);
+                setApiKeyUsage((results[idx++] as ApiKeyUsage[]) || []);
+                setTopApiKeys((results[idx++] as ApiKeyTopUsage[]) || []);
+            }
+
+            if (activeTab === 'endpoints') {
+                setEndpointPerformance((results[idx++] as EndpointPerformance[]) || []);
+                setEndpointTrends((results[idx++] as EndpointTrend[]) || []);
+                setTopEndpoints((results[idx++] as TopEndpoint[]) || []);
+            }
+
+            if (activeTab === 'geographic') {
+                setGeographicUsage((results[idx++] as GeographicUsage[]) || []);
+                setPeakUsageTimes((results[idx++] as PeakUsageTime[]) || []);
+                setUsagePatterns((results[idx++] as UsagePattern[]) || []);
+                setGeographicCostDistribution((results[idx++] as GeographicCostDistribution[]) || []);
+            }
+
+            if (activeTab === 'budget') {
+                setBudgetOverview((results[idx++] as BudgetOverview) || null);
+                setBudgetAlerts((results[idx++] as BudgetAlert[]) || []);
+                setProjectBudgetStatus((results[idx++] as ProjectBudgetStatus[]) || []);
+                setBudgetTrends((results[idx++] as BudgetTrend[]) || []);
+            }
+
+            if (activeTab === 'integrations') {
+                setIntegrationStats((results[idx++] as IntegrationStats[]) || []);
+                setIntegrationTrends((results[idx++] as IntegrationTrend[]) || []);
+                setIntegrationHealth((results[idx++] as IntegrationHealth[]) || []);
+            }
         } catch (error: unknown) {
             console.error('Error fetching admin dashboard data:', error);
             const errorMessage = error instanceof Error
@@ -201,6 +355,12 @@ export const AdminDashboard: React.FC = () => {
         { id: 'projects', name: 'Projects & Workspaces', icon: BriefcaseIcon, activeIcon: FolderIcon, description: 'Project and workspace stats' },
         { id: 'users', name: 'User Management', icon: UserGroupIcon, activeIcon: UsersIconSolid, description: 'Manage users and permissions' },
         { id: 'activity', name: 'Activity Feed', icon: BoltIcon, activeIcon: FireIconSolid, description: 'Real-time platform activity' },
+        { id: 'revenue', name: 'Revenue & Billing', icon: CurrencyDollarIcon, activeIcon: CurrencyDollarIconSolid, description: 'Revenue metrics and billing analytics' },
+        { id: 'api-keys', name: 'API Keys', icon: KeyIcon, activeIcon: KeyIconSolid, description: 'API key management and usage' },
+        { id: 'endpoints', name: 'Endpoints', icon: RectangleStackIcon, activeIcon: RectangleStackIconSolid, description: 'Endpoint performance analytics' },
+        { id: 'geographic', name: 'Geographic', icon: GlobeAltIcon, activeIcon: GlobeAltIconSolid, description: 'Geographic usage patterns' },
+        { id: 'budget', name: 'Budget', icon: WalletIcon, activeIcon: WalletIconSolid, description: 'Budget management and tracking' },
+        { id: 'integrations', name: 'Integrations', icon: SquaresPlusIcon, activeIcon: SquaresPlusIconSolid, description: 'Integration analytics and health' },
     ];
 
     const handleDateRangeChange = (startDate?: string, endDate?: string) => {
@@ -220,11 +380,9 @@ export const AdminDashboard: React.FC = () => {
 
     if (loading && !engagementMetrics) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-background via-background-secondary to-background p-6">
-                <div className="max-w-[1600px] mx-auto">
-                    <div className="glass p-12 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-3xl">
-                        <LoadingSpinner />
-                    </div>
+            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center">
+                <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
+                    <LoadingSpinner />
                 </div>
             </div>
         );
@@ -233,23 +391,20 @@ export const AdminDashboard: React.FC = () => {
     const criticalAlerts = alerts.filter(a => a.severity === 'critical' || a.severity === 'high');
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background-secondary to-background p-6">
-            <div className="max-w-[1600px] mx-auto space-y-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="max-w-[1600px] mx-auto p-6 space-y-6">
                 {/* Premium Header */}
-                <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-3xl bg-gradient-to-br from-white/80 via-white/60 to-white/80 dark:from-dark-card/80 dark:via-dark-card/60 dark:to-dark-card/80">
+                <header className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-4">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-xl opacity-50"></div>
-                                <div className="relative bg-gradient-to-br from-primary-500 to-primary-600 p-4 rounded-2xl shadow-2xl glow-primary">
-                                    <ChartBarIcon className="w-8 h-8 text-white" />
-                                </div>
+                            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl glow-primary shadow-lg">
+                                <ChartBarIcon className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-display font-bold gradient-text mb-2">
+                                <h1 className="text-3xl font-display font-bold gradient-text-primary mb-1">
                                     Admin Dashboard
                                 </h1>
-                                <p className="text-light-text-secondary dark:text-dark-text-secondary font-body text-base">
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Comprehensive platform analytics and monitoring
                                 </p>
                             </div>
@@ -258,7 +413,7 @@ export const AdminDashboard: React.FC = () => {
                             <button
                                 onClick={fetchData}
                                 disabled={refreshing}
-                                className="flex items-center gap-2 px-5 py-2.5 glass rounded-xl border border-primary-200/30 font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:scale-105 transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl bg-gradient-to-r from-white/50 to-white/30 dark:from-dark-surface/50 dark:to-dark-surface/30"
+                                className="flex items-center gap-2 px-4 py-2.5 glass backdrop-blur-sm rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-primary-600 dark:text-primary-400 font-display font-semibold hover:bg-primary-500/20 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 disabled:opacity-50"
                             >
                                 <ArrowPathIcon
                                     className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`}
@@ -274,7 +429,7 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     {/* Premium Tabs */}
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2 border-t border-primary-200/30 dark:border-primary-700/30 pt-4">
                         {tabs.map((tab) => {
                             const Icon = activeTab === tab.id ? tab.activeIcon : tab.icon;
                             const isActive = activeTab === tab.id;
@@ -282,28 +437,19 @@ export const AdminDashboard: React.FC = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                                    className={`group relative flex flex-col items-start gap-2 px-5 py-4 rounded-xl font-display font-semibold transition-all duration-300 min-w-[140px] ${isActive
-                                        ? 'bg-gradient-primary text-white shadow-2xl glow-primary scale-105'
-                                        : 'glass border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-white/20 dark:hover:bg-dark-surface/20 hover:scale-105 hover:shadow-xl'
+                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-display font-semibold transition-all duration-300 ${isActive
+                                        ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg glow-primary hover:scale-105'
+                                        : 'glass backdrop-blur-sm border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/20 dark:hover:bg-primary-900/20 hover:scale-105 hover:shadow-md'
                                         }`}
+                                    title={tab.description}
                                 >
-                                    <div className="flex items-center gap-2.5 w-full">
-                                        <Icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-primary-500 dark:text-primary-400'}`} />
-                                        <span className="text-sm">{tab.name}</span>
-                                    </div>
-                                    {isActive && (
-                                        <p className="text-xs text-white/80 font-body mt-1">
-                                            {tab.description}
-                                        </p>
-                                    )}
-                                    {isActive && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/30 rounded-b-xl"></div>
-                                    )}
+                                    <Icon className="w-4 h-4" />
+                                    <span>{tab.name}</span>
                                 </button>
                             );
                         })}
                     </div>
-                </div>
+                </header>
 
                 {/* Overview Tab */}
                 {activeTab === 'overview' && (
@@ -380,6 +526,734 @@ export const AdminDashboard: React.FC = () => {
                 {/* Activity Feed Tab */}
                 {activeTab === 'activity' && (
                     <RealTimeActivityFeed limit={50} />
+                )}
+
+                {/* Revenue & Billing Tab */}
+                {activeTab === 'revenue' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-green-500 to-green-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    Revenue & Billing Analytics
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Revenue metrics, subscriptions, and conversions
+                                </p>
+                            </div>
+                        </div>
+                        {revenueMetrics && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <StatsCard
+                                    title="Total MRR"
+                                    value={revenueMetrics.totalMRR}
+                                    icon={CurrencyDollarIcon}
+                                    format="currency"
+                                />
+                                <StatsCard
+                                    title="Total ARR"
+                                    value={revenueMetrics.totalARR}
+                                    icon={ChartBarIcon}
+                                    format="currency"
+                                />
+                                <StatsCard
+                                    title="Revenue Growth"
+                                    value={revenueMetrics.revenueGrowth}
+                                    icon={ArrowTrendingUpIcon}
+                                    format="percentage"
+                                />
+                                <StatsCard
+                                    title="This Month"
+                                    value={revenueMetrics.revenueThisMonth}
+                                    icon={ClockIcon}
+                                    format="currency"
+                                />
+                            </div>
+                        )}
+                        {subscriptionMetrics && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <StatsCard
+                                    title="Active Subscriptions"
+                                    value={subscriptionMetrics.activeSubscriptions}
+                                    icon={UserGroupIcon}
+                                />
+                                <StatsCard
+                                    title="Churn Rate"
+                                    value={subscriptionMetrics.churnRate}
+                                    icon={ArrowTrendingDownIcon}
+                                    format="percentage"
+                                />
+                                <StatsCard
+                                    title="Retention Rate"
+                                    value={subscriptionMetrics.retentionRate}
+                                    icon={ArrowTrendingUpIcon}
+                                    format="percentage"
+                                />
+                                <StatsCard
+                                    title="ARPU"
+                                    value={subscriptionMetrics.averageRevenuePerUser}
+                                    icon={CurrencyDollarIcon}
+                                    format="currency"
+                                />
+                            </div>
+                        )}
+                        {upcomingRenewals.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Upcoming Renewals (Next 30 Days)
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Plan</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Amount</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Next Billing</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {upcomingRenewals.slice(0, 10).map((renewal, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{renewal.userEmail}</td>
+                                                    <td className="py-3 px-4">
+                                                        <span className="px-2 py-1 rounded-lg bg-primary-100/50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-display font-semibold">
+                                                            {renewal.plan}
+                                                        </span>
+                                                    </td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(renewal.amount)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{new Date(renewal.nextBillingDate).toLocaleDateString()}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {conversionMetrics && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Conversion Metrics
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                                    <StatsCard
+                                        title="Free to Plus"
+                                        value={conversionMetrics.freeToPlus}
+                                        icon={ArrowTrendingUpIcon}
+                                    />
+                                    <StatsCard
+                                        title="Free to Pro"
+                                        value={conversionMetrics.freeToPro}
+                                        icon={ArrowTrendingUpIcon}
+                                    />
+                                    <StatsCard
+                                        title="Conversions This Month"
+                                        value={conversionMetrics.conversionsThisMonth}
+                                        icon={RocketLaunchIcon}
+                                    />
+                                </div>
+                                <div className="mt-4 p-4 glass backdrop-blur-sm rounded-xl border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">Conversion Rates</h4>
+                                    <div className="grid grid-cols-3 gap-4 text-sm">
+                                        <div>
+                                            <span className="text-light-text-secondary dark:text-dark-text-secondary">Free → Plus:</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.freeToPlus.toFixed(1)}%</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-light-text-secondary dark:text-dark-text-secondary">Free → Pro:</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.freeToPro.toFixed(1)}%</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-light-text-secondary dark:text-dark-text-secondary">Plus → Pro:</span>
+                                            <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.plusToPro.toFixed(1)}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* API Keys Tab */}
+                {activeTab === 'api-keys' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <KeyIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    API Key Management
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Monitor and manage API keys across the platform
+                                </p>
+                            </div>
+                        </div>
+                        {apiKeyStats && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <StatsCard
+                                    title="Total Keys"
+                                    value={apiKeyStats.totalKeys}
+                                    icon={KeyIcon}
+                                />
+                                <StatsCard
+                                    title="Active Keys"
+                                    value={apiKeyStats.activeKeys}
+                                    icon={CheckCircleIcon}
+                                />
+                                <StatsCard
+                                    title="Expiring Soon"
+                                    value={apiKeyStats.expiringKeys}
+                                    icon={ExclamationTriangleIcon}
+                                />
+                                <StatsCard
+                                    title="Over Budget"
+                                    value={apiKeyStats.keysOverBudget}
+                                    icon={BellIcon}
+                                />
+                            </div>
+                        )}
+                        {topApiKeys.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Top API Keys by Usage
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {topApiKeys.map((key, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{key.keyName || 'Unnamed Key'}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.requests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.cost)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{key.userEmail || 'N/A'}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {apiKeyUsage.length > 0 && (
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    API Key Usage Details
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {apiKeyUsage.slice(0, 10).map((key, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{key.keyName || 'Unnamed Key'}</td>
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{key.userEmail}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.totalRequests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.totalCost)}</td>
+                                                    <td className="text-right py-3 px-4">
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${key.isActive
+                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                            }`}>
+                                                            {key.isActive ? 'Active' : 'Inactive'}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Endpoints Tab */}
+                {activeTab === 'endpoints' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <ServerIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    Endpoint Performance
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Analyze API endpoint performance and metrics
+                                </p>
+                            </div>
+                        </div>
+                        {topEndpoints.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Top Endpoints
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {topEndpoints.map((endpoint, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{endpoint.endpoint}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.requests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-3 px-4">
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
+                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                            : endpoint.errorRate < 0.05
+                                                                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                            }`}>
+                                                            {(endpoint.errorRate * 100).toFixed(2)}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {endpointTrends.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Endpoint Trends
+                                </h3>
+                                <div className="h-64">
+                                    <Line
+                                        data={generateLineChartData(
+                                            endpointTrends.map(t => new Date(t.date).toLocaleDateString()),
+                                            [{
+                                                label: 'Requests',
+                                                data: endpointTrends.map(t => t.requests),
+                                                color: '#3B82F6',
+                                            }]
+                                        )}
+                                        options={getLineChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {endpointPerformance.length > 0 && (
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Endpoint Performance Details
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">P95</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {endpointPerformance.slice(0, 10).map((endpoint, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{endpoint.endpoint}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.totalRequests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.p95ResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-3 px-4">
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
+                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                            : endpoint.errorRate < 0.05
+                                                                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                            }`}>
+                                                            {(endpoint.errorRate * 100).toFixed(2)}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Geographic Tab */}
+                {activeTab === 'geographic' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <GlobeAltIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    Geographic & Usage Patterns
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Usage patterns by location and time
+                                </p>
+                            </div>
+                        </div>
+                        {geographicUsage.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Geographic Usage
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Country</th>
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Region</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {geographicUsage.slice(0, 10).map((geo, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{geo.country}</td>
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{geo.region || 'N/A'}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(geo.requests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(geo.cost)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(geo.users)}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {usagePatterns.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Usage Patterns by Time
+                                </h3>
+                                <div className="h-64">
+                                    <Line
+                                        data={generateLineChartData(
+                                            usagePatterns.map(p => `${p.timeOfDay}:00`),
+                                            [{
+                                                label: 'Requests',
+                                                data: usagePatterns.map(p => p.requests),
+                                                color: '#8B5CF6',
+                                            }]
+                                        )}
+                                        options={getLineChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {peakUsageTimes.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Peak Usage Times
+                                </h3>
+                                <div className="h-64">
+                                    <Line
+                                        data={generateLineChartData(
+                                            peakUsageTimes.map(t => `${t.hour}:00`),
+                                            [{
+                                                label: 'Requests',
+                                                data: peakUsageTimes.map(t => t.requests),
+                                                color: '#10B981',
+                                            }]
+                                        )}
+                                        options={getLineChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {geographicCostDistribution.length > 0 && (
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Cost Distribution by Region
+                                </h3>
+                                <div className="h-64">
+                                    <Doughnut
+                                        data={generateDoughnutChartData(
+                                            geographicCostDistribution.map(g => g.country),
+                                            geographicCostDistribution.map(g => g.cost),
+                                            ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6']
+                                        )}
+                                        options={getDoughnutChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Budget Tab */}
+                {activeTab === 'budget' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <WalletIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    Budget Management
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Track and manage project budgets
+                                </p>
+                            </div>
+                        </div>
+                        {budgetOverview && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <StatsCard
+                                    title="Total Budget"
+                                    value={budgetOverview.totalBudget}
+                                    icon={WalletIcon}
+                                    format="currency"
+                                />
+                                <StatsCard
+                                    title="Total Spent"
+                                    value={budgetOverview.totalSpent}
+                                    icon={ChartBarIcon}
+                                    format="currency"
+                                />
+                                <StatsCard
+                                    title="Remaining"
+                                    value={budgetOverview.remainingBudget}
+                                    icon={CheckCircleIcon}
+                                    format="currency"
+                                />
+                                <StatsCard
+                                    title="Utilization"
+                                    value={budgetOverview.budgetUtilization}
+                                    icon={ChartPieIcon}
+                                    format="percentage"
+                                />
+                            </div>
+                        )}
+                        {budgetAlerts.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Budget Alerts
+                                </h3>
+                                <div className="space-y-3">
+                                    {budgetAlerts.map((alert, idx) => (
+                                        <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
+                                            <div className="flex items-center gap-3">
+                                                <ExclamationTriangleIcon className={`w-5 h-5 ${alert.alertType === 'critical' || alert.alertType === 'over_budget' ? 'text-red-500' : 'text-yellow-500'}`} />
+                                                <div className="flex-1">
+                                                    <p className="font-medium text-gray-900 dark:text-white">{alert.message}</p>
+                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{alert.projectName || alert.workspaceName}</p>
+                                                </div>
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${alert.alertType === 'critical' || alert.alertType === 'over_budget'
+                                                    ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                    : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                    }`}>
+                                                    {alert.alertType}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {projectBudgetStatus.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Project Budget Status
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Project</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Budget</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Spent</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Usage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {projectBudgetStatus.map((project, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{project.projectName}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.budgetAmount)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.spent)}</td>
+                                                    <td className="text-right py-3 px-4">
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${project.utilization > 90
+                                                            ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                            : project.utilization > 70
+                                                                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                                : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                            }`}>
+                                                            {project.utilization.toFixed(1)}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {budgetTrends.length > 0 && (
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Budget Trends
+                                </h3>
+                                <div className="h-64">
+                                    <Line
+                                        data={generateLineChartData(
+                                            budgetTrends.map(t => new Date(t.date).toLocaleDateString()),
+                                            [{
+                                                label: 'Budget',
+                                                data: budgetTrends.map(t => t.budget),
+                                                color: '#10B981',
+                                            }, {
+                                                label: 'Spent',
+                                                data: budgetTrends.map(t => t.spent),
+                                                color: '#EF4444',
+                                            }]
+                                        )}
+                                        options={getLineChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Integrations Tab */}
+                {activeTab === 'integrations' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-2.5 rounded-xl glow-primary shadow-lg">
+                                <SquaresPlusIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                    Integration Analytics
+                                </h2>
+                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    Monitor AI service integrations and health
+                                </p>
+                            </div>
+                        </div>
+                        {integrationStats.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Integration Statistics
+                                </h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
+                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Service</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {integrationStats.map((stat, idx) => (
+                                                <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
+                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{stat.service}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(stat.totalRequests)}</td>
+                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(stat.totalCost)}</td>
+                                                    <td className="text-right py-3 px-4">
+                                                        <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${stat.errorRate < 0.01
+                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                            : stat.errorRate < 0.05
+                                                                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                            }`}>
+                                                            {(stat.errorRate * 100).toFixed(2)}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {integrationHealth.length > 0 && (
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Integration Health
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {integrationHealth.map((health, idx) => (
+                                        <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="font-medium text-gray-900 dark:text-white">{health.service}</span>
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${health.status === 'healthy'
+                                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                                    : health.status === 'degraded'
+                                                        ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                                                        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                                                    }`}>
+                                                    {health.status}
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400 mt-2">
+                                                <div>Uptime: {(health.uptime * 100).toFixed(1)}%</div>
+                                                <div>Error Rate: {(health.errorRate * 100).toFixed(2)}%</div>
+                                                <div>Avg Response: {health.avgResponseTime.toFixed(0)}ms</div>
+                                                <div>Incidents: {health.incidents24h}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {integrationTrends.length > 0 && (
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                                    Integration Trends
+                                </h3>
+                                <div className="h-64">
+                                    <Line
+                                        data={generateLineChartData(
+                                            integrationTrends.map(t => new Date(t.date).toLocaleDateString()),
+                                            [{
+                                                label: 'Requests',
+                                                data: integrationTrends.map(t => t.requests),
+                                                color: '#3B82F6',
+                                            }, {
+                                                label: 'Cost',
+                                                data: integrationTrends.map(t => t.cost),
+                                                color: '#10B981',
+                                            }]
+                                        )}
+                                        options={getLineChartOptions()}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
