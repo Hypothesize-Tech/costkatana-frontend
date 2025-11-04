@@ -168,17 +168,41 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
                     required
                     className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Get your Slack webhook URL from{' '}
-                    <a
-                      href="https://api.slack.com/messaging/webhooks"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-600 dark:text-primary-400 hover:underline"
-                    >
-                      Slack's Incoming Webhooks
-                    </a>
-                  </p>
+                  <div className="p-3 mt-2 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-500/30">
+                    <p className="mb-2 text-xs font-semibold text-blue-900 dark:text-blue-300">
+                      How to get your Slack Webhook URL:
+                    </p>
+                    <ol className="text-xs text-blue-800 dark:text-blue-200 space-y-1.5 list-decimal list-inside">
+                      <li>Go to your{' '}
+                        <a
+                          href="https://api.slack.com/apps"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                        >
+                          Slack Apps page
+                        </a>
+                        {' '}or{' '}
+                        <a
+                          href="https://api.slack.com/messaging/webhooks"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                        >
+                          create an Incoming Webhook
+                        </a>
+                      </li>
+                      <li>Create a new app or select an existing one</li>
+                      <li>Navigate to <strong>"Incoming Webhooks"</strong> and activate it</li>
+                      <li>Click <strong>"Add New Webhook to Workspace"</strong></li>
+                      <li>Select the channel where you want to receive alerts</li>
+                      <li>Copy the webhook URL (starts with <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">https://hooks.slack.com/services/</code>)</li>
+                      <li>Paste it here</li>
+                    </ol>
+                    <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
+                      <strong>Tip:</strong> You can create multiple webhooks for different channels.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -230,8 +254,8 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
                       <label
                         key={severity.value}
                         className={`flex items-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${selectedSeverities.has(severity.value)
-                            ? 'border-primary-500 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/15 dark:to-primary-800/15 shadow-md shadow-primary-500/20'
-                            : 'border-primary-200/20 dark:border-primary-200/30 bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50 hover:shadow-sm'
+                          ? 'border-primary-500 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/15 dark:to-primary-800/15 shadow-md shadow-primary-500/20'
+                          : 'border-primary-200/20 dark:border-primary-200/30 bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50 hover:shadow-sm'
                           } hover:-translate-y-0.5`}
                       >
                         <input

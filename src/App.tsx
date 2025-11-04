@@ -43,6 +43,7 @@ import { Profile } from './pages/Profile';
 import { Alerts } from './pages/Alerts';
 import CostAuditWizard from './pages/CostAuditWizard';
 import Projects from './pages/Projects';
+import JiraCallback from './pages/JiraCallback';
 import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
@@ -101,6 +102,8 @@ function AppContent() {
         <Route path="/accept-invite/:token" element={<AcceptInvite />} />
         <Route path="/github/success" element={<GitHubCallback />} />
         <Route path="/github/error" element={<GitHubCallback />} />
+        <Route path="/integrations/jira/success" element={<JiraCallback />} />
+        <Route path="/integrations/jira/error" element={<JiraCallback />} />
 
         {/* Protected routes */}
         <Route

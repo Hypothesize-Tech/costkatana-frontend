@@ -294,16 +294,16 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                 {/* Header */}
                 <div className="flex justify-between items-start p-6 border-b border-gray-200 dark:border-primary-200/20">
                     <div>
-                        <h2 className="text-2xl font-display font-bold gradient-text-primary mb-1">
+                        <h2 className="mb-1 text-2xl font-bold font-display gradient-text-primary">
                             Connect Linear
                         </h2>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                             Step {step} of 4
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                        className="p-1 text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                     >
                         <XMarkIcon className="w-6 h-6" />
                     </button>
@@ -316,7 +316,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                         {step === 1 && (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Integration Name *
                                     </label>
                                     <input
@@ -325,12 +325,12 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="e.g., Production Cost Alerts"
                                         required
-                                        className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
+                                        className="px-4 py-3 w-full text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Description
                                     </label>
                                     <textarea
@@ -338,12 +338,12 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Optional description for this integration"
                                         rows={2}
-                                        className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm resize-vertical"
+                                        className="px-4 py-3 w-full text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 resize-vertical"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Linear API Token *
                                     </label>
                                     <div className="flex gap-2">
@@ -362,32 +362,45 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                             }}
                                             placeholder="lin_api_..."
                                             required
-                                            className="flex-1 px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm font-mono"
+                                            className="flex-1 px-4 py-3 font-mono text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15"
                                         />
                                         {accessToken && accessToken.length > 10 && (
                                             <button
                                                 type="button"
                                                 onClick={() => validateTokenMutation.mutate()}
                                                 disabled={validateTokenMutation.isLoading}
-                                                className="px-4 py-3 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                                className="px-4 py-3 text-sm font-semibold text-white whitespace-nowrap rounded-lg shadow-lg transition-all bg-gradient-primary shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 {validateTokenMutation.isLoading ? 'Validating...' : 'Validate'}
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                        Get your Linear API token from{' '}
-                                        <a
-                                            href="https://linear.app/settings/api"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-primary-600 dark:text-primary-400 hover:underline"
-                                        >
-                                            Linear Settings → API
-                                        </a>
-                                    </p>
+                                    <div className="p-3 mt-2 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-500/30">
+                                        <p className="mb-2 text-xs font-semibold text-blue-900 dark:text-blue-300">
+                                            How to get your Linear API Token:
+                                        </p>
+                                        <ol className="text-xs text-blue-800 dark:text-blue-200 space-y-1.5 list-decimal list-inside">
+                                            <li>Go to{' '}
+                                                <a
+                                                    href="https://linear.app/settings/api"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="font-medium text-primary-600 dark:text-primary-400 hover:underline"
+                                                >
+                                                    Linear Settings → API
+                                                </a>
+                                            </li>
+                                            <li>Click <strong>"Create API key"</strong></li>
+                                            <li>Give it a label (e.g., "CostKatana Integration")</li>
+                                            <li>Copy the generated token (starts with <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">lin_api_</code>)</li>
+                                            <li>Paste it here (you won't be able to see it again!)</li>
+                                        </ol>
+                                        <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
+                                            <strong>Note:</strong> Make sure you have the necessary permissions in your Linear workspace.
+                                        </p>
+                                    </div>
                                     {validateTokenMutation.isError && (
-                                        <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded text-sm text-red-700 dark:text-red-300">
+                                        <div className="p-2 mt-2 text-sm text-red-700 bg-red-50 rounded border border-red-200 dark:bg-red-900/20 dark:border-red-500/30 dark:text-red-300">
                                             {(validateTokenMutation.error as Error)?.message || 'Failed to validate token'}
                                         </div>
                                     )}
@@ -395,7 +408,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
 
                                 {accessToken && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Team *
                                         </label>
                                         {teamsLoadingState ? (
@@ -409,7 +422,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                                         setSelectedProjectId('');
                                                     }}
                                                     required
-                                                    className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
+                                                    className="px-4 py-3 w-full text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15"
                                                 >
                                                     <option value="">Select a team</option>
                                                     {teams.map((team) => (
@@ -419,7 +432,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                                     ))}
                                                 </select>
                                                 {teamsData?.user && (
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                                         Connected as: {teamsData.user.name} {teamsData.user.email && `(${teamsData.user.email})`}
                                                     </p>
                                                 )}
@@ -442,7 +455,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
 
                                 {selectedTeamId && accessToken && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Project (Optional)
                                         </label>
                                         {projectsLoading ? (
@@ -451,7 +464,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                             <select
                                                 value={selectedProjectId}
                                                 onChange={(e) => setSelectedProjectId(e.target.value)}
-                                                className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
+                                                className="px-4 py-3 w-full text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15"
                                             >
                                                 <option value="">No project</option>
                                                 {projects.map((project) => (
@@ -486,15 +499,15 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                         {step === 2 && (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Alert Delivery Mode *
                                     </label>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                    <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
                                         Choose how alerts should be delivered to Linear
                                     </p>
 
                                     <div className="space-y-3">
-                                        <label className="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50">
+                                        <label className="flex gap-3 items-start p-4 rounded-xl border-2 transition-all cursor-pointer bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50">
                                             <input
                                                 type="radio"
                                                 name="issueMode"
@@ -504,7 +517,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                                 className="mt-1"
                                             />
                                             <div className="flex-1">
-                                                <div className="font-semibold text-gray-900 dark:text-white mb-1">
+                                                <div className="mb-1 font-semibold text-gray-900 dark:text-white">
                                                     Comment Mode
                                                 </div>
                                                 <div className="text-sm text-gray-600 dark:text-gray-300">
@@ -513,7 +526,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                             </div>
                                         </label>
 
-                                        <label className="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50">
+                                        <label className="flex gap-3 items-start p-4 rounded-xl border-2 transition-all cursor-pointer bg-white/50 dark:bg-gray-800/50 hover:border-primary-300/40 dark:hover:border-primary-400/50">
                                             <input
                                                 type="radio"
                                                 name="issueMode"
@@ -523,7 +536,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                                 className="mt-1"
                                             />
                                             <div className="flex-1">
-                                                <div className="font-semibold text-gray-900 dark:text-white mb-1">
+                                                <div className="mb-1 font-semibold text-gray-900 dark:text-white">
                                                     Issue Mode
                                                 </div>
                                                 <div className="text-sm text-gray-600 dark:text-gray-300">
@@ -536,7 +549,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
 
                                 {issueMode === 'comment' && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Linear Issue ID *
                                         </label>
                                         <input
@@ -545,9 +558,9 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                             onChange={(e) => setIssueId(e.target.value)}
                                             placeholder="e.g., abc-123 or issue-id"
                                             required
-                                            className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
+                                            className="px-4 py-3 w-full text-sm text-gray-900 rounded-lg border shadow-sm transition-all border-primary-200/30 dark:border-primary-200/20 bg-white/90 dark:bg-gray-800/90 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15"
                                         />
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                             Enter the Linear issue ID where alerts should be posted as comments
                                         </p>
                                     </div>
@@ -578,10 +591,10 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                         {step === 3 && (
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Select Alert Types
                                     </label>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                    <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
                                         Choose which types of alerts should be sent to Linear
                                     </p>
                                 </div>
@@ -597,7 +610,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                                 onChange={() => toggleAlertType(type.value)}
                                                 className="w-[18px] h-[18px] rounded border-primary-300 text-primary-600 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
                                             />
-                                            <span className="text-sm text-gray-900 dark:text-white font-medium">
+                                            <span className="text-sm font-medium text-gray-900 dark:text-white">
                                                 {type.label}
                                             </span>
                                         </label>
@@ -610,10 +623,10 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                         {step === 4 && (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Select Severities
                                     </label>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                    <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
                                         Choose which severity levels should trigger notifications
                                     </p>
                                     <div className="grid grid-cols-2 gap-3">
@@ -644,8 +657,8 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                                 </div>
 
                                 {/* Summary */}
-                                <div className="glass rounded-xl border border-primary-200/20 dark:border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/8 dark:to-primary-800/8 p-5">
-                                    <h4 className="text-base font-display font-bold gradient-text-primary mb-4">
+                                <div className="p-5 bg-gradient-to-br rounded-xl border glass border-primary-200/20 dark:border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/8 dark:to-primary-800/8">
+                                    <h4 className="mb-4 text-base font-bold font-display gradient-text-primary">
                                         Configuration Summary
                                     </h4>
                                     <div className="space-y-2 text-sm">
@@ -678,7 +691,7 @@ export const LinearIntegrationSetup: React.FC<LinearIntegrationSetupProps> = ({
                     </div>
 
                     {/* Footer */}
-                    <div className="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-primary-200/20">
+                    <div className="flex gap-3 justify-end p-6 border-t border-gray-200 dark:border-primary-200/20">
                         {step > 1 && (
                             <button
                                 type="button"
