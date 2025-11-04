@@ -2,96 +2,92 @@ import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LoginForm } from "../components/auth/LoginForm";
 import { MFAVerification } from "../components/auth/MFAVerification";
+import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.png";
 import toast from "react-hot-toast";
 
 export default function Login() {
-  const { isAuthenticated, mfaRequired, mfaData, completeMFALogin } = useAuth();
+  const { isAuthenticated, isLoading, mfaRequired, mfaData, completeMFALogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check for returnUrl in query params (from invitation links) or state (from protected routes)
-  const searchParams = new URLSearchParams(location.search);
-  const returnUrl = searchParams.get('returnUrl') || location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(returnUrl, { replace: true });
+    // Only redirect if we're sure the user is authenticated and not loading
+    if (isAuthenticated && !isLoading) {
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate, returnUrl]);
+  }, [isAuthenticated, isLoading, navigate, from]);
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 min-h-screen bg-white dark:bg-gray-900 items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-1 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
-      {/* Ambient glow effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-success-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-accent-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-        <div className="absolute bottom-1/2 left-1/3 w-72 h-72 bg-highlight-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '6s' }} />
-      </div>
-
-      <div className="flex flex-col flex-1 justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 relative z-10">
-        <div className="mx-auto w-full max-w-md lg:w-[420px]">
-          <div className="text-center">
-            <div className="flex justify-center items-center mb-6">
-              <div className="flex justify-center items-center w-16 h-16 rounded-2xl shadow-2xl bg-gradient-primary">
-                <img src={logo} alt="logo" className="w-12 h-12 rounded-xl" />
+    <div className="flex flex-1 min-h-screen bg-white dark:bg-gray-900">
+      <div className="flex flex-col flex-1 justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          <div>
+            <div className="flex gap-x-3 items-center">
+              <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg">
+                <img src={logo} alt="logo" className="w-10 h-10" />
               </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {APP_NAME}
+              </h2>
             </div>
-            <h1 className="text-4xl font-display font-bold gradient-text-primary mb-2">
-              {APP_NAME}
-            </h1>
-            <h2 className="text-xl font-display font-semibold text-secondary-900 dark:text-white">
-              Welcome back
+            <h2 className="mt-8 text-2xl font-bold tracking-tight leading-9 text-gray-900 dark:text-white">
+              Sign in to your account
             </h2>
-            <p className="mt-2 text-secondary-600 dark:text-secondary-300">
-              Sign in to your account to continue
-            </p>
           </div>
 
           <div className="mt-10">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-              {mfaRequired && mfaData ? (
-                <MFAVerification
-                  mfaToken={mfaData.mfaToken!}
-                  userId={mfaData.userId!}
-                  availableMethods={mfaData.availableMethods!}
-                  onSuccess={completeMFALogin}
-                  onError={(error: any) => {
-                    console.error('MFA Error:', error);
-                    toast.error(error.message)
-                    // Could show error toast here
-                  }}
-                  embedded={true}
-                />
-              ) : (
-                <LoginForm />
-              )}
-            </div>
+            {mfaRequired && mfaData ? (
+              <MFAVerification
+                mfaToken={mfaData.mfaToken!}
+                userId={mfaData.userId!}
+                availableMethods={mfaData.availableMethods!}
+                onSuccess={completeMFALogin}
+                onError={(error: unknown) => {
+                  console.error('MFA Error:', error);
+                  toast.error(error instanceof Error ? error.message : 'MFA verification failed')
+                  // Could show error toast here
+                }}
+                embedded={true}
+              />
+            ) : (
+              <LoginForm />
+            )}
           </div>
         </div>
       </div>
 
       <div className="hidden relative flex-1 w-0 lg:block">
-        <div className="absolute inset-0 bg-gradient-primary">
-          <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900">
+          <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />
           <div className="flex absolute inset-0 justify-center items-center p-12">
-            <div className="max-w-xl text-white animate-fade-in">
-              <h1 className="mb-6 text-5xl font-display font-bold">
+            <div className="max-w-xl text-white">
+              <h1 className="mb-6 text-4xl font-bold">
                 Optimize Your AI Costs
               </h1>
-              <p className="mb-8 text-xl font-body text-primary-100">
+              <p className="mb-8 text-lg text-primary-100 dark:text-primary-200">
                 Track, analyze, and reduce your AI API costs across multiple
                 providers. Get intelligent insights and optimization suggestions
                 powered by AI.
               </p>
-              <div className="space-y-6">
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mt-1">
+              <div className="space-y-4">
+                <div className="flex gap-3 items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
                     <svg
-                      className="w-5 h-5 text-white"
+                      className="w-4 h-4 text-primary-200 dark:text-primary-100"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -103,18 +99,18 @@ export default function Login() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-white text-lg">
+                    <h3 className="font-semibold text-white">
                       Real-time Tracking
                     </h3>
-                    <p className="text-primary-200 font-body">
+                    <p className="text-primary-100 dark:text-primary-200">
                       Monitor API usage and costs across all major AI providers
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mt-1">
+                <div className="flex gap-3 items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
                     <svg
-                      className="w-5 h-5 text-white"
+                      className="w-4 h-4 text-primary-200 dark:text-primary-100"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -126,19 +122,19 @@ export default function Login() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-white text-lg">
+                    <h3 className="font-semibold text-white">
                       AI-Powered Optimization
                     </h3>
-                    <p className="text-primary-200 font-body">
+                    <p className="text-primary-100 dark:text-primary-200">
                       Get intelligent suggestions to reduce token usage by up to
                       40%
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mt-1">
+                <div className="flex gap-3 items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-400/20 dark:bg-primary-300/20 flex items-center justify-center mt-0.5">
                     <svg
-                      className="w-5 h-5 text-white"
+                      className="w-4 h-4 text-primary-200 dark:text-primary-100"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -150,10 +146,10 @@ export default function Login() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-white text-lg">
+                    <h3 className="font-semibold text-white">
                       Advanced Analytics
                     </h3>
-                    <p className="text-primary-200 font-body">
+                    <p className="text-primary-100 dark:text-primary-200">
                       Detailed insights and predictions to control your AI
                       spending
                     </p>

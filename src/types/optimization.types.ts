@@ -1,8 +1,8 @@
 export interface Optimization {
   _id: string;
   userId: string;
-  userQuery: string; // Changed from originalPrompt
-  generatedAnswer: string; // Changed from optimizedPrompt
+  originalPrompt: string;
+  optimizedPrompt: string;
   optimizationTechniques: string[];
   originalTokens: number;
   optimizedTokens: number;
@@ -24,43 +24,12 @@ export interface Optimization {
     impactLevel?: string;
     businessValue?: number;
   };
+  status?: string; // Alternative field for applied status
+  applied: boolean;
+  appliedAt?: string;
+  appliedCount: number;
   feedback?: OptimizationFeedback;
   tags?: string[];
-  
-  // Cortex-specific fields
-  cortexEnabled?: boolean;
-  cortexImpactMetrics?: {
-    tokenReduction: {
-      withoutCortex: number;
-      withCortex: number;
-      absoluteSavings: number;
-      percentageSavings: number;
-    };
-    qualityMetrics: {
-      clarityScore: number;
-      completenessScore: number;
-      relevanceScore: number;
-      ambiguityReduction: number;
-      redundancyRemoval: number;
-    };
-    performanceMetrics: {
-      processingTime: number;
-      responseLatency: number;
-      compressionRatio: number;
-    };
-    costImpact: {
-      estimatedCostWithoutCortex: number;
-      actualCostWithCortex: number;
-      costSavings: number;
-      savingsPercentage: number;
-    };
-    justification: {
-      optimizationTechniques: string[];
-      keyImprovements: string[];
-      confidenceScore: number;
-    };
-  };
-  
   createdAt: string;
   updatedAt: string;
 }
@@ -87,31 +56,15 @@ export interface OptimizationMetadata {
     tokens: number;
     cost: number;
   }>;
-  
-  // Cortex-specific metadata
-  cortex?: {
-    processingTime: number;
-    encodingConfidence: number;
-    decodingConfidence: number;
-    semanticIntegrity: number;
-    tokensSaved: number;
-    reductionPercentage: number;
-    optimizationsApplied: number;
-    cortexModel: {
-      encoder: string;
-      core: string;
-      decoder: string;
-    };
-    error?: string;
-    fallbackUsed?: boolean;
-    lightweightCortex?: boolean; // Added for lightweight Cortex identification
-    detailsForDebugging?: {
-      errorType?: string;
-      errorMessage?: string;
-      initStatus?: boolean;
-    };
+  cortexOptimized?: boolean;
+  cortexMetrics?: {
+    encodingReduction?: number;
+    semanticCompression?: number;
+    processingTime?: number;
+    cacheUtilization?: number;
+    tokenReduction?: number;
+    costReduction?: number;
   };
-  
   [key: string]: any;
 }
 
@@ -127,24 +80,12 @@ export interface OptimizationRequest {
   service: string;
   model: string;
   context?: string;
+  useCortex?: boolean;
   options?: {
     targetReduction?: number;
     preserveIntent?: boolean;
     suggestAlternatives?: boolean;
   };
-  
-  // Cortex-specific fields
-  enableCortex?: boolean;
-  cortexOperation?: 'optimize' | 'compress' | 'analyze' | 'transform' | 'sast' | 'answer';
-  cortexEncodingModel?: string;
-  cortexCoreModel?: string;
-  cortexDecodingModel?: string;
-  cortexStyle?: 'formal' | 'casual' | 'technical' | 'conversational';
-  cortexFormat?: 'plain' | 'markdown' | 'structured' | 'json';
-  cortexSemanticCache?: boolean;
-  cortexStructuredContext?: boolean;
-  cortexPreserveSemantics?: boolean;
-  cortexIntelligentRouting?: boolean;
 }
 
 export interface OptimizationOpportunity {

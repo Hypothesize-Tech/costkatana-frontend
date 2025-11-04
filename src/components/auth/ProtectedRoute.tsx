@@ -14,10 +14,12 @@ export const ProtectedRoute = ({
   const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
 
+  // Show loading spinner while validating authentication
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  // Only redirect if we're sure the user is not authenticated
   if (!isAuthenticated) {
     // Redirect to login page but save the attempted location
     return <Navigate to="/login" state={{ from: location }} replace />;
