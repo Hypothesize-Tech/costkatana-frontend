@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { integrationService } from '../../services/integration.service';
 import { XMarkIcon, PencilIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import jiraIcon from '../../assets/jira.png';
 import type { Integration } from '../../types/integration.types';
 
 interface JiraIntegrationViewModalProps {
@@ -75,9 +76,9 @@ export const JiraIntegrationViewModal: React.FC<JiraIntegrationViewModalProps> =
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div
-                            className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg bg-gradient-to-br from-blue-500 to-blue-600"
+                            className="w-10 h-10 rounded-lg flex items-center justify-center shadow-lg bg-white dark:bg-gray-800 p-1.5"
                         >
-                            <span className="text-white font-bold text-lg">J</span>
+                            <img src={jiraIcon} alt="JIRA" className="w-full h-full object-contain" />
                         </div>
                         <div>
                             <h3 className="text-xl font-display font-bold text-secondary-900 dark:text-white">

@@ -23,6 +23,7 @@ import GitHubConnector from '../components/chat/GitHubConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
+import jiraIcon from '../assets/jira.png';
 
 type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | null;
 type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
@@ -202,9 +203,7 @@ export const IntegrationsPage: React.FC = () => {
             name: 'JIRA',
             description: 'Send alerts as comments or create issues in JIRA',
             icon: (
-                <div className="flex justify-center items-center w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded">
-                    <span className="text-sm font-bold text-white">J</span>
-                </div>
+                <img src={jiraIcon} alt="JIRA" className="integration-icon" style={{ width: '24px', height: '24px' }} />
             ),
             color: '#0052CC',
         },

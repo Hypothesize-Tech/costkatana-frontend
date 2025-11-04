@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { PaperClipIcon, XMarkIcon, DocumentTextIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PaperClipIcon, XMarkIcon, DocumentTextIcon, EyeIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 import { documentService, DocumentMetadata } from '@/services/document.service';
 import { DocumentPreviewModal } from './DocumentPreviewModal';
 
@@ -22,6 +23,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
     onGitHubConnect,
     githubConnection
 }) => {
+    const navigate = useNavigate();
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [uploadStage, setUploadStage] = useState<string>('');
@@ -202,6 +204,16 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
                         )}
                     </button>
                 )}
+
+                {/* All Integrations Button */}
+                <button
+                    onClick={() => navigate('/integrations')}
+                    className="flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800/50 rounded-lg transition-all duration-200 border border-secondary-200/50 dark:border-secondary-700/50 hover:border-primary-300 dark:hover:border-primary-600"
+                    title="View all integrations (JIRA, Linear, Slack, Discord, Webhooks, etc.)"
+                >
+                    <Cog6ToothIcon className="w-4 h-4" />
+                    <span className="hidden sm:inline">Integrations</span>
+                </button>
 
                 {/* Attachment Button */}
                 <div className="relative group">
