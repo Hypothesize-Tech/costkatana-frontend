@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   SparklesIcon,
   PlusIcon,
-  CogIcon,
   ChartBarIcon,
   BoltIcon,
   CpuChipIcon,
@@ -11,17 +10,36 @@ import {
   CurrencyDollarIcon,
   TrashIcon,
   ChevronDownIcon,
-  WrenchScrewdriverIcon,
-  PlusCircleIcon,
   LinkIcon,
-  AcademicCapIcon,
-  QuestionMarkCircleIcon,
   XMarkIcon,
   PaperClipIcon,
   EyeIcon,
   ShieldCheckIcon,
   AdjustmentsHorizontalIcon,
   LockOpenIcon,
+  BanknotesIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  CalculatorIcon,
+  CubeIcon,
+  PuzzlePieceIcon,
+  MagnifyingGlassIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  ServerIcon,
+  PresentationChartLineIcon,
+  BeakerIcon,
+  LightBulbIcon,
+  FilmIcon,
+  BookOpenIcon,
+  ScaleIcon,
+  ClockIcon,
+  ChartPieIcon,
+  FireIcon,
+  RocketLaunchIcon,
+  CommandLineIcon,
+  CircleStackIcon,
+  Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
@@ -42,6 +60,8 @@ import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import { Send } from "lucide-react";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
+import { IntegrationMentionHint } from "./IntegrationMentionHint";
+import { MentionAutocomplete } from "./MentionAutocomplete";
 
 // Configure marked for security
 marked.setOptions({
@@ -80,12 +100,10 @@ interface ChatMessage {
     }>;
     summary?: string;
   };
-  // Multi-agent enhancements
   optimizationsApplied?: string[];
   cacheHit?: boolean;
   agentPath?: string[];
   riskLevel?: string;
-  // Sources for citations and references
   sources?: Array<{
     title: string;
     url: string;
@@ -108,6 +126,7 @@ interface AvailableModel {
   name: string;
   provider: string;
   description: string;
+  capabilities?: string[];
   pricing?: {
     input: number;
     output: number;
@@ -243,7 +262,7 @@ export const ConversationalAgent: React.FC = () => {
             totalCost > 0
               ? `Analyze my $${totalCost.toFixed(2)} total AI spending`
               : "What's the most amount of money I spent on models?",
-          icon: CurrencyDollarIcon,
+          icon: BanknotesIcon,
           category: "Cost Analysis",
         },
         {
@@ -251,14 +270,14 @@ export const ConversationalAgent: React.FC = () => {
             uniqueModels.size > 1
               ? `Compare costs across my ${uniqueModels.size} different models`
               : "Show my current spending breakdown by model",
-          icon: ChartBarIcon,
+          icon: ChartPieIcon,
           category: "Analytics",
         },
         {
           text: mostExpensiveModel
             ? `Why is ${mostExpensiveModel} my most expensive model?`
             : "Which models are costing me the most?",
-          icon: CurrencyDollarIcon,
+          icon: FireIcon,
           category: "Cost Analysis",
         },
         {
@@ -266,7 +285,7 @@ export const ConversationalAgent: React.FC = () => {
             dailyAverage > 0
               ? `Reduce my $${dailyAverage.toFixed(2)} daily AI costs`
               : "What's my spend last month vs this month?",
-          icon: ChartBarIcon,
+          icon: ArrowTrendingDownIcon,
           category: "Trends",
         },
 
@@ -276,14 +295,14 @@ export const ConversationalAgent: React.FC = () => {
             totalCost > 10
               ? `Save $${(totalCost * 0.3).toFixed(2)} by optimizing my AI costs`
               : "How can I reduce my AI costs by 30%?",
-          icon: BoltIcon,
+          icon: RocketLaunchIcon,
           category: "Optimization",
         },
         {
           text: usageData.data?.some((u: any) => u.promptTokens > 1500)
             ? `Optimize my ${usageData.data.filter((u: any) => u.promptTokens > 1500).length} high-token prompts`
             : "Suggest prompts for better cost efficiency",
-          icon: SparklesIcon,
+          icon: PuzzlePieceIcon,
           category: "Optimization",
         },
         {
@@ -291,7 +310,7 @@ export const ConversationalAgent: React.FC = () => {
             uniqueModels.size > 2
               ? `Find savings from my ${uniqueModels.size} different models`
               : "Find opportunities to reduce my spending",
-          icon: BoltIcon,
+          icon: MagnifyingGlassIcon,
           category: "Optimization",
         },
         {
@@ -299,7 +318,7 @@ export const ConversationalAgent: React.FC = () => {
             totalCost > 0
               ? `Get personalized cost optimization tips based on my $${totalCost.toFixed(2)} spending`
               : "Show me cost optimization tips",
-          icon: SparklesIcon,
+          icon: LightBulbIcon,
           category: "Tips",
         },
 
@@ -309,7 +328,7 @@ export const ConversationalAgent: React.FC = () => {
             totalTokens > 0
               ? `Analyze my ${totalTokens.toLocaleString()} tokens across ${uniqueModels.size} models`
               : "What's my current token usage across all models?",
-          icon: ChartBarIcon,
+          icon: CubeIcon,
           category: "Usage Analytics",
         },
         {
@@ -317,7 +336,7 @@ export const ConversationalAgent: React.FC = () => {
             usageData.data?.length >= 10
               ? `Analyze patterns from my ${usageData.data.length} recent API calls`
               : "Show my usage patterns and trends",
-          icon: DocumentTextIcon,
+          icon: ClockIcon,
           category: "Analytics",
         },
         {
@@ -325,14 +344,14 @@ export const ConversationalAgent: React.FC = () => {
             totalTokens > 10000
               ? `Improve efficiency of my ${totalTokens.toLocaleString()} token usage`
               : "Analyze my token consumption efficiency",
-          icon: BoltIcon,
+          icon: ArrowTrendingUpIcon,
           category: "Performance",
         },
 
         // PROJECT MANAGEMENT - Data-Aware
         {
           text: "Help me setup an AI cost optimization project",
-          icon: CogIcon,
+          icon: FolderOpenIcon,
           category: "Project Setup",
         },
         {
@@ -340,7 +359,7 @@ export const ConversationalAgent: React.FC = () => {
             projectsData.data?.length > 0
               ? `Optimize my ${projectsData.data.length} existing projects`
               : "Create a new project for content generation",
-          icon: DocumentTextIcon,
+          icon: FolderIcon,
           category: "Projects",
         },
         {
@@ -348,7 +367,7 @@ export const ConversationalAgent: React.FC = () => {
             projectsData.data?.length > 1
               ? `Compare costs across my ${projectsData.data.length} projects`
               : "Configure my existing projects optimally",
-          icon: CogIcon,
+          icon: AdjustmentsHorizontalIcon,
           category: "Configuration",
         },
 
@@ -357,7 +376,7 @@ export const ConversationalAgent: React.FC = () => {
           text: mostExpensiveModel
             ? `Find cheaper alternatives to ${mostExpensiveModel}`
             : "Find cheaper model alternatives for my use case",
-          icon: CpuChipIcon,
+          icon: ScaleIcon,
           category: "Models",
         },
         {
@@ -374,7 +393,7 @@ export const ConversationalAgent: React.FC = () => {
               usageData.data?.some((u: any) => u.model.includes("gpt"))
               ? "Compare my Claude vs GPT actual costs and performance"
               : "Compare models for cost and quality",
-          icon: CpuChipIcon,
+          icon: ScaleIcon,
           category: "Comparison",
         },
         {
@@ -389,7 +408,7 @@ export const ConversationalAgent: React.FC = () => {
         // API & CONFIGURATION - Security & Optimization
         {
           text: "Help me configure my API settings optimally",
-          icon: CogIcon,
+          icon: ServerIcon,
           category: "Configuration",
         },
         {
@@ -397,7 +416,7 @@ export const ConversationalAgent: React.FC = () => {
             usageData.data?.length > 20
               ? `Security review for my ${usageData.data.length} API calls`
               : "Review my API security and best practices",
-          icon: CogIcon,
+          icon: ShieldCheckIcon,
           category: "Security",
         },
         {
@@ -405,7 +424,7 @@ export const ConversationalAgent: React.FC = () => {
             uniqueModels.size > 1
               ? `Integrate ${uniqueModels.size} models efficiently`
               : "Setup integrations with my tools",
-          icon: CogIcon,
+          icon: LinkIcon,
           category: "Integration",
         },
 
@@ -415,7 +434,7 @@ export const ConversationalAgent: React.FC = () => {
             usageData.data?.length >= 30
               ? `Generate insights from ${usageData.data.length} usage records`
               : "Generate insights from my usage data",
-          icon: ChartBarIcon,
+          icon: BeakerIcon,
           category: "Insights",
         },
         {
@@ -423,7 +442,7 @@ export const ConversationalAgent: React.FC = () => {
             totalCost > 0
               ? `${new Date().toLocaleDateString("en-US", { month: "long" })} report: $${totalCost.toFixed(2)} spent`
               : "Create a cost optimization report for this month",
-          icon: DocumentTextIcon,
+          icon: PresentationChartLineIcon,
           category: "Reports",
         },
         {
@@ -438,7 +457,7 @@ export const ConversationalAgent: React.FC = () => {
         // DEMO & EDUCATION - Interactive Learning
         {
           text: "Demo: Show AI thinking process",
-          icon: CpuChipIcon,
+          icon: FilmIcon,
           category: "Demo",
         },
         {
@@ -446,7 +465,7 @@ export const ConversationalAgent: React.FC = () => {
             usageData.data?.length > 0
               ? "Learn optimization strategies for my usage patterns"
               : "Explain AI cost optimization best practices",
-          icon: DocumentTextIcon,
+          icon: BookOpenIcon,
           category: "Education",
         },
       ];
@@ -460,29 +479,29 @@ export const ConversationalAgent: React.FC = () => {
         // Smart questions that help investigate data issues
         {
           text: "Help me setup AI cost tracking - I'm new here",
-          icon: CogIcon,
+          icon: RocketLaunchIcon,
           category: "Setup",
         },
         {
           text: "Show me what data you can access about my usage",
-          icon: ChartBarIcon,
+          icon: CircleStackIcon,
           category: "Data Check",
         },
         {
           text: "I want to start tracking my AI costs - guide me",
-          icon: CurrencyDollarIcon,
+          icon: BanknotesIcon,
           category: "Getting Started",
         },
         {
           text: "Test my database connection and show available data",
-          icon: WrenchScrewdriverIcon,
+          icon: CommandLineIcon,
           category: "Troubleshooting",
         },
 
         // Working suggestions for any user
         {
           text: "Create my first AI cost optimization project",
-          icon: PlusCircleIcon,
+          icon: FolderOpenIcon,
           category: "Project Setup",
         },
         {
@@ -492,22 +511,22 @@ export const ConversationalAgent: React.FC = () => {
         },
         {
           text: "How do I integrate cost tracking with my APIs?",
-          icon: LinkIcon,
+          icon: ServerIcon,
           category: "Integration",
         },
         {
           text: "Show me AI cost optimization best practices",
-          icon: DocumentTextIcon,
+          icon: BookOpenIcon,
           category: "Education",
         },
         {
           text: "Demo: Show AI thinking process",
-          icon: AcademicCapIcon,
+          icon: FilmIcon,
           category: "Demo",
         },
         {
           text: "Help me understand AI pricing models",
-          icon: QuestionMarkCircleIcon,
+          icon: CalculatorIcon,
           category: "Learning",
         },
       ]);
@@ -555,27 +574,98 @@ export const ConversationalAgent: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Function to select best model based on chat mode
+  const selectModelByChatMode = useCallback((models: AvailableModel[], mode: 'fastest' | 'cheapest' | 'balanced'): AvailableModel | null => {
+    if (models.length === 0) return null;
+
+    switch (mode) {
+      case 'fastest': {
+        // Prioritize fast models: Haiku, Nova Lite/Micro, smaller Llama models
+        const fastestIds = [
+          'anthropic.claude-3-5-haiku-20241022-v1:0',
+          'anthropic.claude-3-haiku-20240307-v1:0',
+          'amazon.nova-lite-v1:0',
+          'amazon.nova-micro-v1:0',
+          'meta.llama3-8b-instruct-v1:0',
+          'mistral.mistral-7b-instruct-v0:2',
+        ];
+        for (const id of fastestIds) {
+          const model = models.find(m => m.id === id);
+          if (model) return model;
+        }
+        // Fallback: find cheapest model (usually faster)
+        return models.sort((a, b) => {
+          const aCost = a.pricing?.input || Infinity;
+          const bCost = b.pricing?.input || Infinity;
+          return aCost - bCost;
+        })[0];
+      }
+
+      case 'cheapest': {
+        // Prioritize cheapest models: Haiku, Nova Lite/Micro, smaller models
+        const cheapestIds = [
+          'anthropic.claude-3-5-haiku-20241022-v1:0',
+          'anthropic.claude-3-haiku-20240307-v1:0',
+          'amazon.nova-micro-v1:0',
+          'amazon.nova-lite-v1:0',
+          'meta.llama3-8b-instruct-v1:0',
+          'mistral.mistral-7b-instruct-v0:2',
+        ];
+        for (const id of cheapestIds) {
+          const model = models.find(m => m.id === id);
+          if (model) return model;
+        }
+        // Fallback: sort by total cost (input + output)
+        return models.sort((a, b) => {
+          const aCost = (a.pricing?.input || 0) + (a.pricing?.output || 0);
+          const bCost = (b.pricing?.input || 0) + (b.pricing?.output || 0);
+          return aCost - bCost;
+        })[0];
+      }
+
+      case 'balanced':
+      default: {
+        // Prioritize balanced models: Claude 3.5 Sonnet, Nova Pro, Mistral Large
+        const balancedIds = [
+          'anthropic.claude-3-5-sonnet-20240620-v1:0',
+          'anthropic.claude-3-5-sonnet-20241022-v1:0',
+          'anthropic.claude-sonnet-4-20250514-v1:0',
+          'amazon.nova-pro-v1:0',
+          'mistral.mistral-large-2402-v1:0',
+          'anthropic.claude-3-7-sonnet-20250219-v1:0',
+        ];
+        for (const id of balancedIds) {
+          const model = models.find(m => m.id === id);
+          if (model) return model;
+        }
+        // Fallback: first available model
+        return models[0];
+      }
+    }
+  }, []);
+
+  // Update model selection when chat mode changes
+  useEffect(() => {
+    if (availableModels.length > 0) {
+      const recommendedModel = selectModelByChatMode(availableModels, chatMode);
+      if (recommendedModel && recommendedModel.id !== selectedModel?.id) {
+        setSelectedModel(recommendedModel);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatMode, availableModels.length, selectModelByChatMode]);
+
   const loadAvailableModels = async () => {
     try {
       const models = await ChatService.getAvailableModels();
       setAvailableModels(models);
 
-      // Auto-select most relevant model if none selected
-      if (models.length > 0 && !selectedModel) {
-        // Prioritize: Claude 3.5 Sonnet > GPT-4 > Claude Haiku > Nova Pro > first available
-        const preferredModelIds = [
-          'anthropic.claude-3-5-sonnet-20241022-v1:0',
-          'anthropic.claude-3-7-sonnet-20250219-v1:0',
-          'gpt-4',
-          'anthropic.claude-3-5-haiku-20241022-v1:0',
-          'amazon.nova-pro-v1:0'
-        ];
-
-        const preferredModel = preferredModelIds
-          .map(id => models.find(m => m.id === id))
-          .find(Boolean);
-
-        setSelectedModel(preferredModel || models[0]);
+      // Auto-select model based on chat mode
+      if (models.length > 0) {
+        const recommendedModel = selectModelByChatMode(models, chatMode);
+        if (recommendedModel) {
+          setSelectedModel(recommendedModel);
+        }
       }
     } catch (error) {
       console.error("Error loading models:", error);
@@ -583,38 +673,84 @@ export const ConversationalAgent: React.FC = () => {
     }
   };
 
-  // Get top 5 models for quick selection
+  // Get top 5 models for quick selection based on quality and capabilities
   const getTopModels = (): AvailableModel[] => {
     if (availableModels.length <= 5) return availableModels;
 
-    // Prioritize: Claude 3.5 Sonnet, GPT-4, Claude Haiku, Nova Pro, and one more popular
-    const preferredIds = [
-      'anthropic.claude-3-5-sonnet-20241022-v1:0',
+    // Define top tier models based on capabilities and quality
+    const topTierIds = [
+      'anthropic.claude-opus-4-1-20250805-v1:0', // Claude 4 Opus - most powerful
+      'anthropic.claude-sonnet-4-20250514-v1:0', // Claude Sonnet 4 - high performance
+      'anthropic.claude-3-5-sonnet-20240620-v1:0', // Claude 3.5 Sonnet - popular
+      'mistral.mistral-large-2402-v1:0', // Mistral Large - advanced
+      'amazon.nova-pro-v1:0', // Nova Pro - high performance
+    ];
+
+    // Secondary tier (if top tier not available)
+    const secondaryTierIds = [
       'anthropic.claude-3-7-sonnet-20250219-v1:0',
-      'gpt-4',
       'anthropic.claude-3-5-haiku-20241022-v1:0',
-      'amazon.nova-pro-v1:0'
+      'meta.llama3-70b-instruct-v1:0',
+      'meta.llama4-scout-17b-instruct-v1:0',
     ];
 
     const topModels: AvailableModel[] = [];
     const usedIds = new Set<string>();
 
-    // Add preferred models first
-    preferredIds.forEach(id => {
+    // Add top tier models first
+    topTierIds.forEach(id => {
       const model = availableModels.find(m => m.id === id);
-      if (model) {
+      if (model && !usedIds.has(model.id)) {
         topModels.push(model);
         usedIds.add(model.id);
       }
     });
 
-    // Fill remaining slots with other models
-    availableModels.forEach(model => {
-      if (topModels.length < 5 && !usedIds.has(model.id)) {
-        topModels.push(model);
-        usedIds.add(model.id);
-      }
-    });
+    // Fill with secondary tier if needed
+    if (topModels.length < 5) {
+      secondaryTierIds.forEach(id => {
+        if (topModels.length >= 5) return;
+        const model = availableModels.find(m => m.id === id);
+        if (model && !usedIds.has(model.id)) {
+          topModels.push(model);
+          usedIds.add(model.id);
+        }
+      });
+    }
+
+    // Score remaining models by capabilities and add best ones
+    if (topModels.length < 5) {
+      const scoredModels = availableModels
+        .filter(m => !usedIds.has(m.id))
+        .map(model => {
+          let score = 0;
+          const caps = model.capabilities || [];
+
+          // Score based on capabilities
+          if (caps.includes('reasoning')) score += 10;
+          if (caps.includes('extended-thinking')) score += 10;
+          if (caps.includes('multimodal')) score += 5;
+          if (caps.includes('vision')) score += 3;
+          if (caps.includes('text')) score += 2;
+
+          // Prefer models with better names (not generic)
+          if (!model.name.toLowerCase().includes('claude') &&
+            !model.name.toLowerCase().includes('nova') &&
+            model.name.length > 3) {
+            score += 2;
+          }
+
+          return { model, score };
+        })
+        .sort((a, b) => b.score - a.score);
+
+      scoredModels.forEach(({ model }) => {
+        if (topModels.length < 5) {
+          topModels.push(model);
+          usedIds.add(model.id);
+        }
+      });
+    }
 
     return topModels.slice(0, 5);
   };
@@ -623,6 +759,148 @@ export const ConversationalAgent: React.FC = () => {
   const getOtherModels = (): AvailableModel[] => {
     const topModelIds = new Set(getTopModels().map(m => m.id));
     return availableModels.filter(m => !topModelIds.has(m.id));
+  };
+
+  // Helper function to format model display with name, number, and version
+  const formatModelDisplay = (model: AvailableModel | null): string => {
+    if (!model) return "Select Model";
+
+    // Skip version for Claude models - they already have version in name
+    const isClaude = model.id.includes('claude') || model.provider.toLowerCase().includes('anthropic');
+
+    if (isClaude) {
+      // For Claude, use the name as-is if it's descriptive, otherwise extract from ID
+      if (model.name.toLowerCase() === 'claude') {
+        // Extract Claude version from ID - handle various patterns
+        const modelId = model.id.toLowerCase();
+
+        // Pattern 1: claude-opus-4-1 or claude-sonnet-4
+        let claudeMatch = modelId.match(/claude-(opus|sonnet|haiku)-(\d+)(?:-(\d+))?/);
+        if (claudeMatch) {
+          const type = claudeMatch[1].charAt(0).toUpperCase() + claudeMatch[1].slice(1);
+          const version = claudeMatch[2];
+          const subVersion = claudeMatch[3] ? `.${claudeMatch[3]}` : '';
+          return `Claude ${version} ${type}${subVersion}`;
+        }
+
+        // Pattern 2: claude-3-5-sonnet or claude-3-7-sonnet
+        claudeMatch = modelId.match(/claude-(\d+)-(\d+)-(sonnet|haiku|opus)/);
+        if (claudeMatch) {
+          const type = claudeMatch[3].charAt(0).toUpperCase() + claudeMatch[3].slice(1);
+          return `Claude ${claudeMatch[1]}.${claudeMatch[2]} ${type}`;
+        }
+
+        // Pattern 3: claude-3-opus or claude-3-haiku
+        claudeMatch = modelId.match(/claude-(\d+)-(sonnet|haiku|opus)/);
+        if (claudeMatch) {
+          const type = claudeMatch[2].charAt(0).toUpperCase() + claudeMatch[2].slice(1);
+          return `Claude ${claudeMatch[1]} ${type}`;
+        }
+      }
+      return model.name;
+    }
+
+    let displayName = model.name;
+    const modelId = model.id.toLowerCase();
+
+    // Extract model number from ID (e.g., llama3, llama3-2, llama4, titan-text-lite)
+    let number = '';
+
+    // Llama models: llama3, llama3-2, llama4
+    const llamaMatch = modelId.match(/llama(\d+)(?:-(\d+))?/);
+    if (llamaMatch) {
+      number = llamaMatch[2] ? `3.${llamaMatch[2]}` : llamaMatch[1];
+      displayName = `Llama ${number}`;
+    }
+
+    // Titan models
+    if (modelId.includes('titan')) {
+      const titanMatch = modelId.match(/titan-(\w+)-?(\w+)?/);
+      if (titanMatch) {
+        const variant = titanMatch[1] || titanMatch[2] || '';
+        if (variant === 'text') {
+          displayName = model.name.includes('Lite') ? 'Titan Text Lite' : 'Titan Text';
+        } else if (variant === 'embed') {
+          displayName = 'Titan Embed';
+        }
+      }
+    }
+
+    // Extract version patterns from model ID
+    let version = '';
+
+    // Pattern 1: v1:0, v2:1 format (e.g., amazon.nova-pro-v1:0)
+    const vColonMatch = modelId.match(/v(\d+):(\d+)/);
+    if (vColonMatch) {
+      version = `v${vColonMatch[1]}.${vColonMatch[2]}`;
+    }
+
+    // Pattern 2: Date-based versions -1106, -0314 (e.g., gpt-4-1106-preview)
+    if (!version) {
+      const dateMatch = modelId.match(/-(\d{4})(?:-|$)/);
+      if (dateMatch) {
+        version = dateMatch[1];
+      }
+    }
+
+    // Pattern 3: Simple v1, v2 format (but not v1:0 which is already handled)
+    if (!version) {
+      const simpleVMatch = modelId.match(/v(\d+)(?:-|$)/);
+      if (simpleVMatch) {
+        version = `v${simpleVMatch[1]}`;
+      }
+    }
+
+    // Build display string
+    if (version && !llamaMatch) {
+      // Only add version if we have a meaningful name
+      if (model.name.length > 3 && !model.name.toLowerCase().includes('nova')) {
+        displayName = `${displayName} ${version}`;
+      }
+    }
+
+    return displayName;
+  };
+
+  // Helper function to get model subtitle (provider + version info)
+  const getModelSubtitle = (model: AvailableModel): string => {
+    const isClaude = model.id.includes('claude') || model.provider.toLowerCase().includes('anthropic');
+
+    if (isClaude) {
+      return model.provider;
+    }
+
+    // Extract version from ID for non-Claude models
+    const modelId = model.id.toLowerCase();
+    let version = '';
+
+    // Pattern 1: v1:0 format
+    const vColonMatch = modelId.match(/v(\d+):(\d+)/);
+    if (vColonMatch) {
+      version = `v${vColonMatch[1]}.${vColonMatch[2]}`;
+    }
+
+    // Pattern 2: Date-based -1106
+    if (!version) {
+      const dateMatch = modelId.match(/-(\d{4})(?:-|$)/);
+      if (dateMatch) {
+        version = dateMatch[1];
+      }
+    }
+
+    // Pattern 3: Simple v1
+    if (!version) {
+      const simpleVMatch = modelId.match(/v(\d+)(?:-|$)/);
+      if (simpleVMatch) {
+        version = `v${simpleVMatch[1]}`;
+      }
+    }
+
+    if (version) {
+      return `${model.provider} • ${version}`;
+    }
+
+    return model.provider;
   };
 
   const loadConversations = async () => {
@@ -1938,6 +2216,9 @@ export const ConversationalAgent: React.FC = () => {
                 </p>
               </div>
 
+              {/* Integration Mention Hint - Prominent */}
+              <IntegrationMentionHint variant="prominent" />
+
               <div className="space-y-6">
                 <h4 className="font-display font-semibold text-lg text-light-text-primary dark:text-dark-text-primary">
                   {questionsLoading
@@ -2313,6 +2594,11 @@ export const ConversationalAgent: React.FC = () => {
               </div>
             )}
 
+            {/* Compact Integration Mention Hint - Above Input */}
+            {messages.length > 0 && (
+              <IntegrationMentionHint variant="compact" />
+            )}
+
             {/* Message Input Container */}
             <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
               <div className="flex items-end gap-3">
@@ -2429,7 +2715,7 @@ export const ConversationalAgent: React.FC = () => {
                                 className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
                               >
                                 <ChartBarIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
-                                <span className="text-sm font-medium text-secondary-900 dark:text-white">View Integrations</span>
+                                <span className="text-sm font-medium text-secondary-900 dark:text-white">View GitHub Integrations</span>
                               </button>
                             </div>
                           )}
@@ -2446,10 +2732,24 @@ export const ConversationalAgent: React.FC = () => {
                                 className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
                               >
                                 <PlusIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
-                                <span className="text-sm font-medium text-secondary-900 dark:text-white">Add Integration</span>
+                                <span className="text-sm font-medium text-secondary-900 dark:text-white">Add GitHub Integration</span>
                               </button>
                             </div>
                           )}
+
+                          {/* All Integrations - Separator */}
+                          <div className="pt-2 mb-2 border-t border-primary-200/30 dark:border-primary-500/20">
+                            <button
+                              onClick={() => {
+                                setShowAttachmentsPopover(false);
+                                navigate('/integrations');
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                            >
+                              <Cog6ToothIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                              <span className="text-sm font-medium text-secondary-900 dark:text-white">All Integrations</span>
+                            </button>
+                          </div>
 
                           {/* Disconnect GitHub */}
                           {githubConnection.hasConnection && (
@@ -2510,6 +2810,15 @@ export const ConversationalAgent: React.FC = () => {
                       height: '56px'
                     }}
                   />
+                  {/* Mention Autocomplete */}
+                  <MentionAutocomplete
+                    value={currentMessage}
+                    onChange={setCurrentMessage}
+                    onSelect={() => {
+                      // Mention is already inserted in the textarea
+                    }}
+                    textareaRef={textareaRef}
+                  />
                 </div>
 
                 {/* Model Selector - Next to Send Button */}
@@ -2522,8 +2831,8 @@ export const ConversationalAgent: React.FC = () => {
                     <div className="bg-gradient-primary p-1 rounded glow-primary">
                       <SparklesIcon className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-xs font-display font-semibold text-secondary-900 dark:text-white max-w-[100px] truncate">
-                      {selectedModel?.name || "Select Model"}
+                    <span className="text-xs font-display font-semibold text-secondary-900 dark:text-white max-w-[120px] truncate">
+                      {formatModelDisplay(selectedModel)}
                     </span>
                     <ChevronDownIcon className="w-3 h-3 text-secondary-600 dark:text-secondary-400" />
                   </button>
@@ -2538,9 +2847,12 @@ export const ConversationalAgent: React.FC = () => {
                           setShowAllModelsDropdown(false);
                         }}
                       />
-                      <div className="absolute bottom-full right-0 mb-2 w-72 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 z-50 max-h-96 overflow-y-auto animate-scale-in rounded-xl">
+                      <div className="absolute bottom-full right-0 mb-2 w-80 shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 z-50 max-h-[500px] overflow-y-auto animate-scale-in rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel bg-white/95 dark:bg-dark-card/95">
                         {/* Top 5 Models */}
                         <div className="p-2">
+                          <div className="px-2 py-1.5 mb-1 rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
+                            <span className="text-xs font-display font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">⭐ Top Models</span>
+                          </div>
                           {getTopModels().map((model) => (
                             <button
                               key={model.id}
@@ -2549,20 +2861,50 @@ export const ConversationalAgent: React.FC = () => {
                                 setShowModelDropdown(false);
                                 setShowAllModelsDropdown(false);
                               }}
-                              className={`w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border border-primary-300 dark:border-primary-600" : ""
-                                }`}
+                              className={`w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                } mb-2 last:mb-0`}
                             >
-                              <div className="flex-1 min-w-0">
-                                <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
-                                  {model.name}
-                                </div>
-                                <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium truncate">
-                                  {model.provider}
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
+                                      {formatModelDisplay(model)}
+                                    </div>
+                                    {selectedModel?.id === model.id && (
+                                      <div className="w-2 h-2 rounded-full bg-gradient-primary flex-shrink-0" />
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium mb-1.5">
+                                    {getModelSubtitle(model)}
+                                  </div>
+
+                                  {/* Capabilities */}
+                                  {model.capabilities && model.capabilities.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 mb-1.5">
+                                      {model.capabilities.slice(0, 3).map((cap, idx) => (
+                                        <span key={idx} className="px-1.5 py-0.5 text-xs rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
+                                          {cap}
+                                        </span>
+                                      ))}
+                                      {model.capabilities.length > 3 && (
+                                        <span className="px-1.5 py-0.5 text-xs rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
+                                          +{model.capabilities.length - 3}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Pricing */}
+                                  {model.pricing && (
+                                    <div className="text-xs text-success-600 dark:text-success-400 font-semibold">
+                                      ${model.pricing.input.toFixed(2)}/${model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'} in
+                                      {model.pricing.output > 0 && (
+                                        <span> • ${model.pricing.output.toFixed(2)}/{model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'} out</span>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
-                              {selectedModel?.id === model.id && (
-                                <div className="w-2 h-2 rounded-full bg-gradient-primary ml-2 flex-shrink-0" />
-                              )}
                             </button>
                           ))}
 
@@ -2572,7 +2914,7 @@ export const ConversationalAgent: React.FC = () => {
                               <div className="relative">
                                 <button
                                   onClick={() => setShowAllModelsDropdown(!showAllModelsDropdown)}
-                                  className="w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between"
+                                  className="w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between bg-white/30 dark:bg-dark-card/30"
                                 >
                                   <span className="font-display font-semibold text-sm text-secondary-900 dark:text-white">
                                     More Models ({getOtherModels().length})
@@ -2585,7 +2927,7 @@ export const ConversationalAgent: React.FC = () => {
 
                                 {/* Nested Dropdown for Other Models */}
                                 {showAllModelsDropdown && (
-                                  <div className="mt-1 ml-4 pl-2 border-l-2 border-primary-200/30 dark:border-primary-500/20 space-y-1">
+                                  <div className="mt-1 space-y-1 max-h-[400px] overflow-y-auto">
                                     {getOtherModels().map((model) => (
                                       <button
                                         key={model.id}
@@ -2594,20 +2936,47 @@ export const ConversationalAgent: React.FC = () => {
                                           setShowModelDropdown(false);
                                           setShowAllModelsDropdown(false);
                                         }}
-                                        className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border border-primary-300 dark:border-primary-600" : ""
+                                        className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
                                           }`}
                                       >
-                                        <div className="flex-1 min-w-0">
-                                          <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
-                                            {model.name}
-                                          </div>
-                                          <div className="text-xs text-secondary-500 dark:text-secondary-400 truncate">
-                                            {model.provider}
+                                        <div className="flex items-start justify-between gap-2">
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-1.5 mb-1">
+                                              <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
+                                                {formatModelDisplay(model)}
+                                              </div>
+                                              {selectedModel?.id === model.id && (
+                                                <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                              )}
+                                            </div>
+                                            <div className="text-xs text-secondary-500 dark:text-secondary-400 mb-1">
+                                              {getModelSubtitle(model)}
+                                            </div>
+
+                                            {/* Capabilities - compact */}
+                                            {model.capabilities && model.capabilities.length > 0 && (
+                                              <div className="flex flex-wrap gap-0.5 mb-1">
+                                                {model.capabilities.slice(0, 2).map((cap, idx) => (
+                                                  <span key={idx} className="px-1 py-0.5 text-[10px] rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
+                                                    {cap}
+                                                  </span>
+                                                ))}
+                                                {model.capabilities.length > 2 && (
+                                                  <span className="px-1 py-0.5 text-[10px] rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
+                                                    +{model.capabilities.length - 2}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            )}
+
+                                            {/* Pricing - compact */}
+                                            {model.pricing && (
+                                              <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold">
+                                                ${model.pricing.input.toFixed(2)}/{model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'}
+                                              </div>
+                                            )}
                                           </div>
                                         </div>
-                                        {selectedModel?.id === model.id && (
-                                          <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary ml-2 flex-shrink-0" />
-                                        )}
                                       </button>
                                     ))}
                                   </div>

@@ -1,4 +1,3 @@
-// src/pages/Optimization.tsx
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -189,22 +188,22 @@ export const Optimization: React.FC = () => {
       <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+          <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-3xl font-display font-bold gradient-text-primary">
+              <h1 className="text-3xl font-bold font-display gradient-text-primary">
                 AI Usage Optimization
               </h1>
               <div className="flex space-x-4">
                 <button
                   onClick={() => navigate("/optimizations/wizard")}
-                  className="btn-secondary inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl btn-secondary"
                 >
                   <AcademicCapIcon className="mr-2 w-5 h-5" />
                   Cost Audit Wizard
                 </button>
                 <button
                   onClick={() => setShowForm(!showForm)}
-                  className="btn-primary inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl btn-primary"
                 >
                   <PlusIcon className="mr-2 w-5 h-5" />
                   Advanced Optimization
@@ -221,47 +220,47 @@ export const Optimization: React.FC = () => {
         {/* Stats Cards */}
         {calculatedStats && (
           <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Total Saved</p>
-                  <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
+                  <p className="text-2xl font-bold font-display text-success-600 dark:text-success-400">
                     {formatCurrency(calculatedStats.totalSaved)}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 flex items-center justify-center flex-shrink-0">
+                <div className="flex flex-shrink-0 justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20">
                   <ChartBarIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
                 </div>
               </div>
             </div>
 
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                     Optimizations
                   </p>
-                  <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+                  <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
                     {calculatedStats.total}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="flex flex-shrink-0 justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-primary-500/20 to-secondary-500/20">
                   <SparklesIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                 </div>
               </div>
             </div>
 
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                     Avg Improvement
                   </p>
-                  <p className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
+                  <p className="text-2xl font-bold font-display text-accent-600 dark:text-accent-400">
                     {formatSmartNumber(calculatedStats.avgImprovement)}%
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 flex items-center justify-center flex-shrink-0">
+                <div className="flex flex-shrink-0 justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20">
                   <ArrowTrendingUpIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
                 </div>
               </div>
@@ -272,55 +271,55 @@ export const Optimization: React.FC = () => {
         {/* Show stats even when no optimizations exist */}
         {!calculatedStats && !optimizationsLoading && !summaryLoading && (
           <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Total Saved</p>
-                  <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
+                  <p className="text-2xl font-bold font-display text-success-600 dark:text-success-400">
                     {formatCurrency(0)}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 flex items-center justify-center">
+                <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20">
                   <ChartBarIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
                 </div>
               </div>
             </div>
 
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                     Optimizations
                   </p>
-                  <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">0</p>
+                  <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">0</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center">
+                <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-primary-500/20 to-secondary-500/20">
                   <SparklesIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                 </div>
               </div>
             </div>
 
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Applied</p>
-                  <p className="text-2xl font-display font-bold text-highlight-600 dark:text-highlight-400">0</p>
+                  <p className="text-2xl font-bold font-display text-highlight-600 dark:text-highlight-400">0</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 flex items-center justify-center">
+                <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20">
                   <CheckCircleIcon className="w-6 h-6 text-highlight-600 dark:text-highlight-400" />
                 </div>
               </div>
             </div>
 
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                     Avg Improvement
                   </p>
-                  <p className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">0.0%</p>
+                  <p className="text-2xl font-bold font-display text-accent-600 dark:text-accent-400">0.0%</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 flex items-center justify-center">
+                <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20">
                   <ArrowTrendingUpIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
                 </div>
               </div>
@@ -330,7 +329,7 @@ export const Optimization: React.FC = () => {
 
         {/* Quick Optimize Section */}
         <div className="mb-8">
-          <QuickOptimize onOptimizationCreated={(newOptimization) => {
+          <QuickOptimize onOptimizationCreated={(newOptimization: any) => {
             // Add the new optimization to the list
             setOptimizations((prev: any) => {
               if (!prev) return { data: [newOptimization], pagination: { page: 1, limit: 10, total: 1, pages: 1 } };
@@ -359,12 +358,12 @@ export const Optimization: React.FC = () => {
 
         {/* Latest Optimization Preview */}
         {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
-          <div className="mb-8 p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-display font-semibold gradient-text-primary">
+          <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold font-display gradient-text-primary">
                 Latest Optimization
                 {getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex && (
-                  <span className="ml-2 px-2 py-1 text-xs from-accent-500 to-secondary-500 dark:from-accent-400 dark:to-secondary-400 text-white rounded-full border border-accent-300/50 dark:border-accent-500/50 shadow-sm font-medium">
+                  <span className="px-2 py-1 ml-2 text-xs font-medium text-white rounded-full border shadow-sm from-accent-500 to-secondary-500 dark:from-accent-400 dark:to-secondary-400 border-accent-300/50 dark:border-accent-500/50">
                     ✨ Cortex Optimized
                   </span>
                 )}
@@ -379,57 +378,57 @@ export const Optimization: React.FC = () => {
 
             {/* With/Without Cortex Comparison */}
             {getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex && (
-              <div className="mb-4 p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-accent-50/30 dark:from-secondary-900/20 dark:to-accent-900/20">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-r from-secondary-500 to-accent-500 flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xs">✨</span>
+              <div className="p-4 mb-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-secondary-50/30 to-accent-50/30 dark:from-secondary-900/20 dark:to-accent-900/20">
+                <div className="flex gap-3 items-center mb-4">
+                  <div className="flex justify-center items-center w-6 h-6 bg-gradient-to-r rounded-lg shadow-lg from-secondary-500 to-accent-500">
+                    <span className="text-xs text-white">✨</span>
                   </div>
-                  <h4 className="font-display font-semibold gradient-text-secondary">Cortex Impact Analysis</h4>
+                  <h4 className="font-semibold font-display gradient-text-secondary">Cortex Impact Analysis</h4>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="glass rounded-lg p-4 border border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-r from-danger-500 to-danger-600 shadow-lg"></div>
-                      <h5 className="font-display font-semibold text-danger-600 dark:text-danger-400">Without Cortex</h5>
+                  <div className="p-4 bg-gradient-to-br rounded-lg border glass border-danger-200/30 from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                    <div className="flex gap-2 items-center mb-3">
+                      <div className="w-4 h-4 bg-gradient-to-r rounded-full shadow-lg from-danger-500 to-danger-600"></div>
+                      <h5 className="font-semibold font-display text-danger-600 dark:text-danger-400">Without Cortex</h5>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Tokens:</span>
-                        <span className="font-display font-bold text-secondary-900 dark:text-white">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withoutCortex.toLocaleString()}</span>
+                        <span className="text-sm font-body text-secondary-600 dark:text-secondary-300">Tokens:</span>
+                        <span className="font-bold font-display text-secondary-900 dark:text-white">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withoutCortex.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Cost:</span>
-                        <span className="font-display font-bold text-secondary-900 dark:text-white">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex)}</span>
+                        <span className="text-sm font-body text-secondary-600 dark:text-secondary-300">Cost:</span>
+                        <span className="font-bold font-display text-secondary-900 dark:text-white">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex)}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="glass rounded-lg p-4 border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-r from-success-500 to-success-600 shadow-lg"></div>
-                      <h5 className="font-display font-semibold text-success-600 dark:text-success-400">With Cortex</h5>
+                  <div className="p-4 bg-gradient-to-br rounded-lg border glass border-success-200/30 from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                    <div className="flex gap-2 items-center mb-3">
+                      <div className="w-4 h-4 bg-gradient-to-r rounded-full shadow-lg from-success-500 to-success-600"></div>
+                      <h5 className="font-semibold font-display text-success-600 dark:text-success-400">With Cortex</h5>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Tokens:</span>
-                        <span className="font-display font-bold text-success-600 dark:text-success-400">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withCortex.toLocaleString()}</span>
+                        <span className="text-sm font-body text-secondary-600 dark:text-secondary-300">Tokens:</span>
+                        <span className="font-bold font-display text-success-600 dark:text-success-400">{getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withCortex.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="font-body text-secondary-600 dark:text-secondary-300 text-sm">Cost:</span>
-                        <span className="font-display font-bold text-success-600 dark:text-success-400">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.actualCostWithCortex)}</span>
+                        <span className="text-sm font-body text-secondary-600 dark:text-secondary-300">Cost:</span>
+                        <span className="font-bold font-display text-success-600 dark:text-success-400">{formatCurrency(getAllOptimizations()[0].cortexImpactMetrics.costImpact.actualCostWithCortex)}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 p-3 glass rounded-lg border border-primary-200/30 bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 shadow-lg"></div>
-                      <span className="font-display font-semibold gradient-text-primary">Net Savings</span>
+                <div className="p-3 mt-4 bg-gradient-to-r rounded-lg border glass border-primary-200/30 from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
+                  <div className="flex justify-between items-center">
+                    <div className="flex gap-2 items-center">
+                      <div className="w-4 h-4 bg-gradient-to-r rounded-full shadow-lg from-primary-500 to-secondary-500"></div>
+                      <span className="font-semibold font-display gradient-text-primary">Net Savings</span>
                     </div>
                     <div className="text-right">
-                      <div className="font-display font-bold gradient-text-primary text-lg">
+                      <div className="text-lg font-bold font-display gradient-text-primary">
                         {formatCurrency(Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings))}
-                        <span className="text-sm ml-1">
+                        <span className="ml-1 text-sm">
                           ({Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.savingsPercentage).toFixed(1)}%)
                         </span>
                       </div>
@@ -440,8 +439,8 @@ export const Optimization: React.FC = () => {
             )}
 
             <div className="grid grid-cols-4 gap-4 mb-4">
-              <div className="p-3 glass rounded-lg border border-success-200/30 bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-center">
-                <div className="text-lg font-display font-bold text-success-600 dark:text-success-400">
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-success-200/30 from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                <div className="text-lg font-bold font-display text-success-600 dark:text-success-400">
                   ${formatSmartNumber(
                     (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings)
@@ -450,8 +449,8 @@ export const Optimization: React.FC = () => {
                 </div>
                 <div className="text-xs font-body text-success-700 dark:text-success-300">Savings</div>
               </div>
-              <div className="p-3 glass rounded-lg border border-danger-200/30 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 text-center">
-                <div className="text-lg font-display font-bold text-danger-600 dark:text-danger-400">
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-danger-200/30 from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                <div className="text-lg font-bold font-display text-danger-600 dark:text-danger-400">
                   ${formatSmartNumber(
                     (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? getAllOptimizations()[0].cortexImpactMetrics.costImpact.estimatedCostWithoutCortex
@@ -460,8 +459,8 @@ export const Optimization: React.FC = () => {
                 </div>
                 <div className="text-xs font-body text-danger-700 dark:text-danger-300">Original Cost</div>
               </div>
-              <div className="p-3 glass rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 text-center">
-                <div className="text-lg font-display font-bold text-primary-600 dark:text-primary-400">
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-primary-200/30 from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+                <div className="text-lg font-bold font-display text-primary-600 dark:text-primary-400">
                   {formatSmartNumber(
                     (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                       ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.percentageSavings)
@@ -470,8 +469,8 @@ export const Optimization: React.FC = () => {
                 </div>
                 <div className="text-xs font-body text-primary-700 dark:text-primary-300">Improvement</div>
               </div>
-              <div className="p-3 glass rounded-lg border border-secondary-200/30 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 text-center">
-                <div className="text-lg font-display font-bold text-secondary-600 dark:text-secondary-400">
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-secondary-200/30 from-secondary-50/50 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+                <div className="text-lg font-bold font-display text-secondary-600 dark:text-secondary-400">
                   {(getAllOptimizations()[0]?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                     ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.absoluteSavings).toLocaleString()
                     : getAllOptimizations()[0]?.tokensSaved || 0}
@@ -482,19 +481,19 @@ export const Optimization: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-display font-semibold text-secondary-900 dark:text-white mb-1">
+                <label className="mb-1 text-sm font-semibold font-display text-secondary-900 dark:text-white">
                   User Query
                 </label>
-                <div className="p-3 glass rounded-lg border border-primary-200/30 text-sm font-body text-secondary-700 dark:text-secondary-300 max-h-32 overflow-y-auto">
+                <div className="overflow-y-auto p-3 max-h-32 text-sm rounded-lg border glass border-primary-200/30 font-body text-secondary-700 dark:text-secondary-300">
                   {getAllOptimizations()[0]?.userQuery || getAllOptimizations()[0]?.originalPrompt || 'No query available'}
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-display font-semibold text-secondary-900 dark:text-white mb-1">
+                <label className="mb-1 text-sm font-semibold font-display text-secondary-900 dark:text-white">
                   Generated Answer
                 </label>
-                <div className="p-3 glass rounded-lg border border-success-200/30 text-sm font-body text-secondary-700 dark:text-secondary-300 max-h-32 overflow-y-auto">
+                <div className="overflow-y-auto p-3 max-h-32 text-sm rounded-lg border glass border-success-200/30 font-body text-secondary-700 dark:text-secondary-300">
                   <div
                     dangerouslySetInnerHTML={{
                       __html: processFormattedText(getAllOptimizations()[0]?.generatedAnswer || getAllOptimizations()[0]?.optimizedPrompt || 'No answer generated')
@@ -540,7 +539,7 @@ export const Optimization: React.FC = () => {
 
         {/* Pagination Controls */}
         {optimizations?.pagination && optimizations.pagination.pages > 1 && (
-          <div className="flex items-center justify-between mt-8 p-4 glass rounded-xl border border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex justify-between items-center p-4 mt-8 rounded-xl border glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center space-x-2">
               <span className="text-sm text-secondary-600 dark:text-secondary-300">
                 Showing {((optimizations.pagination.page - 1) * optimizations.pagination.limit) + 1} to{" "}
@@ -553,7 +552,7 @@ export const Optimization: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage <= 1}
-                className="px-3 py-2 text-sm font-medium text-secondary-600 dark:text-secondary-300 glass border border-primary-200/30 rounded-md hover:bg-primary-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm font-medium rounded-md border text-secondary-600 dark:text-secondary-300 glass border-primary-200/30 hover:bg-primary-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeftIcon className="w-4 h-4" />
               </button>
@@ -579,7 +578,7 @@ export const Optimization: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage >= optimizations.pagination.pages}
-                className="px-3 py-2 text-sm font-medium text-secondary-600 dark:text-secondary-300 glass border border-primary-200/30 rounded-md hover:bg-primary-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm font-medium rounded-md border text-secondary-600 dark:text-secondary-300 glass border-primary-200/30 hover:bg-primary-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRightIcon className="w-4 h-4" />
               </button>
@@ -588,11 +587,11 @@ export const Optimization: React.FC = () => {
         )}
 
         {getAllOptimizations().length === 0 && (
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel py-12 text-center">
-            <div className="w-16 h-16 mx-auto rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center mb-4">
+          <div className="py-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-xl from-primary-500/20 to-secondary-500/20">
               <SparklesIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
             </div>
-            <h3 className="mt-2 text-lg font-display font-semibold text-secondary-900 dark:text-white">
+            <h3 className="mt-2 text-lg font-semibold font-display text-secondary-900 dark:text-white">
               No answer generations yet
             </h3>
             <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">

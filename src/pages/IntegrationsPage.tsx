@@ -6,9 +6,11 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { SlackIntegrationSetup } from '../components/integrations/SlackIntegrationSetup';
 import { DiscordIntegrationSetup } from '../components/integrations/DiscordIntegrationSetup';
 import { LinearIntegrationSetup } from '../components/integrations/LinearIntegrationSetup';
+import { JiraIntegrationSetup } from '../components/integrations/JiraIntegrationSetup';
 import { WebhookIntegrationSetup } from '../components/integrations/WebhookIntegrationSetup';
 import { IntegrationLogs } from '../components/integrations/IntegrationLogs';
 import { LinearIntegrationViewModal } from '../components/integrations/LinearIntegrationViewModal';
+import { JiraIntegrationViewModal } from '../components/integrations/JiraIntegrationViewModal';
 import {
     PlusIcon,
     XMarkIcon,
@@ -21,9 +23,10 @@ import GitHubConnector from '../components/chat/GitHubConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
+import jiraIcon from '../assets/jira.png';
 
-type SetupModal = 'slack' | 'discord' | 'linear' | 'webhook' | 'github' | null;
-type ViewModal = { type: 'linear'; integrationId: string } | null;
+type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | null;
+type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
 
 export const IntegrationsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -141,6 +144,9 @@ export const IntegrationsPage: React.FC = () => {
             if (type === 'linear') {
                 return integ.type === 'linear_oauth';
             }
+            if (type === 'jira') {
+                return integ.type === 'jira_oauth';
+            }
             if (type === 'webhook') {
                 return integ.type === 'custom_webhook';
             }
@@ -193,6 +199,15 @@ export const IntegrationsPage: React.FC = () => {
             color: '#5E6AD2',
         },
         {
+            type: 'jira' as const,
+            name: 'JIRA',
+            description: 'Send alerts as comments or create issues in JIRA',
+            icon: (
+                <img src={jiraIcon} alt="JIRA" className="integration-icon" style={{ width: '24px', height: '24px' }} />
+            ),
+            color: '#0052CC',
+        },
+        {
             type: 'webhook' as const,
             name: 'Custom Webhook',
             description: 'Send alerts to any custom webhook endpoint',
@@ -206,20 +221,20 @@ export const IntegrationsPage: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient px-4 py-8">
+        <div className="px-4 py-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {/* Page Header */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+                <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">Integrations</h1>
+                            <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">Integrations</h1>
                             <p className="text-secondary-600 dark:text-secondary-300">
-                                Connect Cost Katana with GitHub, Slack, Discord, Linear, and custom webhooks
+                                Connect Cost Katana with GitHub, Slack, Discord, Linear, JIRA, and custom webhooks
                             </p>
                         </div>
                         <button
                             onClick={() => setShowLogs(!showLogs)}
-                            className="px-6 py-3 bg-gradient-secondary text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 glow-secondary"
+                            className="px-6 py-3 font-semibold text-white rounded-lg transition-all duration-300 bg-gradient-secondary hover:shadow-lg glow-secondary"
                         >
                             {showLogs ? 'Hide Logs' : 'View Logs'}
                         </button>
@@ -239,10 +254,10 @@ export const IntegrationsPage: React.FC = () => {
                             <>
                                 {/* Error Message */}
                                 {error && (
-                                    <div className="glass rounded-lg border border-red-200/30 bg-red-50/80 dark:bg-red-900/20 p-4 mb-6 backdrop-blur-sm">
+                                    <div className="p-4 mb-6 rounded-lg border backdrop-blur-sm glass border-red-200/30 bg-red-50/80 dark:bg-red-900/20">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0">
-                                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg className="w-5 h-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
@@ -257,13 +272,13 @@ export const IntegrationsPage: React.FC = () => {
 
                                 {/* Unified Integrations List */}
                                 <div>
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h2 className="text-2xl font-display font-bold gradient-text-primary">Integrations</h2>
-                                        <span className="px-3 py-1 bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700 rounded-full text-sm font-display font-semibold">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-2xl font-bold font-display gradient-text-primary">Integrations</h2>
+                                        <span className="px-3 py-1 text-sm font-semibold rounded-full border bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-300 dark:border-success-700 font-display">
                                             {integrations.length + (githubConnections.filter(c => c.isActive).length)} Connected
                                         </span>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                                         {availableIntegrations.map((integration) => {
                                             const isConnected = isIntegrationConnected(integration.type);
 
@@ -277,6 +292,7 @@ export const IntegrationsPage: React.FC = () => {
                                                 if (integration.type === 'slack') return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
                                                 if (integration.type === 'discord') return integ.type === 'discord_webhook' || integ.type === 'discord_oauth';
                                                 if (integration.type === 'linear') return integ.type === 'linear_oauth';
+                                                if (integration.type === 'jira') return integ.type === 'jira_oauth';
                                                 if (integration.type === 'webhook') return integ.type === 'custom_webhook';
                                                 return false;
                                             });
@@ -290,10 +306,10 @@ export const IntegrationsPage: React.FC = () => {
                                                         } shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:shadow-xl transition-all duration-300 flex flex-col h-full`}
                                                 >
                                                     {/* Header */}
-                                                    <div className="flex items-start justify-between mb-4">
-                                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                    <div className="flex justify-between items-start mb-4">
+                                                        <div className="flex flex-1 gap-3 items-center min-w-0">
                                                             <div
-                                                                className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"
+                                                                className="flex flex-shrink-0 justify-center items-center w-12 h-12 rounded-xl shadow-lg"
                                                                 style={{ backgroundColor: `${integration.color}20` }}
                                                             >
                                                                 <div style={{ color: integration.color, width: '24px', height: '24px' }}>
@@ -301,11 +317,11 @@ export const IntegrationsPage: React.FC = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <h3 className="text-lg font-display font-bold text-secondary-900 dark:text-white mb-1 truncate">
+                                                                <h3 className="mb-1 text-lg font-bold truncate font-display text-secondary-900 dark:text-white">
                                                                     {integration.name}
                                                                 </h3>
                                                                 {githubConnection && (
-                                                                    <p className="text-sm text-secondary-600 dark:text-secondary-300 truncate">
+                                                                    <p className="text-sm truncate text-secondary-600 dark:text-secondary-300">
                                                                         @{githubConnection.githubUsername}
                                                                     </p>
                                                                 )}
@@ -325,14 +341,14 @@ export const IntegrationsPage: React.FC = () => {
                                                     </div>
 
                                                     {/* Description */}
-                                                    <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4 font-body flex-grow">
+                                                    <p className="flex-grow mb-4 text-sm text-secondary-600 dark:text-secondary-300 font-body">
                                                         {integration.description}
                                                     </p>
 
                                                     {/* GitHub Specific Info */}
                                                     {isConnected && githubConnection && (
-                                                        <div className="mb-4 p-3 glass rounded-lg border border-primary-200/20 dark:border-primary-500/10">
-                                                            <p className="text-xs text-secondary-500 dark:text-secondary-400 font-medium">
+                                                        <div className="p-3 mb-4 rounded-lg border glass border-primary-200/20 dark:border-primary-500/10">
+                                                            <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
                                                                 {githubConnection.repositories?.length || 0} {githubConnection.repositories?.length === 1 ? 'Repository' : 'Repositories'}
                                                                 {githubIntegrations.length > 0 && (
                                                                     <> • {githubIntegrations.length} {githubIntegrations.length === 1 ? 'Integration' : 'Integrations'}</>
@@ -373,11 +389,11 @@ export const IntegrationsPage: React.FC = () => {
                                                                     <>
                                                                         <button
                                                                             onClick={() => {
-                                                                                // For Linear, show integration details instead of setup
-                                                                                if (integration.type === 'linear' && regularIntegrations.length > 0) {
+                                                                                // For Linear and JIRA, show integration details instead of setup
+                                                                                if ((integration.type === 'linear' || integration.type === 'jira') && regularIntegrations.length > 0) {
                                                                                     // Show details for the first integration or allow selection
                                                                                     const firstIntegration = regularIntegrations[0];
-                                                                                    setViewModal({ type: 'linear', integrationId: firstIntegration.id });
+                                                                                    setViewModal({ type: integration.type, integrationId: firstIntegration.id });
                                                                                 } else {
                                                                                     // For other integrations, show setup to add more
                                                                                     setSetupModal(integration.type);
@@ -457,6 +473,12 @@ export const IntegrationsPage: React.FC = () => {
                         onComplete={handleSetupComplete}
                     />
                 )}
+                {setupModal === 'jira' && (
+                    <JiraIntegrationSetup
+                        onClose={() => setSetupModal(null)}
+                        onComplete={handleSetupComplete}
+                    />
+                )}
                 {setupModal === 'webhook' && (
                     <WebhookIntegrationSetup
                         onClose={() => setSetupModal(null)}
@@ -472,6 +494,17 @@ export const IntegrationsPage: React.FC = () => {
                         onEdit={() => {
                             setViewModal(null);
                             setSetupModal('linear');
+                        }}
+                    />
+                )}
+                {/* JIRA Integration View Modal */}
+                {viewModal && viewModal.type === 'jira' && (
+                    <JiraIntegrationViewModal
+                        integrationId={viewModal.integrationId}
+                        onClose={() => setViewModal(null)}
+                        onEdit={() => {
+                            setViewModal(null);
+                            setSetupModal('jira');
                         }}
                     />
                 )}

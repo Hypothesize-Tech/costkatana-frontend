@@ -158,6 +158,58 @@ class IntegrationService {
     );
     return response.data.data;
   }
+
+  /**
+   * Get autocomplete suggestions for @ mentions
+   */
+  async getAutocompleteSuggestions(params?: {
+    query?: string;
+    integration?: string;
+    entityType?: string;
+    entityId?: string;
+  }): Promise<Array<{
+    id: string;
+    label: string;
+    type: 'integration' | 'entity' | 'subentity';
+    integration?: string;
+    entityType?: string;
+    entityId?: string;
+  }>> {
+    const response = await apiClient.get('/chat/integrations/autocomplete', {
+      params
+    });
+    return response.data.data || [];
+  }
+
+  /**
+   * List entities for an integration type
+   */
+  async listEntities(
+    type: string,
+    entityType?: string
+  ): Promise<Array<{ id: string; name: string }>> {
+    const response = await apiClient.get(`/chat/integrations/${type}/entities`, {
+      params: entityType ? { entityType } : {}
+    });
+    return response.data.data || [];
+  }
+
+  /**
+   * Get sub-entities for a parent entity
+   */
+  async getSubEntities(
+    type: string,
+    entityId: string,
+    subEntityType?: string
+  ): Promise<Array<{ id: string; name: string }>> {
+    const response = await apiClient.get(
+      `/chat/integrations/${type}/${entityId}/subentities`,
+      {
+        params: subEntityType ? { subEntityType } : {}
+      }
+    );
+    return response.data.data || [];
+  }
 }
 
 export const integrationService = new IntegrationService();

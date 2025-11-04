@@ -4,6 +4,8 @@ export type IntegrationType =
     | 'discord_webhook' 
     | 'discord_oauth' 
     | 'linear_oauth'
+    | 'jira_oauth'
+    | 'github_oauth'
     | 'custom_webhook';
 
 export type IntegrationStatus = 'active' | 'inactive' | 'error' | 'pending';
@@ -43,6 +45,14 @@ export interface IntegrationCredentials {
     projectId?: string;
     issueId?: string;
     scope?: string;
+    siteUrl?: string;
+    cloudId?: string; 
+    projectKey?: string;
+    issueTypeId?: string;
+    priorityId?: string;
+    labels?: string[];
+    components?: Array<{ id: string; name?: string }>;
+    issueKey?: string;
 }
 
 export interface DeliveryConfig {
@@ -149,6 +159,74 @@ export interface LinearProject {
     name: string;
     description?: string;
     icon?: string;
+}
+
+export interface JiraProject {
+    id: string;
+    key: string;
+    name: string;
+    projectTypeKey: string;
+    simplified?: boolean;
+    avatarUrls?: {
+        '48x48': string;
+        '24x24': string;
+        '16x16': string;
+        '32x32': string;
+    };
+}
+
+export interface JiraIssueType {
+    id: string;
+    name: string;
+    description?: string;
+    iconUrl?: string;
+    subtask: boolean;
+}
+
+export interface JiraPriority {
+    id: string;
+    name: string;
+    iconUrl?: string;
+}
+
+export interface JiraComponent {
+    id: string;
+    name: string;
+    description?: string;
+}
+
+export interface JiraIssue {
+    id: string;
+    key: string;
+    self: string;
+    fields: {
+        summary: string;
+        description?: string;
+        status: {
+            id: string;
+            name: string;
+        };
+        priority?: JiraPriority;
+        project: JiraProject;
+        issuetype: JiraIssueType;
+    };
+}
+
+export interface CreateJiraIssueDto {
+    title: string;
+    description?: string;
+    projectKey: string;
+    issueTypeId: string;
+    priorityId?: string;
+    labels?: string[];
+    components?: Array<{ id: string }>;
+}
+
+export interface UpdateJiraIssueDto {
+    summary?: string;
+    description?: string;
+    priorityId?: string;
+    labels?: string[];
 }
 
 // Slack Block Kit Types

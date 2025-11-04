@@ -68,17 +68,20 @@ class AuthService {
       throw new Error("No refresh token available");
     }
 
+    // Set refresh token as cookie for the request
+    document.cookie = `refreshToken=${refreshToken}; path=/; secure=${window.location.protocol === 'https:'}; samesite=strict`;
+
     const response = await apiClient.post<
-      ApiResponse<{ accessToken: string; refreshToken: string }>
-    >("/auth/refresh", {
-      refreshToken,
-    });
+      ApiResponse<{ accessToken: string }>
+    >("/auth/refresh", {});
 
     const { data } = response.data;
     if (!data) {
       throw new Error("Invalid refresh token response: missing data");
     }
-    this.setTokens(data.accessToken, data.refreshToken);
+    
+    // Update access token (refresh token is handled by backend via cookie)
+    this.setTokens(data.accessToken, refreshToken);
     return data.accessToken;
   }
 
@@ -126,6 +129,9 @@ class AuthService {
   setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+    
+    // Also set refresh token as cookie for backend compatibility
+    document.cookie = `refreshToken=${refreshToken}; path=/; secure=${window.location.protocol === 'https:'}; samesite=strict; max-age=${30 * 24 * 60 * 60}`;
   }
 
   setUser(user: User): void {
@@ -136,6 +142,9 @@ class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    
+    // Clear refresh token cookie
+    document.cookie = 'refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
   }
 }
 

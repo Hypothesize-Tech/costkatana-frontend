@@ -130,9 +130,24 @@ export const DiscordIntegrationSetup: React.FC<DiscordIntegrationSetupProps> = (
                                 required
                                 className="w-full px-4 py-3 border border-primary-200/30 dark:border-primary-200/20 rounded-lg text-sm bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/15 shadow-sm"
                             />
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                Create a webhook in your Discord server's channel settings → Integrations
-                            </p>
+                            <div className="p-3 mt-2 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-500/30">
+                                <p className="mb-2 text-xs font-semibold text-blue-900 dark:text-blue-300">
+                                    How to get your Discord Webhook URL:
+                                </p>
+                                <ol className="text-xs text-blue-800 dark:text-blue-200 space-y-1.5 list-decimal list-inside">
+                                    <li>Open your Discord server where you want to receive alerts</li>
+                                    <li>Go to <strong>Server Settings</strong> → <strong>Integrations</strong> → <strong>Webhooks</strong></li>
+                                    <li>Or right-click on the channel → <strong>Edit Channel</strong> → <strong>Integrations</strong> → <strong>Webhooks</strong></li>
+                                    <li>Click <strong>"Create Webhook"</strong> or <strong>"New Webhook"</strong></li>
+                                    <li>Give it a name (e.g., "CostKatana Alerts")</li>
+                                    <li>Select the channel where alerts should be posted</li>
+                                    <li>Click <strong>"Copy Webhook URL"</strong> (starts with <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">https://discord.com/api/webhooks/</code>)</li>
+                                    <li>Paste it here</li>
+                                </ol>
+                                <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
+                                    <strong>Note:</strong> You need <strong>Manage Webhooks</strong> permission in the channel.
+                                </p>
+                            </div>
                         </div>
 
                         <div>

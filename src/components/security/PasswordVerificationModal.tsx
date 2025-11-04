@@ -53,7 +53,7 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="overflow-y-auto fixed inset-0 z-50">
             {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
@@ -61,26 +61,26 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
             />
 
             {/* Modal */}
-            <div className="flex min-h-full items-center justify-center p-4">
-                <div className="relative glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-md w-full p-6 animate-slide-up">
+            <div className="flex justify-center items-center p-4 min-h-full">
+                <div className="relative p-6 w-full max-w-md rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-slide-up">
                     {/* Close Button */}
                     <button
                         onClick={handleClose}
-                        className="absolute top-4 right-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 transition-colors"
+                        className="absolute top-4 right-4 transition-colors text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200"
                     >
-                        <XMarkIcon className="h-6 w-6" />
+                        <XMarkIcon className="w-6 h-6" />
                     </button>
 
                     {/* Header */}
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
-                            <ShieldCheckIcon className="h-7 w-7 text-white" />
+                    <div className="flex gap-3 items-center mb-6">
+                        <div className="flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-primary glow-primary">
+                            <ShieldCheckIcon className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-display font-bold gradient-text-primary">
+                            <h2 className="text-xl font-bold font-display gradient-text-primary">
                                 {title}
                             </h2>
-                            <p className="text-sm text-secondary-600 dark:text-secondary-300 mt-1">
+                            <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">
                                 {description}
                             </p>
                         </div>
@@ -92,7 +92,7 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2"
+                                className="block mb-2 text-sm font-medium text-secondary-700 dark:text-secondary-300"
                             >
                                 Password
                             </label>
@@ -113,12 +113,12 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 transition-colors"
+                                    className="absolute right-3 top-1/2 transition-colors -translate-y-1/2 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200"
                                 >
                                     {showPassword ? (
-                                        <EyeSlashIcon className="h-5 w-5" />
+                                        <EyeSlashIcon className="w-5 h-5" />
                                     ) : (
-                                        <EyeIcon className="h-5 w-5" />
+                                        <EyeIcon className="w-5 h-5" />
                                     )}
                                 </button>
                             </div>
@@ -134,19 +134,19 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
                             <button
                                 type="button"
                                 onClick={handleClose}
-                                className="btn-secondary flex-1"
+                                className="flex-1 btn-secondary"
                                 disabled={loading}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={loading || !password.trim()}
                             >
                                 {loading ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                    <span className="flex gap-2 justify-center items-center">
+                                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
                                             <circle
                                                 className="opacity-25"
                                                 cx="12"
@@ -172,7 +172,7 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
                     </form>
 
                     {/* Security Note */}
-                    <div className="mt-4 pt-4 border-t border-primary-200/30">
+                    <div className="pt-4 mt-4 border-t border-primary-200/30">
                         <p className="text-xs text-secondary-500 dark:text-secondary-400">
                             🔒 Your password is verified securely and never stored in plain text.
                         </p>

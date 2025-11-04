@@ -220,6 +220,7 @@ class OptimizationService {
     prompt: string;
     model: string;
     service: string;
+    useCortex?: boolean;
     conversationHistory?: ConversationMessage[];
     enableCompression?: boolean;
     enableContextTrimming?: boolean;
