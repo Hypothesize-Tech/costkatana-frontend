@@ -14,10 +14,12 @@ import { OptimizedPromptDisplay } from "../common/FormattedContent";
 
 interface QuickOptimizeProps {
   className?: string;
+  onOptimizationCreated?: (optimization: any) => void;
 }
 
 export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
   className = "",
+  onOptimizationCreated,
 }) => {
   const [prompt, setPrompt] = useState("");
   const [useCortex, setUseCortex] = useState(false);
@@ -43,6 +45,10 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
       showNotification("Prompt optimized successfully!", "success");
       queryClient.invalidateQueries({ queryKey: ["optimizations"] });
       queryClient.invalidateQueries({ queryKey: ["optimization-stats"] });
+      // Call the callback to update the parent component
+      if (onOptimizationCreated) {
+        onOptimizationCreated(data);
+      }
     },
     onError: () => {
       showNotification("Failed to optimize prompt", "error");
@@ -79,7 +85,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
     >
       <div className="p-6">
         <div className="flex items-center mb-4">
-          <SparklesIcon className="w-5 h-5 text-indigo-600 mr-2" />
+          <SparklesIcon className="mr-2 w-5 h-5 text-indigo-600" />
           <h3 className="text-lg font-semibold text-gray-900">
             Quick Optimize
           </h3>
@@ -88,14 +94,14 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         {!showResult ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
                 Enter your prompt
               </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={6}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="block px-3 py-2 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Paste your AI prompt here for instant optimization..."
               />
             </div>
@@ -107,7 +113,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 id="quick-cortex-toggle"
                 checked={useCortex}
                 onChange={(e) => setUseCortex(e.target.checked)}
-                className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                className="w-4 h-4 text-purple-600 bg-gray-100 rounded border-gray-300 focus:ring-purple-500 focus:ring-2"
               />
               <label htmlFor="quick-cortex-toggle" className="text-sm text-gray-700">
                 <span className="font-medium">🧠 Enable Cortex</span>
@@ -118,7 +124,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <button
               onClick={handleOptimize}
               disabled={optimizeMutation.isPending || !prompt.trim()}
-              className="w-full flex items-center justify-center px-4 py-3 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="flex justify-center items-center px-4 py-3 w-full font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {optimizeMutation.isPending ? (
                 <>
@@ -127,13 +133,13 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </>
               ) : (
                 <>
-                  <SparklesIcon className="w-4 h-4 mr-2" />
+                  <SparklesIcon className="mr-2 w-4 h-4" />
                   Optimize Now
                 </>
               )}
             </button>
 
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-center text-gray-500">
               ✨ AI-powered optimization • No configuration needed • Instant
               results
             </p>
@@ -141,9 +147,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         ) : (
           <div className="space-y-4">
             {/* Success Header */}
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+            <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center">
-                <CheckIcon className="w-5 h-5 text-green-600 mr-2" />
+                <CheckIcon className="mr-2 w-5 h-5 text-green-600" />
                 <span className="text-sm font-medium text-green-900">
                   Optimization Complete!
                 </span>
@@ -161,9 +167,9 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </label>
                 <button
                   onClick={() => handleCopy(optimizationResult.optimizedPrompt)}
-                  className="flex items-center px-2 py-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                  className="flex items-center px-2 py-1 text-xs font-medium text-indigo-600 hover:text-indigo-800"
                 >
-                  <ClipboardDocumentIcon className="w-3 h-3 mr-1" />
+                  <ClipboardDocumentIcon className="mr-1 w-3 h-3" />
                   Copy
                 </button>
               </div>
@@ -199,7 +205,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             {optimizationResult.suggestions &&
               optimizationResult.suggestions.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-3">
+                  <h4 className="mb-3 text-sm font-medium text-gray-900">
                     Applied Techniques
                   </h4>
                   <div className="space-y-2">
@@ -209,7 +215,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                           key={index}
                           className="flex items-start p-3 bg-gray-50 rounded-lg border"
                         >
-                          <div className="w-2 h-2 bg-indigo-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                          <div className="flex-shrink-0 mt-2 mr-3 w-2 h-2 bg-indigo-500 rounded-full"></div>
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-1">
                               <span className="text-sm font-medium text-gray-900 capitalize">
@@ -217,7 +223,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                                   "Optimization"}
                               </span>
                               {suggestion.implemented && (
-                                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                <span className="px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full">
                                   Applied
                                 </span>
                               )}
@@ -241,7 +247,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <div className="flex space-x-3">
               <button
                 onClick={handleReset}
-                className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex-1 px-4 py-2 text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Optimize Another
               </button>

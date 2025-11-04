@@ -90,8 +90,8 @@ describe('QuickOptimize', () => {
         const mockResult = {
             _id: 'opt-1',
             userId: 'user-1',
-            userQuery: 'Test prompt without Cortex',
-            generatedAnswer: 'Optimized prompt',
+            originalPrompt: 'Test prompt without Cortex',
+            optimizedPrompt: 'Optimized prompt',
             optimizationTechniques: ['compression'],
             originalTokens: 100,
             optimizedTokens: 80,
@@ -105,9 +105,10 @@ describe('QuickOptimize', () => {
             category: 'prompt_reduction' as const,
             suggestions: [],
             metadata: {},
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: false,
         };
 
         mockOptimizationService.createOptimization.mockResolvedValue(mockResult);
@@ -134,8 +135,8 @@ describe('QuickOptimize', () => {
         const mockResult = {
             _id: 'opt-2',
             userId: 'user-1',
-            userQuery: 'Test prompt with Cortex',
-            generatedAnswer: 'Cortex optimized prompt',
+            originalPrompt: 'Test prompt with Cortex',
+            optimizedPrompt: 'Cortex optimized prompt',
             optimizationTechniques: ['compression'],
             originalTokens: 120,
             optimizedTokens: 72,
@@ -149,9 +150,10 @@ describe('QuickOptimize', () => {
             category: 'prompt_reduction' as const,
             suggestions: [],
             metadata: {},
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: true,
         };
 
         mockOptimizationService.createOptimization.mockResolvedValue(mockResult);
@@ -183,8 +185,8 @@ describe('QuickOptimize', () => {
             () => new Promise(resolve => setTimeout(() => resolve({
                 _id: 'opt-3',
                 userId: 'user-1',
-                userQuery: 'Test prompt',
-                generatedAnswer: 'Optimized prompt',
+                originalPrompt: 'Test prompt',
+                optimizedPrompt: 'Optimized prompt',
                 optimizationTechniques: ['compression'],
                 originalTokens: 80,
                 optimizedTokens: 60,
@@ -198,9 +200,10 @@ describe('QuickOptimize', () => {
                 category: 'prompt_reduction' as const,
                 suggestions: [],
                 metadata: {},
+                applied: false,
+                appliedCount: 0,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-                cortexEnabled: false,
             }), 100))
         );
 
@@ -245,8 +248,8 @@ describe('QuickOptimize', () => {
         const mockResult = {
             _id: 'opt-4',
             userId: 'user-1',
-            userQuery: 'Original prompt text',
-            generatedAnswer: 'Optimized prompt text',
+            originalPrompt: 'Original prompt text',
+            optimizedPrompt: 'Optimized prompt text',
             optimizationTechniques: ['compression'],
             originalTokens: 100,
             optimizedTokens: 65,
@@ -260,9 +263,10 @@ describe('QuickOptimize', () => {
             category: 'prompt_reduction' as const,
             suggestions: [],
             metadata: {},
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: false,
         };
 
         mockOptimizationService.createOptimization.mockResolvedValue(mockResult);
@@ -286,8 +290,8 @@ describe('QuickOptimize', () => {
         const normalResult = {
             _id: 'opt-normal',
             userId: 'user-1',
-            userQuery: 'Test prompt',
-            generatedAnswer: 'Normal optimized prompt',
+            originalPrompt: 'Test prompt',
+            optimizedPrompt: 'Normal optimized prompt',
             optimizationTechniques: ['compression'],
             originalTokens: 80,
             optimizedTokens: 60,
@@ -301,16 +305,17 @@ describe('QuickOptimize', () => {
             category: 'prompt_reduction' as const,
             suggestions: [],
             metadata: {},
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: false,
         };
 
         const cortexResult = {
             _id: 'opt-cortex',
             userId: 'user-1',
-            userQuery: 'Test prompt',
-            generatedAnswer: 'Cortex optimized prompt',
+            originalPrompt: 'Test prompt',
+            optimizedPrompt: 'Cortex optimized prompt',
             optimizationTechniques: ['compression'],
             originalTokens: 100,
             optimizedTokens: 55,
@@ -340,9 +345,10 @@ describe('QuickOptimize', () => {
                     lightweightCortex: false
                 }
             },
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: true,
         };
 
         // Test normal optimization first
@@ -380,8 +386,8 @@ describe('QuickOptimize', () => {
         const mockResult = {
             _id: 'opt-cortex',
             userId: 'user-1',
-            userQuery: 'Test prompt',
-            generatedAnswer: 'Cortex optimized prompt',
+            originalPrompt: 'Test prompt',
+            optimizedPrompt: 'Cortex optimized prompt',
             optimizationTechniques: ['compression'],
             originalTokens: 100,
             optimizedTokens: 55,
@@ -395,9 +401,10 @@ describe('QuickOptimize', () => {
             category: 'prompt_reduction' as const,
             suggestions: [],
             metadata: {},
+            applied: false,
+            appliedCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            cortexEnabled: true,
         };
 
         mockOptimizationService.createOptimization.mockResolvedValue(mockResult);

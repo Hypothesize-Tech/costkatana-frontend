@@ -12,7 +12,7 @@ import { Optimization } from "../../types";
 
 interface OptimizationCardProps {
   optimization: Optimization;
-  onApply: (id: string) => void;
+  onApply?: (id: string) => void;
   onFeedback: (id: string, helpful: boolean, comment?: string) => void;
 }
 
@@ -32,9 +32,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="overflow-hidden bg-white rounded-lg border border-gray-200 shadow-sm">
       <div className="p-6">
-        <div className="flex items-start justify-between">
+        <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center space-x-2">
               <span
@@ -59,7 +59,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               {optimization?.improvementPercentage ? optimization.improvementPercentage.toFixed(1) : '0.0'}% Token Reduction
             </h3>
 
-            <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 mt-2 text-sm md:grid-cols-4">
               <div>
                 <span className="text-gray-500">Tokens Saved:</span>
                 <span className="ml-2 font-medium">
@@ -89,12 +89,12 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="ml-4 p-2 text-gray-400 hover:text-gray-600"
+            className="p-2 ml-4 text-gray-400 hover:text-gray-600"
           >
             {expanded ? (
-              <ChevronUpIcon className="h-5 w-5" />
+              <ChevronUpIcon className="w-5 h-5" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5" />
+              <ChevronDownIcon className="w-5 h-5" />
             )}
           </button>
         </div>
@@ -102,9 +102,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
         {expanded && (
           <div className="mt-6 space-y-4">
             {/* Original vs Optimized */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="mb-2 text-sm font-medium text-gray-700">
                   Original Prompt
                 </h4>
                 <div className="p-3 bg-gray-50 rounded-md">
@@ -118,7 +118,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               </div>
 
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="mb-2 text-sm font-medium text-gray-700">
                   Optimized Prompt
                 </h4>
                 <div className="p-3 bg-green-50 rounded-md">
@@ -135,10 +135,10 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {/* Cortex Metrics */}
             {optimization.metadata?.cortexMetrics && (
               <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <h4 className="text-sm font-medium text-purple-900 mb-3">
+                <h4 className="mb-3 text-sm font-medium text-purple-900">
                   🧠 Cortex Meta-Language Metrics
                 </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
                   {optimization.metadata.cortexMetrics.encodingReduction && (
                     <div>
                       <span className="text-purple-700">Encoding Reduction:</span>
@@ -179,7 +179,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {optimization.suggestions &&
               optimization.suggestions.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  <h4 className="mb-2 text-sm font-medium text-gray-700">
                     Optimization Techniques
                   </h4>
                   <ul className="space-y-2">
@@ -199,12 +199,12 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               )}
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-4 border-t border-gray-200">
               <div className="flex items-center space-x-4">
-                {!(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && (
+                {!(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && onApply && (
                   <button
                     onClick={() => onApply(optimization._id)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Apply Optimization
                   </button>
@@ -213,7 +213,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 {(optimization.applied || optimization.status === "applied" || optimization.status === "completed") && !showFeedback && (
                   <button
                     onClick={() => setShowFeedback(true)}
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Provide Feedback
                   </button>
@@ -231,7 +231,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             {/* Feedback Form */}
             {showFeedback && (
               <div className="pt-4 border-t border-gray-200">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="mb-2 text-sm font-medium text-gray-700">
                   Was this optimization helpful?
                 </h4>
                 <div className="space-y-3">
@@ -239,7 +239,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                     value={feedbackComment}
                     onChange={(e) => setFeedbackComment(e.target.value)}
                     placeholder="Additional comments (optional)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="px-3 py-2 w-full text-sm rounded-md border border-gray-300"
                     rows={2}
                   />
                   <div className="flex items-center space-x-2">
@@ -247,14 +247,14 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                       onClick={() => handleFeedback(true)}
                       className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
                     >
-                      <HandThumbUpIcon className="h-4 w-4 mr-1" />
+                      <HandThumbUpIcon className="mr-1 w-4 h-4" />
                       Helpful
                     </button>
                     <button
                       onClick={() => handleFeedback(false)}
                       className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                     >
-                      <HandThumbDownIcon className="h-4 w-4 mr-1" />
+                      <HandThumbDownIcon className="mr-1 w-4 h-4" />
                       Not Helpful
                     </button>
                     <button
