@@ -100,8 +100,15 @@ export const VerifyEmail: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center p-4">
-            <div className="glass rounded-2xl p-8 border border-primary-200/30 shadow-2xl backdrop-blur-xl max-w-md w-full">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Ambient glow effects */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-success-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+                <div className="absolute top-3/4 right-1/2 w-64 h-64 bg-accent-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+            </div>
+
+            <div className="glass rounded-2xl p-8 border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-md w-full relative z-10">
                 <div className="flex flex-col items-center text-center">
                     {/* Status Icon */}
                     <div className="mb-6">
@@ -116,7 +123,7 @@ export const VerifyEmail: React.FC = () => {
                             </div>
                         )}
                         {status === 'error' && (
-                            <div className="w-20 h-20 rounded-full bg-gradient-danger/20 flex items-center justify-center">
+                            <div className="w-20 h-20 rounded-full bg-gradient-danger/20 flex items-center justify-center glow-danger">
                                 <XCircleIcon className="h-12 w-12 text-danger-500" />
                             </div>
                         )}
@@ -125,7 +132,7 @@ export const VerifyEmail: React.FC = () => {
                     {/* Title */}
                     <h1 className={`text-2xl font-display font-bold mb-3 ${status === 'success' ? 'gradient-text-success' :
                         status === 'error' ? 'gradient-text-danger' :
-                            'gradient-text'
+                            'gradient-text-primary'
                         }`}>
                         {status === 'verifying' && 'Verifying Email'}
                         {status === 'success' && 'Email Verified!'}
@@ -172,12 +179,6 @@ export const VerifyEmail: React.FC = () => {
                         )}
                     </div>
                 </div>
-            </div>
-
-            {/* Background decorative elements */}
-            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl animate-pulse delay-1000" />
             </div>
         </div>
     );

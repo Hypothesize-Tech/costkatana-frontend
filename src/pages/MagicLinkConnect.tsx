@@ -136,15 +136,23 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="text-center">
-          <LoadingSpinner />
-          <h2 className="mt-4 text-xl font-semibold text-secondary-900 dark:text-white">
-            Connecting to Cost Katana...
-          </h2>
-          <p className="mt-2 text-secondary-600 dark:text-secondary-300">
-            Please wait while we set up your account
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
+        {/* Ambient glow effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-success-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-3/4 right-1/2 w-64 h-64 bg-accent-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        </div>
+        <div className="text-center relative z-10">
+          <div className="glass rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 max-w-md mx-auto">
+            <LoadingSpinner />
+            <h2 className="mt-6 text-2xl font-display font-bold gradient-text-primary">
+              Connecting to Cost Katana...
+            </h2>
+            <p className="mt-3 text-secondary-600 dark:text-secondary-300 font-body">
+              Please wait while we set up your account
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -152,21 +160,30 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "expired") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="text-6xl mb-4">⏰</div>
-          <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-4">
-            Magic Link Expired
-          </h2>
-          <p className="text-secondary-600 dark:text-secondary-300 mb-6">
-            This magic link has expired. Please generate a new one from ChatGPT.
-          </p>
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
-            <p className="text-sm text-primary-800 dark:text-primary-200">
-              <strong>How to get a new link:</strong>
-              <br />
-              Go back to ChatGPT and ask to "connect to Cost Katana" again.
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden p-4">
+        {/* Ambient glow effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-warning-500/8 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-accent-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
+        <div className="text-center max-w-md mx-auto relative z-10">
+          <div className="glass rounded-2xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+            <div className="w-20 h-20 rounded-full bg-gradient-warning/20 flex items-center justify-center mx-auto mb-6 glow-warning">
+              <span className="text-4xl">⏰</span>
+            </div>
+            <h2 className="text-2xl font-display font-bold gradient-text-warning mb-4">
+              Magic Link Expired
+            </h2>
+            <p className="text-secondary-600 dark:text-secondary-300 mb-6 font-body">
+              This magic link has expired. Please generate a new one from ChatGPT.
             </p>
+            <div className="glass rounded-xl border border-primary-200/30 p-4 bg-gradient-primary/5">
+              <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
+                <strong className="font-display font-semibold gradient-text">How to get a new link:</strong>
+                <br />
+                <span className="mt-2 block">Go back to ChatGPT and ask to "connect to Cost Katana" again.</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -175,24 +192,33 @@ const MagicLinkConnect: React.FC = () => {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-4">
-            Connection Failed
-          </h2>
-          <p className="text-secondary-600 dark:text-secondary-300 mb-2">
-            We couldn't process your magic link.
-          </p>
-          {errorMessage && (
-            <p className="text-sm text-danger-600 dark:text-danger-400 mb-6">Error: {errorMessage}</p>
-          )}
-          <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
-            <p className="text-sm text-primary-800 dark:text-primary-200">
-              <strong>Try again:</strong>
-              <br />
-              Go back to ChatGPT and generate a new magic link.
+      <div className="min-h-screen flex items-center justify-center bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden p-4">
+        {/* Ambient glow effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-danger-500/8 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-accent-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
+        <div className="text-center max-w-md mx-auto relative z-10">
+          <div className="glass rounded-2xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+            <div className="w-20 h-20 rounded-full bg-gradient-danger/20 flex items-center justify-center mx-auto mb-6 glow-danger">
+              <span className="text-4xl">❌</span>
+            </div>
+            <h2 className="text-2xl font-display font-bold gradient-text-danger mb-4">
+              Connection Failed
+            </h2>
+            <p className="text-secondary-600 dark:text-secondary-300 mb-2 font-body">
+              We couldn't process your magic link.
             </p>
+            {errorMessage && (
+              <p className="text-sm text-danger-600 dark:text-danger-400 mb-6 font-body">{errorMessage}</p>
+            )}
+            <div className="glass rounded-xl border border-primary-200/30 p-4 bg-gradient-primary/5">
+              <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
+                <strong className="font-display font-semibold gradient-text">Try again:</strong>
+                <br />
+                <span className="mt-2 block">Go back to ChatGPT and generate a new magic link.</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

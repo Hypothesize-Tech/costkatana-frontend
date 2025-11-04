@@ -92,7 +92,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
   const containerClass = embedded
     ? "space-y-6"
-    : "flex justify-center items-center px-4 py-12 min-h-screen bg-gray-50 sm:px-6 lg:px-8";
+    : "flex justify-center items-center px-4 py-12 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:px-6 lg:px-8 relative overflow-hidden";
 
   const contentClass = embedded
     ? "space-y-6"
@@ -100,11 +100,11 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
   const content = (
     <div className={contentClass}>
-      <div className="animate-fade-in">
+      <div className={`animate-fade-in ${!embedded ? 'glass rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 relative z-10' : ''}`}>
         <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mx-auto shadow-2xl glow-success">
           <ShieldCheckIcon className="w-8 h-8 text-white" />
         </div>
-        <h2 className="mt-6 text-3xl font-display font-bold text-center gradient-text">
+        <h2 className="mt-6 text-3xl font-display font-bold text-center gradient-text-primary">
           Two-Factor Authentication
         </h2>
         <p className="mt-3 text-sm font-body text-center text-light-text-secondary dark:text-dark-text-secondary">
@@ -274,7 +274,21 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
     </div>
   );
 
-  return embedded ? content : <div className={containerClass}>{content}</div>;
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <div className={containerClass}>
+      {/* Ambient glow effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-success-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-3/4 right-1/2 w-64 h-64 bg-accent-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+      </div>
+      {content}
+    </div>
+  );
 };
 
 
