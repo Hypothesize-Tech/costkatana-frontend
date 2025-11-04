@@ -60,6 +60,8 @@ import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import { Send } from "lucide-react";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
+import { IntegrationMentionHint } from "./IntegrationMentionHint";
+import { MentionAutocomplete } from "./MentionAutocomplete";
 
 // Configure marked for security
 marked.setOptions({
@@ -2214,6 +2216,9 @@ export const ConversationalAgent: React.FC = () => {
                 </p>
               </div>
 
+              {/* Integration Mention Hint - Prominent */}
+              <IntegrationMentionHint variant="prominent" />
+
               <div className="space-y-6">
                 <h4 className="font-display font-semibold text-lg text-light-text-primary dark:text-dark-text-primary">
                   {questionsLoading
@@ -2589,6 +2594,11 @@ export const ConversationalAgent: React.FC = () => {
               </div>
             )}
 
+            {/* Compact Integration Mention Hint - Above Input */}
+            {messages.length > 0 && (
+              <IntegrationMentionHint variant="compact" />
+            )}
+
             {/* Message Input Container */}
             <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
               <div className="flex items-end gap-3">
@@ -2799,6 +2809,15 @@ export const ConversationalAgent: React.FC = () => {
                       scrollbarColor: 'rgba(156, 163, 175, 0.5) transparent',
                       height: '56px'
                     }}
+                  />
+                  {/* Mention Autocomplete */}
+                  <MentionAutocomplete
+                    value={currentMessage}
+                    onChange={setCurrentMessage}
+                    onSelect={() => {
+                      // Mention is already inserted in the textarea
+                    }}
+                    textareaRef={textareaRef}
                   />
                 </div>
 

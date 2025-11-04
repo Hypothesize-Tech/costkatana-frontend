@@ -5,6 +5,7 @@ export type IntegrationType =
     | 'discord_oauth' 
     | 'linear_oauth'
     | 'jira_oauth'
+    | 'github_oauth'
     | 'custom_webhook';
 
 export type IntegrationStatus = 'active' | 'inactive' | 'error' | 'pending';

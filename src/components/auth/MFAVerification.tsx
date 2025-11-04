@@ -259,7 +259,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
           <button
             type="submit"
             disabled={isVerifying || !code.trim() || (selectedMethod === 'email' && !emailCodeSent)}
-            className="btn-primary w-full"
+            className="btn btn-primary w-full"
           >
             {isVerifying ? 'Verifying...' : 'Verify'}
           </button>
