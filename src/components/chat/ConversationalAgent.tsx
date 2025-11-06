@@ -199,6 +199,7 @@ export const ConversationalAgent: React.FC = () => {
   const [showAttachmentsPopover, setShowAttachmentsPopover] = useState(false);
   const [showAllModelsDropdown, setShowAllModelsDropdown] = useState(false);
   const [previewDocument, setPreviewDocument] = useState<{ documentId: string; fileName: string } | null>(null);
+  const [hasExistingIntegrations, setHasExistingIntegrations] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -557,12 +558,23 @@ export const ConversationalAgent: React.FC = () => {
           username: connections[0].githubUsername,
           hasConnection: true
         });
+
+        // Check for existing integrations
+        try {
+          const integrations = await githubService.listIntegrations();
+          setHasExistingIntegrations(integrations.length > 0);
+        } catch (intError) {
+          console.error('Failed to check integrations:', intError);
+          setHasExistingIntegrations(false);
+        }
       } else {
         setGithubConnection({ hasConnection: false });
+        setHasExistingIntegrations(false);
       }
     } catch (error) {
       console.error('Failed to load GitHub connections:', error);
       setGithubConnection({ hasConnection: false });
+      setHasExistingIntegrations(false);
     }
   };
 
@@ -1043,6 +1055,9 @@ export const ConversationalAgent: React.FC = () => {
 
       setShowFeatureSelector(false);
       setSelectedRepo(null);
+
+      // Refresh integration status
+      await loadGitHubConnection();
 
       // Show progress panel
       setSelectedIntegration(result.integrationId);
@@ -2704,37 +2719,42 @@ export const ConversationalAgent: React.FC = () => {
                             </button>
                           </div>
 
-                          {/* View Integrations */}
+                          {/* GitHub Integrations - Conditional Display */}
                           {githubConnection.hasConnection && (
-                            <div className="mb-2">
-                              <button
-                                onClick={() => {
-                                  setShowAttachmentsPopover(false);
-                                  navigate('/github');
-                                }}
-                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
-                              >
-                                <ChartBarIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
-                                <span className="text-sm font-medium text-secondary-900 dark:text-white">View GitHub Integrations</span>
-                              </button>
-                            </div>
-                          )}
-
-                          {/* Add Integration in Popover */}
-                          {!selectedRepo && githubConnection.hasConnection && (
-                            <div className="mb-2">
-                              <button
-                                onClick={() => {
-                                  setShowAttachmentsPopover(false);
-                                  setGitHubConnectorMode('integration');
-                                  setShowGitHubConnector(true);
-                                }}
-                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
-                              >
-                                <PlusIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
-                                <span className="text-sm font-medium text-secondary-900 dark:text-white">Add GitHub Integration</span>
-                              </button>
-                            </div>
+                            <>
+                              {/* Show "View Integrations" if user has existing integrations */}
+                              {hasExistingIntegrations ? (
+                                <div className="mb-2">
+                                  <button
+                                    onClick={() => {
+                                      setShowAttachmentsPopover(false);
+                                      navigate('/github');
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                                  >
+                                    <ChartBarIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                                    <span className="text-sm font-medium text-secondary-900 dark:text-white">View GitHub Integrations</span>
+                                  </button>
+                                </div>
+                              ) : (
+                                /* Show "Add Integration" only if no integrations exist and no repo is selected */
+                                !selectedRepo && (
+                                  <div className="mb-2">
+                                    <button
+                                      onClick={() => {
+                                        setShowAttachmentsPopover(false);
+                                        setGitHubConnectorMode('integration');
+                                        setShowGitHubConnector(true);
+                                      }}
+                                      className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+                                    >
+                                      <PlusIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                                      <span className="text-sm font-medium text-secondary-900 dark:text-white">Add GitHub Integration</span>
+                                    </button>
+                                  </div>
+                                )
+                              )}
+                            </>
                           )}
 
                           {/* All Integrations - Separator */}
@@ -3058,6 +3078,7 @@ export const ConversationalAgent: React.FC = () => {
           onSelectRepository={gitHubConnectorMode === 'integration' ? handleSelectRepository : handleSelectRepoForChat}
           onClose={async () => {
             setShowGitHubConnector(false);
+            // Reload both connections and integrations
             await loadGitHubConnection();
           }}
         />
