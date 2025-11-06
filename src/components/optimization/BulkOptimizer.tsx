@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RocketLaunchIcon } from "@heroicons/react/24/outline";
+import { RocketLaunchIcon, SparklesIcon, DocumentTextIcon, CogIcon } from "@heroicons/react/24/outline";
 import { optimizationService } from "../../services/optimization.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useNotification } from "../../contexts/NotificationContext";
@@ -14,7 +14,11 @@ interface OptimizablePrompt {
   promptId: string;
 }
 
-export const BulkOptimizer: React.FC = () => {
+interface BulkOptimizerProps {
+  onOptimizationsCreated?: (optimizations: any[]) => void;
+}
+
+export const BulkOptimizer: React.FC<BulkOptimizerProps> = ({ onOptimizationsCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
     service: "",
@@ -56,6 +60,12 @@ export const BulkOptimizer: React.FC = () => {
         `Successfully optimized ${result.successful} out of ${result.total} prompts.`,
         "success",
       );
+
+      // Call the callback to update the parent component immediately
+      if (onOptimizationsCreated && result.optimizations) {
+        onOptimizationsCreated(result.optimizations);
+      }
+
       setIsOpen(false);
       setPrompts([]);
       setSelectedPrompts([]);
@@ -132,7 +142,7 @@ export const BulkOptimizer: React.FC = () => {
           <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl mb-6">
             <h4 className="font-display font-semibold gradient-text-primary mb-4 flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                <span className="text-white text-xs">⚙️</span>
+                <CogIcon className="w-4 h-4 text-white" />
               </div>
               Analysis Filters
             </h4>
@@ -206,7 +216,7 @@ export const BulkOptimizer: React.FC = () => {
               <div className="mt-4 p-4 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xs">✨</span>
+                    <SparklesIcon className="w-3 h-3 text-white" />
                   </div>
                   <p className="font-display font-medium gradient-text-secondary">Cortex Enhancement Active</p>
                 </div>
@@ -238,7 +248,7 @@ export const BulkOptimizer: React.FC = () => {
             <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">📝</span>
+                  <DocumentTextIcon className="w-5 h-5 text-white" />
                 </div>
                 <h4 className="text-xl font-display font-bold gradient-text-success">
                   Select prompts to optimize

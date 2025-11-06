@@ -10,6 +10,7 @@ import {
   ArrowTrendingUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CpuChipIcon,
 } from "@heroicons/react/24/outline";
 import { optimizationService } from "../services/optimization.service";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
@@ -30,32 +31,19 @@ export const Optimization: React.FC = () => {
   const { showNotification } = useNotifications();
   const navigate = useNavigate();
 
-  // Debug logging
-  console.log("🔄 OPTIMIZATION PAGE: Component render", {
-    currentPage,
-    pageSize,
-    timestamp: new Date().toISOString()
-  });
 
   // Direct API calls instead of React Query
   const [optimizations, setOptimizations] = useState<any>(null);
   const [optimizationsLoading, setOptimizationsLoading] = useState(false);
-  const [optimizationsError, setOptimizationsError] = useState<any>(null);
 
   const [summary, setSummary] = useState<any>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
-  const [summaryError, setSummaryError] = useState<any>(null);
 
   // Fetch optimizations
   const fetchOptimizations = async () => {
-    console.log("🚀 DIRECT API CALL: Starting optimizations fetch", {
-      page: currentPage,
-      limit: pageSize,
-      timestamp: new Date().toISOString()
-    });
+
 
     setOptimizationsLoading(true);
-    setOptimizationsError(null);
 
     try {
       const result = await optimizationService.getOptimizations({
@@ -66,16 +54,12 @@ export const Optimization: React.FC = () => {
         // No filter needed - all optimizations are simply completed answers
       });
 
-      console.log("✅ DIRECT API CALL: Optimizations success", {
-        totalResults: result.data?.length || 0,
-        pagination: result.pagination,
-        timestamp: new Date().toISOString()
-      });
+
 
       setOptimizations(result);
     } catch (error) {
-      console.error("❌ DIRECT API CALL: Optimizations error", error);
-      setOptimizationsError(error);
+      console.error("Failed to fetch optimizations:", error);
+      showNotification("Failed to load optimizations", "error");
     } finally {
       setOptimizationsLoading(false);
     }
@@ -83,20 +67,14 @@ export const Optimization: React.FC = () => {
 
   // Fetch summary
   const fetchSummary = async () => {
-    console.log("📊 DIRECT API CALL: Starting summary fetch", new Date().toISOString());
-
     setSummaryLoading(true);
-    setSummaryError(null);
 
     try {
       const result = await optimizationService.getOptimizationSummary("all");
-
-      console.log("✅ DIRECT API CALL: Summary success", result);
-
       setSummary(result);
     } catch (error) {
-      console.error("❌ DIRECT API CALL: Summary error", error);
-      setSummaryError(error);
+      console.error("Failed to fetch summary:", error);
+      showNotification("Failed to load summary statistics", "error");
     } finally {
       setSummaryLoading(false);
     }
@@ -111,30 +89,7 @@ export const Optimization: React.FC = () => {
     fetchSummary();
   }, []);
 
-  // Check auth status and API call status
-  React.useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    console.log("🔐 AUTH CHECK:", {
-      hasToken: !!token,
-      tokenLength: token?.length || 0,
-      tokenPreview: token ? `${token.slice(0, 20)}...` : 'no token',
-      timestamp: new Date().toISOString()
-    });
 
-    // Debug API call status
-    console.log("🔍 DIRECT API DEBUG:", {
-      optimizationsLoading,
-      summaryLoading,
-      optimizationsError: optimizationsError?.message || 'none',
-      summaryError: summaryError?.message || 'none',
-      hasOptimizations: !!optimizations,
-      hasSummary: !!summary,
-      optimizationsCount: optimizations?.data?.length || 0,
-      timestamp: new Date().toISOString()
-    });
-  }, [optimizationsLoading, summaryLoading, optimizationsError, summaryError, optimizations, summary]);
-
-  // Removed filter count - no longer needed
 
   // Get all optimizations (no filtering needed)
   const getAllOptimizations = () => {
@@ -438,7 +393,7 @@ export const Optimization: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-3 mb-4 md:grid-cols-3 lg:grid-cols-6">
               <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-success-200/30 from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                 <div className="text-lg font-bold font-display text-success-600 dark:text-success-400">
                   ${formatSmartNumber(
@@ -477,7 +432,57 @@ export const Optimization: React.FC = () => {
                 </div>
                 <div className="text-xs font-body text-secondary-700 dark:text-secondary-300">Tokens Saved</div>
               </div>
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-accent-200/30 from-accent-50/50 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
+                <div className="text-lg font-bold font-display text-accent-600 dark:text-accent-400">
+                  {(getAllOptimizations()[0]?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
+                    ? getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withoutCortex.toLocaleString()
+                    : getAllOptimizations()[0]?.originalTokens || 0}
+                </div>
+                <div className="text-xs font-body text-accent-700 dark:text-accent-300">Original Tokens</div>
+              </div>
+              <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-highlight-200/30 from-highlight-50/50 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
+                <div className="text-lg font-bold font-display text-highlight-600 dark:text-highlight-400">
+                  {(getAllOptimizations()[0]?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
+                    ? getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.withCortex.toLocaleString()
+                    : getAllOptimizations()[0]?.optimizedTokens || 0}
+                </div>
+                <div className="text-xs font-body text-highlight-700 dark:text-highlight-300">Optimized Tokens</div>
+              </div>
             </div>
+
+            {/* Cortex Model Information */}
+            {getAllOptimizations()[0]?.metadata?.cortex?.cortexModel && (
+              <div className="p-4 mb-3 bg-gradient-to-br rounded-xl border glass border-purple-200/30 from-purple-50/50 to-indigo-100/30 dark:from-purple-900/20 dark:to-indigo-800/20">
+                <div className="flex gap-2 items-center mb-3">
+                  <div className="w-5 h-5 bg-gradient-to-r rounded-lg shadow-lg from-purple-500 to-indigo-600 flex items-center justify-center">
+                    <CpuChipIcon className="w-3 h-3 text-white" />
+                  </div>
+                  <h4 className="text-sm font-semibold font-display bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                    Cortex Models
+                  </h4>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
+                    <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Encoder</div>
+                    <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      {getAllOptimizations()[0].metadata.cortex.cortexModel.encoder?.split('.')[1] || 'N/A'}
+                    </div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
+                    <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Processor/Core</div>
+                    <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      {(getAllOptimizations()[0].metadata.cortex.cortexModel.core || getAllOptimizations()[0].metadata.cortex.cortexModel.processor)?.split('.')[1] || 'N/A'}
+                    </div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
+                    <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Decoder</div>
+                    <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      {getAllOptimizations()[0].metadata.cortex.cortexModel.decoder?.split('.')[1] || 'N/A'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-3">
               <div>
@@ -508,13 +513,79 @@ export const Optimization: React.FC = () => {
         {/* Advanced Optimization Form */}
         {showForm && (
           <div className="mb-8">
-            <OptimizationForm onClose={() => setShowForm(false)} />
+            <OptimizationForm
+              onClose={() => setShowForm(false)}
+              onOptimizationCreated={(newOptimization: any) => {
+                // Add the new optimization to the list
+                setOptimizations((prev: any) => {
+                  if (!prev) return { data: [newOptimization], pagination: { page: 1, limit: 10, total: 1, pages: 1 } };
+                  return {
+                    ...prev,
+                    data: [newOptimization, ...prev.data],
+                    pagination: {
+                      ...prev.pagination,
+                      total: prev.pagination.total + 1
+                    }
+                  };
+                });
+
+                // Update summary if it exists
+                if (summary) {
+                  setSummary((prev: any) => ({
+                    ...prev,
+                    total: prev.total + 1,
+                    totalSaved: prev.totalSaved + (newOptimization.costSaved || 0),
+                    totalTokensSaved: prev.totalTokensSaved + (newOptimization.tokensSaved || 0),
+                    avgImprovement: ((prev.avgImprovement * prev.total) + (newOptimization.improvementPercentage || 0)) / (prev.total + 1)
+                  }));
+                }
+              }}
+            />
           </div>
         )}
 
         {/* Bulk Optimizer */}
         <div className="mb-8">
-          <BulkOptimizer />
+          <BulkOptimizer
+            onOptimizationsCreated={(newOptimizations: any[]) => {
+              // Add all new optimizations to the list
+              setOptimizations((prev: any) => {
+                if (!prev) return {
+                  data: newOptimizations,
+                  pagination: {
+                    page: 1,
+                    limit: 10,
+                    total: newOptimizations.length,
+                    pages: Math.ceil(newOptimizations.length / 10)
+                  }
+                };
+                return {
+                  ...prev,
+                  data: [...newOptimizations, ...prev.data],
+                  pagination: {
+                    ...prev.pagination,
+                    total: prev.pagination.total + newOptimizations.length,
+                    pages: Math.ceil((prev.pagination.total + newOptimizations.length) / prev.pagination.limit)
+                  }
+                };
+              });
+
+              // Update summary if it exists
+              if (summary && newOptimizations.length > 0) {
+                const totalCostSaved = newOptimizations.reduce((sum, opt) => sum + (opt.costSaved || 0), 0);
+                const totalTokensSaved = newOptimizations.reduce((sum, opt) => sum + (opt.tokensSaved || 0), 0);
+                const avgImprovement = newOptimizations.reduce((sum, opt) => sum + (opt.improvementPercentage || 0), 0) / newOptimizations.length;
+
+                setSummary((prev: any) => ({
+                  ...prev,
+                  total: prev.total + newOptimizations.length,
+                  totalSaved: prev.totalSaved + totalCostSaved,
+                  totalTokensSaved: prev.totalTokensSaved + totalTokensSaved,
+                  avgImprovement: ((prev.avgImprovement * prev.total) + (avgImprovement * newOptimizations.length)) / (prev.total + newOptimizations.length)
+                }));
+              }
+            }}
+          />
         </div>
 
         {/* No filter tabs needed - all answers are simply generated */}

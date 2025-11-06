@@ -5,6 +5,9 @@ import {
   SparklesIcon,
   CheckIcon,
   ClipboardDocumentIcon,
+  CurrencyDollarIcon,
+  CogIcon,
+  LightBulbIcon,
 } from "@heroicons/react/24/outline";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { optimizationService } from "@/services/optimization.service";
@@ -101,7 +104,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">💰</span>
+                  <CurrencyDollarIcon className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-display font-semibold gradient-text-success">
                   Estimated Savings
@@ -127,7 +130,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
           <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                <span className="text-white text-sm">💡</span>
+                <LightBulbIcon className="w-5 h-5 text-white" />
               </div>
               <h4 className="font-display font-semibold gradient-text-accent text-lg">
                 Optimization Suggestions
@@ -231,7 +234,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
               <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-sm">⚙️</span>
+                    <CogIcon className="w-5 h-5 text-white" />
                   </div>
                   <h4 className="font-display font-semibold gradient-text-secondary text-lg">
                     Applied Techniques
@@ -258,7 +261,7 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
       {!optimizationResult && !optimizeMutation.isPending && (
         <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center">
           <div className="w-16 h-16 rounded-2xl bg-gradient-primary/20 flex items-center justify-center mx-auto mb-4">
-            <SparklesIcon className="w-8 h-8 text-primary-500" />
+            <SparklesIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
           </div>
           <h3 className="font-display font-semibold gradient-text-primary mb-2">Ready to Optimize</h3>
           <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Click "Optimize Prompt" to get started with AI-powered optimization</p>
