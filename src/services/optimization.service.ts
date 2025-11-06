@@ -66,13 +66,26 @@ class OptimizationService {
       // Ensure optimization has required properties with safe defaults
       const safeOptimization = {
         ...optimization,
+        _id: optimization._id || optimization.id, // Handle both _id and id from backend
         suggestions: Array.isArray(optimization.suggestions) ? optimization.suggestions : [],
         metadata: optimization.metadata || {},
         costSaved: typeof optimization.costSaved === 'number' ? optimization.costSaved : 0,
         tokensSaved: typeof optimization.tokensSaved === 'number' ? optimization.tokensSaved : 0,
         improvementPercentage: typeof optimization.improvementPercentage === 'number' ? optimization.improvementPercentage : 0,
-        optimizedPrompt: optimization.optimizedPrompt || optimization.originalPrompt || ''
+        optimizedPrompt: optimization.optimizedPrompt || optimization.originalPrompt || '',
+        createdAt: optimization.createdAt || new Date().toISOString(),
+        updatedAt: optimization.updatedAt || new Date().toISOString()
       };
+
+      console.log("📦 OPTIMIZATION SERVICE: Processed optimization", {
+        hasId: !!safeOptimization._id,
+        id: safeOptimization._id,
+        hasUserQuery: !!safeOptimization.userQuery,
+        hasGeneratedAnswer: !!safeOptimization.generatedAnswer,
+        costSaved: safeOptimization.costSaved,
+        tokensSaved: safeOptimization.tokensSaved,
+        timestamp: new Date().toISOString()
+      });
 
       return safeOptimization;
     } catch (error: any) {
@@ -344,8 +357,9 @@ class OptimizationService {
     total: number;
     successful: number;
     failed: number;
-    totalSavings: number;
-    results: Array<{
+    totalSavings?: number;
+    optimizations?: any[];
+    results?: Array<{
       promptId: string;
       status: "success" | "failed";
       savings?: number;

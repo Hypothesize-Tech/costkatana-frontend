@@ -5,6 +5,10 @@ import {
   SparklesIcon,
   ClipboardDocumentIcon,
   CheckIcon,
+  CpuChipIcon,
+  ChartBarIcon,
+  LightBulbIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { optimizationService } from "@/services/optimization.service";
@@ -81,50 +85,61 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}
+      className={`glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}
     >
       <div className="p-6">
-        <div className="flex items-center mb-4">
-          <SparklesIcon className="mr-2 w-5 h-5 text-indigo-600" />
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+            <SparklesIcon className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-xl font-display font-bold gradient-text-primary">
             Quick Optimize
           </h3>
         </div>
 
         {!showResult ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="block mb-3 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Enter your prompt
               </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={6}
-                className="block px-3 py-2 w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="input resize-none"
                 placeholder="Paste your AI prompt here for instant optimization..."
               />
             </div>
 
             {/* Cortex Toggle */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="quick-cortex-toggle"
-                checked={useCortex}
-                onChange={(e) => setUseCortex(e.target.checked)}
-                className="w-4 h-4 text-purple-600 bg-gray-100 rounded border-gray-300 focus:ring-purple-500 focus:ring-2"
-              />
-              <label htmlFor="quick-cortex-toggle" className="text-sm text-gray-700">
-                <span className="font-medium">🧠 Enable Cortex</span>
-                <span className="ml-1 text-gray-500">(Advanced semantic optimization)</span>
-              </label>
+            <div className="glass rounded-xl p-4 border border-secondary-200/30 backdrop-blur-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                    <CpuChipIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <label htmlFor="quick-cortex-toggle" className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary cursor-pointer">
+                      Enable Cortex Enhancement
+                    </label>
+                    <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Advanced semantic optimization</p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  id="quick-cortex-toggle"
+                  checked={useCortex}
+                  onChange={(e) => setUseCortex(e.target.checked)}
+                  className="toggle"
+                />
+              </div>
             </div>
 
             <button
               onClick={handleOptimize}
               disabled={optimizeMutation.isPending || !prompt.trim()}
-              className="flex justify-center items-center px-4 py-3 w-full font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full"
             >
               {optimizeMutation.isPending ? (
                 <>
@@ -133,108 +148,213 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </>
               ) : (
                 <>
-                  <SparklesIcon className="mr-2 w-4 h-4" />
+                  <SparklesIcon className="mr-2 w-5 h-5" />
                   Optimize Now
                 </>
               )}
             </button>
 
-            <p className="text-xs text-center text-gray-500">
-              ✨ AI-powered optimization • No configuration needed • Instant
-              results
-            </p>
+            <div className="flex items-center justify-center gap-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <SparklesIcon className="w-4 h-4" />
+              <span>AI-powered optimization • No configuration needed • Instant results</span>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Success Header */}
-            <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
-              <div className="flex items-center">
-                <CheckIcon className="mr-2 w-5 h-5 text-green-600" />
-                <span className="text-sm font-medium text-green-900">
-                  Optimization Complete!
+            <div className="glass rounded-xl p-4 border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                    <CheckIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-sm font-display font-semibold gradient-text-success">
+                    Optimization Complete!
+                  </span>
+                </div>
+                <span className="text-lg font-display font-bold gradient-text-success">
+                  ${optimizationResult.costSaved?.toFixed(4) || "0.0000"} saved
                 </span>
               </div>
-              <span className="text-lg font-bold text-green-600">
-                ${optimizationResult.costSaved?.toFixed(4) || "0.0000"} saved
-              </span>
             </div>
 
-            {/* Optimized Prompt */}
+            {/* Generated Answer */}
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Optimized Prompt
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                  Generated Answer
                 </label>
                 <button
-                  onClick={() => handleCopy(optimizationResult.optimizedPrompt)}
-                  className="flex items-center px-2 py-1 text-xs font-medium text-indigo-600 hover:text-indigo-800"
+                  onClick={() => handleCopy(optimizationResult.generatedAnswer || optimizationResult.optimizedPrompt || '')}
+                  className="flex btn items-center gap-2 px-3 py-1.5 rounded-lg glass border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-105"
                 >
-                  <ClipboardDocumentIcon className="mr-1 w-3 h-3" />
-                  Copy
+                  <ClipboardDocumentIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                  <span className="text-xs font-body text-light-text-primary dark:text-dark-text-primary">Copy</span>
                 </button>
               </div>
               <OptimizedPromptDisplay
-                content={optimizationResult.optimizedPrompt}
+                content={optimizationResult.generatedAnswer || optimizationResult.optimizedPrompt || ''}
                 maxHeight="max-h-48"
               />
             </div>
 
             {/* Optimization Stats */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="p-3 bg-blue-50 rounded border border-blue-200">
-                <div className="text-lg font-bold text-blue-600">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
+                <div className="flex justify-center mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                    <ChartBarIcon className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div className="text-lg font-display font-bold gradient-text-primary">
                   {optimizationResult.improvementPercentage?.toFixed(1) || "0"}%
                 </div>
-                <div className="text-xs text-blue-700">Improvement</div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Improvement</div>
               </div>
-              <div className="p-3 bg-purple-50 rounded border border-purple-200">
-                <div className="text-lg font-bold text-purple-600">
+              <div className="glass rounded-xl p-4 border border-secondary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
+                <div className="flex justify-center mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                    <CpuChipIcon className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div className="text-lg font-display font-bold gradient-text-secondary">
                   {optimizationResult.tokensSaved || 0}
                 </div>
-                <div className="text-xs text-purple-700">Tokens Saved</div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Tokens Saved</div>
               </div>
-              <div className="p-3 bg-orange-50 rounded border border-orange-200">
-                <div className="text-lg font-bold text-orange-600">
-                  {optimizationResult.suggestions?.length || 0}
+              <div className="glass rounded-xl p-4 border border-success-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
+                <div className="flex justify-center mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                    <CurrencyDollarIcon className="w-4 h-4 text-white" />
+                  </div>
                 </div>
-                <div className="text-xs text-orange-700">Techniques</div>
+                <div className="text-lg font-display font-bold gradient-text-success">
+                  {optimizationResult.originalTokens || 0}
+                </div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Original Tokens</div>
+              </div>
+              <div className="glass rounded-xl p-4 border border-accent-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
+                <div className="flex justify-center mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                    <CurrencyDollarIcon className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div className="text-lg font-display font-bold gradient-text-accent">
+                  {optimizationResult.optimizedTokens || 0}
+                </div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Optimized Tokens</div>
               </div>
             </div>
+
+            {/* Cortex Information */}
+            {optimizationResult.metadata?.cortex && (
+              <div className="glass rounded-xl p-5 border border-purple-200/30 backdrop-blur-xl bg-gradient-to-br from-purple-50/50 to-indigo-100/30 dark:from-purple-900/20 dark:to-indigo-800/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                    <CpuChipIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h4 className="text-sm font-display font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                    Cortex Performance
+                  </h4>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {optimizationResult.metadata.cortex.cortexModel && (
+                    <>
+                      <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Encoder</div>
+                        <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
+                          {optimizationResult.metadata.cortex.cortexModel.encoder?.split('.')[1] || 'N/A'}
+                        </div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Core/Processor</div>
+                        <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
+                          {(optimizationResult.metadata.cortex.cortexModel.core || optimizationResult.metadata.cortex.cortexModel.processor)?.split('.')[1] || 'N/A'}
+                        </div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Decoder</div>
+                        <div className="text-xs font-medium font-display text-light-text-primary dark:text-dark-text-primary truncate">
+                          {optimizationResult.metadata.cortex.cortexModel.decoder?.split('.')[1] || 'N/A'}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {optimizationResult.metadata.cortex.processingTime && (
+                    <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing Time</div>
+                      <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
+                        {(optimizationResult.metadata.cortex.processingTime / 1000).toFixed(2)}s
+                      </div>
+                    </div>
+                  )}
+
+                  {optimizationResult.metadata.cortex.semanticIntegrity !== undefined && (
+                    <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Semantic Integrity</div>
+                      <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
+                        {(optimizationResult.metadata.cortex.semanticIntegrity * 100).toFixed(1)}%
+                      </div>
+                    </div>
+                  )}
+
+                  {optimizationResult.metadata.cortex.totalCost !== undefined && (
+                    <div className="text-center p-3 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Cortex Cost</div>
+                      <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
+                        ${optimizationResult.metadata.cortex.totalCost.toFixed(5)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Optimization Details */}
             {optimizationResult.suggestions &&
               optimizationResult.suggestions.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="mb-3 text-sm font-medium text-gray-900">
-                    Applied Techniques
-                  </h4>
-                  <div className="space-y-2">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                      <LightBulbIcon className="w-4 h-4 text-white" />
+                    </div>
+                    <h4 className="text-sm font-display font-semibold gradient-text-accent">
+                      Applied Techniques
+                    </h4>
+                  </div>
+                  <div className="space-y-3">
                     {optimizationResult.suggestions.map(
                       (suggestion: any, index: number) => (
                         <div
                           key={index}
-                          className="flex items-start p-3 bg-gray-50 rounded-lg border"
+                          className="glass rounded-lg p-4 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200"
                         >
-                          <div className="flex-shrink-0 mt-2 mr-3 w-2 h-2 bg-indigo-500 rounded-full"></div>
-                          <div className="flex-1">
-                            <div className="flex justify-between items-start mb-1">
-                              <span className="text-sm font-medium text-gray-900 capitalize">
-                                {suggestion.type?.replace(/_/g, " ") ||
-                                  "Optimization"}
-                              </span>
-                              {suggestion.implemented && (
-                                <span className="px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full">
-                                  Applied
-                                </span>
-                              )}
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-1">
+                              <div className="w-2 h-2 rounded-full bg-gradient-primary"></div>
                             </div>
-                            <p className="text-sm text-gray-600">
-                              {renderFormattedContent(
-                                suggestion.description ||
-                                suggestion.explanation ||
-                                "",
-                              )}
-                            </p>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary capitalize">
+                                  {suggestion.type?.replace(/_/g, " ") ||
+                                    "Optimization"}
+                                </span>
+                                {suggestion.implemented && (
+                                  <span className="px-2 py-1 text-xs font-body rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-200/30">
+                                    Applied
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {renderFormattedContent(
+                                  suggestion.description ||
+                                  suggestion.explanation ||
+                                  "",
+                                )}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       ),
@@ -244,16 +364,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               )}
 
             {/* Action Buttons */}
-            <div className="flex space-x-3">
+            <div className="flex gap-4">
               <button
                 onClick={handleReset}
-                className="flex-1 px-4 py-2 text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex-1 btn btn-secondary"
               >
                 Optimize Another
               </button>
               <button
-                onClick={() => handleCopy(optimizationResult.optimizedPrompt)}
-                className="flex-1 px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => handleCopy(optimizationResult.generatedAnswer || optimizationResult.optimizedPrompt || '')}
+                className="flex-1 btn btn-primary"
               >
                 Copy Result
               </button>

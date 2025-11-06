@@ -1,6 +1,8 @@
 export interface Optimization {
   _id: string;
   userId: string;
+  userQuery?: string;
+  generatedAnswer?: string;
   originalPrompt: string;
   optimizedPrompt: string;
   optimizationTechniques: string[];
@@ -17,6 +19,37 @@ export interface Optimization {
   category: OptimizationCategory;
   suggestions: OptimizationSuggestion[];
   metadata: OptimizationMetadata;
+  cortexImpactMetrics?: {
+    tokenReduction?: {
+      withoutCortex: number;
+      withCortex: number;
+      absoluteSavings: number;
+      percentageSavings: number;
+    };
+    qualityMetrics?: {
+      clarityScore: number;
+      completenessScore: number;
+      relevanceScore: number;
+      ambiguityReduction: number;
+      redundancyRemoval: number;
+    };
+    performanceMetrics?: {
+      processingTime: number;
+      responseLatency: number;
+      compressionRatio: number;
+    };
+    costImpact?: {
+      estimatedCostWithoutCortex: number;
+      actualCostWithCortex: number;
+      costSavings: number;
+      savingsPercentage: number;
+    };
+    justification?: {
+      optimizationTechniques: string[];
+      keyImprovements: string[];
+      confidenceScore: number;
+    };
+  };
   parameters?: {
     model?: string;
     threshold?: number;
