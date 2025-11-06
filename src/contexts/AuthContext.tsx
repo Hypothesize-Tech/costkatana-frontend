@@ -28,6 +28,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
   refreshAuth: () => Promise<boolean>;
+  resetPassword: (token: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -340,6 +341,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [isValidatingToken, isRefreshingToken, validateAndRefreshToken]);
 
+  const resetPassword = useCallback(
+    async (token: string, password: string) => {
+      try {
+        setIsLoading(true);
+        await authService.resetPassword(token, password);
+        toast.success("Password reset successful!");
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error && 'response' in error
+          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Password reset failed"
+          : "Password reset failed";
+        toast.error(errorMessage);
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
   const value = {
     user,
     isAuthenticated: !!user && !!accessToken && !isValidatingToken && !isRefreshingToken,
@@ -353,6 +373,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     refreshAuth,
+    resetPassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

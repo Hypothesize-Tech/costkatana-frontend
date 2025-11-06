@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LoginForm } from "../components/auth/LoginForm";
 import { MFAVerification } from "../components/auth/MFAVerification";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { FloatingParticles } from "../components/auth/FloatingParticles";
+import { TestimonialsCarousel } from "../components/auth/TestimonialsCarousel";
+import { AnimatedIllustrations } from "../components/auth/AnimatedIllustrations";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
@@ -92,8 +95,12 @@ export default function Login() {
       <div className="hidden relative flex-1 w-0 lg:block">
         <div className="absolute inset-0 bg-gradient-primary">
           <div className="absolute inset-0 bg-black/10" />
+          <FloatingParticles count={25} color="rgba(255, 255, 255, 0.15)" />
           <div className="flex absolute inset-0 justify-center items-center p-12">
-            <div className="max-w-xl text-white animate-fade-in">
+            <div className="max-w-xl text-white animate-fade-in relative z-10">
+              <div className="mb-8">
+                <AnimatedIllustrations />
+              </div>
               <h1 className="mb-6 text-5xl font-display font-bold">Optimize Your AI Costs</h1>
               <p className="mb-8 text-lg text-white/90">
                 Track, analyze, and reduce your AI API costs across multiple
@@ -163,6 +170,10 @@ export default function Login() {
                     <span>Multi-provider cost management</span>
                   </li>
                 </ul>
+              </div>
+
+              <div className="mb-8">
+                <TestimonialsCarousel />
               </div>
 
               <div className="flex gap-4 items-center text-white/90">

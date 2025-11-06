@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RegisterForm } from "../components/auth/RegisterForm";
+import { FloatingParticles } from "../components/auth/FloatingParticles";
+import { TestimonialsCarousel } from "../components/auth/TestimonialsCarousel";
+import { AnimatedIllustrations } from "../components/auth/AnimatedIllustrations";
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.jpg";
@@ -55,8 +58,12 @@ export default function Register() {
       <div className="hidden relative flex-1 w-0 lg:block">
         <div className="absolute inset-0 bg-gradient-primary">
           <div className="absolute inset-0 bg-black/10" />
+          <FloatingParticles count={25} color="rgba(255, 255, 255, 0.15)" />
           <div className="flex absolute inset-0 justify-center items-center p-12">
-            <div className="max-w-xl text-white animate-fade-in">
+            <div className="max-w-xl text-white animate-fade-in relative z-10">
+              <div className="mb-8">
+                <AnimatedIllustrations />
+              </div>
               <h1 className="mb-6 text-5xl font-display font-bold">Start Your Free Trial</h1>
               <p className="mb-8 text-lg text-white/90">
                 Join thousands of developers who are already saving on their AI
@@ -125,6 +132,10 @@ export default function Register() {
                     <span>Email alerts and notifications</span>
                   </li>
                 </ul>
+              </div>
+
+              <div className="mb-8">
+                <TestimonialsCarousel />
               </div>
 
               <div className="flex gap-4 items-center text-white/90">

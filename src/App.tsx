@@ -27,7 +27,10 @@ import { OnboardingCheck } from './components/common/OnboardingCheck';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
 import MagicLinkConnect from './pages/MagicLinkConnect';
 import VerifyEmail from './pages/VerifyEmail';
 import ConfirmAccountClosure from './pages/ConfirmAccountClosure';
@@ -95,7 +98,10 @@ function AppContent() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/confirm-account-closure/:token" element={<ConfirmAccountClosure />} />
