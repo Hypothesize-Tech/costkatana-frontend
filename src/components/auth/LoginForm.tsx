@@ -43,14 +43,14 @@ export const LoginForm = () => {
   return (
     <form className="space-y-8 animate-fade-in" onSubmit={handleSubmit(onSubmit)}>
       {errors.root && (
-        <div className="p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+        <div className="p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in animate-shake">
           <p className="text-sm font-medium text-danger-800 dark:text-danger-200">
             {errors.root.message}
           </p>
         </div>
       )}
 
-      <div>
+      <div className="animate-slide-up animation-delay-100">
         <label htmlFor="email" className="label">
           Email address
         </label>
@@ -60,17 +60,20 @@ export const LoginForm = () => {
             id="email"
             type="email"
             autoComplete="email"
-            className={cn("input", errors.email && "input-error")}
+            className={cn(
+              "input transition-all duration-300 focus:ring-2 focus:ring-primary-500/50 focus:scale-[1.01]",
+              errors.email && "input-error animate-shake"
+            )}
           />
           {errors.email && (
-            <p className="mt-2 text-sm text-danger-600 dark:text-danger-400">
+            <p className="mt-2 text-sm text-danger-600 dark:text-danger-400 animate-slide-up">
               {errors.email.message}
             </p>
           )}
         </div>
       </div>
 
-      <div>
+      <div className="animate-slide-up animation-delay-200">
         <label htmlFor="password" className="label">
           Password
         </label>
@@ -80,7 +83,10 @@ export const LoginForm = () => {
             id="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
-            className={cn("input pr-10", errors.password && "input-error")}
+            className={cn(
+              "input pr-10 transition-all duration-300 focus:ring-2 focus:ring-primary-500/50 focus:scale-[1.01]",
+              errors.password && "input-error animate-shake"
+            )}
           />
           <button
             type="button"
@@ -94,14 +100,14 @@ export const LoginForm = () => {
             )}
           </button>
           {errors.password && (
-            <p className="mt-2 text-sm text-danger-600 dark:text-danger-400">
+            <p className="mt-2 text-sm text-danger-600 dark:text-danger-400 animate-slide-up">
               {errors.password.message}
             </p>
           )}
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center animate-slide-up animation-delay-300">
         <div className="flex items-center">
           <input
             id="remember-me"
@@ -127,7 +133,7 @@ export const LoginForm = () => {
         </div>
       </div>
 
-      <div>
+      <div className="animate-slide-up animation-delay-400">
         <button
           type="submit"
           disabled={isLoading}
@@ -144,7 +150,7 @@ export const LoginForm = () => {
         </button>
       </div>
 
-      <p className="text-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+      <p className="text-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary animate-slide-up animation-delay-500">
         Not a member?{" "}
         <Link
           to="/register"
