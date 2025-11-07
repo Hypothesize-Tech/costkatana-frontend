@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { X, Plus, Trash2, Key, FileText, Lock, DollarSign, Zap, AlertCircle } from 'lucide-react';
 import { KeyVaultService, CreateProxyKeyRequest, ProviderKey } from '../../services/keyVault.service';
 
 interface CreateProxyKeyModalProps {
@@ -177,7 +177,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
               className="btn btn-ghost p-2 rounded-lg hover:bg-danger-500/10 hover:text-danger-500 transition-all"
               aria-label="Close modal"
             >
-              <XMarkIcon className="h-5 w-5" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
@@ -186,7 +186,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
               <div className="text-center sm:text-left mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">🔑</span>
+                    <Key className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-display font-bold gradient-text-primary">
@@ -204,7 +204,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm">📝</span>
+                      <FileText className="h-4 w-4 text-white" />
                     </div>
                     <h4 className="text-lg font-display font-bold gradient-text-primary">Basic Information</h4>
                   </div>
@@ -274,7 +274,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm">🔒</span>
+                      <Lock className="h-4 w-4 text-white" />
                     </div>
                     <h4 className="text-lg font-display font-bold gradient-text-primary">Permissions</h4>
                   </div>
@@ -299,7 +299,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm">💰</span>
+                      <DollarSign className="h-4 w-4 text-white" />
                     </div>
                     <h4 className="text-lg font-display font-bold gradient-text-primary">Budget Limits (Optional)</h4>
                   </div>
@@ -371,7 +371,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm">⚡</span>
+                      <Zap className="h-4 w-4 text-white" />
                     </div>
                     <h4 className="text-lg font-display font-bold gradient-text-primary">Rate Limiting (Optional)</h4>
                   </div>
@@ -401,7 +401,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm">🔒</span>
+                      <Lock className="h-4 w-4 text-white" />
                     </div>
                     <h4 className="text-lg font-display font-bold gradient-text-primary">Security Restrictions (Optional)</h4>
                   </div>
@@ -424,7 +424,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         onClick={addIP}
                         className="btn btn-ghost w-12 h-12 flex items-center justify-center"
                       >
-                        <PlusIcon className="h-5 w-5" />
+                        <Plus className="h-5 w-5" />
                       </button>
                     </div>
                     {formData.allowedIPs && formData.allowedIPs.length > 0 && (
@@ -441,7 +441,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                               className="btn btn-ghost p-1 h-auto min-w-0 text-primary-600 hover:text-danger-500"
                               aria-label="Remove IP"
                             >
-                              <TrashIcon className="h-3 w-3" />
+                              <Trash2 className="h-3 w-3" />
                             </button>
                           </span>
                         ))}
@@ -467,7 +467,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         onClick={addDomain}
                         className="btn btn-ghost w-12 h-12 flex items-center justify-center"
                       >
-                        <PlusIcon className="h-5 w-5" />
+                        <Plus className="h-5 w-5" />
                       </button>
                     </div>
                     {formData.allowedDomains && formData.allowedDomains.length > 0 && (
@@ -484,7 +484,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                               className="btn btn-ghost p-1 h-auto min-w-0 text-success-600 hover:text-danger-500"
                               aria-label="Remove domain"
                             >
-                              <TrashIcon className="h-3 w-3" />
+                              <Trash2 className="h-3 w-3" />
                             </button>
                           </span>
                         ))}
@@ -495,10 +495,10 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* General Error */}
                 {errors.general && (
-                  <div className="glass p-4 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+                  <div className="glass p-4 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10 dark:bg-gradient-danger/20">
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <span className="text-white text-xs">!</span>
+                        <AlertCircle className="h-3 w-3 text-white" />
                       </div>
                       <div className="font-body text-sm gradient-text-danger">{errors.general}</div>
                     </div>
@@ -526,7 +526,7 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        <span>🔑</span>
+                        <Key className="h-4 w-4" />
                         Create Proxy Key
                       </span>
                     )}

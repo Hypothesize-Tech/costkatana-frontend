@@ -1,4 +1,16 @@
 import React from 'react';
+import {
+    FileText,
+    Wrench,
+    Brain,
+    RotateCcw,
+    Database,
+    Shuffle,
+    Globe,
+    Server,
+    CheckCircle,
+    AlertTriangle
+} from 'lucide-react';
 import { CostAnalysis } from '../../services/unexplainedCost.service';
 
 interface CostAttributionTreeProps {
@@ -29,17 +41,17 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
     };
 
     const getDriverIcon = (driverType: string) => {
-        const icons: Record<string, string> = {
-            system_prompt: '📝',
-            tool_calls: '🔧',
-            context_window: '🧠',
-            retries: '🔄',
-            cache_miss: '💾',
-            model_switching: '🔄',
-            network: '🌐',
-            database: '🗄️'
+        const icons: Record<string, JSX.Element> = {
+            system_prompt: <FileText className="w-6 h-6" />,
+            tool_calls: <Wrench className="w-6 h-6" />,
+            context_window: <Brain className="w-6 h-6" />,
+            retries: <RotateCcw className="w-6 h-6" />,
+            cache_miss: <Database className="w-6 h-6" />,
+            model_switching: <Shuffle className="w-6 h-6" />,
+            network: <Globe className="w-6 h-6" />,
+            database: <Server className="w-6 h-6" />
         };
-        return icons[driverType] || '❓';
+        return icons[driverType] || <AlertTriangle className="w-6 h-6" />;
     };
 
     const getDriverDescription = (driverType: string) => {
@@ -131,9 +143,7 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
                         <div className="ml-16 mt-3 p-3 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
-                                    <svg className="h-4 w-4 text-success-600 dark:text-success-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                    </svg>
+                                    <CheckCircle className="h-4 w-4 text-success-600 dark:text-success-400 mr-2" />
                                     <span className="text-sm font-display font-medium text-success-800 dark:text-success-300">Optimization Potential</span>
                                 </div>
                                 <span className="text-sm font-display font-bold text-success-800 dark:text-success-300">
@@ -173,9 +183,7 @@ export const CostAttributionTree: React.FC<CostAttributionTreeProps> = ({ analys
             <div className="mt-4 p-4 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                        <svg className="h-5 w-5 text-warning-600 dark:text-warning-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
+                        <AlertTriangle className="h-5 w-5 text-warning-600 dark:text-warning-400 mr-2" />
                         <span className="text-sm font-display font-medium text-warning-800 dark:text-warning-300">Anomaly Score</span>
                     </div>
                     <div className="flex items-center">

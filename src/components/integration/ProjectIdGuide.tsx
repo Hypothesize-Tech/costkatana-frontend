@@ -125,7 +125,7 @@ await optimizer.bulkImport(usageData);`;
                     onClick={() =>
                       copyToClipboard(project._id, `project-${project._id}`)
                     }
-                    className="btn-success px-4 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
+                    className="btn btn-success px-4 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
                   >
                     {copied === `project-${project._id}` ? (
                       <>
@@ -135,7 +135,7 @@ await optimizer.bulkImport(usageData);`;
                     ) : (
                       <>
                         <DocumentDuplicateIcon className="h-4 w-4 mr-2" />
-                        📋 Copy ID
+                        Copy ID
                       </>
                     )}
                   </button>

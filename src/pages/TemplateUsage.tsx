@@ -124,7 +124,7 @@ const TemplateUsagePage: React.FC = () => {
             <div className="flex items-center gap-4 mb-4">
               <button
                 onClick={() => navigate("/templates")}
-                className="btn-secondary flex gap-2 items-center"
+                className="btn btn-secondary flex gap-2 items-center"
               >
                 <FiArrowLeft className="w-4 h-4" />
                 Back to Templates

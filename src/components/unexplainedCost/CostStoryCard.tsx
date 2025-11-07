@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import {
+  TrendingDown,
+  BarChart3,
+  AlertTriangle,
+  AlertOctagon,
+  Zap,
+  Info,
+  FileDown,
+  HelpCircle,
+  X
+} from 'lucide-react';
 import { DailyCostReport } from '../../services/unexplainedCost.service';
 
 interface CostStoryCardProps {
@@ -31,11 +42,11 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
   };
 
   const getCostChangeIcon = (percentage: number) => {
-    if (percentage <= 0) return '📉';
-    if (percentage <= 5) return '📊';
-    if (percentage <= 20) return '⚠️';
-    if (percentage <= 50) return '🚨';
-    return '💥';
+    if (percentage <= 0) return <TrendingDown className="w-5 h-5" />;
+    if (percentage <= 5) return <BarChart3 className="w-5 h-5" />;
+    if (percentage <= 20) return <AlertTriangle className="w-5 h-5" />;
+    if (percentage <= 50) return <AlertOctagon className="w-5 h-5" />;
+    return <Zap className="w-5 h-5" />;
   };
 
   const handleExportReport = () => {
@@ -72,9 +83,7 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       <div className="p-4 mb-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/50 to-highlight-50/50 dark:from-primary-900/20 dark:to-highlight-900/20">
         <div className="flex items-start">
           <div className="flex-shrink-0 mt-1">
-            <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
+            <Info className="w-5 h-5 text-primary-600 dark:text-primary-400" />
           </div>
           <div className="ml-3 flex-1">
             <h3 className="mb-2 text-lg font-display font-bold text-primary-900 dark:text-primary-300">Cost Explanation</h3>
@@ -161,31 +170,25 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
-            className="btn-primary inline-flex items-center"
+            className="btn btn-primary inline-flex items-center"
           >
-            <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-            </svg>
+            <BarChart3 className="mr-2 w-4 h-4" />
             {showDetailedAnalysis ? 'Hide' : 'View'} Detailed Analysis
           </button>
 
           <button
             onClick={handleExportReport}
-            className="btn-secondary inline-flex items-center"
+            className="btn btn-secondary inline-flex items-center"
           >
-            <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <FileDown className="mr-2 w-4 h-4" />
             Export Report
           </button>
 
           <button
             onClick={() => setShowHelp(!showHelp)}
-            className="btn-secondary inline-flex items-center"
+            className="btn btn-secondary inline-flex items-center"
           >
-            <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
+            <HelpCircle className="mr-2 w-4 h-4" />
             {showHelp ? 'Hide' : 'Get'} Help
           </button>
         </div>
@@ -199,11 +202,9 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
               <h3 className="text-xl font-display font-bold gradient-text-primary">Detailed Cost Analysis for {report.date}</h3>
               <button
                 onClick={() => setShowDetailedAnalysis(false)}
-                className="btn-icon-secondary"
+                className="btn btn-icon-secondary"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-6 h-6" />
               </button>
             </div>
 
@@ -265,11 +266,9 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
               <h3 className="text-xl font-display font-bold gradient-text-primary">Cost Analysis Help</h3>
               <button
                 onClick={() => setShowHelp(false)}
-                className="btn-icon-secondary"
+                className="btn btn-icon-secondary"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-6 h-6" />
               </button>
             </div>
 

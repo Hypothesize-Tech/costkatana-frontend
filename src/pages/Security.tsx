@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { securityService, SecurityAnalytics, SecurityMetrics, HumanReviewRequest } from '../services/security.service';
 import {
-    ArrowPathIcon,
-    DocumentTextIcon,
-    TableCellsIcon,
-    EyeIcon,
-    CheckCircleIcon,
-    XCircleIcon,
-    XMarkIcon
-} from '@heroicons/react/24/outline';
+    RotateCw,
+    FileText,
+    Table,
+    Eye,
+    CheckCircle,
+    XCircle,
+    X,
+    AlertTriangle,
+    DollarSign,
+    BarChart3,
+    Target,
+    Search
+} from 'lucide-react';
 
 export const Security: React.FC = () => {
     const [metrics, setMetrics] = useState<SecurityMetrics | null>(null);
@@ -97,9 +102,9 @@ export const Security: React.FC = () => {
                         <div className="text-danger-600 dark:text-danger-400 text-sm mb-4 font-body">{error}</div>
                         <button
                             onClick={loadSecurityData}
-                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
+                            className="btn btn-primary flex items-center gap-2"
                         >
-                            <ArrowPathIcon className="w-4 h-4" />
+                            <RotateCw className="w-4 h-4" />
                             Retry
                         </button>
                     </div>
@@ -120,16 +125,16 @@ export const Security: React.FC = () => {
                     <div className="flex gap-4">
                         <button
                             onClick={() => exportSecurityReport('json')}
-                            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                            className="btn btn-secondary flex items-center gap-2"
                         >
-                            <DocumentTextIcon className="w-4 h-4" />
+                            <FileText className="w-4 h-4" />
                             Export JSON Report
                         </button>
                         <button
                             onClick={() => exportSecurityReport('csv')}
-                            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                            className="btn btn-secondary flex items-center gap-2"
                         >
-                            <TableCellsIcon className="w-4 h-4" />
+                            <Table className="w-4 h-4" />
                             Export CSV Report
                         </button>
                     </div>
@@ -143,8 +148,8 @@ export const Security: React.FC = () => {
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Threats Detected</p>
                                 <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{metrics?.totalThreatsDetected || 0}</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-danger-500/20 to-danger-600/20">
-                                <span className="text-danger-600 dark:text-danger-400 text-lg">⚠️</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-danger-500/20 to-danger-600/20 dark:from-danger-900/30 dark:to-danger-800/30">
+                                <AlertTriangle className="h-5 w-5 text-danger-600 dark:text-danger-400" />
                             </div>
                         </div>
                     </div>
@@ -155,8 +160,8 @@ export const Security: React.FC = () => {
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Cost Saved</p>
                                 <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">${metrics?.totalCostSaved?.toFixed(2) || '0.00'}</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20">
-                                <span className="text-success-600 dark:text-success-400 text-lg">💰</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 dark:from-success-900/30 dark:to-success-800/30">
+                                <DollarSign className="h-5 w-5 text-success-600 dark:text-success-400" />
                             </div>
                         </div>
                     </div>
@@ -169,8 +174,8 @@ export const Security: React.FC = () => {
                                     {((metrics?.averageRiskScore || 0) * 100).toFixed(1)}%
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20">
-                                <span className="text-highlight-600 dark:text-highlight-400 text-lg">📊</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 dark:from-highlight-900/30 dark:to-highlight-800/30">
+                                <BarChart3 className="h-5 w-5 text-highlight-600 dark:text-highlight-400" />
                             </div>
                         </div>
                     </div>
@@ -183,8 +188,8 @@ export const Security: React.FC = () => {
                                     {((analytics?.detectionRate || 0) * 100).toFixed(1)}%
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20">
-                                <span className="text-primary-600 dark:text-primary-400 text-lg">🎯</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 dark:from-primary-900/30 dark:to-primary-800/30">
+                                <Target className="h-5 w-5 text-primary-600 dark:text-primary-400" />
                             </div>
                         </div>
                     </div>
@@ -205,8 +210,8 @@ export const Security: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20">
-                                <span className="text-accent-600 dark:text-accent-400 text-lg">🔍</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 dark:from-accent-900/30 dark:to-accent-800/30">
+                                <Search className="h-5 w-5 text-accent-600 dark:text-accent-400" />
                             </div>
                         </div>
                     </div>
@@ -240,9 +245,9 @@ export const Security: React.FC = () => {
                                             <div className="flex gap-2 ml-4">
                                                 <button
                                                     onClick={() => setSelectedReview(review)}
-                                                    className="px-3 py-2 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                                                    className="btn btn-secondary flex items-center gap-2"
                                                 >
-                                                    <EyeIcon className="w-4 h-4" />
+                                                    <Eye className="w-4 h-4" />
                                                     Review
                                                 </button>
                                             </div>
@@ -387,23 +392,23 @@ export const Security: React.FC = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'approved')}
-                                    className="flex-1 px-4 py-2.5 bg-gradient-success hover:bg-gradient-success/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-success transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
+                                    className="btn btn-success flex-1 flex items-center justify-center gap-2"
                                 >
-                                    <CheckCircleIcon className="w-4 h-4" />
+                                    <CheckCircle className="w-4 h-4" />
                                     Approve Request
                                 </button>
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'denied')}
-                                    className="flex-1 px-4 py-2.5 bg-gradient-danger hover:bg-gradient-danger/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-danger transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
+                                    className="btn btn-danger flex-1 flex items-center justify-center gap-2"
                                 >
-                                    <XCircleIcon className="w-4 h-4" />
+                                    <XCircle className="w-4 h-4" />
                                     Deny Request
                                 </button>
                                 <button
                                     onClick={() => setSelectedReview(null)}
-                                    className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
+                                    className="btn btn-ghost flex items-center justify-center gap-2"
                                 >
-                                    <XMarkIcon className="w-4 h-4" />
+                                    <X className="w-4 h-4" />
                                     Cancel
                                 </button>
                             </div>

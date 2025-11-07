@@ -133,7 +133,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                                 <div className="mt-2 text-sm text-error-700 dark:text-error-300">{error}</div>
                                 <button
                                     onClick={loadDashboardData}
-                                    className="btn-primary mt-3"
+                                    className="btn btn-primary mt-3"
                                 >
                                     Retry
                                 </button>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { XMarkIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { X, Eye, EyeOff, Lock, AlertCircle } from 'lucide-react';
 import { KeyVaultService, CreateProviderKeyRequest } from '../../services/keyVault.service';
 
 interface CreateProviderKeyModalProps {
@@ -10,13 +10,13 @@ interface CreateProviderKeyModalProps {
 }
 
 const providerOptions = [
-  { value: 'openai', label: 'OpenAI', icon: '🤖', placeholder: 'sk-...' },
-  { value: 'anthropic', label: 'Anthropic', icon: '🧠', placeholder: 'sk-ant-...' },
-  { value: 'google', label: 'Google AI', icon: '🔍', placeholder: 'AIza...' },
-  { value: 'cohere', label: 'Cohere', icon: '💬', placeholder: 'co-...' },
-  { value: 'aws-bedrock', label: 'AWS Bedrock', icon: '☁️', placeholder: 'AKIA...' },
-  { value: 'deepseek', label: 'DeepSeek', icon: '🔍', placeholder: 'sk-...' },
-  { value: 'groq', label: 'Groq', icon: '⚡', placeholder: 'gsk_...' }
+  { value: 'openai', label: 'OpenAI', placeholder: 'sk-...' },
+  { value: 'anthropic', label: 'Anthropic', placeholder: 'sk-ant-...' },
+  { value: 'google', label: 'Google AI', placeholder: 'AIza...' },
+  { value: 'cohere', label: 'Cohere', placeholder: 'co-...' },
+  { value: 'aws-bedrock', label: 'AWS Bedrock', placeholder: 'AKIA...' },
+  { value: 'deepseek', label: 'DeepSeek', placeholder: 'sk-...' },
+  { value: 'grok', label: 'GroK', placeholder: 'gsk_...' }
 ];
 
 export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
@@ -105,9 +105,9 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+              className="btn w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             >
-              <XMarkIcon className="h-5 w-5" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
@@ -116,7 +116,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
               <div className="text-center sm:text-left mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl">🔐</span>
+                    <Lock className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-display font-bold gradient-text-primary">
@@ -159,7 +159,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                   >
                     {providerOptions.map((provider) => (
                       <option key={provider.value} value={provider.value}>
-                        {provider.icon} {provider.label}
+                        {provider.label}
                       </option>
                     ))}
                   </select>
@@ -181,12 +181,12 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowApiKey(!showApiKey)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 transition-colors duration-300"
+                      className="btn absolute inset-y-0 right-0 pr-3 flex items-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 transition-colors duration-300"
                     >
                       {showApiKey ? (
-                        <EyeSlashIcon className="h-5 w-5" />
+                        <EyeOff className="h-5 w-5" />
                       ) : (
-                        <EyeIcon className="h-5 w-5" />
+                        <Eye className="h-5 w-5" />
                       )}
                     </button>
                   </div>
@@ -195,7 +195,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                   )}
                   <div className="glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl mt-2">
                     <p className="text-xs font-body text-success-600 dark:text-success-400 flex items-center gap-2">
-                      <span className="text-sm">🔒</span>
+                      <Lock className="h-3 w-3" />
                       Your API key will be encrypted and stored securely.
                     </p>
                   </div>
@@ -217,10 +217,10 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
 
                 {/* General Error */}
                 {errors.general && (
-                  <div className="glass p-4 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
+                  <div className="glass p-4 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-danger/10 dark:bg-gradient-danger/20">
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <span className="text-white text-xs">!</span>
+                        <AlertCircle className="h-3 w-3 text-white" />
                       </div>
                       <div className="font-body text-sm gradient-text-danger">{errors.general}</div>
                     </div>
@@ -232,14 +232,14 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="btn-ghost hover:scale-105 transition-transform duration-300"
+                    className="btn btn-ghost"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createProviderKeyMutation.isPending}
-                    className="btn-primary hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {createProviderKeyMutation.isPending ? (
                       <span className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export const CreateProviderKeyModal: React.FC<CreateProviderKeyModalProps> = ({
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        <span>🔐</span>
+                        <Lock className="h-4 w-4" />
                         Create Provider Key
                       </span>
                     )}

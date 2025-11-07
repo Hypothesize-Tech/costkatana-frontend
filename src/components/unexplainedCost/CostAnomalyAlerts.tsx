@@ -1,4 +1,20 @@
 import React from 'react';
+import {
+    Info,
+    AlertTriangle,
+    AlertOctagon,
+    Zap,
+    TrendingUp,
+    Search,
+    Target,
+    RotateCw,
+    Brain,
+    Wrench,
+    CheckCircle,
+    DollarSign,
+    FileText,
+    Bell
+} from 'lucide-react';
 import { CostAnomaly } from '../../services/unexplainedCost.service';
 
 interface CostAnomalyAlertsProps {
@@ -25,13 +41,13 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
     };
 
     const getSeverityIcon = (severity: string) => {
-        const icons: Record<string, string> = {
-            low: 'ℹ️',
-            medium: '⚠️',
-            high: '🚨',
-            critical: '💥'
+        const icons: Record<string, JSX.Element> = {
+            low: <Info className="w-5 h-5" />,
+            medium: <AlertTriangle className="w-5 h-5" />,
+            high: <AlertOctagon className="w-5 h-5" />,
+            critical: <Zap className="w-5 h-5" />
         };
-        return icons[severity] || '❓';
+        return icons[severity] || <Info className="w-5 h-5" />;
     };
 
     const getSeverityBadgeColor = (severity: string) => {
@@ -45,16 +61,16 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
     };
 
     const getAnomalyTypeIcon = (type: string) => {
-        const icons: Record<string, string> = {
-            cost_spike: '📈',
-            anomaly_detected: '🔍',
-            dominant_cost_driver: '🎯',
-            unusual_pattern: '🔄',
-            retry_storm: '⚡',
-            context_bloat: '🧠',
-            tool_loop: '🔧'
+        const icons: Record<string, JSX.Element> = {
+            cost_spike: <TrendingUp className="w-5 h-5" />,
+            anomaly_detected: <Search className="w-5 h-5" />,
+            dominant_cost_driver: <Target className="w-5 h-5" />,
+            unusual_pattern: <RotateCw className="w-5 h-5" />,
+            retry_storm: <Zap className="w-5 h-5" />,
+            context_bloat: <Brain className="w-5 h-5" />,
+            tool_loop: <Wrench className="w-5 h-5" />
         };
-        return icons[type] || '❓';
+        return icons[type] || <Info className="w-5 h-5" />;
     };
 
     const getAnomalyTypeDescription = (type: string) => {
@@ -75,9 +91,7 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
             <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="text-center">
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gradient-success glow-success mb-4">
-                        <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
+                        <CheckCircle className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-lg font-display font-bold gradient-text-success mb-2">No Anomalies Detected</h3>
                     <p className="text-secondary-600 dark:text-secondary-300">Your cost patterns are within normal ranges. Great job!</p>
@@ -146,14 +160,14 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                         className={`p-4 rounded-lg border ${getSeverityColor(anomaly.severity)}`}
                     >
                         <div className="flex items-start">
-                            <div className="flex-shrink-0 mr-3 mt-1">
-                                <span className="text-2xl">{getSeverityIcon(anomaly.severity)}</span>
+                            <div className="flex-shrink-0 mr-3 mt-1 text-current">
+                                {getSeverityIcon(anomaly.severity)}
                             </div>
 
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-2">
-                                        <span className="text-xl">{getAnomalyTypeIcon(anomaly.type)}</span>
+                                        <span className="text-current">{getAnomalyTypeIcon(anomaly.type)}</span>
                                         <h3 className="text-sm font-display font-medium capitalize gradient-text-primary">
                                             {getAnomalyTypeDescription(anomaly.type)}
                                         </h3>
@@ -171,18 +185,14 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4 text-xs">
                                         <span className="flex items-center">
-                                            <svg className="h-4 w-4 mr-1 text-danger-600 dark:text-danger-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                            </svg>
+                                            <DollarSign className="h-4 w-4 mr-1 text-danger-600 dark:text-danger-400" />
                                             <span className="font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 Cost Impact: {formatCurrency(anomaly.cost_impact)}
                                             </span>
                                         </span>
 
                                         <span className="flex items-center">
-                                            <svg className="h-4 w-4 mr-1 text-success-600 dark:text-success-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                            </svg>
+                                            <CheckCircle className="h-4 w-4 mr-1 text-success-600 dark:text-success-400" />
                                             <span className="font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 Save: {formatCurrency(anomaly.optimization_potential)}
                                             </span>
@@ -190,22 +200,16 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                                     </div>
 
                                     <div className="flex space-x-2">
-                                        <button className="btn-icon-secondary">
-                                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                                            </svg>
+                                        <button className="btn btn-icon-secondary">
+                                            <Info className="h-4 w-4" />
                                         </button>
 
-                                        <button className="btn-icon-secondary">
-                                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                        <button className="btn btn-icon-secondary">
+                                            <CheckCircle className="h-4 w-4" />
                                         </button>
 
-                                        <button className="btn-icon-secondary">
-                                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                                            </svg>
+                                        <button className="btn btn-icon-secondary">
+                                            <FileText className="h-4 w-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -222,11 +226,9 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                         onClick={() => {
                             alert(`Acknowledging ${anomalies.length} anomalies.\n\nThis will mark all current anomalies as reviewed and will stop showing them in the alerts.`);
                         }}
-                        className="btn-danger inline-flex items-center"
+                        className="btn btn-danger inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
+                        <AlertTriangle className="h-4 w-4 mr-2" />
                         Acknowledge All
                     </button>
 
@@ -237,11 +239,9 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                             ).join('\n\n');
                             alert(`Anomaly Details:\n\n${details}`);
                         }}
-                        className="btn-secondary inline-flex items-center"
+                        className="btn btn-secondary inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
+                        <FileText className="h-4 w-4 mr-2" />
                         View Details
                     </button>
 
@@ -255,11 +255,9 @@ export const CostAnomalyAlerts: React.FC<CostAnomalyAlertsProps> = ({ anomalies 
                             };
                             alert(`Setting up anomaly alerts:\n\nAlert Thresholds:\n• Critical: ${severityCounts.critical} anomalies\n• High: ${severityCounts.high} anomalies\n• Medium: ${severityCounts.medium} anomalies\n• Low: ${severityCounts.low} anomalies\n\nYou will be notified when new anomalies are detected.`);
                         }}
-                        className="btn-secondary inline-flex items-center"
+                        className="btn btn-secondary inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <Bell className="h-4 w-4 mr-2" />
                         Set Alerts
                     </button>
                 </div>
