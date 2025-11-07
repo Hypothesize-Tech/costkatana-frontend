@@ -103,31 +103,31 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
     switch (tipData.tip.type) {
       case "cost_saving":
         return (
-          <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
             <FiDollarSign className="w-5 h-5 text-white" />
           </div>
         );
       case "optimization":
         return (
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
             <FiZap className="w-5 h-5 text-white" />
           </div>
         );
       case "feature":
         return (
-          <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-accent">
             <FiSettings className="w-5 h-5 text-white" />
           </div>
         );
       case "best_practice":
         return (
-          <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-warning">
             <FiBookOpen className="w-5 h-5 text-white" />
           </div>
         );
       default:
         return (
-          <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
             <FiInfo className="w-5 h-5 text-white" />
           </div>
         );
@@ -135,16 +135,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
   };
 
   const getPriorityColor = () => {
-    switch (tipData.tip.priority) {
-      case "high":
-        return "border-danger-200/30 bg-gradient-danger/10 shadow-lg backdrop-blur-xl";
-      case "medium":
-        return "border-warning-200/30 bg-gradient-warning/10 shadow-lg backdrop-blur-xl";
-      case "low":
-        return "border-primary-200/30 bg-gradient-primary/10 shadow-lg backdrop-blur-xl";
-      default:
-        return "border-secondary-200/30 bg-gradient-secondary/10 shadow-lg backdrop-blur-xl";
-    }
+    return "border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel";
   };
 
   const formatSavings = () => {
@@ -165,23 +156,23 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0">{getIcon()}</div>
         <div className="flex-1">
-          <h4 className="mb-2 text-lg font-display font-bold gradient-text-primary">
+          <h4 className="mb-2 text-lg font-bold font-display gradient-text-primary">
             {tipData.tip.title}
           </h4>
-          <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{tipData.tip.message}</p>
+          <p className="mb-4 font-body text-light-text-secondary dark:text-dark-text-secondary">{tipData.tip.message}</p>
 
           {isExpanded && tipData.context && (
-            <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mb-4">
+            <div className="p-4 mb-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="space-y-3">
                 {tipData.context.currentTokens && (
                   <div className="flex justify-between items-center">
                     <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Current tokens:</span>
                     <div className="text-right">
-                      <span className="font-display font-semibold gradient-text-primary">
+                      <span className="font-semibold font-display gradient-text-primary">
                         {tipData.context.currentTokens.toLocaleString()}
                       </span>
                       {tipData.context.threshold && (
-                        <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                           threshold: {tipData.context.threshold.toLocaleString()}
                         </div>
                       )}
@@ -193,10 +184,10 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
                     <div className="flex justify-between items-center">
                       <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Model switch:</span>
                       <div className="text-right">
-                        <div className="font-display font-semibold gradient-text-primary">
+                        <div className="font-semibold font-display gradient-text-primary">
                           {tipData.context.currentModel}
                         </div>
-                        <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                           → {tipData.context.suggestedModel}
                         </div>
                       </div>
@@ -207,13 +198,13 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
           )}
 
           {tipData.tip.potentialSavings && (
-            <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+            <div className="p-4 mb-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30">
+              <div className="flex gap-3 items-center">
+                <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-success">
                   <FiTrendingUp className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-display font-semibold gradient-text-success">
+                  <div className="font-semibold font-display gradient-text-success">
                     Save {formatSavings()}
                   </div>
                   <div className="text-xs font-body text-success-600 dark:text-success-400">
@@ -225,10 +216,10 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
           )}
 
           {tipData.tip.action && (
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-wrap gap-3 items-center">
               <button
                 onClick={handleAction}
-                className="btn-primary flex items-center gap-2 hover:scale-105 transition-transform duration-300"
+                className="flex gap-2 items-center transition-transform duration-300 btn-primary hover:scale-105"
               >
                 {tipData.tip.action.type === "enable_feature" &&
                   "✨ Enable Feature"}
@@ -243,7 +234,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
               {!isExpanded && tipData.context && (
                 <button
                   onClick={() => setIsExpanded(true)}
-                  className="btn-ghost text-sm hover:scale-105 transition-transform duration-300"
+                  className="text-sm transition-transform duration-300 btn-ghost hover:scale-105"
                 >
                   More details
                 </button>
@@ -252,7 +243,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
               {isExpanded && (
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="btn-ghost text-sm hover:scale-105 transition-transform duration-300"
+                  className="text-sm transition-transform duration-300 btn-ghost hover:scale-105"
                 >
                   Less details
                 </button>
@@ -262,7 +253,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
         </div>
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+          className="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 hover:scale-110"
         >
           <FiX size={16} />
         </button>
@@ -274,7 +265,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
     return (
       <div className="fixed right-6 bottom-6 z-50 max-w-md animate-slide-up">
         <div
-          className={`glass rounded-xl p-6 border-2 shadow-2xl backdrop-blur-xl animate-scale-in ${getPriorityColor()}`}
+          className={`p-6 rounded-xl border-2 shadow-2xl backdrop-blur-xl glass animate-scale-in ${getPriorityColor()}`}
         >
           {renderContent()}
         </div>
@@ -284,7 +275,7 @@ export const ProactiveTip: React.FC<ProactiveTipProps> = ({
 
   if (position === "banner") {
     return (
-      <div className={`glass rounded-xl p-6 w-full border-b-2 ${getPriorityColor()}`}>
+      <div className={`p-6 w-full rounded-xl border-b-2 glass ${getPriorityColor()}`}>
         <div className="mx-auto max-w-7xl">{renderContent()}</div>
       </div>
     );
