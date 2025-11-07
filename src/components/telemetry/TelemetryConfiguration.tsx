@@ -90,13 +90,13 @@ const TelemetryConfiguration: React.FC = () => {
     const getStatusIcon = (status?: 'success' | 'error' | 'partial') => {
         switch (status) {
             case 'success':
-                return <CheckCircle className="text-success-600 dark:text-success-400 flex-shrink-0" size={16} />;
+                return <CheckCircle className="flex-shrink-0 text-success-600 dark:text-success-400" size={16} />;
             case 'error':
-                return <XCircle className="text-danger-600 dark:text-danger-400 flex-shrink-0" size={16} />;
+                return <XCircle className="flex-shrink-0 text-danger-600 dark:text-danger-400" size={16} />;
             case 'partial':
-                return <Activity className="text-warning-600 dark:text-warning-400 flex-shrink-0" size={16} />;
+                return <Activity className="flex-shrink-0 text-warning-600 dark:text-warning-400" size={16} />;
             default:
-                return <Activity className="text-secondary-500 dark:text-secondary-400 flex-shrink-0" size={16} />;
+                return <Activity className="flex-shrink-0 text-secondary-500 dark:text-secondary-400" size={16} />;
         }
     };
 
@@ -114,9 +114,9 @@ const TelemetryConfiguration: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex justify-center items-center py-12">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+                    <div className="mx-auto mb-4 w-8 h-8 rounded-full border-b-2 animate-spin border-primary-600 dark:border-primary-400"></div>
                     <p className="text-secondary-600 dark:text-secondary-300">Loading configurations...</p>
                 </div>
             </div>
@@ -126,10 +126,10 @@ const TelemetryConfiguration: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <h2 className="text-2xl font-display font-bold text-secondary-900 dark:text-white mb-2">
+                        <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">
                             External Telemetry Sources
                         </h2>
                         <p className="text-secondary-600 dark:text-secondary-300">
@@ -138,7 +138,7 @@ const TelemetryConfiguration: React.FC = () => {
                     </div>
                     <button
                         onClick={handleCreate}
-                        className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap"
+                        className="flex gap-2 items-center px-6 py-3 font-semibold whitespace-nowrap rounded-xl transition-all duration-300 btn btn-primary"
                     >
                         <Plus size={20} />
                         Add Source
@@ -148,49 +148,49 @@ const TelemetryConfiguration: React.FC = () => {
 
             {/* Empty State */}
             {configs.length === 0 ? (
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
+                <div className="p-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex justify-center mb-4">
                         <Activity size={48} className="text-secondary-400 dark:text-secondary-600" />
                     </div>
-                    <h3 className="text-xl font-display font-bold text-secondary-900 dark:text-white mb-2">
+                    <h3 className="mb-2 text-xl font-bold font-display text-secondary-900 dark:text-white">
                         No External Telemetry Sources
                     </h3>
-                    <p className="text-secondary-600 dark:text-secondary-300 mb-6">
+                    <p className="mb-6 text-secondary-600 dark:text-secondary-300">
                         Add your first telemetry endpoint to start tracking external AI usage
                     </p>
                     <button
                         onClick={handleCreate}
-                        className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 mx-auto"
+                        className="flex gap-2 items-center px-6 py-3 mx-auto font-semibold rounded-xl transition-all duration-300 btn btn-primary"
                     >
                         <Plus size={20} />
                         Add Source
                     </button>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {configs.map((config) => (
                         <div
                             key={config._id}
-                            className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover transition-all duration-300"
+                            className="rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover"
                         >
                             {/* Card Header */}
                             <div className="p-6 border-b border-primary-200/20 dark:border-primary-500/10">
-                                <div className="flex items-start justify-between gap-4 mb-3">
+                                <div className="flex gap-4 justify-between items-start mb-3">
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-display font-bold text-secondary-900 dark:text-white truncate">
+                                        <h3 className="text-lg font-bold truncate font-display text-secondary-900 dark:text-white">
                                             {getEndpointTypeLabel(config.endpointType)}
                                         </h3>
                                         {config.syncEnabled && (
-                                            <span className="inline-block mt-2 px-3 py-1 rounded-full bg-success-500/20 dark:bg-success-500/20 text-success-700 dark:text-success-300 text-xs font-semibold border border-success-200/30 dark:border-success-500/20">
+                                            <span className="inline-block px-3 py-1 mt-2 text-xs font-semibold rounded-full border bg-success-500/20 dark:bg-success-500/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20">
                                                 Active
                                             </span>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                    <div className="flex flex-shrink-0 gap-2 items-center">
                                         <button
                                             onClick={() => handleSync(config._id)}
                                             disabled={syncing === config._id}
-                                            className="p-2 rounded-lg bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="p-2 rounded-lg transition-colors btn bg-secondary-500/10 dark:bg-secondary-500/20 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-500/20 dark:hover:bg-secondary-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                                             title="Trigger manual sync"
                                         >
                                             <RefreshCw
@@ -200,14 +200,14 @@ const TelemetryConfiguration: React.FC = () => {
                                         </button>
                                         <button
                                             onClick={() => handleEdit(config)}
-                                            className="p-2 rounded-lg bg-primary-500/10 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 hover:bg-primary-500/20 dark:hover:bg-primary-500/30 transition-colors"
+                                            className="p-2 rounded-lg transition-colors btn bg-primary-500/10 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 hover:bg-primary-500/20 dark:hover:bg-primary-500/30"
                                             title="Edit"
                                         >
                                             <Edit2 size={16} />
                                         </button>
                                         <button
                                             onClick={() => handleDelete(config._id)}
-                                            className="p-2 rounded-lg bg-danger-500/10 dark:bg-danger-500/20 text-danger-700 dark:text-danger-300 hover:bg-danger-500/20 dark:hover:bg-danger-500/30 transition-colors"
+                                            className="p-2 rounded-lg transition-colors btn bg-danger-500/10 dark:bg-danger-500/20 text-danger-700 dark:text-danger-300 hover:bg-danger-500/20 dark:hover:bg-danger-500/30"
                                             title="Delete"
                                         >
                                             <Trash2 size={16} />
@@ -241,7 +241,7 @@ const TelemetryConfiguration: React.FC = () => {
                                         <span className="text-sm font-medium text-secondary-600 dark:text-secondary-400">
                                             Last Sync:
                                         </span>
-                                        <span className="text-sm font-semibold text-secondary-900 dark:text-white flex items-center gap-2">
+                                        <span className="flex gap-2 items-center text-sm font-semibold text-secondary-900 dark:text-white">
                                             {getStatusIcon(config.lastSyncStatus)}
                                             {new Date(config.lastSyncAt).toLocaleString()}
                                         </span>

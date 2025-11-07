@@ -186,12 +186,12 @@ const PromptTemplates: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
+    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Header */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+      <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">
+            <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">
               Prompt Templates
             </h1>
             <p className="text-lg text-secondary-600 dark:text-secondary-300">
@@ -201,14 +201,14 @@ const PromptTemplates: React.FC = () => {
           <div className="flex gap-3">
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn-primary flex gap-2 items-center px-6 py-3"
+              className="flex gap-2 items-center px-6 py-3 btn btn-primary"
             >
               <FiPlus className="w-5 h-5" />
               New Template
             </button>
             <Link
               to="/templates/use"
-              className="btn-secondary flex gap-2 items-center px-6 py-3"
+              className="flex gap-2 items-center px-6 py-3 btn-secondary btn"
             >
               <FiPlay className="w-5 h-5" />
               Use Template
@@ -219,48 +219,48 @@ const PromptTemplates: React.FC = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-xl">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20">
               <FiBookOpen className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Total Templates
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
                 {templates.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-accent-500/20 to-accent-600/20 rounded-xl">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20">
               <FiStar className="w-6 h-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Favorites
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
                 {templates.filter((t) => t.isFavorite).length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-success-500/20 to-success-600/20 rounded-xl">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20">
               <FiTrendingUp className="w-6 h-6 text-success-600 dark:text-success-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Most Used
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
                 {templates.reduce(
                   (max, t) => Math.max(max, t.usage?.count || 0),
                   0,
@@ -270,16 +270,16 @@ const PromptTemplates: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
           <div className="flex items-center">
-            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 rounded-xl">
+            <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20">
               <FiTag className="w-6 h-6 text-highlight-600 dark:text-highlight-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
                 Categories
               </p>
-              <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">
+              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
                 {new Set(templates.map((t) => t.category)).size}
               </p>
             </div>
@@ -288,23 +288,23 @@ const PromptTemplates: React.FC = () => {
       </div>
 
       {/* Enhanced Filters */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-8">
+      <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <FiSearch className="absolute left-4 top-1/2 text-secondary-600 dark:text-secondary-300 transform -translate-y-1/2" />
+            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary-600 dark:text-secondary-300" />
             <input
               type="text"
               placeholder="Search templates by name, description, or tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="input pl-12 text-lg"
+              className="pl-12 text-lg input"
             />
           </div>
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="select text-lg"
+            className="text-lg select"
           >
             {categories.map((category) => (
               <option key={category.value} value={category.value}>
@@ -315,9 +315,9 @@ const PromptTemplates: React.FC = () => {
 
           <button
             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            className={`flex gap-2 items-center px-6 py-3 rounded-xl font-semibold transition-all ${showFavoritesOnly
-              ? "text-accent-600 dark:text-accent-400 bg-gradient-to-r from-accent-500/20 to-warning-500/20 border-2 border-accent-200/50 dark:border-accent-600/50"
-              : "text-secondary-600 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border-2 border-secondary-200/30 dark:border-secondary-600/30"
+            className={`btn flex gap-2 items-center px-6 py-3 rounded-xl font-semibold transition-all ${showFavoritesOnly
+              ? "bg-gradient-to-r border-2 text-accent-600 dark:text-accent-400 from-accent-500/20 to-warning-500/20 border-accent-200/50 dark:border-accent-600/50"
+              : "border-2 text-secondary-600 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border-secondary-200/30 dark:border-secondary-600/30"
               }`}
           >
             <FiStar className={`w-5 h-5 ${showFavoritesOnly ? "fill-current" : ""}`} />
@@ -328,11 +328,11 @@ const PromptTemplates: React.FC = () => {
 
       {/* Templates Grid */}
       {sortedTemplates.length === 0 ? (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel py-16 text-center">
-          <div className="flex justify-center items-center mx-auto mb-6 w-24 h-24 bg-gradient-to-br from-primary-500/20 to-success-500/20 rounded-full">
+        <div className="py-16 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex justify-center items-center mx-auto mb-6 w-24 h-24 bg-gradient-to-br rounded-full from-primary-500/20 to-success-500/20">
             <FiBookOpen className="w-12 h-12 text-primary-600 dark:text-primary-400" />
           </div>
-          <h3 className="mb-3 text-2xl font-display font-bold text-secondary-900 dark:text-white">
+          <h3 className="mb-3 text-2xl font-bold font-display text-secondary-900 dark:text-white">
             {searchQuery || selectedCategory !== "all" || showFavoritesOnly
               ? "No templates found"
               : "No templates yet"}
@@ -345,7 +345,7 @@ const PromptTemplates: React.FC = () => {
           {!searchQuery && selectedCategory === "all" && !showFavoritesOnly && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn-primary inline-flex items-center px-8 py-4 text-lg font-medium"
+              className="inline-flex items-center px-8 py-4 text-lg font-medium btn btn-primary"
             >
               <FiPlus className="mr-3 w-6 h-6" />
               Create Template
@@ -443,13 +443,13 @@ const PromptTemplates: React.FC = () => {
                   setDeleteConfirmOpen(false);
                   setSelectedTemplate(null);
                 }}
-                className="btn-outline"
+                className="btn btn-outline"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteTemplate}
-                className="btn-danger"
+                className="btn btn-danger"
               >
                 Delete
               </button>

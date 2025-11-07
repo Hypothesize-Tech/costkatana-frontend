@@ -183,7 +183,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="spinner w-12 h-12"></div>
+        <div className="w-12 h-12 spinner"></div>
       </div>
     );
   }
@@ -192,17 +192,17 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
       <div className="flex items-center">
-        <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg glow-success">
+        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-success glow-success">
           <ShieldCheckIcon className="w-6 h-6 text-white" />
         </div>
-        <h3 className="text-2xl font-display font-bold gradient-text">Two-Factor Authentication</h3>
+        <h3 className="text-2xl font-bold font-display gradient-text">Two-Factor Authentication</h3>
       </div>
 
       {/* Status Messages */}
       {error && (
-        <div className="p-4 rounded-2xl border border-danger-200/50 bg-gradient-to-br from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
+        <div className="p-4 bg-gradient-to-br rounded-2xl border border-danger-200/50 from-danger-50 to-danger-100/50 glow-danger animate-scale-in">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center mr-3 shadow-lg">
+            <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
               <XMarkIcon className="w-5 h-5 text-white" />
             </div>
             <p className="text-sm font-medium text-danger-800 dark:text-danger-200">{error}</p>
@@ -211,9 +211,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       )}
 
       {success && (
-        <div className="p-4 rounded-2xl border border-success-200/50 bg-gradient-to-br from-success-50 to-success-100/50 animate-scale-in">
+        <div className="p-4 bg-gradient-to-br rounded-2xl border border-success-200/50 from-success-50 to-success-100/50 animate-scale-in">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
+            <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-success">
               <CheckCircleIcon className="w-5 h-5 text-white" />
             </div>
             <p className="text-sm font-medium text-success-800 dark:text-success-200">{success}</p>
@@ -222,8 +222,8 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       )}
 
       {/* MFA Status Overview */}
-      <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
-        <h4 className="mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">Current Status</h4>
+      <div className="p-6 border shadow-2xl backdrop-blur-xl glass border-primary-200/30">
+        <h4 className="mb-4 text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary">Current Status</h4>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">Two-Factor Authentication</span>
@@ -243,24 +243,24 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {setupMode === 'none' && (
         <div className="space-y-6">
           {/* Email MFA */}
-          <div className="glass p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+          <div className="p-6 bg-gradient-to-br border shadow-lg backdrop-blur-xl transition-all duration-300 glass from-primary-50/50 to-primary-100/50 border-primary-200/30 hover:scale-105">
             <div className="flex justify-between items-start">
               <div className="flex items-center">
-                <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+                <div className="flex justify-center items-center mr-4 w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
                   <EnvelopeIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Email Authentication</h4>
+                  <h4 className="mb-1 text-lg font-semibold font-display text-light-text-primary dark:text-dark-text-primary">Email Authentication</h4>
                   <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Receive verification codes via email</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 {mfaStatus?.email.enabled ? (
                   <>
-                    <span className="px-3 py-1 text-xs font-display font-bold bg-gradient-success text-white rounded-xl shadow-lg">Enabled</span>
+                    <span className="px-3 py-1 text-xs font-bold text-white rounded-xl shadow-lg font-display bg-gradient-success">Enabled</span>
                     <button
                       onClick={() => handleDisableMFA('email')}
-                      className="px-4 py-2 text-sm font-medium text-danger-600 dark:text-danger-400 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/50 rounded-xl hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50 transition-all duration-300 shadow-lg backdrop-blur-xl"
+                      className="px-4 py-2 text-sm font-medium bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 btn text-danger-600 dark:text-danger-400 from-danger-50/50 to-danger-100/50 border-danger-200/50 hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50"
                     >
                       Disable
                     </button>
@@ -269,7 +269,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   <button
                     onClick={handleSendEmailCode}
                     disabled={isSendingEmailCode}
-                    className="btn-primary"
+                    className="btn btn-primary"
                   >
                     {isSendingEmailCode ? 'Setting up...' : 'Enable'}
                   </button>
@@ -279,24 +279,24 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
           </div>
 
           {/* TOTP MFA */}
-          <div className="glass p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl hover:scale-105 transition-all duration-300">
+          <div className="p-6 bg-gradient-to-br border shadow-lg backdrop-blur-xl transition-all duration-300 glass from-success-50/50 to-success-100/50 border-success-200/30 hover:scale-105">
             <div className="flex justify-between items-start">
               <div className="flex items-center">
-                <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
+                <div className="flex justify-center items-center mr-4 w-12 h-12 rounded-xl shadow-lg bg-gradient-success">
                   <DevicePhoneMobileIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">Authenticator App</h4>
+                  <h4 className="mb-1 text-lg font-semibold font-display text-light-text-primary dark:text-dark-text-primary">Authenticator App</h4>
                   <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Use Google Authenticator, Authy, or similar apps</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 {mfaStatus?.totp.enabled ? (
                   <>
-                    <span className="px-3 py-1 text-xs font-display font-bold bg-gradient-success text-white rounded-xl shadow-lg">Enabled</span>
+                    <span className="px-3 py-1 text-xs font-bold text-white rounded-xl shadow-lg font-display bg-gradient-success">Enabled</span>
                     <button
                       onClick={() => handleDisableMFA('totp')}
-                      className="px-4 py-2 text-sm font-medium text-danger-600 dark:text-danger-400 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/50 rounded-xl hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50 transition-all duration-300 shadow-lg backdrop-blur-xl"
+                      className="px-4 py-2 text-sm font-medium bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 btn text-danger-600 dark:text-danger-400 from-danger-50/50 to-danger-100/50 border-danger-200/50 hover:from-danger-100/50 hover:to-danger-200/50 hover:border-danger-300/50"
                     >
                       Disable
                     </button>
@@ -305,7 +305,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   <button
                     onClick={handleSetupTOTP}
                     disabled={isSettingUpTotp}
-                    className="btn-secondary"
+                    className="btn btn-secondary"
                   >
                     {isSettingUpTotp ? 'Setting up...' : 'Enable'}
                   </button>
@@ -319,9 +319,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {/* TOTP Setup Flow */}
       {setupMode === 'totp' && totpSetup && (
         <div className="space-y-6">
-          <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
-            <h4 className="flex items-center mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+          <div className="p-6 border shadow-2xl backdrop-blur-xl glass border-primary-200/30">
+            <h4 className="flex items-center mb-4 text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+              <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-primary">
                 <QrCodeIcon className="w-5 h-5 text-white" />
               </div>
               Setup Authenticator App
@@ -335,7 +335,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
               </div>
 
               {/* QR Code */}
-              <div className="flex justify-center p-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+              <div className="flex justify-center p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
                 <img
                   src={totpSetup.qrCodeUrl}
                   alt="TOTP QR Code"
@@ -353,25 +353,25 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   type="text"
                   value={totpToken}
                   onChange={(e) => setTotpToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="input w-full text-2xl tracking-widest text-center"
+                  className="w-full text-2xl tracking-widest text-center input"
                   placeholder="000000"
                   maxLength={6}
                 />
               </div>
 
               {/* Backup Codes */}
-              <div className="p-4 glass rounded-xl border border-warning-200/30 bg-gradient-to-br from-warning-50/50 to-warning-100/50 shadow-lg backdrop-blur-xl">
-                <h5 className="mb-2 text-sm font-display font-bold text-warning-700 dark:text-warning-300">🔐 Backup Codes</h5>
+              <div className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-warning-200/30 from-warning-50/50 to-warning-100/50">
+                <h5 className="mb-2 text-sm font-bold font-display text-warning-700 dark:text-warning-300">🔐 Backup Codes</h5>
                 <p className="mb-3 text-sm font-body text-warning-700 dark:text-warning-300">
                   Save these backup codes in a safe place. You can use them to access your account if you lose your authenticator device.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   {totpSetup.backupCodes.map((code, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 glass rounded-lg border border-primary-200/30 shadow-sm backdrop-blur-xl">
+                    <div key={index} className="flex justify-between items-center p-2 rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30">
                       <span className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary">{code}</span>
                       <button
                         onClick={() => copyToClipboard(code)}
-                        className="text-light-text-muted dark:text-dark-text-muted hover:text-primary-500 transition-colors duration-300"
+                        className="transition-colors duration-300 btn text-light-text-muted dark:text-dark-text-muted hover:text-primary-500"
                       >
                         <DocumentDuplicateIcon className="w-4 h-4" />
                       </button>
@@ -380,9 +380,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 </div>
                 <button
                   onClick={downloadBackupCodes}
-                  className="btn-ghost text-warning-600 dark:text-warning-400 hover:bg-warning-500/10"
+                  className="btn btn-ghost text-warning-600 dark:text-warning-400 hover:bg-warning-500/10"
                 >
-                  📥 Download Backup Codes
+                  Download Backup Codes
                 </button>
               </div>
 
@@ -391,7 +391,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 <button
                   onClick={handleVerifyTOTP}
                   disabled={isSettingUpTotp || totpToken.length !== 6}
-                  className="btn-primary flex-1"
+                  className="flex-1 btn btn-primary"
                 >
                   {isSettingUpTotp ? '🔄 Verifying...' : '✅ Complete Setup'}
                 </button>
@@ -401,7 +401,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     setTotpSetup(null);
                     setTotpToken('');
                   }}
-                  className="btn-secondary"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
@@ -414,9 +414,9 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
       {/* Email Setup Flow */}
       {setupMode === 'email' && emailCodeSent && (
         <div className="space-y-6">
-          <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30">
-            <h4 className="flex items-center mb-4 text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+          <div className="p-6 border shadow-2xl backdrop-blur-xl glass border-primary-200/30">
+            <h4 className="flex items-center mb-4 text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+              <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-primary">
                 <EnvelopeIcon className="w-5 h-5 text-white" />
               </div>
               Verify Email Address
@@ -436,7 +436,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                   type="text"
                   value={emailCode}
                   onChange={(e) => setEmailCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="input w-full text-2xl tracking-widest text-center"
+                  className="w-full text-2xl tracking-widest text-center input"
                   placeholder="000000"
                   maxLength={6}
                 />
@@ -446,7 +446,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 <button
                   onClick={handleVerifyEmail}
                   disabled={isSettingUpEmail || emailCode.length !== 6}
-                  className="btn-primary flex-1"
+                  className="flex-1 btn btn-primary"
                 >
                   {isSettingUpEmail ? '🔄 Verifying...' : '✅ Complete Setup'}
                 </button>
@@ -456,7 +456,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                     setEmailCode('');
                     setEmailCodeSent(false);
                   }}
-                  className="btn-secondary"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
@@ -481,7 +481,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
                 </div>
                 <button
                   onClick={() => MFAService.removeTrustedDevice(device.deviceId)}
-                  className="px-2 py-1 text-xs text-red-600 rounded border border-red-300 hover:bg-red-50"
+                  className="px-2 py-1 text-xs text-red-600 rounded border border-red-300 btn hover:bg-red-50"
                 >
                   Remove
                 </button>

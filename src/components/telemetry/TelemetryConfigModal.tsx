@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Loader, CheckCircle, XCircle } from 'lucide-react';
 import { telemetryConfigApi } from '../../services/telemetryConfigApi';
-import { Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { Settings } from 'lucide-react';
 
 interface TelemetryConfigModalProps {
     config: any | null;
@@ -93,30 +93,30 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => onClose(false)}>
+        <div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50" onClick={() => onClose(false)}>
             <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-primary-200/30 dark:border-primary-500/20">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <Cog6ToothIcon className="w-6 h-6 text-white" />
+                    <div className="flex gap-3 items-center">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
+                            <Settings className="w-6 h-6 text-white" />
                         </div>
-                        <h2 className="text-xl font-display font-bold gradient-text-primary">
+                        <h2 className="text-xl font-bold font-display gradient-text-primary">
                             {config ? 'Edit' : 'Add'} Telemetry Configuration
                         </h2>
                     </div>
-                    <button 
-                        onClick={() => onClose(false)} 
-                        className="btn-icon p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
+                    <button
+                        onClick={() => onClose(false)}
+                        className="p-2 rounded-lg transition-all duration-200 btn btn-icon text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400"
                     >
                         <X size={24} />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+                <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-6 space-y-6">
                     <div className="space-y-2">
-                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Endpoint Type *
                         </label>
                         <select
@@ -138,7 +138,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Endpoint URL *
                         </label>
                         <input
@@ -156,7 +156,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Authentication Type
                         </label>
                         <select
@@ -174,7 +174,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
 
                     {formData.authType !== 'none' && (
                         <div className="space-y-2">
-                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 {formData.authType === 'bearer' ? 'Bearer Token' : 'API Key'}
                             </label>
                             <input
@@ -193,7 +193,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 Sync Interval (minutes)
                             </label>
                             <input
@@ -210,7 +210,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 Query Range (minutes)
                             </label>
                             <input
@@ -228,7 +228,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white">
+                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Service Name Filter (optional)
                         </label>
                         <input
@@ -242,7 +242,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                         <span className="text-xs text-secondary-600 dark:text-secondary-300">Only sync data from this service</span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex gap-3 items-center">
                         <input
                             type="checkbox"
                             name="syncEnabled"
@@ -250,14 +250,14 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             onChange={handleChange}
                             className="toggle-switch-sm"
                         />
-                        <label className="text-sm font-display font-medium text-secondary-900 dark:text-white cursor-pointer">
+                        <label className="text-sm font-medium cursor-pointer font-display text-secondary-900 dark:text-white">
                             Enable automatic syncing
                         </label>
                     </div>
 
                     {error && (
-                        <div className="glass rounded-lg p-4 border border-danger-200/30 dark:border-danger-500/20 bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-                            <div className="flex items-center gap-2">
+                        <div className="p-4 bg-gradient-to-r rounded-lg border glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                            <div className="flex gap-2 items-center">
                                 <XCircle className="w-5 h-5 text-danger-600 dark:text-danger-400" />
                                 <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
                             </div>
@@ -266,7 +266,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
 
                     {testResult && (
                         <div className={`glass rounded-lg p-4 border ${testResult.reachable ? 'border-success-200/30 dark:border-success-500/20 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20' : 'border-warning-200/30 dark:border-warning-500/20 bg-gradient-to-r from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20'}`}>
-                            <div className="flex items-center gap-2">
+                            <div className="flex gap-2 items-center">
                                 {testResult.reachable ? (
                                     <>
                                         <CheckCircle className="w-5 h-5 text-success-600 dark:text-success-400" />
@@ -291,7 +291,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                         <button
                             type="button"
                             onClick={handleTest}
-                            className="btn-secondary inline-flex items-center gap-2"
+                            className="inline-flex gap-2 items-center btn btn-secondary"
                             disabled={testing || !formData.endpoint}
                         >
                             {testing ? (
@@ -308,13 +308,13 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             <button
                                 type="button"
                                 onClick={() => onClose(false)}
-                                className="btn-secondary"
+                                className="btn btn-secondary"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="btn-primary inline-flex items-center gap-2"
+                                className="inline-flex gap-2 items-center btn btn-primary"
                                 disabled={saving}
                             >
                                 {saving ? (

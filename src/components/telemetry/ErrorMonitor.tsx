@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { ErrorSpan } from '../../types/telemetry';
-import { ExclamationTriangleIcon, DocumentDuplicateIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
+import { AlertTriangle, Copy, RotateCw } from 'lucide-react';
 
 const formatTimeAgo = (iso: string) => {
     const diff = Date.now() - new Date(iso).getTime();
@@ -56,26 +56,26 @@ export const ErrorMonitor: React.FC = () => {
     }, []);
 
     if (isLoading) return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel animate-pulse">
+        <div className="p-8 rounded-xl border shadow-lg backdrop-blur-xl animate-pulse glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-12 bg-gradient-primary/20 rounded-xl mb-3" />
+                <div key={i} className="mb-3 h-12 rounded-xl bg-gradient-primary/20" />
             ))}
         </div>
     );
 
     if (error) return (
-        <div className="glass rounded-xl p-6 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+        <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex justify-between items-center">
+                <div className="flex gap-3 items-center">
+                    <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
+                        <AlertTriangle className="w-5 h-5 text-white" />
                     </div>
-                <span className="font-body text-secondary-900 dark:text-white">
-                    Error loading error monitor
-                </span>
+                    <span className="font-body text-secondary-900 dark:text-white">
+                        Error loading error monitor
+                    </span>
                 </div>
-                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
-                    <ArrowPathIcon className="w-4 h-4" /> Retry
+                <button onClick={() => refetch()} className="inline-flex gap-2 items-center btn btn-secondary">
+                    <RotateCw className="w-4 h-4" /> Retry
                 </button>
             </div>
         </div>
@@ -84,56 +84,56 @@ export const ErrorMonitor: React.FC = () => {
     const errorList = errors || [];
 
     return (
-        <div className="glass rounded-xl p-8 border border-danger-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <ExclamationTriangleIcon className="w-6 h-6 text-white" />
+                <div className="flex gap-3 items-center">
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
+                        <AlertTriangle className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text-danger">
+                    <h2 className="text-xl font-bold font-display gradient-text-danger">
                         Error Monitor
                     </h2>
                 </div>
-                <button onClick={() => refetch()} className="btn-secondary inline-flex items-center gap-2">
-                    <ArrowPathIcon className="w-4 h-4" /> Refresh
+                <button onClick={() => refetch()} className="inline-flex gap-2 items-center btn btn-secondary">
+                    <RotateCw className="w-4 h-4" /> Refresh
                 </button>
             </div>
 
             {errorList.length === 0 ? (
-                <div className="glass rounded-xl p-8 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-center">
-                    <div className="w-16 h-16 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-4 shadow-lg">
-                        <ExclamationTriangleIcon className="w-8 h-8 text-white" />
+                <div className="p-8 text-center bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl shadow-lg bg-gradient-success">
+                        <AlertTriangle className="w-8 h-8 text-white" />
                     </div>
-                    <p className="font-display font-semibold gradient-text-success mb-2">No errors detected</p>
+                    <p className="mb-2 font-semibold font-display gradient-text-success">No errors detected</p>
                     <p className="font-body text-secondary-600 dark:text-secondary-300">Your system is running smoothly</p>
                 </div>
             ) : (
                 <div className="space-y-4">
                     {errorList.slice(0, 10).map((errorSpan) => (
-                        <div key={errorSpan.trace_id} className="glass rounded-xl p-4 border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/20 to-danger-100/20 dark:from-danger-900/10 dark:to-danger-800/10 flex items-center justify-between hover:bg-gradient-danger/20 transition-all duration-200">
-                            <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                                        <ExclamationTriangleIcon className="w-4 h-4 text-white" />
+                        <div key={errorSpan.trace_id} className="flex justify-between items-center p-4 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 glass border-danger-200/30 from-danger-50/20 to-danger-100/20 dark:from-danger-900/10 dark:to-danger-800/10 hover:bg-gradient-danger/20">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex gap-3 items-center mb-2">
+                                    <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-danger">
+                                        <AlertTriangle className="w-4 h-4 text-white" />
                                     </div>
                                     <p className="font-display font-semibold text-secondary-900 dark:text-white truncate max-w-[260px]">
                                         {errorSpan.error_message}
                                     </p>
                                 </div>
-                                <div className="font-body text-secondary-600 dark:text-secondary-300 text-sm flex flex-wrap gap-3 ml-9">
+                                <div className="flex flex-wrap gap-3 ml-9 text-sm font-body text-secondary-600 dark:text-secondary-300">
                                     <span className="glass px-2 py-1 rounded-full border border-accent-200/30 shadow-lg backdrop-blur-xl truncate max-w-[180px]">
                                         Route: {errorSpan.route}
                                     </span>
-                                    <span className="glass px-2 py-1 rounded-full border border-highlight-200/30 shadow-lg backdrop-blur-xl">
+                                    <span className="px-2 py-1 rounded-full border shadow-lg backdrop-blur-xl glass border-highlight-200/30">
                                         {formatTimeAgo(errorSpan.timestamp)}
                                     </span>
                                 </div>
                             </div>
                             <button
                                 onClick={() => handleCopyTraceId(errorSpan.trace_id)}
-                                className={`ml-4 px-4 py-2 rounded-lg transition-all duration-200 inline-flex items-center gap-2 ${copiedTraceId === errorSpan.trace_id ? 'btn-success' : 'btn-secondary'}`}
+                                className={`btn ml-4 px-4 py-2 rounded-lg transition-all duration-200 inline-flex items-center gap-2 ${copiedTraceId === errorSpan.trace_id ? 'btn-success' : 'btn-secondary'}`}
                             >
-                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><DocumentDuplicateIcon className="w-4 h-4" /> Copy Trace ID</>)}
+                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><Copy className="w-4 h-4" /> Copy Trace ID</>)}
                             </button>
                         </div>
                     ))}

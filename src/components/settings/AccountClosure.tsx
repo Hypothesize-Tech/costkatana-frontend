@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExclamationTriangleIcon, TrashIcon, XMarkIcon, ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { AlertTriangle, Trash2, X, Clock, CheckCircle } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { accountClosureService } from '../../services/accountClosure.service';
 import { AccountClosureStatus } from '../../types/auth.types';
@@ -113,16 +113,16 @@ export const AccountClosure: React.FC = () => {
         <div className="space-y-6">
             {/* Reactivation Banner for Pending Deletion */}
             {isPending && (
-                <div className="glass rounded-xl p-6 border border-warning-200/30 bg-warning-500/5">
-                    <div className="flex items-start gap-4">
+                <div className="p-6 rounded-xl border glass border-warning-200/30 bg-warning-500/5">
+                    <div className="flex gap-4 items-start">
                         <div className="flex-shrink-0">
-                            <ExclamationTriangleIcon className="h-6 w-6 text-warning-500" />
+                            <AlertTriangle className="w-6 h-6 text-warning-500" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-display font-semibold text-warning-600 dark:text-warning-400 mb-2">
+                            <h3 className="mb-2 font-semibold font-display text-warning-600 dark:text-warning-400">
                                 Account Pending Deletion
                             </h3>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                            <p className="mb-4 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Your account is scheduled for permanent deletion in {closureStatus.daysRemaining} days.
                                 You can reactivate your account at any time before then.
                             </p>
@@ -140,16 +140,16 @@ export const AccountClosure: React.FC = () => {
 
             {/* Cooldown Status */}
             {isInProcess && cooldownEndsAt && (
-                <div className="glass rounded-xl p-6 border border-info-200/30 bg-info-500/5">
-                    <div className="flex items-start gap-4">
+                <div className="p-6 rounded-xl border glass border-info-200/30 bg-info-500/5">
+                    <div className="flex gap-4 items-start">
                         <div className="flex-shrink-0">
-                            <ClockIcon className="h-6 w-6 text-info-500" />
+                            <Clock className="w-6 h-6 text-info-500" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-display font-semibold text-info-600 dark:text-info-400 mb-2">
+                            <h3 className="mb-2 font-semibold font-display text-info-600 dark:text-info-400">
                                 Cooldown Period Active
                             </h3>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                            <p className="mb-4 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Your account closure has been confirmed. There's a 24-hour cooldown period before it takes effect.
                                 {' '}{formatTimeRemaining(cooldownEndsAt)}
                             </p>
@@ -166,17 +166,17 @@ export const AccountClosure: React.FC = () => {
             )}
 
             {/* Danger Zone */}
-            <div className="glass rounded-xl p-6 border border-danger-200/30 bg-danger-500/5">
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center shadow-lg">
-                        <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+            <div className="p-6 rounded-xl border glass border-danger-200/30 bg-danger-500/5">
+                <div className="flex gap-3 items-center mb-4">
+                    <div className="flex justify-center items-center w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl shadow-lg">
+                        <AlertTriangle className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text-danger">
+                    <h2 className="text-xl font-bold font-display gradient-text-danger">
                         Danger Zone
                     </h2>
                 </div>
 
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                <p className="mb-4 font-body text-light-text-secondary dark:text-dark-text-secondary">
                     Once you close your account, there is no going back after the 30-day grace period.
                     Please be certain before proceeding.
                 </p>
@@ -184,9 +184,9 @@ export const AccountClosure: React.FC = () => {
                 {!isPending && !isInProcess && (
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="btn btn-danger flex items-center gap-2"
+                        className="flex gap-2 items-center btn btn-danger"
                     >
-                        <TrashIcon className="h-5 w-5" />
+                        <Trash2 className="w-5 h-5" />
                         <span>Close Account</span>
                     </button>
                 )}
@@ -194,52 +194,52 @@ export const AccountClosure: React.FC = () => {
 
             {/* Closure Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="glass rounded-2xl p-6 border border-danger-200/30 shadow-2xl backdrop-blur-xl max-w-md w-full">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-display font-bold gradient-text-danger">
+                <div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50">
+                    <div className="p-6 w-full max-w-md rounded-2xl border shadow-2xl backdrop-blur-xl glass border-danger-200/30">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold font-display gradient-text-danger">
                                 {modalStep === 'warning' && 'Close Account'}
                                 {modalStep === 'email-sent' && 'Email Sent'}
                                 {modalStep === 'cooldown' && 'Cooldown Active'}
                             </h3>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="btn btn-ghost p-2 rounded-lg hover:bg-danger-500/10 hover:text-danger-500 transition-colors"
+                                className="p-2 rounded-lg transition-colors btn btn-ghost hover:bg-danger-500/10 hover:text-danger-500"
                                 aria-label="Close modal"
                             >
-                                <XMarkIcon className="h-5 w-5" />
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Step 1: Warning */}
                         {modalStep === 'warning' && (
                             <div className="space-y-4">
-                                <div className="glass rounded-lg p-4 border border-danger-200/30 bg-danger-500/10">
-                                    <h4 className="font-display font-semibold text-danger-600 dark:text-danger-400 mb-2">
+                                <div className="p-4 rounded-lg border glass border-danger-200/30 bg-danger-500/10">
+                                    <h4 className="mb-2 font-semibold font-display text-danger-600 dark:text-danger-400">
                                         This action will:
                                     </h4>
                                     <ul className="space-y-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-danger-500 mt-1">•</span>
+                                        <li className="flex gap-2 items-start">
+                                            <span className="mt-1 text-danger-500">•</span>
                                             <span>Start a 24-hour cooldown period</span>
                                         </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-danger-500 mt-1">•</span>
+                                        <li className="flex gap-2 items-start">
+                                            <span className="mt-1 text-danger-500">•</span>
                                             <span>Give you 30 days to change your mind</span>
                                         </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-danger-500 mt-1">•</span>
+                                        <li className="flex gap-2 items-start">
+                                            <span className="mt-1 text-danger-500">•</span>
                                             <span>Permanently delete all your data after 30 days</span>
                                         </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-danger-500 mt-1">•</span>
+                                        <li className="flex gap-2 items-start">
+                                            <span className="mt-1 text-danger-500">•</span>
                                             <span>Delete API keys, usage data, and settings</span>
                                         </li>
                                     </ul>
                                 </div>
 
                                 <div>
-                                    <label className="block font-display font-medium gradient-text mb-2">
+                                    <label className="block mb-2 font-medium font-display gradient-text">
                                         Confirm Password *
                                     </label>
                                     <input
@@ -247,12 +247,12 @@ export const AccountClosure: React.FC = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="Enter your password"
-                                        className="input w-full"
+                                        className="w-full input"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block font-display font-medium gradient-text mb-2">
+                                    <label className="block mb-2 font-medium font-display gradient-text">
                                         Reason (Optional)
                                     </label>
                                     <textarea
@@ -260,21 +260,21 @@ export const AccountClosure: React.FC = () => {
                                         onChange={(e) => setReason(e.target.value)}
                                         placeholder="Help us understand why you're leaving..."
                                         rows={3}
-                                        className="input w-full resize-none"
+                                        className="w-full resize-none input"
                                     />
                                 </div>
 
                                 <div className="flex gap-3">
                                     <button
                                         onClick={() => setIsModalOpen(false)}
-                                        className="btn btn-secondary flex-1"
+                                        className="flex-1 btn btn-secondary"
                                         disabled={isLoading}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleInitiateClosure}
-                                        className="btn btn-danger flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 btn btn-danger disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={isLoading || !password.trim()}
                                     >
                                         {isLoading ? 'Processing...' : 'Continue'}
@@ -286,11 +286,11 @@ export const AccountClosure: React.FC = () => {
                         {/* Step 2: Email Sent */}
                         {modalStep === 'email-sent' && (
                             <div className="space-y-4 text-center">
-                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center ring-2 ring-green-500/30">
-                                    <CheckCircleIcon className="h-10 w-10 text-green-500" />
+                                <div className="flex justify-center items-center mx-auto w-16 h-16 bg-gradient-to-br rounded-full ring-2 from-green-500/20 to-green-600/20 ring-green-500/30">
+                                    <CheckCircle className="w-10 h-10 text-green-500" />
                                 </div>
                                 <div>
-                                    <h4 className="font-display font-semibold text-lg mb-2">
+                                    <h4 className="mb-2 text-lg font-semibold font-display">
                                         Check Your Email
                                     </h4>
                                     <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
@@ -300,7 +300,7 @@ export const AccountClosure: React.FC = () => {
                                 </div>
                                 <button
                                     onClick={() => setIsModalOpen(false)}
-                                    className="btn btn-primary w-full"
+                                    className="w-full btn btn-primary"
                                 >
                                     Got It
                                 </button>
@@ -310,24 +310,24 @@ export const AccountClosure: React.FC = () => {
                         {/* Step 3: Cooldown */}
                         {modalStep === 'cooldown' && cooldownEndsAt && (
                             <div className="space-y-4 text-center">
-                                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 flex items-center justify-center ring-2 ring-yellow-500/30">
-                                    <ClockIcon className="h-10 w-10 text-yellow-500" />
+                                <div className="flex justify-center items-center mx-auto w-16 h-16 bg-gradient-to-br rounded-full ring-2 from-yellow-500/20 to-yellow-600/20 ring-yellow-500/30">
+                                    <Clock className="w-10 h-10 text-yellow-500" />
                                 </div>
                                 <div>
-                                    <h4 className="font-display font-semibold text-lg mb-2">
+                                    <h4 className="mb-2 text-lg font-semibold font-display">
                                         Cooldown Period
                                     </h4>
-                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                                    <p className="mb-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                         Your account closure has been confirmed. The cooldown period ends in:
                                     </p>
-                                    <p className="text-xl font-display font-bold gradient-text-warning">
+                                    <p className="text-xl font-bold font-display gradient-text-warning">
                                         {formatTimeRemaining(cooldownEndsAt)}
                                     </p>
                                 </div>
                                 <button
                                     onClick={handleCancelClosure}
                                     disabled={isLoading}
-                                    className="btn btn-secondary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? 'Cancelling...' : 'Cancel Closure'}
                                 </button>

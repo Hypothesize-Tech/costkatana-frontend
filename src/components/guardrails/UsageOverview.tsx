@@ -1,5 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { TrendingUp, AlertTriangle, CheckCircle, XCircle, Database } from 'lucide-react';
+import {
+    TrendingUp,
+    AlertTriangle,
+    CheckCircle,
+    XCircle,
+    Database,
+    Sparkles,
+    Coins,
+    Zap,
+    FileText,
+    Folder,
+    Settings,
+    DollarSign,
+    Bot,
+    Lock,
+    Rocket,
+    Wand2,
+    AlertCircle,
+    Lightbulb,
+    ArrowRight
+} from 'lucide-react';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
 
@@ -82,17 +102,17 @@ export const UsageOverview: React.FC = () => {
 
     const getStatusIcon = (percentage: number) => {
         if (percentage >= 90) return (
-            <div className="w-6 h-6 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-danger">
                 <XCircle className="w-3 h-3 text-white" />
             </div>
         );
         if (percentage >= 75) return (
-            <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
+            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-warning">
                 <AlertTriangle className="w-3 h-3 text-white" />
             </div>
         );
         return (
-            <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-success">
                 <CheckCircle className="w-3 h-3 text-white" />
             </div>
         );
@@ -105,8 +125,8 @@ export const UsageOverview: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-                <div className="flex items-center justify-center h-64">
+            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex justify-center items-center h-64">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
             </div>
@@ -115,12 +135,12 @@ export const UsageOverview: React.FC = () => {
 
     if (error || !usageStats) {
         return (
-            <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8">
+            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/10">
                 <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
-                        <AlertTriangle className="h-5 w-5 text-white" />
+                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
+                        <AlertTriangle className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-xl font-display font-bold gradient-text-danger">Error Loading Usage Data</h3>
+                    <h3 className="text-xl font-bold font-display gradient-text-danger">Error Loading Usage Data</h3>
                 </div>
                 <p className="font-body text-danger-700 dark:text-danger-300">{error || 'Unable to load usage data'}</p>
             </div>
@@ -132,32 +152,36 @@ export const UsageOverview: React.FC = () => {
     return (
         <div className="space-y-8">
             {/* Plan Overview */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-                <div className="flex items-center justify-between mb-6">
+            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
+                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
                             <Database className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text-primary">📊 Usage Overview</h3>
+                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Overview</h3>
                     </div>
-                    <span className="text-sm font-display font-bold bg-gradient-primary text-white px-4 py-2 rounded-full shadow-lg">
-                        ✨ {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
+                    <span className="flex gap-2 items-center px-4 py-2 text-sm font-bold text-white rounded-full shadow-lg font-display bg-gradient-primary">
+                        <Sparkles className="w-4 h-4" />
+                        {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
                     </span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {/* Tokens Usage */}
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🪙 Tokens</span>
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Coins className="w-4 h-4" />
+                                Tokens
+                            </span>
                             {getStatusIcon(percentages.tokens)}
                         </div>
-                        <div className="w-full bg-primary-200/30 rounded-full h-3 mb-3 overflow-hidden">
+                        <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-primary-200/30 dark:bg-primary-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.tokens)}`}
                                 style={{ width: `${percentages.tokens}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
                             <span>{formatNumber(current.tokens)}</span>
                             <span>{formatLimit(limits.tokensPerMonth)}</span>
                         </div>
@@ -167,18 +191,21 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Requests Usage */}
-                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">⚡ API Requests</span>
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Zap className="w-4 h-4" />
+                                API Requests
+                            </span>
                             {getStatusIcon(percentages.requests)}
                         </div>
-                        <div className="w-full bg-secondary-200/30 rounded-full h-3 mb-3 overflow-hidden">
+                        <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-secondary-200/30 dark:bg-secondary-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.requests)}`}
                                 style={{ width: `${percentages.requests}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
                             <span>{formatNumber(current.requests)}</span>
                             <span>{formatLimit(limits.requestsPerMonth)}</span>
                         </div>
@@ -188,18 +215,21 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Logs Usage */}
-                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">📝 Logs</span>
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 dark:border-accent-700/30 from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <FileText className="w-4 h-4" />
+                                Logs
+                            </span>
                             {getStatusIcon(percentages.logs)}
                         </div>
-                        <div className="w-full bg-accent-200/30 rounded-full h-3 mb-3 overflow-hidden">
+                        <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-accent-200/30 dark:bg-accent-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.logs)}`}
                                 style={{ width: `${limits.logsPerMonth === -1 ? 0 : percentages.logs}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
                             <span>{formatNumber(current.logs)}</span>
                             <span>{formatLimit(limits.logsPerMonth)}</span>
                         </div>
@@ -209,18 +239,21 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Projects */}
-                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🗂️ Projects</span>
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-success-200/30 dark:border-success-700/30 from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Folder className="w-4 h-4" />
+                                Projects
+                            </span>
                             {getStatusIcon(percentages.projects)}
                         </div>
-                        <div className="w-full bg-success-200/30 rounded-full h-3 mb-3 overflow-hidden">
+                        <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-success-200/30 dark:bg-success-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.projects)}`}
                                 style={{ width: `${limits.projects === -1 ? 0 : percentages.projects}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
                             <span>{current.projects}</span>
                             <span>{formatLimit(limits.projects)}</span>
                         </div>
@@ -230,18 +263,21 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Workflows */}
-                    <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">⚙️ Workflows</span>
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 dark:border-warning-700/30 from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Settings className="w-4 h-4" />
+                                Workflows
+                            </span>
                             {getStatusIcon(percentages.workflows)}
                         </div>
-                        <div className="w-full bg-warning-200/30 rounded-full h-3 mb-3 overflow-hidden">
+                        <div className="overflow-hidden mb-3 w-full h-3 rounded-full bg-warning-200/30 dark:bg-warning-800/30">
                             <div
                                 className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentages.workflows)}`}
                                 style={{ width: `${limits.workflows === -1 ? 0 : percentages.workflows}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <div className="flex justify-between mb-2 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
                             <span>{current.workflows}</span>
                             <span>{formatLimit(limits.workflows)}</span>
                         </div>
@@ -251,14 +287,17 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Monthly Cost */}
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">💰 Monthly Cost</span>
-                            <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <DollarSign className="w-4 h-4" />
+                                Monthly Cost
+                            </span>
+                            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-primary">
                                 <TrendingUp className="w-3 h-3 text-white" />
                             </div>
                         </div>
-                        <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
+                        <div className="mb-2 text-3xl font-bold font-display gradient-text-primary">
                             ${current.cost.toFixed(2)}
                         </div>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -267,19 +306,23 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Model Usage */}
-                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-display font-bold text-light-text-primary dark:text-dark-text-primary">🤖 Available Models</span>
-                            <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Bot className="w-4 h-4" />
+                                Available Models
+                            </span>
+                            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-secondary">
                                 <Database className="w-3 h-3 text-white" />
                             </div>
                         </div>
-                        <div className="text-sm font-body text-light-text-primary dark:text-dark-text-primary mb-3">
+                        <div className="mb-3 text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                             {limits.models && limits.models.length > 0 ? (
                                 <div className="flex flex-wrap gap-2">
                                     {limits.models.map((model: string, index: number) => (
-                                        <span key={index} className="px-3 py-1 bg-gradient-primary/10 text-primary-700 dark:text-primary-300 text-xs rounded-full border border-primary-200/30">
-                                            {model === '*' ? '✨ All Models' : model}
+                                        <span key={index} className="flex gap-1 items-center px-3 py-1 text-xs rounded-full border bg-gradient-primary/10 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-700/30">
+                                            {model === '*' && <Sparkles className="w-3 h-3" />}
+                                            {model === '*' ? 'All Models' : model}
                                         </span>
                                     ))}
                                 </div>
@@ -287,8 +330,18 @@ export const UsageOverview: React.FC = () => {
                                 <span className="text-light-text-muted dark:text-dark-text-muted">No models available</span>
                             )}
                         </div>
-                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            {plan === 'free' ? '🔒 Limited to cheaper models' : '🚀 Access to all models'}
+                        <p className="flex gap-1 items-center text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            {plan === 'free' ? (
+                                <>
+                                    <Lock className="w-3 h-3" />
+                                    Limited to cheaper models
+                                </>
+                            ) : (
+                                <>
+                                    <Rocket className="w-3 h-3" />
+                                    Access to all models
+                                </>
+                            )}
                         </p>
                     </div>
                 </div>
@@ -296,33 +349,51 @@ export const UsageOverview: React.FC = () => {
 
             {/* Predictions */}
             {predictions && (
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+                <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex items-center mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center mr-4 shadow-lg">
-                            <TrendingUp className="w-5 h-5 text-white" />
+                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-accent">
+                            <Wand2 className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text-primary">🔮 End of Month Predictions</h3>
+                        <h3 className="text-2xl font-bold font-display gradient-text-primary">End of Month Predictions</h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 text-center hover:scale-105 transition-transform duration-300">
-                            <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">🪙 Predicted Tokens</p>
-                            <p className="text-2xl font-display font-bold gradient-text-primary mb-2">{formatNumber(predictions.tokens)}</p>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                        <div className="p-6 text-center bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                            <p className="flex gap-2 justify-center items-center mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                <Coins className="w-4 h-4" />
+                                Predicted Tokens
+                            </p>
+                            <p className="mb-2 text-2xl font-bold font-display gradient-text-primary">{formatNumber(predictions.tokens)}</p>
                             {predictions.tokens > limits.tokensPerMonth && limits.tokensPerMonth !== -1 && (
-                                <p className="text-xs font-display font-bold gradient-text-danger">⚠️ Will exceed limit</p>
+                                <p className="flex gap-1 justify-center items-center text-xs font-bold font-display gradient-text-danger">
+                                    <AlertCircle className="w-3 h-3" />
+                                    Will exceed limit
+                                </p>
                             )}
                         </div>
-                        <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 text-center hover:scale-105 transition-transform duration-300">
-                            <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">⚡ Predicted Requests</p>
-                            <p className="text-2xl font-display font-bold gradient-text-secondary mb-2">{formatNumber(predictions.requests)}</p>
+                        <div className="p-6 text-center bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
+                            <p className="flex gap-2 justify-center items-center mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                <Zap className="w-4 h-4" />
+                                Predicted Requests
+                            </p>
+                            <p className="mb-2 text-2xl font-bold font-display gradient-text-secondary">{formatNumber(predictions.requests)}</p>
                             {predictions.requests > limits.requestsPerMonth && limits.requestsPerMonth !== -1 && (
-                                <p className="text-xs font-display font-bold gradient-text-danger">⚠️ Will exceed limit</p>
+                                <p className="flex gap-1 justify-center items-center text-xs font-bold font-display gradient-text-danger">
+                                    <AlertCircle className="w-3 h-3" />
+                                    Will exceed limit
+                                </p>
                             )}
                         </div>
-                        <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
-                            <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">📝 Predicted Logs</p>
-                            <p className="text-2xl font-display font-bold gradient-text-accent mb-2">{formatNumber(predictions.logs)}</p>
+                        <div className="p-6 text-center bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 dark:border-accent-700/30 from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105">
+                            <p className="flex gap-2 justify-center items-center mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                <FileText className="w-4 h-4" />
+                                Predicted Logs
+                            </p>
+                            <p className="mb-2 text-2xl font-bold font-display gradient-text-accent">{formatNumber(predictions.logs)}</p>
                             {predictions.logs > limits.logsPerMonth && limits.logsPerMonth !== -1 && (
-                                <p className="text-xs font-display font-bold gradient-text-danger">⚠️ Will exceed limit</p>
+                                <p className="flex gap-1 justify-center items-center text-xs font-bold font-display gradient-text-danger">
+                                    <AlertCircle className="w-3 h-3" />
+                                    Will exceed limit
+                                </p>
                             )}
                         </div>
                     </div>
@@ -331,21 +402,19 @@ export const UsageOverview: React.FC = () => {
 
             {/* Recommendations */}
             {recommendations && recommendations.length > 0 && (
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+                <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex items-center mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
-                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
+                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
+                            <Lightbulb className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text-primary">💡 Optimization Recommendations</h3>
+                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Optimization Recommendations</h3>
                     </div>
                     <div className="space-y-4">
                         {recommendations.map((rec, index) => (
-                            <div key={index} className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/5 transition-all duration-300">
+                            <div key={index} className="p-4 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 hover:bg-primary-500/5">
                                 <div className="flex items-start space-x-3">
-                                    <div className="w-2 h-2 bg-gradient-success rounded-full mt-2 flex-shrink-0 shadow-lg"></div>
-                                    <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">{rec}</span>
+                                    <div className="flex-shrink-0 mt-2 w-2 h-2 rounded-full shadow-lg bg-gradient-success"></div>
+                                    <span className="text-sm leading-relaxed font-body text-light-text-primary dark:text-dark-text-primary">{rec}</span>
                                 </div>
                             </div>
                         ))}
@@ -355,21 +424,23 @@ export const UsageOverview: React.FC = () => {
 
             {/* Upgrade Prompt for Free Users */}
             {plan === 'free' && (percentages.tokens > 70 || percentages.requests > 70) && (
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary p-6">
+                <div className="p-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary">
                     <div className="flex items-center mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3 shadow-lg">
+                        <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-white/20">
                             <TrendingUp className="w-4 h-4 text-white" />
                         </div>
-                        <h3 className="text-lg font-display font-bold text-white">🚀 Approaching Limits</h3>
+                        <h3 className="text-lg font-bold text-white font-display">Approaching Limits</h3>
                     </div>
-                    <p className="text-sm font-body text-white/90 mb-4">
+                    <p className="mb-4 text-sm font-body text-white/90">
                         You're approaching your plan limits. Consider upgrading to Plus or Pro for increased limits and access to all AI models.
                     </p>
                     <a
                         href="https://www.costkatana.com/#pricing"
-                        className="inline-flex items-center text-sm font-display font-semibold bg-white text-primary-600 px-4 py-2 rounded-xl hover:bg-primary-50 transition-all duration-300 hover:scale-105 shadow-lg"
+                        className="inline-flex items-center px-4 py-2 text-sm font-semibold bg-white rounded-xl shadow-lg transition-all duration-300 btn btn-primary font-display text-primary-600 hover:bg-primary-50 hover:scale-105"
                     >
-                        ✨ View Plans →
+                        <Sparkles className="mr-1 w-4 h-4" />
+                        View Plans
+                        <ArrowRight className="ml-1 w-4 h-4" />
                     </a>
                 </div>
             )}

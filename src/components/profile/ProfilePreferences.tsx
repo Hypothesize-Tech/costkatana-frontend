@@ -1,5 +1,5 @@
-// src/components/profile/ProfilePreferences.tsx
 import React, { useState } from "react";
+import { Settings, Palette, Moon, Mail, Sparkles } from "lucide-react";
 import { Switch } from "../common/Switch";
 
 interface ProfilePreferencesProps {
@@ -14,7 +14,7 @@ interface ProfilePreferencesProps {
     showCostInHeader: boolean;
     enableBetaFeatures: boolean;
   };
-  onUpdate: (preferences: any) => void;
+  onUpdate: (preferences: ProfilePreferencesProps["preferences"]) => void;
 }
 
 export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
@@ -24,7 +24,10 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   const [localPreferences, setLocalPreferences] = useState(preferences);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (
+    key: keyof ProfilePreferencesProps["preferences"],
+    value: string | boolean,
+  ) => {
     setLocalPreferences({ ...localPreferences, [key]: value });
     setHasChanges(true);
   };
@@ -40,27 +43,29 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   };
   return (
     <div>
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-          <span className="text-white text-lg">⚙️</span>
+      <div className="flex gap-4 items-center mb-8">
+        <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
+          <Settings className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl font-display font-bold gradient-text-primary">Preferences</h2>
+        <h2 className="text-2xl font-bold font-display gradient-text-primary">
+          Preferences
+        </h2>
       </div>
 
       <div className="space-y-8">
         {/* Display Preferences */}
-        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">🎨</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-primary">
+              <Palette className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-display font-semibold gradient-text-primary text-lg">
+            <h3 className="text-lg font-semibold font-display gradient-text-primary">
               Display Settings
             </h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+              <label className="block mb-3 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Language
               </label>
               <select
@@ -78,7 +83,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+              <label className="block mb-3 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Timezone
               </label>
               <select
@@ -98,7 +103,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+              <label className="block mb-3 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Date Format
               </label>
               <select
@@ -113,7 +118,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
             </div>
 
             <div>
-              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+              <label className="block mb-3 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Currency
               </label>
               <select
@@ -132,16 +137,18 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Theme */}
-        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">🌌</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30 dark:border-secondary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-secondary">
+              <Moon className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-display font-semibold gradient-text-secondary text-lg">Appearance</h3>
+            <h3 className="text-lg font-semibold font-display gradient-text-secondary">
+              Appearance
+            </h3>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-4">
+              <label className="block mb-4 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Theme
               </label>
               <div className="grid grid-cols-3 gap-4">
@@ -149,9 +156,9 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                   <button
                     key={theme}
                     onClick={() => handleChange("theme", theme)}
-                    className={`px-6 py-3 font-display font-medium rounded-xl border transition-all duration-200 ${localPreferences.theme === theme
-                      ? "border-primary-500 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 scale-105 shadow-lg"
-                      : "glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:border-primary-300/50 hover:scale-105"
+                    className={`btn px-6 py-3 font-display font-medium rounded-xl border transition-all duration-200 ${localPreferences.theme === theme
+                      ? "border-primary-500 dark:border-primary-400 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 scale-105 shadow-lg"
+                      : "glass border-primary-200/30 dark:border-primary-700/30 text-light-text-primary dark:text-dark-text-primary hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105"
                       }`}
                   >
                     {theme.charAt(0).toUpperCase() + theme.slice(1)}
@@ -163,23 +170,23 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Email Preferences */}
-        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">📧</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-accent-200/30 dark:border-accent-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-accent">
+              <Mail className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-display font-semibold gradient-text-accent text-lg">
+            <h3 className="text-lg font-semibold font-display gradient-text-accent">
               Email Preferences
             </h3>
           </div>
           <div>
-            <label className="block font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+            <label className="block mb-3 font-medium font-display text-light-text-primary dark:text-dark-text-primary">
               Email Digest Frequency
             </label>
             <select
               value={localPreferences.emailDigest}
               onChange={(e) => handleChange("emailDigest", e.target.value)}
-              className="input max-w-xs"
+              className="max-w-xs input"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -190,15 +197,17 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         </div>
 
         {/* Feature Toggles */}
-        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">✨</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30 dark:border-success-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-success">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-display font-semibold gradient-text-success text-lg">Features</h3>
+            <h3 className="text-lg font-semibold font-display gradient-text-success">
+              Features
+            </h3>
           </div>
           <div className="space-y-6">
-            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <Switch
                 checked={localPreferences.autoOptimize}
                 onChange={(checked) => handleChange("autoOptimize", checked)}
@@ -206,7 +215,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                 description="Automatically apply optimizations to frequently used prompts"
               />
             </div>
-            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <Switch
                 checked={localPreferences.showCostInHeader}
                 onChange={(checked) => handleChange("showCostInHeader", checked)}
@@ -214,7 +223,7 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                 description="Display your current month's spending in the navigation bar"
               />
             </div>
-            <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <Switch
                 checked={localPreferences.enableBetaFeatures}
                 onChange={(checked) =>
@@ -229,17 +238,11 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
 
         {/* Save Button */}
         {hasChanges && (
-          <div className="flex justify-end space-x-4 pt-8 border-t border-primary-200/30">
-            <button
-              onClick={handleReset}
-              className="btn-secondary"
-            >
+          <div className="flex justify-end pt-8 space-x-4 border-t border-primary-200/30 dark:border-primary-700/30">
+            <button onClick={handleReset} className="btn btn-secondary">
               Reset
             </button>
-            <button
-              onClick={handleSave}
-              className="btn-primary"
-            >
+            <button onClick={handleSave} className="btn btn-primary">
               Save Changes
             </button>
           </div>
@@ -247,4 +250,4 @@ export const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
       </div>
     </div>
   );
-}
+};

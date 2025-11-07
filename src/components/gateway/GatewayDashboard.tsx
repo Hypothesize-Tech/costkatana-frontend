@@ -1,4 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Globe,
+  BarChart3,
+  DollarSign,
+  Zap,
+  Clock,
+  Monitor,
+  Target,
+  Settings,
+  Tag,
+  AlertTriangle,
+} from 'lucide-react';
 import { GatewayService, GatewayAnalytics, GatewayStats } from '../../services/gateway.service';
 
 interface GatewayDashboardProps {
@@ -67,12 +79,12 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="animate-pulse space-y-6">
-          <div className="h-32 glass rounded-xl border border-primary-200/30"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
-            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
-            <div className="h-64 glass rounded-xl border border-primary-200/30"></div>
+        <div className="space-y-6 animate-pulse">
+          <div className="h-32 rounded-xl border glass border-primary-200/30"></div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="h-64 rounded-xl border glass border-primary-200/30"></div>
+            <div className="h-64 rounded-xl border glass border-primary-200/30"></div>
+            <div className="h-64 rounded-xl border glass border-primary-200/30"></div>
           </div>
         </div>
       </div>
@@ -81,17 +93,15 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-full bg-gradient-danger/20 flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8 text-danger-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
+      <div className="py-12 text-center">
+        <div className="flex justify-center items-center mx-auto mb-6 w-16 h-16 rounded-full bg-gradient-danger/20">
+          <AlertTriangle className="w-8 h-8 text-danger-600 dark:text-danger-400" />
         </div>
-        <h3 className="text-xl font-display font-bold gradient-text-danger mb-3">Gateway Error</h3>
-        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-6">{error}</p>
+        <h3 className="mb-3 text-xl font-bold font-display gradient-text-danger">Gateway Error</h3>
+        <p className="mb-6 font-body text-light-text-secondary dark:text-dark-text-secondary">{error}</p>
         <button
           onClick={loadGatewayData}
-          className="btn-primary"
+          className="btn btn-primary"
         >
           Retry
         </button>
@@ -102,14 +112,14 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">🌐</span>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-4 items-center">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
+            <Globe className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-3xl font-display font-bold gradient-text-primary">Gateway Analytics</h2>
+          <h2 className="text-3xl font-bold font-display gradient-text-primary">Gateway Analytics</h2>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex gap-3 items-center">
           <div className={`w-4 h-4 rounded-full ${health?.status === 'healthy' ? 'bg-gradient-success' : 'bg-gradient-danger'}`}></div>
           <span className={`px-3 py-1 rounded-full font-display font-medium ${health?.status === 'healthy'
             ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
@@ -121,78 +131,78 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary/20 flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-2xl">📊</span>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 text-center rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 hover:scale-105">
+          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl shadow-lg bg-gradient-primary/20">
+            <BarChart3 className="w-6 h-6 text-primary-600 dark:text-primary-400" />
           </div>
-          <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
+          <div className="mb-2 text-3xl font-bold font-display gradient-text-primary">
             {analytics?.summary.totalRequests?.toLocaleString() || 0}
           </div>
-          <p className="font-display font-semibold text-primary-700 dark:text-primary-300">Total Requests</p>
-          <p className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">via Gateway</p>
+          <p className="font-semibold font-display text-primary-700 dark:text-primary-300">Total Requests</p>
+          <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">via Gateway</p>
         </div>
 
-        <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
-          <div className="w-12 h-12 rounded-xl bg-gradient-success/20 flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-2xl">💰</span>
+        <div className="p-6 text-center rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-success-200/30 hover:scale-105">
+          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl shadow-lg bg-gradient-success/20">
+            <DollarSign className="w-6 h-6 text-success-600 dark:text-success-400" />
           </div>
-          <div className="text-3xl font-display font-bold gradient-text-success mb-2">
+          <div className="mb-2 text-3xl font-bold font-display gradient-text-success">
             ${analytics?.summary.totalCost?.toFixed(4) || '0.0000'}
           </div>
-          <p className="font-display font-semibold text-success-700 dark:text-success-300">Total Cost</p>
-          <p className="font-body text-sm text-success-600 dark:text-success-400 mt-1">
+          <p className="font-semibold font-display text-success-700 dark:text-success-300">Total Cost</p>
+          <p className="mt-1 text-sm font-body text-success-600 dark:text-success-400">
             ${analytics?.summary.cost_savings?.toFixed(4) || '0'} saved
           </p>
         </div>
 
-        <div className="glass p-6 rounded-xl border border-warning-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
-          <div className="w-12 h-12 rounded-xl bg-gradient-warning/20 flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-2xl">⚡</span>
+        <div className="p-6 text-center rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 hover:scale-105">
+          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl shadow-lg bg-gradient-warning/20">
+            <Zap className="w-6 h-6 text-warning-600 dark:text-warning-400" />
           </div>
-          <div className="text-3xl font-display font-bold gradient-text-warning mb-2">
+          <div className="mb-2 text-3xl font-bold font-display gradient-text-warning">
             {analytics?.summary.cacheHitRate?.toFixed(1) || 0}%
           </div>
-          <p className="font-display font-semibold text-warning-700 dark:text-warning-300">Cache Hit Rate</p>
-          <p className="font-body text-sm text-warning-600 dark:text-warning-400 mt-1">
+          <p className="font-semibold font-display text-warning-700 dark:text-warning-300">Cache Hit Rate</p>
+          <p className="mt-1 text-sm font-body text-warning-600 dark:text-warning-400">
             {analytics?.cacheMetrics.totalHits || 0} hits
           </p>
         </div>
 
-        <div className="glass p-6 rounded-xl border border-accent-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
-          <div className="w-12 h-12 rounded-xl bg-gradient-accent/20 flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-2xl">⏱️</span>
+        <div className="p-6 text-center rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 hover:scale-105">
+          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl shadow-lg bg-gradient-accent/20">
+            <Clock className="w-6 h-6 text-accent-600 dark:text-accent-400" />
           </div>
-          <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
+          <div className="mb-2 text-3xl font-bold font-display gradient-text-accent">
             {analytics?.summary.averageLatency?.toFixed(0) || 0}ms
           </div>
-          <p className="font-display font-semibold text-accent-700 dark:text-accent-300">Avg Latency</p>
-          <p className="font-body text-sm text-accent-600 dark:text-accent-400 mt-1">Gateway overhead</p>
+          <p className="font-semibold font-display text-accent-700 dark:text-accent-300">Avg Latency</p>
+          <p className="mt-1 text-sm font-body text-accent-600 dark:text-accent-400">Gateway overhead</p>
         </div>
       </div>
 
       {/* System Stats */}
       {stats && (
-        <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">💻</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
+              <Monitor className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">System Status</h3>
+            <h3 className="text-xl font-bold font-display gradient-text-primary">System Status</h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass p-4 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-center">
-              <h4 className="font-display font-semibold text-success-700 dark:text-success-300 mb-2">Uptime</h4>
-              <p className="text-2xl font-display font-bold gradient-text-success">{formatUptime(stats.uptime)}</p>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30">
+              <h4 className="mb-2 font-semibold font-display text-success-700 dark:text-success-300">Uptime</h4>
+              <p className="text-2xl font-bold font-display gradient-text-success">{formatUptime(stats.uptime)}</p>
             </div>
-            <div className="glass p-4 rounded-lg border border-warning-200/30 shadow-lg backdrop-blur-xl text-center">
-              <h4 className="font-display font-semibold text-warning-700 dark:text-warning-300 mb-2">Memory Usage</h4>
-              <p className="text-2xl font-display font-bold gradient-text-warning">{formatBytes(stats.memoryUsage.heapUsed)}</p>
-              <p className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
+            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-warning-200/30">
+              <h4 className="mb-2 font-semibold font-display text-warning-700 dark:text-warning-300">Memory Usage</h4>
+              <p className="text-2xl font-bold font-display gradient-text-warning">{formatBytes(stats.memoryUsage.heapUsed)}</p>
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
             </div>
-            <div className="glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
-              <h4 className="font-display font-semibold text-accent-700 dark:text-accent-300 mb-2">Cache Size</h4>
-              <p className="text-2xl font-display font-bold gradient-text-accent">{stats.cacheSize} items</p>
+            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30">
+              <h4 className="mb-2 font-semibold font-display text-accent-700 dark:text-accent-300">Cache Size</h4>
+              <p className="text-2xl font-bold font-display gradient-text-accent">{stats.cacheSize} items</p>
             </div>
           </div>
         </div>
@@ -200,36 +210,36 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Provider Breakdown */}
       {analytics?.providerBreakdown && analytics.providerBreakdown.length > 0 && (
-        <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🎯</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
+              <Target className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">Provider Usage</h3>
+            <h3 className="text-xl font-bold font-display gradient-text-primary">Provider Usage</h3>
           </div>
           <div className="space-y-6">
             {analytics.providerBreakdown.map((provider, index) => (
-              <div key={index} className="glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-display font-semibold gradient-text-primary">{provider.provider}</span>
-                  <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-sm">
+              <div key={index} className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-semibold font-display gradient-text-primary">{provider.provider}</span>
+                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display">
                     {provider.percentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-gradient-secondary/20 rounded-full h-3 mb-3">
+                <div className="mb-3 w-full h-3 rounded-full bg-gradient-secondary/20">
                   <div
-                    className="bg-gradient-primary h-3 rounded-full"
+                    className="h-3 rounded-full bg-gradient-primary"
                     style={{ width: `${provider.percentage}%` }}
                   ></div>
                 </div>
                 <div className="flex justify-between">
-                  <span className="px-2 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-xs">
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display">
                     {provider.requests} requests
                   </span>
-                  <span className="px-2 py-1 rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display font-medium text-xs">
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display">
                     ${provider.cost.toFixed(4)}
                   </span>
-                  <span className="px-2 py-1 rounded-full bg-gradient-accent/20 text-accent-700 dark:text-accent-300 font-display font-medium text-xs">
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-accent/20 text-accent-700 dark:text-accent-300 font-display">
                     {provider.averageLatency > 0 ? `${provider.averageLatency.toFixed(0)}ms avg` : 'N/A'}
                   </span>
                 </div>
@@ -241,33 +251,33 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Budget Utilization */}
       {analytics?.budgetUtilization && analytics.budgetUtilization.length > 0 && (
-        <div className="glass p-6 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">💰</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
+              <DollarSign className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-success">Budget Utilization</h3>
+            <h3 className="text-xl font-bold font-display gradient-text-success">Budget Utilization</h3>
           </div>
           <div className="space-y-6">
             {analytics.budgetUtilization.map((budget, index) => (
-              <div key={index} className="glass p-4 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-display font-semibold gradient-text-primary">{budget.budgetName}</span>
-                  <span className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-sm">
+              <div key={index} className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-semibold font-display gradient-text-primary">{budget.budgetName}</span>
+                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display">
                     {budget.percentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-gradient-secondary/20 rounded-full h-3 mb-3">
+                <div className="mb-3 w-full h-3 rounded-full bg-gradient-secondary/20">
                   <div
-                    className="bg-gradient-success h-3 rounded-full"
+                    className="h-3 rounded-full bg-gradient-success"
                     style={{ width: `${budget.percentage}%` }}
                   ></div>
                 </div>
                 <div className="flex justify-between">
-                  <span className="px-2 py-1 rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display font-medium text-xs">
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-warning/20 text-warning-700 dark:text-warning-300 font-display">
                     ${budget.utilized.toFixed(4)} used
                   </span>
-                  <span className="px-2 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-xs">
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display">
                     ${budget.total.toFixed(4)} total
                   </span>
                 </div>
@@ -279,19 +289,19 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Features Usage */}
       {analytics?.featuresUsage && (
-        <div className="glass p-6 rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">⚙️</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-accent-200/30">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-accent">
+              <Settings className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-accent">Features Usage</h3>
+            <h3 className="text-xl font-bold font-display gradient-text-accent">Features Usage</h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {analytics.featuresUsage.map((feature, index) => (
-              <div key={index} className="glass p-6 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-center">
-                <h4 className="font-display font-semibold gradient-text-primary mb-3">{feature.feature}</h4>
-                <p className="text-3xl font-display font-bold gradient-text-accent mb-2">{feature.count}</p>
-                <p className="font-body text-sm text-accent-600 dark:text-accent-400">{feature.percentage.toFixed(1)}% usage</p>
+              <div key={index} className="p-6 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30">
+                <h4 className="mb-3 font-semibold font-display gradient-text-primary">{feature.feature}</h4>
+                <p className="mb-2 text-3xl font-bold font-display gradient-text-accent">{feature.count}</p>
+                <p className="text-sm font-body text-accent-600 dark:text-accent-400">{feature.percentage.toFixed(1)}% usage</p>
               </div>
             ))}
           </div>
@@ -300,25 +310,25 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Top Properties */}
       {analytics?.topProperties && analytics.topProperties.length > 0 && (
-        <div className="glass p-6 rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🏷️</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
+          <div className="flex gap-3 items-center mb-6">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
+              <Tag className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">Most Used Properties</h3>
+            <h3 className="text-xl font-bold font-display gradient-text-primary">Most Used Properties</h3>
           </div>
           <div className="space-y-4">
             {analytics.topProperties.slice(0, 5).map((prop, index) => (
-              <div key={index} className="glass p-4 rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-between">
+              <div key={index} className="flex justify-between items-center p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
                 <div className="flex-1">
-                  <span className="font-display font-semibold gradient-text-primary">{prop.property}:</span>
-                  <span className="font-body text-light-text-secondary dark:text-dark-text-secondary ml-2">{prop.value}</span>
+                  <span className="font-semibold font-display gradient-text-primary">{prop.property}:</span>
+                  <span className="ml-2 font-body text-light-text-secondary dark:text-dark-text-secondary">{prop.value}</span>
                 </div>
                 <div className="text-right">
-                  <div className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium text-sm mb-1">
+                  <div className="px-3 py-1 mb-1 text-sm font-medium rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display">
                     {prop.count} requests
                   </div>
-                  <div className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-xs">
+                  <div className="px-3 py-1 text-xs font-medium rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display">
                     ${prop.cost.toFixed(4)}
                   </div>
                 </div>
