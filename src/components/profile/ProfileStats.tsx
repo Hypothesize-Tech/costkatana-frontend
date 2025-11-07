@@ -1,4 +1,3 @@
-// src/components/profile/ProfileStats.tsx
 import React from "react";
 import {
   CurrencyDollarIcon,
@@ -6,6 +5,7 @@ import {
   SparklesIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
+import { Building2, Bot, Calendar } from "lucide-react";
 import { formatCurrency } from "../../utils/formatters";
 
 interface ProfileStatsProps {
@@ -32,7 +32,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       icon: CurrencyDollarIcon,
       gradient: "bg-gradient-primary",
       textGradient: "gradient-text-primary",
-      borderColor: "border-primary-200/30",
+      borderColor: "border-primary-200/30 dark:border-primary-700/30",
       glowClass: "shadow-lg",
     },
     {
@@ -42,7 +42,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       icon: SparklesIcon,
       gradient: "bg-gradient-success",
       textGradient: "gradient-text-success",
-      borderColor: "border-success-200/30",
+      borderColor: "border-success-200/30 dark:border-success-700/30",
       glowClass: "shadow-lg",
     },
     {
@@ -52,7 +52,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       icon: ChartBarIcon,
       gradient: "bg-gradient-secondary",
       textGradient: "gradient-text-secondary",
-      borderColor: "border-secondary-200/30",
+      borderColor: "border-secondary-200/30 dark:border-secondary-700/30",
       glowClass: "shadow-lg",
     },
     {
@@ -62,30 +62,30 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       icon: ClockIcon,
       gradient: "bg-gradient-accent",
       textGradient: "gradient-text-accent",
-      borderColor: "border-accent-200/30",
+      borderColor: "border-accent-200/30 dark:border-accent-700/30",
       glowClass: "shadow-lg",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {cards.map((card, index) => (
         <div
           key={index}
           className={`glass rounded-xl shadow-lg border ${card.borderColor} backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 hover:border-opacity-50 p-6`}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex gap-4 items-center">
             <div className={`w-14 h-14 rounded-xl ${card.gradient} flex items-center justify-center ${card.glowClass}`}>
-              <card.icon className="h-7 w-7 text-white" />
+              <card.icon className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mb-1">
+              <p className="mb-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 {card.title}
               </p>
               <p className={`text-2xl font-display font-bold ${card.textGradient} mb-1`}>
                 {card.value}
               </p>
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">
+              <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                 {card.subValue}
               </p>
             </div>
@@ -94,37 +94,43 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ stats }) => {
       ))}
 
       {/* Additional Stats */}
-      <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">🏢</span>
+      <div className="grid grid-cols-1 col-span-full gap-6 mt-8 md:grid-cols-3">
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+          <div className="flex gap-3 items-center mb-2">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-primary">
+              <Building2 className="w-4 h-4 text-white" />
             </div>
-            <p className="font-display font-semibold gradient-text-primary">Most Used Service</p>
+            <p className="font-semibold font-display gradient-text-primary">
+              Most Used Service
+            </p>
           </div>
-          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary capitalize">
-            {stats.mostUsedService || 'N/A'}
+          <p className="text-xl font-bold capitalize font-display text-light-text-primary dark:text-dark-text-primary">
+            {stats.mostUsedService || "N/A"}
           </p>
         </div>
-        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">🤖</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+          <div className="flex gap-3 items-center mb-2">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-secondary">
+              <Bot className="w-4 h-4 text-white" />
             </div>
-            <p className="font-display font-semibold gradient-text-secondary">Most Used Model</p>
+            <p className="font-semibold font-display gradient-text-secondary">
+              Most Used Model
+            </p>
           </div>
-          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-            {stats.mostUsedModel || 'N/A'}
+          <p className="text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+            {stats.mostUsedModel || "N/A"}
           </p>
         </div>
-        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">📅</span>
+        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+          <div className="flex gap-3 items-center mb-2">
+            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-accent">
+              <Calendar className="w-4 h-4 text-white" />
             </div>
-            <p className="font-display font-semibold gradient-text-accent">Account Age</p>
+            <p className="font-semibold font-display gradient-text-accent">
+              Account Age
+            </p>
           </div>
-          <p className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+          <p className="text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
             {stats.accountAge || 0} days
           </p>
         </div>

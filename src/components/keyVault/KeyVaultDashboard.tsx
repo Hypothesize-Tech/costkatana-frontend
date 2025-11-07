@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  KeyIcon,
-  ShieldCheckIcon,
-  PlusIcon,
-  ChartBarIcon,
-  CurrencyDollarIcon,
-  ClockIcon
-} from '@heroicons/react/24/outline';
+  Key,
+  Shield,
+  Plus,
+  BarChart3,
+  DollarSign,
+  Clock,
+  Lock,
+  AlertCircle
+} from 'lucide-react';
 import { KeyVaultService, KeyVaultDashboard as DashboardData } from '../../services/keyVault.service';
 import { CreateProviderKeyModal } from './CreateProviderKeyModal';
 import { CreateProxyKeyModal } from './CreateProxyKeyModal';
@@ -79,7 +81,7 @@ export const KeyVaultDashboard: React.FC = () => {
     return (
       <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
         <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center animate-pulse shadow-lg">
-          <span className="text-white text-2xl">🔐</span>
+          <Lock className="h-8 w-8 text-white" />
         </div>
         <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">Loading Key Vault...</h3>
         <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Fetching your secure keys and analytics</p>
@@ -92,7 +94,7 @@ export const KeyVaultDashboard: React.FC = () => {
       <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">❌</span>
+            <AlertCircle className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-display font-bold gradient-text-danger mb-2">Error loading Key Vault</h3>
@@ -121,10 +123,13 @@ export const KeyVaultDashboard: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <ShieldCheckIcon className="h-8 w-8 text-white" />
+                <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">🔐 Key Vault</h1>
+                <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2 flex items-center gap-2">
+                  <Lock className="h-8 w-8" />
+                  Key Vault
+                </h1>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Secure storage and management for your AI provider keys
                 </p>
@@ -135,14 +140,14 @@ export const KeyVaultDashboard: React.FC = () => {
                 onClick={() => setShowCreateProviderModal(true)}
                 className="btn btn-primary flex items-center gap-2"
               >
-                <PlusIcon className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
                 Add Provider Key
               </button>
               <button
                 onClick={() => setShowCreateProxyModal(true)}
                 className="btn btn-secondary flex items-center gap-2"
               >
-                <KeyIcon className="h-5 w-5" />
+                <Key className="h-5 w-5" />
                 Create Proxy Key
               </button>
             </div>
@@ -153,10 +158,10 @@ export const KeyVaultDashboard: React.FC = () => {
         {analytics && (
           <div className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <KeyIcon className="h-6 w-6 text-white" />
+                    <Key className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <p className="font-body text-sm text-primary-600 dark:text-primary-400 mb-1">Total Keys</p>
@@ -165,10 +170,10 @@ export const KeyVaultDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                    <ChartBarIcon className="h-6 w-6 text-white" />
+                    <BarChart3 className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <p className="font-body text-sm text-success-600 dark:text-success-400 mb-1">Total Requests</p>
@@ -177,10 +182,10 @@ export const KeyVaultDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                    <CurrencyDollarIcon className="h-6 w-6 text-white" />
+                    <DollarSign className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <p className="font-body text-sm text-warning-600 dark:text-warning-400 mb-1">Total Cost</p>
@@ -189,10 +194,10 @@ export const KeyVaultDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                    <ClockIcon className="h-6 w-6 text-white" />
+                    <Clock className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <p className="font-body text-sm text-accent-600 dark:text-accent-400 mb-1">Daily Cost</p>
@@ -210,7 +215,7 @@ export const KeyVaultDashboard: React.FC = () => {
         <div className="p-6 border-b border-primary-200/30">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🔐</span>
+              <Lock className="h-5 w-5 text-white" />
             </div>
             <h2 className="text-xl font-display font-bold gradient-text-primary">Provider Keys</h2>
           </div>
@@ -222,7 +227,7 @@ export const KeyVaultDashboard: React.FC = () => {
           {dashboardData?.providerKeys.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-20 h-20 rounded-full bg-gradient-secondary mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <KeyIcon className="h-10 w-10 text-white" />
+                <Key className="h-10 w-10 text-white" />
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No provider keys</h3>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-8">
@@ -232,7 +237,7 @@ export const KeyVaultDashboard: React.FC = () => {
                 onClick={() => setShowCreateProviderModal(true)}
                 className="btn btn-primary flex items-center gap-2 mx-auto"
               >
-                <PlusIcon className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
                 Add Provider Key
               </button>
             </div>
@@ -255,7 +260,7 @@ export const KeyVaultDashboard: React.FC = () => {
         <div className="p-6 border-b border-primary-200/30">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🔑</span>
+              <Key className="h-5 w-5 text-white" />
             </div>
             <h2 className="text-xl font-display font-bold gradient-text-primary">Proxy Keys</h2>
           </div>
@@ -267,7 +272,7 @@ export const KeyVaultDashboard: React.FC = () => {
           {dashboardData?.proxyKeys.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-20 h-20 rounded-full bg-gradient-accent mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <ShieldCheckIcon className="h-10 w-10 text-white" />
+                <Shield className="h-10 w-10 text-white" />
               </div>
               <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No proxy keys</h3>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-8">
@@ -278,13 +283,14 @@ export const KeyVaultDashboard: React.FC = () => {
                 className="btn btn-secondary flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!dashboardData?.providerKeys.length}
               >
-                <PlusIcon className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
                 Create Proxy Key
               </button>
               {!dashboardData?.providerKeys.length && (
-                <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-warning/10 mt-6 max-w-md mx-auto">
-                  <p className="text-sm font-body text-warning-700 dark:text-warning-300">
-                    ⚠️ You need at least one provider key to create proxy keys.
+                <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-warning/10 dark:bg-gradient-warning/20 mt-6 max-w-md mx-auto">
+                  <p className="text-sm font-body text-warning-700 dark:text-warning-300 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    You need at least one provider key to create proxy keys.
                   </p>
                 </div>
               )}

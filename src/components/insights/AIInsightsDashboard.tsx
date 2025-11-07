@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, TrendingUp, Brain, Target, Zap, CheckCircle, XCircle, AlertCircle, DollarSign } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, ArrowRight, Brain, Target, Zap, CheckCircle, XCircle, AlertCircle, DollarSign, RefreshCw } from 'lucide-react'; // Added TrendingDown, ArrowRight, RefreshCw
 import NotebookService, { AIInsightsSummary } from '../../services/notebook.service';
 
 interface AIInsightsDashboardProps {
@@ -74,10 +74,10 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
   const getTrendIcon = (direction: string) => {
     switch (direction) {
-      case 'increasing': return '📈';
-      case 'decreasing': return '📉';
-      case 'stable': return '➡️';
-      default: return '➡️';
+      case 'increasing': return TrendingUp;
+      case 'decreasing': return TrendingDown;
+      case 'stable': return ArrowRight;
+      default: return ArrowRight;
     }
   };
 
@@ -94,7 +94,8 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="spinner-lg text-primary-500 mb-4"></div>
-            <div className="text-lg font-display font-semibold gradient-text-primary">🧠 Generating AI insights...</div>
+            <div className="font-display text-lg font-semibold gradient-text-primary">Generating AI insights...</div>
+            <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">Analyzing your cost patterns</div>
           </div>
         </div>
       </div>
@@ -108,14 +109,15 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
           <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
             <AlertCircle className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-display font-bold gradient-text-danger">Error Loading Insights</span>
+          <span className="font-display text-xl font-bold gradient-text-danger">Error Loading Insights</span>
         </div>
         <p className="font-body text-danger-700 dark:text-danger-300 mb-6">{error}</p>
         <button
           onClick={loadInsights}
-          className="btn-danger px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
+          className="btn btn-danger px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
         >
-          🔄 Retry
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Retry
         </button>
       </div>
     );
@@ -129,8 +131,8 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
               <Brain className="w-8 h-8 text-white" />
             </div>
-            <div className="text-lg font-display font-bold gradient-text-primary mb-2">No Insights Available</div>
-            <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Start using AI services to generate insights</div>
+            <div className="font-display text-lg font-bold gradient-text-primary mb-2">No Insights Available</div>
+            <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">Start using AI services to generate insights</div>
           </div>
         </div>
       </div>
@@ -146,7 +148,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <Brain className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-3xl font-display font-bold gradient-text-primary">🧠 AI-Powered Insights</h2>
+            <h2 className="font-display text-3xl font-bold gradient-text-primary">AI-Powered Insights</h2>
           </div>
           <div className="flex items-center gap-3">
             <select
@@ -154,16 +156,17 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
               onChange={(e) => setSelectedTimeframe(e.target.value)}
               className="input px-4 py-2 font-display font-semibold"
             >
-              <option value="1h">⏰ Last Hour</option>
-              <option value="24h">📅 Last 24 Hours</option>
-              <option value="7d">📊 Last 7 Days</option>
-              <option value="30d">📈 Last 30 Days</option>
+              <option value="1h">Last Hour</option>
+              <option value="24h">Last 24 Hours</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
             </select>
             <button
               onClick={loadInsights}
-              className="btn-primary px-6 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
+              className="btn btn-primary px-6 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
             >
-              🔄 Refresh
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
             </button>
           </div>
         </div>
@@ -176,36 +179,36 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <Target className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold">{insights.overall_health_score}</div>
+            <div className="font-display text-3xl font-bold">{insights.overall_health_score}</div>
           </div>
-          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">🎯 Health Score</div>
+          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Health Score</div>
         </div>
         <div className="glass rounded-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold gradient-text-danger">{insights.anomalies.length}</div>
+            <div className="font-display text-3xl font-bold gradient-text-danger">{insights.anomalies.length}</div>
           </div>
-          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚠️ Anomalies</div>
+          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Anomalies</div>
         </div>
         <div className="glass rounded-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold gradient-text-success">{insights.optimizations.length}</div>
+            <div className="font-display text-3xl font-bold gradient-text-success">{insights.optimizations.length}</div>
           </div>
-          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">⚡ Optimizations</div>
+          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Optimizations</div>
         </div>
         <div className="glass rounded-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <div className="text-3xl font-display font-bold gradient-text-primary">0</div>
+            <div className="font-display text-3xl font-bold gradient-text-primary">0</div>
           </div>
-          <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">📈 Forecasts</div>
+          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Forecasts</div>
         </div>
       </div>
 
@@ -216,7 +219,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
               <Brain className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-primary">💡 Key Insights</h3>
+            <h3 className="font-display text-2xl font-bold gradient-text-primary">Key Insights</h3>
           </div>
           <div className="space-y-4">
             {insights.key_insights.map((insight, index) => (
@@ -238,7 +241,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
               <Target className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-warning">🎯 Priority Actions</h3>
+            <h3 className="font-display text-2xl font-bold gradient-text-warning">Priority Actions</h3>
           </div>
           <div className="space-y-4">
             {insights.priority_actions.map((action, index) => (
@@ -262,7 +265,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-primary">⚠️ Anomaly Detection</h3>
+            <h3 className="font-display text-2xl font-bold gradient-text-primary">Anomaly Detection</h3>
           </div>
           <div className="space-y-6">
             {insights.anomalies.map((anomaly) => {
@@ -276,14 +279,14 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                       </div>
                       <div className="flex-1">
                         <div className="font-display font-bold text-lg text-light-text-primary dark:text-dark-text-primary mb-2">{anomaly.description}</div>
-                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
-                          📊 Type: {anomaly.type.replace('_', ' ')} •
-                          🕒 Detected: {new Date(anomaly.detected_at).toLocaleString()}
+                        <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                          Type: {anomaly.type.replace('_', ' ')} •
+                          Detected: {new Date(anomaly.detected_at).toLocaleString()}
                         </div>
-                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                          📈 Current: {anomaly.metrics.current_value.toFixed(2)} •
-                          🎯 Expected: {anomaly.metrics.expected_value.toFixed(2)} •
-                          📊 Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%
+                        <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                          Current: {anomaly.metrics.current_value.toFixed(2)} •
+                          Expected: {anomaly.metrics.expected_value.toFixed(2)} •
+                          Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%
                         </div>
                       </div>
                     </div>
@@ -293,10 +296,10 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                   </div>
                   {anomaly.recommendations.length > 0 && (
                     <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
-                      <div className="text-sm font-display font-bold gradient-text-primary mb-3">💡 Recommendations:</div>
+                      <div className="font-display text-sm font-bold gradient-text-primary mb-3">Recommendations:</div>
                       <div className="space-y-2">
                         {anomaly.recommendations.slice(0, 2).map((rec, index) => (
-                          <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                          <div key={index} className="font-body text-sm text-light-text-primary dark:text-dark-text-primary flex items-start">
                             <div className="w-2 h-2 bg-gradient-primary rounded-full mr-3 mt-2 flex-shrink-0 shadow-lg"></div>
                             <span>{rec}</span>
                           </div>
@@ -318,7 +321,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-primary">⚡ Cost Optimization Opportunities</h3>
+            <h3 className="font-display text-2xl font-bold gradient-text-primary">Cost Optimization Opportunities</h3>
           </div>
           <div className="space-y-6">
             {insights.optimizations.map((optimization) => (
@@ -331,7 +334,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                       <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
                         <DollarSign className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-sm font-display font-bold gradient-text-success">
+                      <span className="font-display text-sm font-bold gradient-text-success">
                         ${optimization.potential_savings.amount_usd.toFixed(2)}
                         ({optimization.potential_savings.percentage}%)
                       </span>
@@ -346,10 +349,10 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
                 </div>
                 {optimization.steps.length > 0 && (
                   <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
-                    <div className="text-sm font-display font-bold gradient-text-primary mb-3">🛠️ Implementation Steps:</div>
+                    <div className="font-display text-sm font-bold gradient-text-primary mb-3">Implementation Steps:</div>
                     <div className="space-y-2">
                       {optimization.steps.slice(0, 3).map((step, index) => (
-                        <div key={index} className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-start">
+                        <div key={index} className="font-body text-sm text-light-text-primary dark:text-dark-text-primary flex items-start">
                           <div className="w-6 h-6 bg-gradient-primary text-white rounded-lg flex items-center justify-center text-xs font-display font-bold mr-3 mt-0.5 flex-shrink-0 shadow-lg">
                             {index + 1}
                           </div>

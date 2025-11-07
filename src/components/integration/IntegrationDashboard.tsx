@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  KeyIcon,
-  ChartBarIcon,
-  CogIcon,
-  DocumentTextIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  ArrowTopRightOnSquareIcon,
-  PlayIcon,
-  CodeBracketIcon,
-  CpuChipIcon,
-  BoltIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
+  Key,
+  BarChart3,
+  Settings,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  Play,
+  Code,
+  Cpu,
+  Zap,
+  Eye,
+  Folder,
+  Link2,
+} from "lucide-react";
 import { userService } from "../../services/user.service";
 import { ProjectService } from "../../services/project.service";
 import { analyticsService } from "../../services/analytics.service";
@@ -115,24 +117,24 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
     if (service === "openai")
       return (
         <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-          <CpuChipIcon className="w-4 h-4 text-white" />
+          <Cpu className="w-4 h-4 text-white" />
         </div>
       );
     if (service === "aws-bedrock")
       return (
         <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-          <BoltIcon className="w-4 h-4 text-white" />
+          <Zap className="w-4 h-4 text-white" />
         </div>
       );
     if (service === "anthropic")
       return (
         <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-          <CodeBracketIcon className="w-4 h-4 text-white" />
+          <Code className="w-4 h-4 text-white" />
         </div>
       );
     return (
       <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-        <PlayIcon className="w-4 h-4 text-white" />
+        <Play className="w-4 h-4 text-white" />
       </div>
     );
   };
@@ -175,11 +177,12 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
       <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <CogIcon className="w-6 h-6 text-white" />
+            <Settings className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-display font-bold gradient-text-primary">
-              🔗 Integration Dashboard
+            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-2">
+              <Link2 className="h-7 w-7 text-primary-600 dark:text-primary-400" />
+              Integration Dashboard
             </h1>
             <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary">
               Monitor your AI usage and manage integrations
@@ -193,21 +196,17 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
         <div className="flex space-x-4">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'overview'
-              ? 'bg-gradient-primary text-white shadow-lg'
-              : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
-              }`}
+            className={`btn ${activeTab === 'overview' ? 'btn-primary' : 'btn-secondary'} flex items-center gap-2`}
           >
-            📊 Overview
+            <BarChart3 className="w-4 h-4" />
+            Overview
           </button>
           <button
             onClick={() => setActiveTab('projects')}
-            className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === 'projects'
-              ? 'bg-gradient-primary text-white shadow-lg'
-              : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
-              }`}
+            className={`btn ${activeTab === 'projects' ? 'btn-primary' : 'btn-secondary'} flex items-center gap-2`}
           >
-            🗂️ Project IDs & Integration
+            <Folder className="w-4 h-4" />
+            Project IDs & Integration
           </button>
         </div>
       </div>
@@ -220,10 +219,10 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                  <ChartBarIcon className="w-5 h-5 text-white" />
+                  <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl font-display font-bold gradient-text-primary">
-                  <ChartBarIcon className="w-5 h-5 inline mr-2" />
+                <h2 className="text-2xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
                   Quick Overview
                 </h2>
               </div>
@@ -236,9 +235,9 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                   }`}
               >
                 {health.color === "green" ? (
-                  <CheckCircleIcon className="mr-2 w-4 h-4" />
+                  <CheckCircle className="mr-2 w-4 h-4" />
                 ) : (
-                  <ExclamationTriangleIcon className="mr-2 w-4 h-4" />
+                  <AlertTriangle className="mr-2 w-4 h-4" />
                 )}
                 {health.label}
               </div>
@@ -249,32 +248,36 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                 <div className="text-3xl font-display font-bold gradient-text-primary mb-2">
                   {integrationStatus.apiKeysConfigured}
                 </div>
-                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                  🔑 API Keys
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary flex items-center justify-center gap-1">
+                  <Key className="h-3 w-3" />
+                  API Keys
                 </div>
               </div>
-              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 text-center hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 text-center hover:scale-105 transition-transform duration-300">
                 <div className="text-3xl font-display font-bold gradient-text-success mb-2">
                   {integrationStatus.projectsWithUsage}
                 </div>
-                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                  🚀 Active Projects
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary flex items-center justify-center gap-1">
+                  <Zap className="h-3 w-3" />
+                  Active Projects
                 </div>
               </div>
-              <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 text-center hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 text-center hover:scale-105 transition-transform duration-300">
                 <div className="text-3xl font-display font-bold gradient-text-secondary mb-2">
                   {analytics?.summary?.totalRequests || 0}
                 </div>
-                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                  ⚡ API Calls
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary flex items-center justify-center gap-1">
+                  <Zap className="h-3 w-3" />
+                  API Calls
                 </div>
               </div>
-              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 text-center hover:scale-105 transition-transform duration-300">
+              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 text-center hover:scale-105 transition-transform duration-300">
                 <div className="text-3xl font-display font-bold gradient-text-accent mb-2">
                   {formatCurrency(analytics?.summary?.totalCost || 0)}
                 </div>
-                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                  💰 Total Spent
+                <div className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary flex items-center justify-center gap-1">
+                  <span className="text-xs">💰</span>
+                  Total Spent
                 </div>
               </div>
             </div>
@@ -286,27 +289,28 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
               <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
                 <div className="flex items-center mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center mr-3 shadow-lg">
-                    <BoltIcon className="w-4 h-4 text-white" />
+                    <Zap className="w-4 h-4 text-white" />
                   </div>
-                  <h2 className="text-xl font-display font-bold gradient-text-primary">⚡ Quick Actions</h2>
+                  <h2 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                    Quick Actions
+                  </h2>
                 </div>
                 <div className="space-y-4">
                   {integrationStatus.apiKeysConfigured === 0 && (
                     <button
                       onClick={() => setShowIntegrationModal(true)}
-                      className="w-full glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-primary-50/50 to-primary-100/50 transition-all duration-300 hover:scale-105"
+                      className="btn btn-secondary w-full flex items-center gap-3 text-left"
                     >
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-                          <CogIcon className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <Settings className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-display font-bold">
+                          Setup Integration
                         </div>
-                        <div className="text-left">
-                          <div className="font-display font-bold gradient-text-primary">
-                            Setup Integration
-                          </div>
-                          <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            Add your first API key
-                          </div>
+                        <div className="text-sm font-body opacity-80">
+                          Add your first API key
                         </div>
                       </div>
                     </button>
@@ -314,57 +318,51 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
 
                   <a
                     href="/settings"
-                    className="w-full glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-success-50/50 to-success-100/50 transition-all duration-300 hover:scale-105 block"
+                    className="btn btn-secondary w-full flex items-center gap-3 text-left"
                   >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
-                        <KeyIcon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+                      <Key className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-display font-bold">
+                        Manage API Keys
                       </div>
-                      <div className="text-left">
-                        <div className="font-display font-bold gradient-text-success">
-                          Manage API Keys
-                        </div>
-                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                          {integrationStatus.apiKeysConfigured} configured
-                        </div>
+                      <div className="text-sm font-body opacity-80">
+                        {integrationStatus.apiKeysConfigured} configured
                       </div>
                     </div>
                   </a>
 
                   <a
                     href="/projects"
-                    className="w-full glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 transition-all duration-300 hover:scale-105 block"
+                    className="btn btn-secondary w-full flex items-center gap-3 text-left"
                   >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center mr-4 shadow-lg">
-                        <DocumentTextIcon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
+                      <FileText className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-display font-bold">
+                        View Projects
                       </div>
-                      <div className="text-left">
-                        <div className="font-display font-bold gradient-text-secondary">
-                          View Projects
-                        </div>
-                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                          {integrationStatus.totalProjects} total projects
-                        </div>
+                      <div className="text-sm font-body opacity-80">
+                        {integrationStatus.totalProjects} total projects
                       </div>
                     </div>
                   </a>
 
                   <a
                     href="/analytics"
-                    className="w-full glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-4 bg-gradient-to-br from-warning-50/50 to-warning-100/50 transition-all duration-300 hover:scale-105 block"
+                    className="btn btn-secondary w-full flex items-center gap-3 text-left"
                   >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
-                        <ChartBarIcon className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
+                      <BarChart3 className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-display font-bold">
+                        Detailed Analytics
                       </div>
-                      <div className="text-left">
-                        <div className="font-display font-bold gradient-text-warning">
-                          Detailed Analytics
-                        </div>
-                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                          View comprehensive reports
-                        </div>
+                      <div className="text-sm font-body opacity-80">
+                        View comprehensive reports
                       </div>
                     </div>
                   </a>
@@ -378,9 +376,12 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                 <div className="p-6 border-b border-primary-200/30">
                   <div className="flex items-center">
                     <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
-                      <ClockIcon className="w-4 h-4 text-white" />
+                      <Clock className="w-4 h-4 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text-primary">🕒 Recent AI Activity</h2>
+                    <h2 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                      Recent AI Activity
+                    </h2>
                   </div>
                 </div>
                 {loadingUsage ? (
@@ -393,7 +394,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                     {recentUsage.map((usage: any, index: number) => (
                       <div
                         key={index}
-                        className="p-6 hover:bg-primary-500/5 transition-all duration-300"
+                        className="p-6 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -413,39 +414,66 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                                         (1000 * 60 * 60);
 
                                       if (diffInHours < 1) {
-                                        return "⚡ Just now";
+                                        return (
+                                          <span className="flex items-center gap-1">
+                                            <Zap className="h-3 w-3" />
+                                            Just now
+                                          </span>
+                                        );
                                       } else if (diffInHours < 24) {
-                                        return `🕒 ${Math.floor(diffInHours)}h ago`;
+                                        return (
+                                          <span className="flex items-center gap-1">
+                                            <Clock className="h-3 w-3" />
+                                            {Math.floor(diffInHours)}h ago
+                                          </span>
+                                        );
                                       } else if (diffInHours < 168) {
-                                        return `📅 ${Math.floor(diffInHours / 24)}d ago`;
+                                        return (
+                                          <span className="flex items-center gap-1">
+                                            <span className="text-xs">📅</span>
+                                            {Math.floor(diffInHours / 24)}d ago
+                                          </span>
+                                        );
                                       } else {
-                                        return `📆 ${date.toLocaleDateString()}`;
+                                        return (
+                                          <span className="flex items-center gap-1">
+                                            <span className="text-xs">📆</span>
+                                            {date.toLocaleDateString()}
+                                          </span>
+                                        );
                                       }
                                     })()
                                     : "N/A"}
                                 </span>
                               </div>
                               <div className="glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mb-3">
-                                <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
-                                  <span className="font-display font-bold">🤖 {usage.model}</span>
+                                <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary flex items-center gap-2">
+                                  <span className="font-display font-bold flex items-center gap-1">
+                                    <Cpu className="h-4 w-4" />
+                                    {usage.model}
+                                  </span>
                                   {usage.projectName && (
-                                    <span className="text-light-text-secondary dark:text-dark-text-secondary ml-2">
-                                      • 📁 {usage.projectName}
+                                    <span className="text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-1">
+                                      <Folder className="h-3 w-3" />
+                                      {usage.projectName}
                                     </span>
                                   )}
                                 </p>
                                 {usage.prompt && (
-                                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-2 line-clamp-2">
-                                    💬 {truncateText(usage.prompt, 120)}
+                                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted mt-2 line-clamp-2 flex items-start gap-1">
+                                    <span className="text-xs mt-0.5">💬</span>
+                                    {truncateText(usage.prompt, 120)}
                                   </p>
                                 )}
                               </div>
                               <div className="flex items-center gap-4 text-xs font-display font-semibold">
-                                <span className="glass px-2 py-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 dark:text-primary-400">
-                                  🪙 {usage.totalTokens?.toLocaleString() || "0"} tokens
+                                <span className="glass px-2 py-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 dark:text-primary-400 flex items-center gap-1">
+                                  <span className="text-xs">🪙</span>
+                                  {usage.totalTokens?.toLocaleString() || "0"} tokens
                                 </span>
-                                <span className="glass px-2 py-1 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 dark:text-success-400">
-                                  💰 {formatCurrency(usage.cost)}
+                                <span className="glass px-2 py-1 rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 dark:text-success-400 flex items-center gap-1">
+                                  <span className="text-xs">💰</span>
+                                  {formatCurrency(usage.cost)}
                                 </span>
                               </div>
                             </div>
@@ -453,9 +481,9 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                           {usage.prompt && (
                             <button
                               onClick={() => handleViewActivity(usage)}
-                              className="ml-4 p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                              className="btn btn-ghost ml-4 p-2"
                             >
-                              <EyeIcon className="w-4 h-4 gradient-text-primary" />
+                              <Eye className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -465,7 +493,7 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                 ) : (
                   <div className="p-8 text-center">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
-                      <ClockIcon className="w-8 h-8 text-white" />
+                      <Clock className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="mb-2 text-xl font-display font-bold gradient-text-primary">
                       No Recent Activity
@@ -476,10 +504,11 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
                     {integrationStatus.apiKeysConfigured === 0 && (
                       <button
                         onClick={() => setShowIntegrationModal(true)}
-                        className="btn-primary px-6 py-3 font-display font-semibold transition-all duration-300 hover:scale-105"
+                        className="btn btn-primary flex items-center gap-2 mx-auto"
                       >
-                        🚀 Setup Integration
-                        <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
+                        <Zap className="w-4 h-4" />
+                        Setup Integration
+                        <ExternalLink className="w-4 h-4" />
                       </button>
                     )}
                   </div>
@@ -504,17 +533,18 @@ export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <EyeIcon className="w-5 h-5 text-white" />
+                    <Eye className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold gradient-text-primary">
-                    🔍 Activity Details
+                  <h3 className="text-2xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                    <Eye className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+                    Activity Details
                   </h3>
                 </div>
                 <button
                   onClick={() => setSelectedActivity(null)}
-                  className="p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                  className="btn btn-ghost p-2"
                 >
-                  <span className="text-lg gradient-text-primary">✕</span>
+                  <span className="text-lg">✕</span>
                 </button>
               </div>
 

@@ -7,8 +7,8 @@ import {
     ArrowDownIcon,
     ArrowRightIcon,
     ExclamationTriangleIcon,
-    ChartBarIcon
-} from '@heroicons/react/24/solid';
+    ChartBarIcon,
+} from '@heroicons/react/24/outline';
 
 const getTrendIndicator = (current: number, previous: number) => {
     const safePrev = previous === 0 ? 0.0001 : previous;
@@ -43,17 +43,17 @@ export const PerformanceOverview: React.FC = () => {
     );
 
     if (isLoading) return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 gap-6 animate-pulse md:grid-cols-4">
             {[...Array(4)].map((_, i) => (
-                <div key={i} className="glass h-32 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl" />
+                <div key={i} className="h-32 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30" />
             ))}
         </div>
     );
 
     if (error) return (
-        <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-            <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+        <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex gap-3 items-center">
+                <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
                     <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-body text-secondary-900 dark:text-white">
@@ -77,20 +77,20 @@ export const PerformanceOverview: React.FC = () => {
     const timeframes = ['1h', '24h', '7d'];
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-highlight flex items-center justify-center shadow-lg">
+                <div className="flex gap-3 items-center">
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-highlight glow-highlight">
                         <ChartBarIcon className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-display font-bold gradient-text-primary">Performance Overview</h2>
+                    <h2 className="text-xl font-bold font-display gradient-text-primary">Performance Overview</h2>
                 </div>
-                <div className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl p-1">
+                <div className="p-1 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30">
                     {timeframes.map(frame => (
                         <button
                             key={frame}
                             onClick={() => setTimeframe(frame)}
-                            className={`px-4 py-2 font-display font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
+                            className={`btn px-4 py-2 font-display btn font-medium rounded-md transition-all duration-200 ${timeframe === frame ? 'bg-gradient-primary text-white shadow-lg' : 'text-secondary-600 dark:text-secondary-300 hover:bg-gradient-primary/10'}`}
                         >
                             {frame}
                         </button>
@@ -98,63 +98,63 @@ export const PerformanceOverview: React.FC = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+                <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
                     <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="font-display font-medium gradient-text-primary text-sm uppercase tracking-wide">RPM</p>
-                            <p className="text-3xl font-display font-bold gradient-text-primary mt-2">{(metrics.requests_per_minute || 0).toFixed(1)}</p>
+                            <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-primary">RPM</p>
+                            <p className="mt-2 text-3xl font-bold font-display gradient-text-primary">{(metrics.requests_per_minute || 0).toFixed(1)}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg bg-gradient-primary glow-primary">
                             <rpmTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
+                    <p className="text-sm font-body text-secondary-600 dark:text-secondary-300">
                         {rpmTrend.percentage}% {rpmTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
                     <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="font-display font-medium gradient-text-danger text-sm uppercase tracking-wide">Error Rate</p>
-                            <p className="text-3xl font-display font-bold gradient-text-danger mt-2">{(metrics.error_rate || 0).toFixed(2)}%</p>
+                            <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-danger">Error Rate</p>
+                            <p className="mt-2 text-3xl font-bold font-display gradient-text-danger">{(metrics.error_rate || 0).toFixed(2)}%</p>
                         </div>
-                        <div className="w-10 h-10 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg bg-gradient-danger glow-danger">
                             <errorRateTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
+                    <p className="text-sm font-body text-secondary-600 dark:text-secondary-300">
                         {errorRateTrend.percentage}% {errorRateTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
                     <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="font-display font-medium gradient-text-accent text-sm uppercase tracking-wide">Avg Latency</p>
-                            <p className="text-3xl font-display font-bold gradient-text-accent mt-2">{(metrics.avg_latency_ms || 0).toFixed(1)} ms</p>
+                            <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-accent">Avg Latency</p>
+                            <p className="mt-2 text-3xl font-bold font-display gradient-text-accent">{(metrics.avg_latency_ms || 0).toFixed(1)} ms</p>
                         </div>
-                        <div className="w-10 h-10 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg bg-gradient-accent glow-accent">
                             <latencyTrend.icon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
+                    <p className="text-sm font-body text-secondary-600 dark:text-secondary-300">
                         {latencyTrend.percentage}% {latencyTrend.icon === ArrowUpIcon ? 'increase' : 'decrease'}
                     </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-secondary-200/30 dark:border-secondary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-200">
+                <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
                     <div className="flex justify-between items-center mb-4">
                         <div>
-                            <p className="font-display font-medium gradient-text-secondary text-sm uppercase tracking-wide">P95 Latency</p>
-                            <p className="text-3xl font-display font-bold gradient-text-secondary mt-2">{(metrics.p95_latency_ms || 0).toFixed(1)} ms</p>
+                            <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-secondary">P95 Latency</p>
+                            <p className="mt-2 text-3xl font-bold font-display gradient-text-secondary">{(metrics.p95_latency_ms || 0).toFixed(1)} ms</p>
                         </div>
-                        <div className="w-10 h-10 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                        <div className="flex justify-center items-center w-10 h-10 rounded-lg shadow-lg bg-gradient-secondary glow-secondary">
                             <ArrowRightIcon className="w-6 h-6 text-white" />
                         </div>
                     </div>
-                    <p className="font-body text-secondary-600 dark:text-secondary-300 text-sm">
+                    <p className="text-sm font-body text-secondary-600 dark:text-secondary-300">
                         Performance Threshold
                     </p>
                 </div>

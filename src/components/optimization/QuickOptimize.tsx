@@ -15,6 +15,9 @@ import { optimizationService } from "@/services/optimization.service";
 import { useNotifications } from "../../contexts/NotificationContext";
 import { renderFormattedContent } from "@/utils/formatters";
 import { OptimizedPromptDisplay } from "../common/FormattedContent";
+import { CortexToggle } from "../cortex/CortexToggle";
+import { CortexConfigPanel } from "../cortex/CortexConfigPanel";
+import type { CortexConfig } from "../../types/cortex.types";
 
 interface QuickOptimizeProps {
   className?: string;
@@ -27,6 +30,8 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 }) => {
   const [prompt, setPrompt] = useState("");
   const [useCortex, setUseCortex] = useState(false);
+  const [cortexConfig, setCortexConfig] = useState<CortexConfig | undefined>(undefined);
+  const [showCortexConfig, setShowCortexConfig] = useState(false);
   const [optimizationResult, setOptimizationResult] = useState<any>(null);
   const [showResult, setShowResult] = useState(false);
   const { showNotification } = useNotifications();
@@ -39,6 +44,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
         service: "openai",
         model: "gpt-4",
         useCortex,
+        cortexConfig,
         enableCompression: true,
         enableContextTrimming: true,
         enableRequestFusion: true,
@@ -113,28 +119,25 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             </div>
 
             {/* Cortex Toggle */}
-            <div className="glass rounded-xl p-4 border border-secondary-200/30 backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <CpuChipIcon className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <label htmlFor="quick-cortex-toggle" className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary cursor-pointer">
-                      Enable Cortex Enhancement
-                    </label>
-                    <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Advanced semantic optimization</p>
-                  </div>
-                </div>
-                <input
-                  type="checkbox"
-                  id="quick-cortex-toggle"
-                  checked={useCortex}
-                  onChange={(e) => setUseCortex(e.target.checked)}
-                  className="toggle"
-                />
-              </div>
-            </div>
+            <CortexToggle
+              enabled={useCortex}
+              onChange={(enabled) => {
+                setUseCortex(enabled);
+                if (enabled && !showCortexConfig) {
+                  setShowCortexConfig(true);
+                }
+              }}
+              config={cortexConfig}
+            />
+
+            {/* Cortex Configuration Panel */}
+            {useCortex && showCortexConfig && (
+              <CortexConfigPanel
+                config={cortexConfig || {}}
+                onChange={(config) => setCortexConfig(config as CortexConfig)}
+                disabled={optimizeMutation.isPending}
+              />
+            )}
 
             <button
               onClick={handleOptimize}
@@ -206,10 +209,15 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     <ChartBarIcon className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-lg font-display font-bold gradient-text-primary">
-                  {optimizationResult.improvementPercentage?.toFixed(1) || "0"}%
+                <div className={`text-lg font-display font-bold ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                  ? 'text-danger-600 dark:text-danger-400'
+                  : 'gradient-text-primary'
+                  }`}>
+                  {Math.abs(optimizationResult.improvementPercentage || 0).toFixed(1)}%
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Improvement</div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Improvement'}
+                </div>
               </div>
               <div className="glass rounded-xl p-4 border border-secondary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
                 <div className="flex justify-center mb-2">
@@ -217,10 +225,15 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                     <CpuChipIcon className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-lg font-display font-bold gradient-text-secondary">
+                <div className={`text-lg font-display font-bold ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                  ? 'text-danger-600 dark:text-danger-400'
+                  : 'gradient-text-secondary'
+                  }`}>
                   {optimizationResult.tokensSaved || 0}
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Tokens Saved</div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Tokens Saved'}
+                </div>
               </div>
               <div className="glass rounded-xl p-4 border border-success-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
                 <div className="flex justify-center mb-2">

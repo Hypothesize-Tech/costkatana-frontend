@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Line, Doughnut, Scatter } from "react-chartjs-2";
+import { Doughnut, Scatter } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,12 +12,24 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  ChartBarIcon,
+  RocketLaunchIcon,
+  TagIcon,
+  ArrowPathIcon,
+  ExclamationTriangleIcon,
+  ClockIcon,
+  PlusIcon,
+  XMarkIcon,
+  ChartPieIcon,
+} from "@heroicons/react/24/outline";
 import AdvancedMonitoringService, {
   TagAnalytics,
   RealTimeMetrics,
   PerformanceCorrelation,
 } from "../../services/advancedMonitoring.service";
 import { authService } from "../../services/auth.service";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 
 ChartJS.register(
   CategoryScale,
@@ -334,32 +346,35 @@ const AdvancedCostMonitoring: React.FC = () => {
   };
 
   const renderRealTimeTab = () => (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {realTimeData.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             {realTimeData.map((metric) => (
-              <div key={metric.tag} className="glass p-6 hover:scale-105 transition-all duration-300 shadow-lg backdrop-blur-xl border border-primary-200/30">
+              <div key={metric.tag} className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-display font-semibold gradient-text">
+                  <span className="text-lg font-display font-semibold gradient-text-primary">
                     {metric.tag}
                   </span>
-                  <span className="bg-gradient-success text-white px-2 py-1 rounded-lg text-xs font-display font-bold animate-pulse">Live</span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-display font-bold bg-gradient-success text-white border border-success-300/30 dark:border-success-500/20 animate-pulse">
+                    <div className="w-2 h-2 rounded-full bg-white"></div>
+                    Live
+                  </span>
                 </div>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                     <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Current Cost</span>
-                    <span className="text-lg font-display font-bold gradient-text">
+                    <span className="text-lg font-display font-bold gradient-text-primary">
                       ${metric.currentCost.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                     <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Hourly Rate</span>
                     <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       ${metric.hourlyRate.toFixed(2)}/hr
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                     <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       Daily Projection
                     </span>
@@ -367,7 +382,7 @@ const AdvancedCostMonitoring: React.FC = () => {
                       ${metric.projectedDailyCost.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
                     <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       Monthly Projection
                     </span>
@@ -380,12 +395,12 @@ const AdvancedCostMonitoring: React.FC = () => {
             ))}
           </div>
 
-          <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+          <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-gradient-accent p-2 rounded-lg glow-accent">
-                <span className="text-lg text-white">🍰</span>
+              <div className="p-3 rounded-xl shadow-lg bg-gradient-accent glow-accent">
+                <ChartPieIcon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text">
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
                 Tag Cost Distribution
               </h3>
             </div>
@@ -414,7 +429,9 @@ const AdvancedCostMonitoring: React.FC = () => {
               ) : (
                 <div className="flex justify-center items-center h-full">
                   <div className="text-center">
-                    <div className="text-6xl mb-4">🍰</div>
+                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-accent/10">
+                      <ChartPieIcon className="w-8 h-8 text-accent-500 dark:text-accent-400" />
+                    </div>
                     <p className="text-lg font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                       No tag distribution data available
                     </p>
@@ -425,10 +442,12 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="glass p-12 text-center shadow-2xl backdrop-blur-xl border border-primary-200/30">
-          <div className="text-8xl mb-6">🔴</div>
-          <p className="text-2xl font-display font-bold gradient-text mb-4">No real-time data available</p>
-          <p className="text-lg font-body text-light-text-secondary dark:text-dark-text-secondary">
+        <div className="p-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl shadow-2xl bg-gradient-danger">
+            <ClockIcon className="w-10 h-10 text-white" />
+          </div>
+          <p className="text-2xl font-display font-bold gradient-text-danger mb-4">No real-time data available</p>
+          <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
             Start using AI services to see real-time metrics
           </p>
         </div>
@@ -441,10 +460,15 @@ const AdvancedCostMonitoring: React.FC = () => {
     <div className="space-y-6">
       {performanceData.length > 0 ? (
         <>
-          <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-            <h3 className="mb-4 text-lg font-semibold">
-              Cost vs Performance Correlation
-            </h3>
+          <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                <RocketLaunchIcon className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-display font-bold gradient-text-primary">
+                Cost vs Performance Correlation
+              </h3>
+            </div>
             <div className="h-64">
               {generatePerformanceScatterData().datasets[0].data.length > 0 ? (
                 <Scatter
@@ -469,8 +493,8 @@ const AdvancedCostMonitoring: React.FC = () => {
                     plugins: {
                       tooltip: {
                         callbacks: {
-                          label: (context: any) => {
-                            const point = context.raw;
+                          label: (context: { raw: unknown }) => {
+                            const point = context.raw as { service: string; model: string; x: number; y: number; efficiency: number };
                             return [
                               `${point.service} - ${point.model}`,
                               `Cost: $${point.x.toFixed(4)}`,
@@ -485,51 +509,56 @@ const AdvancedCostMonitoring: React.FC = () => {
                 />
               ) : (
                 <div className="flex justify-center items-center h-full">
-                  <p className="text-gray-500">
-                    No performance correlation data available
-                  </p>
+                  <div className="text-center">
+                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
+                      <RocketLaunchIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+                    </div>
+                    <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      No performance correlation data available
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {performanceData.map((corr, index) => (
-              <div key={index} className="p-4 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-900">
+              <div key={index} className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl transition-all duration-300">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                     {corr.service} - {corr.model}
                   </span>
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPerformanceRatingColor(
+                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-display font-semibold border ${getPerformanceRatingColor(
                       corr.efficiency.performanceRating,
                     )}`}
                   >
                     {corr.efficiency.performanceRating}
                   </span>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-xs text-gray-500">Cost/Request</span>
-                    <span className="text-sm">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Cost/Request</span>
+                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       ${corr.costPerRequest.toFixed(4)}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-gray-500">Latency</span>
-                    <span className="text-sm">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Latency</span>
+                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       {corr.performance.latency.toFixed(0)}ms
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-gray-500">Quality</span>
-                    <span className="text-sm">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Quality</span>
+                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       {(corr.performance.qualityScore * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-gray-500">Efficiency</span>
-                    <span className="text-sm">
+                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Efficiency</span>
+                    <span className="text-sm font-display font-semibold gradient-text-primary">
                       {(corr.efficiency.costEfficiencyScore * 100).toFixed(1)}%
                     </span>
                   </div>
@@ -539,12 +568,15 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-64 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
+        <div className="flex justify-center items-center py-20 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="text-center">
-            <p className="text-gray-500 text-lg">
+            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
+              <RocketLaunchIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+            </div>
+            <p className="text-lg font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               No performance data available
             </p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
               Performance correlation data will appear here when available
             </p>
           </div>
@@ -556,27 +588,32 @@ const AdvancedCostMonitoring: React.FC = () => {
   const renderTagsTab = () => (
     <div className="space-y-6">
       {/* Tag Management Section */}
-      <div className="p-6 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-        <h3 className="mb-4 text-lg font-semibold">Tag Management</h3>
+      <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+            <TagIcon className="w-6 h-6 text-white" />
+          </div>
+          <h3 className="text-xl font-display font-bold gradient-text-primary">Tag Management</h3>
+        </div>
 
         {/* Available Tags */}
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+        <div className="mb-6">
+          <label className="block mb-3 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
             Available Tags:
           </label>
           <div className="flex flex-wrap gap-2">
             {availableTags.map((tag) => (
               <div
                 key={tag}
-                className="flex items-center px-3 py-1 bg-gray-100 rounded-full"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/10 transition-all duration-300"
               >
-                <span className="text-sm text-gray-700">{tag}</span>
+                <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{tag}</span>
                 <button
                   onClick={() => handleRemoveTag(tag)}
-                  className="ml-2 text-red-500 hover:text-red-700"
+                  className="text-danger-500 hover:text-danger-700 dark:text-danger-400 dark:hover:text-danger-300 transition-colors"
                   title="Remove tag"
                 >
-                  ×
+                  <XMarkIcon className="w-4 h-4" />
                 </button>
               </div>
             ))}
@@ -584,11 +621,11 @@ const AdvancedCostMonitoring: React.FC = () => {
         </div>
 
         {/* Add New Tag */}
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+        <div className="mb-6">
+          <label className="block mb-3 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
             Add New Tag:
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             {isAddingTag ? (
               <>
                 <input
@@ -596,13 +633,14 @@ const AdvancedCostMonitoring: React.FC = () => {
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   placeholder="Enter tag name"
-                  className="flex-1 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 input"
                   onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
                 />
                 <button
                   onClick={handleAddTag}
-                  className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                  className="btn btn-primary flex items-center gap-2"
                 >
+                  <PlusIcon className="w-5 h-5" />
                   Add
                 </button>
                 <button
@@ -610,25 +648,27 @@ const AdvancedCostMonitoring: React.FC = () => {
                     setIsAddingTag(false);
                     setNewTagName("");
                   }}
-                  className="px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                  className="btn btn-secondary flex items-center gap-2"
                 >
+                  <XMarkIcon className="w-5 h-5" />
                   Cancel
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsAddingTag(true)}
-                className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+                className="btn btn-success flex items-center gap-2"
               >
-                + Add Tag
+                <PlusIcon className="w-5 h-5" />
+                Add Tag
               </button>
             )}
           </div>
         </div>
 
         {/* Selected Tags Filter */}
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+        <div>
+          <label className="block mb-3 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
             Filter by tags (click to select/deselect):
           </label>
           <div className="flex flex-wrap gap-2">
@@ -641,24 +681,25 @@ const AdvancedCostMonitoring: React.FC = () => {
                     : [...selectedTags, tag];
                   handleTagFilter(newTags);
                 }}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${selectedTags.includes(tag)
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-display font-semibold transition-all duration-300 border ${selectedTags.includes(tag)
+                  ? "bg-gradient-primary text-white shadow-lg glow-primary border-primary-300/30 dark:border-primary-500/20"
+                  : "glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 dark:hover:bg-primary-500/10"
                   }`}
               >
+                <TagIcon className="w-4 h-4" />
                 {tag}
               </button>
             ))}
           </div>
 
           {selectedTags.length > 0 && (
-            <div className="flex gap-2 items-center mt-2">
-              <span className="text-sm text-gray-600">
+            <div className="flex flex-wrap gap-3 items-center mt-4 p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 bg-primary-500/5 dark:bg-primary-500/10">
+              <span className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                 Selected: {selectedTags.join(", ")}
               </span>
               <button
                 onClick={() => handleTagFilter([])}
-                className="text-sm text-blue-500 hover:text-blue-700"
+                className="text-sm font-display font-semibold gradient-text-primary hover:scale-110 transition-all duration-300"
               >
                 Clear All
               </button>
@@ -669,45 +710,48 @@ const AdvancedCostMonitoring: React.FC = () => {
 
       {/* Tag Analytics */}
       {tagAnalytics.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {tagAnalytics.map((tag) => (
-            <div key={tag.tag} className="p-4 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-900">
+            <div key={tag.tag} className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl transition-all duration-300">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm font-display font-semibold gradient-text-primary">
                   {tag.tag}
                 </span>
-                <span className={`text-sm ${getTrendColor(tag.trend)}`}>
+                <span className={`inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-full border ${getTrendColor(tag.trend)}`}>
                   {getTrendIcon(tag.trend)} {tag.trendPercentage.toFixed(1)}%
                 </span>
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-xs text-gray-500">Total Cost</span>
-                  <span className="text-sm font-semibold">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Total Cost</span>
+                  <span className="text-sm font-display font-bold gradient-text-primary">
                     ${tag.totalCost.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-xs text-gray-500">Total Calls</span>
-                  <span className="text-sm">
+                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Total Calls</span>
+                  <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                     {tag.totalCalls.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-xs text-gray-500">Avg Cost/Call</span>
-                  <span className="text-sm">${tag.averageCost.toFixed(4)}</span>
+                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Avg Cost/Call</span>
+                  <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">${tag.averageCost.toFixed(4)}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="flex justify-center items-center h-64 glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30">
+        <div className="flex justify-center items-center py-20 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="text-center">
-            <p className="text-gray-500 text-lg">
+            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
+              <TagIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+            </div>
+            <p className="text-lg font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               No tag analytics data available
             </p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
               Tag analytics will appear here when you have tagged usage data
             </p>
           </div>
@@ -718,64 +762,62 @@ const AdvancedCostMonitoring: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="spinner"></div>
+      <div className="flex justify-center items-center py-20">
+        <div className="text-center p-12 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl shadow-2xl bg-gradient-primary glow-primary animate-pulse-slow">
+            <ChartBarIcon className="w-10 h-10 text-white" />
+          </div>
+          <LoadingSpinner />
+          <h3 className="mt-6 mb-3 text-2xl font-display font-bold gradient-text-primary">Loading Advanced Metrics</h3>
+          <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">Fetching monitoring data...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen relative overflow-hidden p-8">
-        {/* Ambient Glow Effects */}
-        <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
-
-        <div className="flex justify-between items-center relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
-              <span className="text-2xl">📈</span>
-            </div>
-            <h2 className="text-3xl font-display font-bold gradient-text">
-              Advanced Cost Monitoring
-            </h2>
+      <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-fade-in">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-4 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+            <ChartBarIcon className="w-8 h-8 text-white" />
           </div>
-          <button
-            onClick={fetchData}
-            className="btn-primary font-display font-semibold"
-          >
-            Retry
-          </button>
+          <h2 className="text-3xl font-display font-bold gradient-text-primary">
+            Advanced Cost Monitoring
+          </h2>
         </div>
-        <div className={`glass p-6 shadow-2xl backdrop-blur-xl border animate-scale-in relative z-10 ${authError
-          ? "border-warning-200/30"
-          : "border-danger-200/30"
-          }`} style={{
-            background: authError
-              ? 'linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(254, 228, 64, 0.1))'
-              : 'linear-gradient(90deg, rgba(255, 79, 100, 0.1), rgba(233, 78, 78, 0.1))'
-          }}>
+        <div className={`p-6 rounded-xl border shadow-xl backdrop-blur-xl glass animate-fade-in ${authError
+          ? "border-warning-200/30 dark:border-warning-500/20 bg-gradient-to-br from-warning-50/50 to-warning-100/30 dark:from-warning-900/10 dark:to-warning-800/10"
+          : "border-danger-200/30 dark:border-danger-500/20 bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/10 dark:to-danger-800/10"
+          }`}>
           <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${authError
+            <div className={`p-3.5 rounded-xl shadow-lg ${authError
               ? "bg-gradient-warning glow-warning"
               : "bg-gradient-danger glow-danger"
               }`}>
-              <span className="text-lg text-white">⚠️</span>
+              <ExclamationTriangleIcon className="w-7 h-7 text-white" />
             </div>
-            <div>
-              <h3 className={`text-lg font-display font-bold ${authError
-                ? "text-warning-700 dark:text-warning-300"
-                : "text-danger-700 dark:text-danger-300"
+            <div className="flex-1">
+              <h3 className={`text-xl font-display font-bold mb-2 ${authError
+                ? "gradient-text-warning"
+                : "gradient-text-danger"
                 }`}>
                 {authError ? "Authentication Required" : "Error Loading Data"}
               </h3>
-              <p className={`mt-1 font-body ${authError
+              <p className={`text-base font-body ${authError
                 ? "text-warning-600 dark:text-warning-400"
                 : "text-danger-600 dark:text-danger-400"
                 }`}>
                 {error}
               </p>
             </div>
+            <button
+              onClick={fetchData}
+              className="btn btn-primary shrink-0"
+            >
+              <ArrowPathIcon className="w-5 h-5 mr-2" />
+              Retry
+            </button>
           </div>
         </div>
       </div>
@@ -783,61 +825,63 @@ const AdvancedCostMonitoring: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-screen relative overflow-hidden p-8">
-      {/* Ambient Glow Effects */}
-      <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute top-40 right-20 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl animate-pulse"></div>
-
-      <div className="flex justify-between items-center relative z-10">
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-col gap-6 justify-between items-start lg:flex-row lg:items-center">
         <div className="flex items-center gap-4">
-          <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
-            <span className="text-2xl">📈</span>
+          <div className="p-4 rounded-xl shadow-xl bg-gradient-primary glow-primary">
+            <ChartBarIcon className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-display font-bold gradient-text">
+          <h2 className="text-3xl font-display font-bold gradient-text-primary">
             Advanced Cost Monitoring
           </h2>
         </div>
-        <div className="flex space-x-4">
-          <select
-            value={timeRange}
-            onChange={(e) =>
-              setTimeRange(e.target.value as "24h" | "7d" | "30d")
-            }
-            className="px-4 py-3 border border-primary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-300 font-display font-semibold"
-          >
-            <option value="24h">Last 24 hours</option>
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-          </select>
+        <div className="flex flex-wrap gap-3 items-center w-full lg:w-auto">
+          <div className="relative">
+            <ClockIcon className="absolute left-3 top-1/2 z-10 w-5 h-5 transform -translate-y-1/2 pointer-events-none text-primary-500 dark:text-primary-400" />
+            <select
+              value={timeRange}
+              onChange={(e) =>
+                setTimeRange(e.target.value as "24h" | "7d" | "30d")
+              }
+              className="input text-sm py-2.5 pl-11 pr-10 min-w-[160px] appearance-none bg-white/90 dark:bg-dark-bg-300/90 border-primary-200/30 dark:border-primary-500/20 font-display font-semibold text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500/20"
+            >
+              <option value="24h">Last 24 hours</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+            </select>
+          </div>
           <button
             onClick={fetchData}
-            className="btn-primary font-display font-semibold px-6 py-3"
+            className="btn btn-primary flex items-center gap-2"
           >
+            <ArrowPathIcon className="w-5 h-5" />
             Refresh
           </button>
         </div>
       </div>
 
-      <div className="glass shadow-2xl backdrop-blur-xl border border-primary-200/30 relative z-10">
-        <nav className="flex space-x-2 px-6">
+      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <nav className="flex flex-wrap gap-3">
           {[
-            { key: "realtime", label: "Real-time", icon: "🔴" },
-            { key: "performance", label: "Performance", icon: "🚀" },
-            { key: "tags", label: "Tags", icon: "🏷️" },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key as any)}
-              className={`flex items-center gap-3 px-6 py-4 text-sm font-display font-semibold border-b-4 border-transparent transition-all duration-300 hover:scale-105 rounded-t-xl ${activeTab === tab.key
-                ? "bg-gradient-primary text-white shadow-lg border-b-primary-500"
-                : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10"
-                }`}
-            >
-              <span className="text-lg">{tab.icon}</span>
-              {tab.label}
-            </button>
-          ))}
+            { key: "realtime", label: "Real-time", icon: ClockIcon },
+            { key: "performance", label: "Performance", icon: RocketLaunchIcon },
+            { key: "tags", label: "Tags", icon: TagIcon },
+          ].map((tab) => {
+            const IconComponent = tab.icon;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as "realtime" | "performance" | "tags")}
+                className={`flex items-center gap-2.5 px-6 py-3 rounded-xl font-display font-semibold text-sm transition-all duration-300 shrink-0 ${activeTab === tab.key
+                  ? "bg-gradient-primary text-white shadow-xl glow-primary scale-105"
+                  : "glass hover:bg-primary-500/10 dark:hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30 dark:border-primary-500/20 hover:scale-105 hover:border-primary-300/50 dark:hover:border-primary-400/30"
+                  }`}
+              >
+                <IconComponent className={`w-5 h-5 shrink-0 ${activeTab === tab.key ? 'text-white' : ''}`} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </nav>
       </div>
 

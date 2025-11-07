@@ -295,19 +295,19 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
     <div className="overflow-y-auto fixed inset-0 z-50">
       <div className="flex justify-center items-center p-4 min-h-screen">
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 backdrop-blur-sm bg-black/50"
           onClick={onClose}
         />
 
         <div className="relative glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="sticky top-0 px-6 py-4 glass border-b border-primary-200/30 rounded-t-xl">
+          <div className="sticky top-0 px-6 py-4 rounded-t-xl border-b glass border-primary-200/30">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-display font-bold gradient-text-primary">
+              <h2 className="text-xl font-bold font-display gradient-text-primary">
                 Track API Usage
               </h2>
               <button
                 onClick={onClose}
-                className="btn-icon-secondary"
+                className="btn btn-icon-secondary"
               >
                 <XMarkIcon className="w-6 h-6" />
               </button>
@@ -318,7 +318,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Service and Model Selection */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   AI Service
                 </label>
                 <select
@@ -336,7 +336,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Model
                 </label>
                 <select
@@ -357,7 +357,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Prompt and Response */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Prompt
                 </label>
                 {formData.prompt && (
@@ -366,7 +366,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     onClick={() =>
                       setShowOptimizationWidget(!showOptimizationWidget)
                     }
-                    className="text-sm font-display font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                    className="text-sm font-medium btn font-display text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                   >
                     {showOptimizationWidget ? "Hide" : "Optimize"} Prompt
                   </button>
@@ -376,7 +376,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 value={formData.prompt}
                 onChange={(e) => handleChange("prompt", e.target.value)}
                 rows={3}
-                className="input resize-none"
+                className="resize-none input"
                 placeholder="Enter the prompt you sent to the AI..."
                 required
               />
@@ -384,7 +384,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Optimization Widget */}
             {showOptimizationWidget && formData.prompt && (
-              <div className="p-4 mt-4 glass rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+              <div className="p-4 mt-4 bg-gradient-to-br rounded-xl border backdrop-blur-xl glass border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                 <OptimizationWidget
                   prompt={formData.prompt}
                   model={formData.model}
@@ -395,14 +395,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             )}
 
             <div>
-              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                 Response (Optional)
               </label>
               <textarea
                 value={formData.response}
                 onChange={(e) => handleChange("response", e.target.value)}
                 rows={3}
-                className="input resize-none"
+                className="resize-none input"
                 placeholder="Enter the AI's response..."
               />
             </div>
@@ -424,11 +424,11 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       setTimeout(triggerCalculation, 100);
                     }
                   }}
-                  className="w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  className="w-4 h-4 rounded text-primary-600 border-primary-300 focus:ring-primary-500"
                 />
                 <label
                   htmlFor="autoCalculate"
-                  className="ml-2 text-sm font-body text-light-text-primary dark:text-dark-text-primary"
+                  className="ml-2 text-sm font-body text-secondary-900 dark:text-white"
                 >
                   Auto-calculate tokens and cost
                 </label>
@@ -437,7 +437,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <button
                   type="button"
                   onClick={triggerCalculation}
-                  className="btn-secondary text-sm"
+                  className="text-sm btn btn-secondary"
                 >
                   Calculate Now
                 </button>
@@ -447,7 +447,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Token Counts */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Prompt Tokens
                 </label>
                 <input
@@ -463,7 +463,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Completion Tokens
                 </label>
                 <input
@@ -482,7 +482,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Total Tokens
                 </label>
                 <input
@@ -494,7 +494,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Cost ($)
                 </label>
                 <input
@@ -516,7 +516,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Response Time */}
             <div>
-              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                 Response Time (ms)
               </label>
               <input
@@ -533,7 +533,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Metadata */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Project (Optional)
                 </label>
                 <input
@@ -548,7 +548,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Tags (Optional)
                 </label>
                 <input
@@ -564,7 +564,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             {/* Email Fields */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   User Email (Optional)
                 </label>
                 <input
@@ -574,13 +574,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   className="input"
                   placeholder="developer@company.com"
                 />
-                <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">
                   Email of the developer/integrator
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Customer Email (Optional)
                 </label>
                 <input
@@ -590,7 +590,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   className="input"
                   placeholder="client@client.com"
                 />
-                <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">
                   Email of the end customer/client
                 </p>
               </div>
@@ -601,14 +601,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="btn-secondary"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={trackUsageMutation.isLoading}
-                className="btn-primary inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {trackUsageMutation.isLoading ? (
                   <>

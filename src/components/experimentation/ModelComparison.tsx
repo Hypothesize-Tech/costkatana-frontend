@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  PlayIcon,
-  PlusIcon,
-  TrashIcon,
-  CurrencyDollarIcon,
-  ArrowPathIcon,
-  DocumentArrowDownIcon,
-  ExclamationTriangleIcon,
-  BeakerIcon,
-} from "@heroicons/react/24/outline";
+  Play,
+  Plus,
+  Trash2,
+  DollarSign,
+  RotateCw,
+  Download,
+  AlertTriangle,
+  Beaker,
+} from "lucide-react";
 import { ExperimentationService } from "../../services/experimentation.service";
 import { Modal } from "../common/Modal";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -967,7 +967,7 @@ const ModelComparison: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-            <BeakerIcon className="h-6 w-6 text-white" />
+            <Beaker className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-3xl font-display font-bold gradient-text">Model Comparison</h2>
         </div>
@@ -975,9 +975,9 @@ const ModelComparison: React.FC = () => {
           {results.length > 0 && (
             <button
               onClick={exportResults}
-              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+              className="btn btn-secondary flex items-center gap-2"
             >
-              <DocumentArrowDownIcon className="w-4 h-4" />
+              <Download className="w-4 h-4" />
               Export Results
             </button>
           )}
@@ -986,16 +986,16 @@ const ModelComparison: React.FC = () => {
             disabled={
               isRunning || !prompt.trim() || selectedModels.length === 0
             }
-            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
+            className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isRunning ? (
               <>
-                <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                <RotateCw className="w-4 h-4 animate-spin" />
                 <span>{realTimeMode ? "Executing Models..." : "Running..."}</span>
               </>
             ) : (
               <>
-                <PlayIcon className="w-4 h-4" />
+                <Play className="w-4 h-4" />
                 <span>{realTimeMode ? "Run Real-time Comparison" : "Run Comparison"}</span>
               </>
             )}
@@ -1004,10 +1004,10 @@ const ModelComparison: React.FC = () => {
       </div>
 
       {error && (
-        <div className="glass p-6 mb-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+        <div className="glass p-6 mb-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 dark:border-danger-500/30 animate-scale-in">
           <div className="flex items-center">
             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
-              <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+              <AlertTriangle className="w-5 h-5 text-white" />
             </div>
             <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
           </div>
@@ -1123,9 +1123,9 @@ const ModelComparison: React.FC = () => {
             <button
               onClick={addModel}
               disabled={selectedModels.length >= availableModels.length}
-              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+              className="btn btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <PlusIcon className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
               Add Model
             </button>
           </div>
@@ -1179,9 +1179,9 @@ const ModelComparison: React.FC = () => {
                         m.provider === model.provider &&
                         m.model === model.model,
                     ).length > 1 && (
-                        <div className="glass p-2 rounded-lg border border-accent-200/30 bg-accent-500/10 mt-2">
+                        <div className="glass p-2 rounded-lg border border-accent-200/30 bg-accent-500/10 dark:bg-accent-500/20 mt-2">
                           <div className="text-xs font-body text-accent-700 dark:text-accent-300 flex items-center">
-                            <ExclamationTriangleIcon className="h-3 w-3 mr-2" />
+                            <AlertTriangle className="h-3 w-3 mr-2" />
                             Duplicate model selected
                           </div>
                         </div>
@@ -1205,10 +1205,10 @@ const ModelComparison: React.FC = () => {
                   </div>
                   <button
                     onClick={() => removeModel(index)}
-                    className="ml-3 p-2 rounded-xl text-danger-500 hover:text-white hover:bg-gradient-danger transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="btn btn-ghost ml-3 p-2 text-danger-500 hover:text-white hover:bg-gradient-danger"
                     title="Remove this model"
                   >
-                    <TrashIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -1257,7 +1257,7 @@ const ModelComparison: React.FC = () => {
             {selectedModels.length === 0 && (
               <div className="text-center py-8">
                 <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <BeakerIcon className="h-8 w-8 text-white" />
+                  <Beaker className="h-8 w-8 text-white" />
                 </div>
                 <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                   No models selected. Click <span className="font-display font-semibold text-primary-500">"Add Model"</span> to get started.
@@ -1313,9 +1313,9 @@ const ModelComparison: React.FC = () => {
             />
           </div>
           {estimatedCost !== null && (
-            <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
+            <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5 dark:bg-success-500/20">
               <div className="flex items-center text-sm">
-                <CurrencyDollarIcon className="h-5 w-5 mr-2 text-success-500" />
+                <DollarSign className="h-5 w-5 mr-2 text-success-500 dark:text-success-400" />
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary mr-2">Estimated Cost:</span>
                 <span className="font-display font-bold gradient-text text-lg">
                   ${estimatedCost < 0.001
@@ -1372,7 +1372,7 @@ const ModelComparison: React.FC = () => {
                         setSelectedResult(result);
                         setShowResultsModal(true);
                       }}
-                      className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                      className="btn btn-secondary flex items-center gap-2"
                     >
                       View Details
                     </button>
@@ -1514,7 +1514,7 @@ const ModelComparison: React.FC = () => {
                                   {result.analysis.considerations.map(
                                     (consideration: string, i: number) => (
                                       <li key={i} className="flex items-start">
-                                        <ExclamationTriangleIcon className="w-4 h-4 text-accent-500 mr-2 flex-shrink-0 mt-0.5" />
+                                        <AlertTriangle className="w-4 h-4 text-accent-500 dark:text-accent-400 mr-2 flex-shrink-0 mt-0.5" />
                                         <span>{consideration}</span>
                                       </li>
                                     ),

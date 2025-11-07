@@ -12,11 +12,17 @@ interface UsageExportProps {
     startDate?: string;
     endDate?: string;
   };
+  isOpen?: boolean;
+  onClose?: () => void;
+  trigger?: React.ReactNode;
 }
 
-export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
+export const UsageExport: React.FC<UsageExportProps> = ({ filters = {}, isOpen: controlledIsOpen, onClose, trigger }) => {
   const [isExporting, setIsExporting] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [internalShowModal, setInternalShowModal] = useState(false);
+
+  const showModal = controlledIsOpen !== undefined ? controlledIsOpen : internalShowModal;
+  const setShowModal = controlledIsOpen !== undefined ? (onClose || (() => { })) : setInternalShowModal;
   const [exportConfig, setExportConfig] = useState({
     format: "csv" as "csv" | "json" | "excel",
     includeMetadata: true,
@@ -59,30 +65,34 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
 
   return (
     <>
-      <button
-        onClick={() => setShowModal(true)}
-        className="btn-secondary inline-flex items-center"
-      >
-        <ArrowDownTrayIcon className="mr-2 w-5 h-5" />
-        Export
-      </button>
+      {trigger ? (
+        <div onClick={() => setShowModal(true)}>{trigger}</div>
+      ) : controlledIsOpen === undefined ? (
+        <button
+          onClick={() => setShowModal(true)}
+          className="inline-flex items-center btn btn-secondary"
+        >
+          <ArrowDownTrayIcon className="mr-2 w-5 h-5" />
+          Export
+        </button>
+      ) : null}
 
       {showModal && (
-        <div className="overflow-y-auto fixed inset-0 z-50">
+        <div className="overflow-y-auto fixed inset-0 z-[100]">
           <div className="flex justify-center items-center p-4 min-h-screen">
             <div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 backdrop-blur-sm bg-black/50 z-[100]"
               onClick={() => setShowModal(false)}
             />
 
-            <div className="relative p-6 w-full max-w-md glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">
+            <div className="relative z-[101] p-6 w-full max-w-md rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <h3 className="mb-4 text-lg font-bold font-display gradient-text-primary">
                 Export Usage Data
               </h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
                     Export Format
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -95,9 +105,9 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                             format: format as "csv" | "json" | "excel",
                           })
                         }
-                        className={`px-3 py-2 text-sm font-medium rounded-xl transition-all duration-300 ${exportConfig.format === format
+                        className={`btn px-3 py-2 text-sm font-medium rounded-xl transition-all duration-300 ${exportConfig.format === format
                           ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg"
-                          : "glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-primary-300/50 hover:shadow-md"
+                          : "glass border border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:border-primary-300/50 hover:shadow-md"
                           }`}
                       >
                         {format.toUpperCase()}
@@ -107,11 +117,11 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
                     Options
                   </label>
                   <div className="space-y-3">
-                    <label className="flex items-center p-3 glass rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
+                    <label className="flex items-center p-3 rounded-xl border transition-all duration-300 cursor-pointer glass border-primary-200/30 hover:border-primary-300/50">
                       <input
                         type="checkbox"
                         checked={exportConfig.includeMetadata}
@@ -121,13 +131,13 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                             includeMetadata: e.target.checked,
                           })
                         }
-                        className="w-4 h-4 text-primary-500 rounded border-primary-300 focus:ring-primary-500 focus:ring-2"
+                        className="w-4 h-4 rounded text-primary-500 border-primary-300 focus:ring-primary-500 focus:ring-2"
                       />
-                      <span className="ml-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                      <span className="ml-3 text-sm text-secondary-600 dark:text-secondary-300">
                         Include metadata
                       </span>
                     </label>
-                    <label className="flex items-center p-3 glass rounded-xl border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300 cursor-pointer">
+                    <label className="flex items-center p-3 rounded-xl border transition-all duration-300 cursor-pointer glass border-primary-200/30 hover:border-primary-300/50">
                       <input
                         type="checkbox"
                         checked={exportConfig.includePrompts}
@@ -137,9 +147,9 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                             includePrompts: e.target.checked,
                           })
                         }
-                        className="w-4 h-4 text-primary-500 rounded border-primary-300 focus:ring-primary-500 focus:ring-2"
+                        className="w-4 h-4 rounded text-primary-500 border-primary-300 focus:ring-primary-500 focus:ring-2"
                       />
-                      <span className="ml-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                      <span className="ml-3 text-sm text-secondary-600 dark:text-secondary-300">
                         Include prompts & responses
                       </span>
                     </label>
@@ -148,7 +158,7 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
 
                 {exportConfig.format === "csv" && (
                   <div>
-                    <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                    <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
                       Group By
                     </label>
                     <select
@@ -169,9 +179,9 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
                   </div>
                 )}
 
-                <div className="p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
-                  <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Export includes:</p>
-                  <ul className="text-xs space-y-1 text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="p-4 bg-gradient-to-r rounded-xl border glass border-primary-200/30 from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
+                  <p className="mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">Export includes:</p>
+                  <ul className="space-y-1 text-xs text-secondary-600 dark:text-secondary-300">
                     <li className="flex items-center">
                       <span className="w-1.5 h-1.5 bg-primary-400 rounded-full mr-2"></span>
                       Date range: {filters.startDate || "All time"} to{" "}
@@ -196,14 +206,14 @@ export const UsageExport: React.FC<UsageExportProps> = ({ filters = {} }) => {
               <div className="flex justify-end mt-6 space-x-3">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="btn-secondary"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleExport}
                   disabled={isExporting}
-                  className="btn-primary inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isExporting ? (
                     <>

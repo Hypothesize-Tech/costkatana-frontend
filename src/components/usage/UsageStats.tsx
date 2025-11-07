@@ -66,13 +66,13 @@ export const UsageStats: React.FC<{
     ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {cards.map((card, index) => (
         <div
           key={index}
-          className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
+          className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-2xl hover:scale-105"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex justify-between items-center mb-4">
             <div className={`p-3 rounded-xl glass border border-primary-200/30 ${card.bgColor}`}>
               <card.icon
                 className={`h-6 w-6 ${card.color}`}
@@ -92,11 +92,11 @@ export const UsageStats: React.FC<{
             )}
           </div>
           <div>
-            <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">{card.title}</p>
-            <p className="text-2xl font-display font-bold gradient-text-primary mt-1">
+            <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">{card.title}</p>
+            <p className="mt-1 text-2xl font-bold font-display gradient-text-primary">
               {card.value}
             </p>
-            <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+            <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">
               {period === "24h" && "Last 24 hours"}
               {period === "7d" && "Last 7 days"}
               {period === "30d" && "Last 30 days"}

@@ -63,19 +63,19 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
     switch (qualityData.recommendation) {
       case "accept":
         return (
-          <div className="bg-gradient-to-br from-success-500 to-success-600 p-2 rounded-lg glow-success shadow-lg">
+          <div className="p-2 rounded-lg shadow-lg bg-gradient-success glow-success">
             <CheckCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
       case "review":
         return (
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2 rounded-lg shadow-lg">
+          <div className="p-2 rounded-lg shadow-lg bg-gradient-warning">
             <ExclamationCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
       case "reject":
         return (
-          <div className="bg-gradient-to-br from-red-500 to-red-600 p-2 rounded-lg shadow-lg">
+          <div className="p-2 rounded-lg shadow-lg bg-gradient-danger">
             <XCircleIcon className="w-4 h-4 text-white" />
           </div>
         );
@@ -120,13 +120,13 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
   const renderCriteriaBar = (label: string, value: number) => (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">{label}</span>
+        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{label}</span>
         <span className={`font-display font-semibold ${value >= 90 ? 'gradient-text-success'
           : value >= 75 ? 'gradient-text-warning'
             : 'gradient-text-danger'
           }`}>{value}%</span>
       </div>
-      <div className="w-full h-3 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-full overflow-hidden">
+      <div className="overflow-hidden w-full h-3 rounded-full bg-light-bg-secondary dark:bg-dark-bg-secondary">
         <div
           className={`h-3 rounded-full transition-all duration-500 ${value >= 90
             ? "bg-gradient-success shadow-lg"
@@ -141,51 +141,51 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
   );
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 space-y-6">
+    <div className="p-6 space-y-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       {/* Main Score Display */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-6">
           <div className="text-center">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center mb-2">
+            <div className="flex justify-center items-center mb-2 w-20 h-20 bg-gradient-to-br rounded-full border shadow-lg backdrop-blur-xl from-primary-50/50 to-primary-100/50 border-primary-200/30">
               <div
                 className={`text-3xl font-display font-bold ${getScoreColor(qualityData.optimizedScore)}`}
               >
                 {qualityData.optimizedScore}
               </div>
             </div>
-            <div className="font-body text-xs text-light-text-secondary dark:text-dark-text-secondary">Quality Score</div>
+            <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Quality Score</div>
           </div>
 
           {qualityData.originalScore && qualityData.qualityRetention && (
             <>
-              <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
+              <div className="flex justify-center items-center w-8 h-8 rounded-full bg-gradient-primary">
                 <span className="text-white">→</span>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center mb-2">
+                <div className="flex justify-center items-center mb-2 w-16 h-16 bg-gradient-to-br rounded-full border shadow-lg backdrop-blur-xl from-success-50/50 to-success-100/50 border-primary-200/30">
                   <div
                     className={`text-2xl font-display font-bold ${getScoreColor(qualityData.qualityRetention)}`}
                   >
                     {qualityData.qualityRetention.toFixed(1)}%
                   </div>
                 </div>
-                <div className="font-body text-xs text-light-text-secondary dark:text-dark-text-secondary">Retained</div>
+                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Retained</div>
               </div>
             </>
           )}
         </div>
 
         <div className="text-right">
-          <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-lg glow-success shadow-lg">
+          <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+            <div className="flex gap-2 items-center mb-1">
+              <div className="bg-gradient-success p-1.5 rounded-lg glow-success shadow-lg">
                 <CurrencyDollarIcon className="w-3 h-3 text-white" />
               </div>
-              <span className="font-display font-bold gradient-text-success">
+              <span className="font-bold font-display gradient-text-success">
                 ${qualityData.costSavings.amount.toFixed(2)}
               </span>
             </div>
-            <div className="font-body text-xs text-success-600 dark:text-success-400">
+            <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
               {qualityData.costSavings.percentage}% saved
             </div>
           </div>
@@ -194,9 +194,9 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
 
       {/* Recommendation */}
       {qualityData.recommendation && (
-        <div className={`glass p-4 rounded-xl border shadow-lg backdrop-blur-xl flex items-center gap-3 ${qualityData.recommendation === 'accept' ? 'border-success-200/30 bg-gradient-success/10'
-          : qualityData.recommendation === 'review' ? 'border-warning-200/30 bg-gradient-warning/10'
-            : 'border-danger-200/30 bg-gradient-danger/10'
+        <div className={`glass p-4 rounded-xl border shadow-lg backdrop-blur-xl flex items-center gap-3 ${qualityData.recommendation === 'accept' ? 'border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel'
+          : qualityData.recommendation === 'review' ? 'border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel'
+            : 'border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel'
           }`}>
           {getRecommendationIcon()}
           <span className={`font-display font-semibold ${qualityData.recommendation === 'accept' ? 'gradient-text-success'
@@ -209,13 +209,13 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
       {/* Detailed Criteria */}
       {showDetails && qualityData.criteria && (
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-lg">
+          <div className="flex gap-3 items-center">
+            <div className="p-2 bg-gradient-to-br rounded-lg shadow-lg from-primary-500 to-primary-600 glow-primary">
               <ChartBarIcon className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-semibold gradient-text-primary">Quality Breakdown</span>
+            <span className="font-semibold font-display gradient-text-primary">Quality Breakdown</span>
           </div>
-          <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-4">
+          <div className="p-4 space-y-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
             {renderCriteriaBar("Accuracy", qualityData.criteria.accuracy)}
             {renderCriteriaBar("Relevance", qualityData.criteria.relevance)}
             {renderCriteriaBar(
@@ -227,7 +227,7 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
           </div>
           {qualityData.confidence && (
             <div className="text-right">
-              <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 text-sm font-medium">
+              <span className="px-3 py-1 text-sm font-medium rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300">
                 Confidence: {(qualityData.confidence * 100).toFixed(0)}%
               </span>
             </div>
@@ -237,24 +237,24 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
 
       {/* User Feedback */}
       {showFeedback && !feedbackGiven && (
-        <div className="glass p-6 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-accent-500 to-accent-600 p-2 rounded-lg glow-accent shadow-lg">
+        <div className="p-6 space-y-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+          <div className="flex gap-3 items-center">
+            <div className="p-2 bg-gradient-to-br rounded-lg shadow-lg from-accent-500 to-accent-600 glow-accent">
               <ChatBubbleLeftRightIcon className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-semibold gradient-text-primary">
+            <span className="font-semibold font-display gradient-text-primary">
               Was this optimization acceptable?
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2 items-center">
             {[1, 2, 3, 4, 5].map((rating) => (
               <button
                 key={rating}
                 onClick={() => setUserRating(rating)}
                 className={`w-8 h-8 rounded-lg transition-all duration-300 hover:scale-110 ${userRating >= rating
                   ? "bg-gradient-warning text-white shadow-lg"
-                  : "glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-tertiary dark:text-dark-text-tertiary hover:border-warning-200/50"
+                  : "glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-secondary dark:text-dark-text-secondary hover:border-warning-200/50"
                   }`}
               >
                 ★
@@ -266,21 +266,21 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
             value={userComment}
             onChange={(e) => setUserComment(e.target.value)}
             placeholder="Any additional feedback? (optional)"
-            className="input w-full resize-none"
+            className="w-full resize-none input"
             rows={3}
           />
 
           <div className="flex gap-3">
             <button
               onClick={() => handleFeedback(true)}
-              className="btn btn-primary flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
+              className="flex flex-1 gap-2 justify-center items-center transition-transform duration-300 btn btn-primary hover:scale-105"
             >
               <HandThumbUpIcon className="w-4 h-4" />
               <span>Acceptable</span>
             </button>
             <button
               onClick={() => handleFeedback(false)}
-              className="btn btn-danger flex-1 flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
+              className="flex flex-1 gap-2 justify-center items-center transition-transform duration-300 btn btn-danger hover:scale-105"
             >
               <HandThumbDownIcon className="w-4 h-4" />
               <span>Not Acceptable</span>
@@ -290,12 +290,12 @@ export const QualityScore: React.FC<QualityScoreProps> = ({
       )}
 
       {feedbackGiven && (
-        <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 text-center">
-          <div className="flex items-center justify-center gap-2">
-            <div className="bg-gradient-to-br from-success-500 to-success-600 p-1.5 rounded-full glow-success shadow-lg">
+        <div className="p-4 text-center rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 justify-center items-center">
+            <div className="bg-gradient-success p-1.5 rounded-full glow-success shadow-lg">
               <CheckIcon className="w-3 h-3 text-white" />
             </div>
-            <span className="font-display font-semibold gradient-text-success">
+            <span className="font-semibold font-display gradient-text-success">
               Thank you for your feedback!
             </span>
           </div>

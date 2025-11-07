@@ -5,6 +5,7 @@ import {
   generateLineChartData,
 } from "@/utils/chartConfig";
 import { TimeSeriesData } from "@/types";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 
 interface CostChartProps {
   data: TimeSeriesData[];
@@ -14,16 +15,16 @@ interface CostChartProps {
 export const CostChart = ({ data, loading }: CostChartProps) => {
   if (loading) {
     return (
-      <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30">
+      <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
-            <span className="text-lg">📈</span>
+          <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+            <ChartBarIcon className="w-6 h-6 text-white" />
           </div>
-          <h3 className="text-xl font-display font-bold gradient-text">
+          <h3 className="text-xl font-bold font-display gradient-text-primary">
             Cost Over Time
           </h3>
         </div>
-        <div className="skeleton h-64" />
+        <div className="skeleton h-64 rounded-xl" />
       </div>
     );
   }
@@ -46,7 +47,7 @@ export const CostChart = ({ data, loading }: CostChartProps) => {
       tooltip: {
         ...getLineChartOptions().plugins?.tooltip,
         callbacks: {
-          label: (context: any) => {
+          label: (context: { parsed: { y: number } }) => {
             return `Cost: ${formatCurrency(context.parsed.y)}`;
           },
         },
@@ -58,23 +59,23 @@ export const CostChart = ({ data, loading }: CostChartProps) => {
         ...getLineChartOptions().scales?.y,
         ticks: {
           ...getLineChartOptions().scales?.y?.ticks,
-          callback: (value: any) => formatCurrency(value),
+          callback: (value: number | string) => formatCurrency(typeof value === 'number' ? value : parseFloat(value)),
         },
       },
     },
   });
 
   return (
-    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300">
+    <div className="group p-8 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.01] hover:shadow-2xl">
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
-          <span className="text-lg">📈</span>
+        <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
+          <ChartBarIcon className="w-6 h-6 text-white" />
         </div>
-        <h3 className="text-xl font-display font-bold gradient-text">
+        <h3 className="text-xl font-bold font-display gradient-text-primary">
           Cost Over Time
         </h3>
       </div>
-      <div className="h-64 chart-container">
+      <div className="h-64 chart-container rounded-xl">
         <Line data={chartData} options={options} />
       </div>
     </div>

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  KeyIcon,
-  DocumentDuplicateIcon,
-  CheckIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-  CogIcon,
-  BookOpenIcon,
-  CodeBracketIcon,
-} from "@heroicons/react/24/outline";
+  Key,
+  Copy,
+  Check,
+  AlertTriangle,
+  Info,
+  Settings,
+  BookOpen,
+  Code,
+  Link2,
+} from "lucide-react";
 import { userService } from "../../services/user.service";
 import { ProjectService } from "../../services/project.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
@@ -246,30 +247,37 @@ app.listen(3000, () => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="🔗 Dashboard API Integration">
+    <Modal isOpen={isOpen} onClose={onClose} title="Dashboard API Integration">
       <div className="mx-auto max-w-4xl">
+        {/* Header with Icon */}
+        <div className="mb-6 flex items-center gap-2">
+          <Link2 className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+          <h2 className="text-2xl font-display font-bold gradient-text-primary">Dashboard API Integration</h2>
+        </div>
+
         {/* Tab Navigation */}
         <div className="mb-8 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
           <div className="flex space-x-4">
             {[
-              { id: "setup", name: "Setup", icon: CogIcon, emoji: "⚙️" },
-              { id: "usage", name: "Usage Guide", icon: BookOpenIcon, emoji: "📖" },
-              { id: "examples", name: "Code Examples", icon: CodeBracketIcon, emoji: "💻" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`px-6 py-3 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${activeTab === tab.id
-                  ? "bg-gradient-primary text-white shadow-lg"
-                  : "glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
-                  }`}
-              >
-                <div className="flex items-center">
-                  <span className="mr-2">{tab.emoji}</span>
+              { id: "setup", name: "Setup", icon: Settings },
+              { id: "usage", name: "Usage Guide", icon: BookOpen },
+              { id: "examples", name: "Code Examples", icon: Code },
+            ].map((tab) => {
+              const IconComponent = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`btn ${activeTab === tab.id
+                    ? "btn-primary"
+                    : "btn-secondary"
+                    } flex items-center gap-2`}
+                >
+                  <IconComponent className="w-4 h-4" />
                   {tab.name}
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -277,13 +285,14 @@ app.listen(3000, () => {
         {activeTab === "setup" && (
           <div className="space-y-8">
             {/* API Key Status */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 p-6">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 dark:bg-gradient-primary/20 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-                  <InformationCircleIcon className="w-5 h-5 text-white" />
+                  <Info className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text-primary">
-                  🔑 Dashboard API Key Integration
+                <h3 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                  <Key className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                  Dashboard API Key Integration
                 </h3>
               </div>
               <p className="font-body text-primary-700 dark:text-primary-300">
@@ -296,10 +305,11 @@ app.listen(3000, () => {
             <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
               <div className="flex items-center mb-6">
                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
-                  <KeyIcon className="w-4 h-4 text-white" />
+                  <Key className="w-4 h-4 text-white" />
                 </div>
-                <h4 className="text-xl font-display font-bold gradient-text-primary">
-                  🔐 Available Dashboard API Keys
+                <h4 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                  <Key className="h-5 w-5 text-success-600 dark:text-success-400" />
+                  Available Dashboard API Keys
                 </h4>
               </div>
               <div className="space-y-4">
@@ -311,14 +321,19 @@ app.listen(3000, () => {
                     <div className="flex justify-between items-center">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
-                          <KeyIcon className="w-5 h-5 text-white" />
+                          <Key className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <p className="font-display font-bold text-lg gradient-text-success">
                             {apiKey.name}
                           </p>
-                          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            🔑 {apiKey.maskedKey} • 🛡️ Permissions: {apiKey.permissions.join(", ")}
+                          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-2">
+                            <Key className="h-3 w-3" />
+                            {apiKey.maskedKey} •
+                            <span className="flex items-center gap-1">
+                              <span className="text-xs">🛡️</span>
+                              Permissions: {apiKey.permissions.join(", ")}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -328,14 +343,12 @@ app.listen(3000, () => {
                         }`}>
                         {apiKey.isExpired ? (
                           <>
-                            <svg className="mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                            </svg>
+                            <AlertTriangle className="mr-1 w-4 h-4" />
                             Expired
                           </>
                         ) : (
                           <>
-                            <CheckIcon className="mr-1 w-4 h-4" />
+                            <Check className="mr-1 w-4 h-4" />
                             Active
                           </>
                         )}
@@ -346,7 +359,7 @@ app.listen(3000, () => {
                 {(!apiKeys || apiKeys.length === 0) && (
                   <div className="py-8 text-center">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
-                      <KeyIcon className="w-8 h-8 text-white" />
+                      <Key className="w-8 h-8 text-white" />
                     </div>
                     <p className="text-lg font-display font-bold gradient-text-primary mb-2">No dashboard API keys configured</p>
                     <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -365,8 +378,9 @@ app.listen(3000, () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
-                <h4 className="text-xl font-display font-bold gradient-text-primary">
-                  📁 Select Project for Integration
+                <h4 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                  <span className="text-lg">📁</span>
+                  Select Project for Integration
                 </h4>
               </div>
               <select
@@ -374,20 +388,22 @@ app.listen(3000, () => {
                 onChange={(e) => setSelectedProject(e.target.value)}
                 className="input w-full font-display font-semibold"
               >
-                <option value="">🔍 Select a project...</option>
+                <option value="">Select a project...</option>
                 {projects?.map((project) => (
                   <option key={project._id} value={project._id}>
-                    📁 {project.name}
+                    {project.name}
                   </option>
                 ))}
               </select>
               {selectedProject && (
-                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 p-4 mt-4">
-                  <p className="text-sm font-display font-bold gradient-text-success mb-2">
-                    ✅ Project selected: {projects?.find((p) => p._id === selectedProject)?.name}
+                <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-success/10 dark:bg-gradient-success/20 p-4 mt-4">
+                  <p className="text-sm font-display font-bold gradient-text-success mb-2 flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    Project selected: {projects?.find((p) => p._id === selectedProject)?.name}
                   </p>
-                  <p className="text-xs font-body text-success-600 dark:text-success-400">
-                    🆔 Project ID:{" "}
+                  <p className="text-xs font-body text-success-600 dark:text-success-400 flex items-center gap-2">
+                    <span className="text-xs">🆔</span>
+                    Project ID:{" "}
                     <code className="px-2 py-1 bg-success-100 dark:bg-success-800 rounded font-mono text-xs">
                       {selectedProject}
                     </code>
@@ -398,13 +414,14 @@ app.listen(3000, () => {
 
             {/* Integration Warning */}
             {(!apiKeys || apiKeys.length === 0) && (
-              <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-6">
+              <div className="glass rounded-xl border border-warning-200/30 dark:border-warning-500/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 dark:bg-gradient-warning/20 p-6">
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
-                    <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+                    <AlertTriangle className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-xl font-display font-bold gradient-text-warning">
-                    ⚠️ Setup Required
+                  <h3 className="text-xl font-display font-bold gradient-text-warning flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-warning-600 dark:text-warning-400" />
+                    Setup Required
                   </h3>
                 </div>
                 <p className="font-body text-warning-700 dark:text-warning-300">
@@ -435,12 +452,12 @@ app.listen(3000, () => {
                         </span>
                         <button
                           onClick={() => copyToClipboard(code, language)}
-                          className="flex items-center text-sm gradient-text-primary hover:scale-110 transition-transform duration-300"
+                          className="btn btn-ghost flex items-center text-sm gap-1"
                         >
                           {copied === language ? (
-                            <CheckIcon className="mr-1 w-4 h-4" />
+                            <Check className="w-4 h-4" />
                           ) : (
-                            <DocumentDuplicateIcon className="mr-1 w-4 h-4" />
+                            <Copy className="w-4 h-4" />
                           )}
                           {copied === language ? "Copied!" : "Copy"}
                         </button>

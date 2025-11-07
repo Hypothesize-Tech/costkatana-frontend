@@ -100,9 +100,14 @@ export const CortexImpactDisplay: React.FC<CortexImpactDisplayProps> = ({
                         <span className={`text-2xl font-display font-bold ${metrics.tokenReduction.absoluteSavings >= 0 ? 'gradient-text' : 'text-danger-600 dark:text-danger-400'}`}>
                             {formatNumber(Math.abs(metrics.tokenReduction.absoluteSavings))} ({Math.abs(metrics.tokenReduction.percentageSavings).toFixed(1)}%)
                         </span>
+                        {metrics.tokenReduction.absoluteSavings < 0 && (
+                            <div className="text-xs font-body text-danger-600 dark:text-danger-400 flex items-center gap-1">
+                                ⚠️ Cortex increased tokens instead of reducing them
+                            </div>
+                        )}
                         <div className="flex justify-between text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            <span>Original: {formatNumber(metrics.tokenReduction.withoutCortex)}</span>
-                            <span>Optimized: {formatNumber(metrics.tokenReduction.withCortex)}</span>
+                            <span>Expected: {formatNumber(metrics.tokenReduction.withoutCortex)}</span>
+                            <span>Actual: {formatNumber(metrics.tokenReduction.withCortex)}</span>
                         </div>
                     </div>
                 </div>

@@ -38,8 +38,8 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-3 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <p className="text-sm font-display font-medium gradient-text-primary">{label}</p>
+        <div className="p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <p className="text-sm font-medium font-display gradient-text-primary">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm font-body" style={{ color: entry.color }}>
               {entry.name}:{" "}
@@ -64,10 +64,10 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const ChartComponent = type === "line" ? LineChart : BarChart;
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+    <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="mb-4">
-        <h3 className="text-lg font-display font-bold gradient-text-primary">Usage Over Time</h3>
-        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Track your API usage trends</p>
+        <h3 className="text-lg font-bold font-display gradient-text-primary">Usage Over Time</h3>
+        <p className="text-sm text-secondary-600 dark:text-secondary-300">Track your API usage trends</p>
       </div>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -91,13 +91,13 @@ export const UsageChart: React.FC<UsageChartProps> = ({
             dataKey="displayDate"
             tick={{ fontSize: 12, fill: 'currentColor' }}
             tickLine={false}
-            className="text-light-text-tertiary dark:text-dark-text-tertiary"
+            className="text-secondary-500 dark:text-secondary-400"
           />
           <YAxis
             tick={{ fontSize: 12, fill: 'currentColor' }}
             tickLine={false}
             tickFormatter={getYAxisTickFormatter(metric)}
-            className="text-light-text-tertiary dark:text-dark-text-tertiary"
+            className="text-secondary-500 dark:text-secondary-400"
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />

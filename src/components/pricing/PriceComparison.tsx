@@ -5,7 +5,84 @@ import {
   PricingComparison,
 } from "../../services/pricing.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
-import "./PriceComparison.css";
+
+// Icon Components
+const RefreshIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+    <path d="M3 21v-5h5" />
+  </svg>
+);
+
+const DocumentIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <path d="M14 2v6h6" />
+    <path d="M16 13H8" />
+    <path d="M16 17H8" />
+    <path d="M10 9H8" />
+  </svg>
+);
+
+const CalculatorIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="4" y="2" width="16" height="20" rx="2" />
+    <path d="M8 6h8" />
+    <path d="M8 10h8" />
+    <path d="M8 14h.01" />
+    <path d="M12 14h.01" />
+    <path d="M16 14h.01" />
+    <path d="M8 18h.01" />
+    <path d="M12 18h.01" />
+    <path d="M16 18h.01" />
+  </svg>
+);
+
+const TagIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.58-8.58a1 1 0 0 0 0-1.41L12 2Z" />
+    <circle cx="7" cy="7" r="1.5" />
+  </svg>
+);
+
+const CompareIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+  </svg>
+);
+
+const TrophyIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+);
+
+const AlertIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+    <path d="M12 9v4" />
+    <path d="M12 17h.01" />
+  </svg>
+);
+
+const ChevronDownIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
+
+const CircleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="12" cy="12" r="10" />
+  </svg>
+);
 
 export const PriceComparison: React.FC = () => {
   const [allPricing, setAllPricing] = useState<ProviderPricing[]>([]);
@@ -203,10 +280,12 @@ export const PriceComparison: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="price-comparison">
-        <div className="loading-container">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+        <div className="text-center">
           <LoadingSpinner />
-          <p>Loading pricing data...</p>
+          <p className="mt-4 text-lg text-secondary-600 dark:text-secondary-300">
+            Loading pricing data...
+          </p>
         </div>
       </div>
     );
@@ -215,33 +294,32 @@ export const PriceComparison: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Modern Header with Gradient */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mx-6 mt-6 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center">
-            <div className="title-section">
-              <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">AI Pricing Dashboard</h1>
-              <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+      <div className="p-8 mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-6 justify-between items-start md:flex-row md:items-center">
+            <div className="flex-1">
+              <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">
+                AI Pricing Dashboard
+              </h1>
+              <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
                 Compare costs across leading AI providers in real-time
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex gap-4 items-center">
               {lastUpdate && (
-                <div className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl px-4 py-2">
-                  <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">Updated {lastUpdate.toLocaleTimeString()}</span>
+                <div className="px-4 py-2 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
+                  <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                    Updated {lastUpdate.toLocaleTimeString()}
+                  </span>
                 </div>
               )}
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"
+                className="flex gap-2 items-center px-4 py-2 rounded-xl btn btn-primary"
                 title="Refresh pricing data"
               >
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path
-                    fill="currentColor"
-                    d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
-                  />
-                </svg>
+                <RefreshIcon className="w-4 h-4" />
                 {refreshing ? "Refreshing..." : "Refresh"}
               </button>
             </div>
@@ -249,39 +327,34 @@ export const PriceComparison: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mt-4 glass rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-4">
-            <div className="flex items-center gap-3 text-danger-600 dark:text-danger-400">
-              <svg viewBox="0 0 24 24" width="20" height="20">
-                <path
-                  fill="currentColor"
-                  d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"
-                />
-              </svg>
-              {error}
+          <div className="p-4 mt-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex gap-3 items-center text-danger-600 dark:text-danger-400">
+              <AlertIcon className="flex-shrink-0 w-5 h-5" />
+              <span>{error}</span>
             </div>
           </div>
         )}
       </div>
 
       {/* Enhanced Comparison Form */}
-      <div className="max-w-7xl mx-auto mt-8 mb-8 px-6">
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-display font-bold gradient-text-primary mb-4">Compare Pricing</h2>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+      <div className="px-6 mx-auto mt-8 mb-8 max-w-7xl">
+        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="mb-8 text-center">
+            <h2 className="mb-4 text-3xl font-bold font-display gradient-text-primary">
+              Compare Pricing
+            </h2>
+            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
               Enter your task details to see cost comparisons across providers
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          <div className="mx-auto max-w-4xl">
             <div className="mb-6">
-              <label htmlFor="task" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path
-                    fill="currentColor"
-                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-                  />
-                </svg>
+              <label
+                htmlFor="task"
+                className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+              >
+                <DocumentIcon className="w-4 h-4" />
                 Task Description
               </label>
               <input
@@ -290,19 +363,17 @@ export const PriceComparison: React.FC = () => {
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
                 placeholder="e.g., Generate a 500-word article, Summarize documents, Code review"
-                className="input w-full"
+                className="w-full input"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
               <div>
-                <label htmlFor="tokens" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
-                  <svg viewBox="0 0 24 24" width="16" height="16">
-                    <path
-                      fill="currentColor"
-                      d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19Z"
-                    />
-                  </svg>
+                <label
+                  htmlFor="tokens"
+                  className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+                >
+                  <CalculatorIcon className="w-4 h-4" />
                   Estimated Tokens
                 </label>
                 <input
@@ -311,25 +382,23 @@ export const PriceComparison: React.FC = () => {
                   value={estimatedTokens}
                   onChange={(e) => setEstimatedTokens(Number(e.target.value))}
                   min="1"
-                  className="input w-full"
+                  className="w-full input"
                 />
               </div>
 
               <div>
-                <label htmlFor="category" className="flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary font-display font-semibold mb-3">
-                  <svg viewBox="0 0 24 24" width="16" height="16">
-                    <path
-                      fill="currentColor"
-                      d="M12,2A2,2 0 0,1 14,4A2,2 0 0,1 12,6A2,2 0 0,1 10,4A2,2 0 0,1 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V19A2,2 0 0,0 5,21H11V19H5V3H13V9H21Z"
-                    />
-                  </svg>
+                <label
+                  htmlFor="category"
+                  className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+                >
+                  <TagIcon className="w-4 h-4" />
                   Category
                 </label>
                 <select
                   id="category"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="input w-full"
+                  className="w-full input"
                 >
                   <option value="all">All Categories</option>
                   <option value="text">Text Generation</option>
@@ -343,21 +412,16 @@ export const PriceComparison: React.FC = () => {
             <button
               onClick={handleComparePrice}
               disabled={comparing}
-              className="btn-primary w-full py-4 text-lg font-display font-bold rounded-xl flex items-center justify-center gap-3 shadow-lg"
+              className="flex gap-3 justify-center items-center py-4 w-full text-lg font-bold rounded-xl shadow-lg btn btn-primary font-display"
             >
               {comparing ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className="w-5 h-5 rounded-full border-b-2 border-white animate-spin"></div>
                   Comparing...
                 </>
               ) : (
                 <>
-                  <svg viewBox="0 0 24 24" width="20" height="20">
-                    <path
-                      fill="currentColor"
-                      d="M9,5V9H21V7H11V5H9M9,19H11V17H21V15H9V19M3,17H7V15H3V17M3,7V9H7V7H3M15,11V13H21V11H15M3,13H13V11H3V13Z"
-                    />
-                  </svg>
+                  <CompareIcon className="w-5 h-5" />
                   Compare Prices
                 </>
               )}
@@ -368,215 +432,267 @@ export const PriceComparison: React.FC = () => {
 
       {/* Beautiful Comparison Results */}
       {comparison && (
-        <div className="modern-results">
-          <div className="results-header">
-            <div className="results-title">
-              <h2>Price Comparison Results</h2>
-              <span className="results-count">
-                {comparison.providers.length} models found
-              </span>
+        <div className="px-6 mx-auto mb-8 max-w-7xl">
+          <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex flex-col gap-6 justify-between items-start pb-6 mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
+              <div>
+                <h2 className="mb-2 text-2xl font-bold font-display gradient-text-primary">
+                  Price Comparison Results
+                </h2>
+                <span className="px-3 py-1 text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
+                  {comparison.providers.length} models found
+                </span>
+              </div>
+              <div className="flex gap-3 items-center">
+                <label className="text-sm font-semibold text-secondary-600 dark:text-secondary-300">
+                  Sort by:
+                </label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as "cost" | "provider" | "model")}
+                  className="px-4 py-2 text-sm font-semibold rounded-lg input"
+                >
+                  <option value="cost">Best Price</option>
+                  <option value="provider">Provider</option>
+                  <option value="model">Model Name</option>
+                </select>
+              </div>
             </div>
-            <div className="sort-controls">
-              <label className="sort-label">Sort by:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="sort-select"
-              >
-                <option value="cost">💰 Best Price</option>
-                <option value="provider">🏢 Provider</option>
-                <option value="model">🤖 Model Name</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="results-grid">
-            {getSortedComparison().map((item, index) => (
-              <div
-                key={`${item.provider}-${item.model}`}
-                className={`result-card ${index === 0 ? "best-deal" : ""}`}
-              >
-                {index === 0 && <div className="best-badge">🏆 Best Price</div>}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {getSortedComparison().map((item, index) => (
+                <div
+                  key={`${item.provider}-${item.model}`}
+                  className={`glass rounded-2xl border backdrop-blur-xl p-6 transition-all duration-300 relative overflow-hidden ${index === 0
+                    ? "border-primary-500 dark:border-primary-400 bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 shadow-xl"
+                    : "border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1"
+                    }`}
+                >
+                  {index === 0 && (
+                    <div className="flex absolute top-0 right-0 gap-1 items-center px-4 py-1 text-xs font-bold tracking-wider text-white uppercase rounded-tr-2xl rounded-bl-2xl shadow-lg bg-gradient-primary">
+                      <TrophyIcon className="w-3 h-3" />
+                      Best Price
+                    </div>
+                  )}
 
-                <div className="card-header">
-                  <div className="provider-info">
-                    <h3 className="provider-name">{item.provider}</h3>
-                    <p className="model-name">{item.model}</p>
-                  </div>
-                  <div className="cost-display">
-                    <span className="total-cost">
-                      {formatPrice(item.estimatedCost)}
-                    </span>
-                    <span className="cost-label">total cost</span>
-                  </div>
-                </div>
-
-                <div className="cost-breakdown">
-                  <div className="cost-item">
-                    <span className="cost-type">Input</span>
-                    <span className="cost-value">
-                      {formatPrice(item.inputCost)}
-                    </span>
-                  </div>
-                  <div className="cost-item">
-                    <span className="cost-type">Output</span>
-                    <span className="cost-value">
-                      {formatPrice(item.outputCost)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="features-section">
-                  <div className="features-list">
-                    {item.features.slice(0, 3).map((feature) => (
-                      <span
-                        key={feature}
-                        className={`feature-pill ${getCategoryColor(feature)}`}
-                      >
-                        {feature}
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex-1">
+                      <h3 className="mb-1 text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                        {item.provider}
+                      </h3>
+                      <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                        {item.model}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="block text-2xl font-bold gradient-text-primary">
+                        {formatPrice(item.estimatedCost)}
                       </span>
-                    ))}
+                      <span className="text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
+                        total cost
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 p-4 mb-6 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
+                    <div className="text-center">
+                      <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
+                        Input
+                      </span>
+                      <span className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+                        {formatPrice(item.inputCost)}
+                      </span>
+                    </div>
+                    <div className="text-center">
+                      <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
+                        Output
+                      </span>
+                      <span className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+                        {formatPrice(item.outputCost)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {item.features.slice(0, 3).map((feature) => {
+                      const color = getCategoryColor(feature);
+                      const colorClasses = {
+                        blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+                        purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700",
+                        green: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700",
+                        orange: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700",
+                        gray: "bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 border-secondary-200 dark:border-secondary-700",
+                      };
+                      return (
+                        <span
+                          key={feature}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${colorClasses[color as keyof typeof colorClasses] || colorClasses.gray}`}
+                        >
+                          {feature}
+                        </span>
+                      );
+                    })}
                     {item.features.length > 3 && (
-                      <span className="feature-pill more">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full border bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 border-secondary-200 dark:border-secondary-700">
                         +{item.features.length - 3}
                       </span>
                     )}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
 
       {/* Modern Models Overview */}
-      <div className="models-section">
-        <div className="section-header">
-          <h2>Available Models</h2>
-          <span className="models-count">
-            {getFilteredModels().length} models across {allPricing.length}{" "}
-            providers
-          </span>
-        </div>
+      <div className="px-6 mx-auto mb-8 max-w-7xl">
+        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex flex-col gap-6 justify-between items-start pb-6 mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
+            <h2 className="text-2xl font-bold font-display gradient-text-primary">
+              Available Models
+            </h2>
+            <span className="px-3 py-1 text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
+              {getFilteredModels().length} models across {allPricing.length}{" "}
+              providers
+            </span>
+          </div>
 
-        <div className="providers-container">
-          {allPricing.map((provider) => {
-            const filteredModels = provider.models.filter(
-              (model) =>
-                selectedCategory === "all" ||
-                model.category === selectedCategory,
-            );
-            const isExpanded = expandedProviders.has(provider.provider);
-            const visibleModels = isExpanded
-              ? filteredModels
-              : filteredModels.slice(0, 3);
+          <div className="space-y-6">
+            {allPricing.map((provider) => {
+              const filteredModels = provider.models.filter(
+                (model) =>
+                  selectedCategory === "all" ||
+                  model.category === selectedCategory,
+              );
+              const isExpanded = expandedProviders.has(provider.provider);
+              const visibleModels = isExpanded
+                ? filteredModels
+                : filteredModels.slice(0, 3);
 
-            return (
-              <div key={provider.provider} className="provider-section">
-                <div className="provider-header-modern">
-                  <div className="provider-info">
-                    <h3 className="provider-title">{provider.provider}</h3>
-                    <span className="provider-stats">
-                      {filteredModels.length} models • Updated{" "}
-                      {new Date(provider.lastUpdated).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {filteredModels.length > 3 && (
-                    <button
-                      onClick={() => toggleProviderExpansion(provider.provider)}
-                      className="expand-button"
-                    >
-                      <span>
-                        {isExpanded
-                          ? "Show Less"
-                          : `Show All ${filteredModels.length}`}
+              return (
+                <div
+                  key={provider.provider}
+                  className="overflow-hidden rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 border-secondary-200/50 dark:border-secondary-700/50 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-secondary-50/30 dark:bg-secondary-900/20"
+                >
+                  <div className="flex flex-col gap-4 justify-between items-start p-6 bg-gradient-to-r border-b from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 md:flex-row md:items-center border-primary-200/30 dark:border-primary-700/30">
+                    <div className="flex-1">
+                      <h3 className="mb-1 text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                        {provider.provider}
+                      </h3>
+                      <span className="text-sm text-secondary-600 dark:text-secondary-300">
+                        {filteredModels.length} models • Updated{" "}
+                        {new Date(provider.lastUpdated).toLocaleDateString()}
                       </span>
-                      <svg
-                        className={`expand-icon ${isExpanded ? "rotated" : ""}`}
-                        viewBox="0 0 24 24"
-                        width="16"
-                        height="16"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-
-                <div className="models-grid">
-                  {visibleModels.map((model) => (
-                    <div
-                      key={`${provider.provider}-${model.modelId}`}
-                      className="model-card"
-                    >
-                      <div className="model-header">
-                        <div className="model-title">
-                          <span className="model-name">{model.modelName}</span>
-                          {model.isLatest && (
-                            <span className="latest-tag">Latest</span>
-                          )}
-                        </div>
-                        <span
-                          className={`category-badge ${getCategoryColor(model.category)}`}
-                        >
-                          {model.category}
-                        </span>
-                      </div>
-
-                      <div className="model-details">
-                        <div className="pricing-row">
-                          <div className="price-item">
-                            <span className="price-label">Input</span>
-                            <span className="price-value">
-                              {formatModelPrice(model.inputPricePerMToken)}
-                            </span>
-                          </div>
-                          <div className="price-item">
-                            <span className="price-label">Output</span>
-                            <span className="price-value">
-                              {formatModelPrice(model.outputPricePerMToken)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="model-specs">
-                          <div className="spec-item">
-                            <svg viewBox="0 0 24 24" width="14" height="14">
-                              <path
-                                fill="currentColor"
-                                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
-                              />
-                            </svg>
-                            <span>
-                              {model.contextWindow !== null &&
-                                model.contextWindow > 0
-                                ? `${(model.contextWindow / 1000).toFixed(0)}K tokens`
-                                : "Variable"}
-                            </span>
-                          </div>
-                          <div className="capabilities">
-                            {model.capabilities.slice(0, 2).map((cap) => (
-                              <span key={cap} className="capability-tag">
-                                {cap}
-                              </span>
-                            ))}
-                            {model.capabilities.length > 2 && (
-                              <span className="capability-tag more">
-                                +{model.capabilities.length - 2}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
                     </div>
-                  ))}
+                    {filteredModels.length > 3 && (
+                      <button
+                        onClick={() => toggleProviderExpansion(provider.provider)}
+                        className="flex gap-2 items-center px-4 py-2 text-sm rounded-xl btn btn-primary"
+                      >
+                        <span>
+                          {isExpanded
+                            ? "Show Less"
+                            : `Show All ${filteredModels.length}`}
+                        </span>
+                        <ChevronDownIcon
+                          className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
+                    {visibleModels.map((model) => {
+                      const categoryColor = getCategoryColor(model.category);
+                      const categoryColorClasses = {
+                        blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+                        purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700",
+                        green: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700",
+                        orange: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700",
+                        gray: "bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 border-secondary-200 dark:border-secondary-700",
+                      };
+                      return (
+                        <div
+                          key={`${provider.provider}-${model.modelId}`}
+                          className="p-6 rounded-xl border backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-gradient-light-panel dark:bg-gradient-dark-panel"
+                        >
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex-1">
+                              <div className="flex gap-2 items-center mb-2">
+                                <span className="text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                  {model.modelName}
+                                </span>
+                                {model.isLatest && (
+                                  <span className="bg-gradient-primary text-white px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
+                                    Latest
+                                  </span>
+                                )}
+                              </div>
+                              <span
+                                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${categoryColorClasses[categoryColor as keyof typeof categoryColorClasses] || categoryColorClasses.gray
+                                  }`}
+                              >
+                                {model.category}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <div className="grid grid-cols-2 gap-4 p-4 mb-4 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
+                              <div className="text-center">
+                                <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
+                                  Input
+                                </span>
+                                <span className="font-mono text-base font-bold gradient-text-primary">
+                                  {formatModelPrice(model.inputPricePerMToken)}
+                                </span>
+                              </div>
+                              <div className="text-center">
+                                <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
+                                  Output
+                                </span>
+                                <span className="font-mono text-base font-bold gradient-text-primary">
+                                  {formatModelPrice(model.outputPricePerMToken)}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex gap-4 justify-between items-center">
+                              <div className="flex gap-2 items-center text-sm text-secondary-600 dark:text-secondary-300">
+                                <CircleIcon className="w-3 h-3" />
+                                <span>
+                                  {model.contextWindow !== null &&
+                                    model.contextWindow > 0
+                                    ? `${(model.contextWindow / 1000).toFixed(0)}K tokens`
+                                    : "Variable"}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {model.capabilities.slice(0, 2).map((cap) => (
+                                  <span
+                                    key={cap}
+                                    className="px-2 py-1 text-xs font-semibold rounded-lg border bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-700"
+                                  >
+                                    {cap}
+                                  </span>
+                                ))}
+                                {model.capabilities.length > 2 && (
+                                  <span className="px-2 py-1 text-xs font-semibold rounded-lg border bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 border-secondary-200 dark:border-secondary-700">
+                                    +{model.capabilities.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

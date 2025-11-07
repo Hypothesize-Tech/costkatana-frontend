@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+    TrendingUp,
+    TrendingDown,
+    ArrowRight,
+    AlertTriangle,
+    FileDown,
+    Info,
+    Bell
+} from 'lucide-react';
 import { CostTrends } from '../../services/unexplainedCost.service';
 
 interface CostTrendsChartProps {
@@ -29,12 +38,12 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
     };
 
     const getTrendIcon = (trend: string) => {
-        const icons: Record<string, string> = {
-            increasing: '📈',
-            decreasing: '📉',
-            stable: '➡️'
+        const icons: Record<string, JSX.Element> = {
+            increasing: <TrendingUp className="w-4 h-4" />,
+            decreasing: <TrendingDown className="w-4 h-4" />,
+            stable: <ArrowRight className="w-4 h-4" />
         };
-        return icons[trend] || '❓';
+        return icons[trend] || <Info className="w-4 h-4" />;
     };
 
     const getTrendDescription = (trend: string) => {
@@ -84,7 +93,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                                 {formatPercentage(trends.trends.weekly_growth)}
                             </div>
                         </div>
-                        <div className="text-2xl">
+                        <div className={`${getTrendColor(trends.trends.weekly_growth > 0 ? 'increasing' : 'decreasing')}`}>
                             {getTrendIcon(trends.trends.weekly_growth > 0 ? 'increasing' : 'decreasing')}
                         </div>
                     </div>
@@ -98,7 +107,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                                 {formatPercentage(trends.trends.monthly_growth)}
                             </div>
                         </div>
-                        <div className="text-2xl">
+                        <div className={`${getTrendColor(trends.trends.monthly_growth > 0 ? 'increasing' : 'decreasing')}`}>
                             {getTrendIcon(trends.trends.monthly_growth > 0 ? 'increasing' : 'decreasing')}
                         </div>
                     </div>
@@ -127,7 +136,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                                 <div className={`font-semibold ${getTrendColor(driver.trend)}`}>
                                     {formatPercentage(driver.rate)}
                                 </div>
-                                <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                                <div className={`text-sm ${getTrendColor(driver.trend)}`}>
                                     {getTrendIcon(driver.trend)}
                                 </div>
                             </div>
@@ -169,9 +178,7 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                 <div className="mt-4 p-4 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <svg className="h-4 w-4 text-warning-600 dark:text-warning-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                            </svg>
+                            <AlertTriangle className="h-4 w-4 text-warning-600 dark:text-warning-400 mr-2" />
                             <span className="text-sm font-medium text-warning-800 dark:text-warning-200">Prediction Confidence</span>
                         </div>
                         <div className="flex items-center">
@@ -198,28 +205,28 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                 <div className="space-y-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     {trends.trends.weekly_growth > 0.1 && (
                         <div className="flex items-center">
-                            <span className="text-error-500 mr-2">⚠️</span>
+                            <AlertTriangle className="w-4 h-4 text-error-500 mr-2" />
                             <span>Weekly costs are growing rapidly. Consider immediate optimization.</span>
                         </div>
                     )}
 
                     {trends.trends.monthly_growth > 0.05 && (
                         <div className="flex items-center">
-                            <span className="text-warning-500 mr-2">📊</span>
+                            <TrendingUp className="w-4 h-4 text-warning-500 mr-2" />
                             <span>Monthly trend shows steady growth. Monitor for optimization opportunities.</span>
                         </div>
                     )}
 
                     {trends.trends.cost_drivers_trend.some(d => d.trend === 'increasing' && d.rate > 0.1) && (
                         <div className="flex items-center">
-                            <span className="text-secondary-500 mr-2">🔍</span>
+                            <Info className="w-4 h-4 text-secondary-500 mr-2" />
                             <span>Some cost drivers are increasing significantly. Review system prompts and tool usage.</span>
                         </div>
                     )}
 
                     {trends.predictions.confidence < 0.7 && (
                         <div className="flex items-center">
-                            <span className="text-primary-500 mr-2">ℹ️</span>
+                            <Info className="w-4 h-4 text-primary-500 mr-2" />
                             <span>Low prediction confidence. More historical data needed for accurate forecasts.</span>
                         </div>
                     )}
@@ -240,11 +247,9 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                             link.click();
                             document.body.removeChild(link);
                         }}
-                        className="btn-primary inline-flex items-center"
+                        className="btn btn-primary inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
+                        <FileDown className="h-4 w-4 mr-2" />
                         Export Trends
                     </button>
 
@@ -252,11 +257,9 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                         onClick={() => {
                             alert(`Cost Trends Analysis Guide:\n\n• Daily Average: ${formatCurrency(trends.trends.daily_average)} - Your typical daily spending\n• Weekly Growth: ${formatPercentage(trends.trends.weekly_growth)} - How costs change week-over-week\n• Monthly Growth: ${formatPercentage(trends.trends.monthly_growth)} - Long-term cost trajectory\n• Prediction Confidence: ${getConfidenceLabel(trends.predictions.confidence)} - Reliability of forecasts\n\n${trends.predictions.confidence < 0.7 ? 'Low confidence suggests you need more historical data for accurate predictions.' : 'High confidence means predictions are reliable based on current data.'}`);
                         }}
-                        className="btn-secondary inline-flex items-center"
+                        className="btn btn-secondary inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
+                        <Info className="h-4 w-4 mr-2" />
                         Learn More
                     </button>
 
@@ -269,11 +272,9 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
                             };
                             alert(`Setting up trend alerts:\n\nAlert Thresholds:\n• Weekly Growth: ${thresholds.weekly_growth} (${formatPercentage(trends.trends.weekly_growth)})\n• Monthly Growth: ${thresholds.monthly_growth} (${formatPercentage(trends.trends.monthly_growth)})\n• Prediction Confidence: ${thresholds.confidence} (${getConfidenceLabel(trends.predictions.confidence)})\n\nYou will be notified when trends exceed these thresholds.`);
                         }}
-                        className="btn-secondary inline-flex items-center"
+                        className="btn btn-secondary inline-flex items-center"
                     >
-                        <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <Bell className="h-4 w-4 mr-2" />
                         Set Alerts
                     </button>
                 </div>

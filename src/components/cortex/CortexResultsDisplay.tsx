@@ -255,15 +255,36 @@ export const CortexResultsDisplay: React.FC<CortexResultsDisplayProps> = ({
             </div>
 
             {/* Performance Summary */}
-            <div className="bg-gradient-primary/10 border border-primary-200/30 rounded-xl p-6 glass backdrop-blur-xl text-center animate-scale-in">
-                <div className="text-4xl font-display font-bold gradient-text mb-3">
-                    {Math.round(cortex.reductionPercentage)}% Token Reduction
+            <div className={`border rounded-xl p-6 glass backdrop-blur-xl text-center animate-scale-in ${
+                cortex.reductionPercentage < 0 
+                    ? 'bg-gradient-danger/10 border-danger-200/30' 
+                    : 'bg-gradient-primary/10 border-primary-200/30'
+            }`}>
+                <div className={`text-4xl font-display font-bold mb-3 ${
+                    cortex.reductionPercentage < 0 
+                        ? 'text-danger-600 dark:text-danger-400' 
+                        : 'gradient-text'
+                }`}>
+                    {Math.abs(Math.round(cortex.reductionPercentage))}% Token {cortex.reductionPercentage < 0 ? 'Increase' : 'Reduction'}
                 </div>
-                <div className="text-lg font-body text-primary-600 dark:text-primary-400 mb-2">
-                    Cortex achieved <span className="font-display font-semibold gradient-text">{cortex.tokensSaved}</span> token savings while maintaining{' '}
-                    <span className="font-display font-semibold gradient-text">{Math.round(cortex.semanticIntegrity * 100)}%</span> semantic integrity
+                <div className={`text-lg font-body mb-2 ${
+                    cortex.reductionPercentage < 0 
+                        ? 'text-danger-600 dark:text-danger-400' 
+                        : 'text-primary-600 dark:text-primary-400'
+                }`}>
+                    {cortex.reductionPercentage < 0 ? (
+                        <>
+                            ⚠️ Cortex increased tokens by <span className="font-display font-semibold">{Math.abs(cortex.tokensSaved)}</span> while maintaining{' '}
+                            <span className="font-display font-semibold">{Math.round(cortex.semanticIntegrity * 100)}%</span> semantic integrity
+                        </>
+                    ) : (
+                        <>
+                            Cortex achieved <span className="font-display font-semibold gradient-text">{cortex.tokensSaved}</span> token savings while maintaining{' '}
+                            <span className="font-display font-semibold gradient-text">{Math.round(cortex.semanticIntegrity * 100)}%</span> semantic integrity
+                        </>
+                    )}
                 </div>
-                {!hasError && (
+                {!hasError && cortex.reductionPercentage >= 0 && (
                     <div className="text-sm font-body text-primary-500 dark:text-primary-400 mt-3 flex items-center justify-center space-x-2">
                         <span>✨</span>
                         <span>Optimized using advanced semantic processing</span>

@@ -13,6 +13,7 @@ import {
     BarChart,
     Bar
 } from 'recharts';
+import { TrendingUp, Zap, Coins, DollarSign, Calendar } from 'lucide-react';
 import { guardrailsService } from '../../services/guardrails.service';
 import { formatNumber } from '../../utils/formatters';
 
@@ -84,10 +85,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 animate-scale-in">
-                    <p className="font-display font-bold text-sm text-light-text-primary dark:text-dark-text-primary mb-3">{formatDate(label)}</p>
+                <div className="p-4 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-scale-in">
+                    <p className="mb-3 text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">{formatDate(label)}</p>
                     {payload.map((entry: any, index: number) => (
-                        <p key={index} className="text-sm font-body mb-1" style={{ color: entry.color }}>
+                        <p key={index} className="mb-1 text-sm font-body" style={{ color: entry.color }}>
                             {entry.name}: {entry.name === 'Cost'
                                 ? `$${entry.value.toFixed(2)}`
                                 : formatNumber(entry.value)}
@@ -101,16 +102,14 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
 
     if (loading) {
         return (
-            <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex items-center mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
+                        <TrendingUp className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Usage Trend</h3>
+                    <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
                 </div>
-                <div className="flex items-center justify-center h-64">
+                <div className="flex justify-center items-center h-64">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
             </div>
@@ -320,118 +319,120 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     };
 
     return (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+        <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
+                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
+                            <TrendingUp className="w-5 h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold gradient-text-primary">📈 Usage Trend</h3>
+                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
                     </div>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSelectedMetric('all')}
-                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
+                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
                                 ? 'bg-gradient-primary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             All
                         </button>
                         <button
                             onClick={() => setSelectedMetric('requests')}
-                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'requests'
+                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'requests'
                                 ? 'bg-gradient-secondary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
                                 }`}
                         >
-                            ⚡ Requests
+                            <Zap className="w-4 h-4" />
+                            Requests
                         </button>
                         <button
                             onClick={() => setSelectedMetric('tokens')}
-                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'tokens'
+                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'tokens'
                                 ? 'bg-gradient-success text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
                                 }`}
                         >
-                            🪙 Tokens
+                            <Coins className="w-4 h-4" />
+                            Tokens
                         </button>
                         <button
                             onClick={() => setSelectedMetric('cost')}
-                            className={`px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'cost'
+                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'cost'
                                 ? 'bg-gradient-warning text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
                                 }`}
                         >
-                            💰 Cost
+                            <DollarSign className="w-4 h-4" />
+                            Cost
                         </button>
                     </div>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                         <button
                             onClick={() => setSelectedRange('7d')}
-                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
+                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             7 Days
                         </button>
                         <button
                             onClick={() => setSelectedRange('30d')}
-                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
+                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             30 Days
                         </button>
                         <button
                             onClick={() => setSelectedRange('60d')}
-                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
+                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             60 Days
                         </button>
                         <button
                             onClick={() => setSelectedRange('90d')}
-                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
+                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
                             90 Days
                         </button>
                         <button
                             onClick={() => setSelectedRange('custom')}
-                            className={`px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === 'custom'
+                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedRange === 'custom'
                                 ? 'bg-gradient-accent text-white shadow-lg'
-                                : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
+                                : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
                                 }`}
                         >
-                            📅 Custom
+                            <Calendar className="w-4 h-4" />
+                            Custom
                         </button>
                     </div>
                     {selectedRange === 'custom' && (
-                        <div className="flex items-center gap-3 glass p-3 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="flex gap-3 items-center p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
                             <input
                                 type="date"
                                 value={customStartDate?.toISOString().split('T')[0] || ''}
                                 onChange={(e) => setCustomStartDate(e.target.value ? new Date(e.target.value) : null)}
-                                className="input text-sm"
+                                className="text-sm input"
                             />
-                            <span className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">to</span>
+                            <span className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">to</span>
                             <input
                                 type="date"
                                 value={customEndDate?.toISOString().split('T')[0] || ''}
                                 onChange={(e) => setCustomEndDate(e.target.value ? new Date(e.target.value) : null)}
-                                className="input text-sm"
+                                className="text-sm input"
                             />
                         </div>
                     )}

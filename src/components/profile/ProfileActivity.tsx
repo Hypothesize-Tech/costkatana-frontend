@@ -1,5 +1,5 @@
-// src/components/profile/ProfileActivity.tsx
 import React from "react";
+import { TrendingUp, Clock } from "lucide-react";
 import { formatRelativeTime } from "../../utils/formatters";
 
 interface Activity {
@@ -9,7 +9,12 @@ interface Activity {
   description: string;
   timestamp: string;
   icon?: string;
-  metadata?: any;
+  metadata?: {
+    cost?: number;
+    tokens?: number;
+    service?: string;
+    [key: string]: unknown;
+  };
 }
 
 interface ProfileActivityProps {
@@ -25,7 +30,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
     switch (type) {
       case "usage":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-primary rounded-xl shadow-lg">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -43,7 +48,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "optimization":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-success rounded-xl shadow-lg">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-success">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -61,7 +66,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "settings":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-secondary rounded-xl shadow-lg">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-secondary">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -85,7 +90,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "api_key":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-warning rounded-xl shadow-lg">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-warning">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -103,7 +108,7 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
         );
       case "login":
         return (
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-accent rounded-xl shadow-lg">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-accent">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -124,14 +129,14 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
 
   if (loading) {
     return (
-      <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="p-8 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="space-y-6 animate-pulse">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex items-start space-x-6">
-              <div className="w-12 h-12 bg-gradient-primary/20 rounded-xl"></div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-primary/20"></div>
               <div className="flex-1 space-y-3">
-                <div className="w-3/4 h-4 bg-gradient-primary/20 rounded-lg"></div>
-                <div className="w-1/2 h-3 bg-gradient-primary/10 rounded-lg"></div>
+                <div className="w-3/4 h-4 rounded-lg bg-gradient-primary/20"></div>
+                <div className="w-1/2 h-3 rounded-lg bg-gradient-primary/10"></div>
               </div>
             </div>
           ))}
@@ -141,35 +146,25 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
   }
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+    <div className="rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <div className="p-8">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <span className="text-white text-lg">📈</span>
+        <div className="flex gap-4 items-center mb-8">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
+            <TrendingUp className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-2xl font-display font-bold gradient-text-primary">
+          <h2 className="text-2xl font-bold font-display gradient-text-primary">
             Recent Activity
           </h2>
         </div>
 
         {activities.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="mx-auto w-20 h-20 bg-gradient-primary/20 rounded-2xl flex items-center justify-center mb-6">
-              <svg
-                className="w-10 h-10 text-primary-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+            <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl bg-gradient-primary/20">
+              <Clock className="w-10 h-10 text-primary-500 dark:text-primary-400" />
             </div>
-            <h3 className="font-display font-semibold gradient-text-primary text-lg mb-2">No recent activity</h3>
+            <h3 className="mb-2 text-lg font-semibold font-display gradient-text-primary">
+              No recent activity
+            </h3>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Your activity will appear here
             </p>
@@ -179,36 +174,36 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
             {activities.map((activity) => (
               <div
                 key={activity.id}
-                className="glass rounded-xl p-6 border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-[1.01]"
+                className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 dark:hover:border-primary-600/50 transition-all duration-200 hover:scale-[1.01] bg-gradient-light-panel dark:bg-gradient-dark-panel"
               >
                 <div className="flex items-start space-x-6">
                   {getActivityIcon(activity.type)}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-display font-semibold gradient-text-primary truncate">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-semibold truncate font-display gradient-text-primary">
                         {activity.action}
                       </h3>
-                      <span className="glass rounded-lg px-3 py-1 border border-primary-200/30 font-body text-light-text-secondary dark:text-dark-text-secondary text-xs ml-4 flex-shrink-0">
+                      <span className="flex-shrink-0 px-3 py-1 ml-4 text-xs rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 font-body text-light-text-secondary dark:text-dark-text-secondary">
                         {formatRelativeTime(activity.timestamp)}
                       </span>
                     </div>
-                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-4 line-clamp-2">
+                    <p className="mb-4 font-body text-light-text-primary dark:text-dark-text-primary line-clamp-2">
                       {activity.description}
                     </p>
                     {activity.metadata && (
-                      <div className="flex items-center flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-3 items-center">
                         {activity.metadata.cost && (
-                          <span className="glass rounded-lg px-3 py-1 border border-success-200/30 font-body text-light-text-primary dark:text-dark-text-primary text-xs">
+                          <span className="px-3 py-1 text-xs rounded-lg border glass border-success-200/30 dark:border-success-700/30 font-body text-light-text-primary dark:text-dark-text-primary">
                             Cost: ${activity.metadata.cost.toFixed(4)}
                           </span>
                         )}
                         {activity.metadata.tokens && (
-                          <span className="glass rounded-lg px-3 py-1 border border-primary-200/30 font-body text-light-text-primary dark:text-dark-text-primary text-xs">
+                          <span className="px-3 py-1 text-xs rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 font-body text-light-text-primary dark:text-dark-text-primary">
                             Tokens: {activity.metadata.tokens.toLocaleString()}
                           </span>
                         )}
                         {activity.metadata.service && (
-                          <span className="px-3 py-1 bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border border-accent-200/30 rounded-lg font-display font-medium text-xs">
+                          <span className="px-3 py-1 text-xs font-medium rounded-lg border bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border-accent-200/30 dark:border-accent-700/30 font-display">
                             {activity.metadata.service}
                           </span>
                         )}

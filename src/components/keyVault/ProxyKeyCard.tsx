@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import {
-  TrashIcon,
-  ClockIcon,
-  EyeIcon,
-  EyeSlashIcon,
-  ChartBarIcon,
-  CurrencyDollarIcon,
-  ShieldCheckIcon,
-  KeyIcon,
-  UserGroupIcon,
-  GlobeAltIcon,
-  ClipboardIcon
-} from '@heroicons/react/24/outline';
+  Trash2,
+  Clock,
+  Eye,
+  EyeOff,
+  BarChart3,
+  DollarSign,
+  Shield,
+  Key,
+  Users,
+  Globe,
+  Copy,
+  Check,
+  Lock,
+  Calendar,
+  CheckCircle
+} from 'lucide-react';
 import { ProxyKey } from '../../services/keyVault.service';
 
 interface ProxyKeyCardProps {
@@ -84,7 +88,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-            <KeyIcon className="h-6 w-6 text-white" />
+            <Key className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-xl font-display font-bold gradient-text-primary truncate mb-2">
@@ -103,24 +107,24 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         <div className="flex items-center gap-2">
           <button
             onClick={onToggle}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${proxyKey.isActive
+            className={`btn w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${proxyKey.isActive
               ? 'bg-gradient-success text-white shadow-lg'
               : 'glass border border-primary-200/30 shadow-lg backdrop-blur-xl text-light-text-tertiary dark:text-dark-text-tertiary hover:border-success-200/50'
               }`}
             title={proxyKey.isActive ? 'Deactivate' : 'Activate'}
           >
             {proxyKey.isActive ? (
-              <EyeIcon className="h-5 w-5" />
+              <Eye className="h-5 w-5" />
             ) : (
-              <EyeSlashIcon className="h-5 w-5" />
+              <EyeOff className="h-5 w-5" />
             )}
           </button>
           <button
             onClick={onDelete}
-            className="w-10 h-10 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+            className="btn w-10 h-10 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
             title="Delete proxy key"
           >
-            <TrashIcon className="h-5 w-5" />
+            <Trash2 className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -130,26 +134,26 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-              <span className="text-white text-xs">🔑</span>
+              <Key className="h-3 w-3 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-primary">Proxy Key ID:</span>
             <button
               onClick={() => setShowKeyId(!showKeyId)}
-              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-300"
+              className="btn text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-300"
             >
               {showKeyId ? (
-                <EyeSlashIcon className="h-4 w-4" />
+                <EyeOff className="h-4 w-4" />
               ) : (
-                <EyeIcon className="h-4 w-4" />
+                <Eye className="h-4 w-4" />
               )}
             </button>
           </div>
           <button
             onClick={() => copyToClipboard(proxyKey.keyId)}
-            className="w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 hover:border-primary-200/50 transition-all duration-300 hover:scale-110"
+            className="btn w-8 h-8 rounded-lg glass border border-primary-200/30 shadow-lg backdrop-blur-xl flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 hover:border-primary-200/50 transition-all duration-300 hover:scale-110"
             title="Copy to clipboard"
           >
-            <ClipboardIcon className="h-4 w-4" />
+            <Copy className="h-4 w-4" />
           </button>
         </div>
         <code className="font-mono text-sm bg-primary-100/50 dark:bg-primary-900/50 p-3 rounded-lg block break-all gradient-text-primary">
@@ -158,7 +162,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         {copied && (
           <div className="mt-2 flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-gradient-success flex items-center justify-center shadow-lg">
-              <span className="text-white text-xs">✓</span>
+              <Check className="h-3 w-3 text-white" />
             </div>
             <p className="text-sm font-body gradient-text-success">Copied to clipboard!</p>
           </div>
@@ -209,7 +213,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
                   ? 'bg-gradient-warning'
                   : 'bg-gradient-success'
                 }`}>
-                <CurrencyDollarIcon className="h-4 w-4 text-white" />
+                <DollarSign className="h-4 w-4 text-white" />
               </div>
               <span className={`font-display font-semibold ${budgetStatus.status === 'over'
                 ? 'gradient-text-danger'
@@ -249,7 +253,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-              <ShieldCheckIcon className="h-3 w-3 text-white" />
+              <Shield className="h-3 w-3 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-primary">Permissions</span>
           </div>
@@ -268,7 +272,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <ClockIcon className="h-3 w-3 text-white" />
+              <Clock className="h-3 w-3 text-white" />
             </div>
             <span className="font-display font-semibold gradient-text-primary">Last Used</span>
           </div>
@@ -283,7 +287,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
         <div className="border-t border-primary-200/30 pt-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-              <span className="text-white text-sm">🔒</span>
+              <Lock className="h-4 w-4 text-white" />
             </div>
             <h4 className="text-lg font-display font-bold gradient-text-primary">Security Restrictions</h4>
           </div>
@@ -292,7 +296,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
               <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-warning flex items-center justify-center shadow-lg">
-                    <ChartBarIcon className="h-2 w-2 text-white" />
+                    <BarChart3 className="h-2 w-2 text-white" />
                   </div>
                   <span className="font-body text-sm text-warning-600 dark:text-warning-400">Rate Limit</span>
                 </div>
@@ -305,7 +309,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
               <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <GlobeAltIcon className="h-2 w-2 text-white" />
+                    <Globe className="h-2 w-2 text-white" />
                   </div>
                   <span className="font-body text-sm text-primary-600 dark:text-primary-400">IP Whitelist</span>
                 </div>
@@ -318,7 +322,7 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
               <div className="glass p-4 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-success flex items-center justify-center shadow-lg">
-                    <UserGroupIcon className="h-2 w-2 text-white" />
+                    <Users className="h-2 w-2 text-white" />
                   </div>
                   <span className="font-body text-sm text-success-600 dark:text-success-400">Domain Whitelist</span>
                 </div>
@@ -333,15 +337,25 @@ export const ProxyKeyCard: React.FC<ProxyKeyCardProps> = ({ proxyKey, onDelete, 
 
       {/* Status Footer */}
       <div className="flex items-center justify-between pt-6 border-t border-primary-200/30">
-        <span className={`inline-flex items-center px-4 py-2 rounded-full font-display font-semibold text-sm ${proxyKey.isActive
+        <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-display font-semibold text-sm ${proxyKey.isActive
           ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
           : 'bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300'
           }`}>
-          {proxyKey.isActive ? '✅ Active' : '⏸️ Inactive'}
+          {proxyKey.isActive ? (
+            <>
+              <CheckCircle className="h-3 w-3" />
+              Active
+            </>
+          ) : (
+            <>
+              <Clock className="h-3 w-3" />
+              Inactive
+            </>
+          )}
         </span>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg">
-            <span className="text-white text-xs">📅</span>
+            <Calendar className="h-2 w-2 text-white" />
           </div>
           <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
             Created {formatDate(proxyKey.createdAt)}

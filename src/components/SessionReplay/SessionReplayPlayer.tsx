@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SessionPlayerData, AIInteraction } from '../../types/sessionReplay.types';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Play, Pause, SkipBack, SkipForward, Code2, BarChart3, MessageSquare, Zap, DollarSign, Clock, Activity } from 'lucide-react';
 
 interface SessionReplayPlayerProps {
     sessionData: SessionPlayerData;
@@ -54,24 +55,78 @@ export const SessionReplayPlayer: React.FC<SessionReplayPlayerProps> = ({ sessio
     };
 
     const renderAIInteraction = (interaction: AIInteraction) => {
+        const totalTokens = (interaction.tokens?.input || 0) + (interaction.tokens?.output || 0);
+
         return (
             <div className="space-y-4">
+                {/* Interaction Header with Metrics */}
                 <div className="glass rounded-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30">
-                    <div className="flex justify-between items-center mb-3">
-                        <h3 className="text-lg font-display font-semibold gradient-text-primary">AI Interaction</h3>
-                        <span className="text-sm text-secondary-600 dark:text-secondary-400">{formatTimestamp(interaction.timestamp)}</span>
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 className="text-lg font-display font-semibold gradient-text-primary flex items-center gap-2">
+                                <MessageSquare className="w-5 h-5" />
+                                AI Interaction
+                            </h3>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-400 mt-1">
+                                {formatTimestamp(interaction.timestamp)}
+                            </p>
+                        </div>
+                        <div className="px-4 py-2 bg-gradient-primary text-white rounded-lg font-bold shadow-lg">
+                            {interaction.model}
+                        </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm">
-                        <span className="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-lg font-medium">
-                            Model: {interaction.model}
-                        </span>
-                        <span className="px-3 py-1 bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 rounded-lg font-medium">
-                            Tokens: {(interaction.tokens?.input || 0) + (interaction.tokens?.output || 0)}
-                        </span>
-                        <span className="px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-lg font-medium">
-                            Cost: {formatCost(interaction.cost)}
-                        </span>
+
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-success-50 dark:bg-success-900/20 rounded-lg p-4 border border-success-200/30">
+                            <div className="flex items-center gap-2 text-success-700 dark:text-success-400 mb-1">
+                                <DollarSign className="w-4 h-4" />
+                                <span className="text-xs font-medium">Cost</span>
+                            </div>
+                            <div className="text-2xl font-bold text-success-700 dark:text-success-400">
+                                {formatCost(interaction.cost)}
+                            </div>
+                        </div>
+
+                        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border border-primary-200/30">
+                            <div className="flex items-center gap-2 text-primary-700 dark:text-primary-400 mb-1">
+                                <Zap className="w-4 h-4" />
+                                <span className="text-xs font-medium">Tokens</span>
+                            </div>
+                            <div className="text-2xl font-bold gradient-text-primary">
+                                {totalTokens.toLocaleString()}
+                            </div>
+                            <div className="text-xs text-secondary-600 dark:text-secondary-400 mt-1">
+                                {interaction.tokens?.input || 0} in • {interaction.tokens?.output || 0} out
+                            </div>
+                        </div>
+
+                        {interaction.latency && (
+                            <div className="bg-secondary-50 dark:bg-secondary-800/50 rounded-lg p-4 border border-secondary-200/30">
+                                <div className="flex items-center gap-2 text-secondary-700 dark:text-secondary-300 mb-1">
+                                    <Clock className="w-4 h-4" />
+                                    <span className="text-xs font-medium">Latency</span>
+                                </div>
+                                <div className="text-2xl font-bold text-secondary-800 dark:text-secondary-200">
+                                    {interaction.latency}ms
+                                </div>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Parameters if available */}
+                    {interaction.parameters && Object.keys(interaction.parameters).length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-primary-200/30">
+                            <div className="text-xs font-medium text-secondary-600 dark:text-secondary-400 mb-2">Parameters</div>
+                            <div className="flex flex-wrap gap-2">
+                                {Object.entries(interaction.parameters).map(([key, value]) => (
+                                    <span key={key} className="px-2 py-1 bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 rounded text-xs">
+                                        {key}: {String(value)}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="glass rounded-xl p-6 bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30">
@@ -210,33 +265,36 @@ export const SessionReplayPlayer: React.FC<SessionReplayPlayerProps> = ({ sessio
             </div>
 
             {/* Tabs */}
-            <div className="px-6 border-b border-primary-200/30">
+            <div className="px-6 border-b border-primary-200/30 bg-secondary-50/30 dark:bg-secondary-900/20">
                 <div className="flex gap-2">
                     <button
                         onClick={() => setSelectedTab('interaction')}
-                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 ${selectedTab === 'interaction'
+                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${selectedTab === 'interaction'
                             ? 'border-primary-500 gradient-text-primary'
                             : 'border-transparent text-secondary-600 dark:text-secondary-400 hover:text-primary-500 dark:hover:text-primary-400'
                             }`}
                     >
+                        <MessageSquare className="w-4 h-4" />
                         AI Interaction
                     </button>
                     <button
                         onClick={() => setSelectedTab('code')}
-                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 ${selectedTab === 'code'
+                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${selectedTab === 'code'
                             ? 'border-primary-500 gradient-text-primary'
                             : 'border-transparent text-secondary-600 dark:text-secondary-400 hover:text-primary-500 dark:hover:text-primary-400'
                             }`}
                     >
+                        <Code2 className="w-4 h-4" />
                         Code Context
                     </button>
                     <button
                         onClick={() => setSelectedTab('metrics')}
-                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 ${selectedTab === 'metrics'
+                        className={`py-3 px-6 font-display font-semibold text-sm transition-all border-b-2 flex items-center gap-2 ${selectedTab === 'metrics'
                             ? 'border-primary-500 gradient-text-primary'
                             : 'border-transparent text-secondary-600 dark:text-secondary-400 hover:text-primary-500 dark:hover:text-primary-400'
                             }`}
                     >
+                        <BarChart3 className="w-4 h-4" />
                         System Metrics
                     </button>
                 </div>
@@ -278,33 +336,48 @@ export const SessionReplayPlayer: React.FC<SessionReplayPlayerProps> = ({ sessio
                     <button
                         onClick={() => handleSeek(currentIndex - 1)}
                         disabled={currentIndex === 0}
-                        className="px-5 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+                        className="flex items-center gap-2 px-4 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
                     >
-                        ← Previous
+                        <SkipBack className="w-4 h-4" />
+                        Previous
                     </button>
                     <button
                         onClick={handlePlayPause}
-                        className="px-8 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-xl transition-all font-semibold glow-primary"
+                        className="flex items-center gap-2 px-8 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-xl transition-all font-semibold glow-primary"
                     >
-                        {isPlaying ? '⏸ Pause' : '▶ Play'}
+                        {isPlaying ? (
+                            <>
+                                <Pause className="w-5 h-5" />
+                                Pause
+                            </>
+                        ) : (
+                            <>
+                                <Play className="w-5 h-5" />
+                                Play
+                            </>
+                        )}
                     </button>
                     <button
                         onClick={() => handleSeek(currentIndex + 1)}
                         disabled={currentIndex >= allEvents.length - 1}
-                        className="px-5 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+                        className="flex items-center gap-2 px-4 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
                     >
-                        Next →
+                        Next
+                        <SkipForward className="w-4 h-4" />
                     </button>
-                    <select
-                        value={playbackSpeed}
-                        onChange={(e) => setPlaybackSpeed(parseFloat(e.target.value))}
-                        className="px-4 py-2.5 bg-secondary-100 dark:bg-secondary-800 text-secondary-800 dark:text-secondary-200 rounded-lg hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-all font-medium cursor-pointer border border-secondary-300 dark:border-secondary-700"
-                    >
-                        <option value="0.5">0.5x</option>
-                        <option value="1">1x</option>
-                        <option value="1.5">1.5x</option>
-                        <option value="2">2x</option>
-                    </select>
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-800 rounded-lg border border-secondary-300 dark:border-secondary-700">
+                        <Activity className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                        <select
+                            value={playbackSpeed}
+                            onChange={(e) => setPlaybackSpeed(parseFloat(e.target.value))}
+                            className="bg-transparent text-secondary-800 dark:text-secondary-200 font-medium cursor-pointer outline-none"
+                        >
+                            <option value="0.5">0.5x</option>
+                            <option value="1">1x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

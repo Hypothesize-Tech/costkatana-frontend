@@ -1,6 +1,6 @@
 // src/components/settings/SecuritySettings.tsx
 import React, { useState, useEffect } from 'react';
-import { ShieldCheckIcon, DevicePhoneMobileIcon, ExclamationTriangleIcon, ChartBarIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
+import { ShieldCheck, Smartphone, AlertTriangle, BarChart3, Mail, Lock, FileText, Shield } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { GatewayService, FirewallAnalytics } from '../../services/gateway.service';
 import { MFASetup } from '../auth/MFASetup';
@@ -50,41 +50,41 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
     <div className="space-y-8">
 
       {/* Prompt Firewall & Cost Shield */}
-      <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
-            <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-warning-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-warning glow-warning">
+            <AlertTriangle className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold gradient-text-warning">
+          <h2 className="text-xl font-bold font-display gradient-text-warning">
             Prompt Firewall & Cost Shield
           </h2>
         </div>
         {loadingFirewall ? (
-          <div className="glass rounded-lg border border-primary-200/30 p-6">
+          <div className="p-6 rounded-lg border glass border-primary-200/30">
             <div className="animate-pulse">
-              <div className="h-4 bg-gradient-primary/20 rounded w-1/4 mb-2"></div>
-              <div className="h-4 bg-gradient-primary/20 rounded w-1/2"></div>
+              <div className="mb-2 w-1/4 h-4 rounded bg-gradient-primary/20"></div>
+              <div className="w-1/2 h-4 rounded bg-gradient-primary/20"></div>
             </div>
           </div>
         ) : firewallAnalytics ? (
           <div className="space-y-6">
             {/* Firewall Overview */}
-            <div className="glass rounded-lg border border-primary-200/30 p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center glass rounded-lg p-4 border border-info-200/30">
-                  <div className="text-3xl font-display font-bold gradient-text mb-2">
+            <div className="p-6 rounded-lg border glass border-primary-200/30">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div className="p-4 text-center rounded-lg border glass border-info-200/30">
+                  <div className="mb-2 text-3xl font-bold font-display gradient-text">
                     {firewallAnalytics.totalRequests}
                   </div>
                   <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Total Requests</div>
                 </div>
-                <div className="text-center glass rounded-lg p-4 border border-danger-200/30">
-                  <div className="text-3xl font-display font-bold gradient-text-danger mb-2">
+                <div className="p-4 text-center rounded-lg border glass border-danger-200/30">
+                  <div className="mb-2 text-3xl font-bold font-display gradient-text-danger">
                     {firewallAnalytics.blockedRequests}
                   </div>
                   <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Blocked Threats</div>
                 </div>
-                <div className="text-center glass rounded-lg p-4 border border-success-200/30">
-                  <div className="text-3xl font-display font-bold gradient-text-success mb-2">
+                <div className="p-4 text-center rounded-lg border glass border-success-200/30">
+                  <div className="mb-2 text-3xl font-bold font-display gradient-text-success">
                     ${firewallAnalytics.costSaved.toFixed(3)}
                   </div>
                   <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Cost Saved</div>
@@ -92,19 +92,19 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
               </div>
 
               {firewallAnalytics.blockedRequests > 0 && (
-                <div className="mt-6 pt-6 border-t border-primary-200/30">
-                  <h3 className="font-display font-semibold gradient-text mb-4">Threat Categories</h3>
+                <div className="pt-6 mt-6 border-t border-primary-200/30">
+                  <h3 className="mb-4 font-semibold font-display gradient-text">Threat Categories</h3>
                   <div className="space-y-3">
                     {Object.entries(firewallAnalytics.threatsByCategory).map(([category, count]) => (
-                      <div key={category} className="glass rounded-lg p-4 border border-danger-200/30 flex justify-between items-center">
-                        <span className="font-body text-light-text-primary dark:text-dark-text-primary capitalize">
+                      <div key={category} className="flex justify-between items-center p-4 rounded-lg border glass border-danger-200/30">
+                        <span className="capitalize font-body text-light-text-primary dark:text-dark-text-primary">
                           {category.replace('_', ' ')}
                         </span>
-                        <div className="flex items-center gap-3">
-                          <span className="font-display font-semibold gradient-text-danger">
+                        <div className="flex gap-3 items-center">
+                          <span className="font-semibold font-display gradient-text-danger">
                             {count}
                           </span>
-                          <span className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                          <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                             (${(firewallAnalytics.savingsByThreatType[category] || 0).toFixed(3)} saved)
                           </span>
                         </div>
@@ -116,23 +116,23 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
             </div>
 
             {/* Firewall Status */}
-            <div className="glass rounded-lg p-6 border border-success-200/30 bg-gradient-success/10">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-gradient-success flex items-center justify-center glow-success">
-                  <ShieldCheckIcon className="h-6 w-6 text-white" />
+            <div className="p-6 rounded-lg border glass border-success-200/30 bg-gradient-success/10">
+              <div className="flex gap-4 items-start">
+                <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-success glow-success">
+                  <ShieldCheck className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold gradient-text-success mb-3">
+                  <h3 className="mb-3 font-semibold font-display gradient-text-success">
                     Firewall Protection Active
                   </h3>
-                  <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-4">
+                  <p className="mb-4 font-body text-light-text-primary dark:text-dark-text-primary">
                     Your AI requests are protected by our two-stage security firewall that automatically
                     blocks malicious prompts and harmful content, saving you from unnecessary costs.
                   </p>
                   {firewallAnalytics.blockedRequests > 0 && (
-                    <div className="glass rounded-lg p-4 border border-success-200/30 bg-gradient-success/20">
-                      <p className="font-display font-semibold gradient-text-success flex items-center gap-2">
-                        <span>🛡️</span>
+                    <div className="p-4 rounded-lg border glass border-success-200/30 bg-gradient-success/20">
+                      <p className="flex gap-2 items-center font-semibold font-display gradient-text-success">
+                        <Shield className="w-5 h-5" />
                         {firewallAnalytics.blockedRequests} threats blocked and
                         ${firewallAnalytics.costSaved.toFixed(3)} in costs prevented!
                       </p>
@@ -143,10 +143,10 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
             </div>
           </div>
         ) : (
-          <div className="glass rounded-lg p-6 border border-accent-200/30">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-accent/20 flex items-center justify-center">
-                <ChartBarIcon className="h-6 w-6 text-accent-500" />
+          <div className="p-6 rounded-lg border glass border-accent-200/30">
+            <div className="flex gap-4 items-center">
+              <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-accent/20">
+                <BarChart3 className="w-6 h-6 text-accent-500" />
               </div>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                 No firewall data available. The firewall will start tracking once you make requests through the gateway.
@@ -157,12 +157,12 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
       </div>
 
       {/* Email Management */}
-      <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
-            <EnvelopeIcon className="h-6 w-6 text-white" />
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-info-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-info glow-info">
+            <Mail className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold gradient-text">
+          <h2 className="text-xl font-bold font-display gradient-text">
             Email Management
           </h2>
         </div>
@@ -170,12 +170,12 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
       </div>
 
       {/* Two-Factor Authentication */}
-      <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center glow-secondary">
-            <span className="text-white text-lg">🔐</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-secondary glow-secondary">
+            <Lock className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold gradient-text-secondary">
+          <h2 className="text-xl font-bold font-display gradient-text-secondary">
             Two-Factor Authentication
           </h2>
         </div>
@@ -186,19 +186,19 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
       <BackupCodesSection />
 
       {/* Active Sessions */}
-      <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-info flex items-center justify-center glow-info">
-            <DevicePhoneMobileIcon className="h-6 w-6 text-white" />
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-info-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-info glow-info">
+            <Smartphone className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold gradient-text">
+          <h2 className="text-xl font-bold font-display gradient-text">
             Active Sessions
           </h2>
         </div>
-        <div className="glass rounded-lg p-6 border border-info-200/30">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-info/20 flex items-center justify-center">
-              <DevicePhoneMobileIcon className="h-6 w-6 text-info-500" />
+        <div className="p-6 rounded-lg border glass border-info-200/30">
+          <div className="flex gap-4 items-center">
+            <div className="flex justify-center items-center w-12 h-12 rounded-lg bg-gradient-info/20">
+              <Smartphone className="w-6 h-6 text-info-500" />
             </div>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
               Active sessions will be displayed here when session management is linked to the account.
@@ -208,20 +208,20 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
       </div>
 
       {/* Security Recommendations */}
-      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
-            <span className="text-white text-lg">📝</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-primary glow-primary">
+            <FileText className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-xl font-display font-bold gradient-text">
+          <h2 className="text-xl font-bold font-display gradient-text">
             Security Recommendations
           </h2>
         </div>
-        <div className="glass rounded-lg p-6 border border-primary-200/30 bg-gradient-primary/5">
+        <div className="p-6 rounded-lg border glass border-primary-200/30 bg-gradient-primary/5">
           <ul className="space-y-4">
-            <li className="flex items-start gap-3">
+            <li className="flex gap-3 items-start">
               <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 glow-success">
-                <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -229,9 +229,9 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
                 Use a strong, unique password for your account
               </span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex gap-3 items-start">
               <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 glow-success">
-                <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -239,9 +239,9 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
                 Enable two-factor authentication for extra security
               </span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex gap-3 items-start">
               <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 glow-success">
-                <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -249,9 +249,9 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
                 Regularly review your active sessions and API keys
               </span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex gap-3 items-start">
               <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 glow-success">
-                <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -259,9 +259,9 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
                 Keep your API keys secure and rotate them periodically
               </span>
             </li>
-            <li className="flex items-start gap-3">
+            <li className="flex gap-3 items-start">
               <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 glow-success">
-                <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>

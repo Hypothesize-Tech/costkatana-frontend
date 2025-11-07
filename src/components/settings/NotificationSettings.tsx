@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
+import { Bell, Mail, Megaphone, AlertTriangle } from "lucide-react";
 
 interface NotificationSettings {
   email: {
@@ -85,13 +86,13 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
 
   return (
     <div className="space-y-8">
-      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center glow-warning">
-            <span className="text-white text-lg">🔔</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+        <div className="flex gap-3 items-center">
+          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-warning glow-warning">
+            <Bell className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-display font-bold gradient-text">
+            <h2 className="text-xl font-bold font-display gradient-text">
               Notification Preferences
             </h2>
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -102,24 +103,24 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       </div>
 
       {/* Email Notifications */}
-      <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
-            <span className="text-white text-sm">📧</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-primary glow-primary">
+            <Mail className="w-4 h-4 text-white" />
           </div>
-          <h3 className="font-display font-semibold gradient-text text-lg">
+          <h3 className="text-lg font-semibold font-display gradient-text">
             Email Notifications
           </h3>
         </div>
         <div className="space-y-4">
           {Object.entries(settings.email).map(([key, value]) => (
-            <div key={key} className="glass rounded-lg p-4 border border-primary-200/30 flex items-center justify-between">
+            <div key={key} className="flex justify-between items-center p-4 rounded-lg border glass border-primary-200/30">
               <div className="flex-1">
-                <label className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                   {key.charAt(0).toUpperCase() +
                     key.slice(1).replace(/([A-Z])/g, " $1")}
                 </label>
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mt-1">
+                <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                   {key === "costAlerts" &&
                     "Get notified when costs exceed thresholds"}
                   {key === "optimizationSuggestions" &&
@@ -152,20 +153,20 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       </div>
 
       {/* Push Notifications */}
-      <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center glow-secondary">
-            <span className="text-white text-sm">📢</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-secondary glow-secondary">
+            <Megaphone className="w-4 h-4 text-white" />
           </div>
-          <h3 className="font-display font-semibold gradient-text-secondary text-lg">
+          <h3 className="text-lg font-semibold font-display gradient-text-secondary">
             Push Notifications
           </h3>
         </div>
         <div className="space-y-4">
           {Object.entries(settings.push).map(([key, value]) => (
-            <div key={key} className="glass rounded-lg p-4 border border-secondary-200/30 flex items-center justify-between">
+            <div key={key} className="flex justify-between items-center p-4 rounded-lg border glass border-secondary-200/30">
               <div className="flex-1">
-                <label className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                   {key.charAt(0).toUpperCase() +
                     key.slice(1).replace(/([A-Z])/g, " $1")}
                 </label>
@@ -192,18 +193,18 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
       </div>
 
       {/* Alert Thresholds */}
-      <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center glow-warning">
-            <span className="text-white text-sm">⚠️</span>
+      <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-warning-200/30">
+        <div className="flex gap-3 items-center mb-6">
+          <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-warning glow-warning">
+            <AlertTriangle className="w-4 h-4 text-white" />
           </div>
-          <h3 className="font-display font-semibold gradient-text-warning text-lg">
+          <h3 className="text-lg font-semibold font-display gradient-text-warning">
             Alert Thresholds
           </h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="block font-display font-medium gradient-text mb-2">
+            <label className="block mb-2 font-medium font-display gradient-text">
               Daily Cost Limit ($)
             </label>
             <input
@@ -216,7 +217,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             />
           </div>
           <div>
-            <label className="block font-display font-medium gradient-text mb-2">
+            <label className="block mb-2 font-medium font-display gradient-text">
               Weekly Cost Limit ($)
             </label>
             <input
@@ -229,7 +230,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             />
           </div>
           <div>
-            <label className="block font-display font-medium gradient-text mb-2">
+            <label className="block mb-2 font-medium font-display gradient-text">
               Monthly Cost Limit ($)
             </label>
             <input
@@ -245,7 +246,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             />
           </div>
           <div>
-            <label className="block font-display font-medium gradient-text mb-2">
+            <label className="block mb-2 font-medium font-display gradient-text">
               Anomaly Detection Threshold (%)
             </label>
             <input
@@ -259,7 +260,7 @@ export const NotificationSettings: React.FC<NotificationSettingsProps> = ({
               }
               className="input"
             />
-            <p className="mt-2 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+            <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Alert when usage exceeds normal by this percentage
             </p>
           </div>

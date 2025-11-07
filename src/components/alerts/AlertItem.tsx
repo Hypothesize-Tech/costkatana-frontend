@@ -136,7 +136,7 @@ export const AlertItem: React.FC<AlertItemProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
-                  className="btn-ghost text-xs px-3 py-1 flex items-center"
+                  className="btn btn-ghost text-xs px-3 py-1 flex items-center"
                 >
                   <BellSlashIcon className="h-4 w-4 mr-1" />
                   Snooze

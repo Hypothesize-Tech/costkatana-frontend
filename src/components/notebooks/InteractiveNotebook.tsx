@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Square, Save, Plus, Trash2, Edit3, BarChart3, FileText, Lightbulb, Search, BookOpen } from 'lucide-react';
+import { Play, Square, Save, Plus, Trash2, Edit3, BarChart3, FileText, Lightbulb, Search, BookOpen, CheckCircle, XCircle, RefreshCw, Zap, AlertCircle, Clock, DollarSign, TrendingUp, X, ChevronRight } from 'lucide-react'; // Added ChevronRight
 import NotebookService, { Notebook, NotebookCell, NotebookExecution } from '../../services/notebook.service';
 import { ModernHeatmap } from './ModernHeatmap';
 
@@ -188,7 +188,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">📊</span>
+                  <BarChart3 className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-display font-semibold gradient-text-primary">Query Results</span>
               </div>
@@ -207,7 +207,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="mb-4 glass p-4 rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-accent flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xs">🔍</span>
+                    <Search className="w-3 h-3 text-white" />
                   </div>
                   <span className="font-display font-semibold gradient-text-accent text-sm">Parsed Query:</span>
                 </div>
@@ -227,7 +227,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                           {item.operation_name || item.service_name || 'Unknown Operation'}
                         </span>
                         {item.timestamp && (
-                          <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                          <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                             {new Date(item.timestamp).toLocaleString()}
                           </div>
                         )}
@@ -239,7 +239,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                           </span>
                         )}
                         {item.duration_ms && (
-                          <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{item.duration_ms}ms</div>
+                          <div className="font-body text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{item.duration_ms}ms</div>
                         )}
                       </div>
                     </div>
@@ -278,7 +278,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             ) : (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-full bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl">🔍</span>
+                  <Search className="w-8 h-8 text-secondary-600" />
                 </div>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">No results found for this query</p>
               </div>
@@ -288,7 +288,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xs">💡</span>
+                    <Lightbulb className="w-3 h-3 text-white" />
                   </div>
                   <span className="font-display font-semibold gradient-text-warning">AI Insights:</span>
                 </div>
@@ -306,7 +306,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="mt-4 glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-6 h-6 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xs">💡</span>
+                    <Lightbulb className="w-3 h-3 text-white" />
                   </div>
                   <span className="font-display font-semibold gradient-text-warning">AI Insights:</span>
                 </div>
@@ -394,10 +394,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                         {/* Center label */}
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-800">
+                            <div className="font-display text-2xl font-bold text-gray-800">
                               {result.data.datasets[0]?.data?.reduce((sum: number, value: number) => sum + value, 0) || 0}
                             </div>
-                            <div className="text-sm text-gray-600">Total</div>
+                            <div className="font-body text-sm text-gray-600">Total</div>
                           </div>
                         </div>
                       </div>
@@ -405,7 +405,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
                     {/* Legend and Data */}
                     <div className="space-y-3">
-                      <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">Operation Distribution</h3>
+                      <h3 className="font-display text-xl font-bold gradient-text-primary mb-4">Operation Distribution</h3>
                       {result.data.labels.map((label: string, index: number) => {
                         const value = result.data.datasets[0]?.data?.[index] || 0;
                         const total = result.data.datasets[0]?.data?.reduce((sum: number, val: number) => sum + val, 0) || 1;
@@ -423,14 +423,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                                 <div className="font-display font-semibold gradient-text-primary">
                                   {label.split('.').pop() || label}
                                 </div>
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                   {label.includes('.') ? label.split('.').slice(0, -1).join('.') : 'Operation'}
                                 </div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-xl font-display font-bold gradient-text-primary">{value.toLocaleString()}</div>
-                              <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{percentage}%</div>
+                              <div className="font-display text-xl font-bold gradient-text-primary">{value.toLocaleString()}</div>
+                              <div className="font-body text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{percentage}%</div>
                             </div>
                           </div>
                         );
@@ -450,7 +450,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                                 width: '20px'
                               }}
                             />
-                            <span className="text-xs mt-1 text-center">
+                            <span className="font-body text-xs mt-1 text-center">
                               {result.data.labels?.[index] || `${index + 1}`}
                             </span>
                           </div>
@@ -471,11 +471,6 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                       setShowDrillDownModal(true);
                     }}
                   />
-
-
-
-
-
                 ) : (
                   <div className="h-48 flex items-center justify-center">
                     <div className="text-center">
@@ -483,7 +478,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                         <BarChart3 className="w-8 h-8 text-success-600" />
                       </div>
                       <span className="font-display font-semibold gradient-text-success text-lg">Chart: {result.chart_type}</span>
-                      <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                      <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">
                         {result.data.labels?.length || result.data.labels?.x?.length || 0} data points
                       </div>
                     </div>
@@ -510,7 +505,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
                 <Lightbulb className="w-5 h-5 text-white" />
               </div>
-              <div className="text-xl font-display font-bold gradient-text-accent">AI Insights</div>
+              <div className="font-display text-xl font-bold gradient-text-accent">AI Insights</div>
             </div>
 
             <div className="space-y-4">
@@ -548,7 +543,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               ) : (
                 <div className="glass p-4 rounded-lg border border-accent-200/30 text-center">
                   <div className="w-12 h-12 rounded-full bg-gradient-accent/20 flex items-center justify-center mx-auto mb-2">
-                    <span className="text-xl">🤔</span>
+                    <Lightbulb className="w-6 h-6 text-accent-600" />
                   </div>
                   <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">No insights available</div>
                 </div>
@@ -562,14 +557,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                   <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
                     <Search className="w-3 h-3 text-white" />
                   </div>
-                  <div className="font-display font-semibold gradient-text">AI Recommendations:</div>
+                  <div className="font-display font-semibold gradient-text-primary">AI Recommendations:</div>
                 </div>
                 <div className="space-y-2">
                   {result.insights.recommendations.slice(0, 5).map((rec: string, index: number) => (
                     <div key={index} className="glass p-3 rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
                       <div className="flex items-start gap-3">
                         <div className="w-5 h-5 rounded-full bg-gradient-primary flex items-center justify-center mt-1">
-                          <span className="text-white text-xs">→</span>
+                          <ChevronRight className="w-3 h-3 text-white" />
                         </div>
                         <div className="prose prose-sm max-w-none flex-1">
                           {renderMarkdown(rec)}
@@ -586,14 +581,14 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="mt-6">
                 <div className="flex items-center gap-2 mb-3">
                   <Search className="w-4 h-4 text-purple-600" />
-                  <div className="text-md font-semibold text-purple-800">Recommendations:</div>
+                  <div className="font-display text-md font-semibold text-purple-800">Recommendations:</div>
                 </div>
                 <div className="space-y-2">
                   {result.recommendations.slice(0, 5).map((rec: string, index: number) => (
                     <div key={index} className="glass p-3 rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-300">
                       <div className="flex items-start gap-3">
                         <div className="w-5 h-5 rounded-full bg-gradient-primary flex items-center justify-center mt-1">
-                          <span className="text-white text-xs">→</span>
+                          <ChevronRight className="w-3 h-3 text-white" />
                         </div>
                         <div className="prose prose-sm max-w-none flex-1">
                           {renderMarkdown(rec)}
@@ -612,7 +607,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
           <div className="mt-6 glass p-6 rounded-xl border border-danger-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                <span className="text-white text-sm">⚠️</span>
+                <AlertCircle className="w-4 h-4 text-white" />
               </div>
               <span className="font-display font-semibold gradient-text-danger">Error</span>
             </div>
@@ -630,7 +625,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 rounded-full bg-gradient-primary/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <span className="text-2xl">📓</span>
+            <BookOpen className="w-6 h-6 text-primary-600" />
           </div>
           <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Loading notebook...</div>
         </div>
@@ -643,7 +638,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-16 h-16 rounded-full bg-gradient-secondary/20 flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">📝</span>
+            <Edit3 className="w-8 h-8 text-secondary-600" />
           </div>
           <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">No notebook selected</div>
         </div>
@@ -661,23 +656,28 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-display font-bold gradient-text-primary">{notebook.title}</h2>
+              <h2 className="font-display text-3xl font-bold gradient-text-primary">{notebook.title}</h2>
               <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">{notebook.description}</p>
               <div className="flex items-center gap-4 mt-3 text-sm">
                 <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium">
-                  📊 {notebook.cells?.length || 0} cells
+                  <BarChart3 className="w-3 h-3 inline mr-1" />
+                  {notebook.cells?.length || 0} cells
                 </span>
                 <span className="px-3 py-1 rounded-full bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-medium">
-                  ⏱️ {new Date().toLocaleDateString()}
+                  <Clock className="w-3 h-3 inline mr-1" />
+                  {new Date().toLocaleDateString()}
                 </span>
                 {execution && (
                   <span className={`px-3 py-1 rounded-full font-display font-medium ${execution.status === 'completed' ? 'bg-gradient-success/20 text-success-700 dark:text-success-300' :
                     execution.status === 'failed' ? 'bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
                       'bg-gradient-warning/20 text-warning-700 dark:text-warning-300'
                     }`}>
-                    {execution.status === 'completed' ? '✅ Completed' :
-                      execution.status === 'failed' ? '❌ Failed' :
-                        '🔄 Running'}
+                    {execution.status === 'completed' ? <CheckCircle className="w-3 h-3 inline mr-1" /> :
+                      execution.status === 'failed' ? <XCircle className="w-3 h-3 inline mr-1" /> :
+                        <RefreshCw className="w-3 h-3 inline mr-1 animate-spin" />}
+                    {execution.status === 'completed' ? 'Completed' :
+                      execution.status === 'failed' ? 'Failed' :
+                        'Running'}
                   </span>
                 )}
               </div>
@@ -686,7 +686,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={saveNotebook}
-              className="btn-secondary flex items-center gap-2"
+              className="btn btn-secondary flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               Save
@@ -694,7 +694,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             <button
               onClick={executeNotebook}
               disabled={isExecuting}
-              className={`btn-primary flex items-center gap-2 ${isExecuting ? 'opacity-75 cursor-not-allowed' : ''}`}
+              className={`btn btn-primary flex items-center gap-2 ${isExecuting ? 'opacity-75 cursor-not-allowed' : ''}`}
             >
               {isExecuting ? (
                 <>
@@ -717,7 +717,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-success flex items-center justify-center shadow-lg">
-                  <span className="text-white text-xs">⚡</span>
+                  <Zap className="w-3 h-3 text-white" />
                 </div>
                 <span className="font-display font-semibold gradient-text-success">
                   Execution completed in {execution.execution_time_ms}ms
@@ -725,7 +725,8 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
               {execution.status === 'completed' && (
                 <span className="px-3 py-1 rounded-full bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-medium text-sm">
-                  ✅ {execution.execution_time_ms}ms
+                  <CheckCircle className="w-3 h-3 inline mr-1" />
+                  {execution.execution_time_ms}ms
                 </span>
               )}
             </div>
@@ -733,7 +734,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="mt-3 p-3 glass rounded-lg border border-danger-200/30">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-gradient-danger flex items-center justify-center">
-                    <span className="text-white text-xs">⚠</span>
+                    <AlertCircle className="w-3 h-3 text-white" />
                   </div>
                   <span className="font-body text-light-text-primary dark:text-dark-text-primary">{execution.error}</span>
                 </div>
@@ -765,21 +766,21 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setEditingCell(isEditing ? null : cell.id)}
-                      className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 hover:border-primary-200/50 transition-all duration-300 hover:scale-110"
+                      className="btn w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-primary-500 hover:border-primary-200/50 transition-all duration-300 hover:scale-110"
                       title="Edit cell"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => deleteCell(cell.id)}
-                      className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+                      className="btn w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
                       title="Delete cell"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => addCell('markdown', index)}
-                      className="w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-success-500 hover:border-success-200/50 transition-all duration-300 hover:scale-110"
+                      className="btn w-8 h-8 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-success-500 hover:border-success-200/50 transition-all duration-300 hover:scale-110"
                       title="Add cell below"
                     >
                       <Plus className="w-4 h-4" />
@@ -826,7 +827,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => addCell('markdown')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105"
               >
                 <div className="w-6 h-6 rounded-lg bg-gradient-secondary/20 flex items-center justify-center shadow-lg">
                   <FileText className="w-3 h-3" />
@@ -835,7 +836,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </button>
               <button
                 onClick={() => addCell('query')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105"
               >
                 <div className="w-6 h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
                   <Search className="w-3 h-3" />
@@ -844,7 +845,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </button>
               <button
                 onClick={() => addCell('visualization')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105"
               >
                 <div className="w-6 h-6 rounded-lg bg-gradient-success/20 flex items-center justify-center shadow-lg">
                   <BarChart3 className="w-3 h-3" />
@@ -853,7 +854,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </button>
               <button
                 onClick={() => addCell('insight')}
-                className="flex items-center gap-2 px-4 py-3 glass rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105"
               >
                 <div className="w-6 h-6 rounded-lg bg-gradient-accent/20 flex items-center justify-center shadow-lg">
                   <Lightbulb className="w-3 h-3" />
@@ -873,87 +874,90 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               {/* Modal Header */}
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h2 className="text-3xl font-display font-bold gradient-text-primary">
+                  <h2 className="font-display text-3xl font-bold gradient-text-primary">
                     {selectedHeatmapCell.day} {selectedHeatmapCell.timeSlot}
                   </h2>
                   <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">Detailed usage analysis for this time period</p>
                 </div>
                 <button
                   onClick={() => setShowDrillDownModal(false)}
-                  className="w-10 h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+                  className="btn w-10 h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
                 >
-                  <span className="text-xl">×</span>
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Key Metrics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div className="glass p-6 rounded-xl border border-primary-200/30 text-center">
-                  <div className="text-4xl font-display font-bold gradient-text-primary mb-2">{selectedHeatmapCell.requests}</div>
+                  <div className="font-display text-4xl font-bold gradient-text-primary mb-2">{selectedHeatmapCell.requests}</div>
                   <div className="font-display font-semibold text-primary-700 dark:text-primary-300">Total Requests</div>
-                  <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">API calls made</div>
+                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">API calls made</div>
                 </div>
                 <div className="glass p-6 rounded-xl border border-success-200/30 text-center">
-                  <div className="text-4xl font-display font-bold gradient-text-success mb-2">${selectedHeatmapCell.cost}</div>
+                  <div className="font-display text-4xl font-bold gradient-text-success mb-2">${selectedHeatmapCell.cost}</div>
                   <div className="font-display font-semibold text-success-700 dark:text-success-300">Total Cost</div>
-                  <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                     ${(selectedHeatmapCell.cost / selectedHeatmapCell.requests).toFixed(4)} per request
                   </div>
                 </div>
                 <div className="glass p-6 rounded-xl border border-danger-200/30 text-center">
-                  <div className="text-4xl font-display font-bold gradient-text-danger mb-2">{selectedHeatmapCell.errorRate}%</div>
+                  <div className="font-display text-4xl font-bold gradient-text-danger mb-2">{selectedHeatmapCell.errorRate}%</div>
                   <div className="font-display font-semibold text-danger-700 dark:text-danger-300">Error Rate</div>
-                  <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{selectedHeatmapCell.errors} failed requests</div>
+                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{selectedHeatmapCell.errors} failed requests</div>
                 </div>
                 <div className="glass p-6 rounded-xl border border-accent-200/30 text-center">
-                  <div className="text-4xl font-display font-bold gradient-text-accent mb-2">{selectedHeatmapCell.avgDuration}ms</div>
+                  <div className="font-display text-4xl font-bold gradient-text-accent mb-2">{selectedHeatmapCell.avgDuration}ms</div>
                   <div className="font-display font-semibold text-accent-700 dark:text-accent-300">Avg Duration</div>
-                  <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">Response time</div>
+                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">Response time</div>
                 </div>
               </div>
 
               {/* Performance Analysis */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {/* Top Operations */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Top Operation</h3>
+                <div className="glass p-4 rounded-lg">
+                  <h3 className="font-display text-lg font-semibold text-secondary-900 dark:text-white mb-3">Top Operation</h3>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center p-3 bg-white rounded border">
+                    <div className="flex justify-between items-center p-3 glass rounded border border-primary-200/30">
                       <div>
-                        <div className="font-medium text-gray-900">{selectedHeatmapCell.topOperation}</div>
-                        <div className="text-sm text-gray-600">Primary operation</div>
+                        <div className="font-display font-medium text-secondary-900 dark:text-white">{selectedHeatmapCell.topOperation}</div>
+                        <div className="font-body text-sm text-secondary-600 dark:text-secondary-300">Primary operation</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-blue-600">{selectedHeatmapCell.topOperationCount}</div>
-                        <div className="text-xs text-gray-500">requests</div>
+                        <div className="font-display font-bold text-primary-600">{selectedHeatmapCell.topOperationCount}</div>
+                        <div className="font-body text-xs text-secondary-500">requests</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Performance Insights */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Performance Insights</h3>
+                <div className="glass p-4 rounded-lg">
+                  <h3 className="font-display text-lg font-semibold text-secondary-900 dark:text-white mb-3">Performance Insights</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.errorRate > 5 ? 'bg-red-500' : selectedHeatmapCell.errorRate > 2 ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
-                      <span className="text-sm">
+                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.errorRate > 5 ? 'bg-danger-500' : selectedHeatmapCell.errorRate > 2 ? 'bg-warning-500' : 'bg-success-500'
+                        }`}></div>
+                      <span className="font-body text-sm">
                         {selectedHeatmapCell.errorRate > 5 ? 'High error rate - needs attention' :
                           selectedHeatmapCell.errorRate > 2 ? 'Moderate error rate - monitor closely' :
                             'Low error rate - performing well'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.avgDuration > 500 ? 'bg-red-500' : selectedHeatmapCell.avgDuration > 200 ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
-                      <span className="text-sm">
+                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.avgDuration > 500 ? 'bg-danger-500' : selectedHeatmapCell.avgDuration > 200 ? 'bg-warning-500' : 'bg-success-500'
+                        }`}></div>
+                      <span className="font-body text-sm">
                         {selectedHeatmapCell.avgDuration > 500 ? 'Slow response times - optimize performance' :
                           selectedHeatmapCell.avgDuration > 200 ? 'Moderate response times - room for improvement' :
                             'Fast response times - excellent performance'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.requests > 50 ? 'bg-green-500' : selectedHeatmapCell.requests > 20 ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
-                      <span className="text-sm">
+                      <div className={`w-3 h-3 rounded-full ${selectedHeatmapCell.requests > 50 ? 'bg-success-500' : selectedHeatmapCell.requests > 20 ? 'bg-warning-500' : 'bg-danger-500'
+                        }`}></div>
+                      <span className="font-body text-sm">
                         {selectedHeatmapCell.requests > 50 ? 'High traffic period - peak usage' :
                           selectedHeatmapCell.requests > 20 ? 'Moderate traffic - normal usage' :
                             'Low traffic period - minimal usage'}
@@ -964,37 +968,37 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
 
               {/* Recommendations */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">💡 Optimization Recommendations</h3>
+              <div className="glass p-6 rounded-lg">
+                <h3 className="font-display text-lg font-semibold text-secondary-900 dark:text-white mb-3">Optimization Recommendations</h3>
                 <div className="space-y-2">
                   {selectedHeatmapCell.errorRate > 5 && (
                     <div className="flex items-start gap-2">
-                      <span className="text-red-500">⚠️</span>
-                      <span className="text-sm">High error rate detected. Review logs and implement error handling improvements.</span>
+                      <AlertCircle className="w-4 h-4 text-danger-500 mt-1" />
+                      <span className="font-body text-sm">High error rate detected. Review logs and implement error handling improvements.</span>
                     </div>
                   )}
                   {selectedHeatmapCell.avgDuration > 300 && (
                     <div className="flex items-start gap-2">
-                      <span className="text-yellow-500">⏱️</span>
-                      <span className="text-sm">Response times could be improved. Consider caching or performance optimization.</span>
+                      <Clock className="w-4 h-4 text-warning-500 mt-1" />
+                      <span className="font-body text-sm">Response times could be improved. Consider caching or performance optimization.</span>
                     </div>
                   )}
                   {selectedHeatmapCell.cost / selectedHeatmapCell.requests > 0.1 && (
                     <div className="flex items-start gap-2">
-                      <span className="text-green-500">💰</span>
-                      <span className="text-sm">High cost per request. Review pricing models and usage patterns.</span>
+                      <DollarSign className="w-4 h-4 text-success-500 mt-1" />
+                      <span className="font-body text-sm">High cost per request. Review pricing models and usage patterns.</span>
                     </div>
                   )}
                   {selectedHeatmapCell.requests > 100 && (
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-500">📈</span>
-                      <span className="text-sm">High traffic period. Consider scaling resources during this time.</span>
+                      <TrendingUp className="w-4 h-4 text-primary-500 mt-1" />
+                      <span className="font-body text-sm">High traffic period. Consider scaling resources during this time.</span>
                     </div>
                   )}
                   {selectedHeatmapCell.errorRate <= 2 && selectedHeatmapCell.avgDuration <= 200 && (
                     <div className="flex items-start gap-2">
-                      <span className="text-green-500">✅</span>
-                      <span className="text-sm">Excellent performance! This time period is operating optimally.</span>
+                      <CheckCircle className="w-4 h-4 text-success-500 mt-1" />
+                      <span className="font-body text-sm">Excellent performance! This time period is operating optimally.</span>
                     </div>
                   )}
                 </div>
@@ -1004,7 +1008,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   onClick={() => setShowDrillDownModal(false)}
-                  className="btn-secondary"
+                  className="btn btn-secondary"
                 >
                   Close
                 </button>
@@ -1013,8 +1017,9 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                     // Detailed query for this time period will be implemented in future versions
                     console.log('Querying detailed data for:', selectedHeatmapCell);
                   }}
-                  className="btn-primary"
+                  className="btn btn-primary"
                 >
+                  <Search className="w-4 h-4 mr-2" />
                   View Detailed Logs
                 </button>
               </div>

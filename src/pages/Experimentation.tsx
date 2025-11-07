@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  BeakerIcon,
-  ChartBarIcon,
-  LightBulbIcon,
-  InformationCircleIcon,
-  SparklesIcon,
-  ArrowTrendingUpIcon,
-  CurrencyDollarIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
+  Beaker,
+  BarChart3,
+  Lightbulb,
+  Info,
+  Sparkles,
+  TrendingUp,
+  DollarSign,
+  AlertTriangle,
+} from "lucide-react";
 import {
   ModelComparison,
   WhatIfScenarios,
@@ -64,7 +64,7 @@ const Experimentation: React.FC = () => {
     {
       id: "cost-simulator" as Tab,
       name: "Cost Simulator",
-      icon: <SparklesIcon className="h-5 w-5" />,
+      icon: <Sparkles className="h-5 w-5" />,
       description:
         "Real-time prompt optimization - see instant cost savings up to 95%",
       color: "text-purple-600",
@@ -72,7 +72,7 @@ const Experimentation: React.FC = () => {
     {
       id: "model-comparison" as Tab,
       name: "Model Comparison",
-      icon: <ChartBarIcon className="h-5 w-5" />,
+      icon: <BarChart3 className="h-5 w-5" />,
       description:
         "Compare different AI models based on your actual usage data",
       color: "text-blue-600",
@@ -80,14 +80,14 @@ const Experimentation: React.FC = () => {
     {
       id: "what-if-scenarios" as Tab,
       name: "What-If Scenarios",
-      icon: <LightBulbIcon className="h-5 w-5" />,
+      icon: <Lightbulb className="h-5 w-5" />,
       description: "Analyze potential cost impacts of optimization strategies",
       color: "text-green-600",
     },
     {
       id: "leaderboard" as Tab,
       name: "Leaderboard",
-      icon: <ArrowTrendingUpIcon className="h-5 w-5" />,
+      icon: <TrendingUp className="h-5 w-5" />,
       description: "Top optimization wins and cost savings champions",
       color: "text-yellow-600",
     },
@@ -257,28 +257,28 @@ const Experimentation: React.FC = () => {
       {
         title: "Total Experiments",
         value: stats.totalExperiments.toString(),
-        icon: <BeakerIcon className="h-8 w-8 text-highlight-600 dark:text-highlight-400" />,
+        icon: <Beaker className="h-8 w-8 text-highlight-600 dark:text-highlight-400" />,
         color: "bg-highlight-50",
         change: formatChange(stats.changes.experimentsChange),
       },
       {
         title: "Average Cost Savings",
         value: `$${stats.avgCostSavings.toFixed(2)}`,
-        icon: <CurrencyDollarIcon className="h-8 w-8 text-success-600 dark:text-success-400" />,
+        icon: <DollarSign className="h-8 w-8 text-success-600 dark:text-success-400" />,
         color: "bg-success-50",
         change: formatChange(stats.changes.savingsChange),
       },
       {
         title: "Success Rate",
         value: `${(stats.successRate * 100).toFixed(1)}%`,
-        icon: <ArrowTrendingUpIcon className="h-8 w-8 text-primary-600 dark:text-primary-400" />,
+        icon: <TrendingUp className="h-8 w-8 text-primary-600 dark:text-primary-400" />,
         color: "bg-primary-50",
         change: formatChange(stats.changes.successRateChange),
       },
       {
         title: "Total Savings",
         value: `$${stats.totalSavings.toFixed(2)}`,
-        icon: <ChartBarIcon className="h-8 w-8 text-accent-600 dark:text-accent-400" />,
+        icon: <BarChart3 className="h-8 w-8 text-accent-600 dark:text-accent-400" />,
         color: "bg-accent-50",
         change: formatChange(stats.changes.totalSavingsChange),
       },
@@ -293,7 +293,7 @@ const Experimentation: React.FC = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="flex items-center text-3xl font-display font-bold gradient-text-primary">
-                <BeakerIcon className="mr-3 w-8 h-8 text-primary-600 dark:text-primary-400" />
+                <Beaker className="mr-3 w-8 h-8 text-primary-600 dark:text-primary-400" />
                 Experimentation & A/B Testing
               </h1>
               <p className="mt-2 text-sm text-secondary-600 dark:text-secondary-300">
@@ -302,7 +302,7 @@ const Experimentation: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <SparklesIcon className="w-5 h-5 text-accent-600 dark:text-accent-400" />
+              <Sparkles className="w-5 h-5 text-accent-600 dark:text-accent-400" />
               <span className="text-sm font-medium text-secondary-900 dark:text-white">
                 {recommendations.length > 0
                   ? `${recommendations.length} ${recommendations.length === 1 ? "recommendation" : "recommendations"} available`
@@ -364,7 +364,7 @@ const Experimentation: React.FC = () => {
               <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-secondary-900 dark:text-white flex items-center">
-                    <SparklesIcon className="h-5 w-5 text-accent-600 mr-2" />
+                    <Sparkles className="h-5 w-5 text-accent-600 dark:text-accent-400 mr-2" />
                     AI-Powered Recommendations
                   </h2>
                   <span className="text-sm text-secondary-500 dark:text-secondary-400">
@@ -397,8 +397,8 @@ const Experimentation: React.FC = () => {
                       </p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <CurrencyDollarIcon className="h-4 w-4 text-success-600" />
-                          <span className="text-sm font-medium text-success-600">
+                          <DollarSign className="h-4 w-4 text-success-600 dark:text-success-400" />
+                          <span className="text-sm font-medium text-success-600 dark:text-success-400">
                             ${rec.potentialSavings.toFixed(2)}
                           </span>
                         </div>
@@ -439,7 +439,7 @@ const Experimentation: React.FC = () => {
             ) : (
               <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 p-6 mb-8">
                 <div className="flex items-center">
-                  <SparklesIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                  <Sparkles className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                   <div>
                     <h3 className="text-sm font-medium text-primary-900 dark:text-primary-200">
                       Getting Started with Experimentation
@@ -459,7 +459,7 @@ const Experimentation: React.FC = () => {
               !isLoading && (
                 <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-8">
                   <div className="text-center">
-                    <SparklesIcon className="h-8 w-8 text-secondary-400 dark:text-secondary-500 mx-auto mb-2" />
+                    <Sparkles className="h-8 w-8 text-secondary-400 dark:text-secondary-500 mx-auto mb-2" />
                     <h3 className="text-sm font-medium text-secondary-900 dark:text-white">
                       No New Recommendations
                     </h3>
@@ -503,7 +503,7 @@ const Experimentation: React.FC = () => {
           {/* Tab Descriptions */}
           <div className="px-6 py-4 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50 border-b border-primary-200/30">
             <div className="flex items-start space-x-3">
-              <InformationCircleIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mt-0.5" />
+              <Info className="h-5 w-5 text-primary-600 dark:text-primary-400 mt-0.5" />
               <div>
                 <h3 className="text-sm font-medium text-secondary-900 dark:text-white">
                   {tabs.find((tab) => tab.id === activeTab)?.name}
@@ -520,7 +520,7 @@ const Experimentation: React.FC = () => {
             {error && (
               <div className="p-4 mb-4 glass rounded-lg border border-danger-200/30 bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                 <div className="flex items-center">
-                  <ExclamationTriangleIcon className="mr-2 w-5 h-5 text-danger-400" />
+                  <AlertTriangle className="mr-2 w-5 h-5 text-danger-400" />
                   <span className="text-sm text-danger-800 dark:text-danger-400">{error}</span>
                 </div>
               </div>

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-    TrophyIcon,
-    ChartBarIcon,
-    CurrencyDollarIcon,
-    SparklesIcon,
-    CalendarIcon,
-    UsersIcon,
-    ArrowPathIcon,
-    ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+    Trophy,
+    BarChart3,
+    DollarSign,
+    Sparkles,
+    Calendar,
+    Users,
+    RotateCw,
+    AlertTriangle
+} from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { SimulationTrackingService, LeaderboardEntry } from '../../services/simulationTracking.service';
 
@@ -93,15 +93,15 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
     const getRankIcon = (rank: number) => {
         switch (rank) {
             case 1:
-                return <TrophyIcon className="h-6 w-6 text-yellow-500" />;
+                return <Trophy className="h-6 w-6 text-yellow-500 dark:text-yellow-400" />;
             case 2:
-                return <TrophyIcon className="h-6 w-6 text-gray-400" />;
+                return <Trophy className="h-6 w-6 text-gray-400 dark:text-gray-500" />;
             case 3:
-                return <TrophyIcon className="h-6 w-6 text-amber-600" />;
+                return <Trophy className="h-6 w-6 text-amber-600 dark:text-amber-500" />;
             default:
                 return (
-                    <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-medium text-gray-600">{rank}</span>
+                    <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{rank}</span>
                     </div>
                 );
         }
@@ -131,15 +131,16 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
     };
 
     const getOptimizationTypeIcon = (type: string) => {
+        const iconProps = { className: 'h-4 w-4' };
         switch (type.toLowerCase()) {
             case 'model_switch':
-                return '🔄';
+                return <RotateCw {...iconProps} />;
             case 'context_trim':
-                return '✂️';
+                return <span className="text-lg">✂️</span>; // Keep scissors emoji as there's no good Lucide equivalent
             case 'prompt_optimize':
-                return '🎯';
+                return <span className="text-lg">🎯</span>; // Keep target emoji as there's no good Lucide equivalent
             default:
-                return '⚡';
+                return <Sparkles {...iconProps} />;
         }
     };
 
@@ -170,15 +171,15 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl p-8">
                 <div className="text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                        <ExclamationTriangleIcon className="h-5 w-5 text-danger-600 dark:text-danger-400" />
+                        <AlertTriangle className="h-5 w-5 text-danger-600 dark:text-danger-400" />
                         <div className="text-danger-600 dark:text-danger-400 font-display font-bold">Error Loading Leaderboard</div>
                     </div>
                     <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4 font-body">{error}</p>
                     <button
                         onClick={loadLeaderboard}
-                        className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
+                        className="btn btn-primary flex items-center gap-2"
                     >
-                        <ArrowPathIcon className="w-4 h-4" />
+                        <RotateCw className="w-4 h-4" />
                         Try Again
                     </button>
                 </div>
@@ -193,7 +194,7 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary mr-4">
-                            <TrophyIcon className="h-6 w-6 text-white" />
+                            <Trophy className="h-6 w-6 text-white" />
                         </div>
                         <div>
                             <h2 className="text-xl font-display font-bold gradient-text">Top Optimization Wins</h2>
@@ -236,7 +237,7 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                 {leaderboard.length === 0 ? (
                     <div className="p-8 text-center">
                         <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                            <SparklesIcon className="h-8 w-8 text-white" />
+                            <Sparkles className="h-8 w-8 text-white" />
                         </div>
                         <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">No Data Yet</h3>
                         <p className="text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -268,21 +269,21 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                                         </div>
                                         <div className="flex items-center mt-2 space-x-6 text-sm">
                                             <div className="flex items-center glass p-2 rounded-lg border border-success-200/30">
-                                                <CurrencyDollarIcon className="h-4 w-4 mr-2 text-success-500" />
+                                                <DollarSign className="h-4 w-4 mr-2 text-success-500 dark:text-success-400" />
                                                 <span className="font-display font-semibold text-success-600 dark:text-success-400">
                                                     {formatCurrency(entry.totalSavings)}
                                                 </span>
                                                 <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted ml-1">saved</span>
                                             </div>
                                             <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
-                                                <ChartBarIcon className="h-4 w-4 mr-2 text-primary-500" />
+                                                <BarChart3 className="h-4 w-4 mr-2 text-primary-500 dark:text-primary-400" />
                                                 <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
                                                     {entry.optimizationsApplied}
                                                 </span>
                                                 <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted ml-1">optimizations</span>
                                             </div>
                                             <div className="flex items-center glass p-2 rounded-lg border border-accent-200/30">
-                                                <span className="mr-2 text-lg">{getOptimizationTypeIcon(entry.topOptimizationType)}</span>
+                                                <span className="mr-2">{getOptimizationTypeIcon(entry.topOptimizationType)}</span>
                                                 <span className="font-display font-medium text-accent-600 dark:text-accent-400 capitalize">
                                                     {entry.topOptimizationType.replace('_', ' ')}
                                                 </span>
@@ -307,9 +308,9 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             {/* Footer */}
             <div className="glass p-6 rounded-b-xl border-t border-primary-200/30 text-center">
                 <div className="flex items-center justify-center text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
-                    <CalendarIcon className="h-4 w-4 mr-1 text-primary-500" />
+                    <Calendar className="h-4 w-4 mr-1 text-primary-500 dark:text-primary-400" />
                     Updated in real-time •
-                    <UsersIcon className="h-4 w-4 ml-2 mr-1 text-primary-500" />
+                    <Users className="h-4 w-4 ml-2 mr-1 text-primary-500 dark:text-primary-400" />
                     {leaderboard.length} participants
                 </div>
             </div>
