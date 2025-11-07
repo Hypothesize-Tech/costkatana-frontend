@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SessionPlayerData, AIInteraction, TrackingHistoryEntry } from '../../types/sessionReplay.types';
+import { Filter } from 'lucide-react';
 
 interface TimelineViewProps {
     sessionData: SessionPlayerData;
@@ -8,6 +9,11 @@ interface TimelineViewProps {
 }
 
 export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelectEvent, currentIndex }) => {
+    const [filterModel, setFilterModel] = useState<string>('');
+    const [minCost, setMinCost] = useState<number | ''>('');
+    const [maxCost, setMaxCost] = useState<number | ''>('');
+    const [showFilters, setShowFilters] = useState(false);
+
     const timelineEvents = useMemo(() => {
         const events: Array<{
             type: 'ai_interaction' | 'tracking_change';
@@ -17,6 +23,17 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
         }> = [];
 
         sessionData.timeline.aiInteractions.forEach((interaction, index) => {
+            // Apply filters
+            if (filterModel && !interaction.model.toLowerCase().includes(filterModel.toLowerCase())) {
+                return;
+            }
+            if (minCost !== '' && interaction.cost !== undefined && interaction.cost < minCost) {
+                return;
+            }
+            if (maxCost !== '' && interaction.cost !== undefined && interaction.cost > maxCost) {
+                return;
+            }
+
             events.push({
                 type: 'ai_interaction',
                 timestamp: interaction.timestamp,
@@ -35,7 +52,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
         });
 
         return events.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-    }, [sessionData]);
+    }, [sessionData, filterModel, minCost, maxCost]);
 
     const formatTimestamp = (timestamp: string) => {
         const date = new Date(timestamp);
@@ -134,14 +151,74 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
         );
     };
 
+    const clearFilters = () => {
+        setFilterModel('');
+        setMinCost('');
+        setMaxCost('');
+    };
+
+    const hasActiveFilters = filterModel || minCost !== '' || maxCost !== '';
+
     return (
         <div className="h-full flex flex-col glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
             {/* Header */}
             <div className="p-4 border-b border-primary-200/30">
-                <h3 className="text-lg font-display font-semibold gradient-text-primary">Timeline</h3>
-                <div className="text-sm text-secondary-600 dark:text-secondary-400 mt-1 font-medium">
-                    {timelineEvents.length} events
+                <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-display font-semibold gradient-text-primary">Timeline</h3>
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`p-2 rounded-lg transition-all ${showFilters || hasActiveFilters
+                            ? 'bg-gradient-primary text-white'
+                            : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
+                            }`}
+                        title="Filter events"
+                    >
+                        <Filter className="w-4 h-4" />
+                    </button>
                 </div>
+                <div className="text-sm text-secondary-600 dark:text-secondary-400 font-medium">
+                    {timelineEvents.length} events
+                    {hasActiveFilters && ' (filtered)'}
+                </div>
+
+                {/* Inline Filters */}
+                {showFilters && (
+                    <div className="mt-3 space-y-2 pt-3 border-t border-primary-200/30">
+                        <input
+                            type="text"
+                            placeholder="Filter by model..."
+                            value={filterModel}
+                            onChange={(e) => setFilterModel(e.target.value)}
+                            className="w-full px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                        />
+                        <div className="flex gap-2">
+                            <input
+                                type="number"
+                                step="0.001"
+                                placeholder="Min $"
+                                value={minCost}
+                                onChange={(e) => setMinCost(e.target.value ? parseFloat(e.target.value) : '')}
+                                className="flex-1 px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                            />
+                            <input
+                                type="number"
+                                step="0.001"
+                                placeholder="Max $"
+                                value={maxCost}
+                                onChange={(e) => setMaxCost(e.target.value ? parseFloat(e.target.value) : '')}
+                                className="flex-1 px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                            />
+                        </div>
+                        {hasActiveFilters && (
+                            <button
+                                onClick={clearFilters}
+                                className="w-full px-3 py-1.5 text-xs text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 transition-all"
+                            >
+                                Clear Filters
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Timeline */}
