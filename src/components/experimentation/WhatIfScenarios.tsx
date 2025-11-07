@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
-  PlayIcon,
-  PlusIcon,
-  TrashIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon,
-  BeakerIcon,
-  LightBulbIcon,
-  ShieldExclamationIcon,
-  ArrowPathIcon,
-  SparklesIcon,
-} from "@heroicons/react/24/outline";
+  Play,
+  Plus,
+  Trash2,
+  AlertTriangle,
+  Info,
+  TrendingUp,
+  TrendingDown,
+  Beaker,
+  Lightbulb,
+  ShieldAlert,
+  RotateCw,
+  Sparkles,
+} from "lucide-react";
 import {
   ExperimentationService,
   WhatIfScenario,
@@ -369,11 +369,11 @@ const WhatIfScenarios: React.FC = () => {
   const getRiskIcon = (riskLevel: string) => {
     switch (riskLevel) {
       case "low":
-        return <InformationCircleIcon className="h-5 w-5 text-success-500 glow-success" />;
+        return <Info className="h-5 w-5 text-success-500 dark:text-success-400 glow-success" />;
       case "medium":
-        return <ExclamationTriangleIcon className="h-5 w-5 text-accent-500 glow-accent" />;
+        return <AlertTriangle className="h-5 w-5 text-accent-500 dark:text-accent-400 glow-accent" />;
       case "high":
-        return <ShieldExclamationIcon className="h-5 w-5 text-danger-500 glow-danger" />;
+        return <ShieldAlert className="h-5 w-5 text-danger-500 dark:text-danger-400 glow-danger" />;
       default:
         return null;
     }
@@ -384,33 +384,33 @@ const WhatIfScenarios: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-            <BeakerIcon className="h-6 w-6 text-white" />
+            <Beaker className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-3xl font-display font-bold gradient-text">What-If Scenarios</h2>
         </div>
         <div className="flex space-x-3">
           <button
             onClick={() => setShowTemplatesModal(true)}
-            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+            className="btn btn-secondary flex items-center gap-2"
           >
-            <BeakerIcon className="w-4 h-4" />
+            <Beaker className="w-4 h-4" />
             Templates
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+            className="btn btn-primary flex items-center gap-2"
           >
-            <PlusIcon className="w-4 h-4" />
+            <Plus className="w-4 h-4" />
             Create Scenario
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 glass p-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+        <div className="mb-6 glass p-6 shadow-2xl backdrop-blur-xl border border-danger-200/30 dark:border-danger-500/30 animate-scale-in">
           <div className="flex items-center">
             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
-              <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+              <AlertTriangle className="h-5 w-5 text-white" />
             </div>
             <span className="text-sm font-body text-danger-700 dark:text-danger-300">{error}</span>
           </div>
@@ -422,7 +422,7 @@ const WhatIfScenarios: React.FC = () => {
         {scenarios.length === 0 ? (
           <div className="text-center py-12">
             <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-6 flex items-center justify-center">
-              <BeakerIcon className="h-8 w-8 text-white" />
+              <Beaker className="h-8 w-8 text-white" />
             </div>
             <h3 className="text-xl font-display font-bold gradient-text mb-3">
               No Scenarios Yet
@@ -432,9 +432,9 @@ const WhatIfScenarios: React.FC = () => {
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold"
+              className="btn btn-primary flex items-center justify-center gap-2"
             >
-              <PlusIcon className="w-5 h-5" />
+              <Plus className="w-5 h-5" />
               Create your first scenario
             </button>
           </div>
@@ -470,25 +470,25 @@ const WhatIfScenarios: React.FC = () => {
                   <button
                     onClick={() => runAnalysis(scenario)}
                     disabled={isAnalyzing[scenario.name]}
-                    className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
+                    className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isAnalyzing[scenario.name] ? (
                       <>
-                        <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                        <RotateCw className="w-4 h-4 animate-spin" />
                         <span>Analyzing...</span>
                       </>
                     ) : (
                       <>
-                        <PlayIcon className="w-4 h-4" />
+                        <Play className="w-4 h-4" />
                         <span>Analyze</span>
                       </>
                     )}
                   </button>
                   <button
                     onClick={() => deleteScenario(scenario.name)}
-                    className="p-2 rounded-xl text-danger-500 hover:text-white hover:bg-gradient-danger transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="btn btn-ghost p-2 text-danger-500 hover:text-white hover:bg-gradient-danger"
                   >
-                    <TrashIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -539,9 +539,9 @@ const WhatIfScenarios: React.FC = () => {
                       <div className="flex items-center justify-center space-x-2 mb-2">
                         {scenarioResults[scenario.name].projectedImpact
                           .costChange >= 0 ? (
-                          <ArrowTrendingUpIcon className="h-4 w-4 text-danger-500 glow-danger" />
+                          <TrendingUp className="h-4 w-4 text-danger-500 dark:text-danger-400 glow-danger" />
                         ) : (
-                          <ArrowTrendingDownIcon className="h-4 w-4 text-success-500 glow-success" />
+                          <TrendingDown className="h-4 w-4 text-success-500 dark:text-success-400 glow-success" />
                         )}
                         <span className="text-sm font-display font-semibold text-primary-600 dark:text-primary-400">Cost Impact</span>
                       </div>
@@ -562,7 +562,7 @@ const WhatIfScenarios: React.FC = () => {
                     </div>
                     <div className="glass rounded-xl p-6 text-center bg-gradient-accent/10 border-l-4 border-accent-500">
                       <div className="flex items-center justify-center space-x-2 mb-2">
-                        <LightBulbIcon className="h-4 w-4 text-accent-500 glow-accent" />
+                        <Lightbulb className="h-4 w-4 text-accent-500 dark:text-accent-400 glow-accent" />
                         <span className="text-sm font-display font-semibold text-accent-600 dark:text-accent-400">Confidence</span>
                       </div>
                       <div className="text-3xl font-display font-bold gradient-text">
@@ -597,7 +597,7 @@ const WhatIfScenarios: React.FC = () => {
                     return aiInsights && aiInsights.length > 0 ? (
                       <div className="mt-6">
                         <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                          <SparklesIcon className="h-5 w-5 mr-2 text-accent-500 glow-accent" />
+                          <Sparkles className="h-5 w-5 mr-2 text-accent-500 dark:text-accent-400 glow-accent" />
                           AI Insights
                         </h5>
                         <div className="glass p-4 rounded-xl border border-accent-200/30 bg-accent-500/5">
@@ -630,7 +630,7 @@ const WhatIfScenarios: React.FC = () => {
                           0 && (
                             <div>
                               <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                                <LightBulbIcon className="h-5 w-5 mr-2 text-success-500 glow-success" />
+                                <Lightbulb className="h-5 w-5 mr-2 text-success-500 dark:text-success-400 glow-success" />
                                 Recommendations
                               </h5>
                               <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
@@ -658,7 +658,7 @@ const WhatIfScenarios: React.FC = () => {
                         {scenarioResults[scenario.name].warnings?.length > 0 && (
                           <div>
                             <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                              <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-warning-500 glow-warning" />
+                              <AlertTriangle className="h-5 w-5 mr-2 text-warning-500 dark:text-warning-400 glow-warning" />
                               Warnings
                             </h5>
                             <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-500/5">
@@ -832,9 +832,9 @@ const WhatIfScenarios: React.FC = () => {
                       </select>
                       <button
                         onClick={() => removeChange(index)}
-                        className="text-danger-500 hover:text-danger-700 hover:scale-110 transition-all duration-300"
+                        className="btn btn-ghost text-danger-500 hover:text-danger-700"
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                     <input
@@ -1000,7 +1000,7 @@ const WhatIfScenarios: React.FC = () => {
                   <div className="grid grid-cols-2 gap-6">
                     <div className="glass rounded-xl p-6 text-center bg-gradient-primary/10 border-l-4 border-primary-500">
                       <div className="flex items-center justify-center space-x-2 mb-3">
-                        <ArrowTrendingUpIcon className="h-5 w-5 text-primary-500 glow-primary" />
+                        <TrendingUp className="h-5 w-5 text-primary-500 dark:text-primary-400 glow-primary" />
                         <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
                           Cost Impact
                         </span>
@@ -1023,7 +1023,7 @@ const WhatIfScenarios: React.FC = () => {
                     </div>
                     <div className="glass rounded-xl p-6 text-center bg-gradient-success/10 border-l-4 border-success-500">
                       <div className="flex items-center justify-center space-x-2 mb-3">
-                        <LightBulbIcon className="h-5 w-5 text-success-500 glow-success" />
+                        <Lightbulb className="h-5 w-5 text-success-500 dark:text-success-400 glow-success" />
                         <span className="font-display font-semibold text-success-600 dark:text-success-400">
                           Performance Impact
                         </span>
@@ -1050,7 +1050,7 @@ const WhatIfScenarios: React.FC = () => {
                     0 && (
                       <div>
                         <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                          <SparklesIcon className="h-5 w-5 mr-2 text-accent-500 glow-accent" />
+                          <Sparkles className="h-5 w-5 mr-2 text-accent-500 dark:text-accent-400 glow-accent" />
                           AI Insights
                         </h5>
                         <div className="glass p-4 rounded-xl border border-accent-200/30 bg-accent-500/5">
@@ -1081,7 +1081,7 @@ const WhatIfScenarios: React.FC = () => {
                       .length > 0 && (
                       <div>
                         <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                          <LightBulbIcon className="h-5 w-5 mr-2 text-success-500 glow-success" />
+                          <Lightbulb className="h-5 w-5 mr-2 text-success-500 dark:text-success-400 glow-success" />
                           Recommendations
                         </h5>
                         <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5">
@@ -1112,7 +1112,7 @@ const WhatIfScenarios: React.FC = () => {
                     0 && (
                       <div>
                         <h5 className="font-display font-semibold gradient-text mb-3 flex items-center">
-                          <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-warning-500 glow-warning" />
+                          <AlertTriangle className="h-5 w-5 mr-2 text-warning-500 dark:text-warning-400 glow-warning" />
                           Warnings
                         </h5>
                         <div className="glass p-4 rounded-xl border border-warning-200/30 bg-warning-500/5">

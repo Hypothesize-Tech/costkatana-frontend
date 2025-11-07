@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ExperimentationService } from '../../services/experimentation.service';
 import { AWS_BEDROCK_PRICING } from '../../utils/pricing';
-import { BeakerIcon, ExclamationTriangleIcon, SparklesIcon, LightBulbIcon, CurrencyDollarIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { Beaker, AlertTriangle, Sparkles, Lightbulb, DollarSign, BarChart3, Target, Zap, Settings } from 'lucide-react';
 
 interface OptimizationOption {
     type: string;
@@ -213,17 +213,17 @@ const RealTimeWhatIfSimulator: React.FC = () => {
             {/* Header */}
             <div className="text-center mb-12 relative z-10">
                 <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-                    <BeakerIcon className="h-10 w-10 text-white" />
+                    <Beaker className="h-10 w-10 text-white" />
                 </div>
                 <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4 flex items-center justify-center gap-3">
-                    <SparklesIcon className="h-10 w-10 text-primary-600 dark:text-primary-400" />
+                    <Sparkles className="h-10 w-10 text-primary-600 dark:text-primary-400" />
                     Real-Time What-If Cost Simulator
                 </h1>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto text-lg leading-relaxed">
                     See instant cost optimizations for your prompts using AWS Bedrock models. Compare models, trim context, optimize structure - all in real-time with confidence scores.
                 </p>
-                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 mt-6 max-w-3xl mx-auto backdrop-blur-xl flex items-center gap-2">
-                    <LightBulbIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 dark:bg-primary-900/20 mt-6 max-w-3xl mx-auto backdrop-blur-xl flex items-center gap-2">
+                    <Lightbulb className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                     <div className="font-body text-primary-700 dark:text-primary-300">
                         <span className="font-display font-bold">Bedrock Focus:</span> All models shown have verified pricing data and are available through AWS Bedrock
                     </div>
@@ -316,9 +316,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
                             <h4 className="text-sm font-display font-bold gradient-text-primary flex items-center">
                                 <div className="bg-gradient-primary p-2 rounded-lg glow-primary shadow-lg mr-3">
-                                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                    </svg>
+                                    <Settings className="w-5 h-5 text-white" />
                                 </div>
                                 Advanced Parameters
                             </h4>
@@ -406,7 +404,7 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         <button
                             onClick={runSimulation}
                             disabled={isSimulating || !prompt.trim() || !currentModel}
-                            className="btn-primary w-full py-4 font-display font-bold text-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-2xl glow-primary"
+                            className="btn btn-primary w-full py-4 font-display font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl glow-primary flex items-center justify-center gap-2"
                         >
                             {isSimulating ? (
                                 <>
@@ -414,17 +412,20 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                     Analyzing...
                                 </>
                             ) : (
-                                '🚀 Run Analysis'
+                                <>
+                                    <Zap className="h-5 w-5" />
+                                    Run Analysis
+                                </>
                             )}
                         </button>
                     </div>
                 </div>
 
                 {error && (
-                    <div className="mt-6 glass p-4 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-scale-in">
+                    <div className="mt-6 glass p-4 shadow-2xl backdrop-blur-xl border border-danger-200/30 dark:border-danger-500/30 animate-scale-in">
                         <div className="flex items-center">
                             <div className="bg-gradient-danger p-2 rounded-lg glow-danger shadow-lg mr-3">
-                                <ExclamationTriangleIcon className="h-5 w-5 text-white" />
+                                <AlertTriangle className="h-5 w-5 text-white" />
                             </div>
                             <span className="font-body text-danger-700 dark:text-danger-300">{error}</span>
                         </div>
@@ -439,35 +440,35 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                     <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
                         <div className="flex items-center mb-6">
                             <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-                                <span className="text-white text-2xl">📊</span>
+                                <BarChart3 className="h-6 w-6 text-white" />
                             </div>
                             <h3 className="text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center justify-center mb-2">
-                                    <CurrencyDollarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                    <DollarSign className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                                 </div>
                                 <div className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{formatCost(results.currentCost.totalCost)}</div>
                                 <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Cost</div>
                             </div>
                             <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center justify-center mb-2">
-                                    <ChartBarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                    <BarChart3 className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                                 </div>
                                 <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{formatTokens(results.currentCost.totalTokens)}</div>
                                 <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Tokens</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg bg-gradient-success/10">
+                            <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg bg-gradient-success/10 dark:bg-gradient-success/20">
                                 <div className="flex items-center justify-center mb-2">
-                                    <CurrencyDollarIcon className="h-5 w-5 text-success-600 dark:text-success-400" />
+                                    <DollarSign className="h-5 w-5 text-success-600 dark:text-success-400" />
                                 </div>
                                 <div className="text-2xl font-display font-bold text-success-600 dark:text-success-400">{results.potentialSavings.toFixed(1)}%</div>
                                 <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Max Savings</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-primary/10">
+                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-primary/10 dark:bg-gradient-primary/20">
                                 <div className="flex items-center justify-center mb-2">
-                                    <ChartBarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                                    <BarChart3 className="h-5 w-5 text-primary-600 dark:text-primary-400" />
                                 </div>
                                 <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{results.confidence}%</div>
                                 <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Confidence</div>
@@ -478,22 +479,25 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                     {/* Top Recommendations */}
                     {results.recommendations.length > 0 && (
                         <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Top Recommendations</h3>
+                            <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Lightbulb className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                                Top Recommendations
+                            </h3>
                             <div className="space-y-3">
                                 {results.recommendations.map((rec, index) => (
-                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300">
                                         <div className={`w-3 h-3 rounded-full mt-1 ${getPriorityColor(rec.priority)}`}></div>
                                         <div className="flex-1">
-                                            <div className="font-medium text-gray-900">{rec.title}</div>
-                                            <div className="text-sm text-gray-600 mt-1">{rec.action}</div>
+                                            <div className="font-medium text-secondary-900 dark:text-white">{rec.title}</div>
+                                            <div className="text-sm text-secondary-600 dark:text-secondary-300 mt-1">{rec.action}</div>
                                             <div className="flex items-center space-x-4 mt-2 text-xs">
-                                                <span className="text-green-600 font-medium">
+                                                <span className="text-success-600 dark:text-success-400 font-medium">
                                                     Save {rec.savings.percentage.toFixed(1)}%
                                                 </span>
                                                 <span className={`px-2 py-1 rounded-full border ${getRiskColor(rec.risk)}`}>
                                                     {rec.risk} risk
                                                 </span>
-                                                <span className="text-gray-500">{rec.implementation} to implement</span>
+                                                <span className="text-secondary-500 dark:text-secondary-400">{rec.implementation} to implement</span>
                                             </div>
                                         </div>
                                     </div>
@@ -505,12 +509,15 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                     {/* Detailed Optimization Options */}
                     {results.optimizedOptions.length > 0 && (
                         <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">⚡ Optimization Options</h3>
+                            <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Zap className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                                Optimization Options
+                            </h3>
                             <div className="grid gap-4 md:grid-cols-2">
                                 {results.optimizedOptions.map((option, index) => (
-                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300">
+                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300">
                                         <div className="flex items-center justify-between mb-2">
-                                            <h4 className="font-medium text-gray-900">{option.description}</h4>
+                                            <h4 className="font-medium text-secondary-900 dark:text-white">{option.description}</h4>
                                             <span className={`px-2 py-1 text-xs rounded-full border ${getRiskColor(option.risk)}`}>
                                                 {option.risk}
                                             </span>
@@ -518,29 +525,29 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                                         <div className="space-y-2 text-sm">
                                             <div className="flex justify-between">
-                                                <span className="text-gray-600">Savings:</span>
-                                                <span className="text-green-600 font-medium">{option.savings.percentage.toFixed(1)}%</span>
+                                                <span className="text-secondary-600 dark:text-secondary-300">Savings:</span>
+                                                <span className="text-success-600 dark:text-success-400 font-medium">{option.savings.percentage.toFixed(1)}%</span>
                                             </div>
 
                                             {option.savings.cost && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-gray-600">New Cost:</span>
-                                                    <span className="font-medium">{formatCost(option.savings.cost)}</span>
+                                                    <span className="text-secondary-600 dark:text-secondary-300">New Cost:</span>
+                                                    <span className="font-medium text-secondary-900 dark:text-white">{formatCost(option.savings.cost)}</span>
                                                 </div>
                                             )}
 
                                             {option.model && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-gray-600">Model:</span>
-                                                    <span className="font-medium">{option.model}</span>
+                                                    <span className="text-secondary-600 dark:text-secondary-300">Model:</span>
+                                                    <span className="font-medium text-secondary-900 dark:text-white">{option.model}</span>
                                                 </div>
                                             )}
 
                                             {option.qualityImpact && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-gray-600">Quality Impact:</span>
-                                                    <span className={`font-medium ${option.qualityImpact === 'minimal' ? 'text-green-600' :
-                                                        option.qualityImpact === 'low' ? 'text-yellow-600' : 'text-red-600'
+                                                    <span className="text-secondary-600 dark:text-secondary-300">Quality Impact:</span>
+                                                    <span className={`font-medium ${option.qualityImpact === 'minimal' ? 'text-success-600 dark:text-success-400' :
+                                                        option.qualityImpact === 'low' ? 'text-warning-600 dark:text-warning-400' : 'text-danger-600 dark:text-danger-400'
                                                         }`}>
                                                         {option.qualityImpact}
                                                     </span>
@@ -548,9 +555,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                             )}
 
                                             <div className="flex justify-between">
-                                                <span className="text-gray-600">Implementation:</span>
-                                                <span className={`font-medium ${option.implementation === 'easy' ? 'text-green-600' :
-                                                    option.implementation === 'moderate' ? 'text-yellow-600' : 'text-red-600'
+                                                <span className="text-secondary-600 dark:text-secondary-300">Implementation:</span>
+                                                <span className={`font-medium ${option.implementation === 'easy' ? 'text-success-600 dark:text-success-400' :
+                                                    option.implementation === 'moderate' ? 'text-warning-600 dark:text-warning-400' : 'text-danger-600 dark:text-danger-400'
                                                     }`}>
                                                     {option.implementation}
                                                 </span>
@@ -568,14 +575,25 @@ const RealTimeWhatIfSimulator: React.FC = () => {
             {!results && !isSimulating && !error && (
                 <div className="glass p-12 rounded-xl border-2 border-dashed border-primary-200/30 text-center shadow-lg backdrop-blur-xl">
                     <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                        <span className="text-white text-2xl">🎯</span>
+                        <Target className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-2">Ready to Optimize Your Costs?</h3>
                     <p className="text-light-text-secondary dark:text-dark-text-secondary font-body mb-4">
                         Enter your prompt above and see instant cost analysis with actionable optimization recommendations.
                     </p>
-                    <div className="text-sm text-light-text-muted dark:text-dark-text-muted font-body">
-                        ✨ See savings up to 95% • 🚀 Instant results • 💡 AI-powered recommendations
+                    <div className="text-sm text-light-text-muted dark:text-dark-text-muted font-body flex items-center justify-center gap-4 flex-wrap">
+                        <span className="flex items-center gap-1">
+                            <Sparkles className="h-4 w-4" />
+                            See savings up to 95%
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <Zap className="h-4 w-4" />
+                            Instant results
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <Lightbulb className="h-4 w-4" />
+                            AI-powered recommendations
+                        </span>
                     </div>
                 </div>
             )}

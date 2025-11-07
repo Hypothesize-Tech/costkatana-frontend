@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  DocumentDuplicateIcon,
-  CheckIcon,
-  InformationCircleIcon,
-  FolderIcon,
-  CodeBracketIcon,
-} from "@heroicons/react/24/outline";
+  Copy,
+  Check,
+  Info,
+  Folder,
+  Code,
+  Lightbulb,
+  Settings,
+} from "lucide-react";
 import { ProjectService } from "../../services/project.service";
 import { useNotification } from "../../contexts/NotificationContext";
 
@@ -75,13 +77,14 @@ await optimizer.bulkImport(usageData);`;
 
   return (
     <div className="space-y-8">
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 p-6">
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-primary/10 dark:bg-gradient-primary/20 p-6">
         <div className="flex items-center mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-            <InformationCircleIcon className="w-5 h-5 text-white" />
+            <Info className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-xl font-display font-bold gradient-text-primary">
-            🆔 Project ID Integration
+          <h3 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+            <span className="text-lg">🆔</span>
+            Project ID Integration
           </h3>
         </div>
         <p className="font-body text-primary-700 dark:text-primary-300">
@@ -94,10 +97,11 @@ await optimizer.bulkImport(usageData);`;
       <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
-            <FolderIcon className="w-4 h-4 text-white" />
+            <Folder className="w-4 h-4 text-white" />
           </div>
-          <h4 className="text-xl font-display font-bold gradient-text-primary">
-            📁 Available Projects
+          <h4 className="text-xl font-display font-bold gradient-text-primary flex items-center gap-2">
+            <Folder className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            Available Projects
           </h4>
         </div>
         <div className="space-y-6">
@@ -106,18 +110,23 @@ await optimizer.bulkImport(usageData);`;
               key={project._id}
               className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden"
             >
-              <div className="p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border-b border-success-200/30">
+              <div className="p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 border-b border-success-200/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
-                      <FolderIcon className="w-5 h-5 text-white" />
+                      <Folder className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h5 className="font-display font-bold text-lg gradient-text-success">
                         {project.name}
                       </h5>
-                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                        {project.description || "📝 No description"}
+                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-1">
+                        {project.description || (
+                          <>
+                            <span className="text-xs">📝</span>
+                            No description
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -125,37 +134,39 @@ await optimizer.bulkImport(usageData);`;
                     onClick={() =>
                       copyToClipboard(project._id, `project-${project._id}`)
                     }
-                    className="btn btn-success px-4 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
+                    className="btn btn-success flex items-center gap-2"
                   >
                     {copied === `project-${project._id}` ? (
                       <>
-                        <CheckIcon className="h-4 w-4 mr-2" />
-                        ✅ Copied!
+                        <Check className="h-4 w-4" />
+                        Copied!
                       </>
                     ) : (
                       <>
-                        <DocumentDuplicateIcon className="h-4 w-4 mr-2" />
+                        <Copy className="h-4 w-4" />
                         Copy ID
                       </>
                     )}
                   </button>
                 </div>
                 <div className="mt-4 glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
-                  <code className="text-sm font-mono text-success-700 dark:text-success-300 break-all">
-                    🆔 {project._id}
+                  <code className="text-sm font-mono text-success-700 dark:text-success-300 break-all flex items-center gap-1">
+                    <span className="text-xs">🆔</span>
+                    {project._id}
                   </code>
                 </div>
               </div>
 
               {/* Usage Example for this project */}
-              <div className="p-6 bg-gradient-to-br from-primary-50/30 to-primary-100/30">
+              <div className="p-6 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center mr-2 shadow-lg">
-                      <CodeBracketIcon className="w-3 h-3 text-white" />
+                      <Code className="w-3 h-3 text-white" />
                     </div>
-                    <h6 className="text-sm font-display font-bold gradient-text-primary">
-                      💻 Usage Example
+                    <h6 className="text-sm font-display font-bold gradient-text-primary flex items-center gap-1">
+                      <Code className="h-4 w-4" />
+                      Usage Example
                     </h6>
                   </div>
                   <button
@@ -165,12 +176,12 @@ await optimizer.bulkImport(usageData);`;
                         `example-${project._id}`,
                       )
                     }
-                    className="p-2 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-primary-500/10 transition-all duration-300 hover:scale-110"
+                    className="btn btn-ghost p-2"
                   >
                     {copied === `example-${project._id}` ? (
-                      <CheckIcon className="h-4 w-4 gradient-text-success" />
+                      <Check className="h-4 w-4" />
                     ) : (
-                      <DocumentDuplicateIcon className="h-4 w-4 gradient-text-primary" />
+                      <Copy className="h-4 w-4" />
                     )}
                   </button>
                 </div>
@@ -188,7 +199,7 @@ await optimizer.bulkImport(usageData);`;
           {(!projects || projects.length === 0) && (
             <div className="text-center py-12">
               <div className="w-16 h-16 rounded-2xl bg-gradient-secondary flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
-                <FolderIcon className="w-8 h-8 text-white" />
+                <Folder className="w-8 h-8 text-white" />
               </div>
               <p className="text-lg font-display font-bold gradient-text-primary mb-2">No projects found</p>
               <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -207,8 +218,9 @@ await optimizer.bulkImport(usageData);`;
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
           </div>
-          <h5 className="text-xl font-display font-bold gradient-text-accent">
-            💡 Integration Tips
+          <h5 className="text-xl font-display font-bold gradient-text-accent flex items-center gap-2">
+            <Lightbulb className="h-5 w-5 text-accent-600 dark:text-accent-400" />
+            Integration Tips
           </h5>
         </div>
         <div className="space-y-3">
@@ -238,15 +250,16 @@ await optimizer.bulkImport(usageData);`;
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <h5 className="text-xl font-display font-bold gradient-text-warning">
-            ⚙️ Environment Variables
+          <h5 className="text-xl font-display font-bold gradient-text-warning flex items-center gap-2">
+            <Settings className="h-5 w-5 text-warning-600 dark:text-warning-400" />
+            Environment Variables
           </h5>
         </div>
         <p className="text-sm font-body text-warning-700 dark:text-warning-300 mb-4">
           Set these environment variables in your application:
         </p>
         <div className="space-y-3">
-          <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-warning-100/20 dark:bg-warning-800/20">
+          <div className="glass p-4 rounded-xl border border-warning-200/30 dark:border-warning-500/30 shadow-lg backdrop-blur-xl bg-warning-100/20 dark:bg-warning-800/20">
             <div className="flex items-center justify-between">
               <code className="text-sm font-mono text-warning-800 dark:text-warning-200 break-all">
                 API_KEY=ck_live_sk_a7b9c2d4e8f1g3h5j6k9l2m4n7p0q3r5s8t1u4v7w0x3y6z9
@@ -258,12 +271,12 @@ await optimizer.bulkImport(usageData);`;
                     "api-key-sample",
                   )
                 }
-                className="ml-3 p-2 glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl hover:bg-warning-500/10 transition-all duration-300 hover:scale-110"
+                className="btn btn-ghost ml-3 p-2"
               >
                 {copied === "api-key-sample" ? (
-                  <CheckIcon className="h-4 w-4 gradient-text-success" />
+                  <Check className="h-4 w-4" />
                 ) : (
-                  <DocumentDuplicateIcon className="h-4 w-4 gradient-text-warning" />
+                  <Copy className="h-4 w-4" />
                 )}
               </button>
             </div>
