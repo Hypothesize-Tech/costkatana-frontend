@@ -10,9 +10,18 @@ import { TopOperations } from '../../components/telemetry/TopOperations';
 import { TopErrors } from '../../components/telemetry/TopErrors';
 import { TelemetryExplorer } from '../../components/telemetry/TelemetryExplorer';
 import SpanExplorer from '../../components/telemetry/SpanExplorer';
-import { AlertTriangle, RotateCw, Database, Brain, Activity, Eye, Sparkles, Settings } from 'lucide-react';
+import {
+    ExclamationTriangleIcon,
+    ArrowPathIcon,
+    CircleStackIcon,
+    SparklesIcon,
+    ChartBarIcon,
+    EyeIcon,
+    Cog6ToothIcon,
+} from '@heroicons/react/24/outline';
 import { apiClient } from '@/config/api';
 import TelemetryConfiguration from '@/components/telemetry/TelemetryConfiguration';
+import { RotateCw } from 'lucide-react';
 
 interface EnhancedDashboardData {
     current: {
@@ -93,7 +102,7 @@ class ErrorBoundary extends React.Component<
             return (
                 <div className="flex gap-4 items-center p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                     <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-6 h-6 text-white" />
+                        <ExclamationTriangleIcon className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
                         <h2 className="mb-2 text-xl font-bold font-display text-danger-900 dark:text-danger-100">Something went wrong</h2>
@@ -157,8 +166,8 @@ const EnhancedTelemetryContent: React.FC = () => {
             <header className="mb-6">
                 <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex gap-3 items-center mb-2">
-                        <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                            <Brain className="w-6 h-6 text-white" />
+                        <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                            <SparklesIcon className="w-6 h-6 text-white" />
                         </div>
                         <h1 className="text-3xl font-bold font-display gradient-text-primary">Enhanced Telemetry Dashboard</h1>
                     </div>
@@ -168,7 +177,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             to="/cost-lake"
                             className="inline-flex gap-2 items-center px-4 py-2 font-medium bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30 hover:shadow-md font-display text-primary-700 dark:text-primary-300"
                         >
-                            <Database className="w-4 h-4" />
+                            <CircleStackIcon className="w-4 h-4" />
                             Cost Lake
                         </Link>
                     </div>
@@ -185,7 +194,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                             }`}
                     >
-                        <Activity className="w-4 h-4" />
+                        <ChartBarIcon className="w-4 h-4" />
                         Overview
                     </button>
                     <button
@@ -195,7 +204,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                             }`}
                     >
-                        <Brain className="w-4 h-4" />
+                        <SparklesIcon className="w-4 h-4" />
                         AI Insights
                     </button>
                     <button
@@ -205,7 +214,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                             }`}
                     >
-                        <Eye className="w-4 h-4" />
+                        <EyeIcon className="w-4 h-4" />
                         Span Explorer
                     </button>
                     <button
@@ -215,7 +224,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                             }`}
                     >
-                        <Sparkles className="w-4 h-4" />
+                        <SparklesIcon className="w-4 h-4" />
                         Traces & Dependencies
                     </button>
                     <button
@@ -225,7 +234,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                             }`}
                     >
-                        <Settings className="w-4 h-4" />
+                        <Cog6ToothIcon className="w-4 h-4" />
                         Configuration
                     </button>
                 </nav>
@@ -243,7 +252,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 disabled={loading}
                                 className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 btn btn-primary glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-display"
                             >
-                                <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                                 Refresh
                             </button>
                         </div>
@@ -267,7 +276,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         </p>
                                     </div>
                                     <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-primary/20">
-                                        <Eye className="w-5 h-5 text-primary-500" />
+                                        <EyeIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +293,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         </p>
                                     </div>
                                     <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-success/20">
-                                        <Brain className="w-5 h-5 text-success-500" />
+                                        <SparklesIcon className="w-5 h-5 text-success-500 dark:text-success-400" />
                                     </div>
                                 </div>
                             </div>
@@ -301,7 +310,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         </p>
                                     </div>
                                     <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-accent/20">
-                                        <Activity className="w-5 h-5 text-accent-500" />
+                                        <ChartBarIcon className="w-5 h-5 text-accent-500 dark:text-accent-400" />
                                     </div>
                                 </div>
                             </div>
@@ -318,7 +327,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         </p>
                                     </div>
                                     <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-secondary/20">
-                                        <Sparkles className="w-5 h-5 text-secondary-500" />
+                                        <SparklesIcon className="w-5 h-5 text-secondary-500 dark:text-secondary-400" />
                                     </div>
                                 </div>
                             </div>
@@ -352,7 +361,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                             disabled={loading}
                             className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 btn btn-primary glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-display"
                         >
-                            <RotateCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                            <ArrowPathIcon className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                             Refresh Insights
                         </button>
                     </div>
@@ -369,7 +378,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                     <h3 className="flex gap-2 items-center mb-4 text-lg font-bold font-display text-secondary-900 dark:text-white">
                                         <div className="flex justify-center items-center w-6 h-6 rounded-lg bg-gradient-primary/20">
-                                            <Brain className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                            <SparklesIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                                         </div>
                                         AI Enrichment Status
                                     </h3>
@@ -443,7 +452,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                             <div className="py-8 text-center">
                                                 <div className="flex justify-center mb-2 text-secondary-400 dark:text-secondary-600">
                                                     <div className="flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-primary/20">
-                                                        <Brain className="w-6 h-6 text-primary-500" />
+                                                        <SparklesIcon className="w-6 h-6 text-primary-500 dark:text-primary-400" />
                                                     </div>
                                                 </div>
                                                 <p className="text-sm font-body text-secondary-600 dark:text-secondary-400">
@@ -460,7 +469,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                 <div className="px-6 py-4 border-b border-primary-200/20 dark:border-primary-500/10">
                                     <h3 className="flex gap-2 items-center text-lg font-bold font-display text-secondary-900 dark:text-white">
                                         <div className="flex justify-center items-center w-6 h-6 rounded-lg bg-gradient-primary/20">
-                                            <Brain className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                            <SparklesIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                                         </div>
                                         AI Recommendations
                                     </h3>
@@ -471,7 +480,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         <div className="py-8 text-center">
                                             <div className="flex justify-center mb-4 text-secondary-400 dark:text-secondary-600">
                                                 <div className="flex justify-center items-center w-16 h-16 rounded-xl bg-gradient-primary/20">
-                                                    <Brain className="w-8 h-8 text-primary-500" />
+                                                    <SparklesIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
                                                 </div>
                                             </div>
                                             <h4 className="mb-2 text-lg font-bold font-display text-secondary-900 dark:text-white">No AI Recommendations Available</h4>
@@ -482,7 +491,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                                 onClick={fetchEnhancedData}
                                                 className="inline-flex gap-2 items-center px-6 py-3 mx-auto font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 btn btn-primary glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 font-display"
                                             >
-                                                <RotateCw className="w-5 h-5" />
+                                                <ArrowPathIcon className="w-5 h-5" />
                                                 Refresh Data
                                             </button>
                                         </div>
@@ -553,7 +562,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                                         <div className="py-8 text-center">
                                             <div className="flex justify-center mb-3 text-secondary-400 dark:text-secondary-600">
                                                 <div className="flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-accent/20">
-                                                    <Eye className="w-6 h-6 text-accent-500" />
+                                                    <EyeIcon className="w-6 h-6 text-accent-500 dark:text-accent-400" />
                                                 </div>
                                             </div>
                                             <h4 className="mb-2 text-lg font-bold font-display text-secondary-900 dark:text-white">No Recent Insights</h4>

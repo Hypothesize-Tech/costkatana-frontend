@@ -172,7 +172,7 @@ export const Sessions: React.FC = () => {
                                             {({ active }) => (
                                                 <button
                                                     onClick={() => handleExportSessions('json')}
-                                                    className={`${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
+                                                    className={`btn ${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
                                                         } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
                                                 >
                                                     Export as JSON
@@ -183,7 +183,7 @@ export const Sessions: React.FC = () => {
                                             {({ active }) => (
                                                 <button
                                                     onClick={() => handleExportSessions('excel')}
-                                                    className={`${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
+                                                    className={`btn ${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
                                                         } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
                                                 >
                                                     Export as Excel
@@ -377,13 +377,13 @@ export const Sessions: React.FC = () => {
                         <div className="flex gap-3">
                             <button
                                 onClick={handleSearch}
-                                className="btn-primary flex-1 md:flex-none"
+                                className="btn btn-primary flex-1 md:flex-none"
                             >
                                 Search
                             </button>
                             <button
                                 onClick={handleClearFilters}
-                                className="btn-secondary flex-1 md:flex-none"
+                                className="btn btn-secondary flex-1 md:flex-none"
                             >
                                 Clear Filters
                             </button>
@@ -462,7 +462,7 @@ export const Sessions: React.FC = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <button
                                                             onClick={() => toggleSessionExpansion(session.sessionId)}
-                                                            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 transition-colors"
+                                                            className="btn text-primary-600 dark:text-primary-400 hover:text-primary-700 transition-colors"
                                                         >
                                                             {isExpanded ? (
                                                                 <ChevronDown className="w-4 h-4" />
@@ -522,7 +522,7 @@ export const Sessions: React.FC = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <button
                                                             onClick={() => navigate(`/sessions/${session.sessionId}`)}
-                                                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300"
+                                                            className="btn inline-flex items-center px-3 py-1.5 text-xs font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-lg shadow-sm backdrop-blur-sm hover:from-primary-500/10 hover:to-success-500/10 hover:border-primary-400/50 transition-all duration-300"
                                                         >
                                                             View Details
                                                         </button>

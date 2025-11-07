@@ -2,7 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { ErrorSpan } from '../../types/telemetry';
-import { AlertTriangle, Copy, RotateCw } from 'lucide-react';
+import {
+    ExclamationTriangleIcon,
+    ClipboardDocumentIcon,
+    ArrowPathIcon,
+} from '@heroicons/react/24/outline';
 
 const formatTimeAgo = (iso: string) => {
     const diff = Date.now() - new Date(iso).getTime();
@@ -68,14 +72,14 @@ export const ErrorMonitor: React.FC = () => {
             <div className="flex justify-between items-center">
                 <div className="flex gap-3 items-center">
                     <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-5 h-5 text-white" />
+                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-body text-secondary-900 dark:text-white">
                         Error loading error monitor
                     </span>
                 </div>
                 <button onClick={() => refetch()} className="inline-flex gap-2 items-center btn btn-secondary">
-                    <RotateCw className="w-4 h-4" /> Retry
+                    <ArrowPathIcon className="w-4 h-4" /> Retry
                 </button>
             </div>
         </div>
@@ -87,22 +91,22 @@ export const ErrorMonitor: React.FC = () => {
         <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-3 items-center">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-6 h-6 text-white" />
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-danger glow-danger">
+                        <ExclamationTriangleIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-bold font-display gradient-text-danger">
                         Error Monitor
                     </h2>
                 </div>
                 <button onClick={() => refetch()} className="inline-flex gap-2 items-center btn btn-secondary">
-                    <RotateCw className="w-4 h-4" /> Refresh
+                    <ArrowPathIcon className="w-4 h-4" /> Refresh
                 </button>
             </div>
 
             {errorList.length === 0 ? (
                 <div className="p-8 text-center bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
-                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl shadow-lg bg-gradient-success">
-                        <AlertTriangle className="w-8 h-8 text-white" />
+                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl shadow-lg bg-gradient-success glow-success">
+                        <ExclamationTriangleIcon className="w-8 h-8 text-white" />
                     </div>
                     <p className="mb-2 font-semibold font-display gradient-text-success">No errors detected</p>
                     <p className="font-body text-secondary-600 dark:text-secondary-300">Your system is running smoothly</p>
@@ -114,7 +118,7 @@ export const ErrorMonitor: React.FC = () => {
                             <div className="flex-1 min-w-0">
                                 <div className="flex gap-3 items-center mb-2">
                                     <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-danger">
-                                        <AlertTriangle className="w-4 h-4 text-white" />
+                                        <ExclamationTriangleIcon className="w-4 h-4 text-white" />
                                     </div>
                                     <p className="font-display font-semibold text-secondary-900 dark:text-white truncate max-w-[260px]">
                                         {errorSpan.error_message}
@@ -133,7 +137,7 @@ export const ErrorMonitor: React.FC = () => {
                                 onClick={() => handleCopyTraceId(errorSpan.trace_id)}
                                 className={`btn ml-4 px-4 py-2 rounded-lg transition-all duration-200 inline-flex items-center gap-2 ${copiedTraceId === errorSpan.trace_id ? 'btn-success' : 'btn-secondary'}`}
                             >
-                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><Copy className="w-4 h-4" /> Copy Trace ID</>)}
+                                {copiedTraceId === errorSpan.trace_id ? 'Copied!' : (<><ClipboardDocumentIcon className="w-4 h-4" /> Copy Trace ID</>)}
                             </button>
                         </div>
                     ))}

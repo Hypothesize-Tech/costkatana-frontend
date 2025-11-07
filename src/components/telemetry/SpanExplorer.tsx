@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Clock, DollarSign, AlertCircle, CheckCircle, Eye, ChevronDown, ChevronRight, Brain, Zap, Target, BarChart3 } from 'lucide-react';
+import {
+    MagnifyingGlassIcon,
+    ClockIcon,
+    BanknotesIcon,
+    ExclamationCircleIcon,
+    CheckCircleIcon,
+    EyeIcon,
+    ChevronDownIcon,
+    ChevronRightIcon,
+    SparklesIcon,
+    BoltIcon,
+    AdjustmentsHorizontalIcon,
+    ChartBarIcon,
+} from '@heroicons/react/24/outline';
 import { apiClient } from '@/config/api';
 
 interface Span {
@@ -99,11 +112,11 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
     const getStatusIcon = (status: string) => {
         switch (status) {
             case 'success':
-                return <CheckCircle className="w-4 h-4 text-green-500" />;
+                return <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400" />;
             case 'error':
-                return <AlertCircle className="w-4 h-4 text-red-500" />;
+                return <ExclamationCircleIcon className="w-4 h-4 text-red-500 dark:text-red-400" />;
             default:
-                return <Clock className="w-4 h-4 text-gray-400" />;
+                return <ClockIcon className="w-4 h-4 text-gray-400 dark:text-gray-500" />;
         }
     };
 
@@ -141,8 +154,8 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                 <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-primary">Total Spans</p>
                                 <p className="mt-2 text-3xl font-bold font-display gradient-text-primary">{enrichmentStats.total_spans}</p>
                             </div>
-                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
-                                <Eye className="w-6 h-6 text-white" />
+                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                                <EyeIcon className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </div>
@@ -167,8 +180,8 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                 <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-secondary">Cache Hits</p>
                                 <p className="mt-2 text-3xl font-bold font-display gradient-text-secondary">{enrichmentStats.cache_hit_spans}</p>
                             </div>
-                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-secondary">
-                                <Zap className="w-6 h-6 text-white" />
+                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-secondary glow-secondary">
+                                <BoltIcon className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </div>
@@ -179,8 +192,8 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                 <p className="text-sm font-medium tracking-wide uppercase font-display gradient-text-accent">Routing Decisions</p>
                                 <p className="mt-2 text-3xl font-bold font-display gradient-text-accent">{enrichmentStats.routing_decisions}</p>
                             </div>
-                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-accent">
-                                <Target className="w-6 h-6 text-white" />
+                            <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-accent glow-accent">
+                                <AdjustmentsHorizontalIcon className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </div>
@@ -190,15 +203,15 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
             {/* Search and Filters */}
             <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 <div className="flex gap-3 items-center mb-4">
-                    <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-highlight">
-                        <Search className="w-4 h-4 text-white" />
+                    <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-highlight glow-highlight">
+                        <MagnifyingGlassIcon className="w-4 h-4 text-white" />
                     </div>
                     <h3 className="font-semibold font-display gradient-text-highlight">Search & Filter</h3>
                 </div>
                 <div className="flex flex-col gap-4 md:flex-row">
                     <div className="flex-1">
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 w-4 h-4 transform -translate-y-1/2 text-secondary-600 dark:text-secondary-300" />
+                            <MagnifyingGlassIcon className="absolute left-4 top-1/2 w-4 h-4 transform -translate-y-1/2 text-secondary-600 dark:text-secondary-300" />
                             <input
                                 type="text"
                                 placeholder="Search spans, traces, or insights..."
@@ -241,7 +254,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                 <div className="px-6 py-4 border-b border-primary-200/30">
                     <div className="flex gap-3 items-center">
                         <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-info glow-info">
-                            <BarChart3 className="w-4 h-4 text-white" />
+                            <ChartBarIcon className="w-4 h-4 text-white" />
                         </div>
                         <h3 className="text-xl font-bold font-display gradient-text">
                             Enriched Spans ({filteredSpans.length})
@@ -257,7 +270,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                 ) : filteredSpans.length === 0 ? (
                     <div className="p-8 text-center">
                         <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-accent/20">
-                            <Search className="w-8 h-8 text-accent-500" />
+                            <MagnifyingGlassIcon className="w-8 h-8 text-accent-500 dark:text-accent-400" />
                         </div>
                         <p className="font-body text-secondary-600 dark:text-secondary-300">
                             No enriched spans found for the selected criteria.
@@ -274,9 +287,9 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                             className="btn btn-icon-secondary"
                                         >
                                             {expandedSpans.has(span.span_id) ? (
-                                                <ChevronDown className="w-4 h-4" />
+                                                <ChevronDownIcon className="w-4 h-4" />
                                             ) : (
-                                                <ChevronRight className="w-4 h-4" />
+                                                <ChevronRightIcon className="w-4 h-4" />
                                             )}
                                         </button>
 
@@ -294,13 +307,13 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
 
                                     <div className="flex items-center space-x-4">
                                         <div className="flex gap-2 items-center px-3 py-2 rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30">
-                                            <Clock className="w-4 h-4 text-accent-500" />
+                                            <ClockIcon className="w-4 h-4 text-accent-500 dark:text-accent-400" />
                                             <span className="text-sm font-semibold font-display gradient-text-accent">{formatDuration(span.duration_ms)}</span>
                                         </div>
 
                                         {span.cost_usd && (
                                             <div className="flex gap-2 items-center px-3 py-2 rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30">
-                                                <DollarSign className="w-4 h-4 text-success-500" />
+                                                <BanknotesIcon className="w-4 h-4 text-success-500 dark:text-success-400" />
                                                 <span className="text-sm font-semibold font-display gradient-text-success">{formatCost(span.cost_usd)}</span>
                                             </div>
                                         )}
@@ -358,7 +371,7 @@ const SpanExplorer: React.FC<SpanExplorerProps> = ({ tenantId, workspaceId }) =>
                                             <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-info-200/30 dark:border-info-500/20 bg-gradient-info/10">
                                                 <div className="flex gap-3 items-center mb-3">
                                                     <div className="flex justify-center items-center w-6 h-6 rounded-lg bg-gradient-info glow-info">
-                                                        <Brain className="w-4 h-4 text-white" />
+                                                        <SparklesIcon className="w-4 h-4 text-white" />
                                                     </div>
                                                     <h5 className="font-semibold font-display gradient-text-info">AI Insights</h5>
                                                 </div>

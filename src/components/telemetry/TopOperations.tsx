@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { BackendMetrics } from '../../types/telemetry';
-import { Rocket, AlertTriangle } from 'lucide-react';
+import {
+    RocketLaunchIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 
 export const TopOperations: React.FC = () => {
     const [timeframe, setTimeframe] = useState<string>('1h');
@@ -17,9 +20,9 @@ export const TopOperations: React.FC = () => {
     if (error) return (
         <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
             <div className="flex gap-3 items-center">
-                <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                    <AlertTriangle className="w-5 h-5 text-white" />
-                </div>
+                    <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
+                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+                    </div>
                 <span className="font-body text-secondary-900 dark:text-white">
                     Failed to load top operations
                 </span>
@@ -33,8 +36,8 @@ export const TopOperations: React.FC = () => {
         <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-3 items-center">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
-                        <Rocket className="w-6 h-6 text-white" />
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success glow-success">
+                        <RocketLaunchIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-bold font-display gradient-text-success">Top Operations</h2>
                 </div>

@@ -2,7 +2,12 @@ import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { DependencyResponse } from '../../types/telemetry';
-import { Server, RotateCw, AlertTriangle } from 'lucide-react';
+import {
+    ServerIcon,
+    ArrowPathIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
+import { RotateCw } from 'lucide-react';
 
 export const ServiceDependencyGraph: React.FC = () => {
     const { data: dependencyData, isLoading, error, refetch } = useQuery<DependencyResponse>({
@@ -40,14 +45,14 @@ export const ServiceDependencyGraph: React.FC = () => {
             <div className="flex justify-between items-center">
                 <div className="flex gap-3 items-center">
                     <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-5 h-5 text-white" />
+                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-body text-secondary-900 dark:text-white">
                         Error loading service dependencies
                     </span>
                 </div>
                 <button onClick={() => refetch()} className="inline-flex gap-2 items-center btn btn-secondary">
-                    <RotateCw className="w-4 h-4" /> Retry
+                    <ArrowPathIcon className="w-4 h-4" /> Retry
                 </button>
             </div>
         </div>
@@ -56,7 +61,7 @@ export const ServiceDependencyGraph: React.FC = () => {
     if (processedData.services.length === 0) return (
         <div className="p-8 text-center rounded-xl border shadow-lg backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-accent/20">
-                <Server className="w-8 h-8 text-accent-500" />
+                <ServerIcon className="w-8 h-8 text-accent-500 dark:text-accent-400" />
             </div>
             <p className="mb-4 font-body text-secondary-600 dark:text-secondary-300">No service dependencies found</p>
             <button
@@ -73,8 +78,8 @@ export const ServiceDependencyGraph: React.FC = () => {
         <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-secondary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-3 items-center">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
-                        <Server className="w-6 h-6 text-white" />
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary glow-secondary">
+                        <ServerIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-bold font-display gradient-text-secondary">
                         Service Dependency Graph

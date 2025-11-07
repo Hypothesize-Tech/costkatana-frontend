@@ -1,4 +1,4 @@
-import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/20/solid";
+import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/utils/helpers";
 import {
   formatCurrency,
@@ -44,9 +44,9 @@ export const StatsCard = ({
   const isNegative = change?.trend === "down";
 
   return (
-    <div className={`glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 ${className || ""}`}>
+    <div className={`group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30 animate-fade-in ${className || ""}`}>
       <div className="flex justify-between items-center">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <dt className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-3">
             {title}
           </dt>
@@ -54,24 +54,24 @@ export const StatsCard = ({
             {loading ? (
               <div className="w-32 h-10 skeleton" />
             ) : (
-              <div className="flex gap-3 items-baseline">
-                <span className="text-3xl font-display font-bold gradient-text">
+              <div className="flex flex-wrap gap-3 items-baseline">
+                <span className="text-3xl font-display font-bold gradient-text-primary">
                   {formatValue()}
                 </span>
                 {change && change.trend !== "stable" && (
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 text-sm font-display font-bold px-2 py-1 rounded-lg",
+                      "inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-full border",
                       isPositive && format === "currency"
-                        ? "text-danger-600 bg-danger-100/50"
-                        : "text-success-600 bg-success-100/50",
+                        ? "text-danger-700 dark:text-danger-300 bg-gradient-to-r from-danger-500/20 to-danger-600/20 border-danger-300/30 dark:border-danger-500/20"
+                        : "text-success-700 dark:text-success-300 bg-gradient-to-r from-success-500/20 to-success-600/20 border-success-300/30 dark:border-success-500/20",
                       isNegative && format === "currency"
-                        ? "text-success-600 bg-success-100/50"
-                        : "text-danger-600 bg-danger-100/50",
+                        ? "text-success-700 dark:text-success-300 bg-gradient-to-r from-success-500/20 to-success-600/20 border-success-300/30 dark:border-success-500/20"
+                        : "text-danger-700 dark:text-danger-300 bg-gradient-to-r from-danger-500/20 to-danger-600/20 border-danger-300/30 dark:border-danger-500/20",
                       !format || format === "number"
                         ? isPositive
-                          ? "text-success-600 bg-success-100/50"
-                          : "text-danger-600 bg-danger-100/50"
+                          ? "text-success-700 dark:text-success-300 bg-gradient-to-r from-success-500/20 to-success-600/20 border-success-300/30 dark:border-success-500/20"
+                          : "text-danger-700 dark:text-danger-300 bg-gradient-to-r from-danger-500/20 to-danger-600/20 border-danger-300/30 dark:border-danger-500/20"
                         : "",
                     )}
                   >
@@ -91,9 +91,9 @@ export const StatsCard = ({
           </dd>
         </div>
         {Icon && (
-          <div className="ml-6">
-            <div className="bg-gradient-primary p-3 rounded-xl glow-primary">
-              <Icon className="w-8 h-8 text-white" />
+          <div className="ml-6 shrink-0">
+            <div className="p-3.5 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
+              <Icon className="w-7 h-7 text-white" />
             </div>
           </div>
         )}

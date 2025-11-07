@@ -41,6 +41,7 @@ export interface VectorizationStats {
 export interface QuerySuggestion {
   category: string;
   queries: string[];
+  icon?: any;
 }
 
 export class CKQLService {

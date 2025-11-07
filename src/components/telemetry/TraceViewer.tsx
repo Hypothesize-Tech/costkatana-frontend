@@ -2,7 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { TraceResponse } from '../../types/telemetry';
-import { Search, ChevronRight, AlertTriangle, Eye, Clipboard, Hand } from 'lucide-react';
+import {
+    MagnifyingGlassIcon,
+    ChevronRightIcon,
+    ExclamationTriangleIcon,
+    EyeIcon,
+    ClipboardDocumentIcon,
+    HandRaisedIcon,
+} from '@heroicons/react/24/outline';
 
 const buildSpanTree = (spans: any[]) => {
     const spanMap = new Map(spans.map(span => [span.span_id, { ...span, children: [] }]));
@@ -28,13 +35,13 @@ const SpanNode: React.FC<{ span: any; depth?: number; onSpanSelect: (span: any) 
                     <div className="flex gap-2 items-center">
                         {span.children.length > 0 && (
                             <div className="flex justify-center items-center w-6 h-6 rounded-lg bg-gradient-primary/20">
-                                <ChevronRight className={`w-3 h-3 text-primary-600 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                                <ChevronRightIcon className={`w-3 h-3 text-primary-600 dark:text-primary-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                             </div>
                         )}
                         <span className="font-medium font-display text-secondary-900 dark:text-white">{span.operation_name}</span>
                         {span.status === 'error' && (
                             <div className="flex justify-center items-center w-5 h-5 rounded-full shadow-lg bg-gradient-danger">
-                                <AlertTriangle className="w-3 h-3 text-white" />
+                                <ExclamationTriangleIcon className="w-3 h-3 text-white" />
                             </div>
                         )}
                     </div>
@@ -73,7 +80,7 @@ export const TraceViewer: React.FC = () => {
             <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                 <div className="flex gap-3 items-center">
                     <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-5 h-5 text-white" />
+                        <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-body text-secondary-900 dark:text-white">
                         Error loading trace details: {errorMessage}
@@ -87,8 +94,8 @@ export const TraceViewer: React.FC = () => {
         <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="mb-6">
                 <div className="flex gap-3 items-center mb-4">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-highlight">
-                        <Search className="w-6 h-6 text-white" />
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-highlight glow-highlight">
+                        <MagnifyingGlassIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-bold font-display gradient-text-primary">Trace Viewer</h2>
                 </div>
@@ -105,7 +112,7 @@ export const TraceViewer: React.FC = () => {
                         className="btn inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 btn btn-primary glass border-primary-200/30 bg-gradient-primary hover:bg-gradient-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-display"
                         disabled={!traceId || isFetching}
                     >
-                        <Search className="w-5 h-5" />
+                        <MagnifyingGlassIcon className="w-5 h-5" />
                         {isFetching ? 'Loading...' : 'View Trace'}
                     </button>
                 </form>
@@ -123,16 +130,16 @@ export const TraceViewer: React.FC = () => {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div className="md:col-span-2">
                         <div className="flex gap-3 items-center mb-4">
-                            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-secondary">
-                                <Eye className="w-5 h-5 text-white" />
+                            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-secondary glow-secondary">
+                                <EyeIcon className="w-5 h-5 text-white" />
                             </div>
                             <h3 className="font-semibold font-display gradient-text-secondary">Trace Spans (Total: {traceData.summary?.total_spans || 0})</h3>
                         </div>
-                        <div className="max-h-[500px] overflow-y-auto glass rounded-xl p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                        <div className="max-h-[500px] overflow-y-auto glass rounded-xl p-4 border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl">
                             {spanTree.length === 0 ? (
                                 <div className="py-8 text-center">
                                     <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-accent/20">
-                                        <Search className="w-6 h-6 text-accent-500" />
+                                        <MagnifyingGlassIcon className="w-6 h-6 text-accent-500 dark:text-accent-400" />
                                     </div>
                                     <p className="font-body text-secondary-600 dark:text-secondary-300">No spans found for this trace</p>
                                 </div>
@@ -144,8 +151,8 @@ export const TraceViewer: React.FC = () => {
 
                     <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-highlight-200/30 dark:border-highlight-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex gap-3 items-center mb-4">
-                            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-highlight">
-                                <Clipboard className="w-5 h-5 text-white" />
+                            <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-highlight glow-highlight">
+                                <ClipboardDocumentIcon className="w-5 h-5 text-white" />
                             </div>
                             <h3 className="font-semibold font-display gradient-text-highlight">Span Details</h3>
                         </div>
@@ -155,11 +162,11 @@ export const TraceViewer: React.FC = () => {
                                     <span className="font-medium font-display gradient-text-primary">Operation:</span>
                                     <div className="mt-1 font-body text-secondary-900 dark:text-white">{selectedSpan.operation_name}</div>
                                 </div>
-                                <div className="p-3 rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30">
+                                <div className="p-3 rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20">
                                     <span className="font-medium font-display gradient-text-accent">Duration:</span>
                                     <div className="mt-1 font-semibold font-display gradient-text-accent">{Number(selectedSpan.duration_ms || 0).toFixed(2)} ms</div>
                                 </div>
-                                <div className="p-3 rounded-lg border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
+                                <div className="p-3 rounded-lg border shadow-lg backdrop-blur-xl glass border-secondary-200/30 dark:border-secondary-500/20">
                                     <span className="font-medium font-display gradient-text-secondary">Status:</span>
                                     <span className={`ml-2 glass px-3 py-1 rounded-full font-display font-semibold border shadow-lg backdrop-blur-xl ${selectedSpan.status === 'error' ? 'border-danger-200/30 bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 text-danger-700 dark:text-danger-300' : 'border-success-200/30 bg-gradient-to-r from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 text-success-700 dark:text-success-300'}`}>{selectedSpan.status}</span>
                                 </div>
@@ -171,7 +178,7 @@ export const TraceViewer: React.FC = () => {
                         ) : (
                             <div className="py-8 text-center">
                                 <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-info/20">
-                                    <Hand className="w-6 h-6 text-info-500" />
+                                    <HandRaisedIcon className="w-6 h-6 text-info-500 dark:text-info-400" />
                                 </div>
                                 <p className="font-body text-secondary-600 dark:text-secondary-300">Select a span to view details</p>
                             </div>

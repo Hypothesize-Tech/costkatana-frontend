@@ -152,7 +152,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                     <button
                         onClick={() => executeQuery()}
                         disabled={isLoading || !query.trim()}
-                        className="btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-xl transition-all duration-300 hover:scale-105"
+                        className="btn btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-xl transition-all duration-300 hover:scale-105"
                     >
                         {isLoading ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
@@ -177,7 +177,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                             >
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="w-4 h-4 text-primary-500" />
-                                    <span className="font-medium">{suggestion}</span>
+                                    <span className="font-display font-medium">{suggestion}</span>
                                 </div>
                             </button>
                         ))}
@@ -194,7 +194,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                         </div>
                         <div>
                             <span className="font-display font-bold text-danger-800 dark:text-danger-200">Query Error</span>
-                            <p className="text-sm font-medium text-danger-700 dark:text-danger-300 mt-1">{error}</p>
+                            <p className="font-body text-sm font-medium text-danger-700 dark:text-danger-300 mt-1">{error}</p>
                         </div>
                     </div>
                 </div>
@@ -204,31 +204,31 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
             {results && (
                 <div className="mb-8 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 animate-fade-in">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-display font-bold gradient-text-primary">Query Results</h3>
+                        <h3 className="font-display text-xl font-bold gradient-text-primary">Query Results</h3>
                         <div className="flex items-center gap-4 text-sm">
                             <span className="flex items-center gap-1 glass px-3 py-1 rounded-xl shadow-lg backdrop-blur-xl border border-primary-200/30">
                                 <Clock className="w-4 h-4 text-primary-500" />
-                                <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.execution_time_ms}ms</span>
+                                <span className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.execution_time_ms}ms</span>
                             </span>
-                            <span className="glass px-3 py-1 rounded-xl shadow-lg backdrop-blur-xl border border-primary-200/30 font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.total_count} results</span>
+                            <span className="glass px-3 py-1 rounded-xl shadow-lg backdrop-blur-xl border border-primary-200/30 font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.total_count} results</span>
                         </div>
                     </div>
 
                     {/* Query Explanation */}
                     <div className="mb-6 p-4 glass border border-primary-200/30 shadow-lg backdrop-blur-xl rounded-2xl">
-                        <p className="font-medium text-light-text-primary dark:text-dark-text-primary">{results.explanation}</p>
+                        <p className="font-body text-light-text-primary dark:text-dark-text-primary">{results.explanation}</p>
                     </div>
 
                     {/* Insights */}
                     {results.insights && results.insights.length > 0 && (
                         <div className="mb-4">
-                            <h4 className="font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
+                            <h4 className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2 flex items-center gap-2">
                                 <Lightbulb className="w-4 h-4 text-accent-500" />
                                 Key Insights
                             </h4>
                             <ul className="space-y-1">
                                 {results.insights.map((insight, index) => (
-                                    <li key={index} className="text-light-text-secondary dark:text-dark-text-secondary text-sm">• {insight}</li>
+                                    <li key={index} className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">• {insight}</li>
                                 ))}
                             </ul>
                         </div>
@@ -238,7 +238,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                     {results.results.length > 0 && (
                         <div className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden">
                             <div className="bg-gradient-to-r from-primary-50/30 to-secondary-50/30 px-4 py-2 border-b border-primary-200/30">
-                                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                                <span className="font-display text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Showing {results.results.length} of {results.total_count} results
                                 </span>
                             </div>
@@ -246,12 +246,12 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                                 {results.results.slice(0, 5).map((result, index) => (
                                     <div key={index} className="px-4 py-3 border-b border-primary-200/20 last:border-b-0 hover:bg-primary-500/5 transition-all duration-300">
                                         <div className="flex items-center justify-between">
-                                            <span className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 {result.operation_name || 'Unknown Operation'}
                                             </span>
                                             <div className="flex items-center gap-4 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                                 {result.cost_usd && (
-                                                    <span className="text-success-600 font-medium">
+                                                    <span className="font-display font-medium text-success-600">
                                                         ${result.cost_usd.toFixed(4)}
                                                     </span>
                                                 )}
@@ -267,7 +267,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                                             </div>
                                         </div>
                                         {result.cost_narrative && (
-                                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{result.cost_narrative}</p>
+                                            <p className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{result.cost_narrative}</p>
                                         )}
                                     </div>
                                 ))}
@@ -278,7 +278,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                     {/* Suggested Filters */}
                     {results.suggested_filters && results.suggested_filters.length > 0 && (
                         <div className="mt-4">
-                            <h4 className="font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Suggested Filters</h4>
+                            <h4 className="font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">Suggested Filters</h4>
                             <div className="flex flex-wrap gap-2">
                                 {results.suggested_filters.map((filter, index) => (
                                     <span
@@ -297,25 +297,28 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
             {/* Example Queries */}
             {!results && examples.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {examples.map((category, categoryIndex) => (
-                        <div key={categoryIndex} className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
-                            <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
-                                <TrendingUp className="w-4 h-4 text-primary-500" />
-                                {category.category}
-                            </h3>
-                            <div className="space-y-2">
-                                {category.queries.map((exampleQuery, queryIndex) => (
-                                    <button
-                                        key={queryIndex}
-                                        onClick={() => selectExample(exampleQuery)}
-                                        className="w-full text-left text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded transition-all duration-300 hover:scale-105"
-                                    >
-                                        "{exampleQuery}"
-                                    </button>
-                                ))}
+                    {examples.map((category, categoryIndex) => {
+                        const Icon = category.icon || TrendingUp;
+                        return (
+                            <div key={categoryIndex} className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Icon className="w-4 h-4 text-primary-500" />
+                                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{category.category}</h3>
+                                </div>
+                                <div className="space-y-2">
+                                    {category.queries.map((exampleQuery, queryIndex) => (
+                                        <button
+                                            key={queryIndex}
+                                            onClick={() => selectExample(exampleQuery)}
+                                            className="w-full text-left text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 p-2 rounded transition-all duration-300 hover:scale-105"
+                                        >
+                                            "{exampleQuery}"
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>

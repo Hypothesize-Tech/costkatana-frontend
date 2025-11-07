@@ -3,7 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { TelemetryAPI } from '../../services/telemetry/telemetryApi';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { BackendMetrics, ModelCost } from '../../types/telemetry';
-import { DollarSign, BarChart3, AlertTriangle } from 'lucide-react';
+import {
+    BanknotesIcon,
+    ChartBarIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 
 const COLORS = [
     '#0ea5e9', '#22c55e', '#f59e0b', '#ef4444',
@@ -42,7 +46,7 @@ export const CostAnalytics: React.FC = () => {
         <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
             <div className="flex gap-3 items-center">
                 <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                    <AlertTriangle className="w-5 h-5 text-white" />
+                    <ExclamationTriangleIcon className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-body text-secondary-900 dark:text-white">
                     Error loading cost analytics
@@ -71,8 +75,8 @@ export const CostAnalytics: React.FC = () => {
         <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-3 items-center">
-                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
-                        <DollarSign className="w-6 h-6 text-white" />
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success glow-success">
+                        <BanknotesIcon className="w-6 h-6 text-white" />
                     </div>
                     <h2 className="text-xl font-bold font-display gradient-text-primary">AI Cost Analytics</h2>
                 </div>
@@ -92,7 +96,7 @@ export const CostAnalytics: React.FC = () => {
             {chartData.length === 0 ? (
                 <div className="p-8 text-center rounded-xl border shadow-lg backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-accent/20">
-                        <BarChart3 className="w-8 h-8 text-accent-500" />
+                        <ChartBarIcon className="w-8 h-8 text-accent-500 dark:text-accent-400" />
                     </div>
                     <p className="font-body text-secondary-600 dark:text-secondary-300">
                         No cost data available for the selected timeframe
@@ -120,8 +124,8 @@ export const CostAnalytics: React.FC = () => {
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(value, name, props: any) => {
-                                        const original = chartData[props?.payload?.index]?.model_name || name;
+                                    <Tooltip formatter={(value, name, props: { payload?: { index?: number } }) => {
+                                        const original = chartData[props?.payload?.index ?? 0]?.model_name || name;
                                         return [`$${Number(value || 0).toFixed(2)}`, original];
                                     }} />
                                 </PieChart>
@@ -145,8 +149,8 @@ export const CostAnalytics: React.FC = () => {
                     <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex gap-3 items-center">
-                                <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-success">
-                                    <DollarSign className="w-5 h-5 text-white" />
+                                <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-success glow-success">
+                                    <BanknotesIcon className="w-5 h-5 text-white" />
                                 </div>
                                 <h3 className="font-semibold font-display gradient-text-success">Total Cost</h3>
                             </div>
