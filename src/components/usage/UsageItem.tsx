@@ -104,17 +104,17 @@ export const UsageItem: React.FC<UsageItemProps> = ({
     <>
       <tr
         onClick={() => onClick(usage)}
-        className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 border-b border-primary-200/30"
+        className="border-b transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 border-primary-200/30"
       >
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="flex items-center">
             <div>
-              <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+              <div className="text-sm font-medium text-secondary-900 dark:text-white">
                 {usage.prompt.length > 50
                   ? usage.prompt.substring(0, 50) + '...'
                   : usage.prompt}
               </div>
-              <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              <div className="text-sm text-secondary-600 dark:text-secondary-300">
                 {formatDate(usage.createdAt)}
               </div>
             </div>
@@ -127,24 +127,24 @@ export const UsageItem: React.FC<UsageItemProps> = ({
           </span>
         </td>
 
-        <td className="px-6 py-4 text-sm text-light-text-secondary dark:text-dark-text-secondary whitespace-nowrap">
+        <td className="px-6 py-4 text-sm whitespace-nowrap text-secondary-600 dark:text-secondary-300">
           {usage.model}
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-light-text-primary dark:text-dark-text-primary">
+          <div className="text-sm text-secondary-900 dark:text-white">
             {usage.totalTokens.toLocaleString()}
             {usage.totalTokens > 4000 && (
               <ExclamationCircleIcon className="inline-block ml-1 w-4 h-4 text-warning-500" />
             )}
           </div>
-          <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+          <div className="text-xs text-secondary-500 dark:text-secondary-400">
             {usage.promptTokens} / {usage.completionTokens}
           </div>
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center text-sm text-light-text-primary dark:text-dark-text-primary">
+          <div className="flex items-center text-sm text-secondary-900 dark:text-white">
             <CurrencyDollarIcon className="mr-1 w-4 h-4 text-success-500" />
             {formatCurrency(usage.cost)}
             {usage.cost > 0.5 && (
@@ -154,7 +154,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <div className="flex items-center text-sm text-secondary-600 dark:text-secondary-300">
             <ClockIcon className="mr-1 w-4 h-4" />
             {usage.responseTime}ms
           </div>
@@ -165,7 +165,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {tipData && (
               <button
                 onClick={handleTipClick}
-                className="p-2 rounded-xl glass border border-primary-200/30 text-warning-500 hover:text-warning-600 hover:border-warning-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-warning-500 dark:text-warning-400 hover:text-warning-600 dark:hover:text-warning-300 hover:border-warning-300/50 hover:shadow-md"
                 title="Optimization tip available"
               >
                 <ExclamationCircleIcon className="w-4 h-4" />
@@ -174,7 +174,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {onOptimize && usage.totalTokens > 100 && (
               <button
                 onClick={handleOptimizeClick}
-                className="p-2 rounded-xl glass border border-primary-200/30 text-primary-500 hover:text-primary-600 hover:border-primary-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-primary-500 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 hover:border-primary-300/50 hover:shadow-md"
                 title="Optimize this prompt"
               >
                 <SparklesIcon className="w-4 h-4" />
@@ -183,7 +183,7 @@ export const UsageItem: React.FC<UsageItemProps> = ({
             {onSimulate && (usage.cost > 0.01 || usage.totalTokens > 500) && (
               <button
                 onClick={handleSimulateClick}
-                className="p-2 rounded-xl glass border border-primary-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 text-purple-500 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:border-purple-300/50 hover:shadow-md"
                 title="Try What-If Simulation"
               >
                 <BeakerIcon className="w-4 h-4" />
@@ -202,20 +202,20 @@ export const UsageItem: React.FC<UsageItemProps> = ({
                   e.stopPropagation();
                   setShowScoring(!showScoring);
                 }}
-                className="p-2 rounded-xl glass border border-primary-200/30 text-blue-500 hover:text-blue-600 hover:border-blue-300/50 hover:shadow-md transition-all duration-300"
+                className="p-2 text-blue-500 rounded-xl border transition-all duration-300 btn dark:text-blue-400 glass border-primary-200/30 hover:text-blue-600 dark:hover:text-blue-300 hover:border-blue-300/50 hover:shadow-md"
                 title="Score this request for training"
               >
                 <StarIcon className="w-4 h-4" />
               </button>
             )}
-            <ChevronRightIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+            <ChevronRightIcon className="w-5 h-5 text-secondary-500 dark:text-secondary-400" />
           </div>
         </td>
       </tr>
 
       {showTip && tipData && (
         <tr>
-          <td colSpan={7} className="px-6 py-4 glass bg-gradient-to-r from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20 border-t border-warning-200/30">
+          <td colSpan={7} className="px-6 py-4 bg-gradient-to-r border-t glass from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20 border-warning-200/30">
             <ProactiveTip
               tipData={tipData}
               position="inline"

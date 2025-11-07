@@ -49,8 +49,8 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
   return (
     <div className={`relative ${className}`}>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <MagnifyingGlassIcon className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+        <div className="flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none">
+          <MagnifyingGlassIcon className="w-5 h-5 text-secondary-500 dark:text-secondary-400" />
         </div>
         <input
           type="text"
@@ -58,26 +58,26 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="input pl-12 pr-12"
+          className="pr-12 pl-12 input"
         />
         {query && (
-          <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+          <div className="flex absolute inset-y-0 right-0 items-center pr-4">
             <button
               onClick={handleClear}
-              className="p-1 rounded-lg text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-100/50 dark:hover:bg-primary-800/50 focus:outline-none transition-all duration-300"
+              className="p-1 rounded-lg transition-all duration-300 btn text-secondary-500 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-white hover:bg-primary-100/50 dark:hover:bg-primary-800/50 focus:outline-none"
             >
-              <XMarkIcon className="h-5 w-5" />
+              <XMarkIcon className="w-5 h-5" />
             </button>
           </div>
         )}
       </div>
 
       {isSearching && (
-        <div className="absolute left-0 right-0 top-full mt-2 z-10">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3">
-            <div className="flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary">
+        <div className="absolute right-0 left-0 top-full z-10 mt-2">
+          <div className="p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center text-sm text-secondary-600 dark:text-secondary-300">
               <svg
-                className="animate-spin h-4 w-4 mr-2 text-primary-500"
+                className="mr-2 w-4 h-4 animate-spin text-primary-500"
                 fill="none"
                 viewBox="0 0 24 24"
               >

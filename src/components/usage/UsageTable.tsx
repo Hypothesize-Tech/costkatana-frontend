@@ -60,19 +60,19 @@ export const UsageTable: React.FC<UsageTableProps> = ({
 
   const getSortIcon = (field: string) => {
     if (sortField !== field) {
-      return <ArrowsUpDownIcon className="h-4 w-4 text-light-text-tertiary dark:text-dark-text-tertiary" />;
+      return <ArrowsUpDownIcon className="w-4 h-4 text-secondary-500 dark:text-secondary-400" />;
     }
 
     return sortOrder === "asc" ? (
-      <ChevronUpIcon className="h-4 w-4 text-primary-500" />
+      <ChevronUpIcon className="w-4 h-4 text-primary-500" />
     ) : (
-      <ChevronDownIcon className="h-4 w-4 text-primary-500" />
+      <ChevronDownIcon className="w-4 h-4 text-primary-500" />
     );
   };
 
   if (isLoading) {
     return (
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+      <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-center">
           <LoadingSpinner />
         </div>
@@ -82,7 +82,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
 
   if (usages.length === 0) {
     return (
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
+      <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <UsageEmpty
           hasFilters={hasFilters}
           onClearFilters={onClearFilters}
@@ -93,15 +93,15 @@ export const UsageTable: React.FC<UsageTableProps> = ({
   }
 
   return (
-    <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+    <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       <table className="min-w-full divide-y divide-primary-200/30">
-        <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
+        <thead className="bg-gradient-to-r glass from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.key}
                 scope="col"
-                className={`px-6 py-4 text-left text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider ${column.sortable && onSort ? "cursor-pointer select-none hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors duration-300" : ""
+                className={`px-6 py-4 text-left text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wider ${column.sortable && onSort ? "cursor-pointer select-none hover:text-secondary-900 dark:hover:text-white transition-colors duration-300" : ""
                   }`}
                 onClick={() => column.sortable && handleSort(column.key)}
                 onMouseEnter={() => setHoveredColumn(column.key)}
@@ -127,7 +127,7 @@ export const UsageTable: React.FC<UsageTableProps> = ({
             </th>
           </tr>
         </thead>
-        <tbody className="glass divide-y divide-primary-200/30">
+        <tbody className="divide-y glass divide-primary-200/30">
           {usages.map((usage) => (
             <UsageItem
               key={usage._id}

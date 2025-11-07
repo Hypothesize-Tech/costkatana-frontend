@@ -55,16 +55,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   if (usage.length === 0) {
     return (
-      <div className="p-12 text-center glass rounded-xl border border-primary-200/30">
-        <div className="mx-auto w-24 h-24 text-light-text-tertiary dark:text-dark-text-tertiary">
+      <div className="p-12 text-center rounded-xl border glass border-primary-200/30">
+        <div className="mx-auto w-24 h-24 text-secondary-500 dark:text-secondary-400">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
-        <h3 className="mt-4 text-lg font-display font-bold gradient-text-primary">
+        <h3 className="mt-4 text-lg font-bold font-display gradient-text-primary">
           No usage data yet
         </h3>
-        <p className="mt-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+        <p className="mt-2 text-sm text-secondary-600 dark:text-secondary-300">
           Start tracking your AI API usage to see it here.
         </p>
       </div>
@@ -73,15 +73,15 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   return (
     <>
-      <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-4 border-b border-primary-200/30">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-display font-bold gradient-text-primary">
+            <h3 className="text-lg font-bold font-display gradient-text-primary">
               Usage History
             </h3>
             <button
               onClick={onRefresh}
-              className="p-2 rounded-xl glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
+              className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
             >
               <ArrowPathIcon className="w-5 h-5" />
             </button>
@@ -90,36 +90,36 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-primary-200/30">
-            <thead className="glass bg-gradient-to-r from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
+            <thead className="bg-gradient-to-r glass from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
               <tr>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Service / Model
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Project
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Workflow
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Email Information
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Request/Response
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Properties
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Token Breakdown
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Cost
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Status
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-light-text-secondary dark:text-dark-text-secondary uppercase">
+                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
                   Time
                 </th>
                 <th className="relative px-6 py-4">
@@ -127,14 +127,14 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 </th>
               </tr>
             </thead>
-            <tbody className="glass divide-y divide-primary-200/30">
+            <tbody className="divide-y glass divide-primary-200/30">
               {usage.map((item) => {
                 const service = AI_SERVICES[item.service as keyof typeof AI_SERVICES];
 
                 return (
                   <tr
                     key={item._id}
-                    className="cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
+                    className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
                     onClick={() => setSelectedUsage(item)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -148,39 +148,39 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                          <div className="text-sm font-medium text-secondary-900 dark:text-white">
                             {formatServiceName(item.service)}
                           </div>
-                          <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                          <div className="text-sm text-secondary-600 dark:text-secondary-300">
                             {item.model}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-light-text-primary dark:text-dark-text-primary">
+                      <div className="text-sm text-secondary-900 dark:text-white">
                         {getProjectName(item.projectId)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.workflowId ? (
                         <div>
-                          <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                          <div className="text-sm font-medium text-secondary-900 dark:text-white">
                             {item.workflowName || 'Unnamed Workflow'}
                           </div>
-                          <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                          <div className="text-xs text-secondary-600 dark:text-secondary-300">
                             {item.workflowStep && (
                               <span className="mr-2">{item.workflowStep}</span>
                             )}
                             {item.workflowSequence && (
-                              <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium glass border border-blue-300/30 bg-gradient-to-r from-blue-400/20 to-blue-500/20 text-blue-600 dark:text-blue-400">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-gradient-to-r rounded-xl border glass border-blue-300/30 from-blue-400/20 to-blue-500/20 dark:text-blue-400">
                                 #{item.workflowSequence}
                               </span>
                             )}
                           </div>
                         </div>
                       ) : (
-                        <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="text-sm text-secondary-500 dark:text-secondary-400">
                           No workflow
                         </div>
                       )}
@@ -191,7 +191,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {item.userEmail && (
                             <div className="text-xs">
                               <span className="font-medium text-gray-700 dark:text-gray-300">User:</span>
-                              <span className="ml-1 text-gray-600 dark:text-gray-400 truncate block max-w-32" title={item.userEmail}>
+                              <span className="block ml-1 text-gray-600 truncate dark:text-gray-400 max-w-32" title={item.userEmail}>
                                 {item.userEmail}
                               </span>
                             </div>
@@ -199,14 +199,14 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {item.customerEmail && (
                             <div className="text-xs">
                               <span className="font-medium text-gray-700 dark:text-gray-300">Customer:</span>
-                              <span className="ml-1 text-gray-600 dark:text-gray-400 truncate block max-w-32" title={item.customerEmail}>
+                              <span className="block ml-1 text-gray-600 truncate dark:text-gray-400 max-w-32" title={item.customerEmail}>
                                 {item.customerEmail}
                               </span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="text-sm text-secondary-500 dark:text-secondary-400">
                           No email data
                         </div>
                       )}
@@ -217,7 +217,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                         <div className="space-y-2">
                           {/* Request/Prompt Section */}
                           <div>
-                            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                               Request:
                             </div>
                             <div className="text-sm">
@@ -234,7 +234,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* Response/Completion Section */}
                           {item.completion && (
                             <div>
-                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                                 Response:
                               </div>
                               <div className="text-sm">
@@ -246,7 +246,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* Messages Section for Chat Models */}
                           {item.metadata?.messages && Array.isArray(item.metadata.messages) && item.metadata.messages.length > 0 && (
                             <div>
-                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                                 Messages:
                               </div>
                               <div className="space-y-1">
@@ -272,7 +272,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* System Message */}
                           {item.metadata?.system && (
                             <div>
-                              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                                 System:
                               </div>
                               <div className="text-sm">
@@ -368,12 +368,12 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-white">
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 items-center">
                           <span className="font-medium">{formatNumber(item.totalTokens)}</span>
                           <span className="text-xs text-gray-500">total</span>
                         </div>
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 mt-1">
+                      <div className="mt-1 space-y-1 text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex justify-between">
                           <span>Input:</span>
                           <span className="font-medium">{formatNumber(item.promptTokens || 0)}</span>
@@ -442,20 +442,20 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       {formatDateTime(item.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end space-x-2">
+                      <div className="flex justify-end items-center space-x-2">
                         {(item.cost > 0.01 || item.totalTokens > 500) && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleSimulate(item);
                             }}
-                            className="p-2 rounded-xl glass border border-primary-200/30 text-purple-500 hover:text-purple-600 hover:border-purple-300/50 hover:shadow-md transition-all duration-300"
+                            className="p-2 text-purple-500 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:border-purple-300/50 hover:shadow-md"
                             title="Try What-If Simulation"
                           >
                             <BeakerIcon className="w-4 h-4" />
                           </button>
                         )}
-                        <ChevronRightIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                        <ChevronRightIcon className="w-5 h-5 text-secondary-500 dark:text-secondary-400" />
                       </div>
                     </td>
                   </tr>
@@ -487,16 +487,16 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
       {selectedUsage && (
         <div className="overflow-y-auto fixed inset-0 z-50">
           <div className="flex justify-center items-center px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUsage(null)} />
+            <div className="fixed inset-0 backdrop-blur-sm transition-opacity bg-black/50" onClick={() => setSelectedUsage(null)} />
 
-            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel transition-all transform">
+            <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-2xl text-left align-middle rounded-xl border shadow-2xl backdrop-blur-xl transition-all transform glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-display font-bold gradient-text-primary">
+                <h3 className="text-lg font-bold font-display gradient-text-primary">
                   Usage Details
                 </h3>
                 <button
                   onClick={() => setSelectedUsage(null)}
-                  className="p-2 rounded-xl glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 transition-all duration-300"
+                  className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -526,7 +526,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Workflow Information */}
                 {selectedUsage.workflowId && (
                   <div className="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                    <h5 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                    <h5 className="mb-2 text-sm font-medium text-blue-900 dark:text-blue-100">
                       Workflow Information
                     </h5>
                     <div className="grid grid-cols-2 gap-4">
@@ -538,7 +538,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       </div>
                       <div>
                         <p className="text-xs text-blue-700 dark:text-blue-300">Workflow ID</p>
-                        <p className="text-sm font-mono text-blue-900 dark:text-blue-100">
+                        <p className="font-mono text-sm text-blue-900 dark:text-blue-100">
                           {selectedUsage.workflowId}
                         </p>
                       </div>
@@ -570,7 +570,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     </h5>
                     <button
                       onClick={() => copyPromptToClipboard(selectedUsage.prompt)}
-                      className="flex items-center px-2 py-1 space-x-1 text-xs text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="flex items-center px-2 py-1 space-x-1 text-xs transition-colors btn text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200"
                       title="Copy prompt to clipboard"
                     >
                       {copiedPrompt ? (
@@ -590,7 +590,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   <div className="space-y-4">
                     {/* Request/Prompt Section */}
                     <div>
-                      <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                      <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                         Request:
                       </h6>
                       <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
@@ -607,7 +607,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* Response/Completion Section */}
                     {selectedUsage.completion && (
                       <div>
-                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                           Response:
                         </h6>
                         <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
@@ -621,19 +621,19 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* Messages Section for Chat Models */}
                     {selectedUsage.metadata?.messages && Array.isArray(selectedUsage.metadata.messages) && selectedUsage.metadata.messages.length > 0 && (
                       <div>
-                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                           Conversation History:
                         </h6>
                         <div className="space-y-2">
                           {selectedUsage.metadata.messages.map((msg: any, idx: number) => (
                             <div key={idx} className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                              <div className="flex items-start justify-between mb-1">
-                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className="text-xs font-medium text-gray-500 capitalize dark:text-gray-400">
                                   {msg.role || 'user'}:
                                 </span>
                                 <button
                                   onClick={() => copyPromptToClipboard(msg.content || '')}
-                                  className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                  className="text-xs btn text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300"
                                   title="Copy message to clipboard"
                                 >
                                   <ClipboardIcon className="w-3 h-3" />
@@ -651,7 +651,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* System Message */}
                     {selectedUsage.metadata?.system && (
                       <div>
-                        <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
                           System Instructions:
                         </h6>
                         <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
@@ -727,7 +727,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {item.key}:
                               </span>
-                              <span className="text-sm text-gray-900 dark:text-white max-w-xs text-right">
+                              <span className="max-w-xs text-sm text-right text-gray-900 dark:text-white">
                                 {item.displayValue}
                               </span>
                             </div>
@@ -807,7 +807,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Error Details */}
                 {selectedUsage.errorOccurred && (
                   <div className="p-4 bg-red-50 rounded-lg dark:bg-red-900/20">
-                    <h5 className="text-sm font-medium text-red-900 dark:text-red-100 mb-3">
+                    <h5 className="mb-3 text-sm font-medium text-red-900 dark:text-red-100">
                       Error Details
                     </h5>
                     <div className="space-y-3">
@@ -839,7 +839,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       {selectedUsage.errorMessage && (
                         <div>
                           <span className="text-sm text-red-700 dark:text-red-300">Error Message:</span>
-                          <p className="text-sm text-red-900 dark:text-red-100 mt-1 p-2 bg-red-100 dark:bg-red-900/30 rounded">
+                          <p className="p-2 mt-1 text-sm text-red-900 bg-red-100 rounded dark:text-red-100 dark:bg-red-900/30">
                             {selectedUsage.errorMessage}
                           </p>
                         </div>
@@ -852,10 +852,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                               .filter(([_, value]) => value !== null && value !== undefined && value !== '')
                               .map(([key, value]) => (
                                 <div key={key} className="flex justify-between items-start text-xs">
-                                  <span className="text-red-600 dark:text-red-400 capitalize">
+                                  <span className="text-red-600 capitalize dark:text-red-400">
                                     {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
                                   </span>
-                                  <span className="text-red-900 dark:text-red-100 max-w-xs text-right">
+                                  <span className="max-w-xs text-right text-red-900 dark:text-red-100">
                                     {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                                   </span>
                                 </div>
