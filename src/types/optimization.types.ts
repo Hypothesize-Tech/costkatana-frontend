@@ -114,6 +114,7 @@ export interface OptimizationRequest {
   model: string;
   context?: string;
   useCortex?: boolean;
+  cortexConfig?: any; // Cortex configuration options
   options?: {
     targetReduction?: number;
     preserveIntent?: boolean;
