@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { usePopper } from 'react-popper';
@@ -127,30 +128,36 @@ const navCategories: NavCategory[] = [
 ];
 
 // ------------------------------
-// Tooltip (unchanged)
+// Tooltip (Enhanced with theme support)
 // ------------------------------
 interface TooltipProps {
   children: React.ReactNode;
-  content: string;
+  title: string;
+  description?: string;
   show: boolean;
   placement?: 'right' | 'left' | 'top' | 'bottom';
   delay?: number;
 }
 
-const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: TooltipProps) => {
+const Tooltip = ({ children, title, description, show, delay = 200 }: TooltipProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement,
+    placement: 'right',
     modifiers: [
-      { name: 'offset', options: { offset: [0, 8] } },
-      { name: 'preventOverflow', options: { padding: 8 } },
+      { name: 'offset', options: { offset: [12, 0] } },
+      { name: 'preventOverflow', options: { padding: 16, rootBoundary: 'viewport' } },
       { name: 'flip', options: { fallbackPlacements: ['left', 'top', 'bottom'] } },
     ],
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleMouseEnter = () => {
     if (!show) return;
@@ -173,6 +180,45 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
 
   if (!show) return <>{children}</>;
 
+  const tooltipContent = showTooltip && mounted && (
+    <div
+      ref={setPopperElement}
+      style={styles.popper}
+      {...attributes.popper}
+      className={cn(
+        'fixed z-[99999] px-4 py-3.5 rounded-xl shadow-xl pointer-events-none min-w-[220px] max-w-[320px]',
+        'animate-fade-in',
+        'glass backdrop-blur-xl',
+        'bg-gradient-light-panel dark:bg-gradient-dark-panel',
+        'border border-primary-200/30 dark:border-primary-500/20',
+        'shadow-[0_8px_30px_rgba(6,236,158,0.15)] dark:shadow-[0_8px_30px_rgba(6,236,158,0.25)]'
+      )}
+    >
+      <div className="relative">
+        <div className="absolute -inset-px bg-gradient-to-r from-[#06ec9e]/10 via-emerald-500/10 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-500/20 dark:to-[#009454]/20 rounded-xl blur-sm" />
+        <div className="relative">
+          <div className="text-sm font-semibold text-secondary-900 dark:text-white mb-1.5">
+            {title}
+          </div>
+          {description && (
+            <div className="text-xs font-normal text-secondary-600 dark:text-white/70 leading-relaxed">
+              {description}
+            </div>
+          )}
+        </div>
+      </div>
+      <div
+        data-popper-arrow
+        className={cn(
+          'absolute top-1/2 -translate-y-1/2 -left-1.5 w-3 h-3 transform rotate-45',
+          'glass backdrop-blur-xl',
+          'bg-gradient-light-panel dark:bg-gradient-dark-panel',
+          'border-l border-b border-primary-200/30 dark:border-primary-500/20'
+        )}
+      />
+    </div>
+  );
+
   return (
     <>
       <div
@@ -183,29 +229,7 @@ const Tooltip = ({ children, content, show, placement = 'right', delay = 200 }: 
       >
         {children}
       </div>
-      {showTooltip && (
-        <div
-          ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
-          className="z-[99999] px-4 py-3 text-sm font-medium text-white bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl shadow-2xl pointer-events-none min-w-[200px] max-w-[300px] border border-[#06ec9e]/30 backdrop-blur-xl animate-fade-in"
-        >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#06ec9e]/10 via-transparent to-[#06ec9e]/10 rounded-lg" />
-            <div className="relative">{content}</div>
-          </div>
-          <div
-            data-popper-arrow
-            className="absolute w-3 h-3 bg-gradient-to-br from-[#06ec9e] to-[#009454] transform rotate-45 shadow-lg"
-            style={{
-              ...(placement === 'right' && { left: '-6px' }),
-              ...(placement === 'left' && { right: '-6px' }),
-              ...(placement === 'top' && { bottom: '-6px' }),
-              ...(placement === 'bottom' && { top: '-6px' }),
-            }}
-          />
-        </div>
-      )}
+      {mounted && tooltipContent && createPortal(tooltipContent, document.body)}
     </>
   );
 };
@@ -265,11 +289,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
   const renderItem = (item: NavItem, collapsed: boolean) => {
     const isActive = location.pathname === item.href;
-    const tooltipContent = `${item.name}${item.description ? ` - ${item.description}` : ''}`;
 
     return (
       <li key={item.name} className="relative">
-        <Tooltip content={tooltipContent} show={collapsed} placement="right">
+        <Tooltip title={item.name} description={item.description} show={true} placement="right">
           <NavLink
             to={item.href}
             onClick={onClose}
@@ -366,7 +389,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       {/* When collapsed, show a floating expand toggle at top */}
       {collapsed && (
         <div className="absolute top-4 left-1/2 z-10 transition-all duration-200 transform -translate-x-1/2">
-          <Tooltip content="Expand sidebar" show placement="right">
+          <Tooltip title="Expand sidebar" show={true} placement="right">
             <button
               onClick={onToggleCollapse}
               className={cn(
