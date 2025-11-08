@@ -14,7 +14,11 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import type { ComplianceResult, Industry } from '../../types/visualCompliance.types';
 
-export const VisualComplianceTab: React.FC = () => {
+interface VisualComplianceTabProps {
+    onOptimizationCreated?: (optimization: any) => void;
+}
+
+export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOptimizationCreated }) => {
     const [referenceImage, setReferenceImage] = useState<File | null>(null);
     const [evidenceImage, setEvidenceImage] = useState<File | null>(null);
     const [referencePreview, setReferencePreview] = useState<string | null>(null);
@@ -81,6 +85,42 @@ export const VisualComplianceTab: React.FC = () => {
             if (response.success && response.data) {
                 setResult(response.data);
                 showNotification('Compliance check completed successfully!', 'success');
+
+                // Notify parent that optimization was created (backend saves it automatically)
+                if (onOptimizationCreated) {
+                    // Wait a bit for backend to save the optimization
+                    setTimeout(async () => {
+                        try {
+                            const token = localStorage.getItem('access_token');
+                            if (!token || token === 'null' || token === 'undefined') {
+                                console.warn('No valid token found, skipping optimization fetch');
+                                return;
+                            }
+
+                            const optimizationsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/optimizations?page=1&limit=1&sort=createdAt&order=desc`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            if (optimizationsResponse.ok) {
+                                const data = await optimizationsResponse.json();
+                                if (data.data && data.data.length > 0) {
+                                    // Check if this is a visual compliance optimization
+                                    const latestOpt = data.data[0];
+                                    if (latestOpt.optimizationType === 'visual_compliance') {
+                                        onOptimizationCreated(latestOpt);
+                                    }
+                                }
+                            } else {
+                                console.warn('Failed to fetch optimizations:', optimizationsResponse.status);
+                            }
+                        } catch (err) {
+                            console.error('Failed to fetch latest optimization:', err);
+                        }
+                    }, 1000); // Increased delay to ensure backend finishes saving
+                }
             } else {
                 throw new Error(response.error || 'Unknown error');
             }

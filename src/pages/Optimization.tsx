@@ -31,6 +31,7 @@ export const Optimization: React.FC = () => {
   // Removed filter - no longer tracking applied/pending status
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState<'quick' | 'bulk' | 'visual' | 'visual-batch' | 'visual-dashboard'>('quick');
+  const [optimizationTypeFilter, setOptimizationTypeFilter] = useState<'all' | 'text' | 'visual_compliance'>('all');
   const pageSize = 10;
   const { showNotification } = useNotifications();
   const navigate = useNavigate();
@@ -95,10 +96,18 @@ export const Optimization: React.FC = () => {
 
 
 
-  // Get all optimizations (no filtering needed)
+  // Get all optimizations (with type filtering)
   const getAllOptimizations = () => {
     if (!optimizations?.data) return [];
-    return optimizations.data;
+
+    if (optimizationTypeFilter === 'all') {
+      return optimizations.data;
+    }
+
+    return optimizations.data.filter((opt: any) => {
+      const type = opt.optimizationType || 'text'; // Default to text for backward compatibility
+      return type === optimizationTypeFilter;
+    });
   };
 
   // Use summary data for accurate statistics (includes ALL optimizations, not just current page)
@@ -367,6 +376,50 @@ export const Optimization: React.FC = () => {
                 }
               }} />
             </div>
+
+            {/* Type Filter for Optimizations List */}
+            {optimizations?.data && optimizations.data.length > 0 && (
+              <div className="mb-6 flex justify-between items-center">
+                <h2 className="text-2xl font-semibold font-display gradient-text-primary">
+                  Optimization History
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setOptimizationTypeFilter('all')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 ${optimizationTypeFilter === 'all'
+                      ? 'bg-gradient-primary text-white shadow-lg'
+                      : 'glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-primary-300/50'
+                      }`}
+                  >
+                    All Types
+                  </button>
+                  <button
+                    onClick={() => setOptimizationTypeFilter('text')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 inline-flex items-center gap-2 ${optimizationTypeFilter === 'text'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                      : 'glass border border-blue-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-blue-300/50'
+                      }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Text
+                  </button>
+                  <button
+                    onClick={() => setOptimizationTypeFilter('visual_compliance')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 inline-flex items-center gap-2 ${optimizationTypeFilter === 'visual_compliance'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg'
+                      : 'glass border border-purple-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-purple-300/50'
+                      }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Visual
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Latest Optimization Preview */}
             {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
@@ -650,7 +703,42 @@ export const Optimization: React.FC = () => {
 
         {activeTab === 'visual' && (
           <div className="mb-8">
-            <VisualComplianceTab />
+            <VisualComplianceTab
+              onOptimizationCreated={(newOptimization: any) => {
+                // Add the new optimization to the list
+                setOptimizations((prev: any) => {
+                  if (!prev) return {
+                    data: [newOptimization],
+                    pagination: {
+                      page: 1,
+                      limit: 10,
+                      total: 1,
+                      pages: 1
+                    }
+                  };
+                  return {
+                    ...prev,
+                    data: [newOptimization, ...prev.data],
+                    pagination: {
+                      ...prev.pagination,
+                      total: prev.pagination.total + 1,
+                      pages: Math.ceil((prev.pagination.total + 1) / prev.pagination.limit)
+                    }
+                  };
+                });
+
+                // Update summary
+                if (summary) {
+                  setSummary((prev: any) => ({
+                    ...prev,
+                    total: prev.total + 1,
+                    totalSaved: prev.totalSaved + (newOptimization.costSaved || 0),
+                    totalTokensSaved: prev.totalTokensSaved + (newOptimization.optimizedTokens || 0),
+                    avgImprovement: ((prev.avgImprovement * prev.total) + (newOptimization.improvementPercentage || 0)) / (prev.total + 1)
+                  }));
+                }
+              }}
+            />
           </div>
         )}
 

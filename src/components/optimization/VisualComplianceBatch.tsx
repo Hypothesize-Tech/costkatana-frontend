@@ -128,18 +128,18 @@ export const VisualComplianceBatch: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
+            <div className="glass rounded-xl border border-purple-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-purple-50/10 to-pink-50/10 dark:from-purple-900/10 dark:to-pink-900/10">
+                <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-8 rounded-t-xl border-b border-purple-200/30">
                     <div className="flex items-center gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <RocketLaunchIcon className="w-6 h-6 text-white" />
+                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                            <RocketLaunchIcon className="w-7 h-7 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-3xl font-display font-bold gradient-text-primary">
+                            <h2 className="text-3xl font-display font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                                 Batch Visual Compliance Check
                             </h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg mt-1">
-                                Process up to 10 evidence images against a single reference image
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-base mt-2">
+                                Process up to 10 evidence images against a single reference standard • Ultra-fast AI analysis
                             </p>
                         </div>
                     </div>
@@ -161,7 +161,7 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-reference"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent"
+                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-purple-300/50 dark:border-purple-600/50 rounded-xl cursor-pointer hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-200 glass bg-gradient-to-br from-purple-50/30 to-transparent dark:from-purple-900/10 dark:to-transparent hover:shadow-lg"
                             >
                                 {referencePreview ? (
                                     <img
@@ -171,7 +171,7 @@ export const VisualComplianceBatch: React.FC = () => {
                                     />
                                 ) : (
                                     <>
-                                        <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
+                                        <PhotoIcon className="w-12 h-12 text-purple-500 dark:text-purple-400 mb-2" />
                                         <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                             Click to upload reference image
                                         </p>
@@ -195,22 +195,26 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-evidence"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent"
+                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-pink-300/50 dark:border-pink-600/50 rounded-xl cursor-pointer hover:border-pink-400 dark:hover:border-pink-500 transition-all duration-200 glass bg-gradient-to-br from-pink-50/30 to-transparent dark:from-pink-900/10 dark:to-transparent hover:shadow-lg"
                             >
-                                <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
+                                <PhotoIcon className="w-12 h-12 text-pink-500 dark:text-pink-400 mb-2" />
                                 <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Click to upload evidence images ({evidenceImages.length} selected)
                                 </p>
                             </label>
                             {evidenceImages.length > 0 && (
-                                <div className="mt-4 grid grid-cols-5 gap-2">
+                                <div className="mt-4 grid grid-cols-5 gap-3">
                                     {evidencePreviews.map((preview, i) => (
-                                        <img
-                                            key={i}
-                                            src={preview}
-                                            alt={`Evidence ${i + 1}`}
-                                            className="w-full h-24 object-cover rounded-lg border border-primary-200/30 dark:border-primary-700/30 glass"
-                                        />
+                                        <div key={i} className="relative group">
+                                            <img
+                                                src={preview}
+                                                alt={`Evidence ${i + 1}`}
+                                                className="w-full h-24 object-cover rounded-lg border-2 border-pink-200/50 dark:border-pink-700/50 glass shadow-md group-hover:scale-105 transition-transform duration-200"
+                                            />
+                                            <span className="absolute top-1 right-1 bg-gradient-to-br from-purple-500 to-pink-600 text-white text-xs font-display font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
+                                                {i + 1}
+                                            </span>
+                                        </div>
                                     ))}
                                 </div>
                             )}
@@ -276,17 +280,22 @@ export const VisualComplianceBatch: React.FC = () => {
 
             {/* Results */}
             {results.length > 0 && (
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="bg-gradient-success/10 p-8 rounded-t-xl border-b border-success-200/30 dark:border-success-800/30">
+                <div className="glass rounded-xl border border-success-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/10 to-emerald-50/10 dark:from-success-900/10 dark:to-emerald-900/10">
+                    <div className="bg-gradient-to-r from-success-500/10 to-emerald-500/10 p-8 rounded-t-xl border-b border-success-200/30 dark:border-success-800/30">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-2xl font-display font-bold gradient-text-success">
-                                Batch Results
-                            </h3>
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                                    <CheckCircleIcon className="w-6 h-6 text-white" />
+                                </div>
+                                <h3 className="text-2xl font-display font-bold bg-gradient-to-r from-success-600 to-emerald-600 dark:from-success-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                    Batch Processing Results
+                                </h3>
+                            </div>
                             <button
                                 onClick={exportToCSV}
-                                className="btn btn-secondary flex items-center gap-2"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-to-r from-success-500 to-emerald-600 shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
                             >
-                                <ArrowDownTrayIcon className="w-4 h-4" />
+                                <ArrowDownTrayIcon className="w-5 h-5" />
                                 Export CSV
                             </button>
                         </div>
@@ -294,28 +303,46 @@ export const VisualComplianceBatch: React.FC = () => {
 
                     <div className="p-8">
                         {/* Summary Stats */}
-                        <div className="grid grid-cols-4 gap-4 mb-6">
-                            <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent">
-                                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Total Cost</div>
-                                <div className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div className="glass rounded-xl p-5 border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/50 to-transparent dark:from-accent-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <svg className="w-4 h-4 text-accent-600 dark:text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Total Cost</div>
+                                </div>
+                                <div className="text-2xl font-display font-bold gradient-text-accent">
                                     ${totalCost.toFixed(4)}
                                 </div>
                             </div>
-                            <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent">
-                                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Avg Score</div>
-                                <div className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                            <div className="glass rounded-xl p-5 border border-purple-200/30 backdrop-blur-xl bg-gradient-to-br from-purple-50/50 to-transparent dark:from-purple-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Avg Score</div>
+                                </div>
+                                <div className="text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
                                     {avgScore.toFixed(1)}%
                                 </div>
                             </div>
-                            <div className="glass rounded-xl p-4 border border-success-200/30 dark:border-success-800/30 backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-transparent dark:from-success-900/10 dark:to-transparent">
-                                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Pass Rate</div>
-                                <div className="text-lg font-display font-bold gradient-text-success">
+                            <div className="glass rounded-xl p-5 border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-transparent dark:from-success-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <CheckCircleIcon className="w-4 h-4 text-success-600 dark:text-success-400" />
+                                    <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Pass Rate</div>
+                                </div>
+                                <div className="text-2xl font-display font-bold gradient-text-success">
                                     {passRate.toFixed(1)}%
                                 </div>
                             </div>
-                            <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent">
-                                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Successful</div>
-                                <div className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                            <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-transparent dark:from-primary-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <svg className="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Successful</div>
+                                </div>
+                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">
                                     {successfulResults.length}/{results.length}
                                 </div>
                             </div>
