@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     PhotoIcon,
     CheckCircleIcon,
@@ -6,13 +6,13 @@ import {
     ChartBarIcon,
     CurrencyDollarIcon,
     ClockIcon,
-    BoltIcon,
-    EyeIcon
+    BoltIcon
 } from '@heroicons/react/24/outline';
 import { visualComplianceService } from '../../services/visualCompliance.service';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { LoadingSpinner } from '../common/LoadingSpinner';
-import type { ComplianceResult, Industry } from '../../types/visualCompliance.types';
+import type { ComplianceResult, Industry, MetaPromptPreset } from '../../types/visualCompliance.types';
+import { EyeIcon } from 'lucide-react';
 
 interface VisualComplianceTabProps {
     onOptimizationCreated?: (optimization: any) => void;
@@ -32,7 +32,33 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<ComplianceResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // Meta prompt state
+    const [metaPromptPresets, setMetaPromptPresets] = useState<MetaPromptPreset[]>([]);
+    const [selectedPresetId, setSelectedPresetId] = useState<string>('default');
+    const [customMetaPrompt, setCustomMetaPrompt] = useState<string>('');
+    const [showCustomPrompt, setShowCustomPrompt] = useState(false);
+    const [loadingPresets, setLoadingPresets] = useState(false);
+
     const { showNotification } = useNotifications();
+
+    // Load meta prompt presets on mount
+    useEffect(() => {
+        const loadPresets = async () => {
+            try {
+                setLoadingPresets(true);
+                const response = await visualComplianceService.getMetaPromptPresets();
+                if (response.success) {
+                    setMetaPromptPresets(response.presets);
+                }
+            } catch (err) {
+                console.error('Failed to load presets:', err);
+            } finally {
+                setLoadingPresets(false);
+            }
+        };
+        loadPresets();
+    }, []);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'reference' | 'evidence') => {
         const file = e.target.files?.[0];
@@ -79,7 +105,10 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                 evidenceImage: evidBase64,
                 complianceCriteria: complianceCriteria.filter(c => c.trim()),
                 industry,
-                useUltraCompression: true
+                useUltraCompression: true,
+                mode: 'optimized',
+                metaPrompt: showCustomPrompt && customMetaPrompt ? customMetaPrompt : undefined,
+                metaPromptPresetId: !showCustomPrompt ? selectedPresetId : undefined
             });
 
             if (response.success && response.data) {
@@ -157,10 +186,10 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         </div>
                         <div className="flex-1">
                             <h2 className="text-3xl font-display font-bold gradient-text-primary">
-                                SensEye - Visual Compliance
+                                Visual Compliance
                             </h2>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg mt-1">
-                                Ultra-optimized AI-powered visual compliance verification with 96% token reduction
+                                Ultra-optimized AI-powered visual compliance verification
                             </p>
                         </div>
                     </div>
@@ -253,6 +282,65 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                 <option value="fmcg">FMCG</option>
                                 <option value="documents">Documents</option>
                             </select>
+                        </div>
+
+                        {/* Meta Prompt Controls */}
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+                                    Analysis Template (Meta Prompt)
+                                </label>
+                                <div className="flex gap-3">
+                                    <select
+                                        value={showCustomPrompt ? 'custom' : selectedPresetId}
+                                        onChange={(e) => {
+                                            if (e.target.value === 'custom') {
+                                                setShowCustomPrompt(true);
+                                            } else {
+                                                setShowCustomPrompt(false);
+                                                setSelectedPresetId(e.target.value);
+                                            }
+                                        }}
+                                        className="input flex-1"
+                                        disabled={loadingPresets}
+                                    >
+                                        {metaPromptPresets.map(preset => (
+                                            <option key={preset.id} value={preset.id}>
+                                                {preset.name} - {preset.description}
+                                            </option>
+                                        ))}
+                                        <option value="custom">Custom Prompt...</option>
+                                    </select>
+                                </div>
+                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                    <EyeIcon className="w-3 h-3 inline mr-1" />
+                                    The selected template guides how AI analyzes your images, even in optimized mode.
+                                </p>
+                            </div>
+
+                            {/* Custom Meta Prompt Textarea */}
+                            {showCustomPrompt && (
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                            Custom Meta Prompt
+                                        </label>
+                                        <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                                            {customMetaPrompt.length}/4000 characters
+                                        </span>
+                                    </div>
+                                    <textarea
+                                        value={customMetaPrompt}
+                                        onChange={(e) => setCustomMetaPrompt(e.target.value)}
+                                        placeholder="Enter your custom meta prompt here. Include {items_to_verify} placeholder where compliance criteria should be inserted..."
+                                        className="input min-h-[200px] font-mono text-sm"
+                                        maxLength={4000}
+                                    />
+                                    <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                        Tip: Use <code className="px-1 py-0.5 bg-light-surface-secondary dark:bg-dark-surface-secondary rounded">{'{items_to_verify}'}</code> as a placeholder for compliance criteria.
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Compliance Criteria */}
@@ -366,6 +454,52 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                 <strong className="font-display">Feedback:</strong> {result.feedback_message}
                             </p>
                         </div>
+
+                        {/* Per-Item Breakdown */}
+                        {result.items && result.items.length > 0 && (
+                            <div className="mb-6">
+                                <h4 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+                                    Item-by-Item Analysis
+                                </h4>
+                                <div className="space-y-3">
+                                    {result.items.map((item) => (
+                                        <div
+                                            key={item.itemNumber}
+                                            className={`glass rounded-xl p-4 border backdrop-blur-xl ${item.status
+                                                ? 'border-success-200/30 dark:border-success-800/30 bg-gradient-to-br from-success-50/20 to-transparent dark:from-success-900/10 dark:to-transparent'
+                                                : 'border-danger-200/30 dark:border-danger-800/30 bg-gradient-to-br from-danger-50/20 to-transparent dark:from-danger-900/10 dark:to-transparent'
+                                                }`}
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <div className={`flex-shrink-0 mt-0.5 ${item.status ? 'text-success-500' : 'text-danger-500'}`}>
+                                                    {item.status ? (
+                                                        <CheckCircleIcon className="w-6 h-6" />
+                                                    ) : (
+                                                        <XCircleIcon className="w-6 h-6" />
+                                                    )}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="text-sm font-body font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                                            {item.itemName}
+                                                        </span>
+                                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.status
+                                                            ? 'bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300'
+                                                            : 'bg-danger-100 dark:bg-danger-900/30 text-danger-700 dark:text-danger-300'
+                                                            }`}>
+                                                            {item.status ? 'PASS' : 'FAIL'}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                        {item.message}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Metrics Grid */}
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

@@ -7,12 +7,21 @@ export interface ComplianceCheckRequest {
   industry: Industry;
   projectId?: string;
   useUltraCompression?: boolean;
+  mode?: 'optimized' | 'standard';
+  metaPrompt?: string;
+  metaPromptPresetId?: string;
 }
 
 export interface ComplianceResult {
   compliance_score: number;
   pass_fail: boolean;
   feedback_message: string;
+  items: Array<{
+    itemNumber: number;
+    itemName: string;
+    status: boolean;
+    message: string;
+  }>;
   metadata: {
     inputTokens: number;
     outputTokens: number;
@@ -119,5 +128,23 @@ export interface CostComparisonData {
 export interface CostComparisonResponse {
   success: boolean;
   comparison: CostComparisonData;
+}
+
+export interface MetaPromptPreset {
+  id: string;
+  name: string;
+  industry: Industry | 'default';
+  description: string;
+  prompt?: string; // Full prompt only included when fetching by ID
+}
+
+export interface MetaPromptPresetsResponse {
+  success: boolean;
+  presets: MetaPromptPreset[];
+}
+
+export interface MetaPromptPresetResponse {
+  success: boolean;
+  preset: MetaPromptPreset;
 }
 

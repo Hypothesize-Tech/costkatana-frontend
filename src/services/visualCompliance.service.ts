@@ -5,7 +5,9 @@ import type {
   BatchComplianceRequest,
   BatchComplianceResponse,
   PresetsResponse,
-  CostComparisonResponse
+  CostComparisonResponse,
+  MetaPromptPresetsResponse,
+  MetaPromptPresetResponse
 } from '../types/visualCompliance.types';
 
 class VisualComplianceService {
@@ -77,6 +79,30 @@ class VisualComplianceService {
       return response.data;
     } catch (error: any) {
       throw new Error('Failed to fetch cost comparison');
+    }
+  }
+
+  /**
+   * Get meta prompt presets (list)
+   */
+  async getMetaPromptPresets(): Promise<MetaPromptPresetsResponse> {
+    try {
+      const response = await api.get('/visual-compliance/meta-prompt-presets');
+      return response.data;
+    } catch (error: any) {
+      throw new Error('Failed to fetch meta prompt presets');
+    }
+  }
+
+  /**
+   * Get specific meta prompt preset by ID (includes full prompt)
+   */
+  async getMetaPromptPresetById(id: string): Promise<MetaPromptPresetResponse> {
+    try {
+      const response = await api.get(`/visual-compliance/meta-prompt-presets/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(`Failed to fetch preset: ${id}`);
     }
   }
 
