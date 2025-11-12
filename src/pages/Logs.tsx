@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { LogFilters } from '../components/logs/LogFilters';
-import { LogTable } from '../components/logs/LogTable';
-import { LogStream } from '../components/logs/LogStream';
-import { LogStats } from '../components/logs/LogStats';
-import { LogDetails } from '../components/logs/LogDetails';
+import {
+    LogFilters,
+    LogTable,
+    LogStream,
+    LogStats,
+    LogDetails
+} from '../components/logs';
 import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode } from 'react-icons/fi';
 import { logsService } from '../services/logs.service';
 
@@ -345,7 +347,7 @@ export const Logs: React.FC = () => {
                                     {isRealtime ? (
                                         <LogStream
                                             filters={filters}
-                                            onNewLog={(newLog) => setLogs((prev) => [newLog, ...prev].slice(0, 500))}
+                                            onNewLog={(newLog: any) => setLogs((prev) => [newLog, ...prev].slice(0, 500))}
                                         />
                                     ) : (
                                         <LogTable
