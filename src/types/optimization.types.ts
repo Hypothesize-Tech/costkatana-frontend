@@ -17,6 +17,16 @@ export interface Optimization {
   service: string;
   model: string;
   category: OptimizationCategory;
+  optimizationType?: 'text' | 'visual_compliance';
+  visualComplianceData?: {
+    referenceImageUrl?: string;
+    evidenceImageUrl?: string;
+    complianceScore: number;
+    passFail: boolean;
+    feedbackMessage: string;
+    industry: string;
+    complianceCriteria: string[];
+  };
   suggestions: OptimizationSuggestion[];
   metadata: OptimizationMetadata;
   cortexImpactMetrics?: {

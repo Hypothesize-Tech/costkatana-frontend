@@ -72,6 +72,7 @@ import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
+import Logs from './pages/Logs';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -257,6 +258,10 @@ function AppContent() {
                 <AdminUserSpending />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="logs"
+            element={<Logs />}
           />
           <Route
             path="admin/dashboard"

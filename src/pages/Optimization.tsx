@@ -18,6 +18,9 @@ import { OptimizationCard } from "../components/optimization/OptimizationCard";
 import { OptimizationForm } from "../components/optimization/OptimizationForm";
 import { BulkOptimizer } from "../components/optimization/BulkOptimizer";
 import { QuickOptimize } from "../components/optimization/QuickOptimize";
+import { VisualComplianceTab } from "../components/optimization/VisualComplianceTab";
+import { VisualComplianceBatch } from "../components/optimization/VisualComplianceBatch";
+import { VisualComplianceDashboard } from "../components/optimization/VisualComplianceDashboard";
 import { formatCurrency, formatSmartNumber } from "../utils/formatters";
 import { useNotifications } from "../contexts/NotificationContext";
 import { processFormattedText } from "../utils/codeFormatter";
@@ -27,6 +30,8 @@ export const Optimization: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   // Removed filter - no longer tracking applied/pending status
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<'quick' | 'bulk' | 'visual' | 'visual-batch' | 'visual-dashboard'>('quick');
+  const [optimizationTypeFilter, setOptimizationTypeFilter] = useState<'all' | 'text' | 'visual_compliance'>('all');
   const pageSize = 10;
   const { showNotification } = useNotifications();
   const navigate = useNavigate();
@@ -91,10 +96,18 @@ export const Optimization: React.FC = () => {
 
 
 
-  // Get all optimizations (no filtering needed)
+  // Get all optimizations (with type filtering)
   const getAllOptimizations = () => {
     if (!optimizations?.data) return [];
-    return optimizations.data;
+
+    if (optimizationTypeFilter === 'all') {
+      return optimizations.data;
+    }
+
+    return optimizations.data.filter((opt: any) => {
+      const type = opt.optimizationType || 'text'; // Default to text for backward compatibility
+      return type === optimizationTypeFilter;
+    });
   };
 
   // Use summary data for accurate statistics (includes ALL optimizations, not just current page)
@@ -282,21 +295,74 @@ export const Optimization: React.FC = () => {
           </div>
         )}
 
-        {/* Quick Optimize Section */}
-        <div className="mb-8">
-          <QuickOptimize onOptimizationCreated={(newOptimization: any) => {
-            // Add the new optimization to the list
-            setOptimizations((prev: any) => {
-              if (!prev) return { data: [newOptimization], pagination: { page: 1, limit: 10, total: 1, pages: 1 } };
-              return {
-                ...prev,
-                data: [newOptimization, ...prev.data],
-                pagination: {
-                  ...prev.pagination,
-                  total: prev.pagination.total + 1
-                }
-              };
-            });
+        {/* Tabs Navigation */}
+        <div className="mb-6">
+          <div className="flex space-x-2 border-b border-primary-200 dark:border-primary-700">
+            <button
+              onClick={() => setActiveTab('quick')}
+              className={`px-4 py-2 font-medium transition-colors ${activeTab === 'quick'
+                ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400'
+                : 'text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+            >
+              Quick Optimize
+            </button>
+            <button
+              onClick={() => setActiveTab('bulk')}
+              className={`px-4 py-2 font-medium transition-colors ${activeTab === 'bulk'
+                ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400'
+                : 'text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+            >
+              Bulk Optimizer
+            </button>
+            <button
+              onClick={() => setActiveTab('visual')}
+              className={`px-4 py-2 font-medium transition-colors ${activeTab === 'visual'
+                ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400'
+                : 'text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+            >
+              Visual Compliance
+            </button>
+            <button
+              onClick={() => setActiveTab('visual-batch')}
+              className={`px-4 py-2 font-medium transition-colors ${activeTab === 'visual-batch'
+                ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400'
+                : 'text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+            >
+              Visual Batch
+            </button>
+            <button
+              onClick={() => setActiveTab('visual-dashboard')}
+              className={`px-4 py-2 font-medium transition-colors ${activeTab === 'visual-dashboard'
+                ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400'
+                : 'text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400'
+                }`}
+            >
+              Cost Dashboard
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'quick' && (
+          <>
+            <div className="mb-8">
+              <QuickOptimize onOptimizationCreated={(newOptimization: any) => {
+                // Add the new optimization to the list
+                setOptimizations((prev: any) => {
+                  if (!prev) return { data: [newOptimization], pagination: { page: 1, limit: 10, total: 1, pages: 1 } };
+                  return {
+                    ...prev,
+                    data: [newOptimization, ...prev.data],
+                    pagination: {
+                      ...prev.pagination,
+                      total: prev.pagination.total + 1
+                    }
+                  };
+                });
 
                 // Update summary if it exists
                 if (summary) {
@@ -310,6 +376,50 @@ export const Optimization: React.FC = () => {
                 }
               }} />
             </div>
+
+            {/* Type Filter for Optimizations List */}
+            {optimizations?.data && optimizations.data.length > 0 && (
+              <div className="mb-6 flex justify-between items-center">
+                <h2 className="text-2xl font-semibold font-display gradient-text-primary">
+                  Optimization History
+                </h2>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setOptimizationTypeFilter('all')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 ${optimizationTypeFilter === 'all'
+                      ? 'bg-gradient-primary text-white shadow-lg'
+                      : 'glass border border-primary-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-primary-300/50'
+                      }`}
+                  >
+                    All Types
+                  </button>
+                  <button
+                    onClick={() => setOptimizationTypeFilter('text')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 inline-flex items-center gap-2 ${optimizationTypeFilter === 'text'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                      : 'glass border border-blue-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-blue-300/50'
+                      }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Text
+                  </button>
+                  <button
+                    onClick={() => setOptimizationTypeFilter('visual_compliance')}
+                    className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-200 inline-flex items-center gap-2 ${optimizationTypeFilter === 'visual_compliance'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg'
+                      : 'glass border border-purple-200/30 text-light-text-secondary dark:text-dark-text-secondary hover:border-purple-300/50'
+                      }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Visual
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Latest Optimization Preview */}
             {optimizations?.data && optimizations.data.length > 0 && getAllOptimizations().length > 0 && (
@@ -543,51 +653,110 @@ export const Optimization: React.FC = () => {
                 />
               </div>
             )}
+          </>
+        )}
 
-            {/* Bulk Optimizer */}
-            <div className="mb-8">
-              <BulkOptimizer
-                onOptimizationsCreated={(newOptimizations: any[]) => {
-                  // Add all new optimizations to the list
-                  setOptimizations((prev: any) => {
-                    if (!prev) return {
-                      data: newOptimizations,
-                      pagination: {
-                        page: 1,
-                        limit: 10,
-                        total: newOptimizations.length,
-                        pages: Math.ceil(newOptimizations.length / 10)
-                      }
-                    };
-                    return {
-                      ...prev,
-                      data: [...newOptimizations, ...prev.data],
-                      pagination: {
-                        ...prev.pagination,
-                        total: prev.pagination.total + newOptimizations.length,
-                        pages: Math.ceil((prev.pagination.total + newOptimizations.length) / prev.pagination.limit)
-                      }
-                    };
-                  });
+        {activeTab === 'bulk' && (
+          <div className="mb-8">
+            <BulkOptimizer
+              onOptimizationsCreated={(newOptimizations: any[]) => {
+                // Add all new optimizations to the list
+                setOptimizations((prev: any) => {
+                  if (!prev) return {
+                    data: newOptimizations,
+                    pagination: {
+                      page: 1,
+                      limit: 10,
+                      total: newOptimizations.length,
+                      pages: Math.ceil(newOptimizations.length / 10)
+                    }
+                  };
+                  return {
+                    ...prev,
+                    data: [...newOptimizations, ...prev.data],
+                    pagination: {
+                      ...prev.pagination,
+                      total: prev.pagination.total + newOptimizations.length,
+                      pages: Math.ceil((prev.pagination.total + newOptimizations.length) / prev.pagination.limit)
+                    }
+                  };
+                });
 
-                  // Update summary if it exists
-                  if (summary && newOptimizations.length > 0) {
-                    const totalCostSaved = newOptimizations.reduce((sum, opt) => sum + (opt.costSaved || 0), 0);
-                    const totalTokensSaved = newOptimizations.reduce((sum, opt) => sum + (opt.tokensSaved || 0), 0);
-                    const avgImprovement = newOptimizations.reduce((sum, opt) => sum + (opt.improvementPercentage || 0), 0) / newOptimizations.length;
+                // Update summary if it exists
+                if (summary && newOptimizations.length > 0) {
+                  const totalCostSaved = newOptimizations.reduce((sum, opt) => sum + (opt.costSaved || 0), 0);
+                  const totalTokensSaved = newOptimizations.reduce((sum, opt) => sum + (opt.tokensSaved || 0), 0);
+                  const avgImprovement = newOptimizations.reduce((sum, opt) => sum + (opt.improvementPercentage || 0), 0) / newOptimizations.length;
 
-                    setSummary((prev: any) => ({
-                      ...prev,
-                      total: prev.total + newOptimizations.length,
-                      totalSaved: prev.totalSaved + totalCostSaved,
-                      totalTokensSaved: prev.totalTokensSaved + totalTokensSaved,
-                      avgImprovement: ((prev.avgImprovement * prev.total) + (avgImprovement * newOptimizations.length)) / (prev.total + newOptimizations.length)
-                    }));
-                  }
-                }}
-              />
-            </div>
+                  setSummary((prev: any) => ({
+                    ...prev,
+                    total: prev.total + newOptimizations.length,
+                    totalSaved: prev.totalSaved + totalCostSaved,
+                    totalTokensSaved: prev.totalTokensSaved + totalTokensSaved,
+                    avgImprovement: ((prev.avgImprovement * prev.total) + (avgImprovement * newOptimizations.length)) / (prev.total + newOptimizations.length)
+                  }));
+                }
+              }}
+            />
+          </div>
+        )}
 
+        {activeTab === 'visual' && (
+          <div className="mb-8">
+            <VisualComplianceTab
+              onOptimizationCreated={(newOptimization: any) => {
+                // Add the new optimization to the list
+                setOptimizations((prev: any) => {
+                  if (!prev) return {
+                    data: [newOptimization],
+                    pagination: {
+                      page: 1,
+                      limit: 10,
+                      total: 1,
+                      pages: 1
+                    }
+                  };
+                  return {
+                    ...prev,
+                    data: [newOptimization, ...prev.data],
+                    pagination: {
+                      ...prev.pagination,
+                      total: prev.pagination.total + 1,
+                      pages: Math.ceil((prev.pagination.total + 1) / prev.pagination.limit)
+                    }
+                  };
+                });
+
+                // Update summary
+                if (summary) {
+                  setSummary((prev: any) => ({
+                    ...prev,
+                    total: prev.total + 1,
+                    totalSaved: prev.totalSaved + (newOptimization.costSaved || 0),
+                    totalTokensSaved: prev.totalTokensSaved + (newOptimization.optimizedTokens || 0),
+                    avgImprovement: ((prev.avgImprovement * prev.total) + (newOptimization.improvementPercentage || 0)) / (prev.total + 1)
+                  }));
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {activeTab === 'visual-batch' && (
+          <div className="mb-8">
+            <VisualComplianceBatch />
+          </div>
+        )}
+
+        {activeTab === 'visual-dashboard' && (
+          <div className="mb-8">
+            <VisualComplianceDashboard />
+          </div>
+        )}
+
+        {/* Optimizations List - Only show for quick and bulk tabs */}
+        {(activeTab === 'quick' || activeTab === 'bulk') && (
+          <>
             {/* No filter tabs needed - all answers are simply generated */}
 
             {/* Optimizations List */}
@@ -657,18 +826,20 @@ export const Optimization: React.FC = () => {
               </div>
             )}
 
-        {getAllOptimizations().length === 0 && (
-          <div className="py-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-xl from-primary-500/20 to-secondary-500/20">
-              <SparklesIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-            </div>
-            <h3 className="mt-2 text-lg font-semibold font-display text-secondary-900 dark:text-white">
-              No answer generations yet
-            </h3>
-            <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">
-              Use the Quick Optimize tool above to get started.
-            </p>
-          </div>
+            {getAllOptimizations().length === 0 && (
+              <div className="py-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-xl from-primary-500/20 to-secondary-500/20">
+                  <SparklesIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                </div>
+                <h3 className="mt-2 text-lg font-semibold font-display text-secondary-900 dark:text-white">
+                  No answer generations yet
+                </h3>
+                <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">
+                  Use the Quick Optimize tool above to get started.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

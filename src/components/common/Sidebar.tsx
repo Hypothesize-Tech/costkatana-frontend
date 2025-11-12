@@ -78,6 +78,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
       { name: 'Telemetry', href: '/telemetry', icon: SignalIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
+      { name: 'Logs', href: '/logs', icon: DocumentTextIcon, description: 'AI operation logs with real-time monitoring' },
       { name: 'Sessions', href: '/sessions', icon: FilmIcon, description: 'View session replays and debug AI traces' },
       { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
       { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
