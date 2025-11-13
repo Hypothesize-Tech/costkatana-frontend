@@ -200,6 +200,8 @@ export const ConversationalAgent: React.FC = () => {
   const [showAllModelsDropdown, setShowAllModelsDropdown] = useState(false);
   const [previewDocument, setPreviewDocument] = useState<{ documentId: string; fileName: string } | null>(null);
   const [hasExistingIntegrations, setHasExistingIntegrations] = useState<boolean>(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
+  const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -982,17 +984,34 @@ export const ConversationalAgent: React.FC = () => {
     localStorage.removeItem('currentConversationId');
   };
 
-  const deleteConversation = async (conversationId: string) => {
+  const handleDeleteClick = (conversationId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setConversationToDelete(conversationId);
+    setShowDeleteConfirmation(true);
+  };
+
+  const confirmDeleteConversation = async () => {
+    if (!conversationToDelete) return;
+
     try {
-      await ChatService.deleteConversation(conversationId);
+      await ChatService.deleteConversation(conversationToDelete);
       await loadConversations();
-      if (currentConversationId === conversationId) {
+      if (currentConversationId === conversationToDelete) {
         startNewConversation();
       }
+      setShowDeleteConfirmation(false);
+      setConversationToDelete(null);
     } catch (error) {
       console.error("Error deleting conversation:", error);
       setError("Failed to delete conversation");
+      setShowDeleteConfirmation(false);
+      setConversationToDelete(null);
     }
+  };
+
+  const cancelDeleteConversation = () => {
+    setShowDeleteConfirmation(false);
+    setConversationToDelete(null);
   };
 
   // GitHub integration handlers
@@ -2058,10 +2077,7 @@ export const ConversationalAgent: React.FC = () => {
                       )}
                     </div>
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteConversation(conversation.id);
-                      }}
+                      onClick={(e) => handleDeleteClick(conversation.id, e)}
                       className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
                       title="Delete conversation"
                     >
@@ -3109,6 +3125,51 @@ export const ConversationalAgent: React.FC = () => {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirmation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="glass max-w-md w-full rounded-2xl shadow-2xl animate-scale-in border border-danger-200/30 bg-white/95 dark:bg-dark-card/95 backdrop-blur-xl">
+            {/* Header */}
+            <div className="flex items-center gap-3 p-6 border-b border-danger-200/30">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-danger-500 to-danger-600 flex items-center justify-center shadow-lg">
+                <TrashIcon className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                  Delete Conversation
+                </h3>
+                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                  This action cannot be undone
+                </p>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <p className="text-light-text-primary dark:text-dark-text-primary font-body leading-relaxed">
+                Are you sure you want to delete this conversation? All messages and history will be permanently removed.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30">
+              <button
+                onClick={cancelDeleteConversation}
+                className="px-5 py-2.5 rounded-xl border border-primary-200/30 bg-white/50 dark:bg-dark-card/50 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 font-display font-semibold text-sm hover:scale-105 hover:shadow-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteConversation}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-danger-500 to-danger-600 text-white hover:from-danger-600 hover:to-danger-700 transition-all duration-300 font-display font-semibold text-sm hover:scale-105 hover:shadow-lg shadow-danger-500/30"
+              >
+                Delete Conversation
+              </button>
+            </div>
           </div>
         </div>
       )}
