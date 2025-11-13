@@ -140,7 +140,7 @@ export const SessionDetail: React.FC = () => {
                         {session.status === 'active' && (
                             <button
                                 onClick={handleEndSession}
-                                className="btn-danger"
+                                className="btn btn-danger"
                             >
                                 End Session
                             </button>

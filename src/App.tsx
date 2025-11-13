@@ -47,6 +47,8 @@ import { Alerts } from './pages/Alerts';
 import CostAuditWizard from './pages/CostAuditWizard';
 import Projects from './pages/Projects';
 import JiraCallback from './pages/JiraCallback';
+import DiscordCallback from './pages/DiscordCallback';
+import SlackCallback from './pages/SlackCallback';
 import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
 import { Integration } from './pages/Integration';
@@ -111,6 +113,10 @@ function AppContent() {
         <Route path="/github/error" element={<GitHubCallback />} />
         <Route path="/integrations/jira/success" element={<JiraCallback />} />
         <Route path="/integrations/jira/error" element={<JiraCallback />} />
+        <Route path="/integrations/discord/success" element={<DiscordCallback />} />
+        <Route path="/integrations/discord/error" element={<DiscordCallback />} />
+        <Route path="/integrations/slack/success" element={<SlackCallback />} />
+        <Route path="/integrations/slack/error" element={<SlackCallback />} />
 
         {/* Protected routes */}
         <Route

@@ -131,6 +131,18 @@ export const IntegrationMentionHint: React.FC<IntegrationMentionHintProps> = ({
                         </div>
                         <div className="flex items-center gap-2">
                             <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
+                                @discord:list-channels
+                            </code>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-400">Manage Discord server</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
+                                @discord create role "VIP"
+                            </code>
+                            <span className="text-xs text-secondary-600 dark:text-secondary-400">Create Discord roles</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
                                 @slack:channel:general send alert
                             </code>
                             <span className="text-xs text-secondary-600 dark:text-secondary-400">Send Slack messages</span>
@@ -147,10 +159,10 @@ export const IntegrationMentionHint: React.FC<IntegrationMentionHintProps> = ({
                         {['JIRA', 'Linear', 'Slack', 'Discord', 'Webhooks'].map((integration) => (
                             <div
                                 key={integration}
-                                className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-500/20 flex items-center gap-1.5"
+                                className="px-2.5 py-1.5 rounded-lg bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-500/20 flex items-center gap-1.5 flex-shrink-0"
                             >
-                                <Cog6ToothIcon className="w-3.5 h-3.5 text-primary-500" />
-                                <span className="text-xs font-medium text-secondary-900 dark:text-white">
+                                <Cog6ToothIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                                <span className="text-xs font-medium text-secondary-900 dark:text-white whitespace-nowrap">
                                     {integration}
                                 </span>
                             </div>

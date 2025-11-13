@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     FiActivity, FiBarChart2, FiPieChart, FiTrendingUp, FiAlertCircle,
     FiClock, FiDollarSign, FiCpu, FiGrid, FiRefreshCw,
     FiZap, FiAlertTriangle, FiServer, FiCheckCircle,
-    FiMaximize2, FiMinimize2
+    FiMaximize2, FiMinimize2, FiX
 } from 'react-icons/fi';
 import {
     LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -97,15 +97,23 @@ const TEMPLATES: DashboardTemplate[] = [
     }
 ];
 
-export const LogDashboard: React.FC = () => {
+interface LogDashboardProps {
+    onApplyQueryToDashboard?: (visualization: any, data: any[]) => void;
+}
+
+export const LogDashboard: React.FC<LogDashboardProps> = ({
+    onApplyQueryToDashboard: externalOnApply
+}) => {
     const [selectedTemplate, setSelectedTemplate] = useState<DashboardTemplate>(TEMPLATES[0]);
     const [widgets, setWidgets] = useState<Widget[]>(TEMPLATES[0].widgets);
     const [widgetData, setWidgetData] = useState<Map<string, any>>(new Map());
     const [loading, setLoading] = useState<boolean>(true);
     const [refreshing, setRefreshing] = useState<boolean>(false);
-    const [showTemplates, setShowTemplates] = useState<boolean>(false);
     const [expandedWidget, setExpandedWidget] = useState<string | null>(null);
     const [autoRefresh, setAutoRefresh] = useState<number>(30);
+    const [aiGeneratedWidgets, setAiGeneratedWidgets] = useState<Map<string, Widget & { data?: any; isAiGenerated: boolean }>>(new Map());
+    const [highlightedWidget, setHighlightedWidget] = useState<string | null>(null);
+    const aiWidgetRef = useRef<HTMLDivElement>(null);
 
     const fetchWidgetData = useCallback(async (widget: Widget) => {
         try {
@@ -158,7 +166,7 @@ export const LogDashboard: React.FC = () => {
                         trend: 'up'
                     };
                     break;
-                case 'avgCost':
+                case 'avgCost': {
                     const avgCost = statsResponse.summary.totalCalls > 0
                         ? statsResponse.summary.totalCost / statsResponse.summary.totalCalls
                         : 0;
@@ -168,6 +176,7 @@ export const LogDashboard: React.FC = () => {
                         trend: 'neutral'
                     };
                     break;
+                }
                 case 'errorRate':
                     processedData = {
                         value: statsResponse.summary.errorRate * 100,
@@ -182,7 +191,7 @@ export const LogDashboard: React.FC = () => {
                         trend: statsResponse.summary.errorRate < 0.05 ? 'up' : 'down'
                     };
                     break;
-                case 'avgLatency':
+                case 'avgLatency': {
                     const avgLat = statsResponse.breakdown.reduce((sum: number, b: any) => sum + (b.avgLatency || 0), 0) / (statsResponse.breakdown.length || 1);
                     processedData = {
                         value: avgLat,
@@ -190,6 +199,7 @@ export const LogDashboard: React.FC = () => {
                         trend: 'neutral'
                     };
                     break;
+                }
                 case 'p95Latency':
                 case 'p99Latency':
                 case 'maxLatency':
@@ -199,7 +209,7 @@ export const LogDashboard: React.FC = () => {
                         trend: 'neutral'
                     };
                     break;
-                case 'totalErrors':
+                case 'totalErrors': {
                     const totalErrs = statsResponse.breakdown.reduce((sum: number, b: any) => sum + (b.errors || 0), 0);
                     processedData = {
                         value: totalErrs,
@@ -207,6 +217,7 @@ export const LogDashboard: React.FC = () => {
                         trend: totalErrs > 0 ? 'down' : 'up'
                     };
                     break;
+                }
                 case 'totalTokens':
                     processedData = {
                         value: statsResponse.breakdown.reduce((sum: number, b: any) => sum + (b.totalTokens || 0), 0),
@@ -214,7 +225,7 @@ export const LogDashboard: React.FC = () => {
                         trend: 'up'
                     };
                     break;
-                case 'cacheHitRate':
+                case 'cacheHitRate': {
                     const totalCalls = statsResponse.summary.totalCalls;
                     const cacheHits = statsResponse.breakdown.reduce((sum: number, b: any) => sum + (b.cacheHits || 0), 0);
                     const hitRate = totalCalls > 0 ? (cacheHits / totalCalls) * 100 : 0;
@@ -224,6 +235,7 @@ export const LogDashboard: React.FC = () => {
                         trend: hitRate > 50 ? 'up' : 'down'
                     };
                     break;
+                }
                 case 'activeModels':
                     processedData = {
                         value: new Set(statsResponse.breakdown.map((b: any) => b._id)).size,
@@ -279,7 +291,7 @@ export const LogDashboard: React.FC = () => {
                             value: b.errors
                         }));
                     break;
-                case 'recentErrors':
+                case 'recentErrors': {
                     // Fetch actual error logs
                     const logsResponse = await logsService.fetchAILogs({
                         ...queryFilters,
@@ -290,6 +302,7 @@ export const LogDashboard: React.FC = () => {
                     });
                     processedData = logsResponse.data || [];
                     break;
+                }
                 default:
                     processedData = { value: 0, change: 0, trend: 'neutral' };
             }
@@ -336,7 +349,76 @@ export const LogDashboard: React.FC = () => {
     const handleTemplateChange = (template: DashboardTemplate) => {
         setSelectedTemplate(template);
         setWidgets(template.widgets);
-        setShowTemplates(false);
+    };
+
+    const handleApplyQueryToDashboard = useCallback((visualization: any, data: any[]) => {
+        if (!visualization) return;
+
+        // Generate unique ID for AI-generated widget
+        const widgetId = `ai-${Date.now()}`;
+
+        // Create widget from visualization config
+        const aiWidget: Widget & { data?: any; isAiGenerated: boolean } = {
+            id: widgetId,
+            type: visualization.type,
+            title: visualization.title,
+            metric: visualization.metric,
+            size: visualization.size,
+            data: data,
+            isAiGenerated: true
+        };
+
+        // Add to AI-generated widgets map
+        setAiGeneratedWidgets(prev => {
+            const updated = new Map(prev);
+            updated.set(widgetId, aiWidget);
+            return updated;
+        });
+
+        // Set widget data
+        setWidgetData(prev => {
+            const updated = new Map(prev);
+            updated.set(widgetId, data);
+            return updated;
+        });
+
+        // Highlight the new widget
+        setHighlightedWidget(widgetId);
+
+        // Scroll to the widget
+        setTimeout(() => {
+            aiWidgetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            setHighlightedWidget(null);
+        }, 3000);
+    }, []);
+
+    // Expose the handler to parent if provided
+    useEffect(() => {
+        if (externalOnApply) {
+            // This allows parent to call our internal handler
+            (window as any).__dashboardApplyHandler = handleApplyQueryToDashboard;
+        }
+        return () => {
+            delete (window as any).__dashboardApplyHandler;
+        };
+    }, [externalOnApply, handleApplyQueryToDashboard]);
+
+    const handleRemoveAiWidget = (widgetId: string) => {
+        setAiGeneratedWidgets(prev => {
+            const updated = new Map(prev);
+            updated.delete(widgetId);
+            return updated;
+        });
+
+        setWidgetData(prev => {
+            const updated = new Map(prev);
+            updated.delete(widgetId);
+            return updated;
+        });
     };
 
     const getWidgetSize = (size: string): string => {
@@ -349,14 +431,15 @@ export const LogDashboard: React.FC = () => {
         }
     };
 
-    const renderWidget = (widget: Widget) => {
+    const renderWidget = (widget: Widget & { isAiGenerated?: boolean }) => {
         const data = widgetData.get(widget.id);
         const isExpanded = expandedWidget === widget.id;
+        const isHighlighted = highlightedWidget === widget.id;
         const sizeClass = isExpanded ? 'col-span-1 md:col-span-2 lg:col-span-4' : getWidgetSize(widget.size);
 
         return (
-            <div key={widget.id} className={`${sizeClass} transition-all duration-300`}>
-                <div className={`card shadow-xl h-full overflow-hidden hover:shadow-2xl transition-all duration-300 ${isExpanded ? 'ring-2 ring-primary-500 glow-primary' : 'hover:scale-[1.02]'}`}>
+            <div key={widget.id} className={`${sizeClass} transition-all duration-300 ${isHighlighted ? 'animate-pulse-glow' : ''}`}>
+                <div className={`card shadow-xl h-full overflow-hidden hover:shadow-2xl transition-all duration-300 ${isExpanded ? 'ring-2 ring-primary-500 glow-primary' : 'hover:scale-[1.02]'} ${isHighlighted ? 'ring-2 ring-primary-500 animate-glow' : ''}`}>
                     {/* Widget Header */}
                     <div className="px-6 py-4 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-500/5 to-transparent">
                         <div className="flex items-center justify-between">
@@ -368,18 +451,35 @@ export const LogDashboard: React.FC = () => {
                                 {widget.type === 'stat-card' && <FiZap className="text-primary-500 w-4 h-4" />}
                                 {widget.type === 'table' && <FiGrid className="text-primary-500 w-4 h-4" />}
                                 {widget.title}
-                            </h3>
-                            <button
-                                onClick={() => setExpandedWidget(isExpanded ? null : widget.id)}
-                                className="p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all duration-300 group"
-                                title={isExpanded ? 'Collapse' : 'Expand'}
-                            >
-                                {isExpanded ? (
-                                    <FiMinimize2 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-primary-500" />
-                                ) : (
-                                    <FiMaximize2 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-primary-500" />
+                                {widget.isAiGenerated && (
+                                    <span className="ml-2 px-2 py-0.5 text-xs font-semibold bg-gradient-primary text-white rounded-full flex items-center gap-1">
+                                        <FiZap className="w-3 h-3" />
+                                        AI
+                                    </span>
                                 )}
-                            </button>
+                            </h3>
+                            <div className="flex items-center gap-1">
+                                {widget.isAiGenerated && (
+                                    <button
+                                        onClick={() => handleRemoveAiWidget(widget.id)}
+                                        className="p-2 rounded-lg hover:bg-red-500/10 transition-all duration-300 group"
+                                        title="Remove AI Widget"
+                                    >
+                                        <FiX className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-red-500" />
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setExpandedWidget(isExpanded ? null : widget.id)}
+                                    className="p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all duration-300 group"
+                                    title={isExpanded ? 'Collapse' : 'Expand'}
+                                >
+                                    {isExpanded ? (
+                                        <FiMinimize2 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-primary-500" />
+                                    ) : (
+                                        <FiMaximize2 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-primary-500" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -481,6 +581,13 @@ export const LogDashboard: React.FC = () => {
                 </div>
             </div>
 
+            {/* AI-Generated Widgets (rendered first) */}
+            {aiGeneratedWidgets.size > 0 && (
+                <div ref={aiWidgetRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    {Array.from(aiGeneratedWidgets.values()).map(renderWidget)}
+                </div>
+            )}
+
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {widgets.map(renderWidget)}
@@ -548,157 +655,232 @@ const StatsCard: React.FC<{ data: any; metric: string }> = ({ data, metric }) =>
     );
 };
 
-const LineWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => (
-    <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
-        <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <defs>
-                <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06ec9e" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#06ec9e" stopOpacity={0} />
-                </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
-            <XAxis
-                dataKey="name"
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-            />
-            <YAxis
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-            />
-            <Tooltip
-                contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    border: '1px solid #06ec9e',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-            />
-            <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#06ec9e"
-                strokeWidth={3}
-                dot={{ fill: '#06ec9e', r: 4 }}
-                activeDot={{ r: 6 }}
-                fill="url(#lineGradient)"
-            />
-        </LineChart>
-    </ResponsiveContainer>
-);
+const LineWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => {
+    const isDark = document.documentElement.classList.contains('dark');
 
-const BarWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => (
-    <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
-        <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
-            <XAxis
-                dataKey="name"
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-                angle={-45}
-                textAnchor="end"
-                height={60}
-            />
-            <YAxis
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-            />
-            <Tooltip
-                contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    border: '1px solid #06ec9e',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-            />
-            <Bar dataKey="value" fill="#06ec9e" radius={[8, 8, 0, 0]} />
-        </BarChart>
-    </ResponsiveContainer>
-);
+    return (
+        <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
+            <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                    <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#06ec9e" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#06ec9e" stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
+                <XAxis
+                    dataKey="name"
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                />
+                <YAxis
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                        border: '2px solid #06ec9e',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        padding: '12px',
+                        boxShadow: isDark
+                            ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 236, 158, 0.3)'
+                            : '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(6, 236, 158, 0.2)',
+                        color: isDark ? '#f1f5f9' : '#1e293b'
+                    }}
+                    labelStyle={{
+                        color: isDark ? '#f1f5f9' : '#1e293b',
+                        fontWeight: 'bold',
+                        marginBottom: '4px'
+                    }}
+                    itemStyle={{
+                        color: isDark ? '#06ec9e' : '#009454',
+                        fontWeight: '600'
+                    }}
+                />
+                <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#06ec9e"
+                    strokeWidth={3}
+                    dot={{ fill: '#06ec9e', r: 4 }}
+                    activeDot={{ r: 6 }}
+                    fill="url(#lineGradient)"
+                />
+            </LineChart>
+        </ResponsiveContainer>
+    );
+};
 
-const PieWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => (
-    <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
-        <PieChart>
-            <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name.slice(0, 10)} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={expanded ? 120 : 80}
-                fill="#8884d8"
-                dataKey="value"
-            >
-                {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-            </Pie>
-            <Tooltip
-                contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    border: '1px solid #06ec9e',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-            />
-            <Legend
-                verticalAlign="bottom"
-                height={36}
-                iconType="circle"
-                wrapperStyle={{ fontSize: '11px' }}
-            />
-        </PieChart>
-    </ResponsiveContainer>
-);
+const BarWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => {
+    const isDark = document.documentElement.classList.contains('dark');
 
-const AreaWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => (
-    <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
-        <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <defs>
-                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06ec9e" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#06ec9e" stopOpacity={0.1} />
-                </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
-            <XAxis
-                dataKey="name"
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-            />
-            <YAxis
-                stroke="#94a3b8"
-                style={{ fontSize: '11px' }}
-                tick={{ fill: '#64748b' }}
-            />
-            <Tooltip
-                contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    border: '1px solid #06ec9e',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-            />
-            <Area
-                type="monotone"
-                dataKey="value"
-                stroke="#06ec9e"
-                strokeWidth={2}
-                fill="url(#colorGradient)"
-            />
-        </AreaChart>
-    </ResponsiveContainer>
-);
+    return (
+        <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
+                <XAxis
+                    dataKey="name"
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                />
+                <YAxis
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                        border: '2px solid #06ec9e',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        padding: '12px',
+                        boxShadow: isDark
+                            ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 236, 158, 0.3)'
+                            : '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(6, 236, 158, 0.2)',
+                        color: isDark ? '#f1f5f9' : '#1e293b'
+                    }}
+                    labelStyle={{
+                        color: isDark ? '#f1f5f9' : '#1e293b',
+                        fontWeight: 'bold',
+                        marginBottom: '4px'
+                    }}
+                    itemStyle={{
+                        color: isDark ? '#06ec9e' : '#009454',
+                        fontWeight: '600'
+                    }}
+                />
+                <Bar dataKey="value" fill="#06ec9e" radius={[8, 8, 0, 0]} />
+            </BarChart>
+        </ResponsiveContainer>
+    );
+};
+
+const PieWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => {
+    const isDark = document.documentElement.classList.contains('dark');
+
+    return (
+        <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
+            <PieChart>
+                <Pie
+                    data={data}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name.slice(0, 10)} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={expanded ? 120 : 80}
+                    fill="#8884d8"
+                    dataKey="value"
+                >
+                    {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                </Pie>
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                        border: '2px solid #06ec9e',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        padding: '12px',
+                        boxShadow: isDark
+                            ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 236, 158, 0.3)'
+                            : '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(6, 236, 158, 0.2)',
+                        color: isDark ? '#f1f5f9' : '#1e293b'
+                    }}
+                    labelStyle={{
+                        color: isDark ? '#f1f5f9' : '#1e293b',
+                        fontWeight: 'bold',
+                        marginBottom: '4px'
+                    }}
+                    itemStyle={{
+                        color: isDark ? '#06ec9e' : '#009454',
+                        fontWeight: '600'
+                    }}
+                />
+                <Legend
+                    verticalAlign="bottom"
+                    height={36}
+                    iconType="circle"
+                    wrapperStyle={{
+                        fontSize: '11px',
+                        color: isDark ? '#cbd5e1' : '#475569'
+                    }}
+                />
+            </PieChart>
+        </ResponsiveContainer>
+    );
+};
+
+const AreaWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => {
+    const isDark = document.documentElement.classList.contains('dark');
+
+    return (
+        <ResponsiveContainer width="100%" height={expanded ? 400 : 250}>
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                    <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#06ec9e" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#06ec9e" stopOpacity={0.1} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.3} />
+                <XAxis
+                    dataKey="name"
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                />
+                <YAxis
+                    stroke="#94a3b8"
+                    style={{ fontSize: '11px' }}
+                    tick={{ fill: '#64748b' }}
+                />
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                        border: '2px solid #06ec9e',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        padding: '12px',
+                        boxShadow: isDark
+                            ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 236, 158, 0.3)'
+                            : '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(6, 236, 158, 0.2)',
+                        color: isDark ? '#f1f5f9' : '#1e293b'
+                    }}
+                    labelStyle={{
+                        color: isDark ? '#f1f5f9' : '#1e293b',
+                        fontWeight: 'bold',
+                        marginBottom: '4px'
+                    }}
+                    itemStyle={{
+                        color: isDark ? '#06ec9e' : '#009454',
+                        fontWeight: '600'
+                    }}
+                />
+                <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#06ec9e"
+                    strokeWidth={2}
+                    fill="url(#colorGradient)"
+                />
+            </AreaChart>
+        </ResponsiveContainer>
+    );
+};
 
 const TableWidget: React.FC<{ data: any[]; expanded?: boolean }> = ({ data, expanded = false }) => (
     <div className={`overflow-y-auto ${expanded ? 'max-h-96' : 'max-h-80'}`}>

@@ -5,9 +5,10 @@ import {
     LogStream,
     LogStats,
     LogDetails,
-    LogDashboard
+    LogDashboard,
+    LogChatWidget
 } from '../components/logs';
-import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode, FiGrid } from 'react-icons/fi';
+import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode, FiGrid, FiZap } from 'react-icons/fi';
 import { logsService } from '../services/logs.service';
 
 type ViewMode = 'table' | 'timeline' | 'json' | 'dashboard';
@@ -24,6 +25,16 @@ export const Logs: React.FC = () => {
     const [showFilters, setShowFilters] = useState<boolean>(true);
     const [statsCollapsed, setStatsCollapsed] = useState<boolean>(false);
     const [autoRefresh, setAutoRefresh] = useState<number>(0);
+    const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+
+    const handleApplyToDashboard = useCallback((visualization: any, data: any[]) => {
+        // Call the dashboard's apply handler if it exists
+        if ((window as any).__dashboardApplyHandler) {
+            (window as any).__dashboardApplyHandler(visualization, data);
+        }
+        // Close the chat after applying
+        setIsChatOpen(false);
+    }, []);
 
     const fetchLogs = useCallback(async () => {
         if (isRealtime) return;
@@ -159,6 +170,20 @@ export const Logs: React.FC = () => {
                         </div>
 
                         <div className="flex items-center gap-3 flex-wrap">
+                            {/* AI Assistant Toggle - Only show in dashboard view */}
+                            {viewMode === 'dashboard' && (
+                                <button
+                                    onClick={() => setIsChatOpen(!isChatOpen)}
+                                    className={`px-4 py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${isChatOpen
+                                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                        : 'btn-ghost'
+                                        }`}
+                                >
+                                    <FiZap className="w-5 h-5" />
+                                    {isChatOpen ? 'Close AI Assistant' : 'AI Assistant'}
+                                </button>
+                            )}
+
                             {/* Auto Refresh */}
                             {!isRealtime && (
                                 <select
@@ -255,6 +280,18 @@ export const Logs: React.FC = () => {
 
                     {/* Logs Content */}
                     <div className="flex-1 min-w-0">
+                        {/* AI Chat Widget - Shows between header and stats when dashboard view is active */}
+                        {viewMode === 'dashboard' && isChatOpen && (
+                            <div className="mb-6">
+                                <LogChatWidget
+                                    isOpen={isChatOpen}
+                                    onClose={() => setIsChatOpen(false)}
+                                    onApplyToDashboard={handleApplyToDashboard}
+                                    currentFilters={filters}
+                                />
+                            </div>
+                        )}
+
                         {/* Stats Section */}
                         {!isRealtime && stats && (
                             <div className="mb-6">
@@ -338,7 +375,9 @@ export const Logs: React.FC = () => {
 
                         {/* Logs Display */}
                         {viewMode === 'dashboard' ? (
-                            <LogDashboard />
+                            <LogDashboard
+                                onApplyQueryToDashboard={handleApplyToDashboard}
+                            />
                         ) : (
                             <div className="card shadow-xl overflow-hidden">
                                 {error && (
