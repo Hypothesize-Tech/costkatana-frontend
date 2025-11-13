@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { integrationService } from '../../services/integration.service';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import type { AlertType, AlertSeverity } from '../../types/integration.types';
+import { apiClient } from '@/config/api';
 
 interface SlackIntegrationSetupProps {
   onClose: () => void;
@@ -14,8 +15,8 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
   onClose,
   onComplete,
 }) => {
-  const [step, setStep] = useState(1);
-  const [integrationType] = useState<'webhook' | 'oauth'>('webhook');
+  const [step, setStep] = useState(0); // Start at 0 for method selection
+  const [integrationMethod, setIntegrationMethod] = useState<'webhook' | 'oauth'>('oauth');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [webhookUrl, setWebhookUrl] = useState('');
@@ -26,10 +27,61 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
 
   const { showNotification } = useNotifications();
 
+  // OAuth flow mutation
+  const initiateOAuthMutation = useMutation(
+    async () => {
+      const response = await apiClient.get('/integrations/slack/auth');
+      return response.data.data;
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.authUrl) {
+          // Open OAuth URL in popup window
+          const width = 600;
+          const height = 700;
+          const left = window.screen.width / 2 - width / 2;
+          const top = window.screen.height / 2 - height / 2;
+          window.open(
+            data.authUrl,
+            'Slack OAuth',
+            `width=${width},height=${height},left=${left},top=${top}`
+          );
+        }
+      },
+      onError: (error: any) => {
+        showNotification(
+          error.response?.data?.message || 'Failed to initiate Slack OAuth',
+          'error'
+        );
+      },
+    }
+  );
+
+  // Listen for OAuth callback messages
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Security: Verify the origin if needed
+      // if (event.origin !== window.location.origin) return;
+
+      if (event.data.type === 'slack-oauth-success') {
+        showNotification('Slack connected successfully!', 'success');
+        onComplete();
+      } else if (event.data.type === 'slack-oauth-error') {
+        showNotification(
+          event.data.message || 'Failed to connect Slack',
+          'error'
+        );
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onComplete, showNotification]);
+
   const createMutation = useMutation(
     () =>
       integrationService.createIntegration({
-        type: integrationType === 'webhook' ? 'slack_webhook' : 'slack_oauth',
+        type: integrationMethod === 'webhook' ? 'slack_webhook' : 'slack_oauth',
         name,
         description,
         credentials: {
@@ -112,7 +164,7 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
               Connect Slack
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-              Step {step} of 3
+              {step === 0 ? 'Select Integration Method' : `Step ${step} of ${integrationMethod === 'webhook' ? '3' : '1'}`}
             </p>
           </div>
           <button
@@ -126,8 +178,100 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
         {/* Body */}
         <form onSubmit={handleSubmit}>
           <div className="p-6">
-            {/* Step 1: Basic Info */}
-            {step === 1 && (
+            {/* Step 0: Integration Method Selection */}
+            {step === 0 && (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-4">
+                    Choose Integration Method
+                  </label>
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* OAuth Option */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIntegrationMethod('oauth');
+                        if (integrationMethod === 'oauth') {
+                          // Directly initiate OAuth flow
+                          initiateOAuthMutation.mutate();
+                        }
+                      }}
+                      className="text-left p-6 border-2 rounded-xl transition-all bg-white/50 dark:bg-gray-800/50 border-primary-500 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/15 dark:to-primary-800/15 shadow-md shadow-primary-500/20 hover:shadow-lg"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                            OAuth Integration (Recommended)
+                          </h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                            Connect your Slack workspace with full bot capabilities
+                          </p>
+                          <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                            <li>✓ List all channels dynamically</li>
+                            <li>✓ Send messages to any channel via chat commands</li>
+                            <li>✓ Create and manage channels</li>
+                            <li>✓ List workspace members</li>
+                            <li>✓ Full bot integration with @slack commands</li>
+                          </ul>
+                        </div>
+                        <div className="text-primary-600 dark:text-primary-400 text-2xl">
+                          →
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Webhook Option */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIntegrationMethod('webhook');
+                        setStep(1);
+                      }}
+                      className="text-left p-6 border-2 rounded-xl transition-all bg-white/50 dark:bg-gray-800/50 border-primary-200/20 dark:border-primary-200/30 hover:border-primary-300/40 dark:hover:border-primary-400/50 hover:shadow-sm"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                            Webhook Integration
+                          </h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                            Simple one-way alerts to a specific channel
+                          </p>
+                          <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                            <li>✓ Quick setup with webhook URL</li>
+                            <li>✓ Send alerts to pre-configured channel</li>
+                            <li>• Limited to one channel</li>
+                            <li>• No chat command integration</li>
+                            <li>• Cannot list or create channels</li>
+                          </ul>
+                        </div>
+                        <div className="text-gray-400 dark:text-gray-600 text-2xl">
+                          →
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* OAuth Command Reference */}
+                {integrationMethod === 'oauth' && (
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-500/30">
+                    <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                      Available Chat Commands (OAuth)
+                    </h4>
+                    <div className="text-xs text-blue-800 dark:text-blue-200 space-y-1">
+                      <p><code className="px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded">@slack list-channels</code> - List all channels</p>
+                      <p><code className="px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded">@slack send hi to #general</code> - Send message to channel</p>
+                      <p><code className="px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded">@slack create channel test</code> - Create new channel</p>
+                      <p><code className="px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded">@slack list-users</code> - List workspace members</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 1: Basic Info (Webhook Only) */}
+            {step === 1 && integrationMethod === 'webhook' && (
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
@@ -306,32 +450,54 @@ export const SlackIntegrationSetup: React.FC<SlackIntegrationSetupProps> = ({
 
           {/* Footer */}
           <div className="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-primary-200/20">
-            {step > 1 && (
+            {/* Hide footer on step 0 (method selection) - buttons are inline */}
+            {step === 0 ? (
               <button
                 type="button"
-                onClick={() => setStep(step - 1)}
+                onClick={onClose}
                 className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-white/80 dark:bg-gray-800/80 text-primary-600 dark:text-primary-400 border border-primary-200/30 dark:border-primary-200/40 hover:bg-primary-50/90 dark:hover:bg-primary-900/30 hover:border-primary-300/50 dark:hover:border-primary-400/60 transition-all"
               >
-                Back
-              </button>
-            )}
-            {step < 3 ? (
-              <button
-                type="button"
-                onClick={() => setStep(step + 1)}
-                disabled={step === 1 && (!name || !webhookUrl)}
-                className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
-              >
-                Next
+                Cancel
               </button>
             ) : (
-              <button
-                type="submit"
-                disabled={createMutation.isLoading || selectedAlertTypes.size === 0}
-                className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
-              >
-                {createMutation.isLoading ? 'Creating...' : 'Create Integration'}
-              </button>
+              <>
+                {step > 1 && integrationMethod === 'webhook' && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(step - 1)}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-white/80 dark:bg-gray-800/80 text-primary-600 dark:text-primary-400 border border-primary-200/30 dark:border-primary-200/40 hover:bg-primary-50/90 dark:hover:bg-primary-900/30 hover:border-primary-300/50 dark:hover:border-primary-400/60 transition-all"
+                  >
+                    Back
+                  </button>
+                )}
+                {step === 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(0)}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-white/80 dark:bg-gray-800/80 text-primary-600 dark:text-primary-400 border border-primary-200/30 dark:border-primary-200/40 hover:bg-primary-50/90 dark:hover:bg-primary-900/30 hover:border-primary-300/50 dark:hover:border-primary-400/60 transition-all"
+                  >
+                    Back
+                  </button>
+                )}
+                {integrationMethod === 'webhook' && step < 3 ? (
+                  <button
+                    type="button"
+                    onClick={() => setStep(step + 1)}
+                    disabled={step === 1 && (!name || !webhookUrl)}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+                  >
+                    Next
+                  </button>
+                ) : integrationMethod === 'webhook' && step === 3 ? (
+                  <button
+                    type="submit"
+                    disabled={createMutation.isLoading || selectedAlertTypes.size === 0}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+                  >
+                    {createMutation.isLoading ? 'Creating...' : 'Create Integration'}
+                  </button>
+                ) : null}
+              </>
             )}
           </div>
         </form>

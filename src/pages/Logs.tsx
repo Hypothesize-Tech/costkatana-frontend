@@ -4,17 +4,19 @@ import {
     LogTable,
     LogStream,
     LogStats,
-    LogDetails
+    LogDetails,
+    LogDashboard,
+    LogChatWidget
 } from '../components/logs';
-import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode } from 'react-icons/fi';
+import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode, FiGrid, FiZap } from 'react-icons/fi';
 import { logsService } from '../services/logs.service';
 
-type ViewMode = 'table' | 'timeline' | 'json';
+type ViewMode = 'table' | 'timeline' | 'json' | 'dashboard';
 
 export const Logs: React.FC = () => {
     const [logs, setLogs] = useState<any[]>([]);
     const [filters, setFilters] = useState<any>({});
-    const [viewMode, setViewMode] = useState<ViewMode>('table');
+    const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
     const [isRealtime, setIsRealtime] = useState<boolean>(false);
     const [selectedLog, setSelectedLog] = useState<any | null>(null);
     const [stats, setStats] = useState<any>(null);
@@ -23,6 +25,16 @@ export const Logs: React.FC = () => {
     const [showFilters, setShowFilters] = useState<boolean>(true);
     const [statsCollapsed, setStatsCollapsed] = useState<boolean>(false);
     const [autoRefresh, setAutoRefresh] = useState<number>(0);
+    const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+
+    const handleApplyToDashboard = useCallback((visualization: any, data: any[]) => {
+        // Call the dashboard's apply handler if it exists
+        if ((window as any).__dashboardApplyHandler) {
+            (window as any).__dashboardApplyHandler(visualization, data);
+        }
+        // Close the chat after applying
+        setIsChatOpen(false);
+    }, []);
 
     const fetchLogs = useCallback(async () => {
         if (isRealtime) return;
@@ -158,6 +170,20 @@ export const Logs: React.FC = () => {
                         </div>
 
                         <div className="flex items-center gap-3 flex-wrap">
+                            {/* AI Assistant Toggle - Only show in dashboard view */}
+                            {viewMode === 'dashboard' && (
+                                <button
+                                    onClick={() => setIsChatOpen(!isChatOpen)}
+                                    className={`px-4 py-2.5 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${isChatOpen
+                                        ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                        : 'btn-ghost'
+                                        }`}
+                                >
+                                    <FiZap className="w-5 h-5" />
+                                    {isChatOpen ? 'Close AI Assistant' : 'AI Assistant'}
+                                </button>
+                            )}
+
                             {/* Auto Refresh */}
                             {!isRealtime && (
                                 <select
@@ -254,6 +280,18 @@ export const Logs: React.FC = () => {
 
                     {/* Logs Content */}
                     <div className="flex-1 min-w-0">
+                        {/* AI Chat Widget - Shows between header and stats when dashboard view is active */}
+                        {viewMode === 'dashboard' && isChatOpen && (
+                            <div className="mb-6">
+                                <LogChatWidget
+                                    isOpen={isChatOpen}
+                                    onClose={() => setIsChatOpen(false)}
+                                    onApplyToDashboard={handleApplyToDashboard}
+                                    currentFilters={filters}
+                                />
+                            </div>
+                        )}
+
                         {/* Stats Section */}
                         {!isRealtime && stats && (
                             <div className="mb-6">
@@ -282,6 +320,16 @@ export const Logs: React.FC = () => {
                         <div className="card shadow-xl mb-4 px-6 py-4">
                             <div className="flex items-center justify-between flex-wrap gap-4">
                                 <div className="flex items-center gap-2 bg-primary-500/10 rounded-lg p-1">
+                                    <button
+                                        onClick={() => handleViewModeChange('dashboard')}
+                                        className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${viewMode === 'dashboard'
+                                            ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                            : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400'
+                                            }`}
+                                    >
+                                        <FiGrid />
+                                        Dashboard
+                                    </button>
                                     <button
                                         onClick={() => handleViewModeChange('table')}
                                         className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${viewMode === 'table'
@@ -326,39 +374,45 @@ export const Logs: React.FC = () => {
                         </div>
 
                         {/* Logs Display */}
-                        <div className="card shadow-xl overflow-hidden">
-                            {error && (
-                                <div className="px-6 py-4 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
-                                    <p className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</p>
-                                </div>
-                            )}
-
-                            {loading && !isRealtime && (
-                                <div className="flex items-center justify-center py-16">
-                                    <div className="flex flex-col items-center gap-3">
-                                        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin glow-primary"></div>
-                                        <p className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Loading logs...</p>
+                        {viewMode === 'dashboard' ? (
+                            <LogDashboard
+                                onApplyQueryToDashboard={handleApplyToDashboard}
+                            />
+                        ) : (
+                            <div className="card shadow-xl overflow-hidden">
+                                {error && (
+                                    <div className="px-6 py-4 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+                                        <p className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</p>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {!loading && (
-                                <>
-                                    {isRealtime ? (
-                                        <LogStream
-                                            filters={filters}
-                                            onNewLog={(newLog: any) => setLogs((prev) => [newLog, ...prev].slice(0, 500))}
-                                        />
-                                    ) : (
-                                        <LogTable
-                                            logs={logs}
-                                            viewMode={viewMode}
-                                            onSelectLog={handleLogSelect}
-                                        />
-                                    )}
-                                </>
-                            )}
-                        </div>
+                                {loading && !isRealtime && (
+                                    <div className="flex items-center justify-center py-16">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin glow-primary"></div>
+                                            <p className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Loading logs...</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!loading && (
+                                    <>
+                                        {isRealtime ? (
+                                            <LogStream
+                                                filters={filters}
+                                                onNewLog={(newLog: any) => setLogs((prev) => [newLog, ...prev].slice(0, 500))}
+                                            />
+                                        ) : (
+                                            <LogTable
+                                                logs={logs}
+                                                viewMode={viewMode as 'table' | 'timeline' | 'json'}
+                                                onSelectLog={handleLogSelect}
+                                            />
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -164,7 +164,20 @@ class LogsService {
         
         // Remove /api suffix if present in baseURL, we'll add it explicitly
         const cleanBaseURL = baseURL.replace(/\/api\/?$/, '');
-        const url = `${cleanBaseURL}/api/logs/ai/stream?${params.toString()}${token ? `&token=${token}` : ''}`;
+        
+        // Build query string properly
+        const queryParams = params.toString();
+        let url = `${cleanBaseURL}/api/logs/ai/stream`;
+        
+        if (queryParams || token) {
+            url += '?';
+            if (queryParams) {
+                url += queryParams;
+            }
+            if (token) {
+                url += (queryParams ? '&' : '') + `token=${token}`;
+            }
+        }
         
         const eventSource = new EventSource(url);
         
