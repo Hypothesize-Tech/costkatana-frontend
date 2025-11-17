@@ -17,6 +17,7 @@ import {
   FiRefreshCw,
   FiTarget,
   FiAlertCircle,
+  FiImage,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { TemplateVariable } from "../../types/promptTemplate.types";
@@ -51,6 +52,18 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  // Visual Compliance specific state
+  const [isVisualCompliance, setIsVisualCompliance] = useState(false);
+  const [visualComplianceData, setVisualComplianceData] = useState({
+    industry: 'retail' as 'jewelry' | 'grooming' | 'retail' | 'fmcg' | 'documents',
+    mode: 'optimized' as 'optimized' | 'standard',
+    complianceCriteria: [''] as string[],
+    imageVariables: [
+      { name: 'referenceImage', imageRole: 'reference' as const, description: 'Reference image', required: true },
+      { name: 'evidenceImage', imageRole: 'evidence' as const, description: 'Evidence image', required: true }
+    ]
+  });
+
   // AI Feature States
   const [aiMode, setAiMode] = useState(false);
   const [aiIntent, setAiIntent] = useState("");
@@ -74,14 +87,15 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     { value: "analysis", label: "Analysis", icon: FiZap, color: "bg-purple-100 text-purple-800" },
     { value: "creative", label: "Creative", icon: FiStar, color: "bg-pink-100 text-pink-800" },
     { value: "business", label: "Business", icon: FiSettings, color: "bg-yellow-100 text-yellow-800" },
+    { value: "visual-compliance", label: "Visual Compliance", icon: FiTarget, color: "bg-indigo-100 text-indigo-800" },
   ];
 
   const toneOptions = [
-    { value: "formal", label: "Formal", icon: "👔" },
-    { value: "casual", label: "Casual", icon: "😊" },
-    { value: "technical", label: "Technical", icon: "🔧" },
-    { value: "creative", label: "Creative", icon: "🎨" },
-    { value: "professional", label: "Professional", icon: "💼" },
+    { value: "formal", label: "Formal", icon: FiBookOpen },
+    { value: "casual", label: "Casual", icon: FiStar },
+    { value: "technical", label: "Technical", icon: FiSettings },
+    { value: "creative", label: "Creative", icon: FiZap },
+    { value: "professional", label: "Professional", icon: FiCpu },
   ];
 
   const handleInputChange = (field: string, value: any) => {
@@ -291,6 +305,11 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     }
   };
 
+  // Watch for visual-compliance category selection
+  useEffect(() => {
+    setIsVisualCompliance(formData.category === 'visual-compliance');
+  }, [formData.category]);
+
   // Auto-detect variables when content changes (fallback if AI not used)
   useEffect(() => {
     if (!aiDetecting) {
@@ -327,8 +346,53 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.content) {
-      toast.error("Template name and content are required");
+    if (!formData.name) {
+      toast.error("Template name is required");
+      return;
+    }
+
+    // Special handling for visual compliance templates
+    if (isVisualCompliance) {
+      const filledCriteria = visualComplianceData.complianceCriteria.filter(c => c.trim());
+      if (filledCriteria.length === 0) {
+        toast.error("At least one compliance criterion is required for visual compliance templates");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Import the service
+        const { PromptTemplateService } = await import("../../services/promptTemplate.service");
+
+        const newTemplate = await PromptTemplateService.createVisualComplianceTemplate({
+          name: formData.name,
+          description: formData.description,
+          complianceCriteria: filledCriteria,
+          imageVariables: visualComplianceData.imageVariables,
+          industry: visualComplianceData.industry,
+          mode: visualComplianceData.mode,
+        });
+
+        toast.success("Visual compliance template created successfully!");
+
+        // Call onSubmit to refresh the templates list
+        if (onSubmit && newTemplate) {
+          await onSubmit(newTemplate);
+        }
+
+        onClose();
+      } catch (error) {
+        console.error("Error creating visual compliance template:", error);
+        toast.error("Failed to create visual compliance template");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Regular template creation
+    if (!formData.content) {
+      toast.error("Template content is required");
       return;
     }
 
@@ -357,14 +421,16 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     <Modal isOpen onClose={onClose} size="xl" title="Create Template">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* AI Mode Toggle */}
-        <div className="glass flex items-center justify-between p-4 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-primary/5 shadow-lg">
+        <div className="glass flex items-center justify-between p-5 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-accent-50/30 dark:from-primary-900/20 dark:to-accent-900/10 shadow-xl">
           <div className="flex items-center space-x-3">
-            <FiBrain className="w-6 h-6 text-primary-500" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <FiBrain className="w-5 h-5 text-white" />
+            </div>
             <div>
-              <h3 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <h3 className="text-base font-display font-bold gradient-text-primary">
                 AI-Powered Template Creation
               </h3>
-              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
+              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body mt-0.5">
                 Let AI generate your template from a simple description
               </p>
             </div>
@@ -372,9 +438,9 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           <button
             type="button"
             onClick={() => setAiMode(!aiMode)}
-            className={`px-4 py-2 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${aiMode
+            className={`px-5 py-2.5 rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${aiMode
               ? "bg-gradient-primary text-white hover:shadow-xl"
-              : "glass bg-gradient-secondary text-white hover:shadow-xl"
+              : "bg-white dark:bg-gray-800 text-secondary-700 dark:text-secondary-300 border-2 border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 dark:hover:border-primary-600/50"
               }`}
           >
             {aiMode ? "AI Mode On" : "AI Mode Off"}
@@ -383,17 +449,17 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
         {/* AI Generation Panel */}
         {aiMode && (
-          <div className="glass space-y-4 p-4 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel shadow-lg">
+          <div className="glass space-y-5 p-6 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel shadow-xl">
             <div>
-              <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-                <FiWand className="inline w-4 h-4 mr-1 text-primary-500" />
+              <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
+                <FiWand className="w-4 h-4 text-primary-500" />
                 Describe Your Template
               </label>
               <textarea
                 value={aiIntent}
                 onChange={(e) => setAiIntent(e.target.value)}
                 placeholder="E.g., 'Create a template for writing SEO-optimized blog posts with sections for keywords, meta description, and content outline'"
-                className="input w-full"
+                className="input w-full font-body"
                 rows={3}
               />
             </div>
@@ -401,7 +467,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
             {/* AI Context Options */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="label text-xs">
+                <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                   Industry
                 </label>
                 <input
@@ -415,7 +481,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 />
               </div>
               <div>
-                <label className="label text-xs">
+                <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                   Target Audience
                 </label>
                 <input
@@ -432,29 +498,32 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
             {/* Tone Selection */}
             <div>
-              <label className="label text-xs mb-2">
+              <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                 Tone
               </label>
-              <div className="flex space-x-2">
-                {toneOptions.map((tone) => (
-                  <button
-                    key={tone.value}
-                    type="button"
-                    onClick={() =>
-                      setSelectedContext({
-                        ...selectedContext,
-                        tone: tone.value as any,
-                      })
-                    }
-                    className={`px-3 py-1.5 rounded-xl text-sm font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${selectedContext.tone === tone.value
-                      ? "bg-gradient-primary text-white hover:shadow-xl"
-                      : "glass bg-gradient-secondary text-white hover:shadow-xl"
-                      }`}
-                  >
-                    <span className="mr-1">{tone.icon}</span>
-                    {tone.label}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-2">
+                {toneOptions.map((tone) => {
+                  const ToneIcon = tone.icon;
+                  return (
+                    <button
+                      key={tone.value}
+                      type="button"
+                      onClick={() =>
+                        setSelectedContext({
+                          ...selectedContext,
+                          tone: tone.value as any,
+                        })
+                      }
+                      className={`px-4 py-2 rounded-xl text-sm font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2 ${selectedContext.tone === tone.value
+                        ? "bg-gradient-primary text-white hover:shadow-xl"
+                        : "bg-white dark:bg-gray-800 text-secondary-700 dark:text-secondary-300 border-2 border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50"
+                        }`}
+                    >
+                      <ToneIcon className="w-4 h-4" />
+                      {tone.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -462,16 +531,16 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
               type="button"
               onClick={generateFromIntent}
               disabled={aiGenerating || !aiIntent.trim()}
-              className="w-full px-4 py-3 bg-gradient-primary text-white rounded-xl font-display font-semibold hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 flex items-center justify-center shadow-lg"
+              className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiGenerating ? (
                 <>
-                  <FiRefreshCw className="animate-spin mr-2" />
+                  <FiRefreshCw className="animate-spin w-5 h-5" />
                   Generating Template...
                 </>
               ) : (
                 <>
-                  <FiCpu className="mr-2" />
+                  <FiCpu className="w-5 h-5" />
                   Generate with AI
                 </>
               )}
@@ -565,66 +634,187 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           </div>
         </div>
 
-        {/* Template Content with AI Tools */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="label">
-              Template Content *
-            </label>
-            <div className="flex space-x-2">
-              <button
-                type="button"
-                onClick={detectVariablesWithAI}
-                disabled={aiDetecting || !formData.content}
-                className="px-3 py-1 text-xs font-display font-semibold bg-gradient-highlight text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 flex items-center shadow-lg"
+        {/* Visual Compliance Specific Fields */}
+        {isVisualCompliance && (
+          <div className="glass p-6 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-success-50/30 dark:from-primary-900/20 dark:to-success-900/10 shadow-xl space-y-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                <FiTarget className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-lg font-display font-bold gradient-text-primary">
+                Visual Compliance Configuration
+              </h3>
+            </div>
+
+            {/* Industry Selection */}
+            <div>
+              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
+                Industry *
+              </label>
+              <select
+                value={visualComplianceData.industry}
+                onChange={(e) => setVisualComplianceData({ ...visualComplianceData, industry: e.target.value as any })}
+                className="input"
               >
-                {aiDetecting ? (
-                  <>
-                    <FiRefreshCw className="animate-spin mr-1 w-3 h-3" />
-                    Detecting...
-                  </>
-                ) : (
-                  <>
-                    <FiSearch className="mr-1 w-3 h-3" />
-                    AI Detect Variables
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={predictEffectiveness}
-                disabled={predictingEffectiveness || !formData.content}
-                className="px-3 py-1 text-xs font-display font-semibold bg-gradient-success text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 flex items-center shadow-lg"
-              >
-                {predictingEffectiveness ? (
-                  <>
-                    <FiRefreshCw className="animate-spin mr-1 w-3 h-3" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <FiTrendingUp className="mr-1 w-3 h-3" />
-                    Predict Effectiveness
-                  </>
-                )}
-              </button>
+                <option value="jewelry">Jewelry</option>
+                <option value="grooming">Grooming</option>
+                <option value="retail">Retail</option>
+                <option value="fmcg">FMCG</option>
+                <option value="documents">Documents</option>
+              </select>
+            </div>
+
+            {/* Mode Selection */}
+            <div>
+              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+                Optimization Mode
+              </label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setVisualComplianceData({ ...visualComplianceData, mode: 'optimized' })}
+                  className={`flex-1 px-4 py-3 rounded-xl text-sm font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${visualComplianceData.mode === 'optimized'
+                    ? 'bg-gradient-primary text-white shadow-xl'
+                    : 'glass border-2 border-primary-200/30 dark:border-primary-700/30 text-secondary-700 dark:text-secondary-300 hover:border-primary-300/50'
+                    }`}
+                >
+                  Optimized (Lower Cost)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVisualComplianceData({ ...visualComplianceData, mode: 'standard' })}
+                  className={`flex-1 px-4 py-3 rounded-xl text-sm font-display font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${visualComplianceData.mode === 'standard'
+                    ? 'bg-gradient-primary text-white shadow-xl'
+                    : 'glass border-2 border-primary-200/30 dark:border-primary-700/30 text-secondary-700 dark:text-secondary-300 hover:border-primary-300/50'
+                    }`}
+                >
+                  Standard (Higher Quality)
+                </button>
+              </div>
+            </div>
+
+            {/* Compliance Criteria */}
+            <div>
+              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
+                Compliance Criteria *
+              </label>
+              <div className="space-y-3">
+                {visualComplianceData.complianceCriteria.map((criterion, index) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={criterion}
+                      onChange={(e) => {
+                        const newCriteria = [...visualComplianceData.complianceCriteria];
+                        newCriteria[index] = e.target.value;
+                        setVisualComplianceData({ ...visualComplianceData, complianceCriteria: newCriteria });
+                      }}
+                      placeholder="e.g., All products should be facing forward"
+                      className="input flex-1"
+                    />
+                    {visualComplianceData.complianceCriteria.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newCriteria = visualComplianceData.complianceCriteria.filter((_, i) => i !== index);
+                          setVisualComplianceData({ ...visualComplianceData, complianceCriteria: newCriteria });
+                        }}
+                        className="px-3 py-2 rounded-xl text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 border-2 border-danger-200/30 dark:border-danger-700/30 hover:border-danger-300/50 transition-all duration-300 hover:scale-105"
+                      >
+                        <FiMinus className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisualComplianceData({
+                      ...visualComplianceData,
+                      complianceCriteria: [...visualComplianceData.complianceCriteria, '']
+                    });
+                  }}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-display font-semibold text-primary-700 dark:text-primary-300 glass border-2 border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                >
+                  <FiPlus className="w-4 h-4" />
+                  Add Criterion
+                </button>
+              </div>
+            </div>
+
+            <div className="glass p-4 rounded-xl border border-success-200/30 bg-gradient-to-r from-success-50/50 to-primary-50/30 dark:from-success-900/20 dark:to-primary-900/10 shadow-lg">
+              <div className="flex items-start gap-2">
+                <FiImage className="w-4 h-4 text-success-600 dark:text-success-400 mt-0.5" />
+                <p className="text-xs font-body text-success-800 dark:text-success-200">
+                  <strong className="font-display font-semibold">Note:</strong> This template will automatically include reference and evidence image variables for visual compliance checks.
+                </p>
+              </div>
             </div>
           </div>
-          <textarea
-            value={formData.content}
-            onChange={(e) => handleInputChange("content", e.target.value)}
-            placeholder="Enter your template content. Use {{variableName}} for variables."
-            className="input font-mono text-sm"
-            rows={8}
-            required
-          />
-          <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
-            Tip: Use {"{{variableName}}"} syntax to create variables that users can fill in
-          </p>
-        </div>
+        )}
+
+        {/* Template Content with AI Tools */}
+        {!isVisualCompliance && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label">
+                Template Content *
+              </label>
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={detectVariablesWithAI}
+                  disabled={aiDetecting || !formData.content}
+                  className="px-3 py-1 text-xs font-display font-semibold bg-gradient-highlight text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 flex items-center shadow-lg"
+                >
+                  {aiDetecting ? (
+                    <>
+                      <FiRefreshCw className="animate-spin mr-1 w-3 h-3" />
+                      Detecting...
+                    </>
+                  ) : (
+                    <>
+                      <FiSearch className="mr-1 w-3 h-3" />
+                      AI Detect Variables
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={predictEffectiveness}
+                  disabled={predictingEffectiveness || !formData.content}
+                  className="px-3 py-1 text-xs font-display font-semibold bg-gradient-success text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 flex items-center shadow-lg"
+                >
+                  {predictingEffectiveness ? (
+                    <>
+                      <FiRefreshCw className="animate-spin mr-1 w-3 h-3" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <FiTrendingUp className="mr-1 w-3 h-3" />
+                      Predict Effectiveness
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            <textarea
+              value={formData.content}
+              onChange={(e) => handleInputChange("content", e.target.value)}
+              placeholder="Enter your template content. Use {{variableName}} for variables."
+              className="input font-mono text-sm"
+              rows={8}
+              required
+            />
+            <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
+              Tip: Use {"{{variableName}}"} syntax to create variables that users can fill in
+            </p>
+          </div>
+        )}
 
         {/* Effectiveness Score Display */}
-        {effectivenessScore && (
+        {!isVisualCompliance && effectivenessScore && (
           <div className="glass p-4 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-success/5 shadow-lg">
             <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center">
               <FiTarget className="mr-2 text-success-500" />
@@ -707,34 +897,38 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         )}
 
         {/* Variables Section */}
-        {formData.variables.length > 0 && (
+        {!isVisualCompliance && formData.variables.length > 0 && (
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                <FiTag className="w-4 h-4 text-white" />
+              </div>
+              <label className="text-base font-display font-bold gradient-text-accent">
                 Variables ({formData.variables.length})
               </label>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {formData.variables.map((variable, index) => (
                 <div
                   key={index}
-                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  className="glass p-5 rounded-xl border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-highlight-50/20 dark:from-accent-900/20 dark:to-highlight-900/10 shadow-lg hover:scale-102 transition-all duration-300"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-base font-display font-bold gradient-text-primary flex items-center gap-2">
+                      <FiCode className="w-4 h-4" />
                       {`{{${variable.name}}}`}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeVariable(index)}
-                      className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                      className="px-3 py-2 rounded-xl text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 border-2 border-danger-200/30 dark:border-danger-700/30 hover:border-danger-300/50 transition-all duration-300 hover:scale-105"
                     >
                       <FiMinus className="w-4 h-4" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                      <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                         Type
                       </label>
                       <select
@@ -742,7 +936,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                         onChange={(e) =>
                           handleVariableChange(index, "type", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                        className="input text-sm font-body"
                       >
                         <option value="text">Text</option>
                         <option value="number">Number</option>
@@ -755,7 +949,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                      <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                         Default Value
                       </label>
                       <input
@@ -765,12 +959,12 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                           handleVariableChange(index, "defaultValue", e.target.value)
                         }
                         placeholder="Optional"
-                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                        className="input text-sm font-body"
                       />
                     </div>
                   </div>
-                  <div className="mt-2">
-                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <div className="mt-4">
+                    <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                       Description
                     </label>
                     <input
@@ -780,20 +974,20 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                         handleVariableChange(index, "description", e.target.value)
                       }
                       placeholder="What is this variable for?"
-                      className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                      className="input text-sm font-body"
                     />
                   </div>
-                  <div className="mt-2 flex items-center">
+                  <div className="mt-4 flex items-center glass px-4 py-3 rounded-lg border border-accent-200/30 bg-white dark:bg-gray-800">
                     <input
                       type="checkbox"
                       checked={variable.required}
                       onChange={(e) =>
                         handleVariableChange(index, "required", e.target.checked)
                       }
-                      className="mr-2"
+                      className="w-4 h-4 text-primary-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-2 mr-3"
                     />
-                    <label className="text-xs text-gray-600 dark:text-gray-400">
-                      Required
+                    <label className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Required variable
                     </label>
                   </div>
                 </div>
@@ -918,7 +1112,14 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           </button>
           <button
             type="submit"
-            disabled={loading || !formData.name || !formData.content}
+            disabled={
+              loading ||
+              !formData.name ||
+              (isVisualCompliance
+                ? visualComplianceData.complianceCriteria.filter(c => c.trim()).length === 0
+                : !formData.content
+              )
+            }
             className="px-6 py-2 bg-gradient-primary text-white rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-all duration-300 hover:scale-105 font-display font-semibold shadow-lg"
           >
             {loading ? (

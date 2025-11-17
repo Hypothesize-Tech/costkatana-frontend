@@ -500,4 +500,55 @@ export class PromptTemplateService {
     const response = await apiClient.post(`${this.baseUrl}/${templateId}/ai/apply-optimization`, data);
     return response.data.data;
   }
+
+  // ============ VISUAL COMPLIANCE TEMPLATE METHODS ============
+
+  // Create visual compliance template
+  static async createVisualComplianceTemplate(
+    data: {
+      name: string;
+      description?: string;
+      content?: string;
+      complianceCriteria: string[];
+      imageVariables: Array<{
+        name: string;
+        imageRole: 'reference' | 'evidence';
+        description?: string;
+        required: boolean;
+      }>;
+      industry: 'jewelry' | 'grooming' | 'retail' | 'fmcg' | 'documents';
+      mode?: 'optimized' | 'standard';
+      metaPromptPresetId?: string;
+      projectId?: string;
+    }
+  ): Promise<PromptTemplate> {
+    const response = await apiClient.post(`${this.baseUrl}/visual-compliance`, data);
+    return response.data.data;
+  }
+
+  // Use visual compliance template
+  static async useVisualTemplate(
+    templateId: string,
+    data: {
+      textVariables?: Record<string, string>;
+      imageVariables: Record<string, string>;
+      projectId?: string;
+    }
+  ): Promise<any> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/use-visual`, data);
+    return response.data.data;
+  }
+
+  // Upload image for template variable
+  static async uploadTemplateImage(
+    templateId: string,
+    data: {
+      variableName: string;
+      imageData: string;
+      mimeType: string;
+    }
+  ): Promise<{ s3Url: string; variable: any }> {
+    const response = await apiClient.post(`${this.baseUrl}/${templateId}/upload-image`, data);
+    return response.data.data;
+  }
 }
