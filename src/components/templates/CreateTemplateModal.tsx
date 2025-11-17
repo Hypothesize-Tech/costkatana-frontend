@@ -899,32 +899,36 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         {/* Variables Section */}
         {!isVisualCompliance && formData.variables.length > 0 && (
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
+                <FiTag className="w-4 h-4 text-white" />
+              </div>
+              <label className="text-base font-display font-bold gradient-text-accent">
                 Variables ({formData.variables.length})
               </label>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {formData.variables.map((variable, index) => (
                 <div
                   key={index}
-                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  className="glass p-5 rounded-xl border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-highlight-50/20 dark:from-accent-900/20 dark:to-highlight-900/10 shadow-lg hover:scale-102 transition-all duration-300"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-base font-display font-bold gradient-text-primary flex items-center gap-2">
+                      <FiCode className="w-4 h-4" />
                       {`{{${variable.name}}}`}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeVariable(index)}
-                      className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                      className="px-3 py-2 rounded-xl text-danger-600 dark:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 border-2 border-danger-200/30 dark:border-danger-700/30 hover:border-danger-300/50 transition-all duration-300 hover:scale-105"
                     >
                       <FiMinus className="w-4 h-4" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                      <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                         Type
                       </label>
                       <select
@@ -932,7 +936,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                         onChange={(e) =>
                           handleVariableChange(index, "type", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                        className="input text-sm font-body"
                       >
                         <option value="text">Text</option>
                         <option value="number">Number</option>
@@ -945,7 +949,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                      <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                         Default Value
                       </label>
                       <input
@@ -955,12 +959,12 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                           handleVariableChange(index, "defaultValue", e.target.value)
                         }
                         placeholder="Optional"
-                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                        className="input text-sm font-body"
                       />
                     </div>
                   </div>
-                  <div className="mt-2">
-                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <div className="mt-4">
+                    <label className="block text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                       Description
                     </label>
                     <input
@@ -970,20 +974,20 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                         handleVariableChange(index, "description", e.target.value)
                       }
                       placeholder="What is this variable for?"
-                      className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                      className="input text-sm font-body"
                     />
                   </div>
-                  <div className="mt-2 flex items-center">
+                  <div className="mt-4 flex items-center glass px-4 py-3 rounded-lg border border-accent-200/30 bg-white dark:bg-gray-800">
                     <input
                       type="checkbox"
                       checked={variable.required}
                       onChange={(e) =>
                         handleVariableChange(index, "required", e.target.checked)
                       }
-                      className="mr-2"
+                      className="w-4 h-4 text-primary-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-2 mr-3"
                     />
-                    <label className="text-xs text-gray-600 dark:text-gray-400">
-                      Required
+                    <label className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Required variable
                     </label>
                   </div>
                 </div>
