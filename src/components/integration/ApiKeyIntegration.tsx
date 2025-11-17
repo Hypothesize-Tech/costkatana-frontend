@@ -59,20 +59,20 @@ export const ApiKeyIntegration: React.FC<ApiKeyIntegrationProps> = ({
     );
 
     return {
-      javascript: `// Install the AI Cost Tracker SDK
-// npm install ai-cost-tracker
+      javascript: `// Install the Cost Katana SDK
+// npm install cost-katana
 
-import { AICostTracker } from 'ai-cost-tracker';
+import { CostKatana } from 'cost-katana';
 
 // Initialize with your dashboard API key
-const tracker = new AICostTracker({
+const costKatana = new CostKatana({
     dashboardUrl: '${window.location.origin}/api',
     apiKey: '${selectedApiKey?.maskedKey || "your_dashboard_api_key"}',
     defaultProjectId: '${selectedProject || "your_project_id"}',
 });
 
 // Track usage for a project
-await tracker.trackUsage({
+await costKatana.trackUsage({
     projectId: '${selectedProject || "your_project_id"}',
     service: 'openai',
     model: 'gpt-4',
@@ -96,31 +96,31 @@ await tracker.trackUsage({
 });
 
 // Get project data
-const projectData = await tracker.getProject('${selectedProject || "your_project_id"}');
+const projectData = await costKatana.getProject('${selectedProject || "your_project_id"}');
 console.log('Project:', projectData);
 
 // Get analytics
-const analytics = await tracker.getAnalytics({
+const analytics = await costKatana.getAnalytics({
     projectId: '${selectedProject || "your_project_id"}',
     startDate: '2024-01-01',
     endDate: '2024-12-31'
 });
 console.log('Analytics:', analytics);`,
 
-      python: `# Install the AI Cost Tracker SDK
-# pip install ai-cost-tracker
+      python: `# Install the Cost Katana SDK
+# pip install cost-katana
 
-from ai_cost_tracker import AICostTracker
+from cost_katana import CostKatana
 
 # Initialize with your dashboard API key
-tracker = AICostTracker(
+cost_katana = CostKatana(
     dashboard_url='${window.location.origin}/api',
     api_key='${selectedApiKey?.maskedKey || "your_dashboard_api_key"}',
     default_project_id='${selectedProject || "your_project_id"}'
 )
 
 # Track usage for a project
-tracker.track_usage(
+cost_katana.track_usage(
     project_id='${selectedProject || "your_project_id"}',
     service='openai',
     model='gpt-4',
@@ -144,11 +144,11 @@ tracker.track_usage(
 )
 
 # Get project data
-project_data = tracker.get_project('${selectedProject || "your_project_id"}')
+project_data = cost_katana.get_project('${selectedProject || "your_project_id"}')
 print(f"Project: {project_data}")
 
 # Get analytics
-analytics = tracker.get_analytics(
+analytics = cost_katana.get_analytics(
     project_id='${selectedProject || "your_project_id"}',
     start_date='2024-01-01',
     end_date='2024-12-31'
@@ -206,7 +206,7 @@ app.post('/webhook/ai-usage', async (req, res) => {
     const usageData = req.body;
     
     try {
-        // Forward to AI Cost Tracker
+        // Forward to Cost Katana
         await axios.post('${window.location.origin}/api/usage/track', {
             projectId: '${selectedProject || "your_project_id"}',
             service: usageData.service,
