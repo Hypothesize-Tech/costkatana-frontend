@@ -58,10 +58,27 @@ import GitHubConnector from "./GitHubConnector";
 import FeatureSelector from "./FeatureSelector";
 import PRStatusPanel from "./PRStatusPanel";
 import githubService, { GitHubRepository } from "../../services/github.service";
-import { Send } from "lucide-react";
+import {
+  Send,
+  Copy,
+  Eye,
+  EyeOff,
+  Check,
+  Settings,
+  Brain,
+  MessageSquare,
+  FileText,
+  Zap,
+  AlertCircle,
+  AlertTriangle,
+} from "lucide-react";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
 import { IntegrationMentionHint } from "./IntegrationMentionHint";
 import { MentionAutocomplete } from "./MentionAutocomplete";
+import TemplatePicker from "./TemplatePicker";
+import TemplateVariableInput from "./TemplateVariableInput";
+import { useTemplateStore } from "@/stores/templateStore";
+import { PromptTemplate } from "@/types/promptTemplate.types";
 
 // Configure marked for security
 marked.setOptions({
@@ -89,6 +106,21 @@ interface ChatMessage {
     qualityScore?: number;
     qualityRecommendations?: string[];
     processingTime?: number;
+    templateId?: string;
+    templateName?: string;
+    templateVariables?: Record<string, any>;
+    templateUsed?: {
+      id: string;
+      name: string;
+      category: string;
+      variablesResolved: Array<{
+        variableName: string;
+        value: string;
+        confidence: number;
+        source: string;
+        reasoning?: string;
+      }>;
+    };
   };
   thinking?: {
     title: string;
@@ -196,6 +228,17 @@ export const ConversationalAgent: React.FC = () => {
   const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
   const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
   const [githubConnection, setGithubConnection] = useState<{ avatarUrl?: string; username?: string; hasConnection: boolean }>({ hasConnection: false });
+
+  // Template functionality
+  const {
+    selectedTemplate,
+    isTemplatePickerOpen,
+    openTemplatePicker,
+    closeTemplatePicker,
+    selectTemplate,
+    clearTemplate,
+  } = useTemplateStore();
+  const [showVariableInput, setShowVariableInput] = useState(false);
   const [showAttachmentsPopover, setShowAttachmentsPopover] = useState(false);
   const [showAllModelsDropdown, setShowAllModelsDropdown] = useState(false);
   const [previewDocument, setPreviewDocument] = useState<{ documentId: string; fileName: string } | null>(null);
@@ -1134,6 +1177,99 @@ export const ConversationalAgent: React.FC = () => {
     }
   };
 
+  // Template handlers
+  const handleTemplateSelect = (template: PromptTemplate) => {
+    selectTemplate(template);
+    if (template.variables.length > 0) {
+      setShowVariableInput(true);
+    } else {
+      // No variables, send directly
+      handleTemplateSubmit({});
+    }
+  };
+
+  const handleTemplateSubmit = async (variables: Record<string, any>) => {
+    setShowVariableInput(false);
+    if (!selectedTemplate || !selectedModel) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    // Create a formatted message showing the template being used
+    const templateMessage = `**Using Template: ${selectedTemplate.name}**\n\n${selectedTemplate.description || ''}\n\n**Variables:**\n${Object.entries(variables).map(([key, value]) => `- **${key}**: ${value}`).join('\n')}`;
+
+    // Add user message showing template usage
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: templateMessage,
+      timestamp: new Date(),
+      metadata: {
+        templateId: selectedTemplate._id,
+        templateName: selectedTemplate.name,
+        templateVariables: variables,
+      },
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Add loading message
+    const loadingId = (Date.now() + 1).toString();
+    setLoadingMessageId(loadingId);
+
+    try {
+      const response = await ChatService.sendMessage({
+        modelId: selectedModel.id,
+        conversationId: currentConversationId || undefined,
+        chatMode: chatMode,
+        useMultiAgent: useMultiAgent,
+        templateId: selectedTemplate._id,
+        templateVariables: variables,
+        documentIds: selectedDocuments.length > 0
+          ? selectedDocuments.map(doc => doc.documentId)
+          : undefined,
+      });
+
+      // Remove loading indicator
+      setLoadingMessageId(null);
+
+      const assistantMessage: ChatMessage = {
+        id: (Date.now() + 2).toString(),
+        role: "assistant",
+        content: response.response,
+        timestamp: new Date(),
+        metadata: {
+          cost: response.cost,
+          latency: response.latency,
+          tokenCount: response.tokenCount,
+          templateUsed: response.templateUsed,
+        },
+        optimizationsApplied: response.optimizationsApplied,
+        cacheHit: response.cacheHit,
+        agentPath: response.agentPath,
+        riskLevel: response.riskLevel,
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      // Update conversation
+      if (!currentConversationId) {
+        setCurrentConversationId(response.conversationId);
+      }
+
+      // Clear template
+      clearTemplate();
+      setSelectedDocuments([]);
+
+    } catch (error: any) {
+      console.error("Error using template:", error);
+      setError(error.response?.data?.message || "Failed to use template");
+      setLoadingMessageId(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const sendMessage = async (content?: string) => {
     const messageContent = content || currentMessage.trim();
     if (!messageContent || isLoading) return;
@@ -1555,15 +1691,15 @@ export const ConversationalAgent: React.FC = () => {
   const getSourceIcon = (type: string) => {
     switch (type) {
       case 'web':
-        return '🌐';
+        return <LinkIcon className="w-4 h-4" />;
       case 'document':
-        return '📄';
+        return <DocumentTextIcon className="w-4 h-4" />;
       case 'api':
-        return '🔗';
+        return <ServerIcon className="w-4 h-4" />;
       case 'database':
-        return '🗄️';
+        return <CircleStackIcon className="w-4 h-4" />;
       default:
-        return '📚';
+        return <BookOpenIcon className="w-4 h-4" />;
     }
   };
 
@@ -1738,17 +1874,37 @@ export const ConversationalAgent: React.FC = () => {
                           {hasPreview && (
                             <button
                               onClick={() => togglePreview(codeId)}
-                              className="btn-ghost text-xs font-display font-medium"
+                              className="px-3 py-1.5 rounded-lg bg-primary-100/50 dark:bg-primary-900/30 hover:bg-primary-200/50 dark:hover:bg-primary-800/40 border border-primary-200/30 dark:border-primary-700/30 transition-all text-xs font-display font-medium text-primary-700 dark:text-primary-300 flex items-center gap-1"
                               title="Toggle Preview"
                             >
-                              {showPreviews[codeId] ? "👁️ Hide Preview" : "👁️ Show Preview"}
+                              {showPreviews[codeId] ? (
+                                <>
+                                  <EyeOff className="w-3 h-3" />
+                                  Hide Preview
+                                </>
+                              ) : (
+                                <>
+                                  <Eye className="w-3 h-3" />
+                                  Show Preview
+                                </>
+                              )}
                             </button>
                           )}
                           <button
                             onClick={() => copyToClipboard(codeContent)}
-                            className="btn-ghost text-xs font-display font-medium"
+                            className="px-3 py-1.5 rounded-lg bg-primary-100/50 dark:bg-primary-900/30 hover:bg-primary-200/50 dark:hover:bg-primary-800/40 border border-primary-200/30 dark:border-primary-700/30 transition-all text-xs font-display font-medium text-primary-700 dark:text-primary-300 flex items-center gap-1"
                           >
-                            {copiedCode === codeContent ? "✓ Copied!" : "📋 Copy"}
+                            {copiedCode === codeContent ? (
+                              <>
+                                <Check className="w-3 h-3" />
+                                Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3" />
+                                Copy
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1897,8 +2053,9 @@ export const ConversationalAgent: React.FC = () => {
         <div className="glass max-w-2xl w-full max-h-[80vh] overflow-hidden rounded-2xl shadow-2xl animate-scale-in">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
-            <h3 className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-              📚 Sources & References
+            <h3 className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-2">
+              <BookOpenIcon className="w-5 h-5" />
+              Sources & References
             </h3>
             <button
               onClick={() => setShowSourcesModal(false)}
@@ -2351,6 +2508,15 @@ export const ConversationalAgent: React.FC = () => {
                     <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
                       {formatTimestamp(message.timestamp)}
                     </span>
+                    {(message.metadata?.templateId || message.metadata?.templateUsed) && (
+                      <span className={`glass px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5 ${message.role === 'user'
+                        ? 'border-white/30 bg-white/20 text-white'
+                        : 'border-purple-200/30 bg-gradient-to-br from-purple-500/20 to-purple-600/20 text-purple-600 dark:text-purple-400'
+                        } font-display font-semibold text-xs`}>
+                        <SparklesIcon className="w-3.5 h-3.5" />
+                        {message.metadata?.templateName || message.metadata?.templateUsed?.name || 'Template'}
+                      </span>
+                    )}
                     {message.metadata?.cost && (
                       <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
                         ? 'border-white/30 bg-white/20 text-white'
@@ -2360,24 +2526,27 @@ export const ConversationalAgent: React.FC = () => {
                       </span>
                     )}
                     {message.cacheHit && (
-                      <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse">
-                        ⚡ Cached
+                      <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse inline-flex items-center gap-1">
+                        <Zap className="w-3 h-3" />
+                        Cached
                       </span>
                     )}
                     {message.riskLevel && message.riskLevel !== 'low' && (
-                      <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs ${message.riskLevel === 'high'
+                      <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs inline-flex items-center gap-1 ${message.riskLevel === 'high'
                         ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
                         : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
                         }`}>
-                        {message.riskLevel === 'high' ? '🔴' : '🟡'} {message.riskLevel.toUpperCase()} RISK
+                        {message.riskLevel === 'high' ? <AlertCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                        {message.riskLevel.toUpperCase()} RISK
                       </span>
                     )}
                     {message.sources && message.sources.length > 0 && (
                       <button
                         onClick={() => openSourcesModal(message.sources)}
-                        className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs"
+                        className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs inline-flex items-center gap-1"
                       >
-                        📚 {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
+                        <BookOpenIcon className="w-3 h-3" />
+                        {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
                       </button>
                     )}
                   </div>
@@ -2403,8 +2572,9 @@ export const ConversationalAgent: React.FC = () => {
                       {/* Cache Hit Indicator */}
                       {message.cacheHit && (
                         <div className="mb-4">
-                          <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md">
-                            ⚡ Semantic Cache Hit - Instant Response
+                          <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md inline-flex items-center gap-1.5">
+                            <Zap className="w-3.5 h-3.5" />
+                            Semantic Cache Hit - Instant Response
                           </span>
                         </div>
                       )}
@@ -2413,8 +2583,9 @@ export const ConversationalAgent: React.FC = () => {
                       {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
                         <div className="mb-3">
                           <div className="mb-2">
-                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
-                              🔧 Optimizations Applied:
+                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-1.5">
+                              <Settings className="w-4 h-4" />
+                              Optimizations Applied:
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -2423,33 +2594,34 @@ export const ConversationalAgent: React.FC = () => {
                               let borderClass = 'border-primary-200/30';
                               let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
                               let textClass = 'text-primary-600 dark:text-primary-400';
-                              let icon = '⚙️';
+                              let IconComponent = Settings;
 
                               if (opt.includes('cache')) {
                                 borderClass = 'border-success-200/30';
                                 bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
                                 textClass = 'text-success-600 dark:text-success-400';
-                                icon = '⚡';
+                                IconComponent = Zap;
                               } else if (opt.includes('prompt') || opt.includes('system')) {
                                 borderClass = 'border-warning-200/30';
                                 bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
                                 textClass = 'text-warning-600 dark:text-warning-400';
-                                icon = '🧠';
+                                IconComponent = Brain;
                               } else if (opt.includes('multi_turn') || opt.includes('context')) {
                                 borderClass = 'border-primary-200/30';
                                 bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
                                 textClass = 'text-primary-600 dark:text-primary-400';
-                                icon = '💬';
+                                IconComponent = MessageSquare;
                               } else if (opt.includes('summarization')) {
                                 borderClass = 'border-accent-200/30';
                                 bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
                                 textClass = 'text-accent-600 dark:text-accent-400';
-                                icon = '📝';
+                                IconComponent = FileText;
                               }
 
                               return (
-                                <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`} title={opt}>
-                                  {icon} {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm inline-flex items-center gap-1.5`} title={opt}>
+                                  <IconComponent className="w-3 h-3" />
+                                  {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </span>
                               );
                             })}
@@ -2652,6 +2824,21 @@ export const ConversationalAgent: React.FC = () => {
                       />
                       <div className="absolute bottom-full left-0 mb-2 w-64 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-50 animate-scale-in overflow-hidden">
                         <div className="p-2">
+                          {/* Template Picker Button */}
+                          <button
+                            onClick={() => {
+                              setShowAttachmentsPopover(false);
+                              openTemplatePicker();
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 mb-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors border border-primary-200/30 dark:border-primary-500/20 bg-primary-50/50 dark:bg-primary-900/10"
+                          >
+                            <SparklesIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                            <div className="flex-1 text-left">
+                              <span className="block text-sm font-medium text-gray-900 dark:text-white">Use Template</span>
+                              <span className="block text-xs text-gray-500 dark:text-gray-400">Quick start with prompts</span>
+                            </div>
+                          </button>
+
                           {/* Document Upload in Popover */}
                           <div className="mb-2">
                             <input
@@ -3085,6 +3272,28 @@ export const ConversationalAgent: React.FC = () => {
           documentId={previewDocument.documentId}
           fileName={previewDocument.fileName}
           onClose={() => setPreviewDocument(null)}
+        />
+      )}
+
+      {/* Template Components */}
+      <TemplatePicker
+        isOpen={isTemplatePickerOpen}
+        onClose={closeTemplatePicker}
+        onSelectTemplate={handleTemplateSelect}
+      />
+
+      {selectedTemplate && showVariableInput && (
+        <TemplateVariableInput
+          template={selectedTemplate}
+          onSubmit={handleTemplateSubmit}
+          onCancel={() => {
+            setShowVariableInput(false);
+            clearTemplate();
+          }}
+          conversationHistory={messages.slice(-5).map(m => ({
+            role: m.role,
+            content: m.content
+          }))}
         />
       )}
 

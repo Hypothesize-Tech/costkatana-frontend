@@ -49,7 +49,7 @@ export interface AvailableModel {
 }
 
 export interface SendMessageRequest {
-  message: string;
+  message?: string; // Now optional when templateId is provided
   modelId: string;
   conversationId?: string;
   temperature?: number;
@@ -63,6 +63,9 @@ export interface SendMessageRequest {
     repositoryName: string;
     repositoryFullName: string;
   };
+  // Template support
+  templateId?: string;
+  templateVariables?: Record<string, any>;
 }
 
 export interface SendMessageResponse {
@@ -95,6 +98,18 @@ export interface SendMessageResponse {
     progress?: number;
     currentStep?: string;
     prUrl?: string;
+  };
+  templateUsed?: {
+    id: string;
+    name: string;
+    category: string;
+    variablesResolved: Array<{
+      variableName: string;
+      value: string;
+      confidence: number;
+      source: 'user_provided' | 'context_inferred' | 'default' | 'missing';
+      reasoning?: string;
+    }>;
   };
 }
 

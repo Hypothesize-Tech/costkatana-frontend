@@ -127,6 +127,8 @@ export interface TemplateStats {
 }
 
 export interface TemplateSearchFilters {
+  page?: number;
+  limit?: number;
   query?: string;
   category?: string;
   tags?: string[];
