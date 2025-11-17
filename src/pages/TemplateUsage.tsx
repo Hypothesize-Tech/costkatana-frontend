@@ -5,6 +5,7 @@ import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { useNotification } from "../contexts/NotificationContext";
+import { ImageVariableInput } from "../components/templates/ImageVariableInput";
 
 const TemplateUsagePage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const TemplateUsagePage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] =
     useState<PromptTemplate | null>(null);
   const [variables, setVariables] = useState<Record<string, string>>({});
+  const [imageVariables, setImageVariables] = useState<Record<string, string>>({});
   const [generatedPrompt, setGeneratedPrompt] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [usingTemplate, setUsingTemplate] = useState(false);
@@ -42,10 +44,16 @@ const TemplateUsagePage: React.FC = () => {
     setSelectedTemplate(template);
     // Initialize variables
     const vars: Record<string, string> = {};
+    const imgVars: Record<string, string> = {};
     template.variables?.forEach((variable) => {
-      vars[variable.name] = variable.defaultValue || "";
+      if (variable.type === 'image') {
+        imgVars[variable.name] = variable.s3Url || variable.defaultValue || "";
+      } else {
+        vars[variable.name] = variable.defaultValue || "";
+      }
     });
     setVariables(vars);
+    setImageVariables(imgVars);
     generatePrompt(template, vars);
   };
 
@@ -84,12 +92,30 @@ const TemplateUsagePage: React.FC = () => {
 
     try {
       setUsingTemplate(true);
-      const templateService = PromptTemplateService;
-      await templateService.useTemplate(selectedTemplate._id, variables);
-      showNotification(
-        `Template "${selectedTemplate.name}" used successfully!`,
-        "success",
-      );
+
+      // Check if this is a visual compliance template
+      if (selectedTemplate.isVisualCompliance) {
+        // Use visual template endpoint
+        const result = await PromptTemplateService.useVisualTemplate(
+          selectedTemplate._id,
+          {
+            textVariables: variables,
+            imageVariables: imageVariables
+          }
+        );
+
+        showNotification(
+          `Visual compliance check completed! Score: ${result.compliance_score}%`,
+          result.pass_fail ? "success" : "warning"
+        );
+      } else {
+        // Regular template usage
+        await PromptTemplateService.useTemplate(selectedTemplate._id, variables);
+        showNotification(
+          `Template "${selectedTemplate.name}" used successfully!`,
+          "success",
+        );
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Failed to use template";
       console.error("Error using template:", error);
@@ -292,54 +318,68 @@ const TemplateUsagePage: React.FC = () => {
                     <div className="grid gap-6">
                       {selectedTemplate.variables.map((variable, index) => (
                         <div key={variable.name} className="group">
-                          <div className="p-4 bg-gradient-to-r rounded-xl border transition-all duration-200 from-secondary-50 to-secondary-100/50 dark:from-secondary-700/50 dark:to-secondary-600/50 border-secondary-200/50 dark:border-secondary-600/50 hover:shadow-lg">
-                            <div className="flex justify-between items-start mb-3">
-                              <div className="flex gap-3 items-center">
-                                <div className="flex justify-center items-center w-8 h-8 text-sm font-bold text-white bg-gradient-to-br rounded-lg from-primary-500 to-highlight-600">
-                                  {index + 1}
-                                </div>
-                                <div>
-                                  <label className="block text-sm font-semibold text-secondary-900 dark:text-white">
-                                    {variable.name}
-                                    {variable.required && (
-                                      <span className="ml-1 text-lg text-danger-500">*</span>
+                          {variable.type === 'image' ? (
+                            // Image variable input
+                            <ImageVariableInput
+                              variableName={variable.name}
+                              imageRole={variable.imageRole || 'reference'}
+                              description={variable.description}
+                              required={variable.required}
+                              value={imageVariables[variable.name]}
+                              onChange={(value) => setImageVariables(prev => ({ ...prev, [variable.name]: value }))}
+                              accept={variable.accept}
+                            />
+                          ) : (
+                            // Text variable input
+                            <div className="p-4 bg-gradient-to-r rounded-xl border transition-all duration-200 from-secondary-50 to-secondary-100/50 dark:from-secondary-700/50 dark:to-secondary-600/50 border-secondary-200/50 dark:border-secondary-600/50 hover:shadow-lg">
+                              <div className="flex justify-between items-start mb-3">
+                                <div className="flex gap-3 items-center">
+                                  <div className="flex justify-center items-center w-8 h-8 text-sm font-bold text-white bg-gradient-to-br rounded-lg from-primary-500 to-highlight-600">
+                                    {index + 1}
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold text-secondary-900 dark:text-white">
+                                      {variable.name}
+                                      {variable.required && (
+                                        <span className="ml-1 text-lg text-danger-500">*</span>
+                                      )}
+                                    </label>
+                                    {variable.description && (
+                                      <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-400">
+                                        {variable.description}
+                                      </p>
                                     )}
-                                  </label>
-                                  {variable.description && (
-                                    <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-400">
-                                      {variable.description}
-                                    </p>
-                                  )}
+                                  </div>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${variable.required
+                                    ? "bg-danger-100 text-danger-700 dark:bg-danger-900/30 dark:text-danger-300"
+                                    : "bg-secondary-100 text-secondary-600 dark:bg-secondary-600 dark:text-secondary-300"
+                                    }`}>
+                                    {variable.required ? "Required" : "Optional"}
+                                  </span>
                                 </div>
                               </div>
-                              <div className="flex gap-2 items-center">
-                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${variable.required
-                                  ? "bg-danger-100 text-danger-700 dark:bg-danger-900/30 dark:text-danger-300"
-                                  : "bg-secondary-100 text-secondary-600 dark:bg-secondary-600 dark:text-secondary-300"
-                                  }`}>
-                                  {variable.required ? "Required" : "Optional"}
-                                </span>
-                              </div>
-                            </div>
 
-                            {variable.type === "text" && variable.name.toLowerCase().includes("description") ? (
-                              <textarea
-                                value={variables[variable.name] || ""}
-                                onChange={(e) => handleVariableChange(variable.name, e.target.value)}
-                                placeholder={variable.defaultValue || `Enter ${variable.name}...`}
-                                rows={4}
-                                className="resize-none input"
-                              />
-                            ) : (
-                              <input
-                                type="text"
-                                value={variables[variable.name] || ""}
-                                onChange={(e) => handleVariableChange(variable.name, e.target.value)}
-                                placeholder={variable.defaultValue || `Enter ${variable.name}...`}
-                                className="input"
-                              />
-                            )}
-                          </div>
+                              {variable.type === "text" && variable.name.toLowerCase().includes("description") ? (
+                                <textarea
+                                  value={variables[variable.name] || ""}
+                                  onChange={(e) => handleVariableChange(variable.name, e.target.value)}
+                                  placeholder={variable.defaultValue || `Enter ${variable.name}...`}
+                                  rows={4}
+                                  className="resize-none input"
+                                />
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={variables[variable.name] || ""}
+                                  onChange={(e) => handleVariableChange(variable.name, e.target.value)}
+                                  placeholder={variable.defaultValue || `Enter ${variable.name}...`}
+                                  className="input"
+                                />
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

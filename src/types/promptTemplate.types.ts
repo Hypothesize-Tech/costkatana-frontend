@@ -10,7 +10,8 @@ export interface PromptTemplate {
     | "analysis"
     | "creative"
     | "business"
-    | "custom";
+    | "custom"
+    | "visual-compliance";
   projectId?: string;
   createdBy:
     | string
@@ -42,6 +43,12 @@ export interface PromptTemplate {
     sharedWith: string[];
     allowFork: boolean;
   };
+  isVisualCompliance?: boolean;
+  visualComplianceConfig?: {
+    industry: "jewelry" | "grooming" | "retail" | "fmcg" | "documents";
+    mode?: "optimized" | "standard";
+    metaPromptPresetId?: string;
+  };
   isFavorite?: boolean;
   isActive: boolean;
   isDeleted: boolean;
@@ -54,7 +61,15 @@ export interface TemplateVariable {
   description?: string;
   defaultValue?: string;
   required: boolean;
-  type?: "text" | "number" | "boolean" | "select" | "multiselect";
+  type?: "text" | "number" | "boolean" | "select" | "multiselect" | "image";
+  imageRole?: "reference" | "evidence";
+  s3Url?: string;
+  accept?: string;
+  metadata?: {
+    format?: string;
+    dimensions?: string;
+    uploadedAt?: string;
+  };
   options?: string[];
 }
 
@@ -172,4 +187,34 @@ export interface TemplateCollection {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+// Visual Compliance Template Types
+export interface CreateVisualTemplateRequest {
+  name: string;
+  description?: string;
+  content?: string;
+  complianceCriteria: string[];
+  imageVariables: Array<{
+    name: string;
+    imageRole: "reference" | "evidence";
+    description?: string;
+    required: boolean;
+  }>;
+  industry: "jewelry" | "grooming" | "retail" | "fmcg" | "documents";
+  mode?: "optimized" | "standard";
+  metaPromptPresetId?: string;
+  projectId?: string;
+}
+
+export interface UseVisualTemplateRequest {
+  textVariables?: Record<string, string>;
+  imageVariables: Record<string, string>; // variable name -> S3 URL or base64
+  projectId?: string;
+}
+
+export interface UploadTemplateImageRequest {
+  variableName: string;
+  imageData: string; // base64
+  mimeType: string;
 }

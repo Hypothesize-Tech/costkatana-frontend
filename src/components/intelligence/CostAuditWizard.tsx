@@ -425,7 +425,7 @@ export const CostAuditWizard: React.FC<CostAuditWizardProps> = ({
                     </p>
                     <a
                       href="/usage"
-                      className="inline-flex gap-2 items-center transition-transform duration-300 btn-warning hover:scale-105"
+                      className="btn inline-flex gap-2 items-center transition-transform duration-300 btn-warning hover:scale-105"
                     >
                       <span>Go to Usage Tracking</span>
                       <span>→</span>

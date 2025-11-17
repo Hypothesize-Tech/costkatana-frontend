@@ -78,7 +78,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
   ];
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="" size="lg">
+    <Modal isOpen={true} onClose={onClose} title="" size="4xl">
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
         <div className="glass flex justify-between items-start p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -87,7 +87,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
               <h2 className="text-3xl font-display font-bold gradient-text-primary truncate">
                 {template.name}
               </h2>
-              <span className="badge-primary">
+              <span className="badge-primary btn">
                 {template.category}
               </span>
               {template.isFavorite && (
@@ -192,7 +192,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 </h3>
                 <button
                   onClick={handleCopyContent}
-                  className={`btn-secondary inline-flex items-center gap-2 ${copied
+                  className={`btn btn-secondary inline-flex items-center gap-2 ${copied
                     ? "text-success-600 bg-success-50/20 shadow-lg"
                     : ""
                     }`}

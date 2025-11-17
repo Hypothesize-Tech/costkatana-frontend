@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FiPlus,
   FiSearch,
@@ -8,6 +8,8 @@ import {
   FiTrendingUp,
   FiBookOpen,
   FiPlay,
+  FiTarget,
+  FiImage,
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
@@ -24,6 +26,7 @@ import { useNotification } from "../contexts/NotificationContext";
 
 const PromptTemplates: React.FC = () => {
   const { showNotification } = useNotification();
+  const navigate = useNavigate();
   const [templates, setTemplates] = useState<PromptTemplate[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +51,7 @@ const PromptTemplates: React.FC = () => {
     { value: "analysis", label: "Analysis" },
     { value: "creative", label: "Creative" },
     { value: "business", label: "Business" },
+    { value: "visual-compliance", label: "Visual Compliance" },
   ];
 
   useEffect(() => {
@@ -443,13 +447,13 @@ const PromptTemplates: React.FC = () => {
                   setDeleteConfirmOpen(false);
                   setSelectedTemplate(null);
                 }}
-                className="btn btn-outline"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteTemplate}
-                className="btn btn-danger"
+                className="btn bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
               >
                 Delete
               </button>

@@ -128,14 +128,14 @@ export const VisualComplianceBatch: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <div className="glass rounded-xl border border-purple-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-purple-50/10 to-pink-50/10 dark:from-purple-900/10 dark:to-pink-900/10">
-                <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-8 rounded-t-xl border-b border-purple-200/30">
+            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
                     <div className="flex items-center gap-4 mb-3">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                        <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
                             <RocketLaunchIcon className="w-7 h-7 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-3xl font-display font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                            <h2 className="text-3xl font-display font-bold gradient-text-primary">
                                 Batch Visual Compliance Check
                             </h2>
                             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-base mt-2">
@@ -161,7 +161,7 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-reference"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-purple-300/50 dark:border-purple-600/50 rounded-xl cursor-pointer hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-200 glass bg-gradient-to-br from-purple-50/30 to-transparent dark:from-purple-900/10 dark:to-transparent hover:shadow-lg"
+                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg"
                             >
                                 {referencePreview ? (
                                     <img
@@ -171,7 +171,7 @@ export const VisualComplianceBatch: React.FC = () => {
                                     />
                                 ) : (
                                     <>
-                                        <PhotoIcon className="w-12 h-12 text-purple-500 dark:text-purple-400 mb-2" />
+                                        <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
                                         <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                             Click to upload reference image
                                         </p>
@@ -195,9 +195,9 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-evidence"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-pink-300/50 dark:border-pink-600/50 rounded-xl cursor-pointer hover:border-pink-400 dark:hover:border-pink-500 transition-all duration-200 glass bg-gradient-to-br from-pink-50/30 to-transparent dark:from-pink-900/10 dark:to-transparent hover:shadow-lg"
+                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg"
                             >
-                                <PhotoIcon className="w-12 h-12 text-pink-500 dark:text-pink-400 mb-2" />
+                                <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
                                 <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Click to upload evidence images ({evidenceImages.length} selected)
                                 </p>
@@ -209,9 +209,9 @@ export const VisualComplianceBatch: React.FC = () => {
                                             <img
                                                 src={preview}
                                                 alt={`Evidence ${i + 1}`}
-                                                className="w-full h-24 object-cover rounded-lg border-2 border-pink-200/50 dark:border-pink-700/50 glass shadow-md group-hover:scale-105 transition-transform duration-200"
+                                                className="w-full h-24 object-cover rounded-lg border-2 border-primary-200/50 dark:border-primary-700/50 glass shadow-md group-hover:scale-105 transition-transform duration-200"
                                             />
-                                            <span className="absolute top-1 right-1 bg-gradient-to-br from-purple-500 to-pink-600 text-white text-xs font-display font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
+                                            <span className="absolute top-1 right-1 bg-gradient-primary text-white text-xs font-display font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
                                                 {i + 1}
                                             </span>
                                         </div>
@@ -245,25 +245,45 @@ export const VisualComplianceBatch: React.FC = () => {
                             </label>
                             <div className="space-y-2">
                                 {complianceCriteria.map((criterion, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={criterion}
-                                        onChange={(e) => {
-                                            const updated = [...complianceCriteria];
-                                            updated[index] = e.target.value;
-                                            setComplianceCriteria(updated);
-                                        }}
-                                        className="input"
-                                    />
+                                    <div key={index} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={criterion}
+                                            onChange={(e) => {
+                                                const updated = [...complianceCriteria];
+                                                updated[index] = e.target.value;
+                                                setComplianceCriteria(updated);
+                                            }}
+                                            placeholder="Enter compliance criterion..."
+                                            className="input flex-1"
+                                        />
+                                        {complianceCriteria.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setComplianceCriteria(complianceCriteria.filter((_, i) => i !== index));
+                                                }}
+                                                className="btn btn-secondary px-4"
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
+                                    </div>
                                 ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setComplianceCriteria([...complianceCriteria, ''])}
+                                    className="btn btn-secondary w-full"
+                                >
+                                    + Add Criterion
+                                </button>
                             </div>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading || !referenceImage || evidenceImages.length === 0}
-                            className="btn btn-primary w-full flex items-center justify-center gap-2"
+                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <>
@@ -271,7 +291,10 @@ export const VisualComplianceBatch: React.FC = () => {
                                     Processing...
                                 </>
                             ) : (
-                                'Process Batch'
+                                <>
+                                    <RocketLaunchIcon className="w-5 h-5" />
+                                    Process Batch
+                                </>
                             )}
                         </button>
                     </form>
@@ -293,7 +316,7 @@ export const VisualComplianceBatch: React.FC = () => {
                             </div>
                             <button
                                 onClick={exportToCSV}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-to-r from-success-500 to-emerald-600 shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+                                className="btn inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-to-r from-success-500 to-emerald-600 shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
                             >
                                 <ArrowDownTrayIcon className="w-5 h-5" />
                                 Export CSV
@@ -315,14 +338,14 @@ export const VisualComplianceBatch: React.FC = () => {
                                     ${totalCost.toFixed(4)}
                                 </div>
                             </div>
-                            <div className="glass rounded-xl p-5 border border-purple-200/30 backdrop-blur-xl bg-gradient-to-br from-purple-50/50 to-transparent dark:from-purple-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                            <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-transparent dark:from-primary-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
                                     <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Avg Score</div>
                                 </div>
-                                <div className="text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
+                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">
                                     {avgScore.toFixed(1)}%
                                 </div>
                             </div>
@@ -335,14 +358,14 @@ export const VisualComplianceBatch: React.FC = () => {
                                     {passRate.toFixed(1)}%
                                 </div>
                             </div>
-                            <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-transparent dark:from-primary-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
+                            <div className="glass rounded-xl p-5 border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/50 to-transparent dark:from-accent-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <svg className="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-4 h-4 text-accent-600 dark:text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <div className="text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide">Successful</div>
                                 </div>
-                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">
+                                <div className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
                                     {successfulResults.length}/{results.length}
                                 </div>
                             </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
     PhotoIcon,
     CheckCircleIcon,
@@ -9,9 +10,12 @@ import {
     BoltIcon
 } from '@heroicons/react/24/outline';
 import { visualComplianceService } from '../../services/visualCompliance.service';
+import { PromptTemplateService } from '../../services/promptTemplate.service';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import { VisualComplianceTemplateCreator } from '../templates/VisualComplianceTemplateCreator';
 import type { ComplianceResult, Industry, MetaPromptPreset } from '../../types/visualCompliance.types';
+import type { PromptTemplate } from '../../types/promptTemplate.types';
 import { EyeIcon } from 'lucide-react';
 
 interface VisualComplianceTabProps {
@@ -19,6 +23,8 @@ interface VisualComplianceTabProps {
 }
 
 export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOptimizationCreated }) => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [showTemplateCreator, setShowTemplateCreator] = useState(searchParams.get('createTemplate') === 'true');
     const [referenceImage, setReferenceImage] = useState<File | null>(null);
     const [evidenceImage, setEvidenceImage] = useState<File | null>(null);
     const [referencePreview, setReferencePreview] = useState<string | null>(null);
@@ -40,6 +46,12 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
     const [showCustomPrompt, setShowCustomPrompt] = useState(false);
     const [loadingPresets, setLoadingPresets] = useState(false);
 
+    // Template state
+    const [useTemplate, setUseTemplate] = useState(false);
+    const [templates, setTemplates] = useState<PromptTemplate[]>([]);
+    const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
+    const [loadingTemplates, setLoadingTemplates] = useState(false);
+
     const { showNotification } = useNotifications();
 
     // Load meta prompt presets on mount
@@ -59,6 +71,42 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
         };
         loadPresets();
     }, []);
+
+    // Load visual compliance templates
+    useEffect(() => {
+        if (useTemplate) {
+            const loadTemplates = async () => {
+                try {
+                    setLoadingTemplates(true);
+                    const allTemplates = await PromptTemplateService.getTemplates();
+                    // Filter only visual compliance templates
+                    const visualTemplates = allTemplates.filter(t => t.isVisualCompliance);
+                    setTemplates(visualTemplates);
+                } catch (err) {
+                    console.error('Failed to load templates:', err);
+                    showNotification('Failed to load templates', 'error');
+                } finally {
+                    setLoadingTemplates(false);
+                }
+            };
+            loadTemplates();
+        }
+    }, [useTemplate, showNotification]);
+
+    // When template is selected, populate criteria
+    useEffect(() => {
+        if (selectedTemplate) {
+            const textVariables = selectedTemplate.variables.filter(v => v.type !== 'image');
+            const criteria = textVariables.map(v => v.defaultValue || v.description || '').filter(Boolean);
+            if (criteria.length > 0) {
+                setComplianceCriteria(criteria);
+            }
+            // Set industry from template config
+            if (selectedTemplate.visualComplianceConfig?.industry) {
+                setIndustry(selectedTemplate.visualComplianceConfig.industry);
+            }
+        }
+    }, [selectedTemplate]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'reference' | 'evidence') => {
         const file = e.target.files?.[0];
@@ -176,6 +224,42 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
         setComplianceCriteria(updated);
     };
 
+    // Handle template creator mode
+    if (showTemplateCreator) {
+        return (
+            <div className="space-y-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-secondary-900 dark:text-white">
+                        Create Visual Compliance Template
+                    </h2>
+                    <button
+                        onClick={() => {
+                            setShowTemplateCreator(false);
+                            searchParams.delete('createTemplate');
+                            setSearchParams(searchParams);
+                        }}
+                        className="px-4 py-2 text-sm btn-secondary btn"
+                    >
+                        Back to Visual Compliance
+                    </button>
+                </div>
+                <VisualComplianceTemplateCreator
+                    onSuccess={() => {
+                        setShowTemplateCreator(false);
+                        searchParams.delete('createTemplate');
+                        setSearchParams(searchParams);
+                        showNotification('Visual compliance template created successfully!', 'success');
+                    }}
+                    onCancel={() => {
+                        setShowTemplateCreator(false);
+                        searchParams.delete('createTemplate');
+                        setSearchParams(searchParams);
+                    }}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -197,6 +281,79 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
 
                 <div className="p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Template Toggle */}
+                        <div className="p-4 bg-gradient-to-br rounded-xl border from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-800/20 border-accent-200/50 dark:border-accent-700/50">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-lg font-bold text-accent-700 dark:text-accent-300">
+                                        Use Template
+                                    </h3>
+                                    <p className="text-sm text-accent-600 dark:text-accent-400 mt-1">
+                                        Load a saved visual compliance template with pre-defined criteria
+                                    </p>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={useTemplate}
+                                        onChange={(e) => setUseTemplate(e.target.checked)}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-11 h-6 bg-secondary-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-accent-300 dark:peer-focus:ring-accent-800 rounded-full peer dark:bg-secondary-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-secondary-600 peer-checked:bg-accent-600"></div>
+                                </label>
+                            </div>
+
+                            {/* Template Selector */}
+                            {useTemplate && (
+                                <div className="mt-4 space-y-3">
+                                    {loadingTemplates ? (
+                                        <div className="flex items-center justify-center p-4">
+                                            <LoadingSpinner />
+                                        </div>
+                                    ) : templates.length > 0 ? (
+                                        <div>
+                                            <label className="block text-sm font-semibold text-accent-700 dark:text-accent-300 mb-2">
+                                                Select Template
+                                            </label>
+                                            <select
+                                                value={selectedTemplate?._id || ''}
+                                                onChange={(e) => {
+                                                    const template = templates.find(t => t._id === e.target.value);
+                                                    setSelectedTemplate(template || null);
+                                                }}
+                                                className="input"
+                                            >
+                                                <option value="">Choose a template...</option>
+                                                {templates.map(template => (
+                                                    <option key={template._id} value={template._id}>
+                                                        {template.name} - {template.visualComplianceConfig?.industry}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {selectedTemplate && (
+                                                <p className="mt-2 text-sm text-accent-600 dark:text-accent-400">
+                                                    {selectedTemplate.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center p-4">
+                                            <p className="text-sm text-accent-600 dark:text-accent-400 mb-2">
+                                                No visual compliance templates found
+                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={() => window.location.href = '/templates'}
+                                                className="text-sm btn btn-secondary"
+                                            >
+                                                Create Template
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
                         {/* Image Upload Section */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Reference Image */}
@@ -358,13 +515,15 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                             placeholder="Enter compliance criterion..."
                                             className="input flex-1"
                                         />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeCriterion(index)}
-                                            className="btn btn-secondary px-4"
-                                        >
-                                            Remove
-                                        </button>
+                                        {complianceCriteria.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeCriterion(index)}
+                                                className="btn btn-secondary px-4"
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
                                 <button
@@ -381,7 +540,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         <button
                             type="submit"
                             disabled={loading || !referenceImage || !evidenceImage}
-                            className="btn btn-primary w-full flex items-center justify-center gap-2"
+                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <>
