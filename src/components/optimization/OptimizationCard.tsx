@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   CheckCircleIcon,
   ChevronDownIcon,
@@ -35,6 +36,9 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
   const [feedbackComment, setFeedbackComment] = useState("");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [imageLoadError, setImageLoadError] = useState<{ reference: boolean; evidence: boolean }>({ reference: false, evidence: false });
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const costCardRef = useRef<HTMLDivElement>(null);
 
   // Helper to get image URL (use presigned URL if available, otherwise return null)
   const getImageUrl = (presignedUrl?: string) => {
@@ -66,6 +70,17 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
     !optimization.metadata?.cortex?.fallbackUsed;
 
   const isVisualCompliance = optimization.optimizationType === 'visual_compliance';
+
+  // Update tooltip position when showing
+  useEffect(() => {
+    if (showTooltip && costCardRef.current) {
+      const rect = costCardRef.current.getBoundingClientRect();
+      setTooltipPosition({
+        top: rect.top + rect.height / 2,
+        left: rect.right + 8
+      });
+    }
+  }, [showTooltip]);
 
   return (
     <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
@@ -137,17 +152,67 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   {optimization.tokensSaved || optimization.cortexImpactMetrics?.tokenReduction?.absoluteSavings || 0}
                 </span>
               </div>
-              <div className="glass rounded-lg p-3 border border-success-200/30 hover:scale-105 transition-transform duration-200">
-                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">
-                  {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Cost Increase' : 'Cost Saved'}
+              <div
+                ref={costCardRef}
+                className="glass rounded-lg p-3 border border-success-200/30 hover:scale-105 transition-transform duration-200 cursor-help"
+                onMouseEnter={() => isVisualCompliance && optimization.metadata?.costBreakdown && setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+              >
+                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1 flex items-center gap-1">
+                  {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Cost Increase' : (isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings ? 'Net Savings' : 'Cost Saved')}
+                  {isVisualCompliance && optimization.metadata?.costBreakdown && (
+                    <svg className="w-3.5 h-3.5 text-success-600 dark:text-success-400 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
                 </span>
                 <span className={`font-display font-semibold text-lg ${optimization.improvementPercentage && optimization.improvementPercentage < 0
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-success'
                   }`}>
-                  {formatCurrency(optimization.costSaved || optimization.cortexImpactMetrics?.costImpact?.costSavings || 0)}
+                  {isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings
+                    ? formatCurrency(optimization.metadata.costBreakdown.netSavings.amount)
+                    : formatCurrency(optimization.costSaved || optimization.cortexImpactMetrics?.costImpact?.costSavings || 0)}
                 </span>
+                {isVisualCompliance && optimization.metadata?.costBreakdown?.internal?.isAdjusted && (
+                  <span className="text-[10px] font-body text-success-600 dark:text-success-400 italic">Minimal fee</span>
+                )}
               </div>
+
+              {/* Portal-based Tooltip for Visual Compliance */}
+              {showTooltip && isVisualCompliance && optimization.metadata?.costBreakdown && createPortal(
+                <div
+                  className="fixed z-[99999] w-64 pointer-events-none transition-opacity duration-200"
+                  style={{
+                    top: `${tooltipPosition.top}px`,
+                    left: `${tooltipPosition.left}px`,
+                    transform: 'translateY(-50%)'
+                  }}
+                >
+                  <div className="glass rounded-lg p-3 border border-success-200/50 dark:border-success-700/50 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 shadow-2xl pointer-events-auto">
+                    <div className="text-[10px] font-display font-semibold text-success-700 dark:text-success-300 mb-2">💰 Cost Breakdown</div>
+                    <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary space-y-1">
+                      <div className="flex justify-between">
+                        <span>Gross Savings:</span>
+                        <span className="font-semibold text-success-600 dark:text-success-400">{formatCurrency(optimization.metadata.costBreakdown.savings.amount)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Processing Cost:</span>
+                        <span className="font-semibold text-accent-600 dark:text-accent-400">-{formatCurrency(optimization.metadata.costBreakdown.internal?.processingCost || 0)}</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-success-200/30">
+                        <span className="font-bold">Net Savings:</span>
+                        <span className="font-bold text-success-700 dark:text-success-300">{formatCurrency(optimization.metadata.costBreakdown.netSavings?.amount || 0)}</span>
+                      </div>
+                    </div>
+                    {/* Arrow pointing left */}
+                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-px">
+                      <div className="border-4 border-transparent border-r-white/95 dark:border-r-gray-900/95"></div>
+                    </div>
+                  </div>
+                </div>,
+                document.body
+              )}
               <div className="glass rounded-lg p-3 border border-primary-200/30 hover:scale-105 transition-transform duration-200">
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">Service</span>
                 <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
@@ -155,9 +220,13 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 </span>
               </div>
               <div className="glass rounded-lg p-3 border border-primary-200/30 hover:scale-105 transition-transform duration-200">
-                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">Improvement</span>
+                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">
+                  {isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings ? 'Net Benefit' : 'Improvement'}
+                </span>
                 <span className="font-display font-semibold gradient-text-accent text-lg">
-                  {(optimization.improvementPercentage || optimization.cortexImpactMetrics?.tokenReduction?.percentageSavings || 0).toFixed(1)}%
+                  {isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings
+                    ? (optimization.metadata.costBreakdown.netSavings.percentage || 0).toFixed(1)
+                    : (optimization.improvementPercentage || optimization.cortexImpactMetrics?.tokenReduction?.percentageSavings || 0).toFixed(1)}%
                 </span>
               </div>
             </div>
@@ -526,8 +595,126 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   </div>
                 )}
 
-                {/* Cortex Impact - With vs Without Comparison */}
-                {isVisualCompliance && optimization.cortexImpactMetrics && (
+                {/* Cost Breakdown for Visual Compliance - Net Savings Card */}
+                {isVisualCompliance && optimization.metadata?.costBreakdown && (
+                  <div>
+                    {/* Savings Summary - Large Card (Only show if positive or adjusted) */}
+                    {optimization.metadata.costBreakdown.netSavings &&
+                      (optimization.metadata.costBreakdown.netSavings.amount >= 0 || optimization.metadata.costBreakdown.internal?.isAdjusted) && (
+                        <div className="glass rounded-xl p-6 border-2 border-success-200/40 dark:border-success-800/40 backdrop-blur-xl bg-gradient-to-r from-success-50/40 to-primary-50/30 dark:from-success-900/30 dark:to-primary-900/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+                          <div className="flex items-center justify-between gap-6 flex-wrap">
+                            {/* Net Savings - Main Display */}
+                            <div className="flex-1 min-w-[250px]">
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success-500 to-success-600 flex items-center justify-center shadow-lg">
+                                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2">
+                                    <div className="text-sm font-body text-success-700 dark:text-success-300 font-semibold">
+                                      Net Savings
+                                    </div>
+                                    <div className="group relative">
+                                      <div className="w-6 h-6 rounded-lg bg-success-100 dark:bg-success-900/30 flex items-center justify-center cursor-help hover:scale-110 hover:bg-success-200 dark:hover:bg-success-800/50 transition-all duration-200 animate-pulse hover:animate-none">
+                                        <svg className="w-4 h-4 text-success-600 dark:text-success-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                      </div>
+                                      {/* Calculation Info Tooltip */}
+                                      <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-[9999] w-80">
+                                        <div className="glass rounded-lg p-4 border border-success-200/50 dark:border-success-700/50 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 shadow-2xl">
+                                          <div className="text-xs font-display font-semibold text-success-700 dark:text-success-300 mb-3">💰 Cost Calculation</div>
+                                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-2">
+                                            <div className="flex justify-between items-center p-2 rounded bg-danger-50/50 dark:bg-danger-900/20">
+                                              <span>Traditional Cost:</span>
+                                              <span className="font-semibold text-danger-600 dark:text-danger-400">${optimization.metadata.costBreakdown.baseline.totalCost.toFixed(4)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-2 rounded bg-primary-50/50 dark:bg-primary-900/20">
+                                              <span>Optimized Cost:</span>
+                                              <span className="font-semibold text-primary-600 dark:text-primary-400">-${optimization.metadata.costBreakdown.optimized.totalCost.toFixed(4)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-2 rounded bg-success-50/50 dark:bg-success-900/20 border-t border-success-200/30">
+                                              <span className="font-semibold">Gross Savings:</span>
+                                              <span className="font-semibold text-success-600 dark:text-success-400">${optimization.metadata.costBreakdown.savings.amount.toFixed(4)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-2 rounded bg-accent-50/50 dark:bg-accent-900/20">
+                                              <span>Processing Cost:</span>
+                                              <span className="font-semibold text-accent-600 dark:text-accent-400">-${optimization.metadata.costBreakdown.internal?.processingCost.toFixed(4)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center p-2 rounded bg-success-100/80 dark:bg-success-900/40 border-2 border-success-300/50">
+                                              <span className="font-bold">Net Savings:</span>
+                                              <span className="font-bold text-success-700 dark:text-success-300">${optimization.metadata.costBreakdown.netSavings.amount.toFixed(4)}</span>
+                                            </div>
+                                            {optimization.metadata.costBreakdown.internal?.isAdjusted && (
+                                              <p className="mt-2 pt-2 border-t border-success-200/30 text-success-600 dark:text-success-400 italic text-[10px]">
+                                                ✓ Minimal processing fee applied for your benefit
+                                              </p>
+                                            )}
+                                          </div>
+                                          {/* Arrow */}
+                                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px">
+                                            <div className="border-8 border-transparent border-t-white/95 dark:border-t-gray-900/95"></div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    After Processing Cost
+                                  </div>
+                                  {optimization.metadata.costBreakdown.internal?.isAdjusted && (
+                                    <div className="text-xs font-body text-success-600 dark:text-success-400 mt-1 italic">
+                                      Minimal processing fee applied
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-baseline gap-3 mt-3">
+                                <div className="text-4xl font-display font-black bg-gradient-to-r from-success-600 via-success-700 to-emerald-600 dark:from-success-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                  ${optimization.metadata.costBreakdown.netSavings.amount.toFixed(4)}
+                                </div>
+                                <div className="text-2xl font-display font-bold bg-gradient-to-r from-success-600 to-success-700 dark:from-success-400 dark:to-success-500 bg-clip-text text-transparent">
+                                  ({optimization.metadata.costBreakdown.netSavings.percentage.toFixed(1)}%)
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Gross Savings - Side Display */}
+                            <div className="glass rounded-lg p-4 border border-success-200/30 min-w-[200px]">
+                              <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                                Gross Cost Reduction
+                              </div>
+                              <div className="text-xl font-display font-bold text-success-600 dark:text-success-400 mb-1">
+                                ${optimization.metadata.costBreakdown.savings.amount.toFixed(4)}
+                              </div>
+                              <div className="text-xs font-body text-success-700 dark:text-success-300">
+                                ({optimization.metadata.costBreakdown.savings.percentage.toFixed(1)}% saved)
+                              </div>
+                              <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 italic">
+                                Before processing costs
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Info Note */}
+                          <div className="mt-4 pt-4 border-t border-success-200/30 flex items-start gap-2">
+                            <svg className="w-4 h-4 text-success-600 dark:text-success-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary italic">
+                              Net savings represent your actual cost benefit after accounting for processing costs. This is your true savings.
+                              {optimization.metadata.costBreakdown.internal?.isAdjusted && " A minimal processing fee has been applied for this check."}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                )}
+
+                {/* Cortex Impact - With vs Without Comparison (Only for text optimization) */}
+                {!isVisualCompliance && optimization.cortexImpactMetrics && (
                   <div className="glass rounded-xl p-6 border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-indigo-50/30 dark:from-secondary-900/10 dark:to-indigo-900/10">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary-500 to-indigo-600 flex items-center justify-center shadow-lg">
@@ -753,141 +940,144 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                   </div>
                 )}
               </div>
-            )}
+            )
+            }
 
             {/* SECTION 1: Request & Response - PRIMARY CONTENT (Only for text optimization) */}
-            {!isVisualCompliance && (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div>
-                  <h4 className="mb-3 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                    User Query
-                  </h4>
-                  <div className="glass rounded-lg p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
-                    <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary whitespace-pre-wrap">
-                      {optimization.userQuery || optimization.originalPrompt || 'No query available'}
-                    </p>
-                    <div className="mt-3 pt-3 border-t border-primary-200/30">
-                      <span className="text-xs font-display font-medium text-primary-600 dark:text-primary-400">
-                        Original Tokens: {optimization.originalTokens || optimization.cortexImpactMetrics?.tokenReduction?.withoutCortex || 0}
-                      </span>
+            {
+              !isVisualCompliance && (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <h4 className="mb-3 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                      User Query
+                    </h4>
+                    <div className="glass rounded-lg p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+                      <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary whitespace-pre-wrap">
+                        {optimization.userQuery || optimization.originalPrompt || 'No query available'}
+                      </p>
+                      <div className="mt-3 pt-3 border-t border-primary-200/30">
+                        <span className="text-xs font-display font-medium text-primary-600 dark:text-primary-400">
+                          Original Tokens: {optimization.originalTokens || optimization.cortexImpactMetrics?.tokenReduction?.withoutCortex || 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <h4 className="mb-3 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                    Generated Answer
-                  </h4>
-                  <div className="glass rounded-lg border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/20 dark:from-success-900/10 dark:to-success-800/10 overflow-hidden">
-                    <div className="p-4 prose prose-sm max-w-none">
-                      <ReactMarkdown
-                        components={{
-                          code({ className, children, ...props }: { className?: string; children?: React.ReactNode;[key: string]: any }) {
-                            const match = /language-(\w+)/.exec(className || '');
-                            const isInline = !match;
-                            const codeContent = String(children).replace(/\n$/, '');
-                            const language = match ? match[1] : 'text';
-                            const codeId = `generated-${language}-${Math.random().toString(36).substr(2, 9)}`;
+                  <div>
+                    <h4 className="mb-3 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                      Generated Answer
+                    </h4>
+                    <div className="glass rounded-lg border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/20 dark:from-success-900/10 dark:to-success-800/10 overflow-hidden">
+                      <div className="p-4 prose prose-sm max-w-none">
+                        <ReactMarkdown
+                          components={{
+                            code({ className, children, ...props }: { className?: string; children?: React.ReactNode;[key: string]: any }) {
+                              const match = /language-(\w+)/.exec(className || '');
+                              const isInline = !match;
+                              const codeContent = String(children).replace(/\n$/, '');
+                              const language = match ? match[1] : 'text';
+                              const codeId = `generated-${language}-${Math.random().toString(36).substr(2, 9)}`;
 
-                            if (isInline) {
+                              if (isInline) {
+                                return (
+                                  <code className="bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 px-1.5 py-0.5 rounded text-xs font-mono border border-primary-200/30" {...props}>
+                                    {children}
+                                  </code>
+                                );
+                              }
+
                               return (
-                                <code className="bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 px-1.5 py-0.5 rounded text-xs font-mono border border-primary-200/30" {...props}>
-                                  {children}
-                                </code>
-                              );
-                            }
-
-                            return (
-                              <div className="my-3 rounded-xl overflow-hidden border border-success-200/30 bg-dark-bg-primary">
-                                <div className="flex items-center justify-between px-4 py-2 glass border-b border-success-200/30">
-                                  <span className="font-display font-semibold text-xs text-success-600 dark:text-success-400 uppercase tracking-wide">
-                                    {language}
-                                  </span>
-                                  <button
-                                    onClick={() => copyCode(codeContent, codeId)}
-                                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass border border-success-200/30 hover:border-success-300/50 transition-all duration-200 hover:scale-105"
-                                    title="Copy code"
+                                <div className="my-3 rounded-xl overflow-hidden border border-success-200/30 bg-dark-bg-primary">
+                                  <div className="flex items-center justify-between px-4 py-2 glass border-b border-success-200/30">
+                                    <span className="font-display font-semibold text-xs text-success-600 dark:text-success-400 uppercase tracking-wide">
+                                      {language}
+                                    </span>
+                                    <button
+                                      onClick={() => copyCode(codeContent, codeId)}
+                                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass border border-success-200/30 hover:border-success-300/50 transition-all duration-200 hover:scale-105"
+                                      title="Copy code"
+                                    >
+                                      {copiedCode === codeId ? (
+                                        <>
+                                          <CheckIcon className="w-3.5 h-3.5 text-success-600 dark:text-success-400" />
+                                          <span className="text-xs font-body text-success-600 dark:text-success-400">Copied!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <ClipboardIcon className="w-3.5 h-3.5 text-light-text-secondary dark:text-dark-text-secondary" />
+                                          <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Copy</span>
+                                        </>
+                                      )}
+                                    </button>
+                                  </div>
+                                  <SyntaxHighlighter
+                                    style={oneDark}
+                                    language={language}
+                                    PreTag="div"
+                                    className="!mt-0 !p-4 !bg-[#282c34] text-sm leading-relaxed overflow-x-auto"
+                                    showLineNumbers={true}
+                                    wrapLines={true}
                                   >
-                                    {copiedCode === codeId ? (
-                                      <>
-                                        <CheckIcon className="w-3.5 h-3.5 text-success-600 dark:text-success-400" />
-                                        <span className="text-xs font-body text-success-600 dark:text-success-400">Copied!</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <ClipboardIcon className="w-3.5 h-3.5 text-light-text-secondary dark:text-dark-text-secondary" />
-                                        <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Copy</span>
-                                      </>
-                                    )}
-                                  </button>
+                                    {codeContent}
+                                  </SyntaxHighlighter>
                                 </div>
-                                <SyntaxHighlighter
-                                  style={oneDark}
-                                  language={language}
-                                  PreTag="div"
-                                  className="!mt-0 !p-4 !bg-[#282c34] text-sm leading-relaxed overflow-x-auto"
-                                  showLineNumbers={true}
-                                  wrapLines={true}
-                                >
-                                  {codeContent}
-                                </SyntaxHighlighter>
-                              </div>
-                            );
-                          },
-                          p: ({ children }) => (
-                            <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-3">
-                              {children}
-                            </p>
-                          ),
-                          h1: ({ children }) => (
-                            <h1 className="text-xl font-display font-bold gradient-text-primary mb-3 mt-4">
-                              {children}
-                            </h1>
-                          ),
-                          h2: ({ children }) => (
-                            <h2 className="text-lg font-display font-bold gradient-text-secondary mb-2 mt-3">
-                              {children}
-                            </h2>
-                          ),
-                          h3: ({ children }) => (
-                            <h3 className="text-base font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 mt-2">
-                              {children}
-                            </h3>
-                          ),
-                          ul: ({ children }) => (
-                            <ul className="list-disc list-inside space-y-1 mb-3 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                              {children}
-                            </ul>
-                          ),
-                          ol: ({ children }) => (
-                            <ol className="list-decimal list-inside space-y-1 mb-3 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                              {children}
-                            </ol>
-                          ),
-                          li: ({ children }) => (
-                            <li className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                              {children}
-                            </li>
-                          ),
-                          strong: ({ children }) => (
-                            <strong className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                              {children}
-                            </strong>
-                          ),
-                        }}
-                      >
-                        {optimization.generatedAnswer || optimization.optimizedPrompt || 'No answer generated'}
-                      </ReactMarkdown>
-                    </div>
-                    <div className="px-4 py-3 border-t border-success-200/30 bg-success-50/30 dark:bg-success-900/10">
-                      <span className="text-xs font-display font-medium text-success-600 dark:text-success-400">
-                        Optimized Tokens: {optimization.optimizedTokens || optimization.cortexImpactMetrics?.tokenReduction?.withCortex || 0}
-                      </span>
+                              );
+                            },
+                            p: ({ children }) => (
+                              <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-3">
+                                {children}
+                              </p>
+                            ),
+                            h1: ({ children }) => (
+                              <h1 className="text-xl font-display font-bold gradient-text-primary mb-3 mt-4">
+                                {children}
+                              </h1>
+                            ),
+                            h2: ({ children }) => (
+                              <h2 className="text-lg font-display font-bold gradient-text-secondary mb-2 mt-3">
+                                {children}
+                              </h2>
+                            ),
+                            h3: ({ children }) => (
+                              <h3 className="text-base font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 mt-2">
+                                {children}
+                              </h3>
+                            ),
+                            ul: ({ children }) => (
+                              <ul className="list-disc list-inside space-y-1 mb-3 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {children}
+                              </ul>
+                            ),
+                            ol: ({ children }) => (
+                              <ol className="list-decimal list-inside space-y-1 mb-3 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {children}
+                              </ol>
+                            ),
+                            li: ({ children }) => (
+                              <li className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {children}
+                              </li>
+                            ),
+                            strong: ({ children }) => (
+                              <strong className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                {children}
+                              </strong>
+                            ),
+                          }}
+                        >
+                          {optimization.generatedAnswer || optimization.optimizedPrompt || 'No answer generated'}
+                        </ReactMarkdown>
+                      </div>
+                      <div className="px-4 py-3 border-t border-success-200/30 bg-success-50/30 dark:bg-success-900/10">
+                        <span className="text-xs font-display font-medium text-success-600 dark:text-success-400">
+                          Optimized Tokens: {optimization.optimizedTokens || optimization.cortexImpactMetrics?.tokenReduction?.withCortex || 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )
+            }
 
             {/* SECTION 2: Token & Cost Overview */}
             <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
@@ -924,7 +1114,8 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             </div>
 
             {/* SECTION 3: Additional Suggestions (if any) */}
-            {optimization.suggestions &&
+            {
+              optimization.suggestions &&
               optimization.suggestions.length > 0 && (
                 <div>
                   <h4 className="mb-3 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
@@ -950,191 +1141,204 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                     ))}
                   </ul>
                 </div>
-              )}
+              )
+            }
 
             {/* ========== CORTEX SECTIONS (AT THE BOTTOM) ========== */}
 
             {/* Cortex Configuration (if used) */}
-            {cortexActuallyUsed && (
-              <div className="glass rounded-xl p-5 border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-indigo-100/30 dark:from-secondary-900/20 dark:to-indigo-800/20">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                    <CpuChipIcon className="w-5 h-5 text-white" />
+            {
+              cortexActuallyUsed && (
+                <div className="glass rounded-xl p-5 border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/50 to-indigo-100/30 dark:from-secondary-900/20 dark:to-indigo-800/20">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                      <CpuChipIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h4 className="text-base font-display font-bold bg-gradient-to-r from-secondary-600 to-indigo-600 dark:from-secondary-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                      Cortex Pipeline Configuration
+                    </h4>
                   </div>
-                  <h4 className="text-base font-display font-bold bg-gradient-to-r from-secondary-600 to-indigo-600 dark:from-secondary-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                    Cortex Pipeline Configuration
-                  </h4>
+
+                  {/* Models Grid */}
+                  {optimization.metadata?.cortex?.cortexModel && (
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Encoder</div>
+                        <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
+                          {optimization.metadata.cortex.cortexModel.encoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                        </div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-indigo-200/20">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Core Processor</div>
+                        <div className="text-xs font-semibold font-display text-indigo-700 dark:text-indigo-300 truncate">
+                          {(optimization.metadata.cortex.cortexModel.core || optimization.metadata.cortex.cortexModel.processor)?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                        </div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
+                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Decoder</div>
+                        <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
+                          {optimization.metadata.cortex.cortexModel.decoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Processing Metrics */}
+                  {optimization.metadata?.cortex && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {optimization.metadata.cortex.processingTime && (
+                        <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing</div>
+                          <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                            {(optimization.metadata.cortex.processingTime / 1000).toFixed(2)}s
+                          </div>
+                        </div>
+                      )}
+                      {optimization.metadata.cortex.semanticIntegrity !== undefined && (
+                        <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Integrity</div>
+                          <div className="text-sm font-semibold font-display text-success-600 dark:text-success-400">
+                            {(optimization.metadata.cortex.semanticIntegrity * 100).toFixed(0)}%
+                          </div>
+                        </div>
+                      )}
+                      {optimization.metadata.cortex.totalCost !== undefined && (
+                        <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Cortex Cost</div>
+                          <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                            {formatCurrency(optimization.metadata.cortex.totalCost)}
+                          </div>
+                        </div>
+                      )}
+                      {optimization.metadata.cortex.streamingEnabled !== undefined && (
+                        <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Mode</div>
+                          <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                            {optimization.metadata.cortex.streamingEnabled ? 'Streaming' : optimization.metadata.cortex.lightweightCortex ? 'Lightweight' : 'Standard'}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-
-                {/* Models Grid */}
-                {optimization.metadata?.cortex?.cortexModel && (
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
-                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Encoder</div>
-                      <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
-                        {optimization.metadata.cortex.cortexModel.encoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
-                      </div>
-                    </div>
-                    <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-indigo-200/20">
-                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Core Processor</div>
-                      <div className="text-xs font-semibold font-display text-indigo-700 dark:text-indigo-300 truncate">
-                        {(optimization.metadata.cortex.cortexModel.core || optimization.metadata.cortex.cortexModel.processor)?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
-                      </div>
-                    </div>
-                    <div className="text-center p-3 rounded-lg bg-white/60 dark:bg-black/30 backdrop-blur-sm border border-secondary-200/20">
-                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1.5">Decoder</div>
-                      <div className="text-xs font-semibold font-display text-secondary-700 dark:text-secondary-300 truncate">
-                        {optimization.metadata.cortex.cortexModel.decoder?.split('.')[1]?.replace(/-/g, ' ') || 'N/A'}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Processing Metrics */}
-                {optimization.metadata?.cortex && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {optimization.metadata.cortex.processingTime && (
-                      <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
-                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing</div>
-                        <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
-                          {(optimization.metadata.cortex.processingTime / 1000).toFixed(2)}s
-                        </div>
-                      </div>
-                    )}
-                    {optimization.metadata.cortex.semanticIntegrity !== undefined && (
-                      <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
-                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Integrity</div>
-                        <div className="text-sm font-semibold font-display text-success-600 dark:text-success-400">
-                          {(optimization.metadata.cortex.semanticIntegrity * 100).toFixed(0)}%
-                        </div>
-                      </div>
-                    )}
-                    {optimization.metadata.cortex.totalCost !== undefined && (
-                      <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
-                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Cortex Cost</div>
-                        <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
-                          {formatCurrency(optimization.metadata.cortex.totalCost)}
-                        </div>
-                      </div>
-                    )}
-                    {optimization.metadata.cortex.streamingEnabled !== undefined && (
-                      <div className="text-center p-2.5 rounded-lg glass border border-secondary-200/20">
-                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Mode</div>
-                        <div className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
-                          {optimization.metadata.cortex.streamingEnabled ? 'Streaming' : optimization.metadata.cortex.lightweightCortex ? 'Lightweight' : 'Standard'}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+              )
+            }
 
             {/* Cortex Impact Display - Full Detailed Metrics */}
-            {cortexActuallyUsed && optimization.cortexImpactMetrics && optimization.cortexImpactMetrics.tokenReduction && (
-              <CortexImpactDisplay
-                metrics={optimization.cortexImpactMetrics as any}
-                className="mb-6"
-              />
-            )}
+            {
+              cortexActuallyUsed && optimization.cortexImpactMetrics && optimization.cortexImpactMetrics.tokenReduction && (
+                <CortexImpactDisplay
+                  metrics={optimization.cortexImpactMetrics as any}
+                  className="mb-6"
+                />
+              )
+            }
 
             {/* Cortex Results Display - Metadata & Processing Info */}
-            {cortexActuallyUsed && optimization.metadata?.cortex && (
-              <CortexResultsDisplay
-                metadata={optimization.metadata.cortex}
-                loading={false}
-              />
-            )}
+            {
+              cortexActuallyUsed && optimization.metadata?.cortex && (
+                <CortexResultsDisplay
+                  metadata={optimization.metadata.cortex}
+                  loading={false}
+                />
+              )
+            }
 
             {/* Cortex Performance Metrics */}
-            {cortexActuallyUsed && optimization.cortexImpactMetrics?.performanceMetrics && (
-              <div className="glass rounded-xl p-5 border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
-                <h4 className="text-base font-display font-bold gradient-text-accent mb-4">
-                  Performance Metrics
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
-                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Compression Ratio</div>
-                    <div className="text-xl font-display font-bold gradient-text-primary">
-                      {(optimization.cortexImpactMetrics.performanceMetrics.compressionRatio || 0).toFixed(2)}x
+            {
+              cortexActuallyUsed && optimization.cortexImpactMetrics?.performanceMetrics && (
+                <div className="glass rounded-xl p-5 border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
+                  <h4 className="text-base font-display font-bold gradient-text-accent mb-4">
+                    Performance Metrics
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Compression Ratio</div>
+                      <div className="text-xl font-display font-bold gradient-text-primary">
+                        {(optimization.cortexImpactMetrics.performanceMetrics.compressionRatio || 0).toFixed(2)}x
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
-                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing Time</div>
-                    <div className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-                      {optimization.cortexImpactMetrics.performanceMetrics.processingTime || 0}ms
+                    <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing Time</div>
+                      <div className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                        {optimization.cortexImpactMetrics.performanceMetrics.processingTime || 0}ms
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
-                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Response Latency</div>
-                    <div className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
-                      {optimization.cortexImpactMetrics.performanceMetrics.responseLatency || 0}ms
+                    <div className="text-center p-3 rounded-lg glass border border-accent-200/20">
+                      <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Response Latency</div>
+                      <div className="text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                        {optimization.cortexImpactMetrics.performanceMetrics.responseLatency || 0}ms
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )
+            }
 
             {/* Cortex Optimization Details */}
-            {cortexActuallyUsed && optimization.cortexImpactMetrics?.justification && (
-              <div className="glass rounded-xl p-5 border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/20 dark:from-secondary-900/10 dark:to-secondary-800/10">
-                <h4 className="text-base font-display font-bold gradient-text-secondary mb-4">
-                  Cortex Optimization Details
-                </h4>
+            {
+              cortexActuallyUsed && optimization.cortexImpactMetrics?.justification && (
+                <div className="glass rounded-xl p-5 border border-secondary-200/30 backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/20 dark:from-secondary-900/10 dark:to-secondary-800/10">
+                  <h4 className="text-base font-display font-bold gradient-text-secondary mb-4">
+                    Cortex Optimization Details
+                  </h4>
 
-                {/* Techniques */}
-                {optimization.cortexImpactMetrics.justification.optimizationTechniques &&
-                  optimization.cortexImpactMetrics.justification.optimizationTechniques.length > 0 && (
-                    <div className="mb-4">
-                      <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
-                        Techniques Applied
-                      </h5>
-                      <div className="flex flex-wrap gap-2">
-                        {optimization.cortexImpactMetrics.justification.optimizationTechniques.map((technique: string, index: number) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 rounded-full text-xs font-display font-medium bg-secondary-100/50 dark:bg-secondary-800/30 text-secondary-700 dark:text-secondary-300 border border-secondary-200/50"
-                          >
-                            {technique}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                {/* Key Improvements */}
-                {optimization.cortexImpactMetrics.justification.keyImprovements &&
-                  optimization.cortexImpactMetrics.justification.keyImprovements.length > 0 && (
-                    <div>
-                      <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
-                        Key Improvements
-                      </h5>
-                      <ul className="space-y-2">
-                        {optimization.cortexImpactMetrics.justification.keyImprovements.map((improvement: string, index: number) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <CheckCircleIcon className="w-4 h-4 text-success-600 dark:text-success-400 flex-shrink-0 mt-0.5" />
-                            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                              {improvement}
+                  {/* Techniques */}
+                  {optimization.cortexImpactMetrics.justification.optimizationTechniques &&
+                    optimization.cortexImpactMetrics.justification.optimizationTechniques.length > 0 && (
+                      <div className="mb-4">
+                        <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                          Techniques Applied
+                        </h5>
+                        <div className="flex flex-wrap gap-2">
+                          {optimization.cortexImpactMetrics.justification.optimizationTechniques.map((technique: string, index: number) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1.5 rounded-full text-xs font-display font-medium bg-secondary-100/50 dark:bg-secondary-800/30 text-secondary-700 dark:text-secondary-300 border border-secondary-200/50"
+                            >
+                              {technique}
                             </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-              </div>
-            )}
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Key Improvements */}
+                  {optimization.cortexImpactMetrics.justification.keyImprovements &&
+                    optimization.cortexImpactMetrics.justification.keyImprovements.length > 0 && (
+                      <div>
+                        <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                          Key Improvements
+                        </h5>
+                        <ul className="space-y-2">
+                          {optimization.cortexImpactMetrics.justification.keyImprovements.map((improvement: string, index: number) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <CheckCircleIcon className="w-4 h-4 text-success-600 dark:text-success-400 flex-shrink-0 mt-0.5" />
+                              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                {improvement}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                </div>
+              )
+            }
 
             {/* Cortex Error Info - Only show if fallback was used */}
-            {optimization.metadata?.cortexEnabled && optimization.metadata?.cortex?.fallbackUsed && optimization.metadata?.cortex?.error && (
-              <div className="glass rounded-lg p-4 border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/30 to-warning-100/20 dark:from-warning-900/10 dark:to-warning-800/10">
-                <h4 className="text-sm font-display font-semibold text-warning-700 dark:text-warning-300 mb-2">
-                  Fallback Mode Applied
-                </h4>
-                <p className="text-xs font-body text-warning-600 dark:text-warning-400">
-                  {optimization.metadata.cortex.error}
-                </p>
-              </div>
-            )}
+            {
+              optimization.metadata?.cortexEnabled && optimization.metadata?.cortex?.fallbackUsed && optimization.metadata?.cortex?.error && (
+                <div className="glass rounded-lg p-4 border border-warning-200/30 backdrop-blur-xl bg-gradient-to-br from-warning-50/30 to-warning-100/20 dark:from-warning-900/10 dark:to-warning-800/10">
+                  <h4 className="text-sm font-display font-semibold text-warning-700 dark:text-warning-300 mb-2">
+                    Fallback Mode Applied
+                  </h4>
+                  <p className="text-xs font-body text-warning-600 dark:text-warning-400">
+                    {optimization.metadata.cortex.error}
+                  </p>
+                </div>
+              )
+            }
 
             {/* Actions */}
             <div className="flex justify-between items-center pt-6 border-t border-primary-200/30">
@@ -1160,60 +1364,62 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
             </div>
 
             {/* Feedback Form */}
-            {showFeedback && (
-              <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <HandThumbUpIcon className="w-5 h-5 text-white" />
+            {
+              showFeedback && (
+                <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                      <HandThumbUpIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h4 className="text-base font-display font-bold gradient-text-primary">
+                      Share Your Feedback
+                    </h4>
                   </div>
-                  <h4 className="text-base font-display font-bold gradient-text-primary">
-                    Share Your Feedback
-                  </h4>
+                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                    Help us improve by letting us know if this optimization was helpful
+                  </p>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        Additional Comments (Optional)
+                      </label>
+                      <textarea
+                        value={feedbackComment}
+                        onChange={(e) => setFeedbackComment(e.target.value)}
+                        placeholder="Share your thoughts about this optimization..."
+                        className="input resize-none"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <button
+                        onClick={() => handleFeedback(true)}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-success shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+                      >
+                        <HandThumbUpIcon className="w-5 h-5" />
+                        Helpful
+                      </button>
+                      <button
+                        onClick={() => handleFeedback(false)}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-danger shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+                      >
+                        <HandThumbDownIcon className="w-5 h-5" />
+                        Not Helpful
+                      </button>
+                      <button
+                        onClick={() => setShowFeedback(false)}
+                        className="btn btn-secondary ml-auto"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
-                  Help us improve by letting us know if this optimization was helpful
-                </p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-display font-medium text-light-text-secondary dark:text-dark-text-secondary mb-2">
-                      Additional Comments (Optional)
-                    </label>
-                    <textarea
-                      value={feedbackComment}
-                      onChange={(e) => setFeedbackComment(e.target.value)}
-                      placeholder="Share your thoughts about this optimization..."
-                      className="input resize-none"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <button
-                      onClick={() => handleFeedback(true)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-success shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
-                    >
-                      <HandThumbUpIcon className="w-5 h-5" />
-                      Helpful
-                    </button>
-                    <button
-                      onClick={() => handleFeedback(false)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-danger shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
-                    >
-                      <HandThumbDownIcon className="w-5 h-5" />
-                      Not Helpful
-                    </button>
-                    <button
-                      onClick={() => setShowFeedback(false)}
-                      className="btn btn-secondary ml-auto"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+              )
+            }
+          </div >
         )}
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };

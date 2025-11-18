@@ -4,7 +4,8 @@ import {
   CurrencyDollarIcon,
   ArrowTrendingDownIcon,
   SparklesIcon,
-  PresentationChartLineIcon
+  PresentationChartLineIcon,
+  InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { visualComplianceService } from '../../services/visualCompliance.service';
 import { LoadingSpinner } from '../common/LoadingSpinner';
@@ -46,9 +47,16 @@ export const VisualComplianceDashboard: React.FC = () => {
     );
   }
 
-  const annualSavings = (comparison.traditional.cost - comparison.optimized.cost) * monthlyRequests * 12;
+  // Calculate annual costs with processing costs
+  const processingCostPerCheck = comparison.savings.processingCost || 0;
+  const grossSavingsPerCheck = comparison.traditional.cost - comparison.optimized.cost;
+  const netSavingsPerCheck = grossSavingsPerCheck - processingCostPerCheck;
+
   const annualTraditional = comparison.traditional.cost * monthlyRequests * 12;
   const annualOptimized = comparison.optimized.cost * monthlyRequests * 12;
+  const annualProcessingCost = processingCostPerCheck * monthlyRequests * 12;
+  const annualGrossSavings = grossSavingsPerCheck * monthlyRequests * 12;
+  const annualNetSavings = netSavingsPerCheck * monthlyRequests * 12;
 
   return (
     <div className="space-y-6">
@@ -151,12 +159,32 @@ export const VisualComplianceDashboard: React.FC = () => {
                 {comparison.savings.tokenReduction.toFixed(1)}% Token Reduction
               </h3>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-3">
               <CurrencyDollarIcon className="w-8 h-8 gradient-text-success" />
               <h3 className="text-xl font-display font-bold gradient-text-success">
-                {comparison.savings.costReduction.toFixed(1)}% Cost Reduction
+                {comparison.savings.costReduction.toFixed(1)}% Gross Cost Reduction
               </h3>
             </div>
+            {comparison.savings.netCostReduction !== undefined && (
+              <div className="mt-4 pt-4 border-t border-success-200/30 dark:border-success-700/30">
+                <div className="flex items-start gap-3">
+                  <InformationCircleIcon className="w-6 h-6 text-accent-500 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
+                      Net Savings: {comparison.savings.netCostReduction.toFixed(1)}%
+                    </div>
+                    <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                      After accounting for processing costs
+                      {comparison.savings.processingCost && (
+                        <span className="ml-1 text-accent-600 dark:text-accent-400 font-semibold">
+                          (${comparison.savings.processingCost.toFixed(4)} per check)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Projected Savings Calculator */}
@@ -176,7 +204,7 @@ export const VisualComplianceDashboard: React.FC = () => {
                 min="1"
               />
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div className="glass rounded-xl p-4 border border-danger-200/30 dark:border-danger-800/30 backdrop-blur-xl">
                 <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Traditional Annual</div>
                 <div className="text-xl font-display font-bold text-danger-600 dark:text-danger-400">
@@ -189,13 +217,31 @@ export const VisualComplianceDashboard: React.FC = () => {
                   ${annualOptimized.toFixed(2)}
                 </div>
               </div>
+              <div className="glass rounded-xl p-4 border border-accent-200/30 dark:border-accent-800/30 backdrop-blur-xl">
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Processing Cost</div>
+                <div className="text-xl font-display font-bold text-accent-600 dark:text-accent-400">
+                  ${annualProcessingCost.toFixed(2)}
+                </div>
+              </div>
               <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl">
-                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Annual Savings</div>
+                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Gross Savings</div>
                 <div className="text-xl font-display font-bold gradient-text-primary">
-                  ${annualSavings.toFixed(2)}
+                  ${annualGrossSavings.toFixed(2)}
                 </div>
               </div>
             </div>
+            {processingCostPerCheck > 0 && (
+              <div className="glass rounded-xl p-4 border-2 border-success-200/30 dark:border-success-800/30 backdrop-blur-xl bg-gradient-to-br from-success-50/20 to-transparent dark:from-success-900/10 dark:to-transparent">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    Net Annual Savings (After Credits)
+                  </div>
+                  <div className="text-2xl font-display font-bold gradient-text-success">
+                    ${annualNetSavings.toFixed(2)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Optimization Breakdown */}
