@@ -31,6 +31,41 @@ export interface ComplianceResult {
     optimizationSavings: number;
     compressionRatio: number;
     technique: string;
+    internalProcessingCost?: number;
+    processingCost?: number;
+    netSavingsAmount?: number;
+    netSavingsPercentage?: number;
+    costBreakdown?: {
+      optimized: {
+        inputTokens: number;
+        outputTokens: number;
+        inputCost: number;
+        outputCost: number;
+        totalCost: number;
+      };
+      baseline: {
+        inputTokens: number;
+        outputTokens: number;
+        inputCost: number;
+        outputCost: number;
+        totalCost: number;
+      };
+      savings: {
+        amount: number;
+        percentage: number;
+        tokenReduction: number;
+      };
+      internal?: {
+        processingCost: number;
+        markup: number;
+        isAdjusted?: boolean;
+        actualProcessingCost?: number;
+      };
+      netSavings?: {
+        amount: number;
+        percentage: number;
+      };
+    };
   };
 }
 
@@ -108,6 +143,8 @@ export interface CostComparisonData {
     tokenReduction: number;
     costReduction: number;
     technique: string;
+    netCostReduction?: number;
+    processingCost?: number;
   };
   breakdown: {
     featureExtraction: {

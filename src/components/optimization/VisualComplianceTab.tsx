@@ -661,7 +661,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         )}
 
                         {/* Metrics Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                             <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent">
                                 <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">Input Tokens</div>
                                 <div className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
@@ -695,13 +695,203 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                             <div className="glass rounded-xl p-4 border border-success-200/30 dark:border-success-800/30 backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-transparent dark:from-success-900/10 dark:to-transparent">
                                 <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1 flex items-center gap-1">
                                     <ChartBarIcon className="w-3 h-3" />
-                                    Savings
+                                    Token Reduction
                                 </div>
                                 <div className="text-lg font-display font-bold gradient-text-success">
                                     {result.metadata.compressionRatio.toFixed(1)}%
                                 </div>
                             </div>
                         </div>
+
+                        {/* Cost Breakdown with Processing Cost */}
+                        {result.metadata.costBreakdown && (
+                            <div className="mt-6">
+                                <h4 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
+                                    Cost Breakdown
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                    {/* Baseline Cost */}
+                                    <div className="glass rounded-xl p-5 border border-danger-200/30 dark:border-danger-800/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/20 to-transparent dark:from-danger-900/10 dark:to-transparent">
+                                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                                            Traditional Approach
+                                        </div>
+                                        <div className="text-2xl font-display font-bold text-danger-600 dark:text-danger-400 mb-3">
+                                            ${result.metadata.costBreakdown.baseline.totalCost.toFixed(4)}
+                                        </div>
+                                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-1">
+                                            <div className="flex justify-between">
+                                                <span>Input:</span>
+                                                <span>{result.metadata.costBreakdown.baseline.inputTokens.toLocaleString()} tokens</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>Output:</span>
+                                                <span>{result.metadata.costBreakdown.baseline.outputTokens.toLocaleString()} tokens</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Optimized Cost */}
+                                    <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10 dark:to-transparent">
+                                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                                            With Optimization
+                                        </div>
+                                        <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400 mb-3">
+                                            ${result.metadata.costBreakdown.optimized.totalCost.toFixed(4)}
+                                        </div>
+                                        <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-1">
+                                            <div className="flex justify-between">
+                                                <span>Input:</span>
+                                                <span>{result.metadata.costBreakdown.optimized.inputTokens.toLocaleString()} tokens</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>Output:</span>
+                                                <span>{result.metadata.costBreakdown.optimized.outputTokens.toLocaleString()} tokens</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Processing Cost */}
+                                    {result.metadata.costBreakdown.internal && (
+                                        <div className="glass rounded-xl p-5 border border-accent-200/30 dark:border-accent-800/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/20 to-transparent dark:from-accent-900/10 dark:to-transparent">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="flex items-center gap-1.5 group relative">
+                                                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                        Processing Cost
+                                                    </span>
+                                                    <svg className="w-4 h-4 text-accent-500 dark:text-accent-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    {/* Tooltip */}
+                                                    <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50 w-72">
+                                                        <div className="glass rounded-lg p-4 border border-accent-200/50 dark:border-accent-700/50 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 shadow-2xl">
+                                                            <div className="text-xs font-display font-semibold text-accent-700 dark:text-accent-300 mb-2">Processing Cost Breakdown</div>
+                                                            <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-2">
+                                                                <p>This includes the cost of our internal optimization pipeline:</p>
+                                                                <ul className="list-disc list-inside space-y-1 ml-2">
+                                                                    <li>Image feature extraction</li>
+                                                                    <li>TOON encoding compression</li>
+                                                                    <li>Cortex LISP optimization</li>
+                                                                    <li>AI model processing</li>
+                                                                </ul>
+                                                                {result.metadata.costBreakdown.internal.isAdjusted ? (
+                                                                    <p className="mt-2 pt-2 border-t border-accent-200/30 text-success-600 dark:text-success-400 italic">
+                                                                        A minimal fee has been applied to ensure quality service.
+                                                                    </p>
+                                                                ) : (
+                                                                    <p className="mt-2 pt-2 border-t border-accent-200/30">
+                                                                        Base cost: ${result.metadata.costBreakdown.internal.processingCost.toFixed(6)}<br />
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                            {/* Arrow */}
+                                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px">
+                                                                <div className="border-8 border-transparent border-t-white/95 dark:border-t-gray-900/95"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {result.metadata.costBreakdown.internal.isAdjusted && (
+                                                    <span className="px-2 py-0.5 rounded text-xs font-display font-medium bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300 border border-accent-200/50">
+                                                        Minimal Fee
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
+                                                ${result.metadata.costBreakdown.internal.processingCost.toFixed(4)}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Net Savings Card (Only show if positive or adjusted) */}
+                                {result.metadata.costBreakdown.netSavings &&
+                                    (result.metadata.costBreakdown.netSavings.amount >= 0 || result.metadata.costBreakdown.internal?.isAdjusted) && (
+                                        <div className="glass rounded-xl p-6 border border-success-200/30 dark:border-success-800/30 backdrop-blur-xl bg-gradient-to-r from-success-50/30 to-primary-50/30 dark:from-success-900/20 dark:to-primary-900/20">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                            Net Savings (After Processing Cost)
+                                                        </div>
+                                                        <div className="group relative">
+                                                            <div className="w-6 h-6 rounded-lg bg-success-100 dark:bg-success-900/30 flex items-center justify-center cursor-help hover:scale-110 hover:bg-success-200 dark:hover:bg-success-800/50 transition-all duration-200 animate-pulse hover:animate-none">
+                                                                <svg className="w-4 h-4 text-success-600 dark:text-success-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            {/* Calculation Info Tooltip */}
+                                                            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-[9999] w-80">
+                                                                <div className="glass rounded-lg p-4 border border-success-200/50 dark:border-success-700/50 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 shadow-2xl">
+                                                                    <div className="text-xs font-display font-semibold text-success-700 dark:text-success-300 mb-3">💰 Cost Calculation</div>
+                                                                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary space-y-2">
+                                                                        <div className="flex justify-between items-center p-2 rounded bg-danger-50/50 dark:bg-danger-900/20">
+                                                                            <span>Traditional Cost:</span>
+                                                                            <span className="font-semibold text-danger-600 dark:text-danger-400">${result.metadata.costBreakdown.baseline.totalCost.toFixed(4)}</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between items-center p-2 rounded bg-primary-50/50 dark:bg-primary-900/20">
+                                                                            <span>Optimized Cost:</span>
+                                                                            <span className="font-semibold text-primary-600 dark:text-primary-400">-${result.metadata.costBreakdown.optimized.totalCost.toFixed(4)}</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between items-center p-2 rounded bg-success-50/50 dark:bg-success-900/20 border-t border-success-200/30">
+                                                                            <span className="font-semibold">Gross Savings:</span>
+                                                                            <span className="font-semibold text-success-600 dark:text-success-400">${result.metadata.costBreakdown.savings.amount.toFixed(4)}</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between items-center p-2 rounded bg-accent-50/50 dark:bg-accent-900/20">
+                                                                            <span>Processing Cost:</span>
+                                                                            <span className="font-semibold text-accent-600 dark:text-accent-400">-${result.metadata.costBreakdown.internal?.processingCost.toFixed(4)}</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between items-center p-2 rounded bg-success-100/80 dark:bg-success-900/40 border-2 border-success-300/50">
+                                                                            <span className="font-bold">Net Savings:</span>
+                                                                            <span className="font-bold text-success-700 dark:text-success-300">${result.metadata.costBreakdown.netSavings.amount.toFixed(4)}</span>
+                                                                        </div>
+                                                                        {result.metadata.costBreakdown.internal?.isAdjusted && (
+                                                                            <p className="mt-2 pt-2 border-t border-success-200/30 text-success-600 dark:text-success-400 italic text-[10px]">
+                                                                                ✓ Minimal processing fee applied for your benefit
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+                                                                    {/* Arrow */}
+                                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-px">
+                                                                        <div className="border-8 border-transparent border-t-white/95 dark:border-t-gray-900/95"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {result.metadata.costBreakdown.internal?.isAdjusted && (
+                                                        <div className="text-xs font-body text-success-600 dark:text-success-400 mb-2 italic">
+                                                            Minimal processing fee applied
+                                                        </div>
+                                                    )}
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="text-3xl font-display font-bold gradient-text-success">
+                                                            ${result.metadata.costBreakdown.netSavings.amount.toFixed(4)}
+                                                        </div>
+                                                        <div className="text-2xl font-display font-bold gradient-text-success">
+                                                            ({result.metadata.costBreakdown.netSavings.percentage.toFixed(1)}%)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mb-1">
+                                                        Gross Savings
+                                                    </div>
+                                                    <div className="text-lg font-body text-light-text-primary dark:text-dark-text-primary">
+                                                        ${result.metadata.costBreakdown.savings.amount.toFixed(4)}
+                                                    </div>
+                                                    <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                                                        ({result.metadata.costBreakdown.savings.percentage.toFixed(1)}% gross)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary italic">
+                                                * Net savings reflect the actual cost benefit after accounting for processing costs
+                                                {result.metadata.costBreakdown.internal?.isAdjusted && ". A minimal processing fee has been applied for this check"}
+                                            </div>
+                                        </div>
+                                    )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

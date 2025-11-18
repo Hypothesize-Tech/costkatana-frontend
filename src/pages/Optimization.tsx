@@ -509,10 +509,14 @@ export const Optimization: React.FC = () => {
                       ${formatSmartNumber(
                         (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                           ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.costImpact.costSavings)
-                          : getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0
+                          : (getAllOptimizations()[0]?.optimizationType === 'visual_compliance' && getAllOptimizations()[0]?.metadata?.costBreakdown?.netSavings)
+                            ? getAllOptimizations()[0].metadata.costBreakdown.netSavings.amount
+                            : getAllOptimizations()[0]?.costSaved || getAllOptimizations()[0]?.savings || 0
                       )}
                     </div>
-                    <div className="text-xs font-body text-success-700 dark:text-success-300">Savings</div>
+                    <div className="text-xs font-body text-success-700 dark:text-success-300">
+                      {getAllOptimizations()[0]?.optimizationType === 'visual_compliance' ? 'Net Savings' : 'Savings'}
+                    </div>
                   </div>
                   <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-danger-200/30 from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                     <div className="text-lg font-bold font-display text-danger-600 dark:text-danger-400">
@@ -529,10 +533,14 @@ export const Optimization: React.FC = () => {
                       {formatSmartNumber(
                         (getAllOptimizations()[0]?.metadata?.cortexEnabled && getAllOptimizations()[0]?.cortexImpactMetrics && !getAllOptimizations()[0]?.metadata?.cortex?.lightweightCortex)
                           ? Math.abs(getAllOptimizations()[0].cortexImpactMetrics.tokenReduction.percentageSavings)
-                          : getAllOptimizations()[0]?.improvementPercentage || 0
+                          : (getAllOptimizations()[0]?.optimizationType === 'visual_compliance' && getAllOptimizations()[0]?.metadata?.costBreakdown?.netSavings)
+                            ? getAllOptimizations()[0].metadata.costBreakdown.netSavings.percentage
+                            : getAllOptimizations()[0]?.improvementPercentage || 0
                       )}%
                     </div>
-                    <div className="text-xs font-body text-primary-700 dark:text-primary-300">Improvement</div>
+                    <div className="text-xs font-body text-primary-700 dark:text-primary-300">
+                      {getAllOptimizations()[0]?.optimizationType === 'visual_compliance' ? 'Net Benefit' : 'Improvement'}
+                    </div>
                   </div>
                   <div className="p-3 text-center bg-gradient-to-br rounded-lg border glass border-secondary-200/30 from-secondary-50/50 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
                     <div className="text-lg font-bold font-display text-secondary-600 dark:text-secondary-400">
