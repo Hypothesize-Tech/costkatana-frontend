@@ -18,20 +18,25 @@ import {
   FiTarget,
   FiAlertCircle,
   FiImage,
+  FiDownload,
+  FiX,
+  FiInfo,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
-import { TemplateVariable } from "../../types/promptTemplate.types";
+import { TemplateVariable, PromptTemplate } from "../../types/promptTemplate.types";
 import { PromptTemplateService } from "../../services/promptTemplate.service";
 import { toast } from "react-hot-toast";
 
 interface CreateTemplateModalProps {
   onClose: () => void;
   onSubmit: (templateData: any) => void;
+  existingTemplates?: PromptTemplate[];
 }
 
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   onClose,
   onSubmit,
+  existingTemplates = [],
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -63,6 +68,11 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       { name: 'evidenceImage', imageRole: 'evidence' as const, description: 'Evidence image', required: true }
     ]
   });
+
+  // Fetch Criteria state
+  const [showFetchCriteria, setShowFetchCriteria] = useState(false);
+  const [selectedTemplateForFetch, setSelectedTemplateForFetch] = useState<string | null>(null);
+  const [fetchedFromTemplate, setFetchedFromTemplate] = useState<string | null>(null);
 
   // AI Feature States
   const [aiMode, setAiMode] = useState(false);
@@ -167,6 +177,59 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       ...prev,
       variables: prev.variables.filter((_, i) => i !== index),
     }));
+  };
+
+  // Fetch Criteria Helper Functions
+  const getVisualComplianceTemplates = () => {
+    return existingTemplates.filter(t => t.isVisualCompliance && t.isActive);
+  };
+
+  const extractCriteriaFromTemplate = (template: PromptTemplate): string[] => {
+    return template.variables
+      .filter(v => v.type === 'text' && v.name.startsWith('criterion_'))
+      .sort((a, b) => {
+        const aNum = parseInt(a.name.split('_')[1] || '0');
+        const bNum = parseInt(b.name.split('_')[1] || '0');
+        return aNum - bNum;
+      })
+      .map(v => v.description || v.defaultValue || v.name);
+  };
+
+  const handleFetchCriteria = () => {
+    setShowFetchCriteria(true);
+  };
+
+  const handleApplyCriteria = (templateId: string) => {
+    const selectedTemplate = existingTemplates.find(t => t._id === templateId);
+    if (!selectedTemplate) {
+      toast.error("Template not found");
+      return;
+    }
+
+    const criteria = extractCriteriaFromTemplate(selectedTemplate);
+    if (criteria.length === 0) {
+      toast.error("No compliance criteria found in this template");
+      return;
+    }
+
+    setVisualComplianceData(prev => ({
+      ...prev,
+      complianceCriteria: criteria
+    }));
+
+    setFetchedFromTemplate(selectedTemplate.name);
+    setShowFetchCriteria(false);
+    setSelectedTemplateForFetch(null);
+    toast.success(`Fetched ${criteria.length} criteria from "${selectedTemplate.name}"`);
+  };
+
+  const handleClearFetchedCriteria = () => {
+    setVisualComplianceData(prev => ({
+      ...prev,
+      complianceCriteria: ['']
+    }));
+    setFetchedFromTemplate(null);
+    toast.success("Compliance criteria cleared");
   };
 
   // AI: Generate template from intent
@@ -418,7 +481,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   };
 
   return (
-    <Modal isOpen onClose={onClose} size="xl" title="Create Template">
+    <Modal isOpen onClose={onClose} size="4xl" title="Create Template">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* AI Mode Toggle */}
         <div className="glass flex items-center justify-between p-5 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-accent-50/30 dark:from-primary-900/20 dark:to-accent-900/10 shadow-xl">
@@ -695,9 +758,41 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
             {/* Compliance Criteria */}
             <div>
-              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
-                Compliance Criteria *
-              </label>
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Compliance Criteria *
+                </label>
+                <button
+                  type="button"
+                  onClick={handleFetchCriteria}
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs font-display font-semibold text-info-700 dark:text-info-300 glass border border-info-200/30 dark:border-info-700/30 hover:border-info-300/50 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg"
+                >
+                  <FiDownload className="w-3.5 h-3.5" />
+                  Fetch from Template
+                </button>
+              </div>
+
+              {/* Show source template if criteria were fetched */}
+              {fetchedFromTemplate && (
+                <div className="mb-3 glass p-3 rounded-lg border border-info-200/30 bg-gradient-to-r from-info-50/50 to-primary-50/30 dark:from-info-900/20 dark:to-primary-900/10 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FiInfo className="w-4 h-4 text-info-600 dark:text-info-400" />
+                      <p className="text-xs font-body text-info-800 dark:text-info-200">
+                        <strong className="font-display font-semibold">Fetched from:</strong> {fetchedFromTemplate}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleClearFetchedCriteria}
+                      className="text-xs text-danger-600 dark:text-danger-400 hover:text-danger-700 dark:hover:text-danger-300 font-display font-semibold"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-3">
                 {visualComplianceData.complianceCriteria.map((criterion, index) => (
                   <div key={index} className="flex gap-2">
@@ -1136,6 +1231,141 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           </button>
         </div>
       </form>
+
+      {/* Fetch Criteria Selection Modal */}
+      {showFetchCriteria && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="glass max-w-2xl w-full max-h-[80vh] overflow-hidden rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
+              <div>
+                <h3 className="text-xl font-display font-bold gradient-text-primary">
+                  Select Template
+                </h3>
+                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                  Choose a visual compliance template to fetch criteria from
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFetchCriteria(false);
+                  setSelectedTemplateForFetch(null);
+                }}
+                className="btn-icon-sm btn-icon-secondary"
+              >
+                <FiX className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Template List */}
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]">
+              {getVisualComplianceTemplates().length === 0 ? (
+                <div className="text-center py-12">
+                  <FiAlertCircle className="w-12 h-12 mx-auto text-secondary-400 dark:text-secondary-600 mb-4" />
+                  <p className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                    No visual compliance templates found
+                  </p>
+                  <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
+                    Create a visual compliance template first to fetch criteria from it.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {getVisualComplianceTemplates().map((template) => {
+                    const criteria = extractCriteriaFromTemplate(template);
+                    const isSelected = selectedTemplateForFetch === template._id;
+
+                    return (
+                      <button
+                        key={template._id}
+                        type="button"
+                        onClick={() => setSelectedTemplateForFetch(template._id)}
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 ${isSelected
+                          ? 'border-primary-500 bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30 shadow-lg scale-[1.02]'
+                          : 'border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 hover:scale-[1.01] glass'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate">
+                              {template.name}
+                            </h4>
+                            {template.description && (
+                              <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-1 line-clamp-2">
+                                {template.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-3 mt-2">
+                              {template.visualComplianceConfig?.industry && (
+                                <span className="glass px-2 py-1 rounded-full border border-info-200/30 bg-gradient-info/20 text-info-700 dark:text-info-300 font-display font-semibold text-xs">
+                                  {template.visualComplianceConfig.industry}
+                                </span>
+                              )}
+                              <span className="glass px-2 py-1 rounded-full border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-semibold text-xs">
+                                {criteria.length} {criteria.length === 1 ? 'criterion' : 'criteria'}
+                              </span>
+                            </div>
+                            {criteria.length > 0 && (
+                              <div className="mt-3 space-y-1">
+                                {criteria.slice(0, 3).map((criterion, idx) => (
+                                  <div key={idx} className="flex items-start gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-gradient-info/20 border border-info-200/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <span className="text-info-700 dark:text-info-300 font-display font-bold text-[10px]">
+                                        {idx + 1}
+                                      </span>
+                                    </span>
+                                    <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-1">
+                                      {criterion}
+                                    </p>
+                                  </div>
+                                ))}
+                                {criteria.length > 3 && (
+                                  <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary ml-6">
+                                    +{criteria.length - 3} more...
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          {isSelected && (
+                            <div className="w-6 h-6 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiCheck className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFetchCriteria(false);
+                  setSelectedTemplateForFetch(null);
+                }}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => selectedTemplateForFetch && handleApplyCriteria(selectedTemplateForFetch)}
+                disabled={!selectedTemplateForFetch}
+                className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FiDownload className="w-4 h-4" />
+                Apply Criteria
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Modal>
   );
 };
