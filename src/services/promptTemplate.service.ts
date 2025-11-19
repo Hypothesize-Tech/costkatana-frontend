@@ -52,14 +52,28 @@ export class PromptTemplateService {
     await apiClient.delete(`${this.baseUrl}/${templateId}`);
   }
 
-  // Clone a template
-  static async cloneTemplate(
+  // Duplicate a template
+  static async duplicateTemplate(
     templateId: string,
-    name?: string,
+    customizations?: {
+      name?: string;
+      description?: string;
+      category?: string;
+      projectId?: string;
+      metadata?: {
+        tags?: string[];
+        [key: string]: any;
+      };
+      sharing?: {
+        visibility?: 'private' | 'project' | 'organization' | 'public';
+        sharedWith?: string[];
+        allowFork?: boolean;
+      };
+    }
   ): Promise<PromptTemplate> {
     const response = await apiClient.post(
-      `${this.baseUrl}/${templateId}/clone`,
-      { name },
+      `${this.baseUrl}/${templateId}/duplicate`,
+      customizations || {},
     );
     return response.data.data;
   }

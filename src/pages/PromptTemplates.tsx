@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FiPlus,
   FiSearch,
@@ -8,8 +8,6 @@ import {
   FiTrendingUp,
   FiBookOpen,
   FiPlay,
-  FiTarget,
-  FiImage,
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
@@ -26,7 +24,6 @@ import { useNotification } from "../contexts/NotificationContext";
 
 const PromptTemplates: React.FC = () => {
   const { showNotification } = useNotification();
-  const navigate = useNavigate();
   const [templates, setTemplates] = useState<PromptTemplate[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -97,9 +94,14 @@ const PromptTemplates: React.FC = () => {
   };
 
   const handleDuplicateTemplate = async (templateData: any) => {
+    if (!selectedTemplate) return;
+
     try {
-      await PromptTemplateService.createTemplate(templateData);
-      showNotification("Template duplicated successfully!", "success");
+      const duplicated = await PromptTemplateService.duplicateTemplate(
+        selectedTemplate._id,
+        templateData
+      );
+      showNotification(`Template duplicated: ${duplicated.name}`, "success");
       loadTemplates();
     } catch (error: any) {
       console.error("Error duplicating template:", error);
@@ -121,7 +123,7 @@ const PromptTemplates: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const handleCopyTemplate = (template: PromptTemplate) => {
+  const handleDuplicateClick = (template: PromptTemplate) => {
     setSelectedTemplate(template);
     setShowDuplicateModal(true);
   };
@@ -368,7 +370,7 @@ const PromptTemplates: React.FC = () => {
                 setSelectedTemplate(template);
                 setDeleteConfirmOpen(true);
               }}
-              onCopy={handleCopyTemplate}
+              onDuplicate={handleDuplicateClick}
               onFavorite={handleFavoriteTemplate}
             />
           ))}
@@ -423,6 +425,7 @@ const PromptTemplates: React.FC = () => {
             setSelectedTemplate(null);
           }}
           onSubmit={handleDuplicateTemplate}
+
         />
       )}
 

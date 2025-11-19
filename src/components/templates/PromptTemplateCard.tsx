@@ -16,7 +16,7 @@ interface PromptTemplateCardProps {
   onView: (template: PromptTemplate) => void;
   onEdit: (template: PromptTemplate) => void;
   onDelete: (template: PromptTemplate) => void;
-  onCopy: (template: PromptTemplate) => void;
+  onDuplicate: (template: PromptTemplate) => void;
   onFavorite: (template: PromptTemplate) => void;
 }
 
@@ -25,7 +25,7 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
   onView,
   onEdit,
   onDelete,
-  onCopy,
+  onDuplicate,
   onFavorite,
 }) => {
 
@@ -90,18 +90,18 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
               />
             </button>
             <button
-              onClick={() => onCopy(template)}
-              className="btn-icon-sm btn-icon-primary"
-              title="Copy template"
-            >
-              <FiCopy className="w-4 h-4" />
-            </button>
-            <button
               onClick={() => onView(template)}
               className="btn-icon-sm btn-icon-highlight"
               title="View template"
             >
               <FiEye className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onDuplicate(template)}
+              className="btn-icon-sm btn-icon-primary"
+              title="Duplicate template"
+            >
+              <FiCopy className="w-4 h-4" />
             </button>
             <button
               onClick={() => onEdit(template)}
