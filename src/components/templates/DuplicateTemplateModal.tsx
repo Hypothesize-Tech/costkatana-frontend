@@ -334,25 +334,6 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                   Duplicated templates start as private by default for security.
                 </p>
               </div>
-
-              <div>
-                <label className="flex gap-3 items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.sharing.allowFork}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        ["sharing", "allowFork"],
-                        e.target.checked,
-                      )
-                    }
-                    className="toggle-switch-sm"
-                  />
-                  <span className="font-body text-light-text-primary dark:text-white">
-                    Allow others to fork this template
-                  </span>
-                </label>
-              </div>
             </div>
 
             {/* Actions */}

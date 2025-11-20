@@ -26,18 +26,22 @@ import { Modal } from "../common/Modal";
 import { TemplateVariable, PromptTemplate } from "../../types/promptTemplate.types";
 import { PromptTemplateService } from "../../services/promptTemplate.service";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface CreateTemplateModalProps {
   onClose: () => void;
   onSubmit: (templateData: any) => void;
+  onTemplateCreated?: (template: PromptTemplate) => void;
   existingTemplates?: PromptTemplate[];
 }
 
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   onClose,
   onSubmit,
+  onTemplateCreated,
   existingTemplates = [],
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -69,10 +73,36 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     ]
   });
 
+  // Reference image upload state
+  const [referenceImageFile, setReferenceImageFile] = useState<File | null>(null);
+
   // Fetch Criteria state
   const [showFetchCriteria, setShowFetchCriteria] = useState(false);
   const [selectedTemplateForFetch, setSelectedTemplateForFetch] = useState<string | null>(null);
   const [fetchedFromTemplate, setFetchedFromTemplate] = useState<string | null>(null);
+
+  // Handler for reference image selection
+  const handleReferenceImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only JPEG, PNG, and WebP images are allowed');
+      return;
+    }
+
+    // Validate file size (10MB max)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error('Image size must be less than 10MB');
+      return;
+    }
+
+    setReferenceImageFile(file);
+    toast.success('Reference image selected successfully');
+  };
 
   // AI Feature States
   const [aiMode, setAiMode] = useState(false);
@@ -427,6 +457,23 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         // Import the service
         const { PromptTemplateService } = await import("../../services/promptTemplate.service");
 
+        // Pre-upload reference image if provided
+        let referenceImageData = null;
+        if (referenceImageFile) {
+          try {
+            toast.loading("Uploading reference image...", { id: 'image-upload' });
+            const { ReferenceImageService } = await import("../../services/referenceImage.service");
+            referenceImageData = await ReferenceImageService.preUploadReferenceImage(referenceImageFile);
+            toast.success("Reference image uploaded!", { id: 'image-upload' });
+          } catch (uploadError) {
+            console.error("Error uploading reference image:", uploadError);
+            toast.error("Failed to upload reference image", { id: 'image-upload' });
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Create template with reference image data
         const newTemplate = await PromptTemplateService.createVisualComplianceTemplate({
           name: formData.name,
           description: formData.description,
@@ -434,13 +481,19 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           imageVariables: visualComplianceData.imageVariables,
           industry: visualComplianceData.industry,
           mode: visualComplianceData.mode,
+          referenceImage: referenceImageData ? {
+            s3Url: referenceImageData.s3Url,
+            s3Key: referenceImageData.s3Key,
+            uploadedAt: referenceImageData.uploadedAt ? new Date(referenceImageData.uploadedAt).toISOString() : new Date().toISOString(),
+            uploadedBy: referenceImageData.uploadedBy || user?.id || ''
+          } : undefined
         });
 
-        toast.success("Visual compliance template created successfully!");
+        toast.success("Template created! AI feature extraction started in background.");
 
-        // Call onSubmit to refresh the templates list
-        if (onSubmit && newTemplate) {
-          await onSubmit(newTemplate);
+        // Add new template to parent state
+        if (onTemplateCreated && newTemplate) {
+          onTemplateCreated(newTemplate);
         }
 
         onClose();
@@ -845,6 +898,85 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 </p>
               </div>
             </div>
+
+            {/* Reference Image Upload Section */}
+            <div className="glass rounded-xl p-6 border border-info-200/30">
+              <div className="flex items-center gap-3 mb-4">
+                <FiImage className="w-5 h-5 text-info-600" />
+                <h4 className="font-display font-semibold text-lg">
+                  Reference Image Upload (Optional)
+                </h4>
+                <span className="badge badge-info">Cost Optimization</span>
+              </div>
+
+              <div className="space-y-4">
+                {/* Upload Section */}
+                {!referenceImageFile && (
+                  <div className="border-2 border-dashed border-info-300 dark:border-info-700 rounded-xl p-8 text-center hover:border-info-500 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleReferenceImageSelect}
+                      className="hidden"
+                      id="reference-image-upload"
+                    />
+                    <label htmlFor="reference-image-upload" className="cursor-pointer">
+                      <FiImage className="w-12 h-12 mx-auto text-info-500 mb-3" />
+                      <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                        Upload Reference Image
+                      </p>
+                      <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                        JPG, PNG, or WebP • Max 10MB
+                      </p>
+                      <p className="text-xs text-info-600 dark:text-info-400 mt-2">
+                        Saves 60-70% tokens on every compliance check!
+                      </p>
+                    </label>
+                  </div>
+                )}
+
+                {/* Preview Section */}
+                {referenceImageFile && (
+                  <div className="space-y-3">
+                    <div className="relative rounded-xl overflow-hidden border-2 border-success-300 dark:border-success-700">
+                      <img
+                        src={URL.createObjectURL(referenceImageFile)}
+                        alt="Reference preview"
+                        className="w-full h-auto max-h-64 object-contain bg-gray-50 dark:bg-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setReferenceImageFile(null)}
+                        className="absolute top-2 right-2 btn-icon-sm btn-icon-danger"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Info Card */}
+                    <div className="glass p-4 rounded-lg border border-success-200/30 bg-gradient-to-r from-success-50/50 to-info-50/30">
+                      <div className="flex items-start gap-2">
+                        <FiInfo className="w-4 h-4 text-success-600 dark:text-success-400 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs space-y-1">
+                          <p className="font-display font-semibold text-success-800 dark:text-success-200">
+                            Reference image will be analyzed automatically
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • AI extracts features for each compliance criterion
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • Template usable immediately (analysis runs in background)
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • Future compliance checks only need evidence image
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1159,19 +1291,6 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 </select>
               </div>
 
-              <div className="glass flex items-center space-x-3 p-3 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel shadow-lg">
-                <input
-                  type="checkbox"
-                  checked={formData.sharing.allowFork}
-                  onChange={(e) =>
-                    handleNestedInputChange(["sharing", "allowFork"], e.target.checked)
-                  }
-                  className="w-4 h-4 text-primary-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-2"
-                />
-                <label className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
-                  Allow others to fork this template
-                </label>
-              </div>
 
               <div>
                 <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">

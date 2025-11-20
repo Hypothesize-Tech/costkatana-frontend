@@ -93,7 +93,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
         }
     }, [useTemplate, showNotification]);
 
-    // When template is selected, populate criteria
+    // When template is selected, populate criteria and reference image
     useEffect(() => {
         if (selectedTemplate) {
             const textVariables = selectedTemplate.variables.filter(v => v.type !== 'image');
@@ -104,6 +104,30 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
             // Set industry from template config
             if (selectedTemplate.visualComplianceConfig?.industry) {
                 setIndustry(selectedTemplate.visualComplianceConfig.industry);
+            }
+            // Auto-populate reference image if template has one
+            if (selectedTemplate.referenceImage?.s3Key) {
+                // Fetch presigned URL for the reference image
+                const fetchImageUrl = async () => {
+                    try {
+                        const { apiClient } = await import("../../config/api");
+                        const response = await apiClient.get('/reference-image/presigned-url', {
+                            params: { s3Key: selectedTemplate.referenceImage!.s3Key }
+                        });
+                        setReferencePreview(response.data.data.presignedUrl);
+                    } catch (error) {
+                        console.error('Failed to fetch reference image:', error);
+                    }
+                };
+                fetchImageUrl();
+                // Create a File object from the S3 URL for submission
+                fetch(selectedTemplate.referenceImage.s3Url)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'reference.png', { type: 'image/png' });
+                        setReferenceImage(file);
+                    })
+                    .catch(err => console.error('Failed to load reference image:', err));
             }
         }
     }, [selectedTemplate]);
@@ -128,10 +152,25 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!referenceImage || !evidenceImage) {
-            setError('Both reference and evidence images are required');
-            showNotification('Please upload both images', 'error');
-            return;
+        // Check if using template with cached reference features
+        const useTemplateWithCache = useTemplate && selectedTemplate &&
+            selectedTemplate.referenceImage?.extractedFeatures?.status === 'completed';
+
+        // Validate required images
+        if (useTemplateWithCache) {
+            // Only evidence image required when using template with cached features
+            if (!evidenceImage) {
+                setError('Evidence image is required');
+                showNotification('Please upload evidence image', 'error');
+                return;
+            }
+        } else {
+            // Both images required for regular compliance check
+            if (!referenceImage || !evidenceImage) {
+                setError('Both reference and evidence images are required');
+                showNotification('Please upload both images', 'error');
+                return;
+            }
         }
 
         if (complianceCriteria.length === 0 || complianceCriteria.some(c => !c.trim())) {
@@ -145,19 +184,38 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
         setResult(null);
 
         try {
-            const refBase64 = await visualComplianceService.prepareImageFile(referenceImage);
+            // Prepare evidence image (always required)
             const evidBase64 = await visualComplianceService.prepareImageFile(evidenceImage);
 
-            const response = await visualComplianceService.checkCompliance({
-                referenceImage: refBase64,
-                evidenceImage: evidBase64,
-                complianceCriteria: complianceCriteria.filter(c => c.trim()),
-                industry,
-                useUltraCompression: true,
-                mode: 'optimized',
-                metaPrompt: showCustomPrompt && customMetaPrompt ? customMetaPrompt : undefined,
-                metaPromptPresetId: !showCustomPrompt ? selectedPresetId : undefined
-            });
+            let response;
+
+            if (useTemplateWithCache) {
+                // Use template-based compliance check (only evidence image needed)
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                response = await PromptTemplateService.useVisualTemplate(
+                    selectedTemplate._id,
+                    {
+                        textVariables: {},
+                        imageVariables: {
+                            evidenceImage: evidBase64
+                        }
+                    }
+                );
+            } else {
+                // Regular compliance check (both images needed)
+                const refBase64 = await visualComplianceService.prepareImageFile(referenceImage!);
+
+                response = await visualComplianceService.checkCompliance({
+                    referenceImage: refBase64,
+                    evidenceImage: evidBase64,
+                    complianceCriteria: complianceCriteria.filter(c => c.trim()),
+                    industry,
+                    useUltraCompression: true,
+                    mode: 'optimized',
+                    metaPrompt: showCustomPrompt && customMetaPrompt ? customMetaPrompt : undefined,
+                    metaPromptPresetId: !showCustomPrompt ? selectedPresetId : undefined
+                });
+            }
 
             if (response.success && response.data) {
                 setResult(response.data);
@@ -331,9 +389,31 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                                 ))}
                                             </select>
                                             {selectedTemplate && (
-                                                <p className="mt-2 text-sm text-accent-600 dark:text-accent-400">
-                                                    {selectedTemplate.description}
-                                                </p>
+                                                <>
+                                                    <p className="mt-2 text-sm text-accent-600 dark:text-accent-400">
+                                                        {selectedTemplate.description}
+                                                    </p>
+                                                    {selectedTemplate.referenceImage?.extractedFeatures?.status === 'completed' && (
+                                                        <div className="mt-3 p-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
+                                                            <div className="flex items-start gap-2">
+                                                                <BoltIcon className="w-5 h-5 text-success-600 dark:text-success-400 flex-shrink-0 mt-0.5" />
+                                                                <div className="text-sm">
+                                                                    <p className="font-semibold text-success-700 dark:text-success-300">
+                                                                        Cost Optimization Active!
+                                                                    </p>
+                                                                    <p className="text-success-600 dark:text-success-400 mt-1">
+                                                                        Using cached reference features. Only the evidence image will be processed, saving ~50-70% in tokens and cost!
+                                                                    </p>
+                                                                    {selectedTemplate.referenceImage.extractedFeatures.usage && (
+                                                                        <p className="text-xs text-success-600 dark:text-success-400 mt-2">
+                                                                            💰 Already saved ${selectedTemplate.referenceImage.extractedFeatures.usage.totalCostSaved.toFixed(4)} across {selectedTemplate.referenceImage.extractedFeatures.usage.checksPerformed} checks
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
                                     ) : (
@@ -358,8 +438,13 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Reference Image */}
                             <div>
-                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
-                                    Reference Image (Standard)
+                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
+                                    Reference Image {selectedTemplate?.referenceImage?.extractedFeatures?.status === 'completed' ? '(Optional - Using Cached Features)' : '(Required)'}
+                                    {selectedTemplate?.referenceImage && (
+                                        <span className="text-xs px-2 py-1 rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300 font-medium">
+                                            {selectedTemplate.referenceImage.extractedFeatures?.status === 'completed' ? '✓ Cached' : 'From Template'}
+                                        </span>
+                                    )}
                                 </label>
                                 <input
                                     type="file"
@@ -373,11 +458,18 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                     className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent"
                                 >
                                     {referencePreview ? (
-                                        <img
-                                            src={referencePreview}
-                                            alt="Reference preview"
-                                            className="w-full h-full object-contain rounded-xl p-2"
-                                        />
+                                        <div className="relative w-full h-full">
+                                            <img
+                                                src={referencePreview}
+                                                alt="Reference preview"
+                                                className="w-full h-full object-contain rounded-xl p-2"
+                                            />
+                                            {selectedTemplate?.referenceImage && (
+                                                <div className="absolute top-2 right-2 px-2 py-1 rounded-md bg-success-500/90 text-white text-xs font-medium shadow-lg">
+                                                    From Template
+                                                </div>
+                                            )}
+                                        </div>
                                     ) : (
                                         <>
                                             <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
@@ -539,7 +631,12 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            disabled={loading || !referenceImage || !evidenceImage}
+                            disabled={
+                                loading ||
+                                !evidenceImage ||
+                                // Only require reference image if NOT using template with cached features
+                                (!useTemplate || !selectedTemplate?.referenceImage?.extractedFeatures?.status) && !referenceImage
+                            }
                             className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (

@@ -382,6 +382,9 @@ const PromptTemplates: React.FC = () => {
         <CreateTemplateModal
           onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateTemplate}
+          onTemplateCreated={(newTemplate) => {
+            setTemplates(prev => [newTemplate, ...prev]);
+          }}
           existingTemplates={templates}
         />
       )}

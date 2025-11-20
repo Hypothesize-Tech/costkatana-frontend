@@ -8,6 +8,10 @@ import {
   FiUsers,
   FiClock,
   FiTag,
+  FiImage,
+  FiDollarSign,
+  FiCheckCircle,
+  FiLoader,
 } from "react-icons/fi";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 
@@ -176,6 +180,35 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
                   +{template.metadata.tags.length - 3} more
                 </span>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Reference Image Indicators */}
+        {template.isVisualCompliance && template.referenceImage && (
+          <div className="mb-4">
+            <div className="glass p-3 rounded-lg border border-info-200/30 bg-gradient-to-r from-info-50/50 to-success-50/30 dark:from-info-900/20 dark:to-success-900/10 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <FiImage className="w-4 h-4 text-info-600 dark:text-info-400" />
+                <span className="font-display font-semibold text-sm text-info-800 dark:text-info-200">
+                  Reference Image
+                </span>
+                {template.referenceImage.extractedFeatures?.status === 'completed' && (
+                  <FiCheckCircle className="w-4 h-4 text-success-600 dark:text-success-400" />
+                )}
+                {template.referenceImage.extractedFeatures?.status === 'processing' && (
+                  <FiLoader className="w-4 h-4 text-info-600 dark:text-info-400 animate-spin" />
+                )}
+              </div>
+              {template.referenceImage.extractedFeatures?.usage &&
+                template.referenceImage.extractedFeatures.usage.checksPerformed > 0 && (
+                  <div className="flex items-center gap-2">
+                    <FiDollarSign className="w-4 h-4 text-success-600 dark:text-success-400" />
+                    <span className="text-xs font-display font-bold text-success-700 dark:text-success-300">
+                      Saved {template.referenceImage.extractedFeatures.usage.totalTokensSaved.toLocaleString()} tokens
+                    </span>
+                  </div>
+                )}
             </div>
           </div>
         )}

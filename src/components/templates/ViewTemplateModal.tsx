@@ -12,9 +12,11 @@ import {
   FiCode,
   FiEye,
   FiGitBranch,
+  FiImage,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
+import { FeatureExtractionStatus } from "./FeatureExtractionStatus";
 
 interface ViewTemplateModalProps {
   template: PromptTemplate;
@@ -35,6 +37,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     "content" | "variables" | "usage" | "versions"
   >("content");
   const [copied, setCopied] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const handleCopyContent = async () => {
     try {
@@ -45,6 +49,34 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
       console.error("Failed to copy content:", error);
     }
   };
+
+  // Fetch presigned URL for S3 image
+  const fetchPresignedUrl = async (s3Key: string): Promise<string | null> => {
+    try {
+      setImageLoading(true);
+      const { apiClient } = await import("../../config/api");
+      const response = await apiClient.get('/reference-image/presigned-url', {
+        params: { s3Key }
+      });
+      return response.data.data.presignedUrl;
+    } catch (error) {
+      console.error('Failed to fetch presigned URL:', error);
+      return null;
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  // Load presigned URL when template changes
+  React.useEffect(() => {
+    if (template.referenceImage?.s3Key) {
+      fetchPresignedUrl(template.referenceImage.s3Key).then(url => {
+        if (url) {
+          setImageUrl(url);
+        }
+      });
+    }
+  }, [template.referenceImage?.s3Key]);
 
 
   const getVisibilityIcon = (visibility: string) => {
@@ -76,7 +108,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     { id: "usage", label: "Usage Stats", icon: FiTrendingUp },
     { id: "versions", label: "Versions", icon: FiGitBranch },
   ];
-
+  console.log("template", template)
   return (
     <Modal isOpen={true} onClose={onClose} title="" size="4xl">
       <div className="flex flex-col h-full max-h-[90vh]">
@@ -240,6 +272,58 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         Estimated Cost: $
                         {template.metadata.estimatedCost.toFixed(4)}
                       </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Reference Image Section */}
+              {template.isVisualCompliance && template.referenceImage && (
+                <div className="mt-6">
+                  <h4 className="mb-3 text-sm font-display font-medium gradient-text-secondary flex items-center gap-2">
+                    <FiImage className="w-4 h-4" />
+                    Reference Image
+                  </h4>
+                  <div className="glass p-4 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+                    {imageLoading ? (
+                      <div className="w-full max-w-md h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Loading image...</p>
+                        </div>
+                      </div>
+                    ) : imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt="Reference"
+                        className="w-full max-w-md rounded-lg shadow-lg border border-primary-200/30"
+                        onError={(e) => {
+                          console.error('Failed to load image:', template.referenceImage?.s3Key);
+                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full max-w-md h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Image not available</p>
+                      </div>
+                    )}
+                    <div className="mt-3 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                      Uploaded {new Date(template.referenceImage.uploadedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+
+                  {/* Feature Extraction Status */}
+                  {template.referenceImage.extractedFeatures && (
+                    <div className="mt-4">
+                      <FeatureExtractionStatus
+                        status={template.referenceImage.extractedFeatures.status}
+                        extractedAt={template.referenceImage.extractedFeatures.extractedAt ? new Date(template.referenceImage.extractedFeatures.extractedAt) : undefined}
+                        usageStats={template.referenceImage.extractedFeatures.usage ? {
+                          checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
+                          tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
+                          costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
+                        } : undefined}
+                      />
                     </div>
                   )}
                 </div>

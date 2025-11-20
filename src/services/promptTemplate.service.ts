@@ -534,6 +534,12 @@ export class PromptTemplateService {
       mode?: 'optimized' | 'standard';
       metaPromptPresetId?: string;
       projectId?: string;
+      referenceImage?: {
+        s3Url: string;
+        s3Key: string;
+        uploadedAt: string;
+        uploadedBy: string;
+      };
     }
   ): Promise<PromptTemplate> {
     const response = await apiClient.post(`${this.baseUrl}/visual-compliance`, data);
