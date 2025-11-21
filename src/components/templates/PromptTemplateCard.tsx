@@ -12,6 +12,7 @@ import {
   FiDollarSign,
   FiCheckCircle,
   FiLoader,
+  FiPlay,
 } from "react-icons/fi";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 
@@ -22,6 +23,7 @@ interface PromptTemplateCardProps {
   onDelete: (template: PromptTemplate) => void;
   onDuplicate: (template: PromptTemplate) => void;
   onFavorite: (template: PromptTemplate) => void;
+  onExecute?: (template: PromptTemplate) => void;
 }
 
 export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
@@ -31,6 +33,7 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
   onDelete,
   onDuplicate,
   onFavorite,
+  onExecute,
 }) => {
 
   const getVisibilityIcon = (visibility: string) => {
@@ -236,6 +239,21 @@ export const PromptTemplateCard: React.FC<PromptTemplateCardProps> = ({
             <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">Version</p>
           </div>
         </div>
+
+        {/* Execute Button - Hidden for Visual Compliance templates */}
+        {onExecute && !template.isVisualCompliance && (
+          <div className="mt-4">
+            <button
+              onClick={() => onExecute(template)}
+              className="w-full px-4 py-3 bg-gradient-primary text-white shadow-lg hover:shadow-xl 
+                rounded-xl font-display font-bold hover:scale-105 active:scale-95 
+                transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <FiPlay className="w-4 h-4" />
+              Execute Template
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="flex justify-between items-center mt-6 pt-4 border-t border-primary-200/30">

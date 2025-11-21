@@ -20,6 +20,8 @@ import {
   ViewTemplateModal,
   EditTemplateModal,
   DuplicateTemplateModal,
+  TemplateExecutionModal,
+  ExecutionReportView,
 } from "../components/templates";
 import { ExtractionMonitor } from "../components/templates/ExtractionMonitor";
 import { useNotification } from "../contexts/NotificationContext";
@@ -35,9 +37,12 @@ const PromptTemplates: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [showExecutionModal, setShowExecutionModal] = useState(false);
+  const [showExecutionReport, setShowExecutionReport] = useState(false);
 
   const [selectedTemplate, setSelectedTemplate] =
     useState<PromptTemplate | null>(null);
+  const [executionResult, setExecutionResult] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -134,9 +139,10 @@ const PromptTemplates: React.FC = () => {
 
   const handleCreateTemplate = async (templateData: any) => {
     try {
-      await PromptTemplateService.createTemplate(templateData);
+      const newTemplate = await PromptTemplateService.createTemplate(templateData);
       showNotification("Template created successfully!", "success");
-      loadTemplates();
+      // Update state instead of reloading
+      setTemplates(prev => [newTemplate, ...prev]);
     } catch (error: any) {
       console.error("Error creating template:", error);
       showNotification(error.message || "Failed to create template", "error");
@@ -146,9 +152,10 @@ const PromptTemplates: React.FC = () => {
 
   const handleEditTemplate = async (templateId: string, templateData: any) => {
     try {
-      await PromptTemplateService.updateTemplate(templateId, templateData);
+      const updatedTemplate = await PromptTemplateService.updateTemplate(templateId, templateData);
       showNotification("Template updated successfully!", "success");
-      loadTemplates();
+      // Update state instead of reloading
+      setTemplates(prev => prev.map(t => t._id === templateId ? updatedTemplate : t));
     } catch (error: any) {
       console.error("Error updating template:", error);
       showNotification(error.message || "Failed to update template", "error");
@@ -165,7 +172,8 @@ const PromptTemplates: React.FC = () => {
         templateData
       );
       showNotification(`Template duplicated: ${duplicated.name}`, "success");
-      loadTemplates();
+      // Update state instead of reloading
+      setTemplates(prev => [duplicated, ...prev]);
     } catch (error: any) {
       console.error("Error duplicating template:", error);
       showNotification(
@@ -197,7 +205,8 @@ const PromptTemplates: React.FC = () => {
     try {
       await PromptTemplateService.deleteTemplate(selectedTemplate._id);
       showNotification("Template deleted successfully!", "success");
-      loadTemplates();
+      // Update state instead of reloading
+      setTemplates(prev => prev.filter(t => t._id !== selectedTemplate._id));
       setDeleteConfirmOpen(false);
       setSelectedTemplate(null);
     } catch (error: any) {
@@ -220,6 +229,35 @@ const PromptTemplates: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating favorite:", error);
       showNotification(error.message || "Failed to update favorite", "error");
+    }
+  };
+
+  const handleExecuteTemplate = (template: PromptTemplate) => {
+    setSelectedTemplate(template);
+    setShowExecutionModal(true);
+  };
+
+  const handleExecutionComplete = (result: any) => {
+    setExecutionResult(result);
+    setShowExecutionModal(false);
+    setShowExecutionReport(true);
+    // Update the template's execution stats in state
+    if (selectedTemplate) {
+      setTemplates(prev => prev.map(t => {
+        if (t._id === selectedTemplate._id) {
+          return {
+            ...t,
+            executionStats: {
+              totalExecutions: (t.executionStats?.totalExecutions || 0) + 1,
+              totalCostSavings: (t.executionStats?.totalCostSavings || 0) + (result[0]?.savingsAmount || 0),
+              averageCost: result[0]?.actualCost || t.executionStats?.averageCost || 0,
+              mostUsedModel: result[0]?.modelUsed || t.executionStats?.mostUsedModel || 'N/A',
+              lastExecutedAt: new Date()
+            }
+          };
+        }
+        return t;
+      }));
     }
   };
 
@@ -451,6 +489,7 @@ const PromptTemplates: React.FC = () => {
               }}
               onDuplicate={handleDuplicateClick}
               onFavorite={handleFavoriteTemplate}
+              onExecute={handleExecuteTemplate}
             />
           ))}
         </div>
@@ -684,6 +723,31 @@ const PromptTemplates: React.FC = () => {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* Execution Modal */}
+      {showExecutionModal && selectedTemplate && (
+        <TemplateExecutionModal
+          template={selectedTemplate}
+          onClose={() => {
+            setShowExecutionModal(false);
+            setSelectedTemplate(null);
+          }}
+          onExecutionComplete={handleExecutionComplete}
+        />
+      )}
+
+      {/* Execution Report */}
+      {showExecutionReport && selectedTemplate && executionResult && (
+        <ExecutionReportView
+          template={selectedTemplate}
+          result={executionResult}
+          onClose={() => {
+            setShowExecutionReport(false);
+            setExecutionResult(null);
+            setSelectedTemplate(null);
+          }}
+        />
       )}
     </div>
   );
