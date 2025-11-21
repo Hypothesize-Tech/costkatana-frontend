@@ -8,6 +8,7 @@ import {
   FiTrendingUp,
   FiBookOpen,
   FiPlay,
+  FiBarChart2,
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
@@ -205,13 +206,13 @@ const PromptTemplates: React.FC = () => {
             </p>
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex gap-2 items-center px-6 py-3 btn btn-primary"
+            <Link
+              to="/templates/analytics"
+              className="flex gap-2 items-center px-6 py-3 border border-success-500/30 bg-gradient-to-br from-success-500/10 to-success-600/10 text-success-600 dark:text-success-400 rounded-lg font-semibold hover:from-success-500/20 hover:to-success-600/20 hover:shadow-lg transition-all"
             >
-              <FiPlus className="w-5 h-5" />
-              New Template
-            </button>
+              <FiBarChart2 className="w-5 h-5" />
+              Analytics
+            </Link>
             <Link
               to="/templates/use"
               className="flex gap-2 items-center px-6 py-3 btn-secondary btn"
@@ -219,6 +220,13 @@ const PromptTemplates: React.FC = () => {
               <FiPlay className="w-5 h-5" />
               Use Template
             </Link>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex gap-2 items-center px-6 py-3 btn btn-primary"
+            >
+              <FiPlus className="w-5 h-5" />
+              New Template
+            </button>
           </div>
         </div>
       </div>
