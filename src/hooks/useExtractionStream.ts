@@ -8,6 +8,7 @@ export interface ExtractionStatus {
     errorMessage?: string;
     usage?: {
         checksPerformed: number;
+        tokensSaved: number;
         costSaved: number;
     };
     extractionCost?: number;
@@ -80,7 +81,11 @@ export const useExtractionStream = (options: UseExtractionStreamOptions) => {
                                     extractedAt: data.extractedAt ? new Date(data.extractedAt) : undefined,
                                     extractedBy: data.extractedBy,
                                     errorMessage: data.errorMessage,
-                                    usage: data.usage,
+                                    usage: data.usage ? {
+                                        checksPerformed: data.usage.checksPerformed,
+                                        tokensSaved: data.usage.costSaved || 0,
+                                        costSaved: data.usage.costSaved || 0
+                                    } : undefined,
                                     extractionCost: data.extractionCost
                                 };
                                 setStatus(initialStatus);
@@ -96,7 +101,11 @@ export const useExtractionStream = (options: UseExtractionStreamOptions) => {
                                     extractedAt: data.extractedAt ? new Date(data.extractedAt) : undefined,
                                     extractedBy: data.extractedBy,
                                     errorMessage: data.errorMessage,
-                                    usage: data.usage,
+                                    usage: data.usage ? {
+                                        checksPerformed: data.usage.checksPerformed,
+                                        tokensSaved: data.usage.costSaved || 0,
+                                        costSaved: data.usage.costSaved || 0
+                                    } : undefined,
                                     extractionCost: data.extractionCost
                                 };
                                 setStatus(updatedStatus);

@@ -96,6 +96,13 @@ export interface PromptTemplate {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  executionStats?: {
+    totalExecutions: number;
+    totalCostSavings: number;
+    averageCost: number;
+    mostUsedModel: string;
+    lastExecutedAt?: Date;
+  };
 }
 
 export interface TemplateVariable {

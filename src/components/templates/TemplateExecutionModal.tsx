@@ -101,7 +101,7 @@ export const TemplateExecutionModal: React.FC<TemplateExecutionModalProps> = ({
     const baselineCost = estimatedCost * 2; // Rough baseline estimation
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="" maxWidth="max-w-4xl">
+        <Modal isOpen={true} onClose={onClose} title="" maxWidth="4xl">
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">

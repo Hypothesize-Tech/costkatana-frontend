@@ -45,7 +45,7 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     extractedAt?: Date;
     extractedBy?: string;
     errorMessage?: string;
-    usage?: { checksPerformed: number; totalTokensSaved: number; totalCostSaved: number };
+    usage?: { checksPerformed: number; tokensSaved: number; costSaved: number };
   } | null>(null);
 
   // Check if template has reference image with processing status
@@ -349,8 +349,8 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                         usageStats={
                           liveExtractionStatus?.usage || (template.referenceImage.extractedFeatures.usage ? {
                             checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
-                            tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
-                            costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
+                            tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved || 0,
+                            costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved || 0
                           } : undefined)
                         }
                       />
