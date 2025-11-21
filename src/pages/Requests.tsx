@@ -11,7 +11,7 @@ import {
 import { usageService } from "../services/usage.service";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { useProject } from "../contexts/ProjectContext";
-import toast from "react-hot-toast";
+import { useNotification } from "../contexts/NotificationContext";
 
 interface Request {
   id: string;
@@ -55,6 +55,7 @@ export default function Requests() {
     "30d",
   );
   const { selectedProject } = useProject();
+  const { showNotification } = useNotification();
 
   // Real-time analytics query
   const { data: analyticsData, refetch: refetchAnalytics } = useQuery({
@@ -143,7 +144,7 @@ export default function Requests() {
   const handleRefresh = () => {
     refetchAnalytics();
     refetchRequests();
-    toast.success("Data refreshed");
+    showNotification("Data refreshed", "success");
   };
 
   // Add budget status badge component with CostKatana design

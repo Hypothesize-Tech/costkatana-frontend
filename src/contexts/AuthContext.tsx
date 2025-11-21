@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useNotification } from "./NotificationContext";
 import { authService } from "../services/auth.service";
 import { User, LoginCredentials, RegisterData } from "../types";
 import { setUserContext, addBreadcrumb } from "../config/sentry";
@@ -58,6 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     availableMethods?: Array<'email' | 'totp'>;
   } | null>(null);
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   // Token validation function
   const validateAndRefreshToken = useCallback(async (): Promise<boolean> => {
@@ -211,13 +212,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(response.data.user);
         setAccessToken(response.data.accessToken);
         sessionStorage.setItem("showTokenOnLoad", "true");
-        toast.success("Welcome back!");
+        showNotification("Welcome back!", "success");
         navigate("/dashboard");
       } catch (error: unknown) {
         const errorMessage = error instanceof Error && 'response' in error
           ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed"
           : "Login failed";
-        toast.error(errorMessage);
+        showNotification(errorMessage, "error");
         setUser(null);
         setAccessToken(null);
         setMfaRequired(false);
@@ -226,7 +227,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(false);
       }
     },
-    [navigate],
+    [navigate, showNotification],
   );
 
   const completeMFALogin = useCallback(
@@ -246,17 +247,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.removeItem('userEmail');
 
         sessionStorage.setItem("showTokenOnLoad", "true");
-        toast.success("Welcome back!");
+        showNotification("Welcome back!", "success");
         navigate("/dashboard");
       } catch (error: unknown) {
-        toast.error("Failed to complete login");
+        showNotification("Failed to complete login", "error");
         setUser(null);
         setAccessToken(null);
         setMfaRequired(false);
         setMfaData(null);
       }
     },
-    [navigate],
+    [navigate, showNotification],
   );
 
   const register = useCallback(
@@ -268,19 +269,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           throw new Error("Invalid registration response");
         }
         setUser(response.data);
-        toast.success("Registration successful! Please verify your email.");
+        showNotification("Registration successful! Please verify your email.", "success");
         navigate("/dashboard");
       } catch (error: unknown) {
         const errorMessage = error instanceof Error && 'response' in error
           ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Registration failed"
           : "Registration failed";
-        toast.error(errorMessage);
+        showNotification(errorMessage, "error");
         throw error;
       } finally {
         setIsLoading(false);
       }
     },
-    [navigate],
+    [navigate, showNotification],
   );
 
   const logout = useCallback(async () => {
@@ -288,7 +289,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authService.logout();
       setUser(null);
       setAccessToken(null);
-      toast.success("Logged out successfully");
+      showNotification("Logged out successfully", "success");
       navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -297,7 +298,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAccessToken(null);
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, showNotification]);
 
   const updateUser = useCallback((updatedUser: User) => {
     setUser(updatedUser);
@@ -346,18 +347,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setIsLoading(true);
         await authService.resetPassword(token, password);
-        toast.success("Password reset successful!");
+        showNotification("Password reset successful!", "success");
       } catch (error: unknown) {
         const errorMessage = error instanceof Error && 'response' in error
           ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Password reset failed"
           : "Password reset failed";
-        toast.error(errorMessage);
+        showNotification(errorMessage, "error");
         throw error;
       } finally {
         setIsLoading(false);
       }
     },
-    []
+    [showNotification]
   );
 
   const value = {

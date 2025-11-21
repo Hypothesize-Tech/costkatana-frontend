@@ -12,7 +12,7 @@ import {
     FiCpu,
     FiActivity as FiBrain,
 } from "react-icons/fi";
-import { toast } from "react-hot-toast";
+import { useNotification } from "../../contexts/NotificationContext";
 import { PromptTemplateService } from "../../services/promptTemplate.service";
 
 interface AITemplateOptimizerProps {
@@ -24,6 +24,7 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
     templateId,
     onOptimizationApplied,
 }) => {
+    const { showNotification } = useNotification();
     const [optimizing, setOptimizing] = useState(false);
     const [optimizationType, setOptimizationType] = useState<
         "token" | "cost" | "quality" | "model-specific"
@@ -88,15 +89,15 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
 
                 // Show success message with metrics
                 const { tokenReduction, costSaving } = result.metrics;
-                toast.success(
+                showNotification(
                     `Optimization complete! ${tokenReduction}% token reduction, $${costSaving.toFixed(4)} saved per use`,
-                    { duration: 5000 }
+                    "success"
                 );
             } else {
-                toast.error("Failed to optimize template");
+                showNotification("Failed to optimize template", "error");
             }
         } catch (error) {
-            toast.error("Error optimizing template");
+            showNotification("Error optimizing template", "error");
             console.error(error);
         } finally {
             setOptimizing(false);
@@ -122,14 +123,14 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                     optimizationResult.optimized.content,
                     optimizationResult.metrics
                 );
-                toast.success("Optimization applied successfully!");
+                showNotification("Optimization applied successfully!", "success");
                 setOptimizationResult(null);
                 setShowComparison(false);
             } else {
-                toast.error("Failed to apply optimization");
+                showNotification("Failed to apply optimization", "error");
             }
         } catch (error) {
-            toast.error("Error applying optimization");
+            showNotification("Error applying optimization", "error");
             console.error(error);
         }
     };
@@ -142,10 +143,10 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
             if (result) {
                 setInsights(result);
             } else {
-                toast.error("Failed to get insights");
+                showNotification("Failed to get insights", "error");
             }
         } catch (error) {
-            toast.error("Error fetching insights");
+            showNotification("Error fetching insights", "error");
             console.error(error);
         } finally {
             setLoadingInsights(false);
@@ -256,8 +257,8 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                                 key={opt.type}
                                 onClick={() => setOptimizationType(opt.type)}
                                 className={`p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 active:scale-95 ${isSelected
-                                        ? "border-primary-500 bg-gradient-primary/20 shadow-lg"
-                                        : "glass border-primary-200/30 hover:border-primary-300/50"
+                                    ? "border-primary-500 bg-gradient-primary/20 shadow-lg"
+                                    : "glass border-primary-200/30 hover:border-primary-300/50"
                                     }`}
                             >
                                 <div className="flex items-center space-x-3 mb-2">

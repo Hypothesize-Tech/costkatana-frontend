@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema } from "@/utils/validators";
 import { authService } from "../../services/auth.service";
 import { cn } from "@/utils/helpers";
-import toast from "react-hot-toast";
+import { useNotification } from "../../contexts/NotificationContext";
 
 interface ForgotPasswordFormData {
   email: string;
@@ -14,6 +14,7 @@ interface ForgotPasswordFormData {
 export const ForgotPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { showNotification } = useNotification();
 
   const {
     register,
@@ -29,7 +30,7 @@ export const ForgotPasswordForm = () => {
       setIsLoading(true);
       await authService.forgotPassword(data.email);
       setIsSubmitted(true);
-      toast.success("Password reset instructions sent to your email");
+      showNotification("Password reset instructions sent to your email", "success");
     } catch {
       setError("root", {
         message: "An error occurred. Please try again.",

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Workspace } from '../../types/team.types';
 import { BuildingOfficeIcon, Cog6ToothIcon, CreditCardIcon, ExclamationTriangleIcon, XMarkIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { teamService } from '../../services/team.service';
-import { toast } from 'react-hot-toast';
+import { useNotification } from '../../contexts/NotificationContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,6 +26,7 @@ export const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({ workspace,
     const [transferring, setTransferring] = useState(false);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const { showNotification } = useNotification();
 
     const canEdit = userRole === 'owner' || userRole === 'admin';
     const isOwner = userRole === 'owner';
@@ -46,12 +47,12 @@ export const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({ workspace,
         try {
             setSaving(true);
             await teamService.updateWorkspace({ name, settings });
-            toast.success('Workspace updated successfully');
+            showNotification('Workspace updated successfully', 'success');
             queryClient.invalidateQueries({ queryKey: ['workspace'] });
             setEditing(false);
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to update workspace');
+            showNotification(err.response?.data?.message || 'Failed to update workspace', 'error');
         } finally {
             setSaving(false);
         }
@@ -59,19 +60,19 @@ export const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({ workspace,
 
     const handleDelete = async () => {
         if (deleteConfirmation !== 'DELETE') {
-            toast.error('Please type DELETE to confirm');
+            showNotification('Please type DELETE to confirm', 'error');
             return;
         }
 
         try {
             setDeleting(true);
             await teamService.deleteWorkspace(password, deleteConfirmation);
-            toast.success('Workspace deleted successfully');
+            showNotification('Workspace deleted successfully', 'success');
             queryClient.invalidateQueries({ queryKey: ['workspaces'] });
             navigate('/dashboard');
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to delete workspace');
+            showNotification(err.response?.data?.message || 'Failed to delete workspace', 'error');
         } finally {
             setDeleting(false);
         }
@@ -79,23 +80,23 @@ export const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({ workspace,
 
     const handleTransferOwnership = async () => {
         if (!selectedNewOwner) {
-            toast.error('Please select a new owner');
+            showNotification('Please select a new owner', 'error');
             return;
         }
         if (!transferPassword) {
-            toast.error('Please enter your password');
+            showNotification('Please enter your password', 'error');
             return;
         }
 
         try {
             setTransferring(true);
             await teamService.transferOwnership(selectedNewOwner, transferPassword);
-            toast.success('Ownership transferred successfully');
+            showNotification('Ownership transferred successfully', 'success');
             queryClient.invalidateQueries({ queryKey: ['workspace', 'workspaces', 'team-members'] });
             setShowTransferModal(false);
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to transfer ownership');
+            showNotification(err.response?.data?.message || 'Failed to transfer ownership', 'error');
         } finally {
             setTransferring(false);
         }

@@ -15,13 +15,14 @@ import { InviteMemberModal } from './InviteMemberModal';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { MemberActionsDropdown } from './MemberActionsDropdown';
-import { toast } from 'react-hot-toast';
+import { useNotification } from '../../contexts/NotificationContext';
 
 export const TeamManagement: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
     const [activeSection, setActiveSection] = useState<'workspace' | 'members'>('members');
     const queryClient = useQueryClient();
+    const { showNotification } = useNotification();
 
     // Fetch workspace details and user's role
     const { data: workspace } = useQuery({
@@ -57,11 +58,11 @@ export const TeamManagement: React.FC = () => {
         mutationFn: (memberId: string) => teamService.removeMember(memberId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team-members'] });
-            toast.success('Member removed successfully');
+            showNotification('Member removed successfully', 'success');
         },
         onError: (error: unknown) => {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to remove member');
+            showNotification(err.response?.data?.message || 'Failed to remove member', 'error');
         },
     });
 
@@ -69,11 +70,11 @@ export const TeamManagement: React.FC = () => {
     const resendInvitationMutation = useMutation({
         mutationFn: (memberId: string) => teamService.resendInvitation(memberId),
         onSuccess: () => {
-            toast.success('Invitation resent successfully');
+            showNotification('Invitation resent successfully', 'success');
         },
         onError: (error: unknown) => {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to resend invitation');
+            showNotification(err.response?.data?.message || 'Failed to resend invitation', 'error');
         },
     });
 
@@ -85,7 +86,7 @@ export const TeamManagement: React.FC = () => {
 
     const handleRemoveMember = (member: TeamMember) => {
         if (member.role === 'owner') {
-            toast.error('Cannot remove workspace owner');
+            showNotification('Cannot remove workspace owner', 'error');
             return;
         }
 
@@ -315,7 +316,7 @@ export const TeamManagement: React.FC = () => {
                 onClose={() => setIsInviteModalOpen(false)}
                 onSuccess={() => {
                     queryClient.invalidateQueries({ queryKey: ['team-members'] });
-                    toast.success('Invitation sent successfully!');
+                    showNotification('Invitation sent successfully!', 'success');
                 }}
                 availableProjects={projects}
             />

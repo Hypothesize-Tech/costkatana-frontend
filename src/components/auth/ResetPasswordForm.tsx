@@ -7,7 +7,7 @@ import { resetPasswordSchema } from "@/utils/validators";
 import { authService } from "@/services/auth.service";
 import { cn } from "@/utils/helpers";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
-import toast from "react-hot-toast";
+import { useNotification } from "../../contexts/NotificationContext";
 
 interface ResetPasswordFormData {
     password: string;
@@ -24,6 +24,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const { showNotification } = useNotification();
 
     const {
         register,
@@ -42,7 +43,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
             setIsLoading(true);
             await authService.resetPassword(token, data.password);
             setIsSuccess(true);
-            toast.success("Password reset successful! Redirecting to login...");
+            showNotification("Password reset successful! Redirecting to login...", "success");
             setTimeout(() => {
                 navigate("/login");
             }, 2000);

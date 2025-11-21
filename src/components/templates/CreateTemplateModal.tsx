@@ -25,7 +25,7 @@ import {
 import { Modal } from "../common/Modal";
 import { TemplateVariable, PromptTemplate } from "../../types/promptTemplate.types";
 import { PromptTemplateService } from "../../services/promptTemplate.service";
-import { toast } from "react-hot-toast";
+import { useNotification } from "../../contexts/NotificationContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface CreateTemplateModalProps {
@@ -42,6 +42,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   existingTemplates = [],
 }) => {
   const { user } = useAuth();
+  const { showNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -89,19 +90,19 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Only JPEG, PNG, and WebP images are allowed');
+      showNotification('Only JPEG, PNG, and WebP images are allowed', 'error');
       return;
     }
 
     // Validate file size (10MB max)
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error('Image size must be less than 10MB');
+      showNotification('Image size must be less than 10MB', 'error');
       return;
     }
 
     setReferenceImageFile(file);
-    toast.success('Reference image selected successfully');
+    showNotification('Reference image selected successfully', 'success');
   };
 
   // AI Feature States
@@ -232,13 +233,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const handleApplyCriteria = (templateId: string) => {
     const selectedTemplate = existingTemplates.find(t => t._id === templateId);
     if (!selectedTemplate) {
-      toast.error("Template not found");
+      showNotification("Template not found", "error");
       return;
     }
 
     const criteria = extractCriteriaFromTemplate(selectedTemplate);
     if (criteria.length === 0) {
-      toast.error("No compliance criteria found in this template");
+      showNotification("No compliance criteria found in this template", "error");
       return;
     }
 
@@ -250,7 +251,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     setFetchedFromTemplate(selectedTemplate.name);
     setShowFetchCriteria(false);
     setSelectedTemplateForFetch(null);
-    toast.success(`Fetched ${criteria.length} criteria from "${selectedTemplate.name}"`);
+    showNotification(`Fetched ${criteria.length} criteria from "${selectedTemplate.name}"`, "success");
   };
 
   const handleClearFetchedCriteria = () => {
@@ -259,13 +260,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       complianceCriteria: ['']
     }));
     setFetchedFromTemplate(null);
-    toast.success("Compliance criteria cleared");
+    showNotification("Compliance criteria cleared", "success");
   };
 
   // AI: Generate template from intent
   const generateFromIntent = async () => {
     if (!aiIntent.trim()) {
-      toast.error("Please describe what template you want to create");
+      showNotification("Please describe what template you want to create", "error");
       return;
     }
 
@@ -299,13 +300,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           setShowAiSuggestions(true);
         }
 
-        toast.success(`Template generated with ${metadata.confidence}% confidence!`);
+        showNotification(`Template generated with ${metadata.confidence}% confidence!`, "success");
         setAiMode(false);
       } else {
-        toast.error("Failed to generate template");
+        showNotification("Failed to generate template", "error");
       }
     } catch (error) {
-      toast.error("Error generating template from AI");
+      showNotification("Error generating template from AI", "error");
       console.error(error);
     } finally {
       setAiGenerating(false);
@@ -315,7 +316,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   // AI: Detect variables automatically
   const detectVariablesWithAI = async () => {
     if (!formData.content.trim()) {
-      toast.error("Please enter template content first");
+      showNotification("Please enter template content first", "error");
       return;
     }
 
@@ -336,18 +337,18 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         }));
 
         if (suggestions?.length > 0) {
-          toast.success(
+          showNotification(
             `Detected ${variables.length} variables. ${suggestions.length} additional suggestions available.`,
-            { duration: 5000 }
+            "success"
           );
         } else {
-          toast.success(`Detected ${variables.length} variables with smart type detection!`);
+          showNotification(`Detected ${variables.length} variables with smart type detection!`, "success");
         }
       } else {
-        toast.error("Failed to detect variables");
+        showNotification("Failed to detect variables", "error");
       }
     } catch (error) {
-      toast.error("Error detecting variables");
+      showNotification("Error detecting variables", "error");
       console.error(error);
     } finally {
       setAiDetecting(false);
@@ -357,7 +358,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   // AI: Predict template effectiveness
   const predictEffectiveness = async () => {
     if (!formData.content.trim()) {
-      toast.error("Please enter template content first");
+      showNotification("Please enter template content first", "error");
       return;
     }
 
@@ -370,7 +371,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       } as any);
 
       if (!template) {
-        toast.error("Failed to analyze template");
+        showNotification("Failed to analyze template", "error");
         return;
       }
 
@@ -388,10 +389,10 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         // Clean up temporary template
         await PromptTemplateService.deleteTemplate(templateId);
       } else {
-        toast.error("Failed to predict effectiveness");
+        showNotification("Failed to predict effectiveness", "error");
       }
     } catch (error) {
-      toast.error("Error predicting effectiveness");
+      showNotification("Error predicting effectiveness", "error");
       console.error(error);
     } finally {
       setPredictingEffectiveness(false);
@@ -440,7 +441,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     e.preventDefault();
 
     if (!formData.name) {
-      toast.error("Template name is required");
+      showNotification("Template name is required", "error");
       return;
     }
 
@@ -448,7 +449,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     if (isVisualCompliance) {
       const filledCriteria = visualComplianceData.complianceCriteria.filter(c => c.trim());
       if (filledCriteria.length === 0) {
-        toast.error("At least one compliance criterion is required for visual compliance templates");
+        showNotification("At least one compliance criterion is required for visual compliance templates", "error");
         return;
       }
 
@@ -461,13 +462,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         let referenceImageData = null;
         if (referenceImageFile) {
           try {
-            toast.loading("Uploading reference image...", { id: 'image-upload' });
+            showNotification("Uploading reference image...", "info");
             const { ReferenceImageService } = await import("../../services/referenceImage.service");
             referenceImageData = await ReferenceImageService.preUploadReferenceImage(referenceImageFile);
-            toast.success("Reference image uploaded!", { id: 'image-upload' });
+            showNotification("Reference image uploaded!", "success");
           } catch (uploadError) {
             console.error("Error uploading reference image:", uploadError);
-            toast.error("Failed to upload reference image", { id: 'image-upload' });
+            showNotification("Failed to upload reference image", "error");
             setLoading(false);
             return;
           }
@@ -489,7 +490,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           } : undefined
         });
 
-        toast.success("Template created! AI feature extraction started in background.");
+        showNotification("Template created! AI feature extraction started in background.", "success");
 
         // Add new template to parent state
         if (onTemplateCreated && newTemplate) {
@@ -499,7 +500,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         onClose();
       } catch (error) {
         console.error("Error creating visual compliance template:", error);
-        toast.error("Failed to create visual compliance template");
+        showNotification("Failed to create visual compliance template", "error");
       } finally {
         setLoading(false);
       }
@@ -508,7 +509,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
     // Regular template creation
     if (!formData.content) {
-      toast.error("Template content is required");
+      showNotification("Template content is required", "error");
       return;
     }
 
