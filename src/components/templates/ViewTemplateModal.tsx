@@ -17,6 +17,7 @@ import {
 import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 import { FeatureExtractionStatus } from "./FeatureExtractionStatus";
+import { useExtractionStream } from "../../hooks/useExtractionStream";
 
 interface ViewTemplateModalProps {
   template: PromptTemplate;
@@ -39,6 +40,28 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [liveExtractionStatus, setLiveExtractionStatus] = useState<{
+    status: 'pending' | 'processing' | 'completed' | 'failed';
+    extractedAt?: Date;
+    extractedBy?: string;
+    errorMessage?: string;
+    usage?: { checksPerformed: number; totalTokensSaved: number; totalCostSaved: number };
+  } | null>(null);
+
+  // Check if template has reference image with processing status
+  const extractionStatus = template.referenceImage?.extractedFeatures?.status;
+
+  // Connect SSE for pending or processing status (extraction might be ongoing)
+  const shouldConnectSSE = extractionStatus === 'processing' || extractionStatus === 'pending';
+
+  // SSE for real-time extraction status updates
+  const { isConnected: sseConnected } = useExtractionStream({
+    templateId: template._id,
+    onStatusUpdate: (status) => {
+      setLiveExtractionStatus(status);
+    },
+    autoConnect: shouldConnectSSE
+  });
 
   const handleCopyContent = async () => {
     try {
@@ -108,7 +131,6 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     { id: "usage", label: "Usage Stats", icon: FiTrendingUp },
     { id: "versions", label: "Versions", icon: FiGitBranch },
   ];
-  console.log("template", template)
   return (
     <Modal isOpen={true} onClose={onClose} title="" size="4xl">
       <div className="flex flex-col h-full max-h-[90vh]">
@@ -316,14 +338,27 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                   {template.referenceImage.extractedFeatures && (
                     <div className="mt-4">
                       <FeatureExtractionStatus
-                        status={template.referenceImage.extractedFeatures.status}
-                        extractedAt={template.referenceImage.extractedFeatures.extractedAt ? new Date(template.referenceImage.extractedFeatures.extractedAt) : undefined}
-                        usageStats={template.referenceImage.extractedFeatures.usage ? {
-                          checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
-                          tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
-                          costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
-                        } : undefined}
+                        status={liveExtractionStatus?.status || template.referenceImage.extractedFeatures.status}
+                        extractedAt={
+                          liveExtractionStatus?.extractedAt
+                            ? new Date(liveExtractionStatus.extractedAt)
+                            : template.referenceImage.extractedFeatures.extractedAt
+                              ? new Date(template.referenceImage.extractedFeatures.extractedAt)
+                              : undefined
+                        }
+                        usageStats={
+                          liveExtractionStatus?.usage || (template.referenceImage.extractedFeatures.usage ? {
+                            checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
+                            tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
+                            costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
+                          } : undefined)
+                        }
                       />
+                      {sseConnected && (
+                        <div className="mt-2 text-xs text-success-600 dark:text-success-400">
+                          ● Real-time updates active
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

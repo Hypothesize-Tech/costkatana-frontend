@@ -205,6 +205,38 @@ export class ReferenceImageService {
     }
 
     /**
+     * Create SSE stream for extraction status updates
+     */
+    static createExtractionStream(
+        templateId: string,
+        onMessage: (data: any) => void,
+        onError?: (error: any) => void
+    ): EventSource {
+        const token = localStorage.getItem('access_token');
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const url = `${API_BASE_URL}/api/templates/${templateId}/reference-image/stream?token=${token}`;
+
+        const eventSource = new EventSource(url);
+
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                onMessage(data);
+            } catch (error) {
+                // Failed to parse SSE message
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            if (onError) {
+                onError(error);
+            }
+        };
+
+        return eventSource;
+    }
+
+    /**
      * Delete reference image
      */
     static async deleteReferenceImage(templateId: string): Promise<void> {

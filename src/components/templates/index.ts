@@ -5,6 +5,8 @@ export { ViewTemplateModal } from "./ViewTemplateModal";
 export { EditTemplateModal } from "./EditTemplateModal";
 export { DuplicateTemplateModal } from "./DuplicateTemplateModal";
 export { TemplateTutorial } from "./TemplateTutorial";
+export { ExtractionMonitor } from "./ExtractionMonitor";
+export { FeatureExtractionStatus } from "./FeatureExtractionStatus";
 
 // Re-export types for convenience
 export type {

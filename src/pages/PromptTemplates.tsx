@@ -21,6 +21,7 @@ import {
   EditTemplateModal,
   DuplicateTemplateModal,
 } from "../components/templates";
+import { ExtractionMonitor } from "../components/templates/ExtractionMonitor";
 import { useNotification } from "../contexts/NotificationContext";
 
 const PromptTemplates: React.FC = () => {
@@ -40,6 +41,67 @@ const PromptTemplates: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  // Track templates with ongoing extractions
+  const [processingTemplates, setProcessingTemplates] = useState<Set<string>>(new Set());
+
+  // Find templates that are currently processing
+  useEffect(() => {
+    const processing = new Set<string>();
+    templates.forEach(template => {
+      if (template.referenceImage?.extractedFeatures?.status === 'processing') {
+        processing.add(template._id);
+      }
+    });
+    setProcessingTemplates(processing);
+  }, [templates]);
+
+  // Handle real-time extraction status updates
+  const handleExtractionStatusUpdate = (templateId: string, status: any) => {
+    setTemplates(prevTemplates =>
+      prevTemplates.map(template => {
+        if (template._id === templateId && template.referenceImage?.extractedFeatures) {
+          return {
+            ...template,
+            referenceImage: {
+              ...template.referenceImage,
+              extractedFeatures: {
+                ...template.referenceImage.extractedFeatures,
+                status: status.status,
+                extractedAt: status.extractedAt,
+                extractedBy: status.extractedBy,
+                usage: status.usage ? {
+                  ...template.referenceImage.extractedFeatures.usage,
+                  ...status.usage
+                } : template.referenceImage.extractedFeatures.usage,
+                errorMessage: status.errorMessage
+              }
+            }
+          } as PromptTemplate;
+        }
+        return template;
+      })
+    );
+
+    // Show notification when extraction completes
+    if (status.status === 'completed') {
+      showNotification(`Template extraction completed successfully!`, 'success');
+      // Remove from processing set
+      setProcessingTemplates(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(templateId);
+        return newSet;
+      });
+    } else if (status.status === 'failed') {
+      showNotification(`Template extraction failed: ${status.errorMessage || 'Unknown error'}`, 'error');
+      // Remove from processing set
+      setProcessingTemplates(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(templateId);
+        return newSet;
+      });
+    }
+  };
 
   const categories = [
     { value: "all", label: "All Templates" },
@@ -194,6 +256,15 @@ const PromptTemplates: React.FC = () => {
 
   return (
     <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      {/* Real-time extraction monitors for processing templates */}
+      {Array.from(processingTemplates).map(templateId => (
+        <ExtractionMonitor
+          key={templateId}
+          templateId={templateId}
+          onStatusUpdate={handleExtractionStatusUpdate}
+        />
+      ))}
+
       {/* Header */}
       <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-between items-center">
@@ -449,29 +520,167 @@ const PromptTemplates: React.FC = () => {
             setDeleteConfirmOpen(false);
             setSelectedTemplate(null);
           }}
-          title="Delete Template"
+          title=""
+          size="3xl"
         >
-          <div className="p-6">
-            <p className="mb-4 text-secondary-600 dark:text-secondary-300">
-              Are you sure you want to delete "{selectedTemplate.name}"? This
-              action cannot be undone.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => {
-                  setDeleteConfirmOpen(false);
-                  setSelectedTemplate(null);
-                }}
-                className="btn btn-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteTemplate}
-                className="btn bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
-              >
-                Delete
-              </button>
+          <div className="flex flex-col h-full">
+            {/* Header with Warning Icon */}
+            <div className="glass flex items-center justify-between p-8 border-b border-red-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-to-r from-red-50/50 to-orange-50/50 dark:from-red-900/20 dark:to-orange-900/20">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg animate-pulse">
+                  <svg
+                    className="w-7 h-7 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-display font-bold text-red-600 dark:text-red-400">
+                    Delete Template
+                  </h2>
+                  <p className="font-body text-red-600/80 dark:text-red-400/80 text-sm">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 p-8 space-y-6 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+              {/* Warning Message */}
+              <div className="glass p-6 rounded-xl border border-red-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-red-50/30 to-orange-50/30 dark:from-red-900/10 dark:to-orange-900/10">
+                <p className="text-lg font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">
+                  Are you sure you want to permanently delete{" "}
+                  <span className="font-display font-bold text-red-600 dark:text-red-400">
+                    "{selectedTemplate.name}"
+                  </span>
+                  ?
+                </p>
+              </div>
+
+              {/* Template Info Card */}
+              <div className="glass p-5 rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-secondary-500/20 to-secondary-600/20 flex items-center justify-center">
+                    <FiBookOpen className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+                      {selectedTemplate.name}
+                    </h3>
+                    {selectedTemplate.description && (
+                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-2">
+                        {selectedTemplate.description}
+                      </p>
+                    )}
+                    <div className="flex gap-3 items-center text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <span className="flex items-center gap-1">
+                        <FiTag className="w-3 h-3" />
+                        {selectedTemplate.category}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FiTrendingUp className="w-3 h-3" />
+                        {selectedTemplate.usage?.count || 0} uses
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Consequences List */}
+              <div className="glass p-5 rounded-xl border border-red-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-red-50/20 to-orange-50/20 dark:from-red-900/10 dark:to-orange-900/10">
+                <h4 className="font-display font-semibold text-red-600 dark:text-red-400 mb-3 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  What will be deleted:
+                </h4>
+                <ul className="space-y-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Template content and configuration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>All variables and metadata</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>Usage history and statistics</span>
+                  </li>
+                  {selectedTemplate.referenceImage && (
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Reference image and extracted features</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="glass p-6 border-t border-red-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setDeleteConfirmOpen(false);
+                    setSelectedTemplate(null);
+                  }}
+                  className="btn px-6 py-3 btn-secondary inline-flex items-center gap-2 font-semibold transition-all duration-200 hover:scale-105"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteTemplate}
+                  className="px-6 py-3 btn bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:scale-105 transition-all duration-200 rounded-xl border border-red-200/50 dark:border-red-700/50 inline-flex items-center gap-2 font-semibold"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                  Delete Template
+                </button>
+              </div>
             </div>
           </div>
         </Modal>

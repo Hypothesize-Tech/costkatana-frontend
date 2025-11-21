@@ -4,6 +4,7 @@ import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 import { AITemplateOptimizer } from "./AITemplateOptimizer";
 import { FeatureExtractionStatus } from "./FeatureExtractionStatus";
+import { useExtractionStream } from "../../hooks/useExtractionStream";
 
 interface EditTemplateModalProps {
   template: PromptTemplate;
@@ -19,6 +20,20 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
   const [activeTab, setActiveTab] = useState<"edit" | "optimize">("edit");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [liveExtractionStatus, setLiveExtractionStatus] = useState<any>(null);
+
+  // Connect SSE for pending or processing status (extraction might be ongoing)
+  const extractionStatus = template.referenceImage?.extractedFeatures?.status;
+  const shouldConnectSSE = extractionStatus === 'processing' || extractionStatus === 'pending';
+
+  // SSE for real-time extraction status updates
+  const { isConnected: sseConnected } = useExtractionStream({
+    templateId: template._id,
+    onStatusUpdate: (status) => {
+      setLiveExtractionStatus(status);
+    },
+    autoConnect: shouldConnectSSE
+  });
 
   // Fetch presigned URL for S3 image
   const fetchPresignedUrl = async (s3Key: string): Promise<string | null> => {
@@ -391,17 +406,30 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Feature Extraction Status */}
+                    {/* Feature Extraction Status - with real-time SSE updates */}
                     {template.referenceImage.extractedFeatures && (
                       <FeatureExtractionStatus
-                        status={template.referenceImage.extractedFeatures.status}
-                        extractedAt={template.referenceImage.extractedFeatures.extractedAt ? new Date(template.referenceImage.extractedFeatures.extractedAt) : undefined}
-                        usageStats={template.referenceImage.extractedFeatures.usage ? {
-                          checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
-                          tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
-                          costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
-                        } : undefined}
+                        status={liveExtractionStatus?.status || template.referenceImage.extractedFeatures.status}
+                        extractedAt={
+                          liveExtractionStatus?.extractedAt
+                            ? new Date(liveExtractionStatus.extractedAt)
+                            : template.referenceImage.extractedFeatures.extractedAt
+                              ? new Date(template.referenceImage.extractedFeatures.extractedAt)
+                              : undefined
+                        }
+                        usageStats={
+                          liveExtractionStatus?.usage || (template.referenceImage.extractedFeatures.usage ? {
+                            checksPerformed: template.referenceImage.extractedFeatures.usage.checksPerformed,
+                            tokensSaved: template.referenceImage.extractedFeatures.usage.totalTokensSaved,
+                            costSaved: template.referenceImage.extractedFeatures.usage.totalCostSaved
+                          } : undefined)
+                        }
                       />
+                    )}
+                    {sseConnected && (
+                      <div className="mt-2 text-xs text-success-600 dark:text-success-400">
+                        ● Real-time updates active
+                      </div>
                     )}
                   </div>
                 </div>
