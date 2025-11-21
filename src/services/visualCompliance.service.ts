@@ -9,6 +9,11 @@ import type {
   MetaPromptPresetsResponse,
   MetaPromptPresetResponse
 } from '../types/visualCompliance.types';
+import { 
+  compressImageWithStats, 
+  formatFileSize, 
+  type CompressionResult 
+} from '../utils/imageCompression.utils';
 
 class VisualComplianceService {
   /**
@@ -107,10 +112,66 @@ class VisualComplianceService {
   }
 
   /**
-   * Helper: Convert File to base64 for API
+   * Helper: Convert File to base64 for API with automatic compression
    */
   async prepareImageFile(file: File): Promise<string> {
-    return this.fileToBase64(file);
+    try {
+      // Compress image first to reduce payload size
+      const compressionResult = await compressImageWithStats(file, {
+        maxWidth: 2048,
+        maxHeight: 2048,
+        quality: 0.85,
+        maxSizeKB: 1024 // Target 1MB
+      });
+
+      // Log compression statistics
+      console.log('Image compression:', {
+        original: formatFileSize(compressionResult.originalSize),
+        compressed: formatFileSize(compressionResult.compressedSize),
+        ratio: `${(compressionResult.compressionRatio * 100).toFixed(1)}%`,
+        dimensions: compressionResult.dimensions
+      });
+
+      // Convert compressed image to base64
+      const base64 = await this.fileToBase64(compressionResult.file);
+
+      // Validate base64 size (AWS Bedrock limit ~4MB for base64)
+      const base64Size = base64.length;
+      const maxBase64Size = 4 * 1024 * 1024; // 4MB
+
+      if (base64Size > maxBase64Size) {
+        console.error('Image too large after compression:', {
+          base64Size: formatFileSize(base64Size),
+          maxSize: formatFileSize(maxBase64Size),
+          compressionRatio: compressionResult.compressionRatio
+        });
+        throw new Error(
+          `Image too large (${formatFileSize(base64Size)}). Please use a smaller image or reduce quality.`
+        );
+      }
+
+      console.log('Image prepared successfully:', {
+        base64Size: formatFileSize(base64Size),
+        compressionApplied: compressionResult.compressionRatio > 0
+      });
+
+      return base64;
+    } catch (error: any) {
+      console.error('Failed to prepare image:', error);
+      throw new Error(error.message || 'Failed to prepare image for upload');
+    }
+  }
+
+  /**
+   * Get compression statistics for an image (without base64 conversion)
+   */
+  async getCompressionStats(file: File): Promise<CompressionResult> {
+    return compressImageWithStats(file, {
+      maxWidth: 2048,
+      maxHeight: 2048,
+      quality: 0.85,
+      maxSizeKB: 1024
+    });
   }
 }
 

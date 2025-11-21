@@ -38,6 +38,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<ComplianceResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
 
     // Meta prompt state
     const [metaPromptPresets, setMetaPromptPresets] = useState<MetaPromptPreset[]>([]);
@@ -120,14 +121,6 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                     }
                 };
                 fetchImageUrl();
-                // Create a File object from the S3 URL for submission
-                fetch(selectedTemplate.referenceImage.s3Url)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const file = new File([blob], 'reference.png', { type: 'image/png' });
-                        setReferenceImage(file);
-                    })
-                    .catch(err => console.error('Failed to load reference image:', err));
             }
         }
     }, [selectedTemplate]);
@@ -182,15 +175,18 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
         setLoading(true);
         setError(null);
         setResult(null);
+        setCompressionStatus(null);
 
         try {
             // Prepare evidence image (always required)
+            setCompressionStatus('Compressing images...');
             const evidBase64 = await visualComplianceService.prepareImageFile(evidenceImage);
 
             let response;
 
             if (useTemplateWithCache) {
                 // Use template-based compliance check (only evidence image needed)
+                setCompressionStatus('Running compliance check...');
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 response = await PromptTemplateService.useVisualTemplate(
                     selectedTemplate._id,
@@ -203,8 +199,10 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                 );
             } else {
                 // Regular compliance check (both images needed)
+                setCompressionStatus('Compressing reference image...');
                 const refBase64 = await visualComplianceService.prepareImageFile(referenceImage!);
 
+                setCompressionStatus('Running compliance check...');
                 response = await visualComplianceService.checkCompliance({
                     referenceImage: refBase64,
                     evidenceImage: evidBase64,
@@ -219,7 +217,13 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
 
             if (response.success && response.data) {
                 setResult(response.data);
-                showNotification('Compliance check completed successfully!', 'success');
+
+                // Show appropriate notification based on results
+                if (response.data.pass_fail) {
+                    showNotification('✅ Compliance check passed!', 'success');
+                } else {
+                    showNotification('❌ Compliance check failed - see details below', 'info');
+                }
 
                 // Notify parent that optimization was created (backend saves it automatically)
                 if (onOptimizationCreated) {
@@ -265,6 +269,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
             showNotification(errorMessage, 'error');
         } finally {
             setLoading(false);
+            setCompressionStatus(null);
         }
     };
 
@@ -642,7 +647,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                             {loading ? (
                                 <>
                                     <LoadingSpinner size="small" />
-                                    Processing...
+                                    {compressionStatus || 'Processing...'}
                                 </>
                             ) : (
                                 <>
@@ -654,6 +659,18 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                     </form>
                 </div>
             </div>
+
+            {/* Compression Status Display */}
+            {compressionStatus && (
+                <div className="glass rounded-xl p-4 border border-primary-200/30 dark:border-primary-800/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+                    <div className="flex items-center gap-3">
+                        <LoadingSpinner size="small" />
+                        <p className="font-body text-primary-800 dark:text-primary-200">
+                            {compressionStatus}
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {/* Error Display */}
             {error && (

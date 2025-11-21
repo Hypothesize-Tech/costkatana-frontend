@@ -556,7 +556,12 @@ export class PromptTemplateService {
     }
   ): Promise<any> {
     const response = await apiClient.post(`${this.baseUrl}/${templateId}/use-visual`, data);
-    return response.data.data;
+    // Return the full response structure to match what VisualComplianceTab expects
+    return {
+      success: response.data.success,
+      data: response.data.data,
+      message: response.data.message
+    };
   }
 
   // Upload image for template variable
