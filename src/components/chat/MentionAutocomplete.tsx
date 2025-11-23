@@ -595,7 +595,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             // Determine what to replace
             // If we have @linear: and cursor is after colon, replace from @ to cursor
             // If we have @linear:something, replace from @ to end of "something"
-            let replaceStartIndex = lastAtIndex; // Start from @
+            const replaceStartIndex = lastAtIndex; // Start from @
             let replaceEndIndex = cursorPos; // Default to cursor position
 
             if (colonIndex > 0 && colonIndex < cursorPos) {

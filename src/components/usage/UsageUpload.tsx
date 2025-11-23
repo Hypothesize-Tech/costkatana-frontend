@@ -155,17 +155,22 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
               onClick={() => setIsOpen(false)}
             />
 
-            <div className="relative z-[101] inline-block overflow-hidden text-left align-bottom rounded-xl border shadow-2xl backdrop-blur-xl transition-all transform glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="px-6 pt-6 pb-4">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-bold font-display gradient-text-primary">
-                    Import Usage Data
-                  </h3>
+            <div className="relative z-[101] inline-block overflow-hidden text-left align-bottom rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl transition-all transform glass bg-gradient-light-panel dark:bg-gradient-dark-panel sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-4">
+                <div className="flex justify-between items-center mb-4 sm:mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
+                      <CloudArrowUpIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold font-display gradient-text-primary">
+                      Import Usage Data
+                    </h3>
+                  </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
+                    className="p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:text-danger-600 dark:hover:text-danger-400 transition-colors duration-300 [touch-action:manipulation] active:scale-95"
                   >
-                    <XMarkIcon className="w-6 h-6" />
+                    <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
                 </div>
 
@@ -291,11 +296,11 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                 )}
               </div>
 
-              <div className="px-6 py-4 bg-gradient-to-r border-t glass from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20 border-primary-200/30 sm:flex sm:flex-row-reverse">
+              <div className="px-4 sm:px-6 py-4 bg-gradient-to-r border-t border-primary-200/30 dark:border-primary-700/30 glass from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20 sm:flex sm:flex-row-reverse gap-3">
                 <button
                   onClick={handleUpload}
                   disabled={!file || isUploading}
-                  className="w-full btn btn-primary sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto group relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
                 >
                   {isUploading ? (
                     <>
@@ -303,12 +308,15 @@ export const UsageUpload: React.FC<UsageUploadProps> = ({
                       Uploading...
                     </>
                   ) : (
-                    "Upload"
+                    <>
+                      <CloudArrowUpIcon className="w-5 h-5" />
+                      Upload
+                    </>
                   )}
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="mt-3 w-full btn btn-secondary sm:mt-0 sm:ml-3 sm:w-auto"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
                 >
                   {uploadResult ? "Close" : "Cancel"}
                 </button>

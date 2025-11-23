@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Webhook, Activity } from 'lucide-react';
+import {
+    PlusIcon,
+    WifiIcon,
+    ClockIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+    ArrowPathIcon,
+    QueueListIcon,
+} from '@heroicons/react/24/outline';
 import { useToast } from '../../hooks/useToast';
 import { webhookApi } from '../../services/webhook.api';
 import { WebhookList } from './WebhookList';
@@ -15,7 +23,12 @@ export const WebhookDashboard: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingWebhook, setEditingWebhook] = useState<IWebhook | null>(null);
-    const [queueStats, setQueueStats] = useState<any>(null);
+    const [queueStats, setQueueStats] = useState<{
+        waiting: number;
+        active: number;
+        completed: number;
+        failed: number;
+    } | null>(null);
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -23,12 +36,14 @@ export const WebhookDashboard: React.FC = () => {
         loadQueueStats();
         const interval = setInterval(loadQueueStats, 5000); // Refresh queue stats every 5 seconds
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         if (selectedWebhook) {
             loadDeliveries(selectedWebhook.id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWebhook]);
 
     const loadWebhooks = async () => {
@@ -137,60 +152,84 @@ export const WebhookDashboard: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
-                                <Webhook className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                                Webhooks
-                            </h1>
-                            <p className="text-secondary-600 dark:text-secondary-300 mt-2">
-                                Send real-time notifications to external services
-                            </p>
+                <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 p-6 sm:p-8 mb-6 sm:mb-8">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30">
+                                <WifiIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl sm:text-3xl font-display font-bold gradient-text-primary">
+                                    Webhooks
+                                </h1>
+                                <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary mt-1 sm:mt-2 font-body">
+                                    Send real-time notifications to external services
+                                </p>
+                            </div>
                         </div>
                         <button
                             onClick={() => setShowForm(true)}
-                            className="btn-primary flex items-center gap-2"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-display font-semibold text-white bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] hover:from-[#22c55e] hover:via-emerald-600 hover:to-[#16a34a] shadow-lg shadow-[#06ec9e]/30 hover:shadow-[#06ec9e]/50 transition-all duration-300 hover:scale-105 active:scale-95"
                         >
-                            <Plus className="w-5 h-5" />
-                            Create Webhook
+                            <PlusIcon className="w-5 h-5" />
+                            <span>Create Webhook</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Queue Stats */}
                 {queueStats && (
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
-                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-secondary-900 dark:text-white">
-                            <Activity className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                            Delivery Queue
-                        </h2>
-                        <div className="grid grid-cols-4 gap-4">
-                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
-                                <p className="text-3xl font-bold text-accent-600 dark:text-accent-400">{queueStats.waiting}</p>
-                                <p className="text-secondary-600 dark:text-secondary-300">Waiting</p>
+                    <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 p-4 sm:p-6 mb-6">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                            <div className="p-2 rounded-lg bg-gradient-to-br from-[#06ec9e]/20 to-[#009454]/20 dark:from-[#06ec9e]/30 dark:to-[#009454]/30">
+                                <QueueListIcon className="w-5 h-5 text-[#06ec9e] dark:text-emerald-400" />
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
-                                <p className="text-3xl font-bold text-primary-600 dark:text-primary-400">{queueStats.active}</p>
-                                <p className="text-secondary-600 dark:text-secondary-300">Active</p>
+                            <h2 className="text-lg sm:text-xl font-display font-bold text-secondary-900 dark:text-white">
+                                Delivery Queue
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                            <div className="relative overflow-hidden glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-br from-amber-50/50 to-amber-100/50 dark:from-amber-900/20 dark:to-amber-800/20 p-4 sm:p-5 text-center group hover:scale-105 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="relative">
+                                    <ClockIcon className="w-6 h-6 sm:w-8 sm:h-8 text-amber-600 dark:text-amber-400 mx-auto mb-2" />
+                                    <p className="text-2xl sm:text-3xl font-display font-bold text-amber-600 dark:text-amber-400">{queueStats.waiting || 0}</p>
+                                    <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body mt-1">Waiting</p>
+                                </div>
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
-                                <p className="text-3xl font-bold text-success-600 dark:text-success-400">{queueStats.completed}</p>
-                                <p className="text-secondary-600 dark:text-secondary-300">Completed</p>
+                            <div className="relative overflow-hidden glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-br from-[#06ec9e]/10 to-emerald-100/50 dark:from-[#06ec9e]/20 dark:to-emerald-900/20 p-4 sm:p-5 text-center group hover:scale-105 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#06ec9e]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="relative">
+                                    <ArrowPathIcon className="w-6 h-6 sm:w-8 sm:h-8 text-[#06ec9e] dark:text-emerald-400 mx-auto mb-2 animate-pulse" />
+                                    <p className="text-2xl sm:text-3xl font-display font-bold text-[#06ec9e] dark:text-emerald-400">{queueStats.active || 0}</p>
+                                    <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body mt-1">Active</p>
+                                </div>
                             </div>
-                            <div className="text-center p-4 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-                                <p className="text-3xl font-bold text-danger-600 dark:text-danger-400">{queueStats.failed}</p>
-                                <p className="text-secondary-600 dark:text-secondary-300">Failed</p>
+                            <div className="relative overflow-hidden glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/20 p-4 sm:p-5 text-center group hover:scale-105 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="relative">
+                                    <CheckCircleIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+                                    <p className="text-2xl sm:text-3xl font-display font-bold text-green-600 dark:text-green-400">{queueStats.completed || 0}</p>
+                                    <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body mt-1">Completed</p>
+                                </div>
+                            </div>
+                            <div className="relative overflow-hidden glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-br from-red-50/50 to-red-100/50 dark:from-red-900/20 dark:to-red-800/20 p-4 sm:p-5 text-center group hover:scale-105 transition-all duration-300">
+                                <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="relative">
+                                    <XCircleIcon className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 dark:text-red-400 mx-auto mb-2" />
+                                    <p className="text-2xl sm:text-3xl font-display font-bold text-red-600 dark:text-red-400">{queueStats.failed || 0}</p>
+                                    <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body mt-1">Failed</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {/* Main Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                     {/* Webhook List */}
                     <div className="lg:col-span-1">
                         <WebhookList
@@ -207,7 +246,7 @@ export const WebhookDashboard: React.FC = () => {
                     {/* Webhook Details */}
                     <div className="lg:col-span-2">
                         {selectedWebhook ? (
-                            <>
+                            <div className="space-y-4 sm:space-y-6">
                                 <WebhookDetails
                                     webhook={selectedWebhook}
                                     onEdit={() => setEditingWebhook(selectedWebhook)}
@@ -221,11 +260,18 @@ export const WebhookDashboard: React.FC = () => {
                                     deliveries={deliveries}
                                     onReplay={handleReplayDelivery}
                                 />
-                            </>
+                            </div>
                         ) : (
-                            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
-                                <Webhook className="w-16 h-16 text-secondary-400 dark:text-secondary-500 mx-auto mb-4" />
-                                <p className="text-secondary-600 dark:text-secondary-300">Select a webhook to view details</p>
+                            <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 p-8 sm:p-12 text-center">
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-[#06ec9e]/10 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:to-[#009454]/20 w-fit mx-auto mb-4">
+                                    <WifiIcon className="w-12 h-12 sm:w-16 sm:h-16 text-[#06ec9e] dark:text-emerald-400" />
+                                </div>
+                                <h3 className="text-lg sm:text-xl font-display font-semibold text-secondary-900 dark:text-white mb-2">
+                                    No Webhook Selected
+                                </h3>
+                                <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary font-body">
+                                    Select a webhook from the list to view details and delivery statistics
+                                </p>
                             </div>
                         )}
                     </div>
@@ -233,8 +279,8 @@ export const WebhookDashboard: React.FC = () => {
 
                 {/* Create/Edit Form Modal */}
                 {(showForm || editingWebhook) && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+                        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                             <WebhookForm
                                 webhook={editingWebhook}
                                 onSubmit={editingWebhook

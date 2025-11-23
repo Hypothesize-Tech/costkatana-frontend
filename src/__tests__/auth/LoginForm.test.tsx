@@ -36,7 +36,7 @@ vi.mock('react-router-dom', async () => {
 
 // Mock the AuthContext
 let mockLogin: any;
-let mockIsLoading = false;
+const mockIsLoading = false;
 
 vi.mock('../../contexts/AuthContext', () => ({
     useAuth: () => ({

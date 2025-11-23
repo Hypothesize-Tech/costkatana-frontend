@@ -1,8 +1,6 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { PlusIcon, FunnelIcon, ChevronDownIcon, SparklesIcon, ClockIcon, CircleStackIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, FunnelIcon, ChevronDownIcon, SparklesIcon, ClockIcon, CircleStackIcon, ArrowDownTrayIcon, CloudArrowUpIcon, ChartBarIcon, FolderIcon, CurrencyDollarIcon, HashtagIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { UsageList } from '@/components/usage/UsageList';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -18,8 +16,6 @@ import { UsageUpload } from '@/components/usage/UsageUpload';
 import { useProject } from '@/contexts/ProjectContext';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { Hash } from 'lucide-react';
-import { usePopper } from 'react-popper';
 
 export default function Usage() {
   const [showTrackModal, setShowTrackModal] = useState(false);
@@ -30,66 +26,6 @@ export default function Usage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { selectedProject, setSelectedProject, projects, getSelectedProjectName } = useProject();
-
-  // Actions dropdown state
-  const [actionsDropdownOpen, setActionsDropdownOpen] = useState(false);
-  const [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
-  const actionsDropdownRef = useRef<HTMLDivElement>(null);
-
-  const { styles: actionsStyles, attributes: actionsAttributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-end',
-    strategy: 'fixed',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-      {
-        name: 'preventOverflow',
-        options: {
-          padding: 16,
-        },
-      },
-      {
-        name: 'flip',
-        options: {
-          fallbackPlacements: ['top-end', 'top-start', 'bottom-start'],
-          padding: 16,
-        },
-      },
-      {
-        name: 'computeStyles',
-        options: {
-          gpuAcceleration: true,
-        },
-      },
-    ],
-  });
-
-  // Close actions dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        actionsDropdownRef.current &&
-        !actionsDropdownRef.current.contains(event.target as Node) &&
-        referenceElement &&
-        !referenceElement.contains(event.target as Node)
-      ) {
-        setActionsDropdownOpen(false);
-      }
-    };
-
-    if (actionsDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [actionsDropdownOpen, referenceElement]);
 
 
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -279,33 +215,33 @@ export default function Usage() {
 
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="mx-auto space-y-8 max-w-7xl">
+    <div className="p-4 sm:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="mx-auto space-y-4 sm:space-y-6 lg:space-y-8 max-w-7xl">
         {/* Header */}
-        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="sm:flex sm:items-center sm:justify-between">
-            <div>
-              <div className="flex items-center">
-                <h1 className="text-4xl font-bold font-display gradient-text-primary">
+        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 lg:p-8 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
+                <ChartBarIcon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display gradient-text-primary">
                   API Usage
                 </h1>
-                {data?.usage && data.usage.some((item: any) => item.cost > 0.01 || item.totalTokens > 500) && (
-                  <div className="px-3 py-1 ml-4 text-xs font-medium text-white rounded-full shadow-lg animate-pulse bg-gradient-success">
-                    💰 Savings
-                  </div>
-                )}
+                <p className="mt-1 sm:mt-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
+                  Track and manage your AI API usage across all providers{selectedProject !== 'all' ? ` • ${getSelectedProjectName()}` : ''}
+                </p>
               </div>
-              <p className="mt-2 text-secondary-600 dark:text-secondary-300">
-                Track and manage your AI API usage across all providers{selectedProject !== 'all' ? ` • ${getSelectedProjectName()}` : ''}
-              </p>
             </div>
-            <div className="flex gap-3 mt-4 sm:mt-0">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {/* Project Selection */}
-              <Menu as="div" className="inline-block relative z-50 text-left">
+              <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="inline-flex justify-center items-center btn btn-secondary">
-                    {getSelectedProjectName()}
-                    <ChevronDownIcon className="-mr-1 ml-2 w-5 h-5" aria-hidden="true" />
+                  <Menu.Button className="inline-flex justify-center items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95">
+                    <FolderIcon className="w-5 h-5" />
+                    <span className="hidden sm:inline">{getSelectedProjectName()}</span>
+                    <span className="sm:hidden">Project</span>
+                    <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                   </Menu.Button>
                 </div>
                 <Transition
@@ -317,16 +253,17 @@ export default function Usage() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-50 mt-2 w-56 rounded-xl border shadow-xl backdrop-blur-xl origin-top-right glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel focus:outline-none">
+                  <Menu.Items className="absolute right-0 z-[9999] mt-2 w-56 sm:w-64 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl origin-top-right glass bg-gradient-light-panel dark:bg-gradient-dark-panel focus:outline-none">
                     <div className="py-2">
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             onClick={() => setSelectedProject('all')}
-                            className={`btn ${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
-                              } ${selectedProject === 'all' ? 'bg-primary-500/20 text-primary-700 dark:text-primary-300' : ''
-                              } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
+                            className={`${active ? 'bg-[#06ec9e]/10 dark:bg-emerald-500/10 text-[#06ec9e] dark:text-emerald-400' : 'text-secondary-700 dark:text-secondary-300'
+                              } ${selectedProject === 'all' ? 'bg-[#06ec9e]/20 dark:bg-emerald-500/20 text-[#06ec9e] dark:text-emerald-400 font-semibold' : ''
+                              } group flex items-center gap-2 px-4 py-2.5 text-sm w-full text-left rounded-lg mx-2 transition-colors min-h-[44px] [touch-action:manipulation]`}
                           >
+                            <FolderIcon className="w-4 h-4" />
                             All Projects
                           </button>
                         )}
@@ -336,10 +273,11 @@ export default function Usage() {
                           {({ active }) => (
                             <button
                               onClick={() => setSelectedProject(project._id)}
-                              className={`btn ${active ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-secondary-700 dark:text-secondary-300'
-                                } ${selectedProject === project._id ? 'bg-primary-500/20 text-primary-700 dark:text-primary-300' : ''
-                                } group flex items-center px-4 py-2 text-sm w-full text-left rounded-lg mx-2 transition-colors`}
+                              className={`${active ? 'bg-[#06ec9e]/10 dark:bg-emerald-500/10 text-[#06ec9e] dark:text-emerald-400' : 'text-secondary-700 dark:text-secondary-300'
+                                } ${selectedProject === project._id ? 'bg-[#06ec9e]/20 dark:bg-emerald-500/20 text-[#06ec9e] dark:text-emerald-400 font-semibold' : ''
+                                } group flex items-center gap-2 px-4 py-2.5 text-sm w-full text-left rounded-lg mx-2 transition-colors min-h-[44px] [touch-action:manipulation]`}
                             >
+                              <FolderIcon className="w-4 h-4" />
                               {project.name}
                             </button>
                           )}
@@ -350,76 +288,31 @@ export default function Usage() {
                 </Transition>
               </Menu>
 
-              <Link
-                to="/requests"
-                className="btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-secondary-200/30 rounded-xl shadow-lg backdrop-blur-sm hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300"
+              {/* Quick Actions - Direct buttons instead of dropdown for better UX */}
+              <button
+                onClick={() => setShowTrackModal(true)}
+                className="group relative flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
               >
-                <ClockIcon className="mr-2 w-5 h-5" />
-                Request
-              </Link>
+                <PlusIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">Track Usage</span>
+                <span className="sm:hidden">Track</span>
+              </button>
 
-              {/* Actions Dropdown */}
-              <div className="inline-block relative">
-                <button
-                  ref={setReferenceElement}
-                  onClick={() => setActionsDropdownOpen(!actionsDropdownOpen)}
-                  className="inline-flex items-center btn btn-secondary"
-                  aria-label="Actions"
-                >
-                  <EllipsisVerticalIcon className="w-5 h-5" />
-                </button>
+              <button
+                onClick={() => setShowExportModal(true)}
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+              >
+                <ArrowDownTrayIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">Export</span>
+              </button>
 
-                {actionsDropdownOpen && referenceElement && createPortal(
-                  <div
-                    ref={(node) => {
-                      setPopperElement(node);
-                      if (actionsDropdownRef) {
-                        (actionsDropdownRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-                      }
-                    }}
-                    style={{
-                      ...actionsStyles.popper,
-                      zIndex: 99999,
-                    }}
-                    {...actionsAttributes.popper}
-                    className="w-56"
-                  >
-                    <div className="overflow-hidden py-2 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-scale-in">
-                      <button
-                        onClick={() => {
-                          setShowTrackModal(true);
-                          setActionsDropdownOpen(false);
-                        }}
-                        className="flex items-center px-4 py-2 mx-2 w-full text-sm text-left rounded-lg transition-colors group text-secondary-700 dark:text-secondary-300 hover:bg-primary-500/10 hover:text-primary-600 dark:hover:text-primary-400"
-                      >
-                        <PlusIcon className="mr-3 w-5 h-5" />
-                        Track Usage
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowExportModal(true);
-                          setActionsDropdownOpen(false);
-                        }}
-                        className="flex items-center px-4 py-2 mx-2 w-full text-sm text-left rounded-lg transition-colors group text-secondary-700 dark:text-secondary-300 hover:bg-primary-500/10 hover:text-primary-600 dark:hover:text-primary-400"
-                      >
-                        <ArrowDownTrayIcon className="mr-3 w-5 h-5" />
-                        Export Data
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowUploadModal(true);
-                          setActionsDropdownOpen(false);
-                        }}
-                        className="flex items-center px-4 py-2 mx-2 w-full text-sm text-left rounded-lg transition-colors group text-secondary-700 dark:text-secondary-300 hover:bg-primary-500/10 hover:text-primary-600 dark:hover:text-primary-400"
-                      >
-                        <CloudArrowUpIcon className="mr-3 w-5 h-5" />
-                        Import Usage
-                      </button>
-                    </div>
-                  </div>,
-                  document.body
-                )}
-              </div>
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+              >
+                <CloudArrowUpIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">Import</span>
+              </button>
             </div>
           </div>
         </div>
@@ -467,18 +360,18 @@ export default function Usage() {
 
           {/* Stats Cards */}
           {data?.usage && data.usage.length > 0 && (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {/* Total Cost */}
-              <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+              <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                 <div className="flex items-center">
-                  <div className="p-3 mr-4 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20">
-                    <span className="text-lg font-bold font-display text-success-600 dark:text-success-400">$</span>
+                  <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20 dark:from-success-500/30 dark:to-success-600/30">
+                    <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-success-600 dark:text-success-400" />
                   </div>
-                  <div className="flex-1">
-                    <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                  <div className="flex-1 min-w-0">
+                    <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
                       Total Cost
                     </dt>
-                    <dd className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                    <dd className="text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
                       ${data.usage.reduce((sum: number, item: any) => sum + (item.cost || 0), 0).toFixed(2)}
                     </dd>
                   </div>
@@ -486,10 +379,10 @@ export default function Usage() {
               </div>
 
               {/* Total Tokens */}
-              <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+              <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                 <div className="flex items-center">
-                  <div className="p-3 mr-4 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20">
-                    <Hash className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                  <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-[#06ec9e]/20 to-emerald-500/20 dark:from-[#06ec9e]/30 dark:to-emerald-500/30">
+                    <HashtagIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#06ec9e] dark:text-emerald-400" />
                   </div>
                   <div className="flex-1">
                     <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
@@ -503,17 +396,17 @@ export default function Usage() {
               </div>
 
               {/* Token Breakdown */}
-              <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+              <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                 <div className="flex items-center">
-                  <div className="p-3 mr-4 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20">
-                    <CircleStackIcon className="w-6 h-6 text-highlight-600 dark:text-highlight-400" />
+                  <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20 dark:from-highlight-500/30 dark:to-highlight-600/30">
+                    <CircleStackIcon className="w-5 h-5 sm:w-6 sm:h-6 text-highlight-600 dark:text-highlight-400" />
                   </div>
-                  <div className="flex-1">
-                    <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                  <div className="flex-1 min-w-0">
+                    <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
                       Token Breakdown
                     </dt>
-                    <dd className="text-sm text-secondary-900 dark:text-white">
-                      <div className="mt-2 space-y-2">
+                    <dd className="text-xs sm:text-sm text-secondary-900 dark:text-white">
+                      <div className="mt-2 space-y-1.5 sm:space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-secondary-600 dark:text-secondary-300">Input:</span>
                           <span className="font-semibold">{data.usage.reduce((sum: number, item: any) => sum + ((item as any).promptTokens || 0), 0).toLocaleString()}</span>
@@ -529,16 +422,16 @@ export default function Usage() {
               </div>
 
               {/* Average Response Time */}
-              <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+              <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                 <div className="flex items-center">
-                  <div className="p-3 mr-4 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20">
-                    <ClockIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
+                  <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20 dark:from-accent-500/30 dark:to-accent-600/30">
+                    <ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 text-accent-600 dark:text-accent-400" />
                   </div>
-                  <div className="flex-1">
-                    <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                  <div className="flex-1 min-w-0">
+                    <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
                       Avg Response
                     </dt>
-                    <dd className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                    <dd className="text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
                       {(() => {
                         const avgTime = data.usage.reduce((sum: number, item: any) => sum + (item.responseTime || 0), 0) / data.usage.length;
                         return avgTime > 1000 ? `${(avgTime / 1000).toFixed(1)}s` : `${Math.round(avgTime)}ms`;
@@ -551,8 +444,8 @@ export default function Usage() {
           )}
 
           {/* Search and Filters */}
-          <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row">
               <div className="relative flex-1">
                 <UsageSearch
                   onSearch={setSearchQuery}
@@ -561,12 +454,12 @@ export default function Usage() {
               </div>
               <button
                 onClick={() => setShowFilters(true)}
-                className="btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-secondary-700 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border border-primary-200/30 rounded-xl shadow-lg backdrop-blur-sm hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
               >
-                <FunnelIcon className="mr-2 w-5 h-5" />
-                Filters
+                <FunnelIcon className="w-5 h-5" />
+                <span>Filters</span>
                 {Object.keys(filters).length > 0 && (
-                  <span className="inline-flex justify-center items-center ml-2 w-5 h-5 text-xs font-medium text-white rounded-full shadow-lg bg-gradient-primary">
+                  <span className="inline-flex justify-center items-center w-5 h-5 text-xs font-medium text-white rounded-full shadow-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
                     {Object.keys(filters).length}
                   </span>
                 )}
@@ -599,25 +492,25 @@ export default function Usage() {
 
           {/* Cost Optimization Opportunities Banner */}
           {data?.usage && data.usage.length > 0 && (
-            <div className="mb-8">
-              <div className="p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 from-primary-500/10 to-success-500/10">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <div className="flex flex-shrink-0 justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                      <SparklesIcon className="w-6 h-6 text-white" />
+            <div className="mb-4 sm:mb-6 lg:mb-8">
+              <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex flex-shrink-0 justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454]">
+                      <SparklesIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-bold font-display gradient-text-primary">
-                        💡 Cost Optimization Opportunities
+                    <div>
+                      <h3 className="text-base sm:text-lg font-bold font-display gradient-text-primary">
+                        Cost Optimization Opportunities
                       </h3>
-                      <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">
+                      <p className="mt-1 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                         Scroll down to see AI-powered suggestions for reducing your costs
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="btn btn-primary"
+                    className="w-full sm:w-auto group relative flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
                   >
                     View Opportunities
                   </button>
