@@ -12,7 +12,6 @@ import {
   SignalIcon,
   FilmIcon,
   CpuChipIcon,
-  SparklesIcon,
   BellIcon,
   QueueListIcon,
   LightBulbIcon,
@@ -32,6 +31,9 @@ import {
   ChevronDoubleRightIcon,
   ChevronDownIcon,
   LinkIcon,
+  EyeIcon,
+  ClipboardDocumentListIcon,
+  ChartPieIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
@@ -60,70 +62,82 @@ export type NavCategory = {
 };
 
 // ------------------------------
-// Grouped Navigation (Enhanced Design)
+// Grouped Navigation (User Journey Organization)
 // ------------------------------
 const navCategories: NavCategory[] = [
   {
-    id: 'core',
-    label: 'Core',
+    id: 'overview',
+    label: 'Overview',
     items: [
-      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Chat with AI & view insights' },
-      { name: 'Usage', href: '/usage', icon: ChartBarIcon, description: 'Monitor your API usage' },
-      { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting and proactive optimization' },
+      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, description: 'Main dashboard with AI chat' },
+      { name: 'Usage', href: '/usage', icon: ChartBarIcon, description: 'API usage monitoring' },
+      { name: 'Predictive Intelligence', href: '/predictive-intelligence', icon: BoltIcon, description: 'AI-powered cost forecasting' },
     ],
   },
   {
     id: 'monitor',
     label: 'Monitor',
     items: [
-      { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics and monitoring' },
-      { name: 'Telemetry', href: '/telemetry', icon: SignalIcon, description: 'AI-powered telemetry with intelligent insights and cost optimization' },
-      { name: 'Logs', href: '/logs', icon: DocumentTextIcon, description: 'AI operation logs with real-time monitoring' },
-      { name: 'Sessions', href: '/sessions', icon: FilmIcon, description: 'View session replays and debug AI traces' },
-      { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard with semantic matching' },
-      { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: SparklesIcon, description: 'Advanced monitoring tools' },
-      { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Manage alerts' },
+      { name: 'Gateway', href: '/gateway', icon: ServerIcon, description: 'AI Gateway analytics' },
+      { name: 'Telemetry', href: '/telemetry', icon: SignalIcon, description: 'AI-powered telemetry dashboard' },
+      { name: 'Sessions', href: '/sessions', icon: FilmIcon, description: 'Session replays and debugging' },
+      { name: 'Logs', href: '/logs', icon: ClipboardDocumentListIcon, description: 'Operation logs' },
+      { name: 'Cache', href: '/cache', icon: CpuChipIcon, description: 'Redis cache dashboard' },
+      { name: 'Advanced Monitoring', href: '/advanced-monitoring', icon: EyeIcon, description: 'Advanced monitoring tools' },
+      { name: 'Alerts', href: '/alerts', icon: BellIcon, description: 'Alert management' },
     ],
   },
   {
     id: 'optimize',
-    label: 'Optimize & Debug',
+    label: 'Optimize',
     items: [
-      { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Track multi-step AI operations' },
-      { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Optimize performance' },
-      { name: 'Unexplained Costs', href: '/unexplained-costs', icon: CurrencyDollarIcon, description: 'Understand why your AI costs changed with detailed attribution and optimization insights' },
+      { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Multi-step AI operations' },
+      { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Performance insights' },
+      { name: 'Unexplained Costs', href: '/unexplained-costs', icon: ChartPieIcon, description: 'Cost attribution analysis' },
+      { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'A/B testing' },
     ],
   },
   {
     id: 'security',
     label: 'Security & Compliance',
     items: [
-      { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'Secure API key management' },
-      { name: 'Integrations', href: '/integrations', icon: PuzzlePieceIcon, description: 'Connect Slack, Discord & webhooks' },
-      { name: 'Webhooks', href: '/webhooks', icon: WifiIcon, description: 'Configure webhooks for real-time notifications' },
-      { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'View moderation analytics' },
-      { name: 'Security', href: '/security', icon: ExclamationTriangleIcon, description: 'LLM security guardrails & threat analysis' },
+      { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'API key management' },
+      { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'Content moderation' },
+      { name: 'Security', href: '/security', icon: ExclamationTriangleIcon, description: 'LLM security guardrails' },
     ],
   },
   {
-    id: 'build',
-    label: 'Build & Manage',
+    id: 'integrate',
+    label: 'Integrate',
     items: [
-      { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'Run experiments' },
-      { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Manage your projects' },
-      { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Browse templates' },
-      { name: 'Integration', href: '/integration', icon: LinkIcon, description: 'Integration settings' },
-      { name: 'Pricing', href: '/pricing', icon: BanknotesIcon, description: 'View pricing plans' },
-      { name: 'Profile', href: '/profile', icon: UserCircleIcon, description: 'User profile settings' },
-      { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, description: 'Application settings and preferences' },
+      { name: 'Integrations', href: '/integrations', icon: PuzzlePieceIcon, description: 'Third-party services' },
+      { name: 'Webhooks', href: '/webhooks', icon: WifiIcon, description: 'Webhook configuration' },
+      { name: 'Integration Settings', href: '/integration', icon: LinkIcon, description: 'Integration configs' },
+    ],
+  },
+  {
+    id: 'manage',
+    label: 'Manage',
+    items: [
+      { name: 'Projects', href: '/projects', icon: FolderIcon, description: 'Project management' },
+      { name: 'Templates', href: '/templates', icon: DocumentTextIcon, description: 'Prompt templates' },
+      { name: 'Pricing', href: '/pricing', icon: BanknotesIcon, description: 'Pricing plans' },
+    ],
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    items: [
+      { name: 'Profile', href: '/profile', icon: UserCircleIcon, description: 'User profile' },
+      { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, description: 'Application settings' },
     ],
   },
   {
     id: 'admin',
-    label: 'Admin',
+    label: 'Administration',
     items: [
-      { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Comprehensive platform analytics and monitoring' },
-      { name: 'User Spending', href: '/admin/user-spending', icon: CurrencyDollarIcon, description: 'Track user spending and analytics' },
+      { name: 'Admin Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Platform analytics' },
+      { name: 'User Spending', href: '/admin/user-spending', icon: CurrencyDollarIcon, description: 'User spending tracking' },
     ],
   },
 ];
@@ -293,17 +307,18 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
     return (
       <li key={item.name} className="relative">
-        <Tooltip title={item.name} description={item.description} show={true} placement="right">
+        <Tooltip title={item.name} description={item.description} show={collapsed} placement="right">
           <NavLink
             to={item.href}
             onClick={onClose}
             className={cn(
               'relative flex items-center rounded-xl group transition-all duration-300',
               'before:absolute before:inset-0 before:rounded-xl before:transition-all before:duration-300',
+              'min-h-[44px] [touch-action:manipulation]',
               collapsed ? 'mx-2.5 justify-center p-3' : 'gap-x-3 px-4 py-3',
               isActive
                 ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white shadow-xl shadow-[#06ec9e]/30'
-                : 'text-secondary-900 dark:text-white hover:text-[#06ec9e] dark:hover:text-emerald-400 hover:bg-primary-500/10 dark:hover:bg-primary-500/20',
+                : 'text-secondary-900 dark:text-white hover:text-[#06ec9e] dark:hover:text-emerald-400 active:bg-primary-500/15 dark:active:bg-primary-500/25 hover:bg-primary-500/10 dark:hover:bg-primary-500/20',
               isActive && 'before:bg-gradient-to-r before:from-[#06ec9e]/20 before:via-emerald-400/20 before:to-[#009454]/20 before:blur-sm',
               !isActive && 'hover:before:bg-gradient-to-r hover:before:from-[#06ec9e]/5 hover:before:via-emerald-500/5 hover:before:to-[#009454]/5'
             )}
@@ -354,12 +369,13 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       type="button"
       onClick={() => toggleCat(id)}
       className={cn(
-        'w-full flex items-center justify-between px-3 py-2.5 select-none rounded-lg',
+        'w-full flex items-center justify-between px-3 py-3 min-h-[44px] select-none rounded-lg',
         'text-xs font-bold uppercase tracking-widest',
         'text-secondary-600 dark:text-white/60',
         'hover:text-[#06ec9e] dark:hover:text-emerald-400',
+        'active:bg-primary-500/10 dark:active:bg-primary-500/20',
         'hover:bg-primary-500/5 dark:hover:bg-primary-500/10',
-        'transition-all duration-300',
+        'transition-all duration-300 [touch-action:manipulation]',
         'border border-transparent hover:border-primary-500/20',
         expanded[id] && 'bg-primary-500/5 dark:bg-primary-500/10 text-[#06ec9e] dark:text-emerald-400 border-primary-500/30'
       )}
@@ -447,10 +463,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             </ul>
 
             {/* Divider between categories */}
-            {collapsed && index < navCategories.length - 1 && (
+            {collapsed && index < navCategories.filter(cat => cat.id !== 'admin' || isAdmin).length - 1 && (
               <div className="mx-3 my-3 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent" />
             )}
-            {!collapsed && index < navCategories.length - 1 && (
+            {!collapsed && index < navCategories.filter(cat => cat.id !== 'admin' || isAdmin).length - 1 && (
               <div className="mx-1 my-2 h-px bg-gradient-to-r from-transparent via-primary-200/20 dark:via-primary-500/20 to-transparent" />
             )}
           </li>
@@ -504,7 +520,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
                   </div>
                 </Transition.Child>
 
-                <div className="flex overflow-y-auto flex-col gap-y-5 px-6 pb-6 glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel grow">
+                <div className="flex overflow-y-auto flex-col gap-y-5 px-4 sm:px-6 pb-6 glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel grow overscroll-contain">
                   <div className="flex items-center h-16 shrink-0 mt-4">
                     <div className="relative flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-xl shadow-[#06ec9e]/30">
                       <span className="text-xl font-display font-bold text-white">CK</span>
@@ -533,7 +549,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             'glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20',
             'bg-gradient-light-panel dark:bg-gradient-dark-panel',
             'shadow-xl',
-            isCollapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-6'
+            isCollapsed ? 'overflow-visible px-2' : 'overflow-y-auto px-4 sm:px-6 overscroll-contain'
           )}
         >
           {/* Collapse button (anchored next to the first item when expanded) */}
