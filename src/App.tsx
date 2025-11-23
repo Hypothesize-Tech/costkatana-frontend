@@ -297,19 +297,19 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <NotificationProvider>
+    <NotificationProvider>
+      <AuthProvider>
+        <ThemeProvider>
           <ProjectProvider>
             <MemoryProvider>
               {/* <LaunchScreen /> */}
               <AppContent />
             </MemoryProvider>
           </ProjectProvider>
-        </NotificationProvider>
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </AuthProvider>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </AuthProvider>
+    </NotificationProvider>
   );
 }
 
