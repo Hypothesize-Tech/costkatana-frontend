@@ -58,7 +58,7 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="pr-12 pl-12 input"
+          className="w-full pr-12 pl-12 px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
         />
         {query && (
           <div className="flex absolute inset-y-0 right-0 items-center pr-4">
@@ -74,10 +74,10 @@ export const UsageSearch: React.FC<UsageSearchProps> = ({
 
       {isSearching && (
         <div className="absolute right-0 left-0 top-full z-10 mt-2">
-          <div className="p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center text-sm text-secondary-600 dark:text-secondary-300">
+          <div className="p-3 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
               <svg
-                className="mr-2 w-4 h-4 animate-spin text-primary-500"
+                className="mr-2 w-4 h-4 animate-spin text-[#06ec9e]"
                 fill="none"
                 viewBox="0 0 24 24"
               >

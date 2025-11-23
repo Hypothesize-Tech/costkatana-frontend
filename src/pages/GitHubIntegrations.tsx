@@ -50,7 +50,7 @@ const GitHubIntegrations: React.FC = () => {
 
             return () => clearInterval(interval);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [integrations]);
 
     const loadData = async () => {

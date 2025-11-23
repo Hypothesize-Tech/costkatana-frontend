@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 
 interface UsageChartProps {
@@ -38,10 +39,10 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <p className="text-sm font-medium font-display gradient-text-primary">{label}</p>
+        <div className="p-3 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <p className="text-xs sm:text-sm font-medium font-display gradient-text-primary">{label}</p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm font-body" style={{ color: entry.color }}>
+            <p key={index} className="text-xs sm:text-sm font-body" style={{ color: entry.color }}>
               {entry.name}:{" "}
               {entry.name === "Cost"
                 ? formatCurrency(entry.value)
@@ -64,18 +65,25 @@ export const UsageChart: React.FC<UsageChartProps> = ({
   const ChartComponent = type === "line" ? LineChart : BarChart;
 
   return (
-    <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold font-display gradient-text-primary">Usage Over Time</h3>
-        <p className="text-sm text-secondary-600 dark:text-secondary-300">Track your API usage trends</p>
+    <div className="p-4 sm:p-6 rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
+            <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-bold font-display gradient-text-primary">Usage Over Time</h3>
+            <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">Track your API usage trends</p>
+          </div>
+        </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
         <ChartComponent data={formattedData}>
           <defs>
             <linearGradient id="primaryGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="rgb(var(--primary-500))" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="rgb(var(--primary-500))" stopOpacity={0.3} />
+              <stop offset="5%" stopColor="#06ec9e" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#06ec9e" stopOpacity={0.3} />
             </linearGradient>
             <linearGradient id="successGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="rgb(var(--success-500))" stopOpacity={0.8} />
@@ -107,11 +115,11 @@ export const UsageChart: React.FC<UsageChartProps> = ({
               <Line
                 type="monotone"
                 dataKey="cost"
-                stroke="rgb(var(--primary-500))"
+                stroke="#06ec9e"
                 strokeWidth={3}
                 name="Cost"
-                dot={{ fill: 'rgb(var(--primary-500))', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: 'rgb(var(--primary-500))', stroke: 'rgb(var(--primary-300))', strokeWidth: 2 }}
+                dot={{ fill: '#06ec9e', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, fill: '#06ec9e', stroke: '#009454', strokeWidth: 2 }}
               />
             ) : (
               <Bar dataKey="cost" fill="url(#primaryGradient)" name="Cost" />

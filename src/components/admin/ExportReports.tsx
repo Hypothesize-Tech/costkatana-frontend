@@ -4,7 +4,6 @@ import {
     DocumentArrowDownIcon,
     TableCellsIcon,
     SparklesIcon,
-    CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import { AdminDashboardService } from '../../services/adminDashboard.service';
 import { useNotification } from '../../contexts/NotificationContext';
@@ -42,22 +41,18 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
             // Create blob and download
             let blob: Blob;
             let filename: string;
-            let mimeType: string;
 
             if (format === 'json') {
                 blob = new Blob([reportData as string], { type: 'application/json' });
                 filename = `admin-report-${new Date().toISOString().split('T')[0]}.json`;
-                mimeType = 'application/json';
             } else if (format === 'csv') {
                 blob = new Blob([reportData as string], { type: 'text/csv' });
                 filename = `admin-report-${new Date().toISOString().split('T')[0]}.csv`;
-                mimeType = 'text/csv';
             } else {
                 blob = new Blob([reportData as ArrayBuffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 });
                 filename = `admin-report-${new Date().toISOString().split('T')[0]}.xlsx`;
-                mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
             }
 
             const url = window.URL.createObjectURL(blob);
@@ -70,10 +65,13 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
             window.URL.revokeObjectURL(url);
 
             showNotification(`Report exported successfully as ${format.toUpperCase()}`, 'success');
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error exporting report:', error);
+            const errorMessage = error && typeof error === 'object' && 'response' in error
+                ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+                : undefined;
             showNotification(
-                error.response?.data?.message || 'Failed to export report',
+                errorMessage || 'Failed to export report',
                 'error'
             );
         } finally {
@@ -87,21 +85,21 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
             format: 'csv' as const,
             label: 'Export CSV',
             icon: TableCellsIcon,
-            gradient: 'from-blue-500 to-blue-600',
+            gradientClasses: 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-[#06ec9e] dark:via-emerald-600 dark:to-[#009454] hover:from-[#22c55e] hover:via-emerald-600 hover:to-[#16a34a] dark:hover:from-[#22c55e] dark:hover:via-emerald-700 dark:hover:to-[#16a34a] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:shadow-[#06ec9e]/50 dark:hover:shadow-[#06ec9e]/60',
             description: 'Comma-separated values',
         },
         {
             format: 'excel' as const,
             label: 'Export Excel',
             icon: ArrowDownTrayIcon,
-            gradient: 'from-green-500 to-green-600',
+            gradientClasses: 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-[#06ec9e] dark:via-emerald-600 dark:to-[#009454] hover:from-[#22c55e] hover:via-emerald-600 hover:to-[#16a34a] dark:hover:from-[#22c55e] dark:hover:via-emerald-700 dark:hover:to-[#16a34a] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:shadow-[#06ec9e]/50 dark:hover:shadow-[#06ec9e]/60',
             description: 'Excel spreadsheet',
         },
         {
             format: 'json' as const,
             label: 'Export JSON',
             icon: DocumentArrowDownIcon,
-            gradient: 'from-purple-500 to-purple-600',
+            gradientClasses: 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-[#06ec9e] dark:via-emerald-600 dark:to-[#009454] hover:from-[#22c55e] hover:via-emerald-600 hover:to-[#16a34a] dark:hover:from-[#22c55e] dark:hover:via-emerald-700 dark:hover:to-[#16a34a] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:shadow-[#06ec9e]/50 dark:hover:shadow-[#06ec9e]/60',
             description: 'JSON data format',
         },
     ];
@@ -131,23 +129,30 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
                             key={button.format}
                             onClick={() => handleExport(button.format)}
                             disabled={exporting}
-                            className="group relative flex items-center gap-2 px-5 py-3 rounded-xl font-display font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
-                            style={{
-                                background: exporting && exportFormat === button.format
-                                    ? `linear-gradient(135deg, var(--primary-500), var(--primary-600))`
-                                    : `linear-gradient(135deg, ${button.gradient.split(' ')[1]}, ${button.gradient.split(' ')[3]})`
-                            }}
+                            className={`
+                                group relative flex items-center gap-2 px-5 py-3 rounded-xl 
+                                font-display font-semibold text-white
+                                transition-all duration-300 
+                                disabled:opacity-50 disabled:cursor-not-allowed 
+                                hover:scale-105 active:scale-95
+                                shadow-lg hover:shadow-xl 
+                                overflow-hidden
+                                ${isExporting
+                                    ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-[#06ec9e] dark:via-emerald-600 dark:to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40'
+                                    : button.gradientClasses
+                                }
+                            `}
                             title={button.description}
                         >
                             {isExporting ? (
                                 <>
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="text-white">Exporting...</span>
+                                    <span className="text-white font-medium">Exporting...</span>
                                 </>
                             ) : (
                                 <>
                                     <Icon className="w-5 h-5 text-white" />
-                                    <span className="text-white">{button.label}</span>
+                                    <span className="text-white font-medium">{button.label}</span>
                                 </>
                             )}
                         </button>

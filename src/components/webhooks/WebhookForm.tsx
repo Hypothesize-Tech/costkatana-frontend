@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+    XMarkIcon,
+    PlusIcon,
+    TrashIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+} from '@heroicons/react/24/outline';
 import { IWebhook } from '../../types/webhook.types';
 import { webhookApi } from '../../services/webhook.api';
 
@@ -177,109 +183,109 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-4 sm:mb-6 gap-4">
+                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                     {webhook ? 'Edit Webhook' : 'Create Webhook'}
                 </h2>
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="text-secondary-600 dark:text-secondary-300 hover:text-danger-600 dark:hover:text-danger-400 transition-colors duration-300"
+                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[32px] min-w-[32px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation]"
                 >
-                    <X className="w-6 h-6" />
+                    <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
             </div>
 
             {/* Basic Information */}
-            <div className="space-y-4 mb-6">
+            <div className="space-y-4 mb-4 sm:mb-6">
                 <div>
-                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         Name *
                     </label>
                     <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="input"
+                        className="input w-full"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         Description
                     </label>
                     <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="input resize-none"
+                        className="input resize-none w-full"
                         rows={2}
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-secondary-900 dark:text-white mb-1">
+                    <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         URL *
                     </label>
                     <input
                         type="url"
                         value={formData.url}
                         onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                        className="input"
+                        className="input w-full"
                         placeholder="https://example.com/webhook"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2 cursor-pointer">
                         <input
                             type="checkbox"
                             checked={formData.active}
                             onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                            className="rounded text-blue-600 focus:ring-blue-500"
+                            className="rounded text-[#06ec9e] focus:ring-[#06ec9e] dark:text-emerald-400 dark:focus:ring-emerald-400"
                         />
-                        <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Active</span>
+                        <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">Active</span>
                     </label>
                 </div>
             </div>
 
             {/* Events Selection */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                     Events *
                 </label>
-                <div className="glass rounded-xl border border-accent-200/30 bg-light-bg-100/50 dark:bg-dark-bg-100/50 p-4 max-h-64 overflow-y-auto">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 p-3 sm:p-4 max-h-64 overflow-y-auto">
                     {eventCategories.map(category => (
-                        <div key={category} className="mb-4">
+                        <div key={category} className="mb-3 sm:mb-4 last:mb-0">
                             <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-medium text-gray-900 capitalize">
+                                <h4 className="font-medium text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary capitalize">
                                     {category.replace(/_/g, ' ')}
                                 </h4>
                                 <button
                                     type="button"
                                     onClick={() => selectAllInCategory(category)}
-                                    className="text-xs text-blue-600 hover:text-blue-800"
+                                    className="text-xs text-[#06ec9e] dark:text-emerald-400 hover:text-[#009454] dark:hover:text-emerald-300 font-medium transition-colors"
                                 >
                                     Select all
                                 </button>
                             </div>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 {availableEvents
                                     .filter(e => e.category === category)
                                     .map(event => (
                                         <label
                                             key={event.value}
-                                            className="flex items-center space-x-2 text-sm"
+                                            className="flex items-center space-x-2 text-xs sm:text-sm cursor-pointer hover:bg-white/30 dark:hover:bg-dark-card/30 p-1 rounded transition-colors"
                                         >
                                             <input
                                                 type="checkbox"
                                                 checked={formData.events.includes(event.value)}
                                                 onChange={() => toggleEvent(event.value)}
-                                                className="rounded text-blue-600 focus:ring-blue-500"
+                                                className="rounded text-[#06ec9e] focus:ring-[#06ec9e] dark:text-emerald-400 dark:focus:ring-emerald-400"
                                             />
-                                            <span>{event.name}</span>
+                                            <span className="text-light-text-primary dark:text-dark-text-primary">{event.name}</span>
                                         </label>
                                     ))}
                             </div>
@@ -289,20 +295,24 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Authentication Section */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('authentication')}
-                    className="flex items-center justify-between w-full text-left"
+                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
                 >
-                    <h3 className="text-lg font-medium">Authentication</h3>
-                    {expandedSections.authentication ? <ChevronUp /> : <ChevronDown />}
+                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Authentication</h3>
+                    {expandedSections.authentication ? (
+                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    ) : (
+                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    )}
                 </button>
 
                 {expandedSections.authentication && (
-                    <div className="mt-4 space-y-4">
+                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Authentication Type
                             </label>
                             <select
@@ -311,7 +321,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                     ...formData,
                                     auth: { ...formData.auth, type: e.target.value as any }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="input w-full"
                             >
                                 <option value="none">None</option>
                                 <option value="basic">Basic Auth</option>
@@ -336,7 +346,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                             }
                                         }
                                     })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="input w-full"
                                 />
                                 <input
                                     type="password"
@@ -352,7 +362,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                             }
                                         }
                                     })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="input w-full"
                                 />
                             </>
                         )}
@@ -372,7 +382,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                         }
                                     }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         )}
 
@@ -392,7 +402,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                             }
                                         }
                                     })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="input w-full"
                                 />
                                 <input
                                     type="password"
@@ -408,7 +418,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                             }
                                         }
                                     })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="input w-full"
                                 />
                             </>
                         )}
@@ -417,56 +427,61 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Custom Headers Section */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('headers')}
-                    className="flex items-center justify-between w-full text-left"
+                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
                 >
-                    <h3 className="text-lg font-medium">Custom Headers</h3>
-                    {expandedSections.headers ? <ChevronUp /> : <ChevronDown />}
+                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Custom Headers</h3>
+                    {expandedSections.headers ? (
+                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    ) : (
+                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    )}
                 </button>
 
                 {expandedSections.headers && (
-                    <div className="mt-4">
-                        <div className="space-y-2 mb-4">
+                    <div className="mt-3 sm:mt-4 pl-2">
+                        <div className="space-y-2 mb-3 sm:mb-4">
                             {Object.entries(formData.headers).map(([key, value]) => (
-                                <div key={key} className="flex items-center gap-2">
-                                    <span className="flex-1 text-sm">
+                                <div key={key} className="flex items-center gap-2 p-2 rounded-lg bg-white/30 dark:bg-dark-card/30">
+                                    <span className="flex-1 text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary break-all">
                                         <strong>{key}:</strong> {value}
                                     </span>
                                     <button
                                         type="button"
                                         onClick={() => removeHeader(key)}
-                                        className="text-red-600 hover:text-red-800"
+                                        className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-1 rounded transition-colors min-h-[28px] min-w-[28px] flex items-center justify-center [touch-action:manipulation]"
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <TrashIcon className="w-4 h-4" />
                                     </button>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
                                 placeholder="Header Name"
                                 value={newHeader.key}
                                 onChange={(e) => setNewHeader({ ...newHeader, key: e.target.value })}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input flex-1"
                             />
                             <input
                                 type="text"
                                 placeholder="Header Value"
                                 value={newHeader.value}
                                 onChange={(e) => setNewHeader({ ...newHeader, value: e.target.value })}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input flex-1"
                             />
                             <button
                                 type="button"
                                 onClick={addHeader}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                className="px-3 sm:px-4 py-2 bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white rounded-lg hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 min-h-[36px] flex items-center justify-center gap-2 [touch-action:manipulation] active:scale-95"
                             >
-                                <Plus className="w-5 h-5" />
+                                <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">Add</span>
                             </button>
                         </div>
                     </div>
@@ -474,25 +489,29 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Filters Section */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('filters')}
-                    className="flex items-center justify-between w-full text-left"
+                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
                 >
-                    <h3 className="text-lg font-medium">Filters</h3>
-                    {expandedSections.filters ? <ChevronUp /> : <ChevronDown />}
+                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Filters</h3>
+                    {expandedSections.filters ? (
+                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    ) : (
+                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    )}
                 </button>
 
                 {expandedSections.filters && (
-                    <div className="mt-4 space-y-4">
+                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                                 Severity Levels
                             </label>
                             <div className="space-y-2">
                                 {['low', 'medium', 'high', 'critical'].map(severity => (
-                                    <label key={severity} className="flex items-center space-x-2">
+                                    <label key={severity} className="flex items-center space-x-2 cursor-pointer hover:bg-white/30 dark:hover:bg-dark-card/30 p-1 rounded transition-colors">
                                         <input
                                             type="checkbox"
                                             checked={formData.filters.severity.includes(severity)}
@@ -515,55 +534,56 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                                     });
                                                 }
                                             }}
-                                            className="rounded text-blue-600"
+                                            className="rounded text-[#06ec9e] focus:ring-[#06ec9e] dark:text-emerald-400 dark:focus:ring-emerald-400"
                                         />
-                                        <span className="capitalize">{severity}</span>
+                                        <span className="capitalize text-sm text-light-text-primary dark:text-dark-text-primary">{severity}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                                 Tags
                             </label>
                             <div className="space-y-2 mb-2">
                                 {formData.filters.tags.map(tag => (
-                                    <div key={tag} className="flex items-center gap-2">
-                                        <span className="flex-1 text-sm bg-gray-100 px-2 py-1 rounded">
+                                    <div key={tag} className="flex items-center gap-2 p-2 rounded-lg bg-white/30 dark:bg-dark-card/30">
+                                        <span className="flex-1 text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary px-2 py-1">
                                             {tag}
                                         </span>
                                         <button
                                             type="button"
                                             onClick={() => removeTag(tag)}
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-1 rounded transition-colors min-h-[28px] min-w-[28px] flex items-center justify-center [touch-action:manipulation]"
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <TrashIcon className="w-4 h-4" />
                                         </button>
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <input
                                     type="text"
                                     placeholder="Add tag"
                                     value={newTag}
                                     onChange={(e) => setNewTag(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="input flex-1"
                                 />
                                 <button
                                     type="button"
                                     onClick={addTag}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    className="px-3 sm:px-4 py-2 bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white rounded-lg hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 min-h-[36px] flex items-center justify-center gap-2 [touch-action:manipulation] active:scale-95"
                                 >
-                                    <Plus className="w-5 h-5" />
+                                    <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="hidden sm:inline">Add</span>
                                 </button>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Minimum Cost ($)
                             </label>
                             <input
@@ -578,7 +598,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                         minCost: parseFloat(e.target.value) || 0
                                     }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         </div>
                     </div>
@@ -586,20 +606,24 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Advanced Settings */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('advanced')}
-                    className="flex items-center justify-between w-full text-left"
+                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
                 >
-                    <h3 className="text-lg font-medium">Advanced Settings</h3>
-                    {expandedSections.advanced ? <ChevronUp /> : <ChevronDown />}
+                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Advanced Settings</h3>
+                    {expandedSections.advanced ? (
+                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    ) : (
+                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                    )}
                 </button>
 
                 {expandedSections.advanced && (
-                    <div className="mt-4 space-y-4">
+                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Timeout (ms)
                             </label>
                             <input
@@ -612,12 +636,12 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                     ...formData,
                                     timeout: parseInt(e.target.value) || 30000
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Max Retries
                             </label>
                             <input
@@ -632,12 +656,12 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                         maxRetries: parseInt(e.target.value) || 5
                                     }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Backoff Multiplier
                             </label>
                             <input
@@ -653,12 +677,12 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                         backoffMultiplier: parseFloat(e.target.value) || 2
                                     }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Initial Retry Delay (ms)
                             </label>
                             <input
@@ -674,7 +698,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                         initialDelay: parseInt(e.target.value) || 5000
                                     }
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="input w-full"
                             />
                         </div>
                     </div>
@@ -682,17 +706,17 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Form Actions */}
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="btn-secondary"
+                    className="btn-secondary w-full sm:w-auto min-h-[36px] px-4 py-2 text-sm font-medium rounded-xl [touch-action:manipulation] active:scale-95"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="btn-primary"
+                    className="btn-primary w-full sm:w-auto min-h-[36px] px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 [touch-action:manipulation] active:scale-95"
                 >
                     {webhook ? 'Update Webhook' : 'Create Webhook'}
                 </button>

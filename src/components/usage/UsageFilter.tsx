@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon, TrashIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { useProject } from '@/contexts/ProjectContext';
 
@@ -128,26 +128,31 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
               className="fixed inset-0 backdrop-blur-sm bg-black/50 z-[100]"
               onClick={() => setIsOpen(false)}
             />
-            <div className="relative z-[101] p-6 w-full max-w-2xl rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-bold font-display gradient-text-primary">Filter Usage</h3>
+            <div className="relative z-[101] p-4 sm:p-6 w-full max-w-2xl rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
+                    <FunnelIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold font-display gradient-text-primary">Filter Usage</h3>
+                </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
+                  className="p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:text-danger-600 dark:hover:text-danger-400 transition-colors duration-300 [touch-action:manipulation] active:scale-95"
                 >
-                  <XMarkIcon className="w-5 h-5" />
+                  <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div>
-                  <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                  <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                     Service
                   </label>
                   <select
                     value={filters.service}
                     onChange={(e) => handleFilterChange('service', e.target.value)}
-                    className="select"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   >
                     <option value="">All Services</option>
                     {services.map((service) => (
@@ -159,13 +164,13 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                  <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                     Model
                   </label>
                   <select
                     value={filters.model}
                     onChange={(e) => handleFilterChange('model', e.target.value)}
-                    className="select"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   >
                     <option value="">All Models</option>
                     {models.map((model) => (
@@ -177,13 +182,13 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                  <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                     Date Range
                   </label>
                   <select
                     value={filters.dateRange}
                     onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                    className="select"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   >
                     <option value="1d">Last 24 hours</option>
                     <option value="7d">Last 7 days</option>
@@ -193,29 +198,29 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   </select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                    <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                       Min Cost ($)
                     </label>
                     <input
                       type="number"
                       value={filters.minCost}
                       onChange={(e) => handleFilterChange('minCost', e.target.value)}
-                      className="input"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                       placeholder="0.00"
                       step="0.01"
                     />
                   </div>
                   <div>
-                    <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                    <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                       Max Cost ($)
                     </label>
                     <input
                       type="number"
                       value={filters.maxCost}
                       onChange={(e) => handleFilterChange('maxCost', e.target.value)}
-                      className="input"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                       placeholder="100.00"
                       step="0.01"
                     />
@@ -223,28 +228,28 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                 </div>
 
                 {/* Email Filter Fields */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                    <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                       User Email
                     </label>
                     <input
                       type="email"
                       value={filters.userEmail}
                       onChange={(e) => handleFilterChange('userEmail', e.target.value)}
-                      className="input"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                       placeholder="developer@company.com"
                     />
                   </div>
                   <div>
-                    <label className="block mb-2 text-sm font-medium font-display text-secondary-900 dark:text-white">
+                    <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                       Customer Email
                     </label>
                     <input
                       type="email"
                       value={filters.customerEmail}
                       onChange={(e) => handleFilterChange('customerEmail', e.target.value)}
-                      className="input"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                       placeholder="client@client.com"
                     />
                   </div>
@@ -334,16 +339,16 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-6 space-x-3 border-t border-primary-200/30">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 sm:pt-6 border-t border-primary-200/30 dark:border-primary-700/30">
                   <button
                     onClick={resetFilters}
-                    className="btn btn-secondary"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
                   >
                     Reset
                   </button>
                   <button
                     onClick={applyFilters}
-                    className="btn btn-primary"
+                    className="w-full sm:w-auto group relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
                   >
                     Apply
                   </button>

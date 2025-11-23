@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { UsageService } from "@/services/usage.service";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useNotifications } from "@/contexts/NotificationContext";
@@ -299,32 +299,37 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
           onClick={onClose}
         />
 
-        <div className="relative glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="sticky top-0 px-6 py-4 rounded-t-xl border-b glass border-primary-200/30">
+        <div className="relative glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="sticky top-0 px-4 sm:px-6 py-4 rounded-t-2xl border-b border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel z-10">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold font-display gradient-text-primary">
-                Track API Usage
-              </h2>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
+                  <PlusIcon className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-lg sm:text-xl font-bold font-display gradient-text-primary">
+                  Track API Usage
+                </h2>
+              </div>
               <button
                 onClick={onClose}
-                className="btn btn-icon-secondary"
+                className="p-2 rounded-lg text-secondary-600 dark:text-secondary-300 hover:text-danger-600 dark:hover:text-danger-400 transition-colors duration-300 [touch-action:manipulation] active:scale-95"
               >
-                <XMarkIcon className="w-6 h-6" />
+                <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Service and Model Selection */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   AI Service
                 </label>
                 <select
                   value={formData.provider}
                   onChange={(e) => handleChange("provider", e.target.value)}
-                  className="select"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   required
                 >
                   {aiServices.map((service) => (
@@ -336,13 +341,13 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Model
                 </label>
                 <select
                   value={formData.model}
                   onChange={(e) => handleChange("model", e.target.value)}
-                  className="select"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   required
                 >
                   {getModelsForService(formData.provider).map((model) => (
@@ -356,8 +361,8 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Prompt and Response */}
             <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-1.5 sm:mb-2">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
                   Prompt
                 </label>
                 {formData.prompt && (
@@ -366,7 +371,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     onClick={() =>
                       setShowOptimizationWidget(!showOptimizationWidget)
                     }
-                    className="text-sm font-medium btn font-display text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                    className="text-xs sm:text-sm font-medium font-display text-[#06ec9e] dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors duration-300 [touch-action:manipulation] active:scale-95"
                   >
                     {showOptimizationWidget ? "Hide" : "Optimize"} Prompt
                   </button>
@@ -376,7 +381,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 value={formData.prompt}
                 onChange={(e) => handleChange("prompt", e.target.value)}
                 rows={3}
-                className="resize-none input"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 resize-none"
                 placeholder="Enter the prompt you sent to the AI..."
                 required
               />
@@ -384,7 +389,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Optimization Widget */}
             {showOptimizationWidget && formData.prompt && (
-              <div className="p-4 mt-4 bg-gradient-to-br rounded-xl border backdrop-blur-xl glass border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+              <div className="p-3 sm:p-4 mt-3 sm:mt-4 bg-gradient-to-br rounded-xl border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl glass from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
                 <OptimizationWidget
                   prompt={formData.prompt}
                   model={formData.model}
@@ -395,20 +400,20 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             )}
 
             <div>
-              <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+              <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                 Response (Optional)
               </label>
               <textarea
                 value={formData.response}
                 onChange={(e) => handleChange("response", e.target.value)}
                 rows={3}
-                className="resize-none input"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 resize-none"
                 placeholder="Enter the AI's response..."
               />
             </div>
 
             {/* Auto-calculate Toggle */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -424,11 +429,11 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       setTimeout(triggerCalculation, 100);
                     }
                   }}
-                  className="w-4 h-4 rounded text-primary-600 border-primary-300 focus:ring-primary-500"
+                  className="w-4 h-4 rounded text-[#06ec9e] border-primary-300 dark:border-primary-700 focus:ring-[#06ec9e] [touch-action:manipulation]"
                 />
                 <label
                   htmlFor="autoCalculate"
-                  className="ml-2 text-sm font-body text-secondary-900 dark:text-white"
+                  className="ml-2 text-xs sm:text-sm font-body text-secondary-900 dark:text-white"
                 >
                   Auto-calculate tokens and cost
                 </label>
@@ -437,7 +442,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 <button
                   type="button"
                   onClick={triggerCalculation}
-                  className="text-sm btn btn-secondary"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[36px] [touch-action:manipulation] active:scale-95"
                 >
                   Calculate Now
                 </button>
@@ -445,9 +450,9 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             </div>
 
             {/* Token Counts */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 md:grid-cols-4">
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Prompt Tokens
                 </label>
                 <input
@@ -456,14 +461,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleChange("promptTokens", parseInt(e.target.value) || 0)
                   }
-                  className="input disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 disabled:opacity-50 min-h-[44px] [touch-action:manipulation]"
                   disabled={autoCalculate}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Completion Tokens
                 </label>
                 <input
@@ -475,26 +480,26 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                       parseInt(e.target.value) || 0,
                     )
                   }
-                  className="input disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 disabled:opacity-50 min-h-[44px] [touch-action:manipulation]"
                   disabled={autoCalculate}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Total Tokens
                 </label>
                 <input
                   type="number"
                   value={formData.totalTokens}
-                  className="input disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 disabled:opacity-50 min-h-[44px]"
                   disabled
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Cost ($)
                 </label>
                 <input
@@ -507,7 +512,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     )
                   }
                   step="0.0001"
-                  className="input disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 disabled:opacity-50 min-h-[44px] [touch-action:manipulation]"
                   disabled={autoCalculate}
                   required
                 />
@@ -516,7 +521,7 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
 
             {/* Response Time */}
             <div>
-              <label className="block text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
+              <label className="block text-xs sm:text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary mb-1.5 sm:mb-2">
                 Response Time (ms)
               </label>
               <input
@@ -525,15 +530,15 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                 onChange={(e) =>
                   handleChange("responseTime", parseInt(e.target.value) || 0)
                 }
-                className="input"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                 placeholder="Optional: Time taken for the API call"
               />
             </div>
 
             {/* Metadata */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Project (Optional)
                 </label>
                 <input
@@ -542,36 +547,36 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                   onChange={(e) =>
                     handleMetadataChange("project", e.target.value)
                   }
-                  className="input"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   placeholder="e.g., Customer Support Bot"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Tags (Optional)
                 </label>
                 <input
                   type="text"
                   value={formData.metadata.tags}
                   onChange={(e) => handleMetadataChange("tags", e.target.value)}
-                  className="input"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   placeholder="e.g., support, production"
                 />
               </div>
             </div>
 
             {/* Email Fields */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   User Email (Optional)
                 </label>
                 <input
                   type="email"
                   value={formData.userEmail}
                   onChange={(e) => handleChange("userEmail", e.target.value)}
-                  className="input"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   placeholder="developer@company.com"
                 />
                 <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">
@@ -580,14 +585,14 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium font-display text-secondary-900 dark:text-white">
+                <label className="block text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white mb-1.5 sm:mb-2">
                   Customer Email (Optional)
                 </label>
                 <input
                   type="email"
                   value={formData.customerEmail}
                   onChange={(e) => handleChange("customerEmail", e.target.value)}
-                  className="input"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   placeholder="client@client.com"
                 />
                 <p className="mt-1 text-xs text-secondary-500 dark:text-secondary-400">
@@ -597,18 +602,18 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end pt-4 space-x-3 border-t border-primary-200/30">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-primary-200/30 dark:border-primary-700/30">
               <button
                 type="button"
                 onClick={onClose}
-                className="btn btn-secondary"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={trackUsageMutation.isLoading}
-                className="inline-flex items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto group relative flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
               >
                 {trackUsageMutation.isLoading ? (
                   <>
@@ -616,7 +621,10 @@ export const TrackUsageModal: React.FC<TrackUsageModalProps> = ({
                     Tracking...
                   </>
                 ) : (
-                  "Track Usage"
+                  <>
+                    <PlusIcon className="w-5 h-5" />
+                    Track Usage
+                  </>
                 )}
               </button>
             </div>
