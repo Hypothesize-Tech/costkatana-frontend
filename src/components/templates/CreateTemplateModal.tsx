@@ -18,21 +18,31 @@ import {
   FiTarget,
   FiAlertCircle,
   FiImage,
+  FiDownload,
+  FiX,
+  FiInfo,
 } from "react-icons/fi";
 import { Modal } from "../common/Modal";
-import { TemplateVariable } from "../../types/promptTemplate.types";
+import { TemplateVariable, PromptTemplate } from "../../types/promptTemplate.types";
 import { PromptTemplateService } from "../../services/promptTemplate.service";
-import { toast } from "react-hot-toast";
+import { useNotification } from "../../contexts/NotificationContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface CreateTemplateModalProps {
   onClose: () => void;
   onSubmit: (templateData: any) => void;
+  onTemplateCreated?: (template: PromptTemplate) => void;
+  existingTemplates?: PromptTemplate[];
 }
 
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   onClose,
   onSubmit,
+  onTemplateCreated,
+  existingTemplates = [],
 }) => {
+  const { user } = useAuth();
+  const { showNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -63,6 +73,37 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       { name: 'evidenceImage', imageRole: 'evidence' as const, description: 'Evidence image', required: true }
     ]
   });
+
+  // Reference image upload state
+  const [referenceImageFile, setReferenceImageFile] = useState<File | null>(null);
+
+  // Fetch Criteria state
+  const [showFetchCriteria, setShowFetchCriteria] = useState(false);
+  const [selectedTemplateForFetch, setSelectedTemplateForFetch] = useState<string | null>(null);
+  const [fetchedFromTemplate, setFetchedFromTemplate] = useState<string | null>(null);
+
+  // Handler for reference image selection
+  const handleReferenceImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      showNotification('Only JPEG, PNG, and WebP images are allowed', 'error');
+      return;
+    }
+
+    // Validate file size (10MB max)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      showNotification('Image size must be less than 10MB', 'error');
+      return;
+    }
+
+    setReferenceImageFile(file);
+    showNotification('Reference image selected successfully', 'success');
+  };
 
   // AI Feature States
   const [aiMode, setAiMode] = useState(false);
@@ -169,10 +210,63 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     }));
   };
 
+  // Fetch Criteria Helper Functions
+  const getVisualComplianceTemplates = () => {
+    return existingTemplates.filter(t => t.isVisualCompliance && t.isActive);
+  };
+
+  const extractCriteriaFromTemplate = (template: PromptTemplate): string[] => {
+    return template.variables
+      .filter(v => v.type === 'text' && v.name.startsWith('criterion_'))
+      .sort((a, b) => {
+        const aNum = parseInt(a.name.split('_')[1] || '0');
+        const bNum = parseInt(b.name.split('_')[1] || '0');
+        return aNum - bNum;
+      })
+      .map(v => v.description || v.defaultValue || v.name);
+  };
+
+  const handleFetchCriteria = () => {
+    setShowFetchCriteria(true);
+  };
+
+  const handleApplyCriteria = (templateId: string) => {
+    const selectedTemplate = existingTemplates.find(t => t._id === templateId);
+    if (!selectedTemplate) {
+      showNotification("Template not found", "error");
+      return;
+    }
+
+    const criteria = extractCriteriaFromTemplate(selectedTemplate);
+    if (criteria.length === 0) {
+      showNotification("No compliance criteria found in this template", "error");
+      return;
+    }
+
+    setVisualComplianceData(prev => ({
+      ...prev,
+      complianceCriteria: criteria
+    }));
+
+    setFetchedFromTemplate(selectedTemplate.name);
+    setShowFetchCriteria(false);
+    setSelectedTemplateForFetch(null);
+    showNotification(`Fetched ${criteria.length} criteria from "${selectedTemplate.name}"`, "success");
+  };
+
+  const handleClearFetchedCriteria = () => {
+    setVisualComplianceData(prev => ({
+      ...prev,
+      complianceCriteria: ['']
+    }));
+    setFetchedFromTemplate(null);
+    showNotification("Compliance criteria cleared", "success");
+  };
+
   // AI: Generate template from intent
   const generateFromIntent = async () => {
     if (!aiIntent.trim()) {
-      toast.error("Please describe what template you want to create");
+      showNotification("Please describe what template you want to create", "error");
       return;
     }
 
@@ -206,13 +300,13 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           setShowAiSuggestions(true);
         }
 
-        toast.success(`Template generated with ${metadata.confidence}% confidence!`);
+        showNotification(`Template generated with ${metadata.confidence}% confidence!`, "success");
         setAiMode(false);
       } else {
-        toast.error("Failed to generate template");
+        showNotification("Failed to generate template", "error");
       }
     } catch (error) {
-      toast.error("Error generating template from AI");
+      showNotification("Error generating template from AI", "error");
       console.error(error);
     } finally {
       setAiGenerating(false);
@@ -222,7 +316,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   // AI: Detect variables automatically
   const detectVariablesWithAI = async () => {
     if (!formData.content.trim()) {
-      toast.error("Please enter template content first");
+      showNotification("Please enter template content first", "error");
       return;
     }
 
@@ -243,18 +337,18 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         }));
 
         if (suggestions?.length > 0) {
-          toast.success(
+          showNotification(
             `Detected ${variables.length} variables. ${suggestions.length} additional suggestions available.`,
-            { duration: 5000 }
+            "success"
           );
         } else {
-          toast.success(`Detected ${variables.length} variables with smart type detection!`);
+          showNotification(`Detected ${variables.length} variables with smart type detection!`, "success");
         }
       } else {
-        toast.error("Failed to detect variables");
+        showNotification("Failed to detect variables", "error");
       }
     } catch (error) {
-      toast.error("Error detecting variables");
+      showNotification("Error detecting variables", "error");
       console.error(error);
     } finally {
       setAiDetecting(false);
@@ -264,7 +358,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   // AI: Predict template effectiveness
   const predictEffectiveness = async () => {
     if (!formData.content.trim()) {
-      toast.error("Please enter template content first");
+      showNotification("Please enter template content first", "error");
       return;
     }
 
@@ -277,7 +371,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       } as any);
 
       if (!template) {
-        toast.error("Failed to analyze template");
+        showNotification("Failed to analyze template", "error");
         return;
       }
 
@@ -295,10 +389,10 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         // Clean up temporary template
         await PromptTemplateService.deleteTemplate(templateId);
       } else {
-        toast.error("Failed to predict effectiveness");
+        showNotification("Failed to predict effectiveness", "error");
       }
     } catch (error) {
-      toast.error("Error predicting effectiveness");
+      showNotification("Error predicting effectiveness", "error");
       console.error(error);
     } finally {
       setPredictingEffectiveness(false);
@@ -347,7 +441,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     e.preventDefault();
 
     if (!formData.name) {
-      toast.error("Template name is required");
+      showNotification("Template name is required", "error");
       return;
     }
 
@@ -355,7 +449,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     if (isVisualCompliance) {
       const filledCriteria = visualComplianceData.complianceCriteria.filter(c => c.trim());
       if (filledCriteria.length === 0) {
-        toast.error("At least one compliance criterion is required for visual compliance templates");
+        showNotification("At least one compliance criterion is required for visual compliance templates", "error");
         return;
       }
 
@@ -364,6 +458,23 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         // Import the service
         const { PromptTemplateService } = await import("../../services/promptTemplate.service");
 
+        // Pre-upload reference image if provided
+        let referenceImageData = null;
+        if (referenceImageFile) {
+          try {
+            showNotification("Uploading reference image...", "info");
+            const { ReferenceImageService } = await import("../../services/referenceImage.service");
+            referenceImageData = await ReferenceImageService.preUploadReferenceImage(referenceImageFile);
+            showNotification("Reference image uploaded!", "success");
+          } catch (uploadError) {
+            console.error("Error uploading reference image:", uploadError);
+            showNotification("Failed to upload reference image", "error");
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Create template with reference image data
         const newTemplate = await PromptTemplateService.createVisualComplianceTemplate({
           name: formData.name,
           description: formData.description,
@@ -371,19 +482,25 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           imageVariables: visualComplianceData.imageVariables,
           industry: visualComplianceData.industry,
           mode: visualComplianceData.mode,
+          referenceImage: referenceImageData ? {
+            s3Url: referenceImageData.s3Url,
+            s3Key: referenceImageData.s3Key,
+            uploadedAt: referenceImageData.uploadedAt ? new Date(referenceImageData.uploadedAt).toISOString() : new Date().toISOString(),
+            uploadedBy: referenceImageData.uploadedBy || user?.id || ''
+          } : undefined
         });
 
-        toast.success("Visual compliance template created successfully!");
+        showNotification("Template created! AI feature extraction started in background.", "success");
 
-        // Call onSubmit to refresh the templates list
-        if (onSubmit && newTemplate) {
-          await onSubmit(newTemplate);
+        // Add new template to parent state
+        if (onTemplateCreated && newTemplate) {
+          onTemplateCreated(newTemplate);
         }
 
         onClose();
       } catch (error) {
         console.error("Error creating visual compliance template:", error);
-        toast.error("Failed to create visual compliance template");
+        showNotification("Failed to create visual compliance template", "error");
       } finally {
         setLoading(false);
       }
@@ -392,7 +509,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
     // Regular template creation
     if (!formData.content) {
-      toast.error("Template content is required");
+      showNotification("Template content is required", "error");
       return;
     }
 
@@ -418,7 +535,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   };
 
   return (
-    <Modal isOpen onClose={onClose} size="xl" title="Create Template">
+    <Modal isOpen onClose={onClose} size="4xl" title="Create Template">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* AI Mode Toggle */}
         <div className="glass flex items-center justify-between p-5 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-accent-50/30 dark:from-primary-900/20 dark:to-accent-900/10 shadow-xl">
@@ -695,9 +812,41 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
             {/* Compliance Criteria */}
             <div>
-              <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
-                Compliance Criteria *
-              </label>
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Compliance Criteria *
+                </label>
+                <button
+                  type="button"
+                  onClick={handleFetchCriteria}
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs font-display font-semibold text-info-700 dark:text-info-300 glass border border-info-200/30 dark:border-info-700/30 hover:border-info-300/50 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg"
+                >
+                  <FiDownload className="w-3.5 h-3.5" />
+                  Fetch from Template
+                </button>
+              </div>
+
+              {/* Show source template if criteria were fetched */}
+              {fetchedFromTemplate && (
+                <div className="mb-3 glass p-3 rounded-lg border border-info-200/30 bg-gradient-to-r from-info-50/50 to-primary-50/30 dark:from-info-900/20 dark:to-primary-900/10 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FiInfo className="w-4 h-4 text-info-600 dark:text-info-400" />
+                      <p className="text-xs font-body text-info-800 dark:text-info-200">
+                        <strong className="font-display font-semibold">Fetched from:</strong> {fetchedFromTemplate}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleClearFetchedCriteria}
+                      className="text-xs text-danger-600 dark:text-danger-400 hover:text-danger-700 dark:hover:text-danger-300 font-display font-semibold"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-3">
                 {visualComplianceData.complianceCriteria.map((criterion, index) => (
                   <div key={index} className="flex gap-2">
@@ -748,6 +897,85 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 <p className="text-xs font-body text-success-800 dark:text-success-200">
                   <strong className="font-display font-semibold">Note:</strong> This template will automatically include reference and evidence image variables for visual compliance checks.
                 </p>
+              </div>
+            </div>
+
+            {/* Reference Image Upload Section */}
+            <div className="glass rounded-xl p-6 border border-info-200/30">
+              <div className="flex items-center gap-3 mb-4">
+                <FiImage className="w-5 h-5 text-info-600" />
+                <h4 className="font-display font-semibold text-lg">
+                  Reference Image Upload (Optional)
+                </h4>
+                <span className="badge badge-info">Cost Optimization</span>
+              </div>
+
+              <div className="space-y-4">
+                {/* Upload Section */}
+                {!referenceImageFile && (
+                  <div className="border-2 border-dashed border-info-300 dark:border-info-700 rounded-xl p-8 text-center hover:border-info-500 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleReferenceImageSelect}
+                      className="hidden"
+                      id="reference-image-upload"
+                    />
+                    <label htmlFor="reference-image-upload" className="cursor-pointer">
+                      <FiImage className="w-12 h-12 mx-auto text-info-500 mb-3" />
+                      <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                        Upload Reference Image
+                      </p>
+                      <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2">
+                        JPG, PNG, or WebP • Max 10MB
+                      </p>
+                      <p className="text-xs text-info-600 dark:text-info-400 mt-2">
+                        Saves 60-70% tokens on every compliance check!
+                      </p>
+                    </label>
+                  </div>
+                )}
+
+                {/* Preview Section */}
+                {referenceImageFile && (
+                  <div className="space-y-3">
+                    <div className="relative rounded-xl overflow-hidden border-2 border-success-300 dark:border-success-700">
+                      <img
+                        src={URL.createObjectURL(referenceImageFile)}
+                        alt="Reference preview"
+                        className="w-full h-auto max-h-64 object-contain bg-gray-50 dark:bg-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setReferenceImageFile(null)}
+                        className="absolute top-2 right-2 btn-icon-sm btn-icon-danger"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Info Card */}
+                    <div className="glass p-4 rounded-lg border border-success-200/30 bg-gradient-to-r from-success-50/50 to-info-50/30">
+                      <div className="flex items-start gap-2">
+                        <FiInfo className="w-4 h-4 text-success-600 dark:text-success-400 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs space-y-1">
+                          <p className="font-display font-semibold text-success-800 dark:text-success-200">
+                            Reference image will be analyzed automatically
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • AI extracts features for each compliance criterion
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • Template usable immediately (analysis runs in background)
+                          </p>
+                          <p className="text-success-700 dark:text-success-300">
+                            • Future compliance checks only need evidence image
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1064,19 +1292,6 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
                 </select>
               </div>
 
-              <div className="glass flex items-center space-x-3 p-3 rounded-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel shadow-lg">
-                <input
-                  type="checkbox"
-                  checked={formData.sharing.allowFork}
-                  onChange={(e) =>
-                    handleNestedInputChange(["sharing", "allowFork"], e.target.checked)
-                  }
-                  className="w-4 h-4 text-primary-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-400 focus:ring-2"
-                />
-                <label className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
-                  Allow others to fork this template
-                </label>
-              </div>
 
               <div>
                 <label className="block text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
@@ -1136,6 +1351,141 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
           </button>
         </div>
       </form>
+
+      {/* Fetch Criteria Selection Modal */}
+      {showFetchCriteria && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="glass max-w-2xl w-full max-h-[80vh] overflow-hidden rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
+              <div>
+                <h3 className="text-xl font-display font-bold gradient-text-primary">
+                  Select Template
+                </h3>
+                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                  Choose a visual compliance template to fetch criteria from
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFetchCriteria(false);
+                  setSelectedTemplateForFetch(null);
+                }}
+                className="btn-icon-sm btn-icon-secondary"
+              >
+                <FiX className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Template List */}
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]">
+              {getVisualComplianceTemplates().length === 0 ? (
+                <div className="text-center py-12">
+                  <FiAlertCircle className="w-12 h-12 mx-auto text-secondary-400 dark:text-secondary-600 mb-4" />
+                  <p className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                    No visual compliance templates found
+                  </p>
+                  <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-2">
+                    Create a visual compliance template first to fetch criteria from it.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {getVisualComplianceTemplates().map((template) => {
+                    const criteria = extractCriteriaFromTemplate(template);
+                    const isSelected = selectedTemplateForFetch === template._id;
+
+                    return (
+                      <button
+                        key={template._id}
+                        type="button"
+                        onClick={() => setSelectedTemplateForFetch(template._id)}
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 ${isSelected
+                          ? 'border-primary-500 bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30 shadow-lg scale-[1.02]'
+                          : 'border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 hover:scale-[1.01] glass'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate">
+                              {template.name}
+                            </h4>
+                            {template.description && (
+                              <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-1 line-clamp-2">
+                                {template.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-3 mt-2">
+                              {template.visualComplianceConfig?.industry && (
+                                <span className="glass px-2 py-1 rounded-full border border-info-200/30 bg-gradient-info/20 text-info-700 dark:text-info-300 font-display font-semibold text-xs">
+                                  {template.visualComplianceConfig.industry}
+                                </span>
+                              )}
+                              <span className="glass px-2 py-1 rounded-full border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-semibold text-xs">
+                                {criteria.length} {criteria.length === 1 ? 'criterion' : 'criteria'}
+                              </span>
+                            </div>
+                            {criteria.length > 0 && (
+                              <div className="mt-3 space-y-1">
+                                {criteria.slice(0, 3).map((criterion, idx) => (
+                                  <div key={idx} className="flex items-start gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-gradient-info/20 border border-info-200/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <span className="text-info-700 dark:text-info-300 font-display font-bold text-[10px]">
+                                        {idx + 1}
+                                      </span>
+                                    </span>
+                                    <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-1">
+                                      {criterion}
+                                    </p>
+                                  </div>
+                                ))}
+                                {criteria.length > 3 && (
+                                  <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary ml-6">
+                                    +{criteria.length - 3} more...
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          {isSelected && (
+                            <div className="w-6 h-6 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                              <FiCheck className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFetchCriteria(false);
+                  setSelectedTemplateForFetch(null);
+                }}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => selectedTemplateForFetch && handleApplyCriteria(selectedTemplateForFetch)}
+                disabled={!selectedTemplateForFetch}
+                className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FiDownload className="w-4 h-4" />
+                Apply Criteria
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Modal>
   );
 };

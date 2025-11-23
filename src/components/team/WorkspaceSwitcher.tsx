@@ -4,7 +4,7 @@ import { usePopper } from 'react-popper';
 import { ChevronDownIcon, CheckIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
 import { UserWorkspace } from '../../types/team.types';
 import { RoleBadge } from './RoleBadge';
-import { toast } from 'react-hot-toast';
+import { useNotification } from '../../contexts/NotificationContext';
 import { teamService } from '../../services/team.service';
 
 interface WorkspaceSwitcherProps {
@@ -18,6 +18,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ workspaces
     const [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>(null);
     const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { showNotification } = useNotification();
 
     const primaryWorkspace = workspaces.find((w) => w.isPrimary);
 
@@ -74,7 +75,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ workspaces
         try {
             setSwitching(true);
             await teamService.switchWorkspace(workspaceId);
-            toast.success('Workspace switched successfully');
+            showNotification('Workspace switched successfully', 'success');
             setIsOpen(false);
 
             // Call the onSwitch callback to refresh data without page reload
@@ -83,7 +84,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ workspaces
             }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            toast.error(err.response?.data?.message || 'Failed to switch workspace');
+            showNotification(err.response?.data?.message || 'Failed to switch workspace', 'error');
         } finally {
             setSwitching(false);
         }

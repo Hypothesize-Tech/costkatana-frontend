@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiCopy } from "react-icons/fi";
+import { FiCopy, FiSettings, FiFileText, FiLock, FiInfo, FiEye } from "react-icons/fi";
 import { Modal } from "../common/Modal";
 import { PromptTemplate } from "../../types/promptTemplate.types";
 
@@ -14,8 +14,19 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  // Helper function to extract compliance criteria from variables
+  const getComplianceCriteria = () => {
+    return template.variables
+      .filter(v => v.type === 'text' && v.name.startsWith('criterion_'))
+      .sort((a, b) => {
+        const aNum = parseInt(a.name.split('_')[1] || '0');
+        const bNum = parseInt(b.name.split('_')[1] || '0');
+        return aNum - bNum;
+      });
+  };
+
   const [formData, setFormData] = useState({
-    name: `${template.name} (Copy)`,
+    name: `Copy of ${template.name}`,
     description: template.description || "",
     content: template.content,
     category: template.category,
@@ -28,11 +39,15 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
     },
     sharing: {
       visibility: "private" as const, // Always start as private for duplicates
-      allowFork: template.sharing.allowFork,
+      allowFork: template.sharing.allowFork !== undefined ? template.sharing.allowFork : true,
     },
+    // Preserve visual compliance config if present
+    isVisualCompliance: template.isVisualCompliance || false,
+    visualComplianceConfig: template.visualComplianceConfig || undefined,
   });
 
   const [loading, setLoading] = useState(false);
+  const complianceCriteria = getComplianceCriteria();
 
   const categories = [
     { value: "general", label: "General" },
@@ -42,6 +57,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
     { value: "creative", label: "Creative" },
     { value: "business", label: "Business" },
     { value: "custom", label: "Custom" },
+    { value: "visual-compliance", label: "Visual Compliance" },
   ];
 
   const handleInputChange = (field: string, value: any) => {
@@ -80,7 +96,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} size="lg" title="">
+    <Modal isOpen={true} onClose={onClose} size="4xl" title="">
       <div className="glass rounded-3xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="glass flex items-center gap-4 p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
           <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
@@ -120,7 +136,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
             <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">⚙️</span>
+                  <FiSettings className="w-4 h-4 text-white" />
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-primary">
                   Template Details
@@ -176,7 +192,7 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
             <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">📝</span>
+                  <FiFileText className="w-4 h-4 text-white" />
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-success">
                   Content Preview
@@ -217,11 +233,78 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
               )}
             </div>
 
+            {/* Visual Compliance Info */}
+            {formData.isVisualCompliance && formData.visualComplianceConfig && (
+              <div className="glass rounded-xl p-6 border border-info-200/30 shadow-lg backdrop-blur-xl space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-info flex items-center justify-center shadow-lg">
+                    <FiEye className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="text-xl font-display font-bold gradient-text-info">
+                    Visual Compliance Configuration
+                  </h3>
+                </div>
+                <div className="glass p-4 rounded-lg border border-info-200/30 shadow-lg backdrop-blur-xl space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-display font-medium text-light-text-secondary dark:text-white">
+                      Industry:
+                    </span>
+                    <span className="glass px-3 py-1 rounded-full border border-info-200/30 bg-gradient-info/20 text-info-700 dark:text-info-300 font-display font-semibold text-sm">
+                      {formData.visualComplianceConfig.industry}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-display font-medium text-light-text-secondary dark:text-white">
+                      Mode:
+                    </span>
+                    <span className="glass px-3 py-1 rounded-full border border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300 font-display font-semibold text-sm">
+                      {formData.visualComplianceConfig.mode || 'optimized'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Compliance Criteria */}
+                {complianceCriteria.length > 0 && (
+                  <div className="glass p-4 rounded-lg border border-warning-200/30 shadow-lg backdrop-blur-xl">
+                    <div className="mb-3 flex items-center gap-2">
+                      <FiInfo className="w-4 h-4 text-warning-600 dark:text-warning-400" />
+                      <span className="font-display font-semibold gradient-text-warning">
+                        Compliance Criteria ({complianceCriteria.length})
+                      </span>
+                    </div>
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                      {complianceCriteria.map((criterion, index) => (
+                        <div key={criterion.name} className="flex gap-3 items-start glass p-3 rounded-lg border border-info-200/20 hover:border-info-300/30 transition-colors">
+                          <div className="w-6 h-6 rounded-full bg-gradient-info/20 border border-info-200/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-info-700 dark:text-info-300 font-display font-bold text-xs">
+                              {index + 1}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-body text-light-text-primary dark:text-white text-sm leading-relaxed break-words">
+                              {criterion.description || criterion.defaultValue || criterion.name}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-xs">
+                      All compliance criteria will be preserved in the duplicated template.
+                    </p>
+                  </div>
+                )}
+
+                <p className="font-body text-light-text-secondary dark:text-white text-sm">
+                  This is a visual compliance template. All image variables and compliance criteria will be preserved in the duplicate.
+                </p>
+              </div>
+            )}
+
             {/* Sharing Settings */}
             <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                  <span className="text-white text-sm">🔒</span>
+                  <FiLock className="w-4 h-4 text-white" />
                 </div>
                 <h3 className="text-xl font-display font-bold gradient-text-accent">
                   Sharing Settings
@@ -251,25 +334,6 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                   Duplicated templates start as private by default for security.
                 </p>
               </div>
-
-              <div>
-                <label className="flex gap-3 items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.sharing.allowFork}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        ["sharing", "allowFork"],
-                        e.target.checked,
-                      )
-                    }
-                    className="toggle-switch-sm"
-                  />
-                  <span className="font-body text-light-text-primary dark:text-white">
-                    Allow others to fork this template
-                  </span>
-                </label>
-              </div>
             </div>
 
             {/* Actions */}
@@ -278,14 +342,14 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="btn-secondary"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary inline-flex items-center gap-2"
+                  className="btn btn-primary inline-flex items-center gap-2"
                 >
                   {loading ? (
                     <>

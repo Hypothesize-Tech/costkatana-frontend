@@ -52,14 +52,28 @@ export class PromptTemplateService {
     await apiClient.delete(`${this.baseUrl}/${templateId}`);
   }
 
-  // Clone a template
-  static async cloneTemplate(
+  // Duplicate a template
+  static async duplicateTemplate(
     templateId: string,
-    name?: string,
+    customizations?: {
+      name?: string;
+      description?: string;
+      category?: string;
+      projectId?: string;
+      metadata?: {
+        tags?: string[];
+        [key: string]: any;
+      };
+      sharing?: {
+        visibility?: 'private' | 'project' | 'organization' | 'public';
+        sharedWith?: string[];
+        allowFork?: boolean;
+      };
+    }
   ): Promise<PromptTemplate> {
     const response = await apiClient.post(
-      `${this.baseUrl}/${templateId}/clone`,
-      { name },
+      `${this.baseUrl}/${templateId}/duplicate`,
+      customizations || {},
     );
     return response.data.data;
   }
@@ -520,6 +534,12 @@ export class PromptTemplateService {
       mode?: 'optimized' | 'standard';
       metaPromptPresetId?: string;
       projectId?: string;
+      referenceImage?: {
+        s3Url: string;
+        s3Key: string;
+        uploadedAt: string;
+        uploadedBy: string;
+      };
     }
   ): Promise<PromptTemplate> {
     const response = await apiClient.post(`${this.baseUrl}/visual-compliance`, data);
@@ -536,7 +556,12 @@ export class PromptTemplateService {
     }
   ): Promise<any> {
     const response = await apiClient.post(`${this.baseUrl}/${templateId}/use-visual`, data);
-    return response.data.data;
+    // Return the full response structure to match what VisualComplianceTab expects
+    return {
+      success: response.data.success,
+      data: response.data.data,
+      message: response.data.message
+    };
   }
 
   // Upload image for template variable

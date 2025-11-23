@@ -9,12 +9,13 @@ import { AnimatedIllustrations } from "../components/auth/AnimatedIllustrations"
 import { useAuth } from "../hooks";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
-import toast from "react-hot-toast";
+import { useNotification } from "../contexts/NotificationContext";
 
 export default function Login() {
   const { isAuthenticated, isLoading, mfaRequired, mfaData, completeMFALogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { showNotification } = useNotification();
 
   const from = location.state?.from?.pathname || "/dashboard";
 
@@ -80,7 +81,7 @@ export default function Login() {
                   onSuccess={completeMFALogin}
                   onError={(error: unknown) => {
                     console.error('MFA Error:', error);
-                    toast.error(error instanceof Error ? error.message : 'MFA verification failed')
+                    showNotification(error instanceof Error ? error.message : 'MFA verification failed', 'error')
                   }}
                   embedded={true}
                 />

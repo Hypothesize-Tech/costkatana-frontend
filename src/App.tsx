@@ -51,6 +51,7 @@ import DiscordCallback from './pages/DiscordCallback';
 import SlackCallback from './pages/SlackCallback';
 import PromptTemplates from './pages/PromptTemplates';
 import TemplateUsage from './pages/TemplateUsage';
+import TemplateAnalytics from './pages/TemplateAnalytics';
 import { Integration } from './pages/Integration';
 import { IntegrationsPage } from './pages/IntegrationsPage';
 import Pricing from './pages/Pricing';
@@ -176,6 +177,14 @@ function AppContent() {
           />
           <Route
             path="templates/use"
+            element={<TemplateUsage />}
+          />
+          <Route
+            path="templates/analytics"
+            element={<TemplateAnalytics />}
+          />
+          <Route
+            path="templates/:templateId"
             element={<TemplateUsage />}
           />
           <Route

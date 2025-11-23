@@ -49,11 +49,60 @@ export interface PromptTemplate {
     mode?: "optimized" | "standard";
     metaPromptPresetId?: string;
   };
+  referenceImage?: {
+    s3Url: string;
+    s3Key: string;
+    uploadedAt: string;
+    uploadedBy: string;
+    extractedFeatures?: {
+      extractedAt: string;
+      extractedBy: string;
+      status: "pending" | "processing" | "completed" | "failed";
+      errorMessage?: string;
+      analysis: {
+        visualDescription: string;
+        structuredData: any;
+        criteriaAnalysis: Array<{
+          criterionId: string;
+          criterionText: string;
+          referenceState: any;
+          comparisonInstructions: any;
+          confidence: number;
+        }>;
+      };
+      extractionCost: {
+        initialCallTokens: { input: number; output: number; cost: number };
+        followUpCalls: Array<{
+          reason: string;
+          input: number;
+          output: number;
+          cost: number;
+        }>;
+        totalTokens: number;
+        totalCost: number;
+      };
+      usage: {
+        checksPerformed: number;
+        totalTokensSaved: number;
+        totalCostSaved: number;
+        averageConfidence: number;
+        lowConfidenceCount: number;
+        lastUsedAt?: string;
+      };
+    };
+  };
   isFavorite?: boolean;
   isActive: boolean;
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  executionStats?: {
+    totalExecutions: number;
+    totalCostSavings: number;
+    averageCost: number;
+    mostUsedModel: string;
+    lastExecutedAt?: Date;
+  };
 }
 
 export interface TemplateVariable {
