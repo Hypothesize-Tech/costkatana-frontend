@@ -73,7 +73,7 @@ export function estimateTokens(
       return Math.ceil(baseTokens * 1.1);
 
     case "groq":
-      // Groq (Llama models)
+      // Grok (Llama models)
       return Math.ceil(baseTokens * 1.0);
 
     case "aws bedrock":
@@ -301,7 +301,7 @@ export const PRICING_METADATA = {
     "Reasoning models (o3, o4-mini)",
     "New GPT-4.1 and GPT-4.5 models",
     "Google Gemini 2.5/2.0/1.5/Flash/Pro/Audio/Preview/Native TTS",
-    "Groq fast inference",
+    "Grok fast inference",
     "Enhanced tokenization estimation",
     "Improved model matching",
     "Provider-specific fallbacks",

@@ -16,7 +16,7 @@ export enum AIProvider {
   Cohere = 'cohere',
   Gemini = 'gemini',
   DeepSeek = 'deepseek',
-  Groq = 'groq',
+  Grok = 'groq',
   HuggingFace = 'huggingface',
   Ollama = 'ollama',
   Replicate = 'replicate',
