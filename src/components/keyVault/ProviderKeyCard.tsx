@@ -48,7 +48,7 @@ const providerNames: Record<string, string> = {
   cohere: 'Cohere',
   'aws-bedrock': 'AWS Bedrock',
   deepseek: 'DeepSeek',
-  groq: 'Groq'
+  groq: 'Grok'
 };
 
 export const ProviderKeyCard: React.FC<ProviderKeyCardProps> = ({ providerKey, onDelete }) => {
