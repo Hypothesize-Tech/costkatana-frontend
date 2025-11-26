@@ -71,7 +71,6 @@ export const PreviewRenderer: React.FC<PreviewRendererProps> = React.memo(({
     sandboxMode = 'strict',
     theme = 'auto'
 }) => {
-    const [selectedPreview, setSelectedPreview] = useState<string>('auto');
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [copied, setCopied] = useState(false);
 

@@ -160,7 +160,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
                 type="button"
                 onClick={handleSendEmailCode}
                 disabled={isSendingCode}
-                className="btn-primary text-sm"
+                className="btn btn-primary text-sm"
               >
                 {isSendingCode ? 'Sending...' : 'Send Code'}
               </button>
