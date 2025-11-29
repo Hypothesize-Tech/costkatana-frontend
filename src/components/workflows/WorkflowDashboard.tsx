@@ -39,6 +39,7 @@ interface WorkflowExecution {
   id: string;
   workflowId?: string;
   workflowName: string;
+  automationPlatform?: 'zapier' | 'make' | 'n8n'; // Add automation platform
   status: 'running' | 'completed' | 'failed' | 'paused' | 'cancelled';
   duration: number | null;
   cost: number;
@@ -160,9 +161,10 @@ const WorkflowDashboard: React.FC = () => {
           ...alert,
           timestamp: new Date(alert.timestamp)
         })),
-        recentExecutions: data.recentExecutions.map((exec) => ({
+        recentExecutions: data.recentExecutions.map((exec: any) => ({
           id: exec.workflowId,
           workflowName: exec.workflowName,
+          automationPlatform: exec.automationPlatform, // Include automation platform
           status: 'completed' as const,
           duration: exec.duration,
           cost: exec.totalCost,
@@ -172,7 +174,7 @@ const WorkflowDashboard: React.FC = () => {
           totalTokens: exec.totalTokens,
           requestCount: exec.requestCount,
           averageCost: exec.averageCost,
-          steps: exec.steps.map((step) => ({
+          steps: exec.steps.map((step: any) => ({
             id: step.step,
             name: step.step,
             type: `${step.service}/${step.model}`,
@@ -185,6 +187,7 @@ const WorkflowDashboard: React.FC = () => {
             model: step.model,
             service: step.service,
             timestamp: step.timestamp,
+            automationPlatform: step.automationPlatform, // Include automation platform in steps
             metadata: {
               cost: step.cost,
               tokens: { total: step.tokens },
@@ -709,8 +712,18 @@ const WorkflowDashboard: React.FC = () => {
                             <div className="flex items-center">
                               {getStatusIcon(execution.status)}
                               <div className="ml-2 sm:ml-3 min-w-0">
-                                <div className="font-display text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
-                                  {execution.workflowName}
+                                <div className="flex items-center gap-2">
+                                  <div className="font-display text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                                    {execution.workflowName}
+                                  </div>
+                                  {execution.automationPlatform && (
+                                    <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full capitalize ${execution.automationPlatform === 'zapier' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
+                                      execution.automationPlatform === 'make' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                                        'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+                                      }`}>
+                                      {execution.automationPlatform}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="font-body text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary truncate">
                                   ID: {execution.id}

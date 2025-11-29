@@ -77,6 +77,7 @@ import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
 import Logs from './pages/Logs';
+import Automation from './pages/Automation';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -235,6 +236,10 @@ function AppContent() {
           <Route
             path="webhooks"
             element={<Webhooks />}
+          />
+          <Route
+            path="automation"
+            element={<Automation />}
           />
           <Route
             path="sessions"
