@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   CurrencyDollarIcon,
   ChartBarIcon,
   BoltIcon,
-  ClockIcon,
   ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  ExclamationTriangleIcon
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import { Line, Bar } from 'react-chartjs-2';
 import {
@@ -25,6 +22,12 @@ import {
 import { automationService } from '../../services/automation.service';
 import { AutomationAnalytics, AutomationStats } from '../../types/automation.types';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import { WorkflowQuotaStatusComponent } from './WorkflowQuotaStatus';
+import { WorkflowOptimizationRecommendations } from './WorkflowOptimizationRecommendations';
+import { WorkflowROIComparison } from './WorkflowROIComparison';
+import { OrchestrationOverhead } from './OrchestrationOverhead';
+import { WorkflowAlerts } from './WorkflowAlerts';
+import { WorkflowDetailView } from './WorkflowDetailView';
 
 // Register Chart.js components
 ChartJS.register(
@@ -44,8 +47,20 @@ const AutomationDashboard: React.FC = () => {
   const [stats, setStats] = useState<AutomationStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'platforms' | 'workflows'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'platforms' | 'workflows' | 'quota' | 'optimization' | 'roi' | 'overhead' | 'alerts'>('overview');
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
+
+  // Calculate date range strings
+  const getDateRange = () => {
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - (dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90));
+    return {
+      start: startDate.toISOString().split('T')[0],
+      end: endDate.toISOString().split('T')[0]
+    };
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -110,7 +125,7 @@ const AutomationDashboard: React.FC = () => {
     }
   };
 
-  const getPlatformIcon = (platform: string) => {
+  const getPlatformIcon = (_platform: string) => {
     return <BoltIcon className="w-5 h-5 text-white" />;
   };
 
@@ -224,7 +239,7 @@ const AutomationDashboard: React.FC = () => {
       <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4">
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => setActiveTab('overview')}
+            onClick={() => { setActiveTab('overview'); setSelectedWorkflowId(null); }}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'overview'
                 ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
@@ -234,7 +249,7 @@ const AutomationDashboard: React.FC = () => {
             Overview
           </button>
           <button
-            onClick={() => setActiveTab('platforms')}
+            onClick={() => { setActiveTab('platforms'); setSelectedWorkflowId(null); }}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'platforms'
                 ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
@@ -244,7 +259,7 @@ const AutomationDashboard: React.FC = () => {
             By Platform
           </button>
           <button
-            onClick={() => setActiveTab('workflows')}
+            onClick={() => { setActiveTab('workflows'); setSelectedWorkflowId(null); }}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'workflows'
                 ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
@@ -253,11 +268,75 @@ const AutomationDashboard: React.FC = () => {
           >
             By Workflow
           </button>
+          <button
+            onClick={() => { setActiveTab('quota'); setSelectedWorkflowId(null); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'quota'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
+            }`}
+          >
+            Quota
+          </button>
+          <button
+            onClick={() => { setActiveTab('optimization'); setSelectedWorkflowId(null); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'optimization'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
+            }`}
+          >
+            Optimization
+          </button>
+          <button
+            onClick={() => { setActiveTab('roi'); setSelectedWorkflowId(null); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'roi'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
+            }`}
+          >
+            ROI Analysis
+          </button>
+          <button
+            onClick={() => { setActiveTab('overhead'); setSelectedWorkflowId(null); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'overhead'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
+            }`}
+          >
+            Overhead
+          </button>
+          <button
+            onClick={() => { setActiveTab('alerts'); setSelectedWorkflowId(null); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'alerts'
+                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
+            }`}
+          >
+            Alerts
+          </button>
         </div>
       </div>
 
+      {/* Workflow Detail View */}
+      {selectedWorkflowId && (() => {
+        const { start, end } = getDateRange();
+        return (
+          <WorkflowDetailView
+            key={selectedWorkflowId}
+            workflowId={selectedWorkflowId}
+            onBack={() => setSelectedWorkflowId(null)}
+            startDate={start}
+            endDate={end}
+          />
+        );
+      })()}
+
       {/* Tab Content */}
-      {activeTab === 'overview' && stats && (
+      {!selectedWorkflowId && activeTab === 'overview' && stats && (
         <div className="space-y-6">
           {/* Time Series Chart */}
           {analytics.length > 0 && analytics[0].timeSeries && analytics[0].timeSeries.length > 0 && (
@@ -529,10 +608,74 @@ const AutomationDashboard: React.FC = () => {
               ))}
             </div>
           )}
+
+          {/* Quota Status Widget */}
+          <div className="mt-6">
+            <WorkflowQuotaStatusComponent />
+          </div>
         </div>
       )}
 
-      {activeTab === 'platforms' && (
+      {!selectedWorkflowId && activeTab === 'quota' && (
+        <WorkflowQuotaStatusComponent showUpgradeButton={true} />
+      )}
+
+      {!selectedWorkflowId && activeTab === 'optimization' && (() => {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - (dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90));
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+        
+        return (
+          <WorkflowOptimizationRecommendations
+            startDate={startDateStr}
+            endDate={endDateStr}
+            onRecommendationClick={(rec) => {
+              if (rec.workflowId) {
+                setSelectedWorkflowId(rec.workflowId);
+              }
+            }}
+          />
+        );
+      })()}
+
+      {!selectedWorkflowId && activeTab === 'roi' && (() => {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - (dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90));
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+        
+        return (
+          <WorkflowROIComparison
+            startDate={startDateStr}
+            endDate={endDateStr}
+            onWorkflowClick={(workflowId) => setSelectedWorkflowId(workflowId)}
+          />
+        );
+      })()}
+
+      {!selectedWorkflowId && activeTab === 'overhead' && (() => {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - (dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90));
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+        
+        return (
+          <OrchestrationOverhead
+            startDate={startDateStr}
+            endDate={endDateStr}
+          />
+        );
+      })()}
+
+      {!selectedWorkflowId && activeTab === 'alerts' && (
+        <WorkflowAlerts />
+      )}
+
+      {!selectedWorkflowId && activeTab === 'platforms' && (
         <div className="space-y-6">
           {analytics.map((platformData, index) => (
             <div
@@ -622,7 +765,7 @@ const AutomationDashboard: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'workflows' && (
+      {!selectedWorkflowId && activeTab === 'workflows' && (
         <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
           <h3 className="text-lg font-display font-bold mb-4 gradient-text-primary">
             All Workflows
@@ -632,7 +775,8 @@ const AutomationDashboard: React.FC = () => {
               platform.workflows.map((workflow, index) => (
                 <div
                   key={`${platform.platform}-${index}`}
-                  className="flex items-center justify-between p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10"
+                  onClick={() => setSelectedWorkflowId(workflow.workflowId)}
+                  className="flex items-center justify-between p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10 cursor-pointer hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getPlatformColor(platform.platform)} flex items-center justify-center flex-shrink-0`}>

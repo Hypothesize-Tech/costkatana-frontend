@@ -18,6 +18,7 @@ import { ZapierSetupGuide } from './ZapierSetupGuide';
 import { MakeSetupGuide } from './MakeSetupGuide';
 import { N8nSetupGuide } from './N8nSetupGuide';
 import { userService } from '../../services/user.service';
+import { WorkflowQuotaStatusComponent } from './WorkflowQuotaStatus';
 
 const AutomationConnectionManager: React.FC = () => {
   const [connections, setConnections] = useState<AutomationConnection[]>([]);
@@ -213,6 +214,9 @@ const AutomationConnectionManager: React.FC = () => {
         </div>
       </div>
 
+      {/* Quota Status */}
+      <WorkflowQuotaStatusComponent showUpgradeButton={true} />
+
       {/* Setup Guide */}
       {showGuide && (
         <div className="mt-6">
@@ -245,10 +249,18 @@ const AutomationConnectionManager: React.FC = () => {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-          <h3 className="text-lg font-display font-bold mb-4 gradient-text-primary">
-            {editingConnection ? 'Edit Connection' : 'Create New Connection'}
-          </h3>
+        <div className="space-y-6">
+          {!editingConnection && (
+            <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4">
+              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                Before creating a new connection, check your workflow quota status above.
+              </p>
+            </div>
+          )}
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
+            <h3 className="text-lg font-display font-bold mb-4 gradient-text-primary">
+              {editingConnection ? 'Edit Connection' : 'Create New Connection'}
+            </h3>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-body font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
@@ -329,6 +341,7 @@ const AutomationConnectionManager: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
         </div>
       )}
 

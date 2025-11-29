@@ -19,6 +19,12 @@ export interface AutomationConnection {
     metadata?: {
         workflowCount?: number;
         lastWorkflowName?: string;
+        workflowQuota?: {
+            current: number;
+            limit: number;
+            percentage: number;
+            plan: string;
+        };
         [key: string]: any;
     };
     healthCheckStatus?: 'healthy' | 'degraded' | 'unhealthy';
@@ -132,5 +138,212 @@ export interface AutomationConnectionStats {
         averageTokens: number;
         lastActivity: string | null;
     };
+}
+
+export interface WorkflowQuotaStatus {
+    current: number;
+    limit: number;
+    percentage: number;
+    plan: string;
+    canCreate: boolean;
+    violation?: {
+        type: string;
+        message: string;
+        suggestions: string[];
+    };
+}
+
+export interface WorkflowOptimizationRecommendation {
+    type: 'immediate' | 'short_term' | 'long_term';
+    category: 'model_switch' | 'caching' | 'redundancy' | 'batching' | 'prompt_optimization' | 'workflow_design';
+    title: string;
+    description: string;
+    workflowId?: string;
+    workflowName?: string;
+    step?: string;
+    currentModel?: string;
+    recommendedModel?: string;
+    potentialSavings: number;
+    potentialSavingsPercentage: number;
+    implementationEffort: 'low' | 'medium' | 'high';
+    estimatedTimeToImplement?: string;
+    steps: string[];
+    metadata?: Record<string, any>;
+}
+
+export interface WorkflowPerformanceMetrics {
+    workflowId: string;
+    workflowName: string;
+    platform: string;
+    totalCost: number;
+    totalExecutions: number;
+    totalTokens: number;
+    averageCostPerExecution: number;
+    averageTokensPerExecution: number;
+    averageResponseTime: number;
+    costPerStep: Array<{
+        step: string;
+        sequence: number;
+        cost: number;
+        tokens: number;
+        executions: number;
+        averageCost: number;
+    }>;
+    modelUsage: Array<{
+        model: string;
+        service: string;
+        cost: number;
+        tokens: number;
+        executions: number;
+        percentageOfTotal: number;
+    }>;
+    timeSeries: Array<{
+        date: string;
+        cost: number;
+        executions: number;
+        tokens: number;
+    }>;
+}
+
+export interface OrchestrationOverheadAnalytics {
+    totalOrchestrationCost: number;
+    totalAICost: number;
+    totalCost: number;
+    averageOverheadPercentage: number;
+    platformBreakdown: Array<{
+        platform: string;
+        orchestrationCost: number;
+        aiCost: number;
+        totalCost: number;
+        overheadPercentage: number;
+    }>;
+}
+
+export interface WorkflowROIMetrics {
+    workflowId: string;
+    workflowName: string;
+    platform: string;
+    timeRange: {
+        startDate: string;
+        endDate: string;
+    };
+    totalCost: number;
+    totalOrchestrationCost: number;
+    totalAICost: number;
+    previousPeriodCost: number;
+    costChange: number;
+    costChangePercentage: number;
+    totalExecutions: number;
+    averageCostPerExecution: number;
+    costPerStep: Array<{
+        step: string;
+        sequence: number;
+        cost: number;
+        executions: number;
+        averageCost: number;
+    }>;
+    costPerOutcome?: number;
+    outcomes?: Array<{
+        type: string;
+        count: number;
+        totalCost: number;
+        averageCost: number;
+    }>;
+    efficiencyScore: number;
+    efficiencyFactors: {
+        costPerExecution: number;
+        orchestrationOverhead: number;
+        modelEfficiency: number;
+        cachingUtilization: number;
+    };
+    roiRank?: number;
+    totalWorkflows?: number;
+    trends: {
+        dailyCosts: Array<{ date: string; cost: number; executions: number }>;
+        costPerExecutionTrend: 'improving' | 'degrading' | 'stable';
+    };
+}
+
+export interface WorkflowAlertConfig {
+    workflowId?: string;
+    userId: string;
+    budgetThreshold?: number;
+    budgetThresholdPercentages?: number[];
+    spikeThreshold?: number;
+    inefficiencyThreshold?: number;
+    failureRateThreshold?: number;
+    enabled: boolean;
+    channels?: string[];
+}
+
+export interface WorkflowAlert {
+    id: string;
+    userId: string;
+    type: 'workflow_budget' | 'workflow_spike' | 'workflow_inefficiency' | 'workflow_failure' | 'workflow_quota';
+    title: string;
+    message: string;
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    data: {
+        workflowId?: string;
+        workflowName?: string;
+        currentValue?: number;
+        threshold?: number;
+        percentage?: number;
+        percentageIncrease?: number;
+        costPerExecution?: number;
+        failureRate?: number;
+        totalErrors?: number;
+        totalRequests?: number;
+        suggestions?: string[];
+        [key: string]: any;
+    };
+    actionRequired: boolean;
+    sent: boolean;
+    expiresAt?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface WorkflowVersion {
+    id: string;
+    userId: string;
+    automationConnectionId: string;
+    workflowId: string;
+    workflowName: string;
+    versionNumber: number;
+    changes: Array<{
+        type: 'cost_change' | 'model_change' | 'step_add' | 'step_remove' | 'step_modify' | 'trigger_change' | 'metadata_change';
+        description: string;
+        details: Record<string, any>;
+        timestamp: string;
+    }>;
+    snapshot: {
+        platform: 'zapier' | 'make' | 'n8n';
+        steps: Array<{
+            stepName: string;
+            stepType: string;
+            service?: string;
+            model?: string;
+            estimatedCost?: number;
+            isAIStep: boolean;
+            metadata?: Record<string, any>;
+        }>;
+        totalEstimatedCost: number;
+        totalEstimatedTokens: number;
+        metadata?: Record<string, any>;
+    };
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface WorkflowVersionComparison {
+    version1: WorkflowVersion | null;
+    version2: WorkflowVersion | null;
+    differences: Array<{
+        type: 'cost_change' | 'model_change' | 'step_add' | 'step_remove' | 'step_modify' | 'trigger_change' | 'metadata_change';
+        description: string;
+        details: Record<string, any>;
+    }>;
+    costImpact: number;
 }
 
