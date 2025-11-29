@@ -112,6 +112,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Integrations', href: '/integrations', icon: PuzzlePieceIcon, description: 'Third-party services' },
       { name: 'Webhooks', href: '/webhooks', icon: WifiIcon, description: 'Webhook configuration' },
+      { name: 'Automation', href: '/automation', icon: BoltIcon, description: 'Zapier/Make/n8n cost tracking' },
       { name: 'Integration Settings', href: '/integration', icon: LinkIcon, description: 'Integration configs' },
     ],
   },

@@ -47,6 +47,38 @@ export interface PricingApiResponse<T> {
   error?: string;
 }
 
+export interface ModelComparisonRow {
+  modelId: string;
+  modelName: string;
+  provider: string;
+  inputPricePer1M: number;
+  outputPricePer1M: number;
+  contextWindow: number;
+  taskTypes: ('chat' | 'code' | 'vision')[];
+  capabilities: string[];
+  category: string;
+  isLatest: boolean;
+}
+
+export interface ComparisonTableResponse {
+  models: ModelComparisonRow[];
+  totalModels: number;
+  totalProviders: number;
+  lastUpdated: Date;
+}
+
+export interface CostCalculationResult {
+  modelId: string;
+  modelName: string;
+  provider: string;
+  inputTokens: number;
+  outputTokens: number;
+  inputCost: number;
+  outputCost: number;
+  totalCost: number;
+  taskTypes: ('chat' | 'code' | 'vision')[];
+}
+
 class PricingService {
   private baseUrl = "/pricing";
 
@@ -264,6 +296,87 @@ class PricingService {
     }
 
     return cheapest;
+  }
+
+  /**
+   * Get model comparison table data
+   */
+  async getModelComparisonTable(
+    taskType?: 'chat' | 'code' | 'vision' | 'all'
+  ): Promise<PricingApiResponse<ComparisonTableResponse>> {
+    try {
+      const params = taskType && taskType !== 'all' ? `?taskType=${taskType}` : '';
+      const response = await apiClient.get(
+        `${this.baseUrl}/models/comparison-table${params}`
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.error || "Failed to fetch comparison table data",
+      };
+    }
+  }
+
+  /**
+   * Calculate costs for all models given input/output tokens
+   */
+  calculateCostForModels(
+    models: ModelComparisonRow[],
+    inputTokens: number,
+    outputTokens: number,
+    taskType?: 'chat' | 'code' | 'vision'
+  ): CostCalculationResult[] {
+    // Filter by task type if specified
+    let filteredModels = models;
+    if (taskType) {
+      filteredModels = models.filter(model => 
+        model.taskTypes.includes(taskType)
+      );
+    }
+
+    // Calculate costs for each model
+    const results: CostCalculationResult[] = filteredModels.map(model => {
+      const inputCost = (inputTokens / 1_000_000) * model.inputPricePer1M;
+      const outputCost = (outputTokens / 1_000_000) * model.outputPricePer1M;
+      const totalCost = inputCost + outputCost;
+
+      return {
+        modelId: model.modelId,
+        modelName: model.modelName,
+        provider: model.provider,
+        inputTokens,
+        outputTokens,
+        inputCost,
+        outputCost,
+        totalCost,
+        taskTypes: model.taskTypes,
+      };
+    });
+
+    // Sort by total cost (cheapest first)
+    return results.sort((a, b) => a.totalCost - b.totalCost);
+  }
+
+  /**
+   * Format price per 1M tokens for display
+   */
+  formatPricePer1M(price: number): string {
+    if (price === 0 || price === null || price === undefined) {
+      return "$0.00";
+    }
+
+    if (price >= 1000) {
+      return `$${(price / 1000).toFixed(2)}K`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(2)}`;
+    } else if (price >= 0.01) {
+      return `$${price.toFixed(3)}`;
+    } else if (price >= 0.001) {
+      return `$${price.toFixed(4)}`;
+    } else {
+      return `$${(price * 1000).toFixed(3)}m`;
+    }
   }
 }
 

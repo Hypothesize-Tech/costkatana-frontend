@@ -55,6 +55,7 @@ import TemplateAnalytics from './pages/TemplateAnalytics';
 import { Integration } from './pages/Integration';
 import { IntegrationsPage } from './pages/IntegrationsPage';
 import Pricing from './pages/Pricing';
+import ModelComparison from './pages/ModelComparison';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
 import Gateway from './pages/Gateway';
@@ -76,6 +77,7 @@ import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
 import Logs from './pages/Logs';
+import Automation from './pages/Automation';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -150,6 +152,10 @@ function AppContent() {
           <Route
             path="pricing"
             element={<Pricing />}
+          />
+          <Route
+            path="model-comparison"
+            element={<ModelComparison />}
           />
           <Route
             path="optimizations"
@@ -230,6 +236,10 @@ function AppContent() {
           <Route
             path="webhooks"
             element={<Webhooks />}
+          />
+          <Route
+            path="automation"
+            element={<Automation />}
           />
           <Route
             path="sessions"
