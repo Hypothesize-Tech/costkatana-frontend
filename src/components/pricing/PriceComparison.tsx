@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 import {
   pricingService,
   ProviderPricing,
@@ -85,6 +87,7 @@ const CircleIcon = ({ className }: { className?: string }) => (
 );
 
 export const PriceComparison: React.FC = () => {
+  const navigate = useNavigate();
   const [allPricing, setAllPricing] = useState<ProviderPricing[]>([]);
   const [comparison, setComparison] = useState<PricingComparison | null>(null);
   const [loading, setLoading] = useState(true);
@@ -313,6 +316,14 @@ export const PriceComparison: React.FC = () => {
                   </span>
                 </div>
               )}
+              <button
+                onClick={() => navigate('/model-comparison')}
+                className="flex gap-2 items-center px-4 py-2 rounded-xl btn btn-secondary border border-primary-300 dark:border-primary-600 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 hover:from-primary-100 hover:to-primary-200 dark:hover:from-primary-800/50 dark:hover:to-primary-700/50 text-primary-700 dark:text-primary-300 transition-all"
+                title="View Model Comparison Table"
+              >
+                <ChartBarIcon className="w-4 h-4" />
+                Model Comparison
+              </button>
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}

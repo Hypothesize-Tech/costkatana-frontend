@@ -55,6 +55,7 @@ import TemplateAnalytics from './pages/TemplateAnalytics';
 import { Integration } from './pages/Integration';
 import { IntegrationsPage } from './pages/IntegrationsPage';
 import Pricing from './pages/Pricing';
+import ModelComparison from './pages/ModelComparison';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
 import Gateway from './pages/Gateway';
@@ -150,6 +151,10 @@ function AppContent() {
           <Route
             path="pricing"
             element={<Pricing />}
+          />
+          <Route
+            path="model-comparison"
+            element={<ModelComparison />}
           />
           <Route
             path="optimizations"

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { PlusIcon, FunnelIcon, ChevronDownIcon, SparklesIcon, ClockIcon, CircleStackIcon, ArrowDownTrayIcon, CloudArrowUpIcon, ChartBarIcon, FolderIcon, CurrencyDollarIcon, HashtagIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+import { PlusIcon, FunnelIcon, ChevronDownIcon, SparklesIcon, ClockIcon, CircleStackIcon, ArrowDownTrayIcon, CloudArrowUpIcon, ChartBarIcon, FolderIcon, CurrencyDollarIcon, HashtagIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { usageService } from '@/services/usage.service';
 import { UsageList } from '@/components/usage/UsageList';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -18,6 +19,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
 export default function Usage() {
+  const navigate = useNavigate();
   const [showTrackModal, setShowTrackModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
@@ -287,6 +289,16 @@ export default function Usage() {
                   </Menu.Items>
                 </Transition>
               </Menu>
+
+              {/* View Requests Button */}
+              <button
+                onClick={() => navigate('/requests')}
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+              >
+                <DocumentTextIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">View Requests</span>
+                <span className="sm:hidden">Requests</span>
+              </button>
 
               {/* Quick Actions - Direct buttons instead of dropdown for better UX */}
               <button
