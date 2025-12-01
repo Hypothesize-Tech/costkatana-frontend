@@ -17,6 +17,8 @@ import { UsageUpload } from '@/components/usage/UsageUpload';
 import { useProject } from '@/contexts/ProjectContext';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+import { HighCostSuggestions, WhatIfSimulationModal } from '@/components/experimentation';
+import type { Usage } from '@/types';
 
 export default function Usage() {
   const navigate = useNavigate();
@@ -27,6 +29,8 @@ export default function Usage() {
   const [filters, setFilters] = useState<IUsageFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [simulationModalOpen, setSimulationModalOpen] = useState(false);
+  const [usageForSimulation, setUsageForSimulation] = useState<Usage | null>(null);
   const { selectedProject, setSelectedProject, projects, getSelectedProjectName } = useProject();
 
 
@@ -63,9 +67,11 @@ export default function Usage() {
 
   // Prepare query parameters with memoization to prevent infinite re-renders
   const queryParams = useMemo(() => {
+    // Ensure limit doesn't exceed API maximum of 100
+    const safeLimit = Math.min(limit, 100);
     const params: any = {
       page: currentPage,
-      limit,
+      limit: safeLimit,
       q: debouncedSearch,
       ...getDateRange(filters.dateRange || '7d')
     };
@@ -122,7 +128,7 @@ export default function Usage() {
 
     const params: any = {
       page: 1,
-      limit: 10000, // Get all for comparison
+      limit: 100, // API maximum limit
       startDate: previousStart.toISOString(),
       endDate: previousEnd.toISOString(),
     };
@@ -293,37 +299,35 @@ export default function Usage() {
               {/* View Requests Button */}
               <button
                 onClick={() => navigate('/requests')}
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
                 <DocumentTextIcon className="w-5 h-5" />
-                <span className="hidden sm:inline">View Requests</span>
-                <span className="sm:hidden">Requests</span>
+                <span>Requests</span>
               </button>
 
               {/* Quick Actions - Direct buttons instead of dropdown for better UX */}
               <button
                 onClick={() => setShowTrackModal(true)}
-                className="group relative flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
+                className="group relative flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation] whitespace-nowrap flex-shrink-0"
               >
                 <PlusIcon className="w-5 h-5" />
-                <span className="hidden sm:inline">Track Usage</span>
-                <span className="sm:hidden">Track</span>
+                <span>Track</span>
               </button>
 
               <button
                 onClick={() => setShowExportModal(true)}
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
                 <ArrowDownTrayIcon className="w-5 h-5" />
-                <span className="hidden sm:inline">Export</span>
+                <span>Export</span>
               </button>
 
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
                 <CloudArrowUpIcon className="w-5 h-5" />
-                <span className="hidden sm:inline">Import</span>
+                <span>Import</span>
               </button>
             </div>
           </div>
@@ -521,7 +525,24 @@ export default function Usage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => {
+                      // Try to find the element, with retry logic
+                      const scrollToOpportunities = () => {
+                        const element = document.getElementById('cost-opportunities');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                          // Retry after a short delay in case component is still rendering
+                          setTimeout(() => {
+                            const retryElement = document.getElementById('cost-opportunities');
+                            if (retryElement) {
+                              retryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                          }, 300);
+                        }
+                      };
+                      scrollToOpportunities();
+                    }}
                     className="w-full sm:w-auto group relative flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
                   >
                     View Opportunities
@@ -550,12 +571,27 @@ export default function Usage() {
               </button>
             </div>
           ) : (
-            <UsageList
-              pagination={data?.pagination}
-              usage={data?.usage || []}
-              onRefresh={handleRefresh}
-              onPageChange={handlePageChange}
-            />
+            <>
+              <UsageList
+                pagination={data?.pagination}
+                usage={data?.usage || []}
+                onRefresh={handleRefresh}
+                onPageChange={handlePageChange}
+              />
+
+              {/* Cost Optimization Opportunities - Always render container for scroll target */}
+              {data?.usage && data.usage.length > 0 && (
+                <div id="cost-opportunities" className="mt-6">
+                  <HighCostSuggestions
+                    usages={data.usage}
+                    onSimulate={(usage) => {
+                      setUsageForSimulation(usage);
+                      setSimulationModalOpen(true);
+                    }}
+                  />
+                </div>
+              )}
+            </>
           )}
         </>
 
@@ -564,6 +600,16 @@ export default function Usage() {
           isOpen={showTrackModal}
           onClose={() => setShowTrackModal(false)}
           projectId={selectedProject}
+        />
+
+        {/* What-If Simulation Modal */}
+        <WhatIfSimulationModal
+          isOpen={simulationModalOpen}
+          onClose={() => {
+            setSimulationModalOpen(false);
+            setUsageForSimulation(null);
+          }}
+          usage={usageForSimulation}
         />
       </div>
     </div>

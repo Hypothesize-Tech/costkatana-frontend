@@ -16,11 +16,10 @@ import { UsageAlerts } from '../components/guardrails/UsageAlerts';
 import { UsageTrendChart } from '../components/guardrails/UsageTrendChart';
 import {
   ShieldCheckIcon,
-  CreditCardIcon,
   ChartBarIcon,
-  BellIcon,
 } from '@heroicons/react/24/outline';
 import { MFASetup } from '../components/auth/MFASetup';
+import { SubscriptionDashboard } from '../components/subscription/SubscriptionDashboard';
 
 export const Profile: React.FC = () => {
   const { user, updateUser } = useAuth();
@@ -351,173 +350,7 @@ export const Profile: React.FC = () => {
             )}
 
             {activeTab === 'subscription' && (
-              <div className="space-y-6">
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                  <div className="flex items-center mb-4">
-                    <CreditCardIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Subscription Details</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Current Plan</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Your current subscription plan and features</p>
-                      </div>
-                      <span className="px-4 py-1.5 text-sm font-semibold bg-gradient-primary text-white rounded-full shadow-md">
-                        {profileData?.subscription?.plan || 'Free'} Plan
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">API Calls</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {profileData?.subscription?.limits?.apiCalls?.toLocaleString() || '10,000'}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">calls per month</p>
-                      </div>
-
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Tokens</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {(profileData?.subscription?.limits?.tokensPerMonth || 1000000).toLocaleString()}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">tokens per month</p>
-                      </div>
-
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Projects</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {profileData?.subscription?.limits?.projects || 5}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">projects</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Workflows</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {profileData?.subscription?.limits?.workflows || 10}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">AI workflows</p>
-                      </div>
-
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Logs</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {(profileData?.subscription?.limits?.logsPerMonth || 15000).toLocaleString()}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">logs per month</p>
-                      </div>
-
-                      <div className="p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl hover:scale-105 transition-all duration-300 shadow-md">
-                        <h4 className="mb-2 text-sm font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wider">Models</h4>
-                        <p className="text-3xl font-bold text-secondary-900 dark:text-white mb-1">
-                          {profileData?.subscription?.plan === 'free' ? '3' : 'All'}
-                        </p>
-                        <p className="text-xs text-secondary-500 dark:text-secondary-400">AI models</p>
-                      </div>
-                    </div>
-
-                    {/* Free Plan Features */}
-                    {profileData?.subscription?.plan === 'free' && (
-                      <div className="p-5 glass border border-primary-300/50 dark:border-primary-600/50 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl">
-                        <h4 className="mb-4 font-semibold text-primary-900 dark:text-primary-200 flex items-center gap-2">
-                          <span className="text-lg">✨</span>
-                          Free Plan Features
-                        </h4>
-                        <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">1M tokens per month</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">10K API requests per month</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">15K logs per month</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">5 projects</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">10 AI workflows</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-success-600 dark:text-success-400 font-bold">✓</span>
-                            <span className="text-primary-800 dark:text-primary-200">3 AI models (Claude Haiku, GPT-3.5, Gemini)</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
-                      <div>
-                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Upgrade Plan</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Get more features and higher limits</p>
-                      </div>
-                      <button
-                        onClick={() => navigate('/pricing')}
-                        className="px-6 py-2.5 bg-gradient-success text-white rounded-xl font-display font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 whitespace-nowrap"
-                      >
-                        Upgrade Now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Usage Guardrails */}
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                  <div className="flex items-center mb-4">
-                    <ChartBarIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Usage Guardrails</h3>
-                  </div>
-
-                  <div className="space-y-6">
-                    <UsageOverview />
-                    <UsageTrendChart days={30} chartType="area" />
-                    <UsageAlerts />
-                  </div>
-                </div>
-
-                {/* Notification Settings */}
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                  <div className="flex items-center mb-6">
-                    <BellIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">Notification Settings</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Email Notifications</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Receive updates about your usage and optimizations</p>
-                      </div>
-                      <label className="inline-flex relative items-center cursor-pointer ml-4">
-                        <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-12 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-500 peer-focus:ring-opacity-50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-primary shadow-inner"></div>
-                      </label>
-                    </div>
-
-                    <div className="flex justify-between items-center p-5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-secondary-900 dark:text-white mb-1">Cost Alerts</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Get notified when you reach cost thresholds</p>
-                      </div>
-                      <label className="inline-flex relative items-center cursor-pointer ml-4">
-                        <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-12 h-6 bg-secondary-200 dark:bg-secondary-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-500 peer-focus:ring-opacity-50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-secondary-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-primary shadow-inner"></div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SubscriptionDashboard />
             )}
           </div>
         </div>

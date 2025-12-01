@@ -5,8 +5,8 @@ export const AI_SERVICES = {
   openai: {
     name: "OpenAI",
     models: ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "text-embedding-ada-002"],
-    color: "#00A67E",
-    icon: "🤖",
+    color: "#FFF",
+    logo: "/assets/openai.png", // Logo path - add logo to public/assets/ folder
   },
   "aws-bedrock": {
     name: "AWS Bedrock",
@@ -17,79 +17,156 @@ export const AI_SERVICES = {
       "claude-2.1",
     ],
     color: "#FF9900",
-    icon: "☁️",
+    logo: "/assets/aws-bedrock.svg", // Logo path - add logo to public/assets/ folder
   },
   "google-ai": {
     name: "Google AI",
     models: ["gemini-pro", "gemini-pro-vision", "palm-2"],
     color: "#4285F4",
-    icon: "🧠",
+    logo: "/assets/gemini-ai.svg", // Logo path - add logo to public/assets/ folder
   },
   anthropic: {
     name: "Anthropic",
     models: ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
     color: "#D97757",
-    icon: "🔮",
+    logo: "/assets/anthropic.png", // Logo path - add logo to public/assets/ folder
   },
   huggingface: {
     name: "Hugging Face",
     models: ["llama-2", "mistral-7b", "falcon-40b"],
     color: "#FFD21E",
-    icon: "🤗",
+    logo: "/assets/huggingface.svg", // Logo path - add logo to public/assets/ folder
   },
   cohere: {
     name: "Cohere",
     models: ["command", "command-light", "embed-english-v3.0"],
     color: "#39E09B",
-    icon: "💬",
+    logo: "/assets/cohere.svg", // Logo path - add logo to public/assets/ folder
   },
 } as const;
 
 export const SUBSCRIPTION_PLANS = {
   free: {
     name: "Free",
+    displayName: "Free",
     price: 0,
+    yearlyPrice: 0,
+    currency: "USD",
+    trialDays: 0,
     limits: {
-      apiCalls: 1000,
-      optimizations: 10,
+      tokensPerMonth: 1_000_000,
+      requestsPerMonth: 10_000,
+      logsPerMonth: 15_000,
+      projects: 1,
+      workflows: 10,
+      seats: 1,
+      cortexDailyUsage: 0,
     },
+    allowedModels: ['claude-3-haiku', 'gpt-3.5-turbo', 'gemini-1.5-flash'],
     features: [
       "Basic usage tracking",
       "Simple analytics",
       "Email alerts",
-      "10 optimizations per month",
+      "1M tokens/month",
+      "10K requests/month",
+      "15K logs/month",
+      "1 project",
+      "10 workflows",
     ],
+  },
+  plus: {
+    name: "Plus",
+    displayName: "Plus",
+    price: 49,
+    yearlyPrice: 470, // 20% discount
+    currency: "USD",
+    trialDays: 7,
+    limits: {
+      tokensPerMonth: 5_000_000,
+      requestsPerMonth: 50_000,
+      logsPerMonth: -1, // Unlimited
+      projects: -1, // Unlimited
+      workflows: 100,
+      seats: 1,
+      cortexDailyUsage: 3,
+    },
+    allowedModels: ['*'], // All models
+    features: [
+      "Advanced analytics",
+      "Unlimited logs & projects",
+      "5M tokens/month",
+      "50K requests/month",
+      "100 workflows",
+      "Cortex: 3/day",
+      "All AI models",
+      "Priority support",
+      "Overage: $5/1M tokens",
+    ],
+    overage: {
+      tokensPerMillion: 5,
+      seatsPerUser: 0,
+    },
+    popular: true,
   },
   pro: {
     name: "Pro",
-    price: 29,
+    displayName: "Pro",
+    price: 499,
+    yearlyPrice: 4790, // 20% discount
+    currency: "USD",
+    trialDays: 7,
     limits: {
-      apiCalls: 10000,
-      optimizations: 100,
+      tokensPerMonth: 5_000_000, // Base, additional paid
+      requestsPerMonth: 100_000,
+      logsPerMonth: -1, // Unlimited
+      projects: -1, // Unlimited
+      workflows: 100, // Per user
+      seats: 20,
+      cortexDailyUsage: 30,
     },
+    allowedModels: ['*'], // All models
     features: [
-      "Advanced analytics",
-      "Unlimited history",
+      "Everything in Plus",
+      "100K requests/month",
+      "20 seats included",
+      "Cortex: 30/day",
+      "All AI models + AWS Bedrock",
+      "Advanced metrics",
       "Priority support",
-      "100 optimizations per month",
-      "API access",
-      "Custom alerts",
+      "Overage: $5/1M tokens, $20/user/month",
     ],
+    overage: {
+      tokensPerMillion: 5,
+      seatsPerUser: 20,
+    },
   },
   enterprise: {
     name: "Enterprise",
-    price: "Custom",
+    displayName: "Enterprise",
+    price: 0, // Custom pricing
+    yearlyPrice: 0,
+    currency: "USD",
+    trialDays: 0,
     limits: {
-      apiCalls: -1, // Unlimited
-      optimizations: -1,
+      tokensPerMonth: -1, // Unlimited
+      requestsPerMonth: -1, // Unlimited
+      logsPerMonth: -1, // Unlimited
+      projects: -1, // Unlimited
+      workflows: -1, // Unlimited
+      seats: -1, // Custom
+      cortexDailyUsage: -1, // Unlimited
     },
+    allowedModels: ['*', 'custom'], // All models + custom
     features: [
       "Everything in Pro",
-      "Unlimited usage",
+      "Unlimited everything",
+      "Custom AI models",
+      "Unlimited Cortex",
       "Custom integrations",
       "Dedicated support",
       "SLA guarantee",
       "On-premise deployment",
+      "Discord/Slack support",
     ],
   },
 } as const;
