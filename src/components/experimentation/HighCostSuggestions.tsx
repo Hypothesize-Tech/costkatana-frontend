@@ -176,7 +176,7 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
 
     return (
         <>
-            <div className={`space-y-6 ${className}`} id="cost-opportunities">
+            <div className={`space-y-6 ${className}`}>
                 <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">

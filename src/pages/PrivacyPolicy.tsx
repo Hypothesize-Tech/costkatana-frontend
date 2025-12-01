@@ -212,12 +212,26 @@ const PrivacyPolicy: React.FC = () => {
 
           {/* Footer Links */}
           <div className="mt-12 pt-8 border-t border-primary-200/30 dark:border-primary-800/30 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <Link
-              to="/terms"
-              className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
-            >
-              Terms and Conditions
-            </Link>
+            <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+              <Link
+                to="/terms"
+                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
+              >
+                Terms and Conditions
+              </Link>
+              <Link
+                to="/contact"
+                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
+              >
+                Contact Us
+              </Link>
+              <Link
+                to="/cancellations-refunds"
+                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
+              >
+                Cancellations & Refunds
+              </Link>
+            </div>
             <Link
               to="/login"
               className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-display font-semibold text-sm bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"

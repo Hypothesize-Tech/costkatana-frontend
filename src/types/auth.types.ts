@@ -46,16 +46,44 @@ export interface User {
   company?: string;
 }
 
+// Legacy subscription interface - kept for backward compatibility
+// New code should use types from subscription.types.ts
 export interface Subscription {
-  plan: "free" | "pro" | "enterprise";
+  plan: "free" | "plus" | "pro" | "enterprise";
   startDate: string;
   endDate?: string;
   limits: {
-    apiCalls: number;
-    optimizations: number;
+    tokensPerMonth: number;
+    requestsPerMonth: number;
+    logsPerMonth: number;
+    projects: number;
+    workflows: number;
+    seats: number;
+    cortexDailyUsage: number;
   };
-  status?: string;
+  usage?: {
+    tokensUsed: number;
+    requestsUsed: number;
+    logsUsed: number;
+    projectsUsed: number;
+    workflowsUsed: number;
+    cortexDailyUsage: number;
+  };
+  status?: "active" | "trialing" | "past_due" | "canceled" | "unpaid" | "incomplete" | "paused";
   currentPeriodEnd?: string;
+  isTrial?: boolean;
+  trialEnd?: string;
+  billing?: {
+    amount: number;
+    currency: string;
+    interval: "monthly" | "yearly";
+    nextBillingDate?: string;
+  };
+  paymentMethod?: {
+    paymentGateway: "stripe" | "razorpay" | "paypal" | "none";
+    lastFour?: string;
+    brand?: string;
+  };
 }
 
 export interface UserPreferences {

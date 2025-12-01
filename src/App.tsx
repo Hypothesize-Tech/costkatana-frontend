@@ -31,6 +31,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
+import ContactUs from './pages/ContactUs';
+import ShippingPolicy from './pages/ShippingPolicy';
+import CancellationsAndRefunds from './pages/CancellationsAndRefunds';
 import MagicLinkConnect from './pages/MagicLinkConnect';
 import VerifyEmail from './pages/VerifyEmail';
 import ConfirmAccountClosure from './pages/ConfirmAccountClosure';
@@ -55,6 +58,9 @@ import TemplateAnalytics from './pages/TemplateAnalytics';
 import { Integration } from './pages/Integration';
 import { IntegrationsPage } from './pages/IntegrationsPage';
 import Pricing from './pages/Pricing';
+import { Subscription } from './pages/Subscription';
+import SubscriptionSuccess from './pages/SubscriptionSuccess';
+import SubscriptionCancel from './pages/SubscriptionCancel';
 import ModelComparison from './pages/ModelComparison';
 import AdvancedMonitoring from './pages/AdvancedMonitoring';
 import Experimentation from './pages/Experimentation';
@@ -108,6 +114,9 @@ function AppContent() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/cancellations-refunds" element={<CancellationsAndRefunds />} />
         <Route path="/connect/chatgpt" element={<MagicLinkConnect />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/confirm-account-closure/:token" element={<ConfirmAccountClosure />} />
@@ -120,6 +129,8 @@ function AppContent() {
         <Route path="/integrations/discord/error" element={<DiscordCallback />} />
         <Route path="/integrations/slack/success" element={<SlackCallback />} />
         <Route path="/integrations/slack/error" element={<SlackCallback />} />
+        <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+        <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
 
         {/* Protected routes */}
         <Route
@@ -152,6 +163,10 @@ function AppContent() {
           <Route
             path="pricing"
             element={<Pricing />}
+          />
+          <Route
+            path="subscription"
+            element={<Subscription />}
           />
           <Route
             path="model-comparison"

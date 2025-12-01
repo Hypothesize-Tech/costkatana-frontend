@@ -1,10 +1,13 @@
 // src/components/settings/ProfileSettings.tsx
 import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { User } from "../../types";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { CheckCircle, AlertCircle, User as UserIcon, BarChart3 } from "lucide-react";
 import { emailService } from "../../services/email.service";
+import { userService } from "../../services/user.service";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface ProfileSettingsProps {
   profile: User | undefined;
@@ -25,6 +28,18 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [resendingVerification, setResendingVerification] = useState(false);
   const { showNotification } = useNotifications();
+  const { user } = useAuth();
+
+  // Fetch user stats to get accurate usage data
+  const { data: stats, } = useQuery(
+    ['user-stats', user?.id],
+    () => userService.getUserStats(),
+    {
+      enabled: !!user?.id,
+      retry: 1,
+    }
+  );
+
 
   useEffect(() => {
     if (profile) {
@@ -236,10 +251,10 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
             </div>
             <div className="p-4 rounded-lg border glass border-primary-200/30">
               <dt className="mb-2 font-medium font-display gradient-text">
-                Monthly Usage
+                Total Usage
               </dt>
               <dd className="font-semibold font-display gradient-text-success">
-                ${profile.usage?.currentMonth.totalCost.toFixed(2) || "0.00"}
+                ${(stats?.totalSpent ?? profile.usage?.currentMonth?.totalCost ?? 0).toFixed(2)}
               </dd>
             </div>
             <div className="p-4 rounded-lg border glass border-primary-200/30">
@@ -247,8 +262,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
                 Total Optimizations
               </dt>
               <dd className="font-semibold font-display gradient-text-secondary">
-                {profile.usage?.currentMonth.optimizationsSaved.toFixed(2) ||
-                  "0.00"}
+                {(stats?.optimizations ?? profile.usage?.currentMonth?.optimizationsSaved ?? 0).toFixed(2)}
               </dd>
             </div>
           </dl>

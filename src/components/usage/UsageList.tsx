@@ -15,8 +15,8 @@ import {
   getStatusCodeColor,
   getErrorTypeColor
 } from '@/utils/formatters';
-import { AI_SERVICES } from '@/utils/constant';
 import { WhatIfSimulationModal, HighCostSuggestions } from '../experimentation';
+import { ServiceIcon } from '../common/ServiceIcon';
 
 // Helper function to get project name
 const getProjectName = (projectId: string | { _id: string; name: string } | undefined): string => {
@@ -55,7 +55,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
   if (usage.length === 0) {
     return (
-      <div className="p-12 text-center rounded-xl border glass border-primary-200/30">
+      <div className="p-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="mx-auto w-24 h-24 text-secondary-500 dark:text-secondary-400">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -64,7 +64,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         <h3 className="mt-4 text-lg font-bold font-display gradient-text-primary">
           No usage data yet
         </h3>
-        <p className="mt-2 text-sm text-secondary-600 dark:text-secondary-300">
+        <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
           Start tracking your AI API usage to see it here.
         </p>
       </div>
@@ -74,14 +74,14 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
   return (
     <>
       <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="px-6 py-4 border-b border-primary-200/30">
+        <div className="px-6 py-4 border-b border-primary-200/30 dark:border-primary-700/30">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-bold font-display gradient-text-primary">
               Usage History
             </h3>
             <button
               onClick={onRefresh}
-              className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
+              className="p-2 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105 active:scale-95"
             >
               <ArrowPathIcon className="w-5 h-5" />
             </button>
@@ -92,34 +92,34 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
           <table className="min-w-full divide-y divide-primary-200/30">
             <thead className="bg-gradient-to-r glass from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
               <tr>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Service / Model
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Project
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Workflow
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Email Information
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Request/Response
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Properties
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Token Breakdown
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Cost
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Status
                 </th>
-                <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-secondary-600 dark:text-secondary-300">
+                <th className="px-6 py-4 text-xs font-medium font-display tracking-wider text-left uppercase text-light-text-secondary dark:text-dark-text-secondary">
                   Time
                 </th>
                 <th className="relative px-6 py-4">
@@ -127,60 +127,53 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y glass divide-primary-200/30">
+            <tbody className="divide-y divide-primary-200/30 dark:divide-primary-700/30">
               {usage.map((item) => {
-                const service = AI_SERVICES[item.service as keyof typeof AI_SERVICES];
-
                 return (
                   <tr
                     key={item._id}
-                    className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20"
+                    className="transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-primary-50/30 hover:to-secondary-50/30 dark:hover:from-primary-900/20 dark:hover:to-secondary-900/20 glass"
                     onClick={() => setSelectedUsage(item)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 h-10">
-                          <div
-                            className="flex justify-center items-center w-10 h-10 text-lg text-white rounded-lg"
-                            style={{ backgroundColor: service?.color || '#999' }}
-                          >
-                            {service?.icon || '?'}
-                          </div>
+                        <div className="flex-shrink-0">
+                          <ServiceIcon service={item.service} size="md" className="shadow-lg" />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-secondary-900 dark:text-white">
+                          <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                             {formatServiceName(item.service)}
                           </div>
-                          <div className="text-sm text-secondary-600 dark:text-secondary-300">
+                          <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                             {item.model}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-secondary-900 dark:text-white">
+                      <div className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                         {getProjectName(item.projectId)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.workflowId ? (
                         <div>
-                          <div className="text-sm font-medium text-secondary-900 dark:text-white">
+                          <div className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                             {item.workflowName || 'Unnamed Workflow'}
                           </div>
-                          <div className="text-xs text-secondary-600 dark:text-secondary-300">
+                          <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                             {item.workflowStep && (
                               <span className="mr-2">{item.workflowStep}</span>
                             )}
                             {item.workflowSequence && (
-                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-gradient-to-r rounded-xl border glass border-blue-300/30 from-blue-400/20 to-blue-500/20 dark:text-blue-400">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium font-display text-primary-600 bg-gradient-to-r rounded-xl border glass border-primary-300/30 from-primary-400/20 to-primary-500/20 dark:text-primary-400">
                                 #{item.workflowSequence}
                               </span>
                             )}
                           </div>
                         </div>
                       ) : (
-                        <div className="text-sm text-secondary-500 dark:text-secondary-400">
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                           No workflow
                         </div>
                       )}
@@ -190,37 +183,37 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                         <div className="space-y-1">
                           {item.userEmail && (
                             <div className="text-xs">
-                              <span className="font-medium text-gray-700 dark:text-gray-300">User:</span>
-                              <span className="block ml-1 text-gray-600 truncate dark:text-gray-400 max-w-32" title={item.userEmail}>
+                              <span className="font-medium font-display text-light-text-primary dark:text-dark-text-primary">User:</span>
+                              <span className="block ml-1 font-body text-light-text-secondary truncate dark:text-dark-text-secondary max-w-32" title={item.userEmail}>
                                 {item.userEmail}
                               </span>
                             </div>
                           )}
                           {item.customerEmail && (
                             <div className="text-xs">
-                              <span className="font-medium text-gray-700 dark:text-gray-300">Customer:</span>
-                              <span className="block ml-1 text-gray-600 truncate dark:text-gray-400 max-w-32" title={item.customerEmail}>
+                              <span className="font-medium font-display text-light-text-primary dark:text-dark-text-primary">Customer:</span>
+                              <span className="block ml-1 font-body text-light-text-secondary truncate dark:text-dark-text-secondary max-w-32" title={item.customerEmail}>
                                 {item.customerEmail}
                               </span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="text-sm text-secondary-500 dark:text-secondary-400">
+                        <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                           No email data
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="max-w-xs text-sm text-gray-900 dark:text-white">
+                      <div className="max-w-xs text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                         {/* Enhanced prompt display with request/response content */}
                         <div className="space-y-2">
                           {/* Request/Prompt Section */}
                           <div>
-                            <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                            <div className="mb-1 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                               Request:
                             </div>
-                            <div className="text-sm">
+                            <div className="text-sm font-body">
                               {formatPrompt(
                                 item.prompt ||
                                 item.metadata?.prompt ||
@@ -234,10 +227,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* Response/Completion Section */}
                           {item.completion && (
                             <div>
-                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                              <div className="mb-1 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                                 Response:
                               </div>
-                              <div className="text-sm">
+                              <div className="text-sm font-body">
                                 {formatPrompt(item.completion, 80)}
                               </div>
                             </div>
@@ -246,13 +239,13 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* Messages Section for Chat Models */}
                           {item.metadata?.messages && Array.isArray(item.metadata.messages) && item.metadata.messages.length > 0 && (
                             <div>
-                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                              <div className="mb-1 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                                 Messages:
                               </div>
                               <div className="space-y-1">
                                 {item.metadata.messages.slice(0, 3).map((msg: any, idx: number) => (
-                                  <div key={idx} className="text-xs">
-                                    <span className="font-medium text-gray-500 dark:text-gray-400">
+                                  <div key={idx} className="text-xs font-body">
+                                    <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
                                       {msg.role || 'user'}:
                                     </span>
                                     <span className="ml-1">
@@ -261,7 +254,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                                   </div>
                                 ))}
                                 {item.metadata.messages.length > 3 && (
-                                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                                  <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     +{item.metadata.messages.length - 3} more messages
                                   </div>
                                 )}
@@ -272,10 +265,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           {/* System Message */}
                           {item.metadata?.system && (
                             <div>
-                              <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                              <div className="mb-1 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                                 System:
                               </div>
-                              <div className="text-sm">
+                              <div className="text-sm font-body">
                                 {formatPrompt(item.metadata.system, 80)}
                               </div>
                             </div>
@@ -283,19 +276,19 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                         </div>
                       </div>
 
-                      {/* Tags section remains unchanged */}
+                      {/* Tags section */}
                       {item.tags && item.tags.length > 0 && (
                         <div className="flex gap-1 mt-2">
                           {item.tags.slice(0, 3).map((tag, index) => (
                             <span
                               key={index}
-                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel text-light-text-primary dark:text-dark-text-primary"
                             >
                               {tag}
                             </span>
                           ))}
                           {item.tags.length > 3 && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                               +{item.tags.length - 3}
                             </span>
                           )}
@@ -322,7 +315,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           .map(([key, value]) => (
                             <span
                               key={key}
-                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 dark:bg-gradient-primary/10 text-primary-700 dark:text-primary-300"
                               title={`${key}: ${typeof value === 'object' ? JSON.stringify(value) : String(value)}`}
                             >
                               {key}: {typeof value === 'object' ?
@@ -347,7 +340,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                             value !== undefined &&
                             value !== ''
                           ).length > 3 && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                               +{Object.entries(item.metadata)
                                 .filter(([key, value]) =>
                                   key !== 'workspace' &&
@@ -367,23 +360,23 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                      <div className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                         <div className="flex gap-2 items-center">
-                          <span className="font-medium">{formatNumber(item.totalTokens)}</span>
-                          <span className="text-xs text-gray-500">total</span>
+                          <span className="font-medium font-display">{formatNumber(item.totalTokens)}</span>
+                          <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">total</span>
                         </div>
                       </div>
-                      <div className="mt-1 space-y-1 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="mt-1 space-y-1 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                         <div className="flex justify-between">
                           <span>Input:</span>
-                          <span className="font-medium">{formatNumber(item.promptTokens || 0)}</span>
+                          <span className="font-medium font-display">{formatNumber(item.promptTokens || 0)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Output:</span>
-                          <span className="font-medium">{formatNumber(item.completionTokens || 0)}</span>
+                          <span className="font-medium font-display">{formatNumber(item.completionTokens || 0)}</span>
                         </div>
                         {item.responseTime && (
-                          <div className="flex justify-between pt-1 border-t border-gray-200 dark:border-gray-600">
+                          <div className="flex justify-between pt-1 border-t border-primary-200/30 dark:border-primary-700/30">
                             <span>Time:</span>
                             <span>{formatResponseTime(item.responseTime)}</span>
                           </div>
@@ -391,11 +384,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      <div className="text-sm font-medium font-display gradient-text-success">
                         {formatCurrency(item.cost)}
                       </div>
                       {item.optimizationApplied && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-success-200/30 dark:border-success-700/30 bg-gradient-success/20 text-success-700 dark:text-success-300">
                           Optimized
                         </span>
                       )}
@@ -405,40 +398,40 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                         {item.errorOccurred ? (
                           <>
                             {item.httpStatusCode && (
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                ${getStatusCodeColor(item.httpStatusCode) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                                  getStatusCodeColor(item.httpStatusCode) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                    getStatusCodeColor(item.httpStatusCode) === 'green' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                      'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border
+                                ${getStatusCodeColor(item.httpStatusCode) === 'red' ? 'border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
+                                  getStatusCodeColor(item.httpStatusCode) === 'yellow' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                    getStatusCodeColor(item.httpStatusCode) === 'green' ? 'border-success-200/30 dark:border-success-700/30 bg-gradient-success/20 text-success-700 dark:text-success-300' :
+                                      'border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300'}
                               `}>
                                 {item.httpStatusCode}
                               </span>
                             )}
                             {item.errorType && (
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                ${getErrorTypeColor(item.errorType) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                                  getErrorTypeColor(item.errorType) === 'orange' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                                    getErrorTypeColor(item.errorType) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                      getErrorTypeColor(item.errorType) === 'blue' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                                        'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border
+                                ${getErrorTypeColor(item.errorType) === 'red' ? 'border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
+                                  getErrorTypeColor(item.errorType) === 'orange' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                    getErrorTypeColor(item.errorType) === 'yellow' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                      getErrorTypeColor(item.errorType) === 'blue' ? 'border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300' :
+                                        'border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300'}
                               `}>
                                 {formatErrorType(item.errorType)}
                               </span>
                             )}
                             {!item.httpStatusCode && !item.errorType && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300">
                                 Error
                               </span>
                             )}
                           </>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-success-200/30 dark:border-success-700/30 bg-gradient-success/20 text-success-700 dark:text-success-300">
                             Success
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                    <td className="px-6 py-4 text-sm font-body text-light-text-secondary whitespace-nowrap dark:text-dark-text-secondary">
                       {formatDateTime(item.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
@@ -449,13 +442,13 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                               e.stopPropagation();
                               handleSimulate(item);
                             }}
-                            className="p-2 text-purple-500 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:border-purple-300/50 hover:shadow-md"
+                            className="p-2 text-primary-500 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-md hover:scale-105 active:scale-95"
                             title="Try What-If Simulation"
                           >
                             <BeakerIcon className="w-4 h-4" />
                           </button>
                         )}
-                        <ChevronRightIcon className="w-5 h-5 text-secondary-500 dark:text-secondary-400" />
+                        <ChevronRightIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                       </div>
                     </td>
                   </tr>
@@ -466,7 +459,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
         </div>
 
         {pagination && (
-          <div className="px-6 py-4 border-t border-primary-200/30">
+          <div className="px-6 py-4 border-t border-primary-200/30 dark:border-primary-700/30">
             <Pagination
               currentPage={pagination.currentPage}
               totalPages={pagination.totalPages}
@@ -496,7 +489,7 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 </h3>
                 <button
                   onClick={() => setSelectedUsage(null)}
-                  className="p-2 rounded-xl border transition-all duration-300 btn glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-secondary-900 dark:hover:text-white hover:border-primary-300/50"
+                  className="p-2 rounded-xl border transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:scale-105 active:scale-95"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -506,18 +499,13 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Service & Model */}
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
-                    <div
-                      className="flex justify-center items-center w-12 h-12 text-xl text-white rounded-lg"
-                      style={{ backgroundColor: AI_SERVICES[selectedUsage.service as keyof typeof AI_SERVICES]?.color || '#999' }}
-                    >
-                      {AI_SERVICES[selectedUsage.service as keyof typeof AI_SERVICES]?.icon || '?'}
-                    </div>
+                    <ServiceIcon service={selectedUsage.service} size="lg" className="shadow-lg" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-white">
+                    <h4 className="text-lg font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                       {formatServiceName(selectedUsage.service)}
                     </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       {selectedUsage.model}
                     </p>
                   </div>
@@ -525,35 +513,35 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
                 {/* Workflow Information */}
                 {selectedUsage.workflowId && (
-                  <div className="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                    <h5 className="mb-2 text-sm font-medium text-blue-900 dark:text-blue-100">
+                  <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/10 dark:bg-gradient-primary/5">
+                    <h5 className="mb-2 text-sm font-medium font-display gradient-text-primary">
                       Workflow Information
                     </h5>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-blue-700 dark:text-blue-300">Workflow Name</p>
-                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Workflow Name</p>
+                        <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                           {selectedUsage.workflowName || 'Unnamed Workflow'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-blue-700 dark:text-blue-300">Workflow ID</p>
-                        <p className="font-mono text-sm text-blue-900 dark:text-blue-100">
+                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Workflow ID</p>
+                        <p className="font-mono text-sm text-light-text-primary dark:text-dark-text-primary">
                           {selectedUsage.workflowId}
                         </p>
                       </div>
                       {selectedUsage.workflowStep && (
                         <div>
-                          <p className="text-xs text-blue-700 dark:text-blue-300">Step</p>
-                          <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Step</p>
+                          <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                             {selectedUsage.workflowStep}
                           </p>
                         </div>
                       )}
                       {selectedUsage.workflowSequence && (
                         <div>
-                          <p className="text-xs text-blue-700 dark:text-blue-300">Sequence</p>
-                          <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Sequence</p>
+                          <p className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                             #{selectedUsage.workflowSequence}
                           </p>
                         </div>
@@ -565,18 +553,18 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Enhanced Request/Response Section */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <h5 className="text-sm font-medium text-gray-900 dark:text-white">
+                    <h5 className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                       Request & Response
                     </h5>
                     <button
                       onClick={() => copyPromptToClipboard(selectedUsage.prompt)}
-                      className="flex items-center px-2 py-1 space-x-1 text-xs transition-colors btn text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200"
+                      className="flex items-center px-2 py-1 space-x-1 text-xs transition-colors font-body text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
                       title="Copy prompt to clipboard"
                     >
                       {copiedPrompt ? (
                         <>
-                          <CheckIcon className="w-4 h-4 text-green-500" />
-                          <span className="text-green-500">Copied!</span>
+                          <CheckIcon className="w-4 h-4 text-success-500" />
+                          <span className="text-success-500">Copied!</span>
                         </>
                       ) : (
                         <>
@@ -590,11 +578,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                   <div className="space-y-4">
                     {/* Request/Prompt Section */}
                     <div>
-                      <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                      <h6 className="mb-2 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                         Request:
                       </h6>
-                      <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                        <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                      <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <p className="text-sm font-body text-light-text-primary whitespace-pre-wrap dark:text-dark-text-primary">
                           {selectedUsage.prompt ||
                             selectedUsage.metadata?.prompt ||
                             selectedUsage.metadata?.messages?.[0]?.content ||
@@ -607,11 +595,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* Response/Completion Section */}
                     {selectedUsage.completion && (
                       <div>
-                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                        <h6 className="mb-2 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                           Response:
                         </h6>
-                        <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                          <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                        <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                          <p className="text-sm font-body text-light-text-primary whitespace-pre-wrap dark:text-dark-text-primary">
                             {selectedUsage.completion}
                           </p>
                         </div>
@@ -621,25 +609,25 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* Messages Section for Chat Models */}
                     {selectedUsage.metadata?.messages && Array.isArray(selectedUsage.metadata.messages) && selectedUsage.metadata.messages.length > 0 && (
                       <div>
-                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                        <h6 className="mb-2 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                           Conversation History:
                         </h6>
                         <div className="space-y-2">
                           {selectedUsage.metadata.messages.map((msg: any, idx: number) => (
-                            <div key={idx} className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                            <div key={idx} className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                               <div className="flex justify-between items-start mb-1">
-                                <span className="text-xs font-medium text-gray-500 capitalize dark:text-gray-400">
+                                <span className="text-xs font-medium font-display text-light-text-secondary capitalize dark:text-dark-text-secondary">
                                   {msg.role || 'user'}:
                                 </span>
                                 <button
                                   onClick={() => copyPromptToClipboard(msg.content || '')}
-                                  className="text-xs btn text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300"
+                                  className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
                                   title="Copy message to clipboard"
                                 >
                                   <ClipboardIcon className="w-3 h-3" />
                                 </button>
                               </div>
-                              <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                              <p className="text-sm font-body text-light-text-primary whitespace-pre-wrap dark:text-dark-text-primary">
                                 {msg.content || 'No content'}
                               </p>
                             </div>
@@ -651,11 +639,11 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                     {/* System Message */}
                     {selectedUsage.metadata?.system && (
                       <div>
-                        <h6 className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
+                        <h6 className="mb-2 text-xs font-medium font-display text-light-text-secondary dark:text-dark-text-secondary">
                           System Instructions:
                         </h6>
-                        <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                          <p className="text-sm text-gray-900 whitespace-pre-wrap dark:text-white">
+                        <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                          <p className="text-sm font-body text-light-text-primary whitespace-pre-wrap dark:text-dark-text-primary">
                             {selectedUsage.metadata.system}
                           </p>
                         </div>
@@ -667,10 +655,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Custom Properties */}
                 {selectedUsage.metadata && Object.keys(selectedUsage.metadata).length > 0 && (
                   <div>
-                    <h5 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <h5 className="mb-2 text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                       Custom Properties
                     </h5>
-                    <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+                    <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                       <div className="space-y-2">
                         {Object.entries(selectedUsage.metadata)
                           .filter(([key, value]) =>
@@ -724,10 +712,10 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                           .filter(Boolean)
                           .map((item: any) => (
                             <div key={item.key} className="flex justify-between items-start">
-                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              <span className="text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                                 {item.key}:
                               </span>
-                              <span className="max-w-xs text-sm text-right text-gray-900 dark:text-white">
+                              <span className="max-w-xs text-sm text-right font-body text-light-text-primary dark:text-dark-text-primary">
                                 {item.displayValue}
                               </span>
                             </div>
@@ -740,46 +728,46 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                    <h6 className="text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                  <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h6 className="text-xs font-medium font-display tracking-wider text-light-text-secondary uppercase dark:text-dark-text-secondary">
                       Total Tokens
                     </h6>
-                    <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="mt-1 text-lg font-semibold font-display gradient-text-primary">
                       {formatNumber(selectedUsage.totalTokens)}
                     </p>
-                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-1 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                       {formatNumber(selectedUsage.promptTokens)} prompt + {formatNumber(selectedUsage.completionTokens)} completion
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                    <h6 className="text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                  <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h6 className="text-xs font-medium font-display tracking-wider text-light-text-secondary uppercase dark:text-dark-text-secondary">
                       Cost
                     </h6>
-                    <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="mt-1 text-lg font-semibold font-display gradient-text-success">
                       {formatCurrency(selectedUsage.cost)}
                     </p>
                     {selectedUsage.optimizationApplied && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200 mt-1">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border border-success-200/30 dark:border-success-700/30 bg-gradient-success/20 text-success-700 dark:text-success-300 mt-1">
                         Optimized
                       </span>
                     )}
                   </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                    <h6 className="text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                  <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h6 className="text-xs font-medium font-display tracking-wider text-light-text-secondary uppercase dark:text-dark-text-secondary">
                       Response Time
                     </h6>
-                    <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="mt-1 text-lg font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                       {formatResponseTime(selectedUsage.responseTime)}
                     </p>
                   </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
-                    <h6 className="text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
+                  <div className="p-4 rounded-lg border glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h6 className="text-xs font-medium font-display tracking-wider text-light-text-secondary uppercase dark:text-dark-text-secondary">
                       Created At
                     </h6>
-                    <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="mt-1 text-lg font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                       {formatDateTime(selectedUsage.createdAt)}
                     </p>
                   </div>
@@ -788,14 +776,14 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Tags */}
                 {selectedUsage.tags && selectedUsage.tags.length > 0 && (
                   <div>
-                    <h5 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <h5 className="mb-2 text-sm font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                       Tags
                     </h5>
                     <div className="flex flex-wrap gap-2">
                       {selectedUsage.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-200"
+                          className="inline-flex items-center px-3 py-1 text-sm font-medium font-display glass border border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel text-light-text-primary rounded-full dark:text-dark-text-primary"
                         >
                           {tag}
                         </span>
@@ -806,18 +794,18 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
 
                 {/* Error Details */}
                 {selectedUsage.errorOccurred && (
-                  <div className="p-4 bg-red-50 rounded-lg dark:bg-red-900/20">
-                    <h5 className="mb-3 text-sm font-medium text-red-900 dark:text-red-100">
+                  <div className="p-4 rounded-lg border glass border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/10 dark:bg-gradient-danger/5">
+                    <h5 className="mb-3 text-sm font-medium font-display gradient-text-danger">
                       Error Details
                     </h5>
                     <div className="space-y-3">
                       {selectedUsage.httpStatusCode && (
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-red-700 dark:text-red-300">HTTP Status:</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                            ${getStatusCodeColor(selectedUsage.httpStatusCode) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' :
-                              getStatusCodeColor(selectedUsage.httpStatusCode) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
-                                'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}
+                          <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">HTTP Status:</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border
+                            ${getStatusCodeColor(selectedUsage.httpStatusCode) === 'red' ? 'border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
+                              getStatusCodeColor(selectedUsage.httpStatusCode) === 'yellow' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                'border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300'}
                           `}>
                             {formatHttpStatusCode(selectedUsage.httpStatusCode)}
                           </span>
@@ -825,12 +813,12 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       )}
                       {selectedUsage.errorType && (
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-red-700 dark:text-red-300">Error Type:</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                            ${getErrorTypeColor(selectedUsage.errorType) === 'red' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' :
-                              getErrorTypeColor(selectedUsage.errorType) === 'orange' ? 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200' :
-                                getErrorTypeColor(selectedUsage.errorType) === 'yellow' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
-                                  'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}
+                          <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">Error Type:</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium font-display glass border
+                            ${getErrorTypeColor(selectedUsage.errorType) === 'red' ? 'border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/20 text-danger-700 dark:text-danger-300' :
+                              getErrorTypeColor(selectedUsage.errorType) === 'orange' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                getErrorTypeColor(selectedUsage.errorType) === 'yellow' ? 'border-warning-200/30 dark:border-warning-700/30 bg-gradient-warning/20 text-warning-700 dark:text-warning-300' :
+                                  'border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300'}
                           `}>
                             {formatErrorType(selectedUsage.errorType)}
                           </span>
@@ -838,24 +826,24 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                       )}
                       {selectedUsage.errorMessage && (
                         <div>
-                          <span className="text-sm text-red-700 dark:text-red-300">Error Message:</span>
-                          <p className="p-2 mt-1 text-sm text-red-900 bg-red-100 rounded dark:text-red-100 dark:bg-red-900/30">
+                          <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">Error Message:</span>
+                          <p className="p-2 mt-1 text-sm font-body text-light-text-primary rounded border glass border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/10 dark:bg-gradient-danger/5 dark:text-dark-text-primary">
                             {selectedUsage.errorMessage}
                           </p>
                         </div>
                       )}
                       {selectedUsage.errorDetails && Object.keys(selectedUsage.errorDetails).length > 0 && (
                         <div>
-                          <span className="text-sm text-red-700 dark:text-red-300">Additional Details:</span>
+                          <span className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">Additional Details:</span>
                           <div className="mt-1 space-y-1">
                             {Object.entries(selectedUsage.errorDetails)
                               .filter(([_, value]) => value !== null && value !== undefined && value !== '')
                               .map(([key, value]) => (
-                                <div key={key} className="flex justify-between items-start text-xs">
-                                  <span className="text-red-600 capitalize dark:text-red-400">
+                                <div key={key} className="flex justify-between items-start text-xs font-body">
+                                  <span className="text-light-text-secondary capitalize dark:text-dark-text-secondary">
                                     {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
                                   </span>
-                                  <span className="max-w-xs text-right text-red-900 dark:text-red-100">
+                                  <span className="max-w-xs text-right text-light-text-primary dark:text-dark-text-primary">
                                     {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                                   </span>
                                 </div>
@@ -871,15 +859,15 @@ export const UsageList = ({ usage, pagination, onPageChange, onRefresh }: UsageL
                 {/* Status Indicators */}
                 <div className="flex space-x-4">
                   <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full mr-2 ${selectedUsage.errorOccurred ? 'bg-red-500' : 'bg-green-500'}`} />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className={`w-2 h-2 rounded-full mr-2 ${selectedUsage.errorOccurred ? 'bg-danger-500' : 'bg-success-500'}`} />
+                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                       {selectedUsage.errorOccurred ? 'Error Occurred' : 'Successful'}
                     </span>
                   </div>
                   {selectedUsage.optimizationApplied && (
                     <div className="flex items-center">
-                      <div className="mr-2 w-2 h-2 bg-blue-500 rounded-full" />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="mr-2 w-2 h-2 bg-primary-500 rounded-full" />
+                      <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                         Optimization Applied
                       </span>
                     </div>
