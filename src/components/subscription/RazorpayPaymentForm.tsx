@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { BillingService } from '../../services/billing.service';
 import { apiClient } from '../../config/api';
+import { detectUserCountry } from '../../services/geolocation.service';
+import { getPaymentMethodsByCountry } from '../../utils/paymentMethods.config';
+import { SubscriptionSuccessModal } from './SubscriptionSuccessModal';
 
 interface RazorpayPaymentFormProps {
     amount: number;
     currency?: string;
     plan: string;
     billingInterval: 'monthly' | 'yearly';
+    discountCode?: string;
     onSuccess: () => void;
     onError?: (error: any) => void;
     disabled?: boolean;
@@ -24,6 +28,7 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
     currency = 'USD',
     plan,
     billingInterval,
+    discountCode,
     onSuccess,
     onError,
     disabled = false,
@@ -32,11 +37,19 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
     const [isLoading, setIsLoading] = useState(true);
     const [razorpayKeyId, setRazorpayKeyId] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [userCountry, setUserCountry] = useState<string | null>(null);
+    const [orderData, setOrderData] = useState<{ currency: string; convertedAmount?: number } | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successData, setSuccessData] = useState<{ amount: number; currency: string } | null>(null);
     const razorpayLoaded = useRef(false);
 
     useEffect(() => {
         const loadRazorpayConfig = async () => {
             try {
+                // Detect user's country
+                const country = await detectUserCountry();
+                setUserCountry(country);
+
                 const config = await BillingService.getPaymentConfig();
                 if (config.razorpay?.keyId) {
                     setRazorpayKeyId(config.razorpay.keyId);
@@ -82,24 +95,51 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
 
         setIsProcessing(true);
         try {
+            // Get payment methods based on user's country
+            const paymentMethods = getPaymentMethodsByCountry(userCountry);
+
             // Create order on backend
             const orderResponse = await apiClient.post('/user/subscription/create-razorpay-order', {
                 plan,
                 billingInterval,
                 amount,
                 currency,
+                country: userCountry, // Pass country to backend
+                discountCode: discountCode || undefined, // Pass discount code if available
             });
 
-            const { orderId, keyId: orderKeyId } = orderResponse.data.data;
+            const { orderId, keyId: orderKeyId, currency: orderCurrency, convertedAmount } = orderResponse.data.data;
 
-            // Initialize Razorpay checkout
-            const options = {
+            // Store order data for display
+            setOrderData({
+                currency: orderCurrency,
+                convertedAmount: convertedAmount,
+            });
+
+            // Initialize Razorpay checkout with country-specific payment methods
+            // Razorpay method configuration: https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/checkout-options/
+            const options: any = {
                 key: orderKeyId || razorpayKeyId,
-                amount: orderResponse.data.data.amount, // Amount in paise
-                currency: orderResponse.data.data.currency,
+                amount: orderResponse.data.data.amount, // Amount in paise/cents
+                currency: orderCurrency,
                 name: 'Cost Katana',
                 description: `Subscription: ${plan} (${billingInterval})`,
                 order_id: orderId,
+                // Configure payment methods based on country
+                // For India: show all methods, for others: show only cards
+                method: paymentMethods.length > 1
+                    ? {
+                        // For India: enable all payment methods
+                        netbanking: paymentMethods.includes('netbanking'),
+                        wallet: paymentMethods.includes('wallet'),
+                        upi: paymentMethods.includes('upi'),
+                        card: paymentMethods.includes('card'),
+                        emi: paymentMethods.includes('emi'),
+                    }
+                    : {
+                        // For non-India: only cards
+                        card: true,
+                    },
                 handler: async (response: any) => {
                     try {
                         // Verify and confirm payment on backend
@@ -109,10 +149,22 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                             signature: response.razorpay_signature,
                             plan,
                             billingInterval,
+                            discountCode: discountCode || undefined,
                         });
 
-                        showNotification('Payment successful! Subscription upgraded.', 'success');
-                        onSuccess();
+                        // Show success modal with confetti
+                        const finalAmount = orderData?.convertedAmount || amount;
+                        const finalCurrency = orderData?.currency || currency;
+                        setSuccessData({
+                            amount: finalAmount,
+                            currency: finalCurrency,
+                        });
+                        setShowSuccessModal(true);
+
+                        // Call onSuccess after a short delay to allow modal to show
+                        setTimeout(() => {
+                            onSuccess();
+                        }, 100);
                     } catch (error: any) {
                         console.error('Error confirming payment:', error);
                         const errorMessage = error.response?.data?.message || error.message || 'Payment verification failed';
@@ -203,7 +255,10 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                                 Total:
                             </span>
                             <span className="text-xl font-bold text-primary-500">
-                                ${amount.toFixed(2)}
+                                {orderData?.currency === 'INR' && orderData?.convertedAmount
+                                    ? `₹${orderData.convertedAmount.toFixed(2)}`
+                                    : `$${amount.toFixed(2)}`
+                                }
                             </span>
                         </div>
                     </div>
@@ -218,12 +273,32 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                 disabled={!razorpayKeyId || !window.Razorpay || isProcessing}
                 className="btn btn-primary w-full"
             >
-                {isProcessing ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
+                {isProcessing
+                    ? 'Processing...'
+                    : orderData?.currency === 'INR' && orderData?.convertedAmount
+                        ? `Pay ₹${orderData.convertedAmount.toFixed(2)}`
+                        : `Pay $${amount.toFixed(2)}`
+                }
             </button>
 
             <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary text-center">
                 Your payment information is secure and encrypted
             </p>
+
+            {/* Success Modal */}
+            {successData && (
+                <SubscriptionSuccessModal
+                    isOpen={showSuccessModal}
+                    onClose={() => {
+                        setShowSuccessModal(false);
+                        setSuccessData(null);
+                    }}
+                    plan={plan}
+                    billingInterval={billingInterval}
+                    amount={successData.amount}
+                    currency={successData.currency}
+                />
+            )}
         </div>
     );
 };

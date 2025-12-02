@@ -82,6 +82,7 @@ import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminDiscountManagement } from './pages/AdminDiscountManagement';
 import Logs from './pages/Logs';
 import Automation from './pages/Automation';
 
@@ -308,6 +309,14 @@ function AppContent() {
             element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/discounts"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDiscountManagement />
               </ProtectedRoute>
             }
           />

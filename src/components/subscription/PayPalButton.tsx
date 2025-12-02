@@ -8,6 +8,7 @@ interface PayPalButtonProps {
     currency?: string;
     plan: string;
     billingInterval: 'monthly' | 'yearly';
+    discountCode?: string;
     onSuccess: (subscriptionId: string) => void;
     onError?: (error: any) => void;
     disabled?: boolean;
@@ -18,6 +19,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
     currency = 'USD',
     plan,
     billingInterval,
+    discountCode,
     onSuccess,
     onError,
     disabled = false,
@@ -296,6 +298,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
                                 // The frontend SDK uses this plan ID to create the subscription when user approves
                                 const { apiClient } = await import('../../config/api');
                                 const response = await apiClient.post('/user/subscription/create-paypal-plan', {
+                                    discountCode: discountCode || undefined,
                                     plan,
                                     billingInterval,
                                     amount,
