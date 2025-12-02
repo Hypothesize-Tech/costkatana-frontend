@@ -34,6 +34,7 @@ import {
   EyeIcon,
   ClipboardDocumentListIcon,
   ChartPieIcon,
+  TagIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
@@ -139,6 +140,7 @@ const navCategories: NavCategory[] = [
     items: [
       { name: 'Admin Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Platform analytics' },
       { name: 'User Spending', href: '/admin/user-spending', icon: CurrencyDollarIcon, description: 'User spending tracking' },
+      { name: 'Discount Management', href: '/admin/discounts', icon: TagIcon, description: 'Manage discount codes' },
     ],
   },
 ];

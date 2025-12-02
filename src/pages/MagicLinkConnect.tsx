@@ -111,7 +111,7 @@ const MagicLinkConnect: React.FC = () => {
 
         // Redirect directly to backend for onboarding completion
         const apiBaseUrl =
-          import.meta.env.VITE_API_URL || "https://cost-katana-backend.store";
+          import.meta.env.VITE_API_URL || "https://api.costkatana.com";
         const backendUrl = `${apiBaseUrl}/api/onboarding/complete?token=${token}&data=${encodeURIComponent(data)}`;
 
         console.log("Redirecting to backend:", backendUrl);

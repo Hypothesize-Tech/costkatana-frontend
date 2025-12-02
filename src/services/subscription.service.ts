@@ -141,6 +141,27 @@ export class SubscriptionService {
   }
 
   /**
+   * Validate discount code (for checkout preview)
+   */
+  static async validateDiscountCode(
+    discountCode: string,
+    plan: string,
+    amount: number
+  ): Promise<{ code: string; type: 'percentage' | 'fixed'; amount: number; discountAmount: number; finalAmount: number }> {
+    try {
+      const response = await apiClient.post('/user/subscription/validate-discount', {
+        code: discountCode,
+        plan: plan.toLowerCase(), // Normalize to lowercase
+        amount,
+      });
+      return response.data.data;
+    } catch (error: any) {
+      console.error('Error validating discount code:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Apply discount code
    */
   static async applyDiscountCode(discountCode: string): Promise<Subscription> {

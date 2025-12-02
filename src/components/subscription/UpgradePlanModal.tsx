@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SubscriptionService } from '../../services/subscription.service';
 import { SUBSCRIPTION_PLANS } from '../../utils/constant';
 import { SubscriptionPlan, BillingInterval, PaymentGateway } from '../../types/subscription.types';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
-import stripeLogo from '../../assets/stripe-logo.png';
+// import stripeLogo from '../../assets/stripe-logo.png';
 import paypalLogo from '../../assets/paypal-logo.webp';
 import razorpayLogo from '../../assets/razorpay-logo.png';
 import { PayPalButton } from './PayPalButton';
-import { StripePaymentForm } from './StripePaymentForm';
+// import { StripePaymentForm } from './StripePaymentForm';
 import { RazorpayPaymentForm } from './RazorpayPaymentForm';
 
 interface UpgradePlanModalProps {
@@ -25,8 +25,11 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
     const queryClient = useQueryClient();
     const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>('plus');
     const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
-    const [selectedGateway, setSelectedGateway] = useState<PaymentGateway>('stripe');
+    const [selectedGateway, setSelectedGateway] = useState<PaymentGateway>('paypal');
     const [discountCode, setDiscountCode] = useState('');
+    const [discountInfo, setDiscountInfo] = useState<{ discountAmount: number; finalAmount: number } | null>(null);
+    const [discountError, setDiscountError] = useState<string | null>(null);
+    const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
     const [showPaymentForm, setShowPaymentForm] = useState(false);
 
     const upgradeMutation = useMutation(
@@ -69,10 +72,49 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
 
     const selectedPlanKey = selectedPlan?.toLowerCase() as keyof typeof SUBSCRIPTION_PLANS;
     const selectedPlanDetails = selectedPlanKey ? SUBSCRIPTION_PLANS[selectedPlanKey] : SUBSCRIPTION_PLANS.plus;
-    const price =
+    const basePrice =
         billingInterval === 'monthly'
             ? selectedPlanDetails.price
             : selectedPlanDetails.yearlyPrice;
+
+    // Calculate final price with discount
+    const finalPrice = discountInfo ? discountInfo.finalAmount : basePrice;
+    const discountAmount = discountInfo ? discountInfo.discountAmount : 0;
+
+    // Validate discount code when it changes
+    useEffect(() => {
+        const validateDiscount = async () => {
+            if (!discountCode.trim()) {
+                setDiscountInfo(null);
+                setDiscountError(null);
+                return;
+            }
+
+            setIsValidatingDiscount(true);
+            setDiscountError(null);
+            try {
+                const result = await SubscriptionService.validateDiscountCode(
+                    discountCode,
+                    selectedPlan,
+                    basePrice
+                );
+                setDiscountInfo({
+                    discountAmount: result.discountAmount,
+                    finalAmount: result.finalAmount,
+                });
+            } catch (error: any) {
+                setDiscountInfo(null);
+                setDiscountError(
+                    error.response?.data?.message || 'Invalid discount code'
+                );
+            } finally {
+                setIsValidatingDiscount(false);
+            }
+        };
+
+        const timeoutId = setTimeout(validateDiscount, 500); // Debounce
+        return () => clearTimeout(timeoutId);
+    }, [discountCode, selectedPlan, basePrice]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -168,13 +210,28 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             <label className="block mb-2 text-sm font-semibold text-light-text dark:text-dark-text">
                                 Discount Code (Optional)
                             </label>
-                            <input
-                                type="text"
-                                value={discountCode}
-                                onChange={(e) => setDiscountCode(e.target.value)}
-                                placeholder="Enter discount code"
-                                className="w-full input"
-                            />
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={discountCode}
+                                    onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                                    placeholder="Enter discount code"
+                                    className={`w-full input ${discountError ? 'border-danger-500' : discountInfo ? 'border-success-500' : ''}`}
+                                />
+                                {isValidatingDiscount && (
+                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                        <div className="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
+                                )}
+                            </div>
+                            {discountError && (
+                                <p className="mt-1 text-sm text-danger-500">{discountError}</p>
+                            )}
+                            {discountInfo && !discountError && (
+                                <p className="mt-1 text-sm text-success-500">
+                                    Discount applied! Save ${discountAmount.toFixed(2)}
+                                </p>
+                            )}
                         </div>
 
                         {/* Payment Gateway Selection */}
@@ -182,12 +239,12 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             <label className="block mb-2 text-sm font-semibold text-light-text dark:text-dark-text">
                                 Payment Method
                             </label>
-                            <div className="grid grid-cols-3 gap-4">
-                                {(['stripe', 'razorpay', 'paypal'] as PaymentGateway[]).map((gateway) => {
+                            <div className="grid grid-cols-2 gap-4">
+                                {(['razorpay', 'paypal'] as PaymentGateway[]).map((gateway) => {
                                     const getLogo = () => {
                                         switch (gateway) {
-                                            case 'stripe':
-                                                return stripeLogo;
+                                            // case 'stripe':
+                                            //     return stripeLogo;
                                             case 'paypal':
                                                 return paypalLogo;
                                             case 'razorpay':
@@ -242,21 +299,40 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                     {billingInterval === 'monthly' ? 'Monthly' : 'Yearly'}
                                 </span>
                             </div>
-                            {discountCode && (
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-light-text-secondary dark:text-dark-text-secondary">
-                                        Discount
-                                    </span>
-                                    <span className="font-semibold text-green-500">Applied</span>
-                                </div>
+                            {discountInfo && discountAmount > 0 && (
+                                <>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                            Subtotal
+                                        </span>
+                                        <span className="font-semibold text-light-text dark:text-dark-text">
+                                            ${basePrice.toFixed(2)}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                            Discount ({discountCode})
+                                        </span>
+                                        <span className="font-semibold text-success-500">
+                                            -${discountAmount.toFixed(2)}
+                                        </span>
+                                    </div>
+                                </>
                             )}
                             <div className="flex items-center justify-between pt-2 mt-2 border-t border-primary-200/20 dark:border-primary-800/20">
                                 <span className="text-lg font-bold text-light-text dark:text-dark-text">
                                     Total
                                 </span>
-                                <span className="text-2xl font-bold text-primary-500">
-                                    ${price}/{billingInterval === 'monthly' ? 'mo' : 'yr'}
-                                </span>
+                                <div className="text-right">
+                                    {discountInfo && discountAmount > 0 && (
+                                        <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-through mb-1">
+                                            ${basePrice.toFixed(2)}
+                                        </div>
+                                    )}
+                                    <span className="text-2xl font-bold text-primary-500">
+                                        ${finalPrice.toFixed(2)}/{billingInterval === 'monthly' ? 'mo' : 'yr'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -282,14 +358,14 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                         <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
                             {selectedGateway === 'paypal'
                                 ? 'Complete your subscription with PayPal'
-                                : selectedGateway === 'stripe'
-                                    ? 'Complete your subscription with Stripe'
-                                    : selectedGateway === 'razorpay'
-                                        ? 'Complete your subscription with Razorpay'
-                                        : 'Please select a payment method'}
+                                // : selectedGateway === 'stripe'
+                                //     ? 'Complete your subscription with Stripe'
+                                : selectedGateway === 'razorpay'
+                                    ? 'Complete your subscription with Razorpay'
+                                    : 'Please select a payment method'}
                         </p>
 
-                        {selectedGateway === 'stripe' ? (
+                        {/* {selectedGateway === 'stripe' ? (
                             <div className="space-y-4">
                                 <StripePaymentForm
                                     amount={price}
@@ -315,13 +391,15 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                     Back
                                 </button>
                             </div>
-                        ) : selectedGateway === 'paypal' ? (
+                        ) : */}
+                        {selectedGateway === 'paypal' ? (
                             <div className="space-y-4">
                                 <PayPalButton
-                                    amount={price}
+                                    amount={finalPrice}
                                     currency={selectedPlanDetails.currency || 'USD'}
                                     plan={selectedPlan}
                                     billingInterval={billingInterval}
+                                    discountCode={discountInfo ? discountCode : undefined}
                                     onSuccess={(_subscriptionId: string) => {
                                         queryClient.invalidateQueries(['subscription']);
                                         showNotification('Subscription upgraded successfully!', 'success');
@@ -344,10 +422,11 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                         ) : selectedGateway === 'razorpay' ? (
                             <div className="space-y-4">
                                 <RazorpayPaymentForm
-                                    amount={price}
+                                    amount={finalPrice}
                                     currency={selectedPlanDetails.currency || 'USD'}
                                     plan={selectedPlan}
                                     billingInterval={billingInterval}
+                                    discountCode={discountInfo ? discountCode : undefined}
                                     onSuccess={() => {
                                         queryClient.invalidateQueries(['subscription']);
                                         showNotification('Subscription upgraded successfully!', 'success');
