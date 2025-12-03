@@ -6,9 +6,9 @@ import { SubscriptionPlan, BillingInterval, PaymentGateway } from '../../types/s
 import { useNotifications } from '../../contexts/NotificationContext';
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 // import stripeLogo from '../../assets/stripe-logo.png';
-import paypalLogo from '../../assets/paypal-logo.webp';
+// import paypalLogo from '../../assets/paypal-logo.webp';
 import razorpayLogo from '../../assets/razorpay-logo.png';
-import { PayPalButton } from './PayPalButton';
+// import { PayPalButton } from './PayPalButton';
 // import { StripePaymentForm } from './StripePaymentForm';
 import { RazorpayPaymentForm } from './RazorpayPaymentForm';
 
@@ -25,7 +25,7 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
     const queryClient = useQueryClient();
     const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>('plus');
     const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
-    const [selectedGateway, setSelectedGateway] = useState<PaymentGateway>('paypal');
+    const [selectedGateway, setSelectedGateway] = useState<PaymentGateway>('razorpay');
     const [discountCode, setDiscountCode] = useState('');
     const [discountInfo, setDiscountInfo] = useState<{ discountAmount: number; finalAmount: number } | null>(null);
     const [discountError, setDiscountError] = useState<string | null>(null);
@@ -240,13 +240,13 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                 Payment Method
                             </label>
                             <div className="grid grid-cols-2 gap-4">
-                                {(['razorpay', 'paypal'] as PaymentGateway[]).map((gateway) => {
+                                {(['razorpay'/*, 'paypal'*/] as PaymentGateway[]).map((gateway) => {
                                     const getLogo = () => {
                                         switch (gateway) {
                                             // case 'stripe':
                                             //     return stripeLogo;
-                                            case 'paypal':
-                                                return paypalLogo;
+                                            // case 'paypal':
+                                            //     return paypalLogo;
                                             case 'razorpay':
                                                 return razorpayLogo;
                                             default:
@@ -356,11 +356,11 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             Payment Information
                         </h3>
                         <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
-                            {selectedGateway === 'paypal'
+                            {/* {selectedGateway === 'paypal'
                                 ? 'Complete your subscription with PayPal'
                                 // : selectedGateway === 'stripe'
                                 //     ? 'Complete your subscription with Stripe'
-                                : selectedGateway === 'razorpay'
+                                : */selectedGateway === 'razorpay'
                                     ? 'Complete your subscription with Razorpay'
                                     : 'Please select a payment method'}
                         </p>
@@ -392,7 +392,7 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                 </button>
                             </div>
                         ) : */}
-                        {selectedGateway === 'paypal' ? (
+                        {/* {selectedGateway === 'paypal' ? (
                             <div className="space-y-4">
                                 <PayPalButton
                                     amount={finalPrice}
@@ -419,38 +419,39 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                     Back
                                 </button>
                             </div>
-                        ) : selectedGateway === 'razorpay' ? (
-                            <div className="space-y-4">
-                                <RazorpayPaymentForm
-                                    amount={finalPrice}
-                                    currency={selectedPlanDetails.currency || 'USD'}
-                                    plan={selectedPlan}
-                                    billingInterval={billingInterval}
-                                    discountCode={discountInfo ? discountCode : undefined}
-                                    onSuccess={() => {
-                                        queryClient.invalidateQueries(['subscription']);
-                                        showNotification('Subscription upgraded successfully!', 'success');
-                                        onClose();
-                                    }}
-                                    onError={(error: any) => {
-                                        showNotification(
-                                            error.message || 'Failed to complete Razorpay payment',
-                                            'error'
-                                        );
-                                    }}
-                                />
-                                <button
-                                    onClick={() => setShowPaymentForm(false)}
-                                    className="btn btn-outline w-full"
-                                >
-                                    Back
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="p-4 text-center text-light-text-secondary dark:text-dark-text-secondary">
-                                Please select a payment method to continue
-                            </div>
-                        )}
+                        ) : */
+                            selectedGateway === 'razorpay' ? (
+                                <div className="space-y-4">
+                                    <RazorpayPaymentForm
+                                        amount={finalPrice}
+                                        currency={selectedPlanDetails.currency || 'USD'}
+                                        plan={selectedPlan}
+                                        billingInterval={billingInterval}
+                                        discountCode={discountInfo ? discountCode : undefined}
+                                        onSuccess={() => {
+                                            queryClient.invalidateQueries(['subscription']);
+                                            showNotification('Subscription upgraded successfully!', 'success');
+                                            onClose();
+                                        }}
+                                        onError={(error: any) => {
+                                            showNotification(
+                                                error.message || 'Failed to complete Razorpay payment',
+                                                'error'
+                                            );
+                                        }}
+                                    />
+                                    <button
+                                        onClick={() => setShowPaymentForm(false)}
+                                        className="btn btn-outline w-full"
+                                    >
+                                        Back
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="p-4 text-center text-light-text-secondary dark:text-dark-text-secondary">
+                                    Please select a payment method to continue
+                                </div>
+                            )}
                     </div>
                 )}
             </div>
