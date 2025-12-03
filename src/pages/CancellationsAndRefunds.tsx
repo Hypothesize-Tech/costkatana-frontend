@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
 import { ArrowPathIcon, XCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { getContactLink } from "../utils/contact-utils";
 
 const CancellationsAndRefunds: React.FC = () => {
   return (
@@ -54,7 +55,7 @@ const CancellationsAndRefunds: React.FC = () => {
                 <li>Log in to your {APP_NAME} account</li>
                 <li>Navigate to the Subscription or Settings page</li>
                 <li>Click "Cancel Subscription" and follow the prompts</li>
-                <li>Alternatively, contact support at <a href="mailto:support@costkatana.com" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors">support@costkatana.com</a></li>
+                <li>Alternatively, contact support at <a href={getContactLink('Cancel Subscription', 'Cancellations and Refunds')} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors">support@costkatana.com</a></li>
               </ul>
 
               <h3 className="text-xl font-display font-semibold text-secondary-900 dark:text-white mb-3 mt-6">
@@ -177,7 +178,7 @@ const CancellationsAndRefunds: React.FC = () => {
                 If you believe you have been charged incorrectly:
               </p>
               <ol className="list-decimal pl-6 text-secondary-600 dark:text-secondary-300 space-y-2 mb-4">
-                <li>Contact our support team immediately at <a href="mailto:support@costkatana.com" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors">support@costkatana.com</a></li>
+                <li>Contact our support team immediately at <a href={getContactLink('Billing Dispute', 'Cancellations and Refunds')} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors">support@costkatana.com</a></li>
                 <li>Provide your account details and transaction information</li>
                 <li>Explain the nature of the dispute</li>
                 <li>We will investigate and respond within 5-7 business days</li>
@@ -212,7 +213,9 @@ const CancellationsAndRefunds: React.FC = () => {
                 <p className="text-secondary-600 dark:text-secondary-300 mb-2">
                   <strong className="text-secondary-900 dark:text-white">Billing Support:</strong>{" "}
                   <a
-                    href="mailto:support@costkatana.com"
+                    href={getContactLink('Billing Support', 'Cancellations and Refunds')}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
                   >
                     support@costkatana.com

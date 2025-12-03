@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
 import { TruckIcon } from "@heroicons/react/24/outline";
+import { getContactLink } from "../utils/contact-utils";
 
 const ShippingPolicy: React.FC = () => {
   return (
@@ -142,7 +143,9 @@ const ShippingPolicy: React.FC = () => {
                 <p className="text-secondary-600 dark:text-secondary-300">
                   <strong className="text-secondary-900 dark:text-white">Support:</strong>{" "}
                   <a
-                    href="mailto:support@costkatana.com"
+                    href={getContactLink('Support', 'Contact Us - Shipping Policy')}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
                   >
                     support@costkatana.com
