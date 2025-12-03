@@ -5,6 +5,7 @@ import { SubscriptionService } from '../../services/subscription.service';
 import { UpgradePlanModal } from '../subscription/UpgradePlanModal';
 import { SubscriptionPlan, BillingInterval } from '../../types/subscription.types';
 import { CheckIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { getContactLink } from '../../utils/contact-utils';
 
 export const SubscriptionPlans: React.FC = () => {
     const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
@@ -22,7 +23,7 @@ export const SubscriptionPlans: React.FC = () => {
     const handleUpgrade = (plan: SubscriptionPlan) => {
         if (plan === 'enterprise' || (plan as string).toLowerCase() === 'enterprise') {
             // Contact sales for enterprise
-            window.open('mailto:support@costkatana.com?subject=Enterprise Plan Inquiry', '_blank');
+            window.open(getContactLink('Contact Sales', 'Enterprise Plan Inquiry'), '_blank');
             return;
         }
 

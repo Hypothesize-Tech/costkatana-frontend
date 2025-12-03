@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
+import { getContactLink } from "../utils/contact-utils";
 
 const PrivacyPolicy: React.FC = () => {
   return (
@@ -200,7 +201,9 @@ const PrivacyPolicy: React.FC = () => {
                 <p className="text-secondary-600 dark:text-secondary-300">
                   <strong className="text-secondary-900 dark:text-white">General Support:</strong>{" "}
                   <a
-                    href="mailto:support@costkatana.com"
+                    href={getContactLink('General Support', 'Contact Us - Privacy Policy')}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors"
                   >
                     support@costkatana.com

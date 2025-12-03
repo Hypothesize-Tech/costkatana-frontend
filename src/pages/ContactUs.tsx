@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { APP_NAME } from "../utils/constant";
 import logo from "../assets/logo.png";
 import { EnvelopeIcon, ChatBubbleLeftRightIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { getContactLink } from "../utils/contact-utils";
 
 const ContactUs: React.FC = () => {
     return (
@@ -59,7 +60,9 @@ const ContactUs: React.FC = () => {
                                                 For general inquiries, technical support, or account-related questions.
                                             </p>
                                             <a
-                                                href="mailto:support@costkatana.com"
+                                                href={getContactLink('Email Support', 'Contact Us - General Support')}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-semibold transition-colors text-sm"
                                             >
                                                 support@costkatana.com
@@ -82,7 +85,9 @@ const ContactUs: React.FC = () => {
                                                 Interested in enterprise plans, custom solutions, or partnerships.
                                             </p>
                                             <a
-                                                href="mailto:support@costkatana.com"
+                                                href={getContactLink('Sales & Enterprise', 'Contact Us - Sales & Enterprise')}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="text-success-600 hover:text-success-500 dark:text-success-400 dark:hover:text-success-300 font-semibold transition-colors text-sm"
                                             >
                                                 support@costkatana.com

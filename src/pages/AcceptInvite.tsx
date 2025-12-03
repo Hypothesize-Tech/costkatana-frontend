@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { teamService } from '../services/team.service';
 import { useAuth } from '../contexts/AuthContext';
+import { getContactLink } from '../utils/contact-utils';
 
 type InviteStatus = 'checking' | 'success' | 'error' | 'unauthorized';
 
@@ -196,7 +197,7 @@ export const AcceptInvite: React.FC = () => {
           {status === 'error' && (
             <p className="text-xs text-center text-secondary mt-6">
               Need help? Contact your workspace administrator or{' '}
-              <a href="mailto:support@costkatana.com" className="text-primary-500 hover:underline font-medium">
+              <a href={getContactLink('Support', 'Contact Us - Accept Invite')} target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline font-medium">
                 support
               </a>
             </p>
