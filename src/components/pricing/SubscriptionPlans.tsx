@@ -6,13 +6,14 @@ import { UpgradePlanModal } from '../subscription/UpgradePlanModal';
 import { SubscriptionPlan, BillingInterval } from '../../types/subscription.types';
 import { CheckIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { getContactLink } from '../../utils/contact-utils';
+import { SubscriptionPlansShimmer } from '../shimmer/SubscriptionPlansShimmer';
 
 export const SubscriptionPlans: React.FC = () => {
     const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
 
-    const { data: currentSubscription } = useQuery(
+    const { data: currentSubscription, isLoading } = useQuery(
         ['subscription'],
         () => SubscriptionService.getSubscription(),
         {
@@ -40,20 +41,24 @@ export const SubscriptionPlans: React.FC = () => {
 
     const plans = Object.values(SUBSCRIPTION_PLANS);
 
+    if (isLoading) {
+        return <SubscriptionPlansShimmer />;
+    }
+
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient py-12 px-4">
-            <div className="max-w-7xl mx-auto">
+        <div className="px-4 py-12 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-5xl font-bold font-display gradient-text-primary mb-4">
+                <div className="mb-12 text-center">
+                    <h1 className="mb-4 text-5xl font-bold font-display gradient-text-primary">
                         Choose Your Plan
                     </h1>
-                    <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8">
+                    <p className="mb-8 text-xl text-light-text-secondary dark:text-dark-text-secondary">
                         Select the perfect plan for your AI cost optimization needs
                     </p>
 
                     {/* Billing Toggle */}
-                    <div className="inline-flex items-center gap-4 p-1 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary relative pt-6">
+                    <div className="inline-flex relative gap-4 items-center p-1 pt-6 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
                         <button
                             onClick={() => setBillingInterval('monthly')}
                             className={`btn px-6 py-2 !rounded-xl ${billingInterval === 'monthly'
@@ -79,7 +84,7 @@ export const SubscriptionPlans: React.FC = () => {
                 </div>
 
                 {/* Plan Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pt-8">
+                <div className="grid grid-cols-1 gap-6 pt-8 mb-12 md:grid-cols-2 lg:grid-cols-4">
                     {plans.map((plan) => {
                         const isCurrentPlan = currentSubscription?.plan?.toLowerCase() === plan.name.toLowerCase();
                         const isEnterprise = plan.name.toLowerCase() === 'enterprise'.toLowerCase();
@@ -89,13 +94,12 @@ export const SubscriptionPlans: React.FC = () => {
                             <div
                                 key={plan.name}
                                 className={`card p-8 pt-12 relative transition-all h-full flex flex-col ${isPopular
-                                    ? ' !overflow-visible'
-                                    : 'card-hover'
+                                    ? ' !overflow-visible':'card-hover'
                                     } ${isCurrentPlan ? 'bg-primary-500/10' : ''}`}
                             >
                                 {isPopular && (
-                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                                        <span className="inline-flex items-center justify-center px-5 py-2 text-sm font-bold rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white shadow-xl whitespace-nowrap backdrop-blur-sm">
+                                    <div className="absolute -top-4 left-1/2 z-20 transform -translate-x-1/2">
+                                        <span className="inline-flex justify-center items-center px-5 py-2 text-sm font-bold text-white whitespace-nowrap bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-xl backdrop-blur-sm">
                                             <SparklesIcon className="w-4 h-4 mr-1.5" />
                                             Most Popular
                                         </span>
@@ -104,17 +108,17 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {isCurrentPlan && (
                                     <div className="absolute top-4 right-4">
-                                        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-500 text-white">
+                                        <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-green-500 rounded-full">
                                             Current Plan
                                         </span>
                                     </div>
                                 )}
 
                                 <div className="mb-6">
-                                    <h3 className="text-2xl font-bold text-light-text dark:text-dark-text mb-2">
+                                    <h3 className="mb-2 text-2xl font-bold text-light-text dark:text-dark-text">
                                         {plan.displayName}
                                     </h3>
-                                    <div className="flex items-baseline gap-2">
+                                    <div className="flex gap-2 items-baseline">
                                         <span className="text-4xl font-bold text-light-text dark:text-dark-text">
                                             {isEnterprise
                                                 ? 'Custom'
@@ -127,7 +131,7 @@ export const SubscriptionPlans: React.FC = () => {
                                         )}
                                     </div>
                                     {plan.trialDays > 0 && (
-                                        <div className="mt-2 text-sm text-primary-500 font-semibold">
+                                        <div className="mt-2 text-sm font-semibold text-primary-500">
                                             {plan.trialDays}-day free trial
                                         </div>
                                     )}
@@ -135,7 +139,7 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Limits Summary */}
                                 <div className="mb-6 space-y-3 text-sm">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                             Tokens
                                         </span>
@@ -143,7 +147,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {formatLimit(plan.limits.tokensPerMonth, ' tokens')}
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                             Requests
                                         </span>
@@ -151,7 +155,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {formatLimit(plan.limits.requestsPerMonth, ' requests')}
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                             Logs
                                         </span>
@@ -159,7 +163,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {formatLimit(plan.limits.logsPerMonth, ' logs')}
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                             Projects
                                         </span>
@@ -167,7 +171,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {formatLimit(plan.limits.projects)}
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                             Workflows
                                         </span>
@@ -176,8 +180,8 @@ export const SubscriptionPlans: React.FC = () => {
                                         </span>
                                     </div>
                                     {plan.limits.cortexDailyUsage > 0 && (
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-1">
+                                        <div className="flex justify-between items-center">
+                                            <span className="flex gap-1 items-center text-light-text-secondary dark:text-dark-text-secondary">
                                                 <SparklesIcon className="w-4 h-4 text-primary-500" />
                                                 Cortex
                                             </span>
@@ -189,9 +193,9 @@ export const SubscriptionPlans: React.FC = () => {
                                 </div>
 
                                 {/* Features */}
-                                <ul className="space-y-2 mb-8 flex-grow">
+                                <ul className="flex-grow mb-8 space-y-2">
                                     {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-2 text-sm">
+                                        <li key={idx} className="flex gap-2 items-start text-sm">
                                             <CheckIcon className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
                                             <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                                 {feature}
@@ -202,7 +206,7 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* AI Models Access */}
                                 <div className="mb-6">
-                                    <div className="flex items-center gap-2 mb-2">
+                                    <div className="flex gap-2 items-center mb-2">
                                         <span className="text-sm font-semibold text-light-text dark:text-dark-text">
                                             {((plan.allowedModels as readonly string[]) || []).some((m: string) => m === '*')
                                                 ? 'All Models'
@@ -227,8 +231,8 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Seats Information */}
                                 {plan.limits.seats !== undefined && plan.limits.seats > 0 && (
-                                    <div className="mb-6 p-3 rounded-lg bg-primary-500/5 border border-primary-500/10">
-                                        <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mb-1">
+                                    <div className="p-3 mb-6 rounded-lg border bg-primary-500/5 border-primary-500/10">
+                                        <div className="mb-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             Team Seats
                                         </div>
                                         <div className="text-sm font-semibold text-light-text dark:text-dark-text">
@@ -244,8 +248,8 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Overage Info */}
                                 {(plan as any).overage && (
-                                    <div className="mb-6 p-3 rounded-lg bg-primary-500/10 border border-primary-500/20">
-                                        <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mb-1">
+                                    <div className="p-3 mb-6 rounded-lg border bg-primary-500/10 border-primary-500/20">
+                                        <div className="mb-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                             Overage Pricing
                                         </div>
                                         <div className="text-sm font-semibold text-light-text dark:text-dark-text">
@@ -264,7 +268,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     onClick={() => handleUpgrade(plan.name as SubscriptionPlan)}
                                     disabled={isCurrentPlan}
                                     className={`btn w-full mt-auto ${isCurrentPlan
-                                        ? 'bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-tertiary dark:text-dark-text-tertiary cursor-not-allowed'
+                                        ? 'cursor-not-allowed bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-tertiary dark:text-dark-text-tertiary'
                                         : isPopular
                                             ? 'btn-primary'
                                             : 'btn-outline'
@@ -282,15 +286,15 @@ export const SubscriptionPlans: React.FC = () => {
                 </div>
 
                 {/* Feature Comparison Table */}
-                <div className="card p-8 mb-12">
-                    <h2 className="text-3xl font-bold text-light-text dark:text-dark-text mb-8 text-center">
+                <div className="p-8 mb-12 card">
+                    <h2 className="mb-8 text-3xl font-bold text-center text-light-text dark:text-dark-text">
                         Feature Comparison
                     </h2>
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-primary-200/20 dark:border-primary-800/20">
-                                    <th className="text-left py-4 px-6 font-semibold text-light-text dark:text-dark-text">
+                                    <th className="px-6 py-4 font-semibold text-left text-light-text dark:text-dark-text">
                                         Feature
                                     </th>
                                     {plans.map((plan) => (
@@ -307,15 +311,15 @@ export const SubscriptionPlans: React.FC = () => {
                             <tbody className="divide-y divide-primary-200/10 dark:divide-primary-800/10">
                                 {/* User Restrictions Section */}
                                 <tr>
-                                    <td className="py-4 px-6 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-6 py-4 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
+                                        <div className="flex gap-2 items-center">
                                             <div className="w-1 h-5 rounded-full bg-primary-500"></div>
                                             <span>User Restrictions</span>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Number of Seats
                                     </td>
                                     {plans.map((plan) => (
@@ -331,7 +335,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Tokens per Month
                                     </td>
                                     {plans.map((plan) => (
@@ -347,7 +351,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Requests per Month
                                     </td>
                                     {plans.map((plan) => (
@@ -363,7 +367,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Logs per Month
                                     </td>
                                     {plans.map((plan) => (
@@ -379,7 +383,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Number of Projects
                                     </td>
                                     {plans.map((plan) => (
@@ -395,7 +399,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Number of Workflows
                                     </td>
                                     {plans.map((plan) => (
@@ -412,7 +416,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Template Prompts
                                     </td>
                                     {plans.map((plan) => (
@@ -426,7 +430,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         AI Models Access
                                     </td>
                                     {plans.map((plan) => (
@@ -448,15 +452,15 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Analytics & Optimization Section */}
                                 <tr>
-                                    <td className="py-4 px-6 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-6 py-4 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
+                                        <div className="flex gap-2 items-center">
                                             <div className="w-1 h-5 rounded-full bg-primary-500"></div>
                                             <span>Analytics & Optimization</span>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Usage Tracking
                                     </td>
                                     {plans.map((plan) => (
@@ -465,12 +469,12 @@ export const SubscriptionPlans: React.FC = () => {
                                             className={`text-center py-4 px-6 ${(plan as any).popular ? 'bg-primary-500/5' : ''
                                                 }`}
                                         >
-                                            <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                            <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Advanced Metrics
                                     </td>
                                     {plans.map((plan) => (
@@ -482,13 +486,13 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Predictive Analytics
                                     </td>
                                     {plans.map((plan) => (
@@ -500,13 +504,13 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Batch Processing
                                     </td>
                                     {plans.map((plan) => (
@@ -518,7 +522,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
@@ -526,15 +530,15 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Gateway & Security Section */}
                                 <tr>
-                                    <td className="py-4 px-6 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-6 py-4 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
+                                        <div className="flex gap-2 items-center">
                                             <div className="w-1 h-5 rounded-full bg-primary-500"></div>
                                             <span>Gateway & Security</span>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Unified Endpoint
                                     </td>
                                     {plans.map((plan) => (
@@ -543,12 +547,12 @@ export const SubscriptionPlans: React.FC = () => {
                                             className={`text-center py-4 px-6 ${(plan as any).popular ? 'bg-primary-500/5' : ''
                                                 }`}
                                         >
-                                            <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                            <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Failover & Reliability
                                     </td>
                                     {plans.map((plan) => (
@@ -560,13 +564,13 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Security & Moderation
                                     </td>
                                     {plans.map((plan) => (
@@ -578,14 +582,14 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
+                                        <div className="flex gap-2 items-center">
                                             <span>Cortex Meta-Language</span>
                                             <span className="px-2 py-0.5 text-xs font-semibold text-primary-500 bg-primary-500/20 rounded-full flex items-center gap-1">
                                                 <SparklesIcon className="w-3 h-3" />
@@ -604,7 +608,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             ) : (
                                                 <div className="flex flex-col items-center">
                                                     <CheckIcon className="w-6 h-6 text-primary-500" />
-                                                    <span className="text-xs text-primary-500 mt-1">
+                                                    <span className="mt-1 text-xs text-primary-500">
                                                         {plan.limits.cortexDailyUsage === -1
                                                             ? 'Unlimited'
                                                             : `${plan.limits.cortexDailyUsage}/day`}
@@ -615,7 +619,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Cross-Lingual Processing
                                     </td>
                                     {plans.map((plan) => (
@@ -627,7 +631,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.name === 'Free' ? (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                                             ) : (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             )}
                                         </td>
                                     ))}
@@ -635,15 +639,15 @@ export const SubscriptionPlans: React.FC = () => {
 
                                 {/* Support Channels Section */}
                                 <tr>
-                                    <td className="py-4 px-6 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
-                                        <div className="flex items-center gap-2">
+                                    <td className="px-6 py-4 font-bold text-light-text dark:text-dark-text bg-primary-500/10" colSpan={5}>
+                                        <div className="flex gap-2 items-center">
                                             <div className="w-1 h-5 rounded-full bg-primary-500"></div>
                                             <span>Support Channels</span>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Support Type
                                     </td>
                                     {plans.map((plan) => (
@@ -659,7 +663,7 @@ export const SubscriptionPlans: React.FC = () => {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <td className="py-4 px-6 text-light-text-secondary dark:text-dark-text-secondary">
+                                    <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
                                         Priority Support
                                     </td>
                                     {plans.map((plan) => (
@@ -671,7 +675,7 @@ export const SubscriptionPlans: React.FC = () => {
                                             {plan.features.some((f) =>
                                                 f.toLowerCase().includes('priority')
                                             ) ? (
-                                                <CheckIcon className="w-6 h-6 text-primary-500 mx-auto" />
+                                                <CheckIcon className="mx-auto w-6 h-6 text-primary-500" />
                                             ) : (
                                                 <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                                                     —

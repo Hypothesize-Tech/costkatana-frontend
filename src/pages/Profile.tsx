@@ -8,7 +8,13 @@ import { ProfileHeader } from '../components/profile/ProfileHeader';
 import { ProfileStats } from '../components/profile/ProfileStats';
 import { ProfileActivity } from '../components/profile/ProfileActivity';
 import { ProfilePreferences } from '../components/profile/ProfilePreferences';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import {
+  ProfileShimmer,
+  ProfileOverviewShimmer,
+  ProfilePreferencesShimmer,
+  ProfileSecurityShimmer,
+  ProfileSubscriptionShimmer
+} from '../components/shimmer/ProfileShimmer';
 import { useNotifications } from '../contexts/NotificationContext';
 import { User } from '../types';
 import { UsageOverview } from '../components/guardrails/UsageOverview';
@@ -113,7 +119,9 @@ export const Profile: React.FC = () => {
     }
   };
 
-  if (profileLoading) return <LoadingSpinner />;
+  if (profileLoading) {
+    return <ProfileShimmer activeTab={activeTab} />;
+  }
 
   const tabs = [
     { id: 'overview' as const, label: 'Overview' },
@@ -217,8 +225,8 @@ export const Profile: React.FC = () => {
         />
 
         <div className="mt-8">
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2 mb-6">
-            <nav className="flex space-x-2 overflow-x-auto">
+          <div className="p-2 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <nav className="flex overflow-x-auto space-x-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -241,19 +249,7 @@ export const Profile: React.FC = () => {
             {activeTab === 'overview' && (
               <div className="space-y-8">
                 {statsLoading ? (
-                  <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                    <div className="animate-pulse">
-                      <div className="mb-4 w-1/4 h-4 bg-secondary-200 dark:bg-secondary-700 rounded"></div>
-                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-                        {[...Array(4)].map((_, i) => (
-                          <div key={i} className="p-6 bg-secondary-100 dark:bg-secondary-800 rounded-lg">
-                            <div className="mb-2 w-1/2 h-4 bg-secondary-200 dark:bg-secondary-700 rounded"></div>
-                            <div className="w-3/4 h-8 bg-secondary-200 dark:bg-secondary-700 rounded"></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <ProfileOverviewShimmer />
                 ) : (
                   <>
                     <ProfileStats stats={stats || {
@@ -300,57 +296,69 @@ export const Profile: React.FC = () => {
             )}
 
             {activeTab === 'preferences' && (
-              <ProfilePreferences
-                preferences={preferences}
-                onUpdate={(data) => updateProfileMutation.mutate({ preferences: data })}
-              />
+              profileLoading ? (
+                <ProfilePreferencesShimmer />
+              ) : (
+                <ProfilePreferences
+                  preferences={preferences}
+                  onUpdate={(data) => updateProfileMutation.mutate({ preferences: data })}
+                />
+              )
             )}
 
             {activeTab === 'security' && (
-              <div className="space-y-6">
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                  <div className="flex items-center mb-4">
-                    <ShieldCheckIcon className="mr-3 w-6 h-6 text-success-600 dark:text-success-400" />
-                    <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Security Settings</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">Email Verification</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Verify your email address for enhanced security</p>
-                      </div>
-                      <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${profileData?.emailVerified
-                        ? 'bg-gradient-success text-white shadow-md'
-                        : 'bg-gradient-warning text-white shadow-md'
-                        }`}>
-                        {profileData?.emailVerified ? 'Verified' : 'Not Verified'}
-                      </span>
+              profileLoading ? (
+                <ProfileSecurityShimmer />
+              ) : (
+                <div className="space-y-6">
+                  <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center mb-4">
+                      <ShieldCheckIcon className="mr-3 w-6 h-6 text-success-600 dark:text-success-400" />
+                      <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Security Settings</h3>
                     </div>
 
-                    <div className="p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
-                      <MFASetup />
-                    </div>
-
-                    <div className="flex justify-between items-center p-4 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-lg">
-                      <div>
-                        <h4 className="font-medium text-secondary-900 dark:text-white">API Keys</h4>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">Manage your API keys and access tokens</p>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div>
+                          <h4 className="font-medium text-secondary-900 dark:text-white">Email Verification</h4>
+                          <p className="text-sm text-secondary-600 dark:text-secondary-300">Verify your email address for enhanced security</p>
+                        </div>
+                        <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${profileData?.emailVerified
+                          ? 'bg-gradient-success text-white shadow-md'
+                          : 'bg-gradient-warning text-white shadow-md'
+                          }`}>
+                          {profileData?.emailVerified ? 'Verified' : 'Not Verified'}
+                        </span>
                       </div>
-                      <button
-                        onClick={() => navigate('/settings?tab=api-keys')}
-                        className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
-                      >
-                        Manage Keys
-                      </button>
+
+                      <div className="p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <MFASetup />
+                      </div>
+
+                      <div className="flex justify-between items-center p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div>
+                          <h4 className="font-medium text-secondary-900 dark:text-white">API Keys</h4>
+                          <p className="text-sm text-secondary-600 dark:text-secondary-300">Manage your API keys and access tokens</p>
+                        </div>
+                        <button
+                          onClick={() => navigate('/settings?tab=api-keys')}
+                          className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                        >
+                          Manage Keys
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )
             )}
 
             {activeTab === 'subscription' && (
-              <SubscriptionDashboard />
+              profileLoading ? (
+                <ProfileSubscriptionShimmer />
+              ) : (
+                <SubscriptionDashboard />
+              )
             )}
           </div>
         </div>

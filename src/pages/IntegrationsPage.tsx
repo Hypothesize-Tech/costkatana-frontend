@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { integrationService } from '../services/integration.service';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { IntegrationsShimmer } from '../components/shimmer/IntegrationsShimmer';
 import { SlackIntegrationSetup } from '../components/integrations/SlackIntegrationSetup';
 import { DiscordIntegrationSetup } from '../components/integrations/DiscordIntegrationSetup';
 import { LinearIntegrationSetup } from '../components/integrations/LinearIntegrationSetup';
@@ -42,7 +42,6 @@ export const IntegrationsPage: React.FC = () => {
         ['integrations'],
         () => integrationService.getIntegrations(),
         {
-            refetchInterval: 30000, // Refetch every 30 seconds
             retry: 1,
             onError: (err) => {
                 console.error('Failed to fetch integrations:', err);
@@ -242,9 +241,7 @@ export const IntegrationsPage: React.FC = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className="flex justify-center items-center min-h-[400px]">
-                        <LoadingSpinner />
-                    </div>
+                    <IntegrationsShimmer />
                 ) : (
                     <>
 

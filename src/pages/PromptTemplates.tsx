@@ -12,7 +12,7 @@ import {
 } from "react-icons/fi";
 import { PromptTemplateService } from "../services/promptTemplate.service";
 import { PromptTemplate } from "../types/promptTemplate.types";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { PromptTemplatesShimmer } from "../components/shimmer/PromptTemplatesShimmer";
 import { Modal } from "../components/common/Modal";
 import {
   PromptTemplateCard,
@@ -285,11 +285,7 @@ const PromptTemplates: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
+    return <PromptTemplatesShimmer />;
   }
 
   return (
@@ -317,7 +313,7 @@ const PromptTemplates: React.FC = () => {
           <div className="flex gap-3">
             <Link
               to="/templates/analytics"
-              className="flex gap-2 items-center px-6 py-3 border border-success-500/30 bg-gradient-to-br from-success-500/10 to-success-600/10 text-success-600 dark:text-success-400 rounded-lg font-semibold hover:from-success-500/20 hover:to-success-600/20 hover:shadow-lg transition-all"
+              className="flex gap-2 items-center px-6 py-3 font-semibold bg-gradient-to-br rounded-lg border transition-all border-success-500/30 from-success-500/10 to-success-600/10 text-success-600 dark:text-success-400 hover:from-success-500/20 hover:to-success-600/20 hover:shadow-lg"
             >
               <FiBarChart2 className="w-5 h-5" />
               Analytics
@@ -564,9 +560,9 @@ const PromptTemplates: React.FC = () => {
         >
           <div className="flex flex-col h-full">
             {/* Header with Warning Icon */}
-            <div className="glass flex items-center justify-between p-8 border-b border-red-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-to-r from-red-50/50 to-orange-50/50 dark:from-red-900/20 dark:to-orange-900/20">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg animate-pulse">
+            <div className="flex justify-between items-center p-8 bg-gradient-to-r rounded-t-3xl border-b backdrop-blur-xl glass border-red-200/30 from-red-50/50 to-orange-50/50 dark:from-red-900/20 dark:to-orange-900/20">
+              <div className="flex gap-4 items-center">
+                <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl shadow-lg animate-pulse">
                   <svg
                     className="w-7 h-7 text-white"
                     fill="none"
@@ -582,10 +578,10 @@ const PromptTemplates: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-display font-bold text-red-600 dark:text-red-400">
+                  <h2 className="text-2xl font-bold text-red-600 font-display dark:text-red-400">
                     Delete Template
                   </h2>
-                  <p className="font-body text-red-600/80 dark:text-red-400/80 text-sm">
+                  <p className="text-sm font-body text-red-600/80 dark:text-red-400/80">
                     This action cannot be undone
                   </p>
                 </div>
@@ -595,10 +591,10 @@ const PromptTemplates: React.FC = () => {
             {/* Content */}
             <div className="flex-1 p-8 space-y-6 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
               {/* Warning Message */}
-              <div className="glass p-6 rounded-xl border border-red-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-red-50/30 to-orange-50/30 dark:from-red-900/10 dark:to-orange-900/10">
-                <p className="text-lg font-body text-light-text-primary dark:text-dark-text-primary leading-relaxed">
+              <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-red-200/30 from-red-50/30 to-orange-50/30 dark:from-red-900/10 dark:to-orange-900/10">
+                <p className="text-lg leading-relaxed font-body text-light-text-primary dark:text-dark-text-primary">
                   Are you sure you want to permanently delete{" "}
-                  <span className="font-display font-bold text-red-600 dark:text-red-400">
+                  <span className="font-bold text-red-600 font-display dark:text-red-400">
                     "{selectedTemplate.name}"
                   </span>
                   ?
@@ -606,26 +602,26 @@ const PromptTemplates: React.FC = () => {
               </div>
 
               {/* Template Info Card */}
-              <div className="glass p-5 rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-secondary-500/20 to-secondary-600/20 flex items-center justify-center">
+              <div className="p-5 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex gap-4 items-start">
+                  <div className="flex flex-shrink-0 justify-center items-center w-10 h-10 bg-gradient-to-br rounded-lg from-secondary-500/20 to-secondary-600/20">
                     <FiBookOpen className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <h3 className="mb-1 font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                       {selectedTemplate.name}
                     </h3>
                     {selectedTemplate.description && (
-                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-2">
+                      <p className="mb-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
                         {selectedTemplate.description}
                       </p>
                     )}
                     <div className="flex gap-3 items-center text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
-                      <span className="flex items-center gap-1">
+                      <span className="flex gap-1 items-center">
                         <FiTag className="w-3 h-3" />
                         {selectedTemplate.category}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex gap-1 items-center">
                         <FiTrendingUp className="w-3 h-3" />
                         {selectedTemplate.usage?.count || 0} uses
                       </span>
@@ -635,8 +631,8 @@ const PromptTemplates: React.FC = () => {
               </div>
 
               {/* Consequences List */}
-              <div className="glass p-5 rounded-xl border border-red-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-red-50/20 to-orange-50/20 dark:from-red-900/10 dark:to-orange-900/10">
-                <h4 className="font-display font-semibold text-red-600 dark:text-red-400 mb-3 flex items-center gap-2">
+              <div className="p-5 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-red-200/30 from-red-50/20 to-orange-50/20 dark:from-red-900/10 dark:to-orange-900/10">
+                <h4 className="flex gap-2 items-center mb-3 font-semibold text-red-600 font-display dark:text-red-400">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -653,20 +649,20 @@ const PromptTemplates: React.FC = () => {
                   What will be deleted:
                 </h4>
                 <ul className="space-y-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                  <li className="flex items-start gap-2">
+                  <li className="flex gap-2 items-start">
                     <span className="text-red-500 mt-0.5">•</span>
                     <span>Template content and configuration</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex gap-2 items-start">
                     <span className="text-red-500 mt-0.5">•</span>
                     <span>All variables and metadata</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex gap-2 items-start">
                     <span className="text-red-500 mt-0.5">•</span>
                     <span>Usage history and statistics</span>
                   </li>
                   {selectedTemplate.referenceImage && (
-                    <li className="flex items-start gap-2">
+                    <li className="flex gap-2 items-start">
                       <span className="text-red-500 mt-0.5">•</span>
                       <span>Reference image and extracted features</span>
                     </li>
@@ -676,14 +672,14 @@ const PromptTemplates: React.FC = () => {
             </div>
 
             {/* Actions */}
-            <div className="glass p-6 border-t border-red-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
+            <div className="p-6 rounded-b-3xl border-t backdrop-blur-xl glass border-red-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => {
                     setDeleteConfirmOpen(false);
                     setSelectedTemplate(null);
                   }}
-                  className="btn px-6 py-3 btn-secondary inline-flex items-center gap-2 font-semibold transition-all duration-200 hover:scale-105"
+                  className="inline-flex gap-2 items-center px-6 py-3 font-semibold transition-all duration-200 btn btn-secondary hover:scale-105"
                 >
                   <svg
                     className="w-5 h-5"
@@ -702,7 +698,7 @@ const PromptTemplates: React.FC = () => {
                 </button>
                 <button
                   onClick={handleDeleteTemplate}
-                  className="px-6 py-3 btn bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:scale-105 transition-all duration-200 rounded-xl border border-red-200/50 dark:border-red-700/50 inline-flex items-center gap-2 font-semibold"
+                  className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl border shadow-lg transition-all duration-200 btn hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:scale-105 border-red-200/50 dark:border-red-700/50"
                 >
                   <svg
                     className="w-5 h-5"

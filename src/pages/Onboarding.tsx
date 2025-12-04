@@ -8,6 +8,8 @@ import {
     ChatBubbleLeftRightIcon,
     BuildingStorefrontIcon,
     RocketLaunchIcon,
+    LightBulbIcon,
+    CpuChipIcon,
 } from '@heroicons/react/24/outline';
 import { OnboardingService } from '../services/onboarding.service';
 import { ProjectService } from '../services/project.service';
@@ -46,7 +48,7 @@ interface OnboardingProps {
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { showNotification } = useNotification();
 
     const [currentStep, setCurrentStep] = useState(0);
@@ -230,7 +232,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             setSubmitting(true);
             await OnboardingService.completeOnboarding();
 
-            // Update user in localStorage immediately to prevent race conditions
+            // Update user in AuthContext and localStorage immediately to prevent race conditions
             if (user) {
                 const updatedUser = {
                     ...user,
@@ -240,10 +242,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                         completedAt: new Date().toISOString()
                     }
                 };
-                localStorage.setItem('user', JSON.stringify(updatedUser));
+                updateUser(updatedUser);
             }
 
-            showNotification('Welcome to Cost Katana! 🎉', 'success');
+            showNotification('Welcome to Cost Katana!', 'success');
 
             // Call the completion callback
             if (onComplete) {
@@ -271,7 +273,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                         skippedAt: new Date().toISOString()
                     }
                 };
-                localStorage.setItem('user', JSON.stringify(updatedUser));
+                // Update AuthContext and localStorage
+                updateUser(updatedUser);
                 // Update sessionStorage to prevent re-checking
                 sessionStorage.setItem(`onboarding_check_completed_${user.id}`, 'false');
             }
@@ -394,7 +397,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                                 </div>
                                                 <div className="space-y-4 lg:space-y-6">
                                                     <h3 className="text-2xl lg:text-3xl font-bold text-secondary-900 dark:text-white leading-tight">
-                                                        Welcome to Cost Katana! 🚀
+                                                        Welcome to Cost Katana!
                                                     </h3>
                                                     <p className="text-base lg:text-lg text-secondary-600 dark:text-secondary-300 leading-relaxed max-w-xl mx-auto">
                                                         We're excited to help you take control of your AI costs. In just a few minutes,
@@ -402,9 +405,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                                     </p>
                                                 </div>
                                                 <div className="bg-gradient-to-br from-primary-50/80 to-secondary-50/80 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-6 lg:p-8 border border-primary-200/50 dark:border-primary-700/50">
-                                                    <h4 className="font-bold text-primary-900 dark:text-primary-100 mb-4 lg:mb-6 text-base lg:text-lg">
-                                                        🚀 What you'll accomplish:
-                                                    </h4>
+                                                    <div className="flex items-center space-x-2 mb-4 lg:mb-6">
+                                                        <RocketLaunchIcon className="w-5 h-5 lg:w-6 lg:h-6 text-primary-600 dark:text-primary-400" />
+                                                        <h4 className="font-bold text-primary-900 dark:text-primary-100 text-base lg:text-lg">
+                                                            What you'll accomplish:
+                                                        </h4>
+                                                    </div>
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
                                                         <div className="flex items-start space-x-2 lg:space-x-3">
                                                             <div className="w-5 h-5 lg:w-6 lg:h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -500,11 +506,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
                                                 <div className="bg-gradient-to-br from-primary-50/80 to-secondary-50/80 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-6 border border-primary-200/50 dark:border-primary-700/50 mb-8">
                                                     <div className="flex items-start space-x-3">
-                                                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                            <CheckIcon className="w-4 h-4 text-white" />
+                                                        <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                            <LightBulbIcon className="w-4 h-4 text-white" />
                                                         </div>
                                                         <div>
-                                                            <h4 className="font-semibold text-primary-900 dark:text-primary-100 mb-1">💡 Smart Budget Management</h4>
+                                                            <h4 className="font-semibold text-primary-900 dark:text-primary-100 mb-1">Smart Budget Management</h4>
                                                             <p className="text-sm text-primary-800 dark:text-primary-200">
                                                                 Set spending limits to keep your AI costs under control. You can always adjust these later, and we'll send alerts when you approach limits.
                                                             </p>
@@ -600,10 +606,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                                     <div className="bg-gradient-to-br from-primary-50/80 to-secondary-50/80 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-6 border border-primary-200/50 dark:border-primary-700/50">
                                                         <div className="flex items-center space-x-3 mb-4">
                                                             <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-                                                                <ChatBubbleLeftRightIcon className="w-5 h-5 text-white" />
+                                                                <CpuChipIcon className="w-5 h-5 text-white" />
                                                             </div>
                                                             <h4 className="font-semibold text-primary-900 dark:text-primary-100">
-                                                                🤖 AI Response
+                                                                AI Response
                                                             </h4>
                                                         </div>
                                                         <div className="text-secondary-800 dark:text-secondary-200 bg-white/50 dark:bg-secondary-800/50 rounded-xl p-6 border border-primary-200/30 dark:border-primary-600/30 leading-relaxed">
@@ -622,7 +628,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                                 </div>
                                                 <div className="space-y-6">
                                                     <h3 className="text-3xl lg:text-4xl font-bold text-secondary-900 dark:text-white leading-tight">
-                                                        You're All Set! 🎉
+                                                        You're All Set!
                                                     </h3>
                                                     <p className="text-lg text-secondary-600 dark:text-secondary-300 leading-relaxed max-w-2xl mx-auto">
                                                         Your Cost Katana setup is complete! You can now track, analyze, and optimize your AI costs with confidence.

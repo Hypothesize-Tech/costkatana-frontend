@@ -5,7 +5,7 @@ import {
     ModelComparisonRow,
     ComparisonTableResponse
 } from '@/services/pricing.service';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { ModelComparisonTableShimmer } from '../shimmer/ModelComparisonTableShimmer';
 import {
     MagnifyingGlassIcon,
     FunnelIcon,
@@ -130,11 +130,7 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
     };
 
     if (isLoading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <LoadingSpinner />
-            </div>
-        );
+        return <ModelComparisonTableShimmer />;
     }
 
     if (error) {

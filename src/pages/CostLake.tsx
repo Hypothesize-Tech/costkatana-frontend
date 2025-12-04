@@ -10,6 +10,7 @@ import { AutoScalingRecommendations } from '../components/optimization/AutoScali
 import { Notebook } from '../services/notebook.service';
 import { DashboardService } from '../services/dashboard.service';
 import { useProject } from '../contexts/ProjectContext';
+import { CostLakeShimmer } from '../components/shimmer/CostLakeShimmer';
 
 interface UsagePattern {
   day: string;
@@ -26,6 +27,14 @@ export const CostLake: React.FC = () => {
   const [showNotebookGallery, setShowNotebookGallery] = useState(true);
   const [usagePatterns, setUsagePatterns] = useState<UsagePattern[]>([]);
   const [loadingPatterns, setLoadingPatterns] = useState(false);
+  const [tabLoading, setTabLoading] = useState<Record<string, boolean>>({
+    query: false,
+    notebooks: false,
+    vectorization: false,
+    insights: false,
+    telemetry: false,
+    optimization: false,
+  });
   const { selectedProject } = useProject();
 
   const handleSelectNotebook = (notebookId: string) => {
@@ -108,9 +117,18 @@ export const CostLake: React.FC = () => {
   };
 
   useEffect(() => {
+    // Simulate loading when switching tabs
+    setTabLoading(prev => ({ ...prev, [activeTab]: true }));
+
+    const timer = setTimeout(() => {
+      setTabLoading(prev => ({ ...prev, [activeTab]: false }));
+    }, 500); // Short delay to show shimmer
+
     if (activeTab === 'optimization') {
       fetchUsagePatterns();
     }
+
+    return () => clearTimeout(timer);
   }, [activeTab, selectedProject]);
 
   const tabs = [
@@ -155,14 +173,14 @@ export const CostLake: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Header */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mx-6 mt-6">
+      <div className="mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-8 mx-auto max-w-7xl">
           <div className="flex gap-4 items-center mb-4">
-            <div className="p-3 glass rounded-xl border border-primary-200/30 bg-gradient-to-r from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50">
+            <div className="p-3 bg-gradient-to-r rounded-xl border glass border-primary-200/30 from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50">
               <Database className="w-8 h-8 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-display font-bold gradient-text-primary">Cost Lake</h1>
+              <h1 className="text-3xl font-bold font-display gradient-text-primary">Cost Lake</h1>
               <p className="mt-1 font-body text-secondary-600 dark:text-secondary-300">
                 Unified telemetry lake with semantic search and AI-powered cost analysis
               </p>
@@ -171,25 +189,25 @@ export const CostLake: React.FC = () => {
 
           {/* Key Features */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
               <Sparkles className="w-5 h-5 text-primary-600 dark:text-primary-400" />
               <div>
-                <div className="font-display font-medium text-primary-900 dark:text-primary-100">Natural Language Queries</div>
-                <div className="font-body text-sm text-primary-700 dark:text-primary-300">Ask "why did costs spike?" in plain English</div>
+                <div className="font-medium font-display text-primary-900 dark:text-primary-100">Natural Language Queries</div>
+                <div className="text-sm font-body text-primary-700 dark:text-primary-300">Ask "why did costs spike?" in plain English</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
               <TrendingUp className="w-5 h-5 text-success-600 dark:text-success-400" />
               <div>
-                <div className="font-display font-medium text-success-900 dark:text-success-100">Semantic Search</div>
-                <div className="font-body text-sm text-success-700 dark:text-success-300">Find patterns and anomalies automatically</div>
+                <div className="font-medium font-display text-success-900 dark:text-success-100">Semantic Search</div>
+                <div className="text-sm font-body text-success-700 dark:text-success-300">Find patterns and anomalies automatically</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
+            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
               <Brain className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               <div>
-                <div className="font-display font-medium text-secondary-900 dark:text-secondary-100">AI-Powered Insights</div>
-                <div className="font-body text-sm text-secondary-700 dark:text-secondary-300">Get intelligent cost narratives</div>
+                <div className="font-medium font-display text-secondary-900 dark:text-secondary-100">AI-Powered Insights</div>
+                <div className="text-sm font-body text-secondary-700 dark:text-secondary-300">Get intelligent cost narratives</div>
               </div>
             </div>
           </div>
@@ -197,7 +215,7 @@ export const CostLake: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mx-6 mt-6">
+      <div className="mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 mx-auto max-w-7xl">
           <nav className="flex space-x-8">
             {tabs.map((tab) => {
@@ -222,105 +240,102 @@ export const CostLake: React.FC = () => {
 
       {/* Tab Content */}
       <div className="px-6 py-8 mx-auto max-w-7xl">
-        {activeTab === 'query' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-display font-bold text-secondary-900 dark:text-white">Ask Anything About Your Costs</h2>
-              <p className="font-body text-secondary-600 dark:text-secondary-300">
-                Use natural language to query your telemetry data. Ask questions like "What are my most expensive AI operations?"
-                or "Show me slow requests that cost more than $0.01"
-              </p>
-            </div>
-            <CKQLQueryInterface />
-          </div>
-        )}
-
-        {activeTab === 'notebooks' && (
-          <div>
-            {showNotebookGallery ? (
+        {tabLoading[activeTab] || (activeTab === 'optimization' && loadingPatterns) ? (
+          <CostLakeShimmer activeTab={activeTab} />
+        ) : (
+          <>
+            {activeTab === 'query' && (
               <div>
                 <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-display font-bold text-secondary-900 dark:text-white">Analysis Notebooks</h2>
+                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Ask Anything About Your Costs</h2>
                   <p className="font-body text-secondary-600 dark:text-secondary-300">
-                    Create and execute interactive cost analysis notebooks with embedded queries,
-                    visualizations, and AI-generated insights.
+                    Use natural language to query your telemetry data. Ask questions like "What are my most expensive AI operations?"
+                    or "Show me slow requests that cost more than $0.01"
                   </p>
                 </div>
-                <NotebookGallery
-                  onSelectNotebook={handleSelectNotebook}
-                  onCreateNotebook={handleCreateNotebook}
-                />
+                <CKQLQueryInterface />
               </div>
-            ) : (
+            )}
+
+            {activeTab === 'notebooks' && (
               <div>
-                <div className="mb-6">
-                  <button
-                    onClick={handleBackToGallery}
-                    className="btn font-display font-medium text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-300 flex items-center gap-2"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Back to Notebooks
-                  </button>
+                {showNotebookGallery ? (
+                  <div>
+                    <div className="mb-8">
+                      <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Analysis Notebooks</h2>
+                      <p className="font-body text-secondary-600 dark:text-secondary-300">
+                        Create and execute interactive cost analysis notebooks with embedded queries,
+                        visualizations, and AI-generated insights.
+                      </p>
+                    </div>
+                    <NotebookGallery
+                      onSelectNotebook={handleSelectNotebook}
+                      onCreateNotebook={handleCreateNotebook}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mb-6">
+                      <button
+                        onClick={handleBackToGallery}
+                        className="flex gap-2 items-center font-medium transition-colors duration-300 btn font-display text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Back to Notebooks
+                      </button>
+                    </div>
+                    <InteractiveNotebook
+                      notebookId={selectedNotebook || undefined}
+                      onSave={() => {/* Handle save */ }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'vectorization' && (
+              <div>
+                <div className="mb-8">
+                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Vector Search Setup</h2>
+                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                    Configure and manage semantic search capabilities for your telemetry data
+                  </p>
                 </div>
-                <InteractiveNotebook
-                  notebookId={selectedNotebook || undefined}
-                  onSave={() => {/* Handle save */ }}
-                />
+                <VectorizationManager />
               </div>
             )}
-          </div>
-        )}
 
-        {activeTab === 'vectorization' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-display font-bold text-secondary-900 dark:text-white">Vector Search Setup</h2>
-              <p className="font-body text-secondary-600 dark:text-secondary-300">
-                Configure and manage semantic search capabilities for your telemetry data
-              </p>
-            </div>
-            <VectorizationManager />
-          </div>
-        )}
-
-        {activeTab === 'insights' && (
-          <div>
-            <AIInsightsDashboard />
-          </div>
-        )}
-
-        {activeTab === 'telemetry' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-display font-bold text-secondary-900 dark:text-white">Telemetry Data Management</h2>
-              <p className="font-body text-secondary-600 dark:text-secondary-300">
-                View your telemetry records and vectorize them for semantic search capabilities.
-                Vectorized data enables natural language queries and AI-powered insights.
-              </p>
-            </div>
-            <TelemetryViewer />
-          </div>
-        )}
-
-        {activeTab === 'optimization' && (
-          <div>
-            <div className="mb-8">
-              <h2 className="mb-2 text-2xl font-display font-bold text-secondary-900 dark:text-white">Auto-Scaling Recommendations</h2>
-              <p className="font-body text-secondary-600 dark:text-secondary-300">
-                AI-powered scaling recommendations based on your actual usage patterns and cost optimization opportunities.
-              </p>
-            </div>
-            {loadingPatterns ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-                <span className="font-body ml-3 text-secondary-600 dark:text-secondary-300">
-                  Loading usage patterns...
-                </span>
+            {activeTab === 'insights' && (
+              <div>
+                <AIInsightsDashboard />
               </div>
-            ) : (
-              <AutoScalingRecommendations usagePatterns={usagePatterns} />
             )}
-          </div>
+
+            {activeTab === 'telemetry' && (
+              <div>
+                <div className="mb-8">
+                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Telemetry Data Management</h2>
+                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                    View your telemetry records and vectorize them for semantic search capabilities.
+                    Vectorized data enables natural language queries and AI-powered insights.
+                  </p>
+                </div>
+                <TelemetryViewer />
+              </div>
+            )}
+
+            {activeTab === 'optimization' && (
+              <div>
+                <div className="mb-8">
+                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Auto-Scaling Recommendations</h2>
+                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                    AI-powered scaling recommendations based on your actual usage patterns and cost optimization opportunities.
+                  </p>
+                </div>
+                <AutoScalingRecommendations usagePatterns={usagePatterns} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

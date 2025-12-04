@@ -100,14 +100,14 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
   const content = (
     <div className={contentClass}>
-      <div className={`animate-fade-in ${!embedded ? 'glass rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 relative z-10' : ''}`}>
-        <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mx-auto shadow-2xl glow-success">
+      <div className={`animate-fade-in ${!embedded ? 'relative z-10 p-8 rounded-2xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel' : ''}`}>
+        <div className="flex justify-center items-center mx-auto w-16 h-16 rounded-2xl shadow-2xl bg-gradient-success glow-success">
           <ShieldCheckIcon className="w-8 h-8 text-white" />
         </div>
-        <h2 className="mt-6 text-3xl font-display font-bold text-center gradient-text-primary">
+        <h2 className="mt-6 text-3xl font-bold text-center font-display gradient-text-primary">
           Two-Factor Authentication
         </h2>
-        <p className="mt-3 text-sm font-body text-center text-light-text-secondary dark:text-dark-text-secondary">
+        <p className="mt-3 text-sm text-center font-body text-light-text-secondary dark:text-dark-text-secondary">
           Please verify your identity to continue
         </p>
       </div>
@@ -119,7 +119,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
             <label className="label">Verification Method</label>
             <div className="mt-3 space-y-3">
               {availableMethods.sort((a, b) => a === 'totp' ? -1 : b === 'totp' ? 1 : 0).map((method) => (
-                <label key={method} className="flex items-center p-3 rounded-xl glass hover:bg-primary-500/5 transition-all duration-300 cursor-pointer">
+                <label key={method} className="flex items-center p-3 rounded-xl transition-all duration-300 cursor-pointer glass hover:bg-primary-500/5">
                   <input
                     type="radio"
                     name="method"
@@ -134,7 +134,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
                     ) : (
                       <DevicePhoneMobileIcon className="mr-3 w-5 h-5 text-success-500" />
                     )}
-                    <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                    <span className="font-medium font-display text-light-text-primary dark:text-dark-text-primary">
                       {method === 'email' ? 'Email Code' : 'Authenticator App'}
                     </span>
                   </span>
@@ -146,9 +146,9 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
         {/* Email Code Section */}
         {selectedMethod === 'email' && (
-          <div className="p-4 glass border border-primary-200/30 rounded-2xl shadow-lg backdrop-blur-xl">
+          <div className="p-4 rounded-2xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
             <div className="flex items-center mb-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
+              <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-primary">
                 <EnvelopeIcon className="w-5 h-5 text-white" />
               </div>
               <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -160,7 +160,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
                 type="button"
                 onClick={handleSendEmailCode}
                 disabled={isSendingCode}
-                className="btn btn-primary text-sm"
+                className="text-sm btn btn-primary"
               >
                 {isSendingCode ? 'Sending...' : 'Send Code'}
               </button>
@@ -176,7 +176,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
                 type="button"
                 onClick={handleSendEmailCode}
                 disabled={isSendingCode}
-                className="btn-ghost text-sm"
+                className="text-sm btn-ghost"
               >
                 Resend Code
               </button>
@@ -186,9 +186,9 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
 
         {/* TOTP Section */}
         {selectedMethod === 'totp' && (
-          <div className="p-4 glass border border-success-200/30 rounded-2xl bg-gradient-to-br from-success-50/50 to-success-100/50 shadow-lg backdrop-blur-xl">
+          <div className="p-4 bg-gradient-to-br rounded-2xl border shadow-lg backdrop-blur-xl glass border-success-200/30 from-success-50/50 to-success-100/50">
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center mr-3 shadow-lg">
+              <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-gradient-success">
                 <DevicePhoneMobileIcon className="w-5 h-5 text-white" />
               </div>
               <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -210,7 +210,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
             required
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, selectedMethod === 'totp' ? 6 : 6))}
-            className="input block w-full text-2xl tracking-widest text-center rounded-2xl shadow-lg"
+            className="block w-full text-2xl tracking-widest text-center rounded-2xl shadow-lg input"
             placeholder={selectedMethod === 'totp' ? '000000' : '000000'}
             maxLength={selectedMethod === 'totp' ? 6 : 6}
           />
@@ -239,7 +239,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
         {/* Device Name Input */}
         {rememberDevice && (
           <div>
-            <label htmlFor="device-name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="device-name" className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
               Device Name
             </label>
             <input
@@ -259,7 +259,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
           <button
             type="submit"
             disabled={isVerifying || !code.trim() || (selectedMethod === 'email' && !emailCodeSent)}
-            className="btn btn-primary w-full"
+            className="w-full btn btn-primary"
           >
             {isVerifying ? 'Verifying...' : 'Verify'}
           </button>
@@ -281,10 +281,10 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
   return (
     <div className={containerClass}>
       {/* Ambient glow effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-success-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-3/4 right-1/2 w-64 h-64 bg-accent-500/6 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+      <div className="overflow-hidden absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse bg-primary-500/8" />
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse bg-success-500/8" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-3/4 right-1/2 w-64 h-64 rounded-full blur-3xl animate-pulse bg-accent-500/6" style={{ animationDelay: '4s' }} />
       </div>
       {content}
     </div>

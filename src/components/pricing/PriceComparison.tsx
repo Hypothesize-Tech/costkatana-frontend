@@ -6,7 +6,7 @@ import {
   ProviderPricing,
   PricingComparison,
 } from "../../services/pricing.service";
-import { LoadingSpinner } from "../common/LoadingSpinner";
+import { PriceComparisonShimmer } from "../shimmer/PriceComparisonShimmer";
 
 // Icon Components
 const RefreshIcon = ({ className }: { className?: string }) => (
@@ -282,16 +282,7 @@ export const PriceComparison: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="text-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-lg text-secondary-600 dark:text-secondary-300">
-            Loading pricing data...
-          </p>
-        </div>
-      </div>
-    );
+    return <PriceComparisonShimmer />;
   }
 
   return (

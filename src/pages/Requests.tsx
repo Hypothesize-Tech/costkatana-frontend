@@ -9,7 +9,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import { usageService } from "../services/usage.service";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { RequestsShimmer } from "../components/shimmer/RequestsShimmer";
 import { useProject } from "../contexts/ProjectContext";
 import { useNotification } from "../contexts/NotificationContext";
 
@@ -58,7 +58,7 @@ export default function Requests() {
   const { showNotification } = useNotification();
 
   // Real-time analytics query
-  const { data: analyticsData, refetch: refetchAnalytics } = useQuery({
+  const { data: analyticsData, isLoading: analyticsLoading, refetch: refetchAnalytics } = useQuery({
     queryKey: ["usage-analytics", timeRange, selectedFilter, selectedProject],
     queryFn: () =>
       usageService.getUsageAnalytics({
@@ -216,6 +216,11 @@ export default function Requests() {
     }
     return projectName;
   };
+
+  // Show shimmer when loading
+  if (requestsLoading || analyticsLoading) {
+    return <RequestsShimmer />;
+  }
 
   return (
     <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
@@ -391,120 +396,114 @@ export default function Requests() {
       {/* Requests Table */}
       <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="px-6 py-6">
-          {requestsLoading ? (
-            <div className="flex justify-center py-8">
-              <LoadingSpinner />
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-primary-200/30">
-                <thead className="bg-gradient-to-r rounded-lg border glass border-primary-200/20 from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
-                  <tr>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      TIMESTAMP
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      MODEL
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      STATUS
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      LATENCY
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      TOKEN BREAKDOWN
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      COST
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      USER
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      BUDGET STATUS
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      PROJECT
-                    </th>
-                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
-                      APPROVAL
-                    </th>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-primary-200/30">
+              <thead className="bg-gradient-to-r rounded-lg border glass border-primary-200/20 from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
+                <tr>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    TIMESTAMP
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    MODEL
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    STATUS
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    LATENCY
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    TOKEN BREAKDOWN
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    COST
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    USER
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    BUDGET STATUS
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    PROJECT
+                  </th>
+                  <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left uppercase font-display text-secondary-700 dark:text-secondary-300">
+                    APPROVAL
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-gradient-to-br divide-y glass from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-primary-200/20">
+                {filteredRequests.map((request: Request) => (
+                  <tr
+                    key={request.id}
+                    className="transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-success-500/5"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      {formatTimeAgo(request.timestamp)}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-primary-500/20 to-success-500/20 text-primary-600 dark:text-primary-400">
+                        {request.model}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        {getStatusIcon(request.status, request.statusCode)}
+                        <span className="ml-2 text-sm font-medium text-secondary-700 dark:text-secondary-300">
+                          • {request.statusCode}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-highlight-500/20 to-accent-500/20 text-highlight-600 dark:text-highlight-400">
+                        {request.latency} ms
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-accent-500/20 to-warning-500/20 text-accent-600 dark:text-accent-400">
+                        {request.totalTokens.toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-bold whitespace-nowrap text-success-600 dark:text-success-400">
+                      {formatCost(request.cost)}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
+                        {request.user}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <BudgetStatusBadge budgetInfo={request.budgetInfo} />
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
+                      {getProjectDisplayName(request.projectName)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <ApprovalStatusBadge
+                        approvalStatus={request.approvalStatus}
+                      />
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-gradient-to-br divide-y glass from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-primary-200/20">
-                  {filteredRequests.map((request: Request) => (
-                    <tr
-                      key={request.id}
-                      className="transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-500/5 hover:to-success-500/5"
-                    >
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        {formatTimeAgo(request.timestamp)}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-primary-500/20 to-success-500/20 text-primary-600 dark:text-primary-400">
-                          {request.model}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {getStatusIcon(request.status, request.statusCode)}
-                          <span className="ml-2 text-sm font-medium text-secondary-700 dark:text-secondary-300">
-                            • {request.statusCode}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-highlight-500/20 to-accent-500/20 text-highlight-600 dark:text-highlight-400">
-                          {request.latency} ms
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-accent-500/20 to-warning-500/20 text-accent-600 dark:text-accent-400">
-                          {request.totalTokens.toLocaleString()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-bold whitespace-nowrap text-success-600 dark:text-success-400">
-                        {formatCost(request.cost)}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        <span className="px-2 py-1 text-xs font-semibold bg-gradient-to-r rounded-full from-secondary-500/20 to-accent-500/20 text-secondary-600 dark:text-secondary-400">
-                          {request.user}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <BudgetStatusBadge budgetInfo={request.budgetInfo} />
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-secondary-700 dark:text-secondary-300">
-                        {getProjectDisplayName(request.projectName)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <ApprovalStatusBadge
-                          approvalStatus={request.approvalStatus}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </tbody>
+            </table>
 
-              {filteredRequests.length === 0 && (
-                <div className="py-12 text-center">
-                  <div className="p-8 mx-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-full from-primary-500/20 to-success-500/20">
-                      <MagnifyingGlassIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                    </div>
-                    <h3 className="mb-2 text-lg font-semibold font-display text-secondary-900 dark:text-white">
-                      No Requests Found
-                    </h3>
-                    <p className="text-secondary-600 dark:text-secondary-300">
-                      No requests found for the selected filters. Try adjusting your search criteria.
-                    </p>
+            {filteredRequests.length === 0 && (
+              <div className="py-12 text-center">
+                <div className="p-8 mx-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-full from-primary-500/20 to-success-500/20">
+                    <MagnifyingGlassIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                   </div>
+                  <h3 className="mb-2 text-lg font-semibold font-display text-secondary-900 dark:text-white">
+                    No Requests Found
+                  </h3>
+                  <p className="text-secondary-600 dark:text-secondary-300">
+                    No requests found for the selected filters. Try adjusting your search criteria.
+                  </p>
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { ProjectService } from "../services/project.service";
 import { Project } from "../types/project.types";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
+import { ProjectsShimmer } from "../components/shimmer/ProjectsShimmer";
 import { Modal } from "../components/common/Modal";
 import {
   ProjectCard,
@@ -127,19 +127,15 @@ const Projects: React.FC = () => {
   const safeProjects = Array.isArray(projects) ? projects : [];
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
+    return <ProjectsShimmer />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
-      <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-8">
+    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">
+            <h1 className="mb-2 text-3xl font-bold font-display gradient-text-primary">
               Projects
             </h1>
             <p className="text-secondary-600 dark:text-secondary-300">
@@ -170,32 +166,32 @@ const Projects: React.FC = () => {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30 dark:border-primary-500/20 mr-4 shadow-lg">
+            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-primary-200/30 dark:border-primary-500/20">
               <UserGroupIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Total Projects
               </p>
-              <p className="text-2xl font-display font-bold gradient-text-primary">
+              <p className="text-2xl font-bold font-display gradient-text-primary">
                 {safeProjects.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-success-200/30 dark:border-success-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-success-200/30 dark:border-success-500/20 mr-4 shadow-lg">
+            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-success-200/30 dark:border-success-500/20">
               <CurrencyDollarIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
             </div>
             <div>
-              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Total Budget
               </p>
-              <p className="text-2xl font-display font-bold gradient-text-success">
+              <p className="text-2xl font-bold font-display gradient-text-success">
                 $
                 {safeProjects
                   .reduce((sum, p) => sum + (p.budget?.amount || 0), 0)
@@ -205,16 +201,16 @@ const Projects: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-accent-200/30 dark:border-accent-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:scale-105 transition-all duration-300">
+        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
           <div className="flex items-center">
-            <div className="p-3 rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-accent-200/30 dark:border-accent-500/20 mr-4 shadow-lg">
+            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-accent-200/30 dark:border-accent-500/20">
               <ArrowTrendingUpIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div>
-              <p className="text-sm font-body font-medium text-secondary-600 dark:text-secondary-300">
+              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Active Projects
               </p>
-              <p className="text-2xl font-display font-bold gradient-text-accent">
+              <p className="text-2xl font-bold font-display gradient-text-accent">
                 {safeProjects.filter((p) => p.isActive !== false).length}
               </p>
             </div>
@@ -224,19 +220,19 @@ const Projects: React.FC = () => {
 
       {/* Projects Grid */}
       {safeProjects.length === 0 ? (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel py-16 text-center">
-          <div className="p-4 rounded-full glass border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
+        <div className="py-16 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex justify-center items-center p-4 mx-auto mb-6 w-20 h-20 rounded-full border shadow-lg glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <UserGroupIcon className="w-10 h-10 text-primary-600 dark:text-primary-400" />
           </div>
-          <h3 className="mb-4 text-2xl font-display font-bold gradient-text-primary">
+          <h3 className="mb-4 text-2xl font-bold font-display gradient-text-primary">
             No projects yet
           </h3>
-          <p className="mb-8 font-body text-secondary-600 dark:text-secondary-300 max-w-md mx-auto">
+          <p className="mx-auto mb-8 max-w-md font-body text-secondary-600 dark:text-secondary-300">
             Create your first project to start managing AI costs as a team
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-6 py-3 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 font-display font-semibold"
+            className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl shadow-lg transition-all duration-300 transform bg-gradient-primary hover:bg-gradient-primary/90 hover:shadow-xl glow-primary hover:scale-105 active:scale-95 font-display"
           >
             <PlusIcon className="w-5 h-5" />
             Create Project
@@ -306,21 +302,21 @@ const Projects: React.FC = () => {
           size="lg"
         >
           <div className="p-6">
-            <div className="mb-6 glass p-6 rounded-xl border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-danger/10">
-              <div className="flex items-start gap-4">
+            <div className="p-6 mb-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-danger/10">
+              <div className="flex gap-4 items-start">
                 <div className="flex-shrink-0">
-                  <div className="p-3 rounded-xl bg-gradient-danger/20 border border-danger-200/30">
+                  <div className="p-3 rounded-xl border bg-gradient-danger/20 border-danger-200/30">
                     <ExclamationTriangleIcon className="w-6 h-6 text-danger-600 dark:text-danger-400" />
                   </div>
                 </div>
                 <div className="flex-1">
-                  <p className="text-danger-900 dark:text-danger-100 font-display font-bold text-lg mb-2">
+                  <p className="mb-2 text-lg font-bold text-danger-900 dark:text-danger-100 font-display">
                     Are you sure you want to delete "{selectedProject.name}"?
                   </p>
                   <p className="mt-2 text-sm font-body text-danger-700 dark:text-danger-300">
                     This action cannot be undone and will remove all associated data including:
                   </p>
-                  <ul className="mt-3 ml-4 text-sm font-body text-danger-700 dark:text-danger-300 list-disc space-y-1">
+                  <ul className="mt-3 ml-4 space-y-1 text-sm list-disc font-body text-danger-700 dark:text-danger-300">
                     <li>All project analytics and usage data</li>
                     <li>Budget and spending history</li>
                     <li>Project settings and configurations</li>

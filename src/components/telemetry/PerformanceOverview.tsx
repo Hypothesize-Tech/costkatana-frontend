@@ -39,7 +39,7 @@ export const PerformanceOverview: React.FC = () => {
     const { data: dashboardData, isLoading, error } = useQuery<MetricsResponse>(
         ['telemetry-metrics', timeframe],
         () => TelemetryAPI.getMetrics(timeframe),
-        { refetchInterval: 30000, staleTime: 30000 }
+        {   staleTime: 30000 }
     );
 
     if (isLoading) return (

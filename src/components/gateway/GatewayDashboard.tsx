@@ -13,6 +13,7 @@ import {
   RotateCw,
 } from 'lucide-react';
 import { GatewayService, GatewayAnalytics, GatewayStats } from '../../services/gateway.service';
+import { GatewayShimmer } from '../shimmer/GatewayShimmer';
 
 interface GatewayDashboardProps {
   projectId?: string;
@@ -78,19 +79,7 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   };
 
   if (loading) {
-    return (
-      <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="space-y-6 animate-pulse">
-          <div className="h-32 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"></div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-            <div className="h-40 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"></div>
-            <div className="h-40 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"></div>
-            <div className="h-40 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"></div>
-            <div className="h-40 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"></div>
-          </div>
-        </div>
-      </div>
-    );
+    return <GatewayShimmer />;
   }
 
   if (error) {

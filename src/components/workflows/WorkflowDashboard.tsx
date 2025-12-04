@@ -12,6 +12,7 @@ import {
   InformationCircleIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
+import { WorkflowDashboardShimmer } from '../shimmer/WorkflowDashboardShimmer';
 
 interface WorkflowStep {
   id: string;
@@ -135,6 +136,12 @@ const WorkflowDashboard: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedExecution, setSelectedExecution] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'executions' | 'analytics' | 'traces'>('overview');
+  const [tabLoading, setTabLoading] = useState<Record<string, boolean>>({
+    overview: false,
+    executions: false,
+    analytics: false,
+    traces: false,
+  });
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -232,8 +239,12 @@ const WorkflowDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardData();
-    // No automatic interval refresh - using manual refresh button instead
   }, [fetchDashboardData]);
+
+  useEffect(() => {
+    setTabLoading(prev => ({ ...prev, [activeTab]: true }));
+    setTabLoading(prev => ({ ...prev, [activeTab]: false }));
+  }, [activeTab]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -288,12 +299,8 @@ const WorkflowDashboard: React.FC = () => {
     return num.toFixed(decimals);
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-8 h-8 rounded-full border-b-2 border-[#06ec9e] dark:border-emerald-400 animate-spin"></div>
-      </div>
-    );
+  if (loading || tabLoading[activeTab]) {
+    return <WorkflowDashboardShimmer activeTab={activeTab} />;
   }
 
   if (!dashboardData) {
@@ -305,17 +312,17 @@ const WorkflowDashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-4 sm:p-6">
+    <div className="p-4 space-y-4 min-h-screen sm:space-y-6 bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:p-6">
       {/* Header */}
-      <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-3 sm:gap-4">
+      <div className="p-4 rounded-2xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
+        <div className="flex flex-col gap-4 justify-between items-start sm:flex-row sm:items-center">
+          <div className="flex gap-3 items-center sm:gap-4">
             <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
               <ChartBarIcon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="font-display mb-1 sm:mb-2 text-xl sm:text-2xl lg:text-3xl font-bold gradient-text-primary">AI Workflow Observatory</h1>
-              <p className="font-body text-sm sm:text-base text-secondary-600 dark:text-secondary-300">Monitor, trace, and optimize your AI workflow executions</p>
+              <h1 className="mb-1 text-xl font-bold font-display sm:mb-2 sm:text-2xl lg:text-3xl gradient-text-primary">AI Workflow Observatory</h1>
+              <p className="text-sm font-body sm:text-base text-secondary-600 dark:text-secondary-300">Monitor, trace, and optimize your AI workflow executions</p>
             </div>
           </div>
           <button
@@ -334,9 +341,9 @@ const WorkflowDashboard: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="rounded-2xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="border-b border-primary-200/30 dark:border-primary-700/30">
-          <nav className="flex flex-wrap px-4 sm:px-6 gap-2 sm:gap-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
+          <nav className="flex overflow-x-auto flex-wrap gap-2 px-4 sm:px-6 sm:gap-4 sm:space-x-8" aria-label="Tabs">
             {['overview', 'executions', 'analytics', 'traces'].map((tab) => (
               <button
                 key={tab}
@@ -356,13 +363,13 @@ const WorkflowDashboard: React.FC = () => {
           {activeTab === 'overview' && (
             <div className="space-y-4 sm:space-y-6">
               {/* Overview Metrics */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-6">
                 <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20 hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
                     <ChartBarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-[#06ec9e] dark:text-emerald-400 flex-shrink-0" />
-                    <div className="ml-3 sm:ml-4 min-w-0">
-                      <p className="font-body text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-300">Total Executions</p>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-100">
+                    <div className="ml-3 min-w-0 sm:ml-4">
+                      <p className="text-xs font-medium text-emerald-700 font-body sm:text-sm dark:text-emerald-300">Total Executions</p>
+                      <p className="text-xl font-bold text-emerald-900 font-display sm:text-2xl dark:text-emerald-100">
                         {dashboardData.overview.totalExecutions}
                       </p>
                     </div>
@@ -371,10 +378,10 @@ const WorkflowDashboard: React.FC = () => {
 
                 <div className="p-4 sm:p-6 glass rounded-xl border border-success-200/30 dark:border-success-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <CheckCircleIcon className="w-6 h-6 sm:w-8 sm:h-8 text-success-600 dark:text-success-400 flex-shrink-0" />
-                    <div className="ml-3 sm:ml-4 min-w-0">
-                      <p className="font-body text-xs sm:text-sm font-medium text-success-600 dark:text-success-400">Success Rate</p>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-success-900 dark:text-success-100">
+                    <CheckCircleIcon className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 text-success-600 dark:text-success-400" />
+                    <div className="ml-3 min-w-0 sm:ml-4">
+                      <p className="text-xs font-medium font-body sm:text-sm text-success-600 dark:text-success-400">Success Rate</p>
+                      <p className="text-xl font-bold font-display sm:text-2xl text-success-900 dark:text-success-100">
                         {dashboardData.overview.successRate}%
                       </p>
                     </div>
@@ -383,30 +390,30 @@ const WorkflowDashboard: React.FC = () => {
 
                 <div className="p-4 sm:p-6 glass rounded-xl border border-secondary-200/30 dark:border-secondary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <ClockIcon className="w-6 h-6 sm:w-8 sm:h-8 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-                    <div className="ml-3 sm:ml-4 min-w-0">
-                      <p className="font-body text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-400">Avg Duration</p>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-secondary-900 dark:text-secondary-100">{formatDuration(dashboardData.overview.averageDuration)}</p>
+                    <ClockIcon className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 text-secondary-600 dark:text-secondary-400" />
+                    <div className="ml-3 min-w-0 sm:ml-4">
+                      <p className="text-xs font-medium font-body sm:text-sm text-secondary-600 dark:text-secondary-400">Avg Duration</p>
+                      <p className="text-xl font-bold font-display sm:text-2xl text-secondary-900 dark:text-secondary-100">{formatDuration(dashboardData.overview.averageDuration)}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 sm:p-6 glass rounded-xl border border-accent-200/30 dark:border-accent-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <CurrencyDollarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-accent-600 dark:text-accent-400 flex-shrink-0" />
-                    <div className="ml-3 sm:ml-4 min-w-0">
-                      <p className="font-body text-xs sm:text-sm font-medium text-accent-600 dark:text-accent-400">Total Cost</p>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-accent-900 dark:text-accent-100">{formatCost(dashboardData.overview.totalCost)}</p>
+                    <CurrencyDollarIcon className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 text-accent-600 dark:text-accent-400" />
+                    <div className="ml-3 min-w-0 sm:ml-4">
+                      <p className="text-xs font-medium font-body sm:text-sm text-accent-600 dark:text-accent-400">Total Cost</p>
+                      <p className="text-xl font-bold font-display sm:text-2xl text-accent-900 dark:text-accent-100">{formatCost(dashboardData.overview.totalCost)}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 sm:p-6 glass rounded-xl border border-highlight-200/30 dark:border-highlight-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20 hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <PlayIcon className="w-6 h-6 sm:w-8 sm:h-8 text-highlight-600 dark:text-highlight-400 flex-shrink-0" />
-                    <div className="ml-3 sm:ml-4 min-w-0">
-                      <p className="font-body text-xs sm:text-sm font-medium text-highlight-600 dark:text-highlight-400">Active Workflows</p>
-                      <p className="font-display text-xl sm:text-2xl font-bold text-highlight-900 dark:text-highlight-100">{dashboardData.overview.activeWorkflows}</p>
+                    <PlayIcon className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 text-highlight-600 dark:text-highlight-400" />
+                    <div className="ml-3 min-w-0 sm:ml-4">
+                      <p className="text-xs font-medium font-body sm:text-sm text-highlight-600 dark:text-highlight-400">Active Workflows</p>
+                      <p className="text-xl font-bold font-display sm:text-2xl text-highlight-900 dark:text-highlight-100">{dashboardData.overview.activeWorkflows}</p>
                     </div>
                   </div>
                 </div>
@@ -415,14 +422,14 @@ const WorkflowDashboard: React.FC = () => {
               {/* Workflow Distribution */}
               <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
                 {/* Cost Analysis by Workflow Type */}
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Cost Distribution by Workflow</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-secondary-900 dark:text-white">Cost Distribution by Workflow</h3>
                   <div className="space-y-4">
                     {dashboardData.costAnalysis.breakdown && dashboardData.costAnalysis.breakdown.map((item, index) => (
                       <div key={index} className="relative">
                         <div className="flex justify-between mb-1">
-                          <span className="font-body text-sm font-medium text-secondary-700 dark:text-secondary-300">{item.category}</span>
-                          <span className="font-body text-sm font-medium text-secondary-700 dark:text-secondary-300">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
+                          <span className="text-sm font-medium font-body text-secondary-700 dark:text-secondary-300">{item.category}</span>
+                          <span className="text-sm font-medium font-body text-secondary-700 dark:text-secondary-300">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
                         </div>
                         <div className="w-full bg-secondary-200 dark:bg-secondary-700 rounded-full h-2.5">
                           <div
@@ -441,14 +448,14 @@ const WorkflowDashboard: React.FC = () => {
                 </div>
 
                 {/* Daily Cost Trend */}
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Daily Cost Trend</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-secondary-900 dark:text-white">Daily Cost Trend</h3>
                   <div className="space-y-4">
                     {dashboardData.costAnalysis.trend.daily && dashboardData.costAnalysis.trend.daily.map((day, index) => (
                       <div key={index} className="relative">
                         <div className="flex justify-between mb-1">
-                          <span className="font-body text-sm font-medium text-secondary-700 dark:text-secondary-300">{day.date}</span>
-                          <span className="font-body text-sm font-medium text-secondary-700 dark:text-secondary-300">{formatCost(day.amount)}</span>
+                          <span className="text-sm font-medium font-body text-secondary-700 dark:text-secondary-300">{day.date}</span>
+                          <span className="text-sm font-medium font-body text-secondary-700 dark:text-secondary-300">{formatCost(day.amount)}</span>
                         </div>
                         <div className="w-full bg-secondary-200 dark:bg-secondary-700 rounded-full h-2.5">
                           <div
@@ -463,29 +470,29 @@ const WorkflowDashboard: React.FC = () => {
               </div>
 
               {/* Recent Workflow Activity */}
-              <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Recent Workflow Activity</h3>
-                <div className="overflow-x-auto glass rounded-lg border border-primary-200/30 dark:border-primary-500/20">
+              <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-secondary-900 dark:text-white">Recent Workflow Activity</h3>
+                <div className="overflow-x-auto rounded-lg border glass border-primary-200/30 dark:border-primary-500/20">
                   <table className="min-w-full divide-y divide-primary-200/20 dark:divide-primary-700/20">
-                    <thead className="glass rounded-lg border border-primary-200/20 dark:border-primary-700/20 bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
+                    <thead className="bg-gradient-to-r rounded-lg border glass border-primary-200/20 dark:border-primary-700/20 from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                       <tr>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Workflow</th>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Steps</th>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Duration</th>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Cost</th>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Tokens</th>
-                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-display font-medium text-secondary-500 dark:text-secondary-400 uppercase tracking-wider">Date</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Workflow</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Steps</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Duration</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Cost</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Tokens</th>
+                        <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">Date</th>
                       </tr>
                     </thead>
-                    <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20 dark:divide-primary-700/20">
+                    <tbody className="bg-gradient-to-br divide-y glass from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-primary-200/20 dark:divide-primary-700/20">
                       {dashboardData.recentExecutions.slice(0, 5).map((execution) => (
                         <tr key={execution.id} className="hover:bg-gradient-to-r hover:from-[#06ec9e]/5 hover:to-emerald-500/5 dark:hover:from-[#06ec9e]/10 dark:hover:to-emerald-500/10 transition-colors duration-300">
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-display font-medium text-secondary-900 dark:text-white">{execution.workflowName}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{execution.steps?.length || 0}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{formatDuration(execution.duration)}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{formatCost(execution.cost)}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{execution.totalTokens?.toLocaleString()}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">
+                          <td className="px-3 py-4 text-xs font-medium whitespace-nowrap sm:px-6 sm:text-sm font-display text-secondary-900 dark:text-white">{execution.workflowName}</td>
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{execution.steps?.length || 0}</td>
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{formatDuration(execution.duration)}</td>
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{formatCost(execution.cost)}</td>
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 sm:text-sm font-body text-secondary-600 dark:text-secondary-300">{execution.totalTokens?.toLocaleString()}</td>
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 sm:text-sm font-body text-secondary-600 dark:text-secondary-300">
                             {new Date(execution.startTime).toLocaleDateString()}
                           </td>
                         </tr>
@@ -498,8 +505,8 @@ const WorkflowDashboard: React.FC = () => {
               {/* Performance Metrics Summary */}
               <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
                 {/* Hourly Throughput */}
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Hourly Throughput</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Hourly Throughput</h3>
 
                   {(() => {
                     const values = dashboardData.performanceMetrics.throughput.values || [];
@@ -509,15 +516,15 @@ const WorkflowDashboard: React.FC = () => {
 
                     if (!values.length) {
                       return (
-                        <div className="h-36 flex items-center justify-center rounded-md glass bg-light-bg-200 dark:bg-dark-bg-200 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="flex justify-center items-center h-36 text-xs rounded-md glass bg-light-bg-200 dark:bg-dark-bg-200 font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                           No data available
                         </div>
                       );
                     }
 
                     return (
-                      <div className="h-40 rounded-md glass bg-light-bg-200 dark:bg-dark-bg-200 p-3">
-                        <div className="h-full flex items-end gap-2 overflow-x-auto">
+                      <div className="p-3 h-40 rounded-md glass bg-light-bg-200 dark:bg-dark-bg-200">
+                        <div className="flex overflow-x-auto gap-2 items-end h-full">
                           {values.map((value, index) => {
                             const heightPx = Math.max(MIN_BAR, Math.round((value / max) * BAR_MAX));
                             const isZero = value === 0;
@@ -544,11 +551,11 @@ const WorkflowDashboard: React.FC = () => {
                 </div>
 
                 {/* Latency Metrics */}
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Response Time</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Response Time</h3>
                   <div className="space-y-4">
                     <div className="relative pt-1">
-                      <div className="flex mb-2 items-center justify-between">
+                      <div className="flex justify-between items-center mb-2">
                         <div>
                           <span className="font-body text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-[#06ec9e] dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30">
                             P50
@@ -560,50 +567,50 @@ const WorkflowDashboard: React.FC = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-emerald-100 dark:bg-emerald-900/30">
+                      <div className="flex overflow-hidden mb-4 h-2 text-xs bg-emerald-100 rounded dark:bg-emerald-900/30">
                         <div style={{ width: "50%" }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-[#06ec9e] to-emerald-500 dark:from-emerald-500 dark:to-emerald-600"></div>
                       </div>
                     </div>
                     <div className="relative pt-1">
-                      <div className="flex mb-2 items-center justify-between">
+                      <div className="flex justify-between items-center mb-2">
                         <div>
-                          <span className="font-body text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-secondary-600 dark:text-secondary-400 bg-secondary-100 dark:bg-secondary-900/30">
+                          <span className="inline-block px-2 py-1 text-xs font-semibold uppercase rounded-full font-body text-secondary-600 dark:text-secondary-400 bg-secondary-100 dark:bg-secondary-900/30">
                             P95
                           </span>
                         </div>
                         <div className="text-right">
-                          <span className="font-body text-xs font-semibold inline-block text-secondary-600 dark:text-secondary-400">
+                          <span className="inline-block text-xs font-semibold font-body text-secondary-600 dark:text-secondary-400">
                             {formatDuration(dashboardData.performanceMetrics.latency.p95)}
                           </span>
                         </div>
                       </div>
-                      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-secondary-100 dark:bg-secondary-900/30">
-                        <div style={{ width: "95%" }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-secondary-500 dark:bg-secondary-600"></div>
+                      <div className="flex overflow-hidden mb-4 h-2 text-xs rounded bg-secondary-100 dark:bg-secondary-900/30">
+                        <div style={{ width: "95%" }} className="flex flex-col justify-center text-center text-white whitespace-nowrap shadow-none bg-secondary-500 dark:bg-secondary-600"></div>
                       </div>
                     </div>
                     <div className="relative pt-1">
-                      <div className="flex mb-2 items-center justify-between">
+                      <div className="flex justify-between items-center mb-2">
                         <div>
-                          <span className="font-body text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-danger-600 dark:text-danger-400 bg-danger-100 dark:bg-danger-900/30">
+                          <span className="inline-block px-2 py-1 text-xs font-semibold uppercase rounded-full font-body text-danger-600 dark:text-danger-400 bg-danger-100 dark:bg-danger-900/30">
                             P99
                           </span>
                         </div>
                         <div className="text-right">
-                          <span className="font-body text-xs font-semibold inline-block text-danger-600 dark:text-danger-400">
+                          <span className="inline-block text-xs font-semibold font-body text-danger-600 dark:text-danger-400">
                             {formatDuration(dashboardData.performanceMetrics.latency.p99)}
                           </span>
                         </div>
                       </div>
-                      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-danger-100 dark:bg-danger-900/30">
-                        <div style={{ width: "99%" }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger-500 dark:bg-danger-600"></div>
+                      <div className="flex overflow-hidden mb-4 h-2 text-xs rounded bg-danger-100 dark:bg-danger-900/30">
+                        <div style={{ width: "99%" }} className="flex flex-col justify-center text-center text-white whitespace-nowrap shadow-none bg-danger-500 dark:bg-danger-600"></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Model Usage */}
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Model Distribution</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Model Distribution</h3>
                   <div className="space-y-3">
                     {(() => {
                       // Count model usage across all executions
@@ -626,8 +633,8 @@ const WorkflowDashboard: React.FC = () => {
                       return sortedModels.slice(0, 5).map((item, index) => (
                         <div key={index} className="relative">
                           <div className="flex justify-between mb-1">
-                            <span className="font-body text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">{item.model}</span>
-                            <span className="font-body text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                            <span className="text-sm font-medium font-body text-light-text-secondary dark:text-dark-text-secondary">{item.model}</span>
+                            <span className="text-sm font-medium font-body text-light-text-secondary dark:text-dark-text-secondary">
                               {item.count} calls ({((item.count / totalCalls) * 100).toFixed(1)}%)
                             </span>
                           </div>
@@ -651,8 +658,8 @@ const WorkflowDashboard: React.FC = () => {
 
               {/* Alerts */}
               {dashboardData.alerts.length > 0 && (
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h3 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Alerts & Notifications</h3>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h3 className="mb-3 text-base font-semibold font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Alerts & Notifications</h3>
                   <div className="space-y-3">
                     {dashboardData.alerts.map((alert, index) => (
                       <div key={index} className={`flex items-start p-3 rounded-lg glass border ${alert.type === 'warning' ? 'bg-warning-50/50 dark:bg-warning-900/20 border-warning-200/30 dark:border-warning-800/30' :
@@ -663,7 +670,7 @@ const WorkflowDashboard: React.FC = () => {
                         {alert.type === 'error' && <XCircleIcon className="w-5 h-5 text-danger-600 dark:text-danger-400 mt-0.5" />}
                         {alert.type === 'info' && <InformationCircleIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5" />}
                         <div className="flex-1 ml-3">
-                          <p className="font-body text-sm text-light-text-primary dark:text-dark-text-primary">{alert.message}</p>
+                          <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">{alert.message}</p>
                           <p className="mt-1 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                             {new Date(alert.timestamp).toLocaleString()}
                           </p>
@@ -678,42 +685,42 @@ const WorkflowDashboard: React.FC = () => {
 
           {activeTab === 'executions' && (
             <div className="space-y-4 sm:space-y-6">
-              <h3 className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Recent Workflow Executions</h3>
+              <h3 className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">Recent Workflow Executions</h3>
 
-              <div className="overflow-x-auto glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl">
+              <div className="overflow-x-auto rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
                 <table className="min-w-full divide-y divide-primary-200/20 dark:divide-primary-700/20">
-                  <thead className="glass bg-gradient-to-r from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
+                  <thead className="bg-gradient-to-r glass from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50">
                     <tr>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Workflow
                       </th>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Status
                       </th>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Duration
                       </th>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Cost
                       </th>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Started
                       </th>
-                      <th className="px-3 sm:px-6 py-3 text-xs font-display font-medium tracking-wider text-left text-secondary-500 dark:text-secondary-400 uppercase">
+                      <th className="px-3 py-3 text-xs font-medium tracking-wider text-left uppercase sm:px-6 font-display text-secondary-500 dark:text-secondary-400">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="glass bg-gradient-to-br from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-y divide-primary-200/20 dark:divide-primary-700/20">
+                  <tbody className="bg-gradient-to-br divide-y glass from-light-bg-100/50 to-light-bg-200/50 dark:from-dark-bg-100/50 dark:to-dark-bg-200/50 divide-primary-200/20 dark:divide-primary-700/20">
                     {dashboardData.recentExecutions && dashboardData.recentExecutions.length > 0 ? (
                       dashboardData.recentExecutions.map((execution) => (
                         <tr key={execution.id} className="hover:bg-gradient-to-r hover:from-[#06ec9e]/5 hover:to-emerald-500/5 dark:hover:from-[#06ec9e]/10 dark:hover:to-emerald-500/10 transition-colors duration-300">
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 py-4 whitespace-nowrap sm:px-6">
                             <div className="flex items-center">
                               {getStatusIcon(execution.status)}
-                              <div className="ml-2 sm:ml-3 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <div className="font-display text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                              <div className="ml-2 min-w-0 sm:ml-3">
+                                <div className="flex gap-2 items-center">
+                                  <div className="text-xs font-medium truncate font-display sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                                     {execution.workflowName}
                                   </div>
                                   {execution.automationPlatform && (
@@ -725,27 +732,27 @@ const WorkflowDashboard: React.FC = () => {
                                     </span>
                                   )}
                                 </div>
-                                <div className="font-body text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary truncate">
+                                <div className="text-xs truncate font-body sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                                   ID: {execution.id}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 py-4 whitespace-nowrap sm:px-6">
                             <span className={`inline-flex px-2 py-1 text-xs font-display font-semibold rounded-full ${getStatusColor(execution.status)}`}>
                               {execution.status}
                             </span>
                           </td>
-                          <td className="px-3 sm:px-6 py-4 font-display text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 font-display sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                             {formatDuration(execution.duration)}
                           </td>
-                          <td className="px-3 sm:px-6 py-4 font-display text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 font-display sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                             {formatCost(execution.cost)}
                           </td>
-                          <td className="px-3 sm:px-6 py-4 font-body text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary whitespace-nowrap">
+                          <td className="px-3 py-4 text-xs whitespace-nowrap sm:px-6 font-body sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                             {new Date(execution.startTime).toLocaleString()}
                           </td>
-                          <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm font-display font-medium whitespace-nowrap">
+                          <td className="px-3 py-4 text-xs font-medium whitespace-nowrap sm:px-6 sm:text-sm font-display">
                             <button
                               onClick={() => {
                                 setSelectedExecution(execution.id);
@@ -760,7 +767,7 @@ const WorkflowDashboard: React.FC = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6} className="px-3 sm:px-6 py-4 text-center font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <td colSpan={6} className="px-3 py-4 text-center sm:px-6 font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                           No executions found
                         </td>
                       </tr>
@@ -773,32 +780,32 @@ const WorkflowDashboard: React.FC = () => {
 
           {activeTab === 'analytics' && (
             <div className="space-y-4 sm:space-y-6">
-              <h3 className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Performance Analytics</h3>
+              <h3 className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">Performance Analytics</h3>
 
               {/* Performance Metrics */}
               <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h4 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Latency Percentiles</h4>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h4 className="mb-3 text-base font-medium font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Latency Percentiles</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">P50</span>
-                      <span className="font-body text-sm font-medium text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p50)}ms</span>
+                      <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">P50</span>
+                      <span className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p50)}ms</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">P95</span>
-                      <span className="font-body text-sm font-medium text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p95)}ms</span>
+                      <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">P95</span>
+                      <span className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p95)}ms</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">P99</span>
-                      <span className="font-body text-sm font-medium text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p99)}ms</span>
+                      <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">P99</span>
+                      <span className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary">{formatNumber(dashboardData.performanceMetrics.latency.p99)}ms</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h4 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Error Rate</h4>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h4 className="mb-3 text-base font-medium font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Error Rate</h4>
                   <div className="text-center">
-                    <div className="font-display text-2xl sm:text-3xl font-bold text-danger-600 dark:text-danger-400">
+                    <div className="text-2xl font-bold font-display sm:text-3xl text-danger-600 dark:text-danger-400">
                       {formatNumber(dashboardData.performanceMetrics.errorRate.current)}%
                     </div>
                     <div className={`font-body text-xs sm:text-sm ${dashboardData.performanceMetrics.errorRate.trend < 0 ? 'text-success-600 dark:text-success-400' : 'text-danger-600 dark:text-danger-400'
@@ -809,13 +816,13 @@ const WorkflowDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 sm:p-6 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h4 className="font-display mb-3 sm:mb-4 text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Cost Breakdown</h4>
+                <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl sm:p-6 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h4 className="mb-3 text-base font-medium font-display sm:mb-4 sm:text-lg text-light-text-primary dark:text-dark-text-primary">Cost Breakdown</h4>
                   <div className="space-y-3">
                     {dashboardData.costAnalysis.breakdown && dashboardData.costAnalysis.breakdown.map((item, index) => (
                       <div key={index} className="flex justify-between">
-                        <span className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">{item.category}</span>
-                        <span className="font-body text-sm font-medium text-light-text-primary dark:text-dark-text-primary">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
+                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{item.category}</span>
+                        <span className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary">{formatCost(item.amount)} ({item.percentage.toFixed(1)}%)</span>
                       </div>
                     ))}
                   </div>
@@ -826,7 +833,7 @@ const WorkflowDashboard: React.FC = () => {
 
           {activeTab === 'traces' && (
             <div className="space-y-4 sm:space-y-6">
-              <h3 className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">Workflow Traces</h3>
+              <h3 className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">Workflow Traces</h3>
 
               {selectedExecution ? (
                 <div className="space-y-4 sm:space-y-6">
@@ -836,9 +843,9 @@ const WorkflowDashboard: React.FC = () => {
                     if (!execution) return <div className="font-body text-light-text-primary dark:text-dark-text-primary">Execution not found</div>;
 
                     return (
-                      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
-                          <h4 className="font-display text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">
+                      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
+                        <div className="flex flex-col gap-3 justify-between items-start mb-4 sm:flex-row sm:items-center sm:gap-4">
+                          <h4 className="text-base font-medium font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">
                             {execution.workflowName} - {execution.id}
                           </h4>
                           <button
@@ -850,22 +857,22 @@ const WorkflowDashboard: React.FC = () => {
                         </div>
 
                         {/* Execution Summary */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                          <div className="p-3 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
-                            <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Status</div>
-                            <div className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">{execution.status}</div>
+                        <div className="grid grid-cols-1 gap-3 mb-4 sm:grid-cols-2 md:grid-cols-4 sm:gap-4 sm:mb-6">
+                          <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
+                            <div className="text-xs font-body sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Status</div>
+                            <div className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">{execution.status}</div>
                           </div>
-                          <div className="p-3 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
-                            <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Duration</div>
-                            <div className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">{formatDuration(execution.duration)}</div>
+                          <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
+                            <div className="text-xs font-body sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Duration</div>
+                            <div className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">{formatDuration(execution.duration)}</div>
                           </div>
-                          <div className="p-3 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
-                            <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Total Cost</div>
-                            <div className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCost(execution.cost)}</div>
+                          <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
+                            <div className="text-xs font-body sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Total Cost</div>
+                            <div className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">{formatCost(execution.cost)}</div>
                           </div>
-                          <div className="p-3 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
-                            <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Started</div>
-                            <div className="font-display text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+                          <div className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
+                            <div className="text-xs font-body sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Started</div>
+                            <div className="text-base font-semibold font-display sm:text-lg text-light-text-primary dark:text-dark-text-primary">
                               {new Date(execution.startTime).toLocaleString()}
                             </div>
                           </div>
@@ -874,38 +881,38 @@ const WorkflowDashboard: React.FC = () => {
                         {/* Step-by-Step Trace */}
                         {execution.steps && execution.steps.length > 0 ? (
                           <div className="space-y-3 sm:space-y-4">
-                            <h5 className="font-display text-sm sm:text-md font-medium text-light-text-primary dark:text-dark-text-primary">Execution Steps</h5>
+                            <h5 className="text-sm font-medium font-display sm:text-md text-light-text-primary dark:text-dark-text-primary">Execution Steps</h5>
                             <div className="space-y-2 sm:space-y-3">
                               {execution.steps.map((step, index) => (
-                                <div key={step.id} className="glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 p-3 sm:p-4 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-2">
+                                <div key={step.id} className="p-3 rounded-lg border glass border-primary-200/30 dark:border-primary-500/20 sm:p-4 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                                  <div className="flex flex-col gap-2 justify-between items-start mb-2 sm:flex-row sm:items-center sm:gap-0">
                                     <div className="flex items-center space-x-2 sm:space-x-3">
                                       <div className="w-6 h-6 bg-gradient-to-br from-[#06ec9e]/20 to-emerald-500/20 dark:from-[#06ec9e]/30 dark:to-emerald-500/30 text-[#06ec9e] dark:text-emerald-400 rounded-full flex items-center justify-center text-xs sm:text-sm font-display font-medium border border-[#06ec9e]/30 dark:border-emerald-500/30">
                                         {index + 1}
                                       </div>
-                                      <div className="font-display text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">{step.name}</div>
+                                      <div className="text-xs font-medium font-display sm:text-sm text-light-text-primary dark:text-dark-text-primary">{step.name}</div>
                                     </div>
-                                    <span className="inline-flex px-2 py-1 text-xs font-display font-semibold rounded-full bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300">
+                                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full font-display bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300">
                                       {step.status}
                                     </span>
                                   </div>
 
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm">
+                                  <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 md:grid-cols-4 sm:gap-4 sm:text-sm">
                                     <div>
                                       <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Cost:</span>
-                                      <span className="ml-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">{formatCost(step.metadata?.cost || 0)}</span>
+                                      <span className="ml-2 font-medium font-display text-light-text-primary dark:text-dark-text-primary">{formatCost(step.metadata?.cost || 0)}</span>
                                     </div>
                                     <div>
                                       <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Tokens:</span>
-                                      <span className="ml-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">{step.metadata?.tokens?.total || 0}</span>
+                                      <span className="ml-2 font-medium font-display text-light-text-primary dark:text-dark-text-primary">{step.metadata?.tokens?.total || 0}</span>
                                     </div>
                                     <div>
                                       <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Latency:</span>
-                                      <span className="ml-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">{step.metadata?.latency || 0}ms</span>
+                                      <span className="ml-2 font-medium font-display text-light-text-primary dark:text-dark-text-primary">{step.metadata?.latency || 0}ms</span>
                                     </div>
                                     <div>
                                       <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">Type:</span>
-                                      <span className="ml-2 font-display font-medium text-light-text-primary dark:text-dark-text-primary">{step.type}</span>
+                                      <span className="ml-2 font-medium font-display text-light-text-primary dark:text-dark-text-primary">{step.type}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -913,7 +920,7 @@ const WorkflowDashboard: React.FC = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="text-center font-body text-light-text-tertiary dark:text-dark-text-tertiary py-6 sm:py-8">
+                          <div className="py-6 text-center font-body text-light-text-tertiary dark:text-dark-text-tertiary sm:py-8">
                             No step details available for this execution
                           </div>
                         )}
@@ -922,9 +929,9 @@ const WorkflowDashboard: React.FC = () => {
                   })()}
                 </div>
               ) : (
-                <div className="p-6 sm:p-8 text-center glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
-                  <p className="font-body text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary">Select a workflow execution to view detailed trace information</p>
-                  <p className="font-body text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-2">Click "View Trace" on any execution in the Executions tab</p>
+                <div className="p-6 text-center rounded-xl border sm:p-8 glass border-primary-200/30 dark:border-primary-500/20 bg-light-bg-200 dark:bg-dark-bg-200">
+                  <p className="text-sm font-body sm:text-base text-light-text-secondary dark:text-dark-text-secondary">Select a workflow execution to view detailed trace information</p>
+                  <p className="mt-2 text-xs font-body sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Click "View Trace" on any execution in the Executions tab</p>
                 </div>
               )}
             </div>

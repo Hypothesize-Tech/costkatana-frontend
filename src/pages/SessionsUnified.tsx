@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlayCircleIcon, BugAntIcon } from '@heroicons/react/24/outline';
 import { SessionReplayPage } from './SessionReplayPage';
 import { Sessions as DebugSessions } from './Sessions';
+import { SessionsUnifiedShimmer } from '../components/shimmer/SessionsShimmer';
 
 export const SessionsUnified: React.FC = () => {
     const { sessionId } = useParams<{ sessionId?: string }>();
     const [activeTab, setActiveTab] = useState<'replays' | 'debug'>('replays');
+    const [tabLoading, setTabLoading] = useState(false);
 
     // If sessionId is provided in URL, show the replay player directly
     if (sessionId) {
         return <SessionReplayPage />;
+    }
+
+    useEffect(() => {
+        // Show shimmer when switching tabs
+        setTabLoading(true);
+        const timer = setTimeout(() => {
+            setTabLoading(false);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [activeTab]);
+
+    if (tabLoading) {
+        return <SessionsUnifiedShimmer activeTab={activeTab} />;
     }
 
     return (

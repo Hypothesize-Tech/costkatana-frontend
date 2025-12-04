@@ -27,7 +27,6 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
         limit: 100,
       }),
     {
-      refetchInterval: 10000, // Refetch every 10 seconds
     }
   );
 
@@ -60,7 +59,7 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
     const { icon: Icon, className, label } = config[status as keyof typeof config] || config.pending;
 
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium ${className}`}>
+      <span className={`inline-flex gap-1 items-center px-2 py-1 text-xs font-medium rounded-md ${className}`}>
         <Icon className="w-3.5 h-3.5" />
         {label}
       </span>
@@ -91,10 +90,10 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
   }
 
   return (
-    <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 shadow-2xl backdrop-blur-xl">
+    <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-display font-bold gradient-text-primary">
+        <h2 className="text-2xl font-bold font-display gradient-text-primary">
           Delivery Logs
         </h2>
         <div className="flex gap-3">
@@ -127,32 +126,32 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border border-primary-200/10 dark:border-primary-200/20">
         {logs.length === 0 ? (
-          <div className="text-center py-16 text-gray-600 dark:text-gray-300 text-base">
+          <div className="py-16 text-base text-center text-gray-600 dark:text-gray-300">
             <p>No delivery logs found</p>
           </div>
         ) : (
           <table className="w-full border-collapse">
             <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/15 dark:to-primary-800/15">
               <tr>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Alert
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Type
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Severity
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Status
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Attempts
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Response Time
                 </th>
-                <th className="px-3 py-4 text-left text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
+                <th className="px-3 py-4 text-xs font-bold tracking-wider text-left uppercase text-primary-600 dark:text-primary-400">
                   Date
                 </th>
               </tr>
@@ -163,7 +162,7 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
                   key={`${log.alertId}-${log.integrationId}-${index}`}
                   className="transition-colors hover:bg-primary-50/30 dark:hover:bg-primary-900/10"
                 >
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm text-gray-900 dark:text-white">
+                  <td className="px-3 py-4 text-sm text-gray-900 border-t border-primary-200/10 dark:border-primary-200/15 dark:text-white">
                     <div className="flex flex-col gap-1">
                       <div className="font-medium">{log.alertTitle}</div>
                       {log.lastError && (
@@ -173,13 +172,13 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
                       )}
                     </div>
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm">
+                  <td className="px-3 py-4 text-sm border-t border-primary-200/10 dark:border-primary-200/15">
                     <span className="inline-block px-3 py-1.5 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/15 dark:to-primary-800/15 border border-primary-200/20 dark:border-primary-200/30 rounded-md text-xs font-semibold text-primary-600 dark:text-primary-400">
                       {log.alertType}
                     </span>
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm text-gray-900 dark:text-white">
-                    <div className="flex items-center gap-2">
+                  <td className="px-3 py-4 text-sm text-gray-900 border-t border-primary-200/10 dark:border-primary-200/15 dark:text-white">
+                    <div className="flex gap-2 items-center">
                       <span
                         className="inline-block w-2 h-2 rounded-full"
                         style={{ backgroundColor: getSeverityColor(log.alertSeverity) }}
@@ -187,16 +186,16 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
                       <span className="capitalize">{log.alertSeverity}</span>
                     </div>
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm">
+                  <td className="px-3 py-4 text-sm border-t border-primary-200/10 dark:border-primary-200/15">
                     {getStatusBadge(log.status)}
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm text-gray-900 dark:text-white">
+                  <td className="px-3 py-4 text-sm text-gray-900 border-t border-primary-200/10 dark:border-primary-200/15 dark:text-white">
                     {log.attempts}
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm text-gray-900 dark:text-white">
+                  <td className="px-3 py-4 text-sm text-gray-900 border-t border-primary-200/10 dark:border-primary-200/15 dark:text-white">
                     {log.responseTime ? `${log.responseTime}ms` : '-'}
                   </td>
-                  <td className="px-3 py-4 border-t border-primary-200/10 dark:border-primary-200/15 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                  <td className="px-3 py-4 text-sm text-gray-600 whitespace-nowrap border-t border-primary-200/10 dark:border-primary-200/15 dark:text-gray-400">
                     {formatDate(log.createdAt)}
                   </td>
                 </tr>

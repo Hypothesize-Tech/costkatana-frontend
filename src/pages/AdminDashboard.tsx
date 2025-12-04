@@ -45,7 +45,7 @@ import {
     SquaresPlusIcon as SquaresPlusIconSolid,
 } from '@heroicons/react/24/solid';
 import { StatsCard } from '../components/dashboard/StatsCard';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { AdminDashboardShimmer } from '../components/shimmer/AdminDashboardShimmer';
 import { useNotification } from '../contexts/NotificationContext';
 import {
     AdminDashboardService,
@@ -379,13 +379,7 @@ export const AdminDashboard: React.FC = () => {
     };
 
     if (loading && !engagementMetrics) {
-        return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center">
-                <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
-                    <LoadingSpinner />
-                </div>
-            </div>
-        );
+        return <AdminDashboardShimmer activeTab={activeTab} />;
     }
 
     const criticalAlerts = alerts.filter(a => a.severity === 'critical' || a.severity === 'high');

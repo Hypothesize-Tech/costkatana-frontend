@@ -5,8 +5,9 @@ import { SessionTimeline } from '../components/sessions/SessionTimeline';
 import { TraceTree } from '../components/sessions/TraceTree';
 import { SpanDetails } from '../components/sessions/SpanDetails';
 import { SessionDetailsExpanded } from '../components/SessionDetails/SessionDetailsExpanded';
-import { ArrowLeft, Loader, AlertCircle, Activity, CheckCircle, DollarSign, Hash, Cpu } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Activity, CheckCircle, DollarSign, Hash, Cpu } from 'lucide-react';
 import { SessionReplay } from '../types/sessionReplay.types';
+import { SessionDetailShimmer } from '../components/shimmer/SessionsShimmer';
 
 export const SessionDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -91,18 +92,14 @@ export const SessionDetail: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center">
-                <Loader className="w-8 h-8 animate-spin text-primary-600" />
-            </div>
-        );
+        return <SessionDetailShimmer />;
     }
 
     if (error || !details?.session) {
         return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex flex-col items-center justify-center">
-                <AlertCircle className="w-12 h-12 text-danger-500 mb-4" />
-                <p className="text-danger-600 dark:text-danger-400 mb-4">{error || 'Session not found'}</p>
+            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+                <AlertCircle className="mb-4 w-12 h-12 text-danger-500" />
+                <p className="mb-4 text-danger-600 dark:text-danger-400">{error || 'Session not found'}</p>
                 <button
                     onClick={() => navigate('/sessions')}
                     className="btn-primary"
@@ -118,23 +115,23 @@ export const SessionDetail: React.FC = () => {
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
             {/* Header */}
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mx-6 mt-6 mb-8">
-                <div className="max-w-7xl mx-auto px-6 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+            <div className="mx-6 mt-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="px-6 py-6 mx-auto max-w-7xl">
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-4 items-center">
                             <button
                                 onClick={() => navigate('/sessions')}
-                                className="p-2 hover:bg-primary-100 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
+                                className="p-2 rounded-lg transition-colors hover:bg-primary-100 dark:hover:bg-primary-900/20"
                                 aria-label="Back to sessions"
                             >
                                 <ArrowLeft className="w-5 h-5 text-secondary-700 dark:text-secondary-300" />
                             </button>
                             <div>
-                                <h1 className="text-2xl font-display font-bold gradient-text-primary flex items-center gap-2">
+                                <h1 className="flex gap-2 items-center text-2xl font-bold font-display gradient-text-primary">
                                     Session Details
                                     {getStatusIcon(session.status)}
                                 </h1>
-                                <p className="text-sm text-secondary-600 dark:text-secondary-300 font-mono">{session.sessionId}</p>
+                                <p className="font-mono text-sm text-secondary-600 dark:text-secondary-300">{session.sessionId}</p>
                             </div>
                         </div>
                         {session.status === 'active' && (
@@ -150,64 +147,64 @@ export const SessionDetail: React.FC = () => {
             </div>
 
             {/* Summary Cards */}
-            <div className="max-w-7xl mx-auto px-6 py-6">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+            <div className="px-6 py-6 mx-auto max-w-7xl">
+                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-5">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Started</p>
-                                <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">{formatDate(session.startedAt)}</p>
+                                <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Started</p>
+                                <p className="text-lg font-bold font-display text-secondary-900 dark:text-white">{formatDate(session.startedAt)}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Duration</p>
-                                <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">
+                                <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Duration</p>
+                                <p className="text-lg font-bold font-display text-secondary-900 dark:text-white">
                                     {formatDuration(session.summary?.totalDuration)}
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Spans</p>
-                                <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">{session.summary?.totalSpans || 0}</p>
+                                <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Spans</p>
+                                <p className="text-lg font-bold font-display text-secondary-900 dark:text-white">{session.summary?.totalSpans || 0}</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20">
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20">
                                 <Hash className="w-6 h-6 text-primary-600 dark:text-primary-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Tokens</p>
-                                <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">
+                                <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Tokens</p>
+                                <p className="text-lg font-bold font-display text-secondary-900 dark:text-white">
                                     {((session.summary?.totalTokens?.input || 0) +
                                         (session.summary?.totalTokens?.output || 0)).toLocaleString()}
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20">
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20">
                                 <Cpu className="w-6 h-6 text-highlight-600 dark:text-highlight-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <p className="text-secondary-600 dark:text-secondary-300 text-sm font-medium">Total Cost</p>
-                                <p className="text-lg font-display font-bold text-success-600 dark:text-success-400">
+                                <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Total Cost</p>
+                                <p className="text-lg font-bold font-display text-success-600 dark:text-success-400">
                                     ${session.summary?.totalCost?.toFixed(4) || '0.0000'}
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20">
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20">
                                 <DollarSign className="w-6 h-6 text-success-600 dark:text-success-400" />
                             </div>
                         </div>
@@ -216,14 +213,14 @@ export const SessionDetail: React.FC = () => {
 
                 {/* Error Display */}
                 {session.error && (
-                    <div className="glass rounded-xl border border-danger-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-6 mb-6">
-                        <div className="flex items-start gap-3">
+                    <div className="p-6 mb-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                        <div className="flex gap-3 items-start">
                             <AlertCircle className="w-5 h-5 text-danger-500 mt-0.5" />
                             <div>
                                 <h3 className="font-medium text-danger-900 dark:text-danger-300">Session Error</h3>
-                                <p className="text-danger-700 dark:text-danger-400 mt-1">{session.error.message}</p>
+                                <p className="mt-1 text-danger-700 dark:text-danger-400">{session.error.message}</p>
                                 {session.error.stack && (
-                                    <pre className="text-xs text-danger-600 dark:text-danger-400 mt-2 overflow-x-auto bg-danger-50 dark:bg-danger-900/20 p-2 rounded">
+                                    <pre className="overflow-x-auto p-2 mt-2 text-xs rounded text-danger-600 dark:text-danger-400 bg-danger-50 dark:bg-danger-900/20">
                                         {session.error.stack}
                                     </pre>
                                 )}
@@ -234,8 +231,8 @@ export const SessionDetail: React.FC = () => {
 
                 {/* AI Interactions (for in-app sessions) */}
                 {session.source === 'in-app' && session.replayData && session.replayData.aiInteractions && session.replayData.aiInteractions.length > 0 && (
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
-                        <h2 className="text-xl font-display font-bold gradient-text-primary mb-4">AI Interactions</h2>
+                    <div className="p-6 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <h2 className="mb-4 text-xl font-bold font-display gradient-text-primary">AI Interactions</h2>
                         <SessionDetailsExpanded session={session as any as SessionReplay} />
                     </div>
                 )}
@@ -243,14 +240,14 @@ export const SessionDetail: React.FC = () => {
                 {/* Trace Tree and Timeline (spans/traces) */}
                 {graph && graph.nodes.length > 0 && (
                     <div className="mb-6">
-                        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-4">
-                            <h2 className="text-xl font-display font-bold gradient-text-primary mb-4">Trace Spans</h2>
-                            <p className="text-secondary-600 dark:text-secondary-300 text-sm mb-4">
+                        <div className="p-6 mb-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            <h2 className="mb-4 text-xl font-bold font-display gradient-text-primary">Trace Spans</h2>
+                            <p className="mb-4 text-sm text-secondary-600 dark:text-secondary-300">
                                 Click on any span to view detailed information
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                             {/* Trace Tree */}
                             <div>
                                 <TraceTree

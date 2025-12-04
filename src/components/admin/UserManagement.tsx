@@ -29,7 +29,7 @@ import {
 } from '../../services/adminDashboard.service';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
 import { useNotification } from '../../contexts/NotificationContext';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { AdminUsersShimmer } from '../shimmer/AdminDashboardShimmer';
 import { Modal } from '../common/Modal';
 
 interface UserManagementProps {
@@ -143,8 +143,8 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
 
     if (loading && !stats) {
         return (
-            <div className="glass p-12 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-3xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <LoadingSpinner />
+            <div className="p-12 bg-gradient-to-br rounded-3xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <AdminUsersShimmer />
             </div>
         );
     }
@@ -153,83 +153,83 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
         <div className="space-y-6">
             {/* Premium Stats Cards */}
             {stats && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 group">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg glow-primary group-hover:scale-110 transition-transform">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg transition-transform glow-primary group-hover:scale-110">
                                 <UsersIcon className="w-6 h-6 text-white" />
                             </div>
                             <span className="px-2.5 py-1 rounded-lg bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-display font-semibold">
                                 Total
                             </span>
                         </div>
-                        <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <h3 className="mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Total Users
                         </h3>
-                        <p className="text-3xl font-display font-bold gradient-text">
+                        <p className="text-3xl font-bold font-display gradient-text">
                             {formatNumber(stats.totalUsers)}
                         </p>
-                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                        <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             All registered users in the system
                         </p>
                     </div>
 
                     <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 group">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg glow-primary group-hover:scale-110 transition-transform">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg transition-transform glow-primary group-hover:scale-110">
                                 <CheckCircleIcon className="w-6 h-6 text-white" />
                             </div>
                             <span className="px-2.5 py-1 rounded-lg bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-display font-semibold">
                                 Active
                             </span>
                         </div>
-                        <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <h3 className="mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Active Users
                         </h3>
-                        <p className="text-3xl font-display font-bold gradient-text">
+                        <p className="text-3xl font-bold font-display gradient-text">
                             {formatNumber(stats.activeUsers)}
                         </p>
-                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                        <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users currently active on the platform
                         </p>
                     </div>
 
                     <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 group">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg glow-primary group-hover:scale-110 transition-transform">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg transition-transform glow-primary group-hover:scale-110">
                                 <ShieldCheckIcon className="w-6 h-6 text-white" />
                             </div>
                             <span className="px-2.5 py-1 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-display font-semibold">
                                 Admin
                             </span>
                         </div>
-                        <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <h3 className="mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Admin Users
                         </h3>
-                        <p className="text-3xl font-display font-bold gradient-text">
+                        <p className="text-3xl font-bold font-display gradient-text">
                             {formatNumber(stats.adminUsers)}
                         </p>
-                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                        <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users with administrator privileges
                         </p>
                     </div>
 
                     <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70 group">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg glow-primary group-hover:scale-110 transition-transform">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg transition-transform glow-primary group-hover:scale-110">
                                 <CheckCircleIcon className="w-6 h-6 text-white" />
                             </div>
                             <span className="px-2.5 py-1 rounded-lg bg-purple-100/50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-display font-semibold">
                                 Verified
                             </span>
                         </div>
-                        <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <h3 className="mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Verified Users
                         </h3>
-                        <p className="text-3xl font-display font-bold gradient-text">
+                        <p className="text-3xl font-bold font-display gradient-text">
                             {formatNumber(stats.verifiedUsers)}
                         </p>
-                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                        <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Users with verified email addresses
                         </p>
                     </div>
@@ -237,13 +237,13 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
             )}
 
             {/* Premium Search and Filters */}
-            <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
+            <div className="p-6 bg-gradient-to-br rounded-2xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex gap-3 items-center mb-6">
+                    <div className="p-2 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600">
                         <FunnelIcon className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text">
+                        <h3 className="text-lg font-bold font-display gradient-text">
                             Search & Filter
                         </h3>
                         <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -253,26 +253,26 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                 </div>
                 <div className="flex flex-wrap gap-4 items-center">
                     <div className="flex-1 min-w-[200px]">
-                        <label className="block text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             <div className="flex items-center gap-1.5">
                                 <MagnifyingGlassIcon className="w-4 h-4" />
                                 Search Users
                             </div>
                         </label>
                         <div className="relative">
-                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-5 h-5 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
                             <input
                                 type="text"
                                 placeholder="Search by name or email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary placeholder-light-text-secondary dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50"
+                                className="py-3 pr-4 pl-10 w-full rounded-xl border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary placeholder-light-text-secondary dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50"
                                 aria-label="Search users by name or email"
                             />
                         </div>
                     </div>
                     <div className="min-w-[140px]">
-                        <label className="block text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             <div className="flex items-center gap-1.5">
                                 <ShieldCheckIcon className="w-4 h-4" />
                                 Role
@@ -281,7 +281,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         <select
                             value={filters.role}
                             onChange={(e) => setFilters({ ...filters, role: e.target.value as '' | 'user' | 'admin' })}
-                            className="w-full px-4 py-3 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display font-semibold"
+                            className="px-4 py-3 w-full font-semibold rounded-xl border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display"
                             aria-label="Filter users by role"
                         >
                             <option value="">All Roles</option>
@@ -290,7 +290,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         </select>
                     </div>
                     <div className="min-w-[140px]">
-                        <label className="block text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             <div className="flex items-center gap-1.5">
                                 <CheckCircleIcon className="w-4 h-4" />
                                 Status
@@ -302,7 +302,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                 ...filters,
                                 isActive: e.target.value === '' ? undefined : e.target.value === 'true'
                             })}
-                            className="w-full px-4 py-3 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display font-semibold"
+                            className="px-4 py-3 w-full font-semibold rounded-xl border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display"
                             aria-label="Filter users by status"
                         >
                             <option value="">All Status</option>
@@ -311,7 +311,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         </select>
                     </div>
                     <div className="min-w-[140px]">
-                        <label className="block text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             <div className="flex items-center gap-1.5">
                                 <CreditCardIcon className="w-4 h-4" />
                                 Plan
@@ -323,7 +323,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                 ...filters,
                                 subscriptionPlan: e.target.value as '' | 'free' | 'pro' | 'enterprise' | 'plus'
                             })}
-                            className="w-full px-4 py-3 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display font-semibold"
+                            className="px-4 py-3 w-full font-semibold rounded-xl border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display"
                             aria-label="Filter users by subscription plan"
                         >
                             <option value="">All Plans</option>
@@ -334,7 +334,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         </select>
                     </div>
                     <div className="min-w-[160px]">
-                        <label className="block text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                        <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                             <div className="flex items-center gap-1.5">
                                 <ClockIcon className="w-4 h-4" />
                                 Sort By
@@ -350,7 +350,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                     sortOrder: sortOrder as 'asc' | 'desc'
                                 });
                             }}
-                            className="w-full px-4 py-3 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display font-semibold"
+                            className="px-4 py-3 w-full font-semibold rounded-xl border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white/50 dark:bg-dark-surface/50 font-display"
                             aria-label="Sort users"
                         >
                             <option value="createdAt-desc">Newest First</option>
@@ -365,14 +365,14 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
             </div>
 
             {/* Premium Users Table */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
+            <div className="p-8 bg-gradient-to-br rounded-2xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex justify-between items-center mb-6">
+                    <div className="flex gap-3 items-center">
+                        <div className="p-2 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600">
                             <UserGroupIcon className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text">
+                            <h3 className="text-2xl font-bold font-display gradient-text">
                                 Users
                             </h3>
                             <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -382,56 +382,56 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                     </div>
                     <button
                         onClick={fetchData}
-                        className="flex items-center gap-2 px-4 py-2 glass rounded-xl border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:scale-105 transition-all duration-300 bg-gradient-to-r from-white/50 to-white/30 dark:from-dark-surface/50 dark:to-dark-surface/30"
+                        className="flex gap-2 items-center px-4 py-2 bg-gradient-to-r rounded-xl border transition-all duration-300 glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:scale-105 from-white/50 to-white/30 dark:from-dark-surface/50 dark:to-dark-surface/30"
                         title="Refresh user list"
                         aria-label="Refresh user list"
                     >
                         <ClockIcon className="w-5 h-5" />
-                        <span className="font-display font-semibold text-sm">Refresh</span>
+                        <span className="text-sm font-semibold font-display">Refresh</span>
                     </button>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center gap-2">
+                                <th className="px-5 py-4 font-semibold text-left font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 items-center">
                                         <UserCircleIcon className="w-4 h-4" />
                                         <span>User</span>
                                     </div>
                                 </th>
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center gap-2">
+                                <th className="px-5 py-4 font-semibold text-left font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 items-center">
                                         <ShieldCheckIcon className="w-4 h-4" />
                                         <span>Role</span>
                                     </div>
                                 </th>
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center gap-2">
+                                <th className="px-5 py-4 font-semibold text-left font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 items-center">
                                         <CheckCircleIcon className="w-4 h-4" />
                                         <span>Status</span>
                                     </div>
                                 </th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center justify-end gap-2">
+                                <th className="px-5 py-4 font-semibold text-right font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 justify-end items-center">
                                         <CurrencyDollarIcon className="w-4 h-4" />
                                         <span>Cost</span>
                                     </div>
                                 </th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center justify-end gap-2">
+                                <th className="px-5 py-4 font-semibold text-right font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 justify-end items-center">
                                         <ChartBarIcon className="w-4 h-4" />
                                         <span>Requests</span>
                                     </div>
                                 </th>
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center gap-2">
+                                <th className="px-5 py-4 font-semibold text-left font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 items-center">
                                         <CreditCardIcon className="w-4 h-4" />
                                         <span>Plan</span>
                                     </div>
                                 </th>
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    <div className="flex items-center gap-2">
+                                <th className="px-5 py-4 font-semibold text-left font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex gap-2 items-center">
                                         <FunnelIcon className="w-4 h-4" />
                                         <span>Actions</span>
                                     </div>
@@ -441,11 +441,11 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         <tbody>
                             {users.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="text-center py-12">
-                                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100/50 dark:bg-primary-900/30 mb-4">
+                                    <td colSpan={7} className="py-12 text-center">
+                                        <div className="inline-flex justify-center items-center mb-4 w-16 h-16 rounded-full bg-primary-100/50 dark:bg-primary-900/30">
                                             <UsersIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                                         </div>
-                                        <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                                        <p className="mb-2 text-lg font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                                             No Users Found
                                         </p>
                                         <p className="text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -455,22 +455,22 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                 </tr>
                             ) : (
                                 users.map((user) => (
-                                    <tr key={user.userId} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors group">
-                                        <td className="py-4 px-5">
-                                            <div className="flex items-center gap-3">
+                                    <tr key={user.userId} className="border-b transition-colors border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 group">
+                                        <td className="px-5 py-4">
+                                            <div className="flex gap-3 items-center">
                                                 {user.avatar ? (
                                                     <img
                                                         src={user.avatar}
                                                         alt={`${user.name}'s avatar`}
-                                                        className="w-12 h-12 rounded-full ring-2 ring-primary-200/50 group-hover:ring-primary-400/50 transition-all"
+                                                        className="w-12 h-12 rounded-full ring-2 transition-all ring-primary-200/50 group-hover:ring-primary-400/50"
                                                     />
                                                 ) : (
-                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                                    <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-br rounded-full shadow-lg transition-transform from-primary-500 to-primary-600 group-hover:scale-110">
                                                         <UserCircleIcon className="w-7 h-7 text-white" />
                                                     </div>
                                                 )}
                                                 <div>
-                                                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                                    <div className="font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                                                         {user.name}
                                                     </div>
                                                     <div className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -480,14 +480,14 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-5">
-                                            <div className="flex items-center gap-2">
+                                        <td className="px-5 py-4">
+                                            <div className="flex gap-2 items-center">
                                                 <span className={`px-3 py-1.5 rounded-lg text-xs font-display font-bold uppercase tracking-wide ${user.role === 'admin'
                                                     ? 'bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-800/50'
                                                     : 'bg-gray-100/50 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-gray-800/50'
                                                     }`}>
                                                     {user.role === 'admin' ? (
-                                                        <span className="flex items-center gap-1">
+                                                        <span className="flex gap-1 items-center">
                                                             <ShieldCheckIcon className="w-3 h-3" />
                                                             Admin
                                                         </span>
@@ -497,7 +497,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-5">
+                                        <td className="px-5 py-4">
                                             <span className={`px-3 py-1.5 rounded-lg text-xs font-display font-bold border flex items-center gap-1.5 w-fit ${user.isActive
                                                 ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400 border-green-200/50 dark:border-green-800/50'
                                                 : 'bg-red-100/50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200/50 dark:border-red-800/50'
@@ -515,37 +515,37 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                 )}
                                             </span>
                                         </td>
-                                        <td className="text-right py-4 px-5">
-                                            <div className="flex items-center justify-end gap-2">
+                                        <td className="px-5 py-4 text-right">
+                                            <div className="flex gap-2 justify-end items-center">
                                                 <CurrencyDollarIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-                                                <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                                <span className="font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                                                     {formatCurrency(user.totalCost)}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="text-right py-4 px-5">
-                                            <div className="flex items-center justify-end gap-2">
+                                        <td className="px-5 py-4 text-right">
+                                            <div className="flex gap-2 justify-end items-center">
                                                 <ChartBarIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
                                                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                     {formatNumber(user.totalRequests)}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-5">
+                                        <td className="px-5 py-4">
                                             <span className="px-3 py-1.5 rounded-lg text-xs font-display font-semibold bg-primary-100/50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 border border-primary-200/50 dark:border-primary-800/50 flex items-center gap-1.5 w-fit">
                                                 <CreditCardIcon className="w-3.5 h-3.5" />
                                                 <span>{user.subscriptionPlan}</span>
                                             </span>
                                         </td>
-                                        <td className="py-4 px-5">
-                                            <div className="flex items-center gap-2">
+                                        <td className="px-5 py-4">
+                                            <div className="flex gap-2 items-center">
                                                 <button
                                                     onClick={() => handleViewUser(user.userId)}
                                                     className="p-2.5 rounded-lg hover:bg-blue-100/50 dark:hover:bg-blue-900/30 hover:border-blue-200/50 dark:hover:border-blue-800/50 border border-transparent transition-all duration-300 hover:scale-110 group/btn"
                                                     title="View detailed user information"
                                                     aria-label={`View details for ${user.name}`}
                                                 >
-                                                    <EyeIcon className="w-5 h-5 text-blue-500 dark:text-blue-400 group-hover/btn:scale-110 transition-transform" />
+                                                    <EyeIcon className="w-5 h-5 text-blue-500 transition-transform dark:text-blue-400 group-hover/btn:scale-110" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleUpdateStatus(user.userId, !user.isActive)}
@@ -557,9 +557,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                     aria-label={user.isActive ? `Suspend ${user.name}` : `Activate ${user.name}`}
                                                 >
                                                     {user.isActive ? (
-                                                        <UserMinusIcon className="w-5 h-5 text-orange-500 group-hover/btn:scale-110 transition-transform" />
+                                                        <UserMinusIcon className="w-5 h-5 text-orange-500 transition-transform group-hover/btn:scale-110" />
                                                     ) : (
-                                                        <UserPlusIcon className="w-5 h-5 text-green-500 group-hover/btn:scale-110 transition-transform" />
+                                                        <UserPlusIcon className="w-5 h-5 text-green-500 transition-transform group-hover/btn:scale-110" />
                                                     )}
                                                 </button>
                                                 {user.role !== 'admin' && (
@@ -569,7 +569,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                         title="Grant administrator privileges to this user"
                                                         aria-label={`Make ${user.name} an administrator`}
                                                     >
-                                                        <ShieldCheckIcon className="w-5 h-5 text-indigo-500 dark:text-indigo-400 group-hover/btn:scale-110 transition-transform" />
+                                                        <ShieldCheckIcon className="w-5 h-5 text-indigo-500 transition-transform dark:text-indigo-400 group-hover/btn:scale-110" />
                                                     </button>
                                                 )}
                                                 <button
@@ -578,7 +578,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                                     title="Permanently delete this user account (cannot be undone)"
                                                     aria-label={`Delete ${user.name}`}
                                                 >
-                                                    <TrashIcon className="w-5 h-5 text-red-500 group-hover/btn:scale-110 transition-transform" />
+                                                    <TrashIcon className="w-5 h-5 text-red-500 transition-transform group-hover/btn:scale-110" />
                                                 </button>
                                             </div>
                                         </td>
@@ -602,7 +602,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                 >
                     <div className="space-y-6">
                         {/* User Header */}
-                        <div className="flex items-center gap-4 pb-4 border-b border-primary-200/30">
+                        <div className="flex gap-4 items-center pb-4 border-b border-primary-200/30">
                             {selectedUser.avatar ? (
                                 <img
                                     src={selectedUser.avatar}
@@ -610,15 +610,15 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                     className="w-20 h-20 rounded-full ring-4 ring-primary-200/50"
                                 />
                             ) : (
-                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
+                                <div className="flex justify-center items-center w-20 h-20 bg-gradient-to-br rounded-full shadow-lg from-primary-500 to-primary-600">
                                     <UserCircleIcon className="w-12 h-12 text-white" />
                                 </div>
                             )}
                             <div className="flex-1">
-                                <h3 className="text-2xl font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
+                                <h3 className="mb-1 text-2xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
                                     {selectedUser.name}
                                 </h3>
-                                <div className="flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary font-body">
+                                <div className="flex gap-2 items-center text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     <EnvelopeIcon className="w-4 h-4" />
                                     <span>{selectedUser.email}</span>
                                 </div>
@@ -628,9 +628,9 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         {/* User Info Grid */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-3">
+                                <div className="flex gap-2 items-center mb-3">
                                     <ShieldCheckIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Role
                                     </p>
                                 </div>
@@ -647,18 +647,18 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                         'User'
                                     )}
                                 </span>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                                <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     User's access level and permissions
                                 </p>
                             </div>
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-3">
+                                <div className="flex gap-2 items-center mb-3">
                                     {selectedUser.isActive ? (
                                         <CheckCircleIcon className="w-5 h-5 text-green-500" />
                                     ) : (
                                         <XCircleIcon className="w-5 h-5 text-red-500" />
                                     )}
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Status
                                     </p>
                                 </div>
@@ -668,63 +668,63 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                                     }`}>
                                     {selectedUser.isActive ? 'Active' : 'Inactive'}
                                 </span>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-2 font-body">
+                                <p className="mt-2 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Current account activation status
                                 </p>
                             </div>
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex gap-2 items-center mb-2">
                                     <CurrencyDollarIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Total Cost
                                     </p>
                                 </div>
-                                <p className="text-xl font-display font-bold gradient-text">
+                                <p className="text-xl font-bold font-display gradient-text">
                                     {formatCurrency(selectedUser.totalCost)}
                                 </p>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1 font-body">
+                                <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Lifetime spending on the platform
                                 </p>
                             </div>
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex gap-2 items-center mb-2">
                                     <ChartBarIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Total Requests
                                     </p>
                                 </div>
-                                <p className="text-xl font-display font-bold gradient-text">
+                                <p className="text-xl font-bold font-display gradient-text">
                                     {formatNumber(selectedUser.totalRequests)}
                                 </p>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1 font-body">
+                                <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Total API requests made
                                 </p>
                             </div>
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex gap-2 items-center mb-2">
                                     <BuildingOfficeIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Projects
                                     </p>
                                 </div>
-                                <p className="text-xl font-display font-bold gradient-text">
+                                <p className="text-xl font-bold font-display gradient-text">
                                     {selectedUser.projectCount}
                                 </p>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1 font-body">
+                                <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Number of active projects
                                 </p>
                             </div>
                             <div className="p-4 glass rounded-xl border border-primary-200/30 hover:scale-[1.02] transition-all duration-300 group">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex gap-2 items-center mb-2">
                                     <FireIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Workspaces
                                     </p>
                                 </div>
-                                <p className="text-xl font-display font-bold gradient-text">
+                                <p className="text-xl font-bold font-display gradient-text">
                                     {selectedUser.workspaceCount}
                                 </p>
-                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1 font-body">
+                                <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Number of workspace memberships
                                 </p>
                             </div>
@@ -733,25 +733,25 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onRefresh }) => 
                         {/* Workspace Memberships */}
                         {selectedUser.workspaceMemberships.length > 0 && (
                             <div>
-                                <div className="flex items-center gap-2 mb-3">
+                                <div className="flex gap-2 items-center mb-3">
                                     <BuildingOfficeIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                    <p className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                         Workspace Memberships
                                     </p>
-                                    <span className="px-2 py-1 rounded-lg bg-primary-100/50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-display font-semibold">
+                                    <span className="px-2 py-1 text-xs font-semibold rounded-lg bg-primary-100/50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-display">
                                         {selectedUser.workspaceMemberships.length}
                                     </span>
                                 </div>
                                 <div className="space-y-2">
                                     {selectedUser.workspaceMemberships.map((wm, idx) => (
                                         <div key={idx} className="p-4 glass rounded-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:scale-[1.01] transition-all duration-300">
-                                            <div className="flex items-center gap-2 mb-2">
+                                            <div className="flex gap-2 items-center mb-2">
                                                 <BuildingOfficeIcon className="w-4 h-4 text-primary-500 dark:text-primary-400" />
-                                                <p className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                                <p className="font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                                                     {wm.workspaceName || wm.workspaceId}
                                                 </p>
                                             </div>
-                                            <div className="flex items-center gap-3 text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                                            <div className="flex gap-3 items-center text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                                 <span className="flex items-center gap-1.5">
                                                     <ShieldCheckIcon className="w-3.5 h-3.5" />
                                                     {wm.role}

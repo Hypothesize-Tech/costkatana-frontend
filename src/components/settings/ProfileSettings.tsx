@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "../../types";
-import { LoadingSpinner } from "../common/LoadingSpinner";
+import { ProfileSettingsShimmer } from "../shimmer/SettingsShimmer";
 import { CheckCircle, AlertCircle, User as UserIcon, BarChart3 } from "lucide-react";
 import { emailService } from "../../services/email.service";
 import { userService } from "../../services/user.service";
@@ -77,7 +77,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     }
   };
 
-  if (!profile) return <LoadingSpinner />;
+  if (!profile) return <ProfileSettingsShimmer />;
 
   return (
     <div className="space-y-8">

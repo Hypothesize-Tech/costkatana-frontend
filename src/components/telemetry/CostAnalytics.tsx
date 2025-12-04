@@ -30,7 +30,6 @@ export const CostAnalytics: React.FC = () => {
     const { data: metrics, isLoading, error } = useQuery<BackendMetrics>({
         queryKey: ['telemetry-cost', timeframe],
         queryFn: async () => TelemetryAPI.getMetricsDetail(timeframe),
-        refetchInterval: 60000,
         staleTime: 60000,
         refetchOnWindowFocus: false,
         retry: false,

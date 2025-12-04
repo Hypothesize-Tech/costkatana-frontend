@@ -13,8 +13,8 @@ import {
   CpuChipIcon,
 } from "@heroicons/react/24/outline";
 import { optimizationService } from "../services/optimization.service";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { OptimizationCard } from "../components/optimization/OptimizationCard";
+import { OptimizationShimmer } from "../components/shimmer/OptimizationShimmer";
 import { OptimizationForm } from "../components/optimization/OptimizationForm";
 import { BulkOptimizer } from "../components/optimization/BulkOptimizer";
 import { QuickOptimize } from "../components/optimization/QuickOptimize";
@@ -43,6 +43,13 @@ export const Optimization: React.FC = () => {
 
   const [summary, setSummary] = useState<any>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [tabLoading, setTabLoading] = useState<Record<string, boolean>>({
+    quick: false,
+    bulk: false,
+    visual: false,
+    'visual-batch': false,
+    'visual-dashboard': false,
+  });
 
   // Fetch optimizations
   const fetchOptimizations = async () => {
@@ -93,6 +100,12 @@ export const Optimization: React.FC = () => {
   React.useEffect(() => {
     fetchSummary();
   }, []);
+
+  React.useEffect(() => {
+    // Show shimmer when switching tabs
+    setTabLoading(prev => ({ ...prev, [activeTab]: true }));
+    setTabLoading(prev => ({ ...prev, [activeTab]: false }))
+  }, [activeTab]);
 
 
 
@@ -149,7 +162,9 @@ export const Optimization: React.FC = () => {
     });
   };
 
-  if (optimizationsLoading || summaryLoading) return <LoadingSpinner />;
+  if (optimizationsLoading || summaryLoading || tabLoading[activeTab]) {
+    return <OptimizationShimmer activeTab={activeTab} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
@@ -379,7 +394,7 @@ export const Optimization: React.FC = () => {
 
             {/* Type Filter for Optimizations List */}
             {optimizations?.data && optimizations.data.length > 0 && (
-              <div className="mb-6 flex justify-between items-center">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold font-display gradient-text-primary">
                   Optimization History
                 </h2>
@@ -572,29 +587,29 @@ export const Optimization: React.FC = () => {
                 {getAllOptimizations()[0]?.metadata?.cortex?.cortexModel && (
                   <div className="p-4 mb-3 bg-gradient-to-br rounded-xl border glass border-purple-200/30 from-purple-50/50 to-indigo-100/30 dark:from-purple-900/20 dark:to-indigo-800/20">
                     <div className="flex gap-2 items-center mb-3">
-                      <div className="w-5 h-5 bg-gradient-to-r rounded-lg shadow-lg from-purple-500 to-indigo-600 flex items-center justify-center">
+                      <div className="flex justify-center items-center w-5 h-5 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg shadow-lg">
                         <CpuChipIcon className="w-3 h-3 text-white" />
                       </div>
-                      <h4 className="text-sm font-semibold font-display bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                      <h4 className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 font-display dark:from-purple-400 dark:to-indigo-400">
                         Cortex Models
                       </h4>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
-                        <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Encoder</div>
-                        <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      <div className="p-2 text-center rounded-lg bg-white/50 dark:bg-black/20">
+                        <div className="mb-1 text-xs font-body text-secondary-600 dark:text-secondary-300">Encoder</div>
+                        <div className="text-xs font-medium truncate font-display text-secondary-900 dark:text-white">
                           {getAllOptimizations()[0].metadata.cortex.cortexModel.encoder?.split('.')[1] || 'N/A'}
                         </div>
                       </div>
-                      <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
-                        <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Processor/Core</div>
-                        <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      <div className="p-2 text-center rounded-lg bg-white/50 dark:bg-black/20">
+                        <div className="mb-1 text-xs font-body text-secondary-600 dark:text-secondary-300">Processor/Core</div>
+                        <div className="text-xs font-medium truncate font-display text-secondary-900 dark:text-white">
                           {(getAllOptimizations()[0].metadata.cortex.cortexModel.core || getAllOptimizations()[0].metadata.cortex.cortexModel.processor)?.split('.')[1] || 'N/A'}
                         </div>
                       </div>
-                      <div className="text-center p-2 rounded-lg bg-white/50 dark:bg-black/20">
-                        <div className="text-xs font-body text-secondary-600 dark:text-secondary-300 mb-1">Decoder</div>
-                        <div className="text-xs font-medium font-display text-secondary-900 dark:text-white truncate">
+                      <div className="p-2 text-center rounded-lg bg-white/50 dark:bg-black/20">
+                        <div className="mb-1 text-xs font-body text-secondary-600 dark:text-secondary-300">Decoder</div>
+                        <div className="text-xs font-medium truncate font-display text-secondary-900 dark:text-white">
                           {getAllOptimizations()[0].metadata.cortex.cortexModel.decoder?.split('.')[1] || 'N/A'}
                         </div>
                       </div>

@@ -6,6 +6,7 @@ import { GatewayService, FirewallAnalytics } from '../../services/gateway.servic
 import { MFASetup } from '../auth/MFASetup';
 import { BackupCodesSection } from '../security/BackupCodesSection';
 import { EmailManagement } from './EmailManagement';
+import { FirewallAnalyticsShimmer } from '../shimmer/SettingsShimmer';
 
 interface SecuritySettings {
   twoFactorEnabled: boolean;
@@ -60,12 +61,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
           </h2>
         </div>
         {loadingFirewall ? (
-          <div className="p-6 rounded-lg border glass border-primary-200/30">
-            <div className="animate-pulse">
-              <div className="mb-2 w-1/4 h-4 rounded bg-gradient-primary/20"></div>
-              <div className="w-1/2 h-4 rounded bg-gradient-primary/20"></div>
-            </div>
-          </div>
+          <FirewallAnalyticsShimmer />
         ) : firewallAnalytics ? (
           <div className="space-y-6">
             {/* Firewall Overview */}
@@ -266,7 +262,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
                 </svg>
               </div>
               <span className="font-body text-light-text-primary dark:text-dark-text-primary">
-                Use the CostKATANA Gateway with firewall protection for all AI requests
+                Use the CostKatana Gateway with firewall protection for all AI requests
               </span>
             </li>
           </ul>

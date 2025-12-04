@@ -17,7 +17,17 @@ import {
   Github,
 } from 'lucide-react';
 import { userService } from '../services/user.service';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import {
+  SettingsShimmer,
+  ProfileSettingsShimmer,
+  ApiKeySettingsShimmer,
+  NotificationSettingsShimmer,
+  SecuritySettingsShimmer,
+  SessionReplaySettingsShimmer,
+  TeamManagementShimmer,
+  IntegrationsShimmer,
+  AccountClosureShimmer,
+} from '../components/shimmer/SettingsShimmer';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ApiKeySettings } from '../components/settings/ApiKeySettings';
 import { NotificationSettings } from '../components/settings/NotificationSettings';
@@ -61,7 +71,9 @@ export const Settings: React.FC = () => {
     }
   );
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) {
+    return <SettingsShimmer activeTab={activeTab} />;
+  }
 
   const tabs = [
     {

@@ -22,7 +22,6 @@ import { CostChart } from "../components/dashboard/CostChart";
 import { ServiceBreakdown } from "../components/dashboard/ServiceBreakdown";
 import { RecentActivity } from "../components/dashboard/RecentActivity";
 import { DashboardService, DashboardData } from "../services/dashboard.service";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { AccountClosureBanner } from "../components/common/AccountClosureBanner";
 import { useNotification } from "../contexts/NotificationContext";
 import { formatTimestamp } from "../utils/formatters";
@@ -32,6 +31,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { userService } from "../services/user.service";
+import { DashboardShimmer } from "../components/shimmer/DashboardShimmer";
 
 // Extended DashboardData interface to include projectBreakdown
 interface ExtendedDashboardData extends DashboardData {
@@ -206,24 +206,9 @@ export const Dashboard: React.FC = () => {
     };
   }, [selectedProject]);
 
-  // Loading state
+  // Loading state - Show shimmer that matches the dashboard layout
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-6">
-        <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 glow-primary shadow-lg">
-            <ChartBarIcon className="w-8 h-8 text-white" />
-          </div>
-          <LoadingSpinner />
-          <p className="mt-4 text-base font-display font-semibold gradient-text-primary">
-            Loading dashboard...
-          </p>
-          <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-            Preparing your analytics
-          </p>
-        </div>
-      </div>
-    );
+    return <DashboardShimmer viewMode={viewMode} />;
   }
 
   // No data state

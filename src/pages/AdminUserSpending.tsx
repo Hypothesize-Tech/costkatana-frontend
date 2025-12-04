@@ -18,8 +18,8 @@ import {
     PlatformSummary,
     AdminUserSpendingFilters,
 } from '../services/adminUserSpending.service';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
+import { AdminUserSpendingShimmer } from '../components/shimmer/AdminDashboardShimmer';
 
 export const AdminUserSpending: React.FC = () => {
     const [users, setUsers] = useState<UserSpendingSummary[]>([]);
@@ -84,41 +84,32 @@ export const AdminUserSpending: React.FC = () => {
     ).sort();
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-6">
-                <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
-                    <LoadingSpinner />
-                    <p className="mt-4 text-base font-display font-semibold gradient-text-primary">
-                        Loading user spending analytics...
-                    </p>
-                </div>
-            </div>
-        );
+        return <AdminUserSpendingShimmer />;
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+        <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="mx-auto space-y-6 max-w-7xl">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl glow-primary shadow-lg">
+                <div className="flex justify-between items-center">
+                    <div className="flex gap-4 items-center">
+                        <div className="p-3 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary">
                             <ChartBarIcon className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-display font-bold gradient-text-primary">
+                            <h1 className="text-2xl font-bold font-display gradient-text-primary">
                                 Admin User Spending Analytics
                             </h1>
-                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                            <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                 Track and analyze user spending patterns across the platform
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex gap-3 items-center">
                         <select
                             value={timeRange}
                             onChange={(e) => setTimeRange(e.target.value as 'daily' | 'weekly' | 'monthly')}
-                            className="px-4 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 text-light-text-primary dark:text-dark-text-primary transition-all duration-300 shadow-sm hover:shadow-md"
+                            className="px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 text-light-text-primary dark:text-dark-text-primary hover:shadow-md"
                         >
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
@@ -127,7 +118,7 @@ export const AdminUserSpending: React.FC = () => {
                         <button
                             onClick={fetchData}
                             disabled={refreshing}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold text-white bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg disabled:opacity-50 hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:cursor-not-allowed glow-primary hover:scale-105 disabled:hover:scale-100"
+                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-br rounded-lg shadow-lg transition-all duration-300 font-display from-primary-500 to-primary-600 disabled:opacity-50 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl disabled:cursor-not-allowed glow-primary hover:scale-105 disabled:hover:scale-100"
                         >
                             <ArrowPathIcon
                                 className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -136,7 +127,7 @@ export const AdminUserSpending: React.FC = () => {
                         </button>
                         <button
                             onClick={handleExport}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-primary-600 dark:text-primary-400"
+                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400"
                         >
                             <ArrowDownTrayIcon className="w-4 h-4" />
                             Export
@@ -146,7 +137,7 @@ export const AdminUserSpending: React.FC = () => {
 
                 {/* Summary Cards */}
                 {summary && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
                         <StatsCard
                             title="Total Users"
                             value={summary.totalUsers}
@@ -182,17 +173,17 @@ export const AdminUserSpending: React.FC = () => {
                 />
 
                 {/* Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                     <SpendingChartSwitcher trendsData={trends} loading={refreshing} />
 
                     {/* Top Users Chart */}
-                    <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
-                        <div className="flex items-center gap-3 mb-6">
+                    <div className="p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl">
+                        <div className="flex gap-3 items-center mb-6">
                             <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
                                 <UsersIcon className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-display font-bold gradient-text-primary">
+                                <h3 className="text-lg font-bold font-display gradient-text-primary">
                                     Top Spending Users
                                 </h3>
                                 <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -204,19 +195,19 @@ export const AdminUserSpending: React.FC = () => {
                             {summary?.topSpendingUsers.slice(0, 10).map((user, index) => (
                                 <div
                                     key={user.userId}
-                                    className="flex items-center justify-between p-3 glass bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-primary-200/30 rounded-lg"
+                                    className="flex justify-between items-center p-3 rounded-lg border backdrop-blur-sm glass bg-white/50 dark:bg-gray-800/50 border-primary-200/30"
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-xs font-display font-bold glow-primary shadow-sm">
+                                    <div className="flex gap-3 items-center">
+                                        <div className="flex justify-center items-center w-8 h-8 text-xs font-bold text-white bg-gradient-to-br rounded-full shadow-sm from-primary-500 to-primary-600 font-display glow-primary">
                                             {index + 1}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                            <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
                                                 {user.userEmail || 'Unknown User'}
                                             </span>
                                         </div>
                                     </div>
-                                    <span className="text-sm font-display font-bold gradient-text-primary">
+                                    <span className="text-sm font-bold font-display gradient-text-primary">
                                         {new Intl.NumberFormat('en-US', {
                                             style: 'currency',
                                             currency: 'USD',
@@ -239,12 +230,12 @@ export const AdminUserSpending: React.FC = () => {
 
                 {/* No Data State */}
                 {users.length === 0 && !refreshing && (
-                    <div className="glass backdrop-blur-xl rounded-xl p-12 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                    <div className="p-12 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 bg-gradient-to-br rounded-full from-primary-500/20 to-primary-600/20">
                                 <ExclamationTriangleIcon className="w-8 h-8 text-primary-500" />
                             </div>
-                            <h3 className="text-lg font-display font-bold gradient-text-primary mb-2">
+                            <h3 className="mb-2 text-lg font-bold font-display gradient-text-primary">
                                 No Data Available
                             </h3>
                             <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">

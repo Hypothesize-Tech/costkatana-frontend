@@ -129,17 +129,37 @@ export const ProfileActivity: React.FC<ProfileActivityProps> = ({
 
   if (loading) {
     return (
-      <div className="p-8 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="space-y-6 animate-pulse">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex items-start space-x-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary/20"></div>
-              <div className="flex-1 space-y-3">
-                <div className="w-3/4 h-4 rounded-lg bg-gradient-primary/20"></div>
-                <div className="w-1/2 h-3 rounded-lg bg-gradient-primary/10"></div>
+      <div className="rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="p-8">
+          <div className="flex gap-4 items-center mb-8">
+            <div className="w-12 h-12 rounded-xl skeleton" />
+            <div className="w-48 h-7 rounded skeleton" />
+          </div>
+
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"
+              >
+                <div className="flex items-start space-x-6">
+                  <div className="w-12 h-12 rounded-xl skeleton flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="w-48 h-5 rounded skeleton" />
+                      <div className="w-20 h-5 rounded-lg skeleton flex-shrink-0 ml-4" />
+                    </div>
+                    <div className="mb-4 w-full h-4 rounded skeleton" />
+                    <div className="flex flex-wrap gap-3 items-center">
+                      <div className="w-24 h-6 rounded-lg skeleton" />
+                      <div className="w-28 h-6 rounded-lg skeleton" />
+                      <div className="w-20 h-6 rounded-lg skeleton" />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     );
