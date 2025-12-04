@@ -2,6 +2,46 @@
 
 A modern React-based dashboard for tracking, analyzing, and optimizing AI API costs across multiple providers.
 
+## Table of Contents
+
+- [Cost Katana Frontend](#cost-katana-frontend)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Core Capabilities](#core-capabilities)
+      - [Dashboard](#dashboard)
+      - [Usage Tracking](#usage-tracking)
+      - [Analytics](#analytics)
+      - [Optimizations](#optimizations)
+      - [User Management](#user-management)
+  - [Tech Stack](#tech-stack)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+  - [Available Scripts](#available-scripts)
+    - [Development](#development)
+    - [Code Quality](#code-quality)
+    - [Testing](#testing)
+  - [Project Structure](#project-structure)
+  - [Development Guide](#development-guide)
+    - [State Management](#state-management)
+    - [API Integration](#api-integration)
+    - [Styling](#styling)
+    - [Performance Optimizations](#performance-optimizations)
+  - [Testing](#testing-1)
+  - [Building \& Deployment](#building--deployment)
+    - [Production Build](#production-build)
+    - [Docker Deployment](#docker-deployment)
+    - [Platform Deployment](#platform-deployment)
+  - [Browser Support](#browser-support)
+  - [Contributing](#contributing)
+  - [Troubleshooting](#troubleshooting)
+    - [Common Issues](#common-issues)
+      - [API Connection Failed](#api-connection-failed)
+      - [Build Errors](#build-errors)
+      - [Style Issues](#style-issues)
+  - [Support](#support)
+  - [License](#license)
+
 ## Features
 
 - 🎨 **Modern UI/UX**: Built with React 18, TypeScript, and Tailwind CSS
@@ -12,6 +52,33 @@ A modern React-based dashboard for tracking, analyzing, and optimizing AI API co
 - 🚀 **Optimized Performance**: Code splitting, lazy loading, and caching
 - 🎯 **Type Safety**: Full TypeScript support with strict typing
 - 🧪 **Testing Ready**: Jest and React Testing Library setup
+
+### Core Capabilities
+
+#### Dashboard
+
+- Real-time cost overview with service breakdown charts
+- Recent activity feed and AI-powered insights
+
+#### Usage Tracking
+
+- Detailed usage history with advanced filtering and search
+- Export functionality (CSV/JSON) and token/cost analysis
+
+#### Analytics
+
+- Time-series visualizations and service/model comparisons
+- Cost predictions and trend analysis
+
+#### Optimizations
+
+- AI-powered prompt optimization with cost saving suggestions
+- Optimization history and bulk optimization support
+
+#### User Management
+
+- API key management and notification preferences
+- Subscription management and alert configuration
 
 ## Tech Stack
 
@@ -29,7 +96,7 @@ A modern React-based dashboard for tracking, analyzing, and optimizing AI API co
 ## Prerequisites
 
 - Node.js 18+ and npm
-- Backend API running (default: <http://localhost:3000>)
+- Backend API running (default: `http://localhost:3000`)
 
 ## Installation
 
@@ -59,7 +126,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The app will be available at <http://localhost:3001>
+The app will be available at `http://localhost:3001`
 
 ## Environment Variables
 
@@ -78,19 +145,26 @@ VITE_ENABLE_ANALYTICS=true
 
 ## Available Scripts
 
+### Development
+
 ```bash
-# Development
 npm run dev          # Start development server
 npm run build       # Build for production
 npm run preview     # Preview production build
+```
 
-# Code Quality
+### Code Quality
+
+```bash
 npm run lint        # Run ESLint
 npm run lint:fix    # Fix ESLint errors
 npm run format      # Format code with Prettier
 npm run type-check  # Run TypeScript compiler
+```
 
-# Testing
+### Testing
+
+```bash
 npm run test        # Run tests
 npm run test:ui     # Run tests with UI
 npm run test:coverage # Generate coverage report
@@ -98,138 +172,46 @@ npm run test:coverage # Generate coverage report
 
 ## Project Structure
 
-```
+```text
 src/
-├── components/     # Reusable components
-│   ├── auth/      # Authentication components
-│   ├── common/    # Common/shared components
-│   ├── dashboard/ # Dashboard components
-│   ├── usage/     # Usage tracking components
-│   ├── analytics/ # Analytics components
-│   └── optimization/ # Optimization components
-├── contexts/      # React contexts
-├── hooks/         # Custom React hooks
-├── pages/         # Page components
-├── services/      # API services
-├── types/         # TypeScript types
-├── utils/         # Utility functions
-└── styles/        # Global styles
+├── components/        # Reusable components
+│   ├── auth/         # Authentication components
+│   ├── common/       # Common/shared components
+│   ├── dashboard/    # Dashboard components
+│   ├── usage/        # Usage tracking components
+│   ├── analytics/    # Analytics components
+│   └── optimization/  # Optimization components
+├── contexts/         # React contexts (Auth, Theme, Notifications)
+├── hooks/            # Custom React hooks
+├── pages/            # Page components
+├── services/         # API services
+├── types/            # TypeScript type definitions
+├── utils/            # Utility functions
+└── styles/           # Global styles
 ```
 
-## Key Features
+## Development Guide
 
-### Dashboard
+### State Management
 
-- Real-time cost overview
-- Service breakdown charts
-- Recent activity feed
-- AI-powered insights
+**React Query** - Server state management:
 
-### Usage Tracking
+- Automatic caching and background refetching
+- Optimistic updates and pagination support
 
-- Detailed usage history
-- Advanced filtering and search
-- Export functionality (CSV/JSON)
-- Token and cost analysis
+**Zustand** - Client state:
 
-### Analytics
+- UI preferences, temporary form data, filter states
 
-- Time-series visualizations
-- Service and model comparisons
-- Cost predictions
-- Trend analysis
+**Context API** - Global app state:
 
-### Optimizations
+- Authentication, theme (dark/light mode), notifications
 
-- AI-powered prompt optimization
-- Cost saving suggestions
-- Optimization history
-- Bulk optimization support
-
-### User Profile
-
-- API key management
-- Notification preferences
-- Subscription management
-- Alert configuration
-
-## Component Architecture
-
-### Layout Components
-
-- `Layout`: Main application layout with sidebar
-- `Header`: Top navigation with user menu
-- `Sidebar`: Navigation menu
-- `Footer`: Application footer
-
-### Common Components
-
-- `LoadingSpinner`: Loading states
-- `ErrorBoundary`: Error handling
-- `Modal`: Reusable modal dialog
-- `Pagination`: Table pagination
-
-### Feature Components
-
-- `StatsCard`: Metric display cards
-- `CostChart`: Cost visualization
-- `ServiceBreakdown`: Service usage breakdown
-- `UsageList`: Usage history table
-- `OptimizationCard`: Optimization suggestions
-
-## Styling Guide
-
-The app uses Tailwind CSS with custom design tokens:
-
-```css
-/* Color Palette */
-- Primary: Blue (#3B82F6)
-- Success: Green (#10B981)
-- Warning: Yellow (#F59E0B)
-- Danger: Red (#EF4444)
-
-/* Spacing */
-- Base unit: 4px (0.25rem)
-- Common spacing: 4, 8, 12, 16, 20, 24, 32, 48
-
-/* Typography */
-- Font: Inter
-- Sizes: xs, sm, base, lg, xl, 2xl, 3xl
-```
-
-## State Management
-
-### React Query
-
-Used for server state management:
-
-- Automatic caching
-- Background refetching
-- Optimistic updates
-- Pagination support
-
-### Zustand
-
-Used for client state (if needed):
-
-- UI preferences
-- Temporary form data
-- Filter states
-
-### Context API
-
-Used for global app state:
-
-- Authentication
-- Theme (dark/light mode)
-- Notifications
-
-## API Integration
+### API Integration
 
 All API calls are centralized in the `services/` directory:
 
 ```typescript
-// Example usage
 import { usageService } from '@/services/usage.service';
 
 // Track usage
@@ -239,7 +221,15 @@ const usage = await usageService.trackUsage(data);
 const result = await usageService.getUsage(filters, pagination);
 ```
 
-## Performance Optimizations
+### Styling
+
+The app uses Tailwind CSS with custom design tokens:
+
+- **Colors**: Primary (#3B82F6), Success (#10B981), Warning (#F59E0B), Danger (#EF4444)
+- **Spacing**: Base unit 4px (0.25rem), common values: 4, 8, 12, 16, 20, 24, 32, 48
+- **Typography**: Inter font family, sizes: xs, sm, base, lg, xl, 2xl, 3xl
+
+### Performance Optimizations
 
 1. **Code Splitting**: Routes are lazy loaded
 2. **Image Optimization**: WebP format with fallbacks
@@ -260,7 +250,9 @@ npm run test:watch
 npm run test:coverage
 ```
 
-## Building for Production
+## Building & Deployment
+
+### Production Build
 
 ```bash
 # Build the app
@@ -273,9 +265,7 @@ npm run preview
 npm run build -- --analyze
 ```
 
-## Deployment
-
-### Docker
+### Docker Deployment
 
 ```dockerfile
 FROM node:18-alpine AS builder
@@ -292,15 +282,15 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-### Vercel/Netlify
+### Platform Deployment
 
-The app is configured for easy deployment to Vercel or Netlify:
+**Vercel/Netlify:**
 
 1. Connect your GitHub repository
 2. Set environment variables
 3. Deploy with default settings
 
-### Traditional Hosting
+**Traditional Hosting:**
 
 1. Build the app: `npm run build`
 2. Upload the `dist/` folder to your web server
@@ -325,23 +315,25 @@ The app is configured for easy deployment to Vercel or Netlify:
 
 ### Common Issues
 
-1. **API Connection Failed**
-   - Check if backend is running
-   - Verify VITE_API_URL in .env
+#### API Connection Failed
 
-2. **Build Errors**
-   - Clear node_modules and reinstall
-   - Check for TypeScript errors
+- Check if backend is running
+- Verify `VITE_API_URL` in `.env`
 
-3. **Style Issues**
-   - Ensure Tailwind CSS is properly configured
-   - Check for CSS purging in production
+#### Build Errors
+
+- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Check for TypeScript errors: `npm run type-check`
+
+#### Style Issues
+
+- Ensure Tailwind CSS is properly configured
+- Check for CSS purging in production builds
+
+## Support
+
+For support, email <support@costkatana.com> or create an issue in the repository.
 
 ## License
 
 MIT License - see LICENSE file for details
-
-## Support
-
-For support, email <support@aicostoptimizer.com> or create an issue in the repository.
-# costkatana-frontend
