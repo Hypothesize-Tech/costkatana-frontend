@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { integrationService } from '../../services/integration.service';
-import { LoadingSpinner } from '../common/LoadingSpinner';
 import {
   CheckCircleIcon,
   XCircleIcon,
@@ -14,7 +13,7 @@ interface IntegrationLogsProps {
   onClose: () => void;
 }
 
-export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => {
+export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose: _onClose }) => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [alertTypeFilter, setAlertTypeFilter] = useState<string>('all');
 
@@ -83,8 +82,66 @@ export const IntegrationLogs: React.FC<IntegrationLogsProps> = ({ onClose }) => 
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <LoadingSpinner />
+      <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        {/* Header Shimmer */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="w-40 h-8 rounded skeleton" />
+          <div className="flex gap-3">
+            <div className="w-32 h-10 rounded-lg skeleton" />
+            <div className="w-40 h-10 rounded-lg skeleton" />
+          </div>
+        </div>
+
+        {/* Table Shimmer */}
+        <div className="overflow-x-auto rounded-xl border border-primary-200/10 dark:border-primary-200/20">
+          <table className="w-full border-collapse">
+            <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/50 dark:from-primary-900/15 dark:to-primary-800/15">
+              <tr>
+                {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                  <th key={i} className="px-3 py-4">
+                    <div className="w-20 h-4 rounded skeleton" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((row) => (
+                <tr
+                  key={row}
+                  className="border-t border-primary-200/10 dark:border-primary-200/15"
+                >
+                  <td className="px-3 py-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="w-48 h-4 rounded skeleton" />
+                      <div className="w-64 h-3 rounded skeleton" />
+                    </div>
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="w-24 h-6 rounded-md skeleton" />
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="flex gap-2 items-center">
+                      <div className="w-2 h-2 rounded-full skeleton" />
+                      <div className="w-16 h-4 rounded skeleton" />
+                    </div>
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="w-20 h-6 rounded-md skeleton" />
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="w-8 h-4 rounded skeleton" />
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="w-16 h-4 rounded skeleton" />
+                  </td>
+                  <td className="px-3 py-4">
+                    <div className="w-32 h-4 rounded skeleton" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }

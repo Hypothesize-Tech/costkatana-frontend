@@ -1,19 +1,10 @@
-import React from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Legend,
-  Tooltip,
-} from "recharts";
-import {
-  CurrencyDollarIcon,
-  ChartBarIcon,
-  PhoneIcon,
-  WrenchScrewdriverIcon,
-} from "@heroicons/react/24/outline";
+import { Doughnut } from "react-chartjs-2";
 import { formatCurrency } from "@/utils/formatters";
+import {
+  getDoughnutChartOptions,
+  generateDoughnutChartData,
+} from "@/utils/chartConfig";
+import { ChartPieIcon } from "@heroicons/react/24/outline";
 
 interface ServiceAnalyticsProps {
   data: Array<{
@@ -36,111 +27,106 @@ const COLORS = [
 ];
 
 export const ServiceAnalytics: React.FC<ServiceAnalyticsProps> = ({ data }) => {
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      const serviceName = data.payload?.service || data.name || 'Unknown Service';
-      return (
-        <div className="p-3 glass backdrop-blur-xl shadow-xl border border-primary-200/30 rounded-lg bg-gradient-to-br from-white/95 to-white/90 dark:from-dark-card/95 dark:to-dark-card/90">
-          <div className="flex items-center gap-2 mb-3">
-            <WrenchScrewdriverIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
-            <p className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{serviceName}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <CurrencyDollarIcon className="w-4 h-4 text-success-600 dark:text-success-400 shrink-0" />
-              <p className="text-xs font-display font-semibold gradient-text-success">
-                Cost: {formatCurrency(data.value)}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <ChartBarIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
-              <p className="text-xs font-display font-semibold text-primary-600 dark:text-primary-400">
-                Percentage: {data.payload?.percentage?.toFixed(1) || 0}%
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <PhoneIcon className="w-4 h-4 text-accent-600 dark:text-accent-400 shrink-0" />
-              <p className="text-xs font-display font-semibold gradient-text-accent">
-                Calls: {data.payload?.calls?.toLocaleString() || 0}
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
+  const chartData = generateDoughnutChartData(
+    data.map((d) => d.service),
+    data.map((d) => d.cost),
+    data.map((_d, index) => COLORS[index % COLORS.length])
+  );
 
-  const CustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-  }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const totalCost = data.reduce((sum, d) => sum + (d.cost || 0), 0);
 
-    if (percent < 0.05) return null; // Don't show label for small slices
+  const options = getDoughnutChartOptions({
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        titleColor: "rgb(15, 23, 42)",
+        bodyColor: "rgb(71, 85, 105)",
+        borderColor: "rgba(6, 236, 158, 0.2)",
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
+        titleFont: {
+          size: 14,
+          weight: "bold",
+        },
+        bodyFont: {
+          size: 13,
+        },
+        displayColors: true,
+        callbacks: {
+          label: (context: { label?: string; parsed: number; dataset: { data: number[] } }) => {
+            const label = context.label || "";
+            const value = formatCurrency(context.parsed);
+            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            const percentage = ((context.parsed / total) * 100).toFixed(1);
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-        className="text-xs font-medium"
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
+            // Find the service data to get calls
+            const serviceData = data.find((d) => d.service === label);
+            const calls = serviceData?.calls || 0;
+
+            return [
+              `${label}: ${value}`,
+              `Percentage: ${percentage}%`,
+              `Calls: ${calls.toLocaleString()}`,
+            ];
+          },
+        },
+      },
+    },
+  });
 
   return (
-    <div className="chart-container p-4">
-      <ResponsiveContainer width="100%" height={280}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={CustomLabel}
-            outerRadius={100}
-            fill="#8884d8"
-            dataKey="cost"
-            nameKey="service"
-            stroke="rgba(255, 255, 255, 0.2)"
-            strokeWidth={2}
+    <div className="group p-8 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.01] hover:shadow-2xl">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
+          <ChartPieIcon className="w-6 h-6 text-white" />
+        </div>
+        <h3 className="text-xl font-bold font-display gradient-text-primary">
+          Service Breakdown
+        </h3>
+      </div>
+      <div className="relative h-64 chart-container rounded-xl">
+        <Doughnut data={chartData} options={options} />
+        <div className="flex absolute inset-0 justify-center items-center pointer-events-none">
+          <div className="text-center">
+            <p className="text-3xl font-display font-bold gradient-text-primary">
+              {formatCurrency(totalCost)}
+            </p>
+            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Total</p>
+          </div>
+        </div>
+      </div>
+      <div className="mt-6 space-y-3">
+        {data.map((service) => (
+          <div
+            key={service.service}
+            className="group/item flex justify-between items-center p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
           >
-            {data.map((_entry: unknown, index: number) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
+            <div className="flex gap-3 items-center">
+              <div
+                className="w-4 h-4 rounded-full shadow-lg border border-white/50 dark:border-gray-700/50"
+                style={{
+                  backgroundColor: COLORS[data.indexOf(service) % COLORS.length],
+                }}
               />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            wrapperStyle={{
-              fontFamily: 'Inter, system-ui, sans-serif',
-              fontWeight: '600'
-            }}
-            formatter={(value: string, entry: any) => (
-              <span className="text-sm font-display font-semibold">
-                {entry.payload?.service || value} ({formatCurrency(entry.payload?.cost || 0)})
+              <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                {service.service}
               </span>
-            )}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-display font-bold gradient-text-primary">
+                {formatCurrency(service.cost || 0)}
+              </p>
+              <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                {service.calls.toLocaleString()} calls
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

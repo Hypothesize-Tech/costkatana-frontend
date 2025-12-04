@@ -11,7 +11,8 @@ import {
   ExclamationTriangleIcon,
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
-import { LoadingSpinner, ErrorBoundary } from '../components/common';
+import { ErrorBoundary } from '../components/common';
+import { AnalyticsShimmer } from '../components/shimmer/AnalyticsShimmer';
 import { analyticsService, AnalyticsService } from '../services/analytics.service';
 import { CostTrendChart } from '../components/analytics/CostTrendChart';
 import { ServiceAnalytics } from '../components/analytics/ServiceAnalytics';
@@ -418,22 +419,7 @@ export const Analytics: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-6">
-        <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 glow-primary shadow-lg">
-            <ChartBarIcon className="w-8 h-8 text-white" />
-          </div>
-          <LoadingSpinner />
-          <p className="mt-4 text-base font-display font-semibold gradient-text-primary">
-            Loading analytics...
-          </p>
-          <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-            Preparing your insights
-          </p>
-        </div>
-      </div>
-    );
+    return <AnalyticsShimmer />;
   }
 
   return (
@@ -664,10 +650,10 @@ export const Analytics: React.FC = () => {
 
               {/* Charts */}
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-6">
-                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 min-h-[400px]">
                   <CostTrendChart data={data.timeline} />
                 </div>
-                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300 min-h-[400px]">
                   <ServiceAnalytics data={data.breakdown.services} />
                 </div>
               </div>

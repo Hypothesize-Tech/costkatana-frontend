@@ -6,6 +6,7 @@ import { GatewayService, FirewallAnalytics } from '../../services/gateway.servic
 import { MFASetup } from '../auth/MFASetup';
 import { BackupCodesSection } from '../security/BackupCodesSection';
 import { EmailManagement } from './EmailManagement';
+import { ActiveUserSessions } from './ActiveUserSessions';
 import { FirewallAnalyticsShimmer } from '../shimmer/SettingsShimmer';
 
 interface SecuritySettings {
@@ -191,16 +192,7 @@ export const SecuritySettings: React.FC<SecuritySettingsProps> = () => {
             Active Sessions
           </h2>
         </div>
-        <div className="p-6 rounded-lg border glass border-info-200/30">
-          <div className="flex gap-4 items-center">
-            <div className="flex justify-center items-center w-12 h-12 rounded-lg bg-gradient-info/20">
-              <Smartphone className="w-6 h-6 text-info-500" />
-            </div>
-            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
-              Active sessions will be displayed here when session management is linked to the account.
-            </p>
-          </div>
-        </div>
+        <ActiveUserSessions />
       </div>
 
       {/* Security Recommendations */}

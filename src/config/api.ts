@@ -44,6 +44,19 @@ const longRunningApi: AxiosInstance = axios.create({
     },
 });
 
+// Track refresh attempts to prevent infinite loops
+let isRefreshing = false;
+let refreshSubscribers: Array<(token: string) => void> = [];
+
+const onTokenRefreshed = (token: string) => {
+    refreshSubscribers.forEach(callback => callback(token));
+    refreshSubscribers = [];
+};
+
+const addRefreshSubscriber = (callback: (token: string) => void) => {
+    refreshSubscribers.push(callback);
+};
+
 // Function to add auth interceptors to an axios instance
 const addAuthInterceptors = (instance: AxiosInstance) => {
     // Request interceptor to add auth token
@@ -66,34 +79,57 @@ const addAuthInterceptors = (instance: AxiosInstance) => {
             return response;
         },
         async (error: AxiosError) => {
-            if (error.response?.status === 401) {
-                const url = error.config?.url || '';
+            const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+            
+            if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+                const url = originalRequest.url || '';
                 const isMFAEndpoint = url.includes('/mfa/') || url.includes('/auth/login');
                 const isRefreshEndpoint = url.includes('/auth/refresh');
                 
                 // Don't auto-logout for MFA-related endpoints or refresh endpoint
                 if (!isMFAEndpoint && !isRefreshEndpoint) {
+                    // Mark request as retried to prevent infinite loops
+                    originalRequest._retry = true;
+                    
+                    // If already refreshing, wait for it to complete
+                    if (isRefreshing) {
+                        return new Promise((resolve) => {
+                            addRefreshSubscriber((token: string) => {
+                                if (originalRequest.headers) {
+                                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                                }
+                                resolve(instance.request(originalRequest));
+                            });
+                        });
+                    }
+                    
                     // Try to refresh token first
                     try {
                         const refreshToken = authService.getRefreshToken();
                         if (refreshToken) {
-                            await authService.refreshToken();
+                            isRefreshing = true;
+                            const newToken = await authService.refreshToken();
+                            isRefreshing = false;
+                            
+                            // Notify all waiting requests
+                            onTokenRefreshed(newToken);
+                            
                             // Retry the original request with new token
-                            if (error.config) {
-                                const newToken = authService.getToken();
-                                if (newToken && error.config.headers) {
-                                    error.config.headers.Authorization = `Bearer ${newToken}`;
-                                }
-                                return instance.request(error.config);
+                            if (originalRequest.headers) {
+                                originalRequest.headers.Authorization = `Bearer ${newToken}`;
                             }
+                            return instance.request(originalRequest);
                         }
                     } catch (refreshError) {
+                        isRefreshing = false;
+                        refreshSubscribers = [];
                         // Refresh failed, clear auth and redirect
                         authService.logout();
                         // Use a more gentle redirect that works with React Router
                         if (window.location.pathname !== '/login') {
                             window.location.href = '/login';
                         }
+                        return Promise.reject(refreshError);
                     }
                 } else if (isRefreshEndpoint) {
                     // If refresh endpoint returns 401, the refresh token is invalid

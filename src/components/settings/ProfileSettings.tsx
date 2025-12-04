@@ -77,7 +77,11 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     }
   };
 
-  if (!profile) return <ProfileSettingsShimmer />;
+  // Only show shimmer if profile is not available and we're not in an error state
+  // The parent component (Settings) handles the initial loading state
+  if (!profile) {
+    return <ProfileSettingsShimmer />;
+  }
 
   return (
     <div className="space-y-8">
