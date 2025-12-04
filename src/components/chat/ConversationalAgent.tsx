@@ -79,6 +79,7 @@ import TemplatePicker from "./TemplatePicker";
 import TemplateVariableInput from "./TemplateVariableInput";
 import { useTemplateStore } from "@/stores/templateStore";
 import { PromptTemplate } from "@/types/promptTemplate.types";
+import ThreatDetectionService from "@/services/threatDetection.service";
 
 // Configure marked for security
 marked.setOptions({
@@ -1279,6 +1280,16 @@ export const ConversationalAgent: React.FC = () => {
       return;
     }
 
+    // SECURITY CHECK: Threat detection before sending message
+    const threatCheck = ThreatDetectionService.checkContent(messageContent);
+
+    if (threatCheck.isBlocked) {
+      const errorMessage = ThreatDetectionService.getErrorMessage(threatCheck);
+      setError(errorMessage);
+      // Remove the user message if it was already added (shouldn't happen, but safety check)
+      return;
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
@@ -1596,13 +1607,31 @@ export const ConversationalAgent: React.FC = () => {
         }
         await loadConversations();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending message:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to send message",
-      );
+
+      // Handle security blocks from backend
+      if (error.response?.status === 403 && error.response?.data?.error === 'SECURITY_BLOCK') {
+        const threatCategory = error.response.data.threatCategory;
+        const ThreatDetectionService = (await import('@/services/threatDetection.service')).default;
+        const errorMessage = ThreatDetectionService.getErrorMessage({
+          isBlocked: true,
+          threatCategory: threatCategory,
+          reason: error.response.data.message || 'Message blocked by security system',
+          confidence: error.response.data.confidence || 0.8
+        });
+        setError(errorMessage);
+      } else {
+        setError(
+          error instanceof Error ? error.message : "Failed to send message",
+        );
+      }
+
       setIsLoading(false);
       setLoadingMessageId(null);
+
+      // Remove the user message if it was added before the error
+      setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id));
     } finally {
       // Additional cleanup if needed
     }
