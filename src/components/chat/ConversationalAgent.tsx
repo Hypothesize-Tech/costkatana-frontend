@@ -80,6 +80,9 @@ import TemplateVariableInput from "./TemplateVariableInput";
 import { useTemplateStore } from "@/stores/templateStore";
 import { PromptTemplate } from "@/types/promptTemplate.types";
 import ThreatDetectionService from "@/services/threatDetection.service";
+import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
+import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
+import { MessageShimmer } from "../shimmer/MessageShimmer";
 
 // Configure marked for security
 marked.setOptions({
@@ -184,6 +187,7 @@ export const ConversationalAgent: React.FC = () => {
     null,
   );
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversationsLoading, setConversationsLoading] = useState(true);
   const [currentConversationId, setCurrentConversationId] = useState<
     string | null
   >(null);
@@ -963,10 +967,13 @@ export const ConversationalAgent: React.FC = () => {
 
   const loadConversations = async () => {
     try {
+      setConversationsLoading(true);
       const result = await ChatService.getUserConversations();
       setConversations(result.conversations);
     } catch (error) {
       console.error("Error loading conversations:", error);
+    } finally {
+      setConversationsLoading(false);
     }
   };
 
@@ -2229,60 +2236,68 @@ export const ConversationalAgent: React.FC = () => {
 
         {/* Conversations List */}
         {showConversations ? (
-          <div className="flex-1 overflow-y-auto scrollbar-hide">
-            {conversations.length === 0 ? (
-              <div className="p-4 text-center">
-                <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                  No conversations yet
-                </p>
-              </div>
-            ) : (
-              conversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  className={`group p-3 mx-2 mb-2 rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
-                    ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
-                    : "hover:shadow-md"
-                    }`}
-                  onClick={() => loadConversationHistory(conversation.id)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-1">
-                        {conversation.title}
-                      </h4>
-                      <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
-                        <span>{conversation.messageCount} msgs</span>
-                        <span>•</span>
-                        <span>{formatTimestamp(conversation.updatedAt)}</span>
-                      </div>
-                      {conversation.totalCost && (
-                        <p className="text-xs font-bold gradient-text mt-1 inline-block bg-gradient-success/10 px-2 py-0.5 rounded-lg">
-                          ${conversation.totalCost.toFixed(4)}
-                        </p>
-                      )}
-                    </div>
-                    <button
-                      onClick={(e) => handleDeleteClick(conversation.id, e)}
-                      className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
-                      title="Delete conversation"
-                    >
-                      <TrashIcon className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+          conversationsLoading ? (
+            <ConversationsShimmer count={5} collapsed={false} />
+          ) : (
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+              {conversations.length === 0 ? (
+                <div className="p-4 text-center">
+                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                    No conversations yet
+                  </p>
                 </div>
-              ))
-            )}
-          </div>
+              ) : (
+                conversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    className={`group p-3 mx-2 mb-2 rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
+                      ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
+                      : "hover:shadow-md"
+                      }`}
+                    onClick={() => loadConversationHistory(conversation.id)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-1">
+                          {conversation.title}
+                        </h4>
+                        <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
+                          <span>{conversation.messageCount} msgs</span>
+                          <span>•</span>
+                          <span>{formatTimestamp(conversation.updatedAt)}</span>
+                        </div>
+                        {conversation.totalCost && (
+                          <p className="text-xs font-bold gradient-text mt-1 inline-block bg-gradient-success/10 px-2 py-0.5 rounded-lg">
+                            ${conversation.totalCost.toFixed(4)}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={(e) => handleDeleteClick(conversation.id, e)}
+                        className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
+                        title="Delete conversation"
+                      >
+                        <TrashIcon className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )
         ) : (
-          // Collapsed state - show conversation count indicator
-          <div className="flex-1 flex flex-col items-center justify-start pt-4">
-            {conversations.length > 0 && (
-              <div className="bg-gradient-primary/20 text-primary-600 dark:text-primary-400 rounded-full w-8 h-8 flex items-center justify-center text-xs font-display font-bold mb-2">
-                {conversations.length}
-              </div>
-            )}
-          </div>
+          // Collapsed state - show conversation count indicator or shimmer
+          conversationsLoading ? (
+            <ConversationsShimmer count={1} collapsed={true} />
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-start pt-4">
+              {conversations.length > 0 && (
+                <div className="bg-gradient-primary/20 text-primary-600 dark:text-primary-400 rounded-full w-8 h-8 flex items-center justify-center text-xs font-display font-bold mb-2">
+                  {conversations.length}
+                </div>
+              )}
+            </div>
+          )
         )}
       </div>
 
@@ -2442,16 +2457,11 @@ export const ConversationalAgent: React.FC = () => {
                     ? "Loading personalized suggestions..."
                     : "Try these suggestions:"}
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {questionsLoading ? (
-                    <div className="col-span-full flex flex-col items-center justify-center py-12">
-                      <div className="spinner mb-4"></div>
-                      <p className="text-light-text-secondary dark:text-dark-text-secondary font-display font-medium">
-                        Analyzing your usage data...
-                      </p>
-                    </div>
-                  ) : (
-                    suggestedQuestions.map((question, index) => {
+                {questionsLoading ? (
+                  <SuggestionsShimmer count={6} />
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {suggestedQuestions.map((question, index) => {
                       const IconComponent = question.icon;
                       return (
                         <button
@@ -2475,289 +2485,281 @@ export const ConversationalAgent: React.FC = () => {
                           </div>
                         </button>
                       );
-                    })
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-              <div className={`max-w-4xl ${message.role === 'user'
-                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-xl glow-primary'
-                : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
-                } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
-                {renderMessageContent(message.content, message)}
-
-                {/* Attached Documents Display */}
-                {message.attachedDocuments && message.attachedDocuments.length > 0 && (
-                  <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
-                    {message.attachedDocuments.map((doc) => (
-                      <div
-                        key={doc.documentId}
-                        className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
-                          ? 'border-white/30 bg-white/20 hover:bg-white/30'
-                          : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
-                          }`}
-                      >
-                        <div className={`p-1.5 rounded-lg ${message.role === 'user'
-                          ? 'bg-white/20'
-                          : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
-                          }`}>
-                          <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
-                        </div>
-                        <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
-                          {doc.fileName}
-                        </span>
-                        <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
-                          ? 'bg-white/20 text-white/90'
-                          : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                          }`}>
-                          {doc.chunksCount} chunks
-                        </span>
-                        <button
-                          onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
-                          className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
-                            ? 'hover:bg-white/30 text-white/90 hover:text-white'
-                            : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
-                            }`}
-                          title="Preview document"
-                          aria-label="Preview document"
-                        >
-                          <EyeIcon className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
+                    })}
                   </div>
                 )}
-
-                <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
-                      {formatTimestamp(message.timestamp)}
-                    </span>
-                    {(message.metadata?.templateId || message.metadata?.templateUsed) && (
-                      <span className={`glass px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5 ${message.role === 'user'
-                        ? 'border-white/30 bg-white/20 text-white'
-                        : 'border-purple-200/30 bg-gradient-to-br from-purple-500/20 to-purple-600/20 text-purple-600 dark:text-purple-400'
-                        } font-display font-semibold text-xs`}>
-                        <SparklesIcon className="w-3.5 h-3.5" />
-                        {message.metadata?.templateName || message.metadata?.templateUsed?.name || 'Template'}
-                      </span>
-                    )}
-                    {message.metadata?.cost && (
-                      <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
-                        ? 'border-white/30 bg-white/20 text-white'
-                        : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
-                        } font-display font-bold text-xs`}>
-                        ${message.metadata.cost.toFixed(4)}
-                      </span>
-                    )}
-                    {message.cacheHit && (
-                      <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse inline-flex items-center gap-1">
-                        <Zap className="w-3 h-3" />
-                        Cached
-                      </span>
-                    )}
-                    {message.riskLevel && message.riskLevel !== 'low' && (
-                      <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs inline-flex items-center gap-1 ${message.riskLevel === 'high'
-                        ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
-                        : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
-                        }`}>
-                        {message.riskLevel === 'high' ? <AlertCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
-                        {message.riskLevel.toUpperCase()} RISK
-                      </span>
-                    )}
-                    {message.sources && message.sources.length > 0 && (
-                      <button
-                        onClick={() => openSourcesModal(message.sources)}
-                        className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs inline-flex items-center gap-1"
-                      >
-                        <BookOpenIcon className="w-3 h-3" />
-                        {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
-                      </button>
-                    )}
-                  </div>
-
-                  {message.role === "assistant" && message.requestId && (
-                    <FeedbackButton
-                      requestId={message.requestId}
-                      onFeedbackSubmit={handleFeedbackSubmit}
-                      size="sm"
-                      className="ml-2"
-                    />
-                  )}
-                </div>
-
-                {/* Enhanced Multi-Agent Display */}
-                {showOptimizations && message.role === "assistant" && (
-                  (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
-                  (message.agentPath && message.agentPath.length > 0) ||
-                  message.cacheHit ||
-                  message.riskLevel
-                ) && (
-                    <div className="mt-4 p-5 glass rounded-xl border border-primary-200/30 backdrop-blur-xl animate-fade-in shadow-lg bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10">
-                      {/* Cache Hit Indicator */}
-                      {message.cacheHit && (
-                        <div className="mb-4">
-                          <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md inline-flex items-center gap-1.5">
-                            <Zap className="w-3.5 h-3.5" />
-                            Semantic Cache Hit - Instant Response
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Optimizations Applied */}
-                      {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
-                        <div className="mb-3">
-                          <div className="mb-2">
-                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-1.5">
-                              <Settings className="w-4 h-4" />
-                              Optimizations Applied:
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {message.optimizationsApplied.map((opt, idx) => {
-                              // Determine color and icon based on optimization type
-                              let borderClass = 'border-primary-200/30';
-                              let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                              let textClass = 'text-primary-600 dark:text-primary-400';
-                              let IconComponent = Settings;
-
-                              if (opt.includes('cache')) {
-                                borderClass = 'border-success-200/30';
-                                bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
-                                textClass = 'text-success-600 dark:text-success-400';
-                                IconComponent = Zap;
-                              } else if (opt.includes('prompt') || opt.includes('system')) {
-                                borderClass = 'border-warning-200/30';
-                                bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
-                                textClass = 'text-warning-600 dark:text-warning-400';
-                                IconComponent = Brain;
-                              } else if (opt.includes('multi_turn') || opt.includes('context')) {
-                                borderClass = 'border-primary-200/30';
-                                bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                                textClass = 'text-primary-600 dark:text-primary-400';
-                                IconComponent = MessageSquare;
-                              } else if (opt.includes('summarization')) {
-                                borderClass = 'border-accent-200/30';
-                                bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
-                                textClass = 'text-accent-600 dark:text-accent-400';
-                                IconComponent = FileText;
-                              }
-
-                              return (
-                                <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm inline-flex items-center gap-1.5`} title={opt}>
-                                  <IconComponent className="w-3 h-3" />
-                                  {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </span>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Agent Processing Flow */}
-                      {message.agentPath && message.agentPath.length > 1 && (
-                        <div className="mb-3">
-                          <div className="mb-2">
-                            <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
-                              🤖 Agent Processing Flow:
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap items-center gap-2">
-                            {message.agentPath.map((agent, idx) => {
-                              let borderClass = 'border-accent-200/30';
-                              let bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
-                              let textClass = 'text-accent-600 dark:text-accent-400';
-
-                              if (agent.includes('master')) {
-                                borderClass = 'border-primary-200/30';
-                                bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
-                                textClass = 'text-primary-600 dark:text-primary-400';
-                              } else if (agent.includes('cost')) {
-                                borderClass = 'border-warning-200/30';
-                                bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
-                                textClass = 'text-warning-600 dark:text-warning-400';
-                              } else if (agent.includes('quality')) {
-                                borderClass = 'border-success-200/30';
-                                bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
-                                textClass = 'text-success-600 dark:text-success-400';
-                              }
-
-                              return (
-                                <div key={idx} className="flex items-center gap-2">
-                                  <span className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`}>
-                                    {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                  </span>
-                                  {idx < message.agentPath!.length - 1 && (
-                                    <span className="text-primary-500 font-bold">→</span>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Performance Metrics */}
-                      <div className="flex flex-wrap gap-2 pt-4 border-t border-primary-200/30">
-                        {message.riskLevel && (
-                          <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${message.riskLevel === 'high'
-                            ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400' :
-                            message.riskLevel === 'medium'
-                              ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
-                              'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
-                            }`}>
-                            📊 Risk: {message.riskLevel.toUpperCase()}
-                          </span>
-                        )}
-
-                        {message.metadata?.qualityScore && (
-                          <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${getQualityLevel(message.metadata.qualityScore) === 'excellent'
-                            ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
-                            getQualityLevel(message.metadata.qualityScore) === 'good'
-                              ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
-                              getQualityLevel(message.metadata.qualityScore) === 'fair'
-                                ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
-                                'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
-                            }`}>
-                            ⭐ Quality: {message.metadata.qualityScore}/10
-                          </span>
-                        )}
-
-                        {message.metadata?.processingTime && (
-                          <span className="glass px-3 py-1.5 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 text-xs font-display font-bold shadow-sm">
-                            ⏱️ {message.metadata.processingTime}ms
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-              </div>
-            </div>
-          ))}
-
-          {isLoading && loadingMessageId && (
-            <div className="flex justify-start animate-fade-in">
-              <div className="glass p-5 rounded-2xl rounded-bl-sm shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl animate-pulse glow-primary shadow-lg">
-                    <SparklesIcon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                    AI Assistant is thinking...
-                  </span>
-                  <div className="flex space-x-1.5">
-                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
-                </div>
               </div>
             </div>
           )}
+
+          {messages.map((message, index) => {
+            const isLastMessage = index === messages.length - 1;
+            const shouldShowShimmer = isLoading && loadingMessageId === message.id && message.role === 'user' && isLastMessage;
+
+            return (
+              <React.Fragment key={message.id}>
+                <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                  <div className={`max-w-4xl ${message.role === 'user'
+                    ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-xl glow-primary'
+                    : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
+                    } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
+                    {renderMessageContent(message.content, message)}
+
+                    {/* Attached Documents Display */}
+                    {message.attachedDocuments && message.attachedDocuments.length > 0 && (
+                      <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                        {message.attachedDocuments.map((doc) => (
+                          <div
+                            key={doc.documentId}
+                            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
+                              ? 'border-white/30 bg-white/20 hover:bg-white/30'
+                              : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
+                              }`}
+                          >
+                            <div className={`p-1.5 rounded-lg ${message.role === 'user'
+                              ? 'bg-white/20'
+                              : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                              }`}>
+                              <DocumentTextIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                            </div>
+                            <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                              {doc.fileName}
+                            </span>
+                            <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
+                              ? 'bg-white/20 text-white/90'
+                              : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                              }`}>
+                              {doc.chunksCount} chunks
+                            </span>
+                            <button
+                              onClick={() => setPreviewDocument({ documentId: doc.documentId, fileName: doc.fileName })}
+                              className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                                ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                                : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                                }`}
+                              title="Preview document"
+                              aria-label="Preview document"
+                            >
+                              <EyeIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
+                          {formatTimestamp(message.timestamp)}
+                        </span>
+                        {(message.metadata?.templateId || message.metadata?.templateUsed) && (
+                          <span className={`glass px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5 ${message.role === 'user'
+                            ? 'border-white/30 bg-white/20 text-white'
+                            : 'border-purple-200/30 bg-gradient-to-br from-purple-500/20 to-purple-600/20 text-purple-600 dark:text-purple-400'
+                            } font-display font-semibold text-xs`}>
+                            <SparklesIcon className="w-3.5 h-3.5" />
+                            {message.metadata?.templateName || message.metadata?.templateUsed?.name || 'Template'}
+                          </span>
+                        )}
+                        {message.metadata?.cost && (
+                          <span className={`glass px-2.5 py-1 rounded-lg border ${message.role === 'user'
+                            ? 'border-white/30 bg-white/20 text-white'
+                            : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
+                            } font-display font-bold text-xs`}>
+                            ${message.metadata.cost.toFixed(4)}
+                          </span>
+                        )}
+                        {message.cacheHit && (
+                          <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs animate-pulse inline-flex items-center gap-1">
+                            <Zap className="w-3 h-3" />
+                            Cached
+                          </span>
+                        )}
+                        {message.riskLevel && message.riskLevel !== 'low' && (
+                          <span className={`glass px-2.5 py-1 rounded-lg border font-display font-bold text-xs inline-flex items-center gap-1 ${message.riskLevel === 'high'
+                            ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
+                            : 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400'
+                            }`}>
+                            {message.riskLevel === 'high' ? <AlertCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                            {message.riskLevel.toUpperCase()} RISK
+                          </span>
+                        )}
+                        {message.sources && message.sources.length > 0 && (
+                          <button
+                            onClick={() => openSourcesModal(message.sources)}
+                            className="glass px-2.5 py-1 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 hover:from-accent-500/30 hover:to-accent-600/30 transition-all duration-300 font-display font-semibold text-xs inline-flex items-center gap-1"
+                          >
+                            <BookOpenIcon className="w-3 h-3" />
+                            {message.sources.length} Source{message.sources.length > 1 ? 's' : ''}
+                          </button>
+                        )}
+                      </div>
+
+                      {message.role === "assistant" && message.requestId && (
+                        <FeedbackButton
+                          requestId={message.requestId}
+                          onFeedbackSubmit={handleFeedbackSubmit}
+                          size="sm"
+                          className="ml-2"
+                        />
+                      )}
+                    </div>
+
+                    {/* Enhanced Multi-Agent Display */}
+                    {showOptimizations && message.role === "assistant" && (
+                      (message.optimizationsApplied && message.optimizationsApplied.length > 0) ||
+                      (message.agentPath && message.agentPath.length > 0) ||
+                      message.cacheHit ||
+                      message.riskLevel
+                    ) && (
+                        <div className="mt-4 p-5 glass rounded-xl border border-primary-200/30 backdrop-blur-xl animate-fade-in shadow-lg bg-gradient-to-br from-primary-50/20 to-transparent dark:from-primary-900/10">
+                          {/* Cache Hit Indicator */}
+                          {message.cacheHit && (
+                            <div className="mb-4">
+                              <span className="glass border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 px-3 py-1.5 rounded-lg text-xs font-display font-bold animate-pulse shadow-md inline-flex items-center gap-1.5">
+                                <Zap className="w-3.5 h-3.5" />
+                                Semantic Cache Hit - Instant Response
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Optimizations Applied */}
+                          {message.optimizationsApplied && message.optimizationsApplied.length > 0 && (
+                            <div className="mb-3">
+                              <div className="mb-2">
+                                <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary inline-flex items-center gap-1.5">
+                                  <Settings className="w-4 h-4" />
+                                  Optimizations Applied:
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {message.optimizationsApplied.map((opt, idx) => {
+                                  // Determine color and icon based on optimization type
+                                  let borderClass = 'border-primary-200/30';
+                                  let bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                  let textClass = 'text-primary-600 dark:text-primary-400';
+                                  let IconComponent = Settings;
+
+                                  if (opt.includes('cache')) {
+                                    borderClass = 'border-success-200/30';
+                                    bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                    textClass = 'text-success-600 dark:text-success-400';
+                                    IconComponent = Zap;
+                                  } else if (opt.includes('prompt') || opt.includes('system')) {
+                                    borderClass = 'border-warning-200/30';
+                                    bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                    textClass = 'text-warning-600 dark:text-warning-400';
+                                    IconComponent = Brain;
+                                  } else if (opt.includes('multi_turn') || opt.includes('context')) {
+                                    borderClass = 'border-primary-200/30';
+                                    bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                    textClass = 'text-primary-600 dark:text-primary-400';
+                                    IconComponent = MessageSquare;
+                                  } else if (opt.includes('summarization')) {
+                                    borderClass = 'border-accent-200/30';
+                                    bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                                    textClass = 'text-accent-600 dark:text-accent-400';
+                                    IconComponent = FileText;
+                                  }
+
+                                  return (
+                                    <span key={idx} className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm inline-flex items-center gap-1.5`} title={opt}>
+                                      <IconComponent className="w-3 h-3" />
+                                      {opt.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Agent Processing Flow */}
+                          {message.agentPath && message.agentPath.length > 1 && (
+                            <div className="mb-3">
+                              <div className="mb-2">
+                                <span className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
+                                  🤖 Agent Processing Flow:
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                {message.agentPath.map((agent, idx) => {
+                                  let borderClass = 'border-accent-200/30';
+                                  let bgClass = 'bg-gradient-to-br from-accent-500/20 to-accent-600/20';
+                                  let textClass = 'text-accent-600 dark:text-accent-400';
+
+                                  if (agent.includes('master')) {
+                                    borderClass = 'border-primary-200/30';
+                                    bgClass = 'bg-gradient-to-br from-primary-500/20 to-primary-600/20';
+                                    textClass = 'text-primary-600 dark:text-primary-400';
+                                  } else if (agent.includes('cost')) {
+                                    borderClass = 'border-warning-200/30';
+                                    bgClass = 'bg-gradient-to-br from-warning-500/20 to-warning-600/20';
+                                    textClass = 'text-warning-600 dark:text-warning-400';
+                                  } else if (agent.includes('quality')) {
+                                    borderClass = 'border-success-200/30';
+                                    bgClass = 'bg-gradient-to-br from-success-500/20 to-success-600/20';
+                                    textClass = 'text-success-600 dark:text-success-400';
+                                  }
+
+                                  return (
+                                    <div key={idx} className="flex items-center gap-2">
+                                      <span className={`glass px-3 py-1.5 rounded-lg border ${borderClass} ${bgClass} ${textClass} text-xs font-display font-bold shadow-sm`}>
+                                        {agent.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                      </span>
+                                      {idx < message.agentPath!.length - 1 && (
+                                        <span className="text-primary-500 font-bold">→</span>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Performance Metrics */}
+                          <div className="flex flex-wrap gap-2 pt-4 border-t border-primary-200/30">
+                            {message.riskLevel && (
+                              <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${message.riskLevel === 'high'
+                                ? 'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400' :
+                                message.riskLevel === 'medium'
+                                  ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                                  'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
+                                }`}>
+                                📊 Risk: {message.riskLevel.toUpperCase()}
+                              </span>
+                            )}
+
+                            {message.metadata?.qualityScore && (
+                              <span className={`glass px-3 py-1.5 rounded-lg border text-xs font-display font-bold shadow-sm ${getQualityLevel(message.metadata.qualityScore) === 'excellent'
+                                ? 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400' :
+                                getQualityLevel(message.metadata.qualityScore) === 'good'
+                                  ? 'border-primary-200/30 bg-gradient-to-br from-primary-500/20 to-primary-600/20 text-primary-600 dark:text-primary-400' :
+                                  getQualityLevel(message.metadata.qualityScore) === 'fair'
+                                    ? 'border-warning-200/30 bg-gradient-to-br from-warning-500/20 to-warning-600/20 text-warning-600 dark:text-warning-400' :
+                                    'border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 text-danger-600 dark:text-danger-400'
+                                }`}>
+                                ⭐ Quality: {message.metadata.qualityScore}/10
+                              </span>
+                            )}
+
+                            {message.metadata?.processingTime && (
+                              <span className="glass px-3 py-1.5 rounded-lg border border-accent-200/30 bg-gradient-to-br from-accent-500/20 to-accent-600/20 text-accent-600 dark:text-accent-400 text-xs font-display font-bold shadow-sm">
+                                ⏱️ {message.metadata.processingTime}ms
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                </div>
+
+                {/* Show shimmer right after the user message that triggered loading */}
+                {shouldShowShimmer && (
+                  <MessageShimmer />
+                )}
+              </React.Fragment>
+            );
+          })}
 
           <div ref={messagesEndRef} />
         </div>

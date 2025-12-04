@@ -758,23 +758,57 @@
     font-weight: 700;
   }
 
-  /* Skeleton loading with gradient */
+  /* Skeleton loading with left-to-right pulse animation - Heartbeat effect with green theme */
   .skeleton {
-    background: linear-gradient(90deg, 
-      rgba(6, 236, 158, 0.1) 25%, 
-      rgba(34, 197, 94, 0.2) 50%, 
-      rgba(6, 236, 158, 0.1) 75%);
+    background: linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.2) 0%,
+      rgba(148, 163, 184, 0.2) 40%,
+      rgba(6, 236, 158, 0.25) 50%,
+      rgba(148, 163, 184, 0.2) 60%,
+      rgba(148, 163, 184, 0.2) 100%
+    );
     background-size: 200% 100%;
-    animation: shimmer 2s infinite;
     border-radius: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    animation: skeleton-pulse-light 1.5s ease-in-out infinite;
   }
 
-  @keyframes shimmer {
+  .dark .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(30, 41, 59, 0.3) 0%,
+      rgba(30, 41, 59, 0.3) 40%,
+      rgba(6, 236, 158, 0.35) 50%,
+      rgba(30, 41, 59, 0.3) 60%,
+      rgba(30, 41, 59, 0.3) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-pulse-dark 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-pulse-light {
     0% {
-      background-position: -200% 0;
+      background-position: 200% 0;
+    }
+    50% {
+      background-position: 0% 0;
     }
     100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes skeleton-pulse-dark {
+    0% {
       background-position: 200% 0;
+    }
+    50% {
+      background-position: 0% 0;
+    }
+    100% {
+      background-position: -200% 0;
     }
   }
 
