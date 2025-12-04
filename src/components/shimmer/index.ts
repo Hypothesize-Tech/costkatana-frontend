@@ -7,6 +7,15 @@ export { UserSessionShimmer } from "./UserSessionShimmer";
 export { AnalyticsShimmer } from "./AnalyticsShimmer";
 export { FeedbackAnalyticsShimmer } from "./FeedbackAnalyticsShimmer";
 
+// Team Management Shimmer Components
+export {
+  TeamManagementShimmer,
+  TeamManagementHeaderShimmer,
+  WorkspaceSettingsShimmer,
+  TeamMembersShimmer,
+  TeamMembersTableShimmer,
+} from "./TeamManagementShimmer";
+
 // Settings Shimmer Components
 export {
   SettingsShimmer,
@@ -16,7 +25,6 @@ export {
   NotificationSettingsShimmer,
   SecuritySettingsShimmer,
   SessionReplaySettingsShimmer,
-  TeamManagementShimmer,
   IntegrationsShimmer,
   AccountClosureShimmer,
   FirewallAnalyticsShimmer,
