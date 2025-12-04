@@ -16,6 +16,7 @@ import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { MemberActionsDropdown } from './MemberActionsDropdown';
 import { useNotification } from '../../contexts/NotificationContext';
+import { TeamManagementShimmer, WorkspaceSettingsShimmer, TeamMembersTableShimmer } from '../shimmer/TeamManagementShimmer';
 
 export const TeamManagement: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -25,22 +26,24 @@ export const TeamManagement: React.FC = () => {
     const { showNotification } = useNotification();
 
     // Fetch workspace details and user's role
-    const { data: workspace } = useQuery({
+    const { data: workspace, isLoading: isLoadingWorkspace } = useQuery({
         queryKey: ['workspace'],
         queryFn: () => teamService.getWorkspaceDetails(),
     });
 
     // Fetch all user's workspaces
-    const { data: userWorkspaces = [] } = useQuery({
+    const { data: userWorkspaces = [], isLoading: isLoadingWorkspaces } = useQuery({
         queryKey: ['user-workspaces'],
         queryFn: () => teamService.getUserWorkspaces(),
     });
 
     // Fetch team members
-    const { data: members = [], isLoading } = useQuery({
+    const { data: members = [], isLoading: isLoadingMembers } = useQuery({
         queryKey: ['team-members'],
         queryFn: () => teamService.getWorkspaceMembers(),
     });
+
+    const isLoading = isLoadingWorkspace || isLoadingWorkspaces || isLoadingMembers;
 
     // Fetch projects for assignment
     const { data: projects = [] } = useQuery({
@@ -134,6 +137,11 @@ export const TeamManagement: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
     };
 
+    // Show shimmer while loading initial data
+    if (isLoading && !workspace) {
+        return <TeamManagementShimmer activeSection={activeSection} />;
+    }
+
     return (
         <div className="space-y-6">
             {/* Header with Workspace Switcher */}
@@ -173,8 +181,12 @@ export const TeamManagement: React.FC = () => {
             </div>
 
             {/* Workspace Settings Section */}
-            {activeSection === 'workspace' && workspace && (
-                <WorkspaceSettings workspace={workspace} userRole={currentRole} />
+            {activeSection === 'workspace' && (
+                isLoadingWorkspace ? (
+                    <WorkspaceSettingsShimmer />
+                ) : workspace ? (
+                    <WorkspaceSettings workspace={workspace} userRole={currentRole} />
+                ) : null
             )}
 
             {/* Team Members Section */}
@@ -188,7 +200,7 @@ export const TeamManagement: React.FC = () => {
                             </h3>
                             <button
                                 onClick={() => setIsInviteModalOpen(true)}
-                                className="btn-gradient inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg"
+                                className="bg-gradient-primary text-white inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                             >
                                 <UserPlusIcon className="w-5 h-5" />
                                 Invite Member
@@ -211,12 +223,8 @@ export const TeamManagement: React.FC = () => {
                     </div>
 
                     {/* Members List */}
-                    {isLoading ? (
-                        <div className="glass rounded-xl p-12 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                            <div className="flex items-center justify-center">
-                                <div className="w-8 h-8 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
-                            </div>
-                        </div>
+                    {isLoadingMembers ? (
+                        <TeamMembersTableShimmer />
                     ) : filteredMembers.length === 0 ? (
                         <div className="glass rounded-xl p-12 border-2 border-dashed border-primary-200/50 shadow-lg backdrop-blur-xl text-center">
                             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-accent/10 flex items-center justify-center">
@@ -233,7 +241,7 @@ export const TeamManagement: React.FC = () => {
                             {!searchQuery && (
                                 <button
                                     onClick={() => setIsInviteModalOpen(true)}
-                                    className="btn-gradient inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95"
+                                    className="bg-gradient-primary text-white inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                                 >
                                     <UserPlusIcon className="w-5 h-5" />
                                     Invite Member
