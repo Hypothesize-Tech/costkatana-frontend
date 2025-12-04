@@ -280,6 +280,10 @@ function AppContent() {
 
           <Route
             path="settings"
+            element={<Navigate to="/settings/profile" replace />}
+          />
+          <Route
+            path="settings/:tab"
             element={<Settings />}
           />
           <Route path="profile" element={<Profile />} />

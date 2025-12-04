@@ -1,7 +1,7 @@
 // src/pages/Settings.tsx
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   UserCircle,
   Key,
@@ -17,17 +17,7 @@ import {
   Github,
 } from 'lucide-react';
 import { userService } from '../services/user.service';
-import {
-  SettingsShimmer,
-  ProfileSettingsShimmer,
-  ApiKeySettingsShimmer,
-  NotificationSettingsShimmer,
-  SecuritySettingsShimmer,
-  SessionReplaySettingsShimmer,
-  TeamManagementShimmer,
-  IntegrationsShimmer,
-  AccountClosureShimmer,
-} from '../components/shimmer/SettingsShimmer';
+import { SettingsShimmer } from '../components/shimmer/SettingsShimmer';
 import { ProfileSettings } from '../components/settings/ProfileSettings';
 import { ApiKeySettings } from '../components/settings/ApiKeySettings';
 import { NotificationSettings } from '../components/settings/NotificationSettings';
@@ -36,42 +26,55 @@ import SessionReplaySettings from '../components/settings/SessionReplaySettings'
 import { AccountClosure } from '../components/settings/AccountClosure';
 import { TeamManagement } from '../components/team/TeamManagement';
 import { useNotifications } from '../contexts/NotificationContext';
-import { useNavigate } from 'react-router-dom';
 
 type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security' | 'session-replay' | 'team' | 'integrations' | 'account';
 
-export const Settings: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
-  const { showNotification } = useNotifications();
-  const navigate = useNavigate();
+const VALID_TABS: SettingsTab[] = ['profile', 'api-keys', 'notifications', 'security', 'session-replay', 'team', 'integrations', 'account'];
 
-  // Handle URL parameter to set active tab
+export const Settings: React.FC = () => {
+  const { tab } = useParams<{ tab: SettingsTab }>();
+  const navigate = useNavigate();
+  const { showNotification } = useNotifications();
+  const queryClient = useQueryClient();
+
+  // Validate and set active tab from URL params
+  const activeTab: SettingsTab = (tab && VALID_TABS.includes(tab)) ? tab : 'profile';
+
+  // Redirect to profile if invalid tab
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as SettingsTab;
-    if (tabParam && ['profile', 'api-keys', 'notifications', 'security', 'session-replay', 'team', 'integrations', 'account'].includes(tabParam)) {
-      setActiveTab(tabParam);
+    if (tab && !VALID_TABS.includes(tab)) {
+      navigate('/settings/profile', { replace: true });
     }
-  }, [searchParams]);
+  }, [tab, navigate]);
 
   const { data: profile, isLoading } = useQuery(
     ['user-profile'],
-    userService.getProfile
+    userService.getProfile,
+    {
+      retry: 2,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    }
   );
 
   const updateProfileMutation = useMutation(
-    (data: any) => userService.updateProfile(data),
+    (data: Record<string, unknown>) => userService.updateProfile(data),
     {
-      onSuccess: () => {
+      onSuccess: (updatedProfile) => {
         showNotification('Profile updated successfully', 'success');
+        // Optimistically update the cache instead of invalidating
+        queryClient.setQueryData(['user-profile'], updatedProfile);
       },
-      onError: () => {
-        showNotification('Failed to update profile', 'error');
+      onError: (error: any) => {
+        const errorMessage = error?.response?.data?.message || 'Failed to update profile';
+        showNotification(errorMessage, 'error');
       },
     }
   );
 
-  if (isLoading) {
+  // Only show shimmer on initial load, not when refetching
+  if (isLoading && !profile) {
     return <SettingsShimmer activeTab={activeTab} />;
   }
 
@@ -138,18 +141,18 @@ export const Settings: React.FC = () => {
 
         <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="p-2 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex">
-              {tabs.map((tab) => (
+            <div className="flex gap-2">
+              {tabs.map((tabItem) => (
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`btn flex-1 py-3 px-4 text-center font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === tab.id
+                  key={tabItem.id}
+                  onClick={() => navigate(`/settings/${tabItem.id}`)}
+                  className={`flex-1 flex flex-col items-center justify-center gap-2 py-3 px-2 text-center font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === tabItem.id
                     ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                     : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                     }`}
                 >
-                  <tab.icon className="mx-auto mb-1 w-5 h-5" />
-                  {tab.name}
+                  <tabItem.icon className="w-5 h-5 flex-shrink-0" />
+                  <span className="leading-tight">{tabItem.name}</span>
                 </button>
               ))}
             </div>

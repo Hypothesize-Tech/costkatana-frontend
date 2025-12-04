@@ -151,9 +151,9 @@ export const TeamManagement: React.FC = () => {
                 <div className="flex gap-2">
                     <button
                         onClick={() => setActiveSection('workspace')}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${activeSection === 'workspace'
-                            ? 'btn-gradient text-white shadow-lg'
-                            : 'glass-hover text-secondary hover:text-primary'
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all border ${activeSection === 'workspace'
+                            ? 'bg-gradient-primary text-white shadow-lg border-primary-500/50'
+                            : 'glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:border-primary-500/50 hover:bg-primary-500/10'
                             }`}
                     >
                         <Cog6ToothIcon className="w-5 h-5" />
@@ -161,9 +161,9 @@ export const TeamManagement: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setActiveSection('members')}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${activeSection === 'members'
-                            ? 'btn-gradient text-white shadow-lg'
-                            : 'glass-hover text-secondary hover:text-primary'
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all border ${activeSection === 'members'
+                            ? 'bg-gradient-primary text-white shadow-lg border-primary-500/50'
+                            : 'glass border-primary-200/30 text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:border-primary-500/50 hover:bg-primary-500/10'
                             }`}
                     >
                         <UserGroupIcon className="w-5 h-5" />

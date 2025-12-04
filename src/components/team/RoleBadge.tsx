@@ -6,6 +6,7 @@ import {
   CodeBracketIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
+import { Crown } from 'lucide-react';
 
 const ROLE_CONFIG: Record<RoleName, RoleInfo> = {
   owner: {
@@ -63,7 +64,7 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({
 
     switch (config.icon) {
       case 'crown':
-        return <span style={{ fontSize: size === 'sm' ? '14px' : size === 'md' ? '16px' : '18px' }}>👑</span>;
+        return <Crown {...iconProps} />;
       case 'shield':
         return <ShieldCheckIcon {...iconProps} />;
       case 'code':

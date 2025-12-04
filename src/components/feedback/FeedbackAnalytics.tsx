@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks';
 import { apiClient } from '../../config/api';
+import { FeedbackAnalyticsShimmer } from '../shimmer/FeedbackAnalyticsShimmer';
 
 interface FeedbackAnalyticsProps {
   className?: string;
@@ -108,18 +109,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
   }
 
   if (loading) {
-    return (
-      <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 ${className}`}>
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gradient-primary/20 rounded-xl w-1/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 bg-gradient-primary/10 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <FeedbackAnalyticsShimmer className={className} />;
   }
 
   if (error) {
@@ -168,7 +158,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
           <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
             <ChartBarIcon className="h-7 w-7 text-white" />
           </div>
-          <h2 className="text-3xl font-display font-bold gradient-text-primary">💰 Return on AI Spend Analytics</h2>
+          <h2 className="text-3xl font-display font-bold gradient-text-primary">Return on AI Spend Analytics</h2>
         </div>
 
         {/* Key Metrics */}
@@ -210,7 +200,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
             <CurrencyDollarIcon className="h-5 w-5 text-white" />
           </div>
           <h3 className="text-2xl font-display font-bold gradient-text-primary">
-            💸 Cost vs Value Breakdown
+            Cost vs Value Breakdown
           </h3>
         </div>
 
@@ -271,7 +261,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
               </svg>
             </div>
             <h3 className="text-2xl font-display font-bold gradient-text-primary">
-              💡 AI-Powered Insights & Recommendations
+              AI-Powered Insights & Recommendations
             </h3>
           </div>
 
@@ -299,7 +289,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-display font-bold gradient-text-primary">🎯 Feature Performance</h3>
+            <h3 className="text-2xl font-display font-bold gradient-text-primary">Feature Performance</h3>
           </div>
 
           <div className="space-y-4">
@@ -343,7 +333,7 @@ export const FeedbackAnalytics: React.FC<FeedbackAnalyticsProps> = ({ className 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-display font-bold gradient-text-primary">👥 User Behavior Analysis</h3>
+          <h3 className="text-2xl font-display font-bold gradient-text-primary">User Behavior Analysis</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

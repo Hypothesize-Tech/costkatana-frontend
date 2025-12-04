@@ -7,6 +7,7 @@ import {
     UserIcon,
     CreditCardIcon,
     ArrowRightOnRectangleIcon,
+    HandRaisedIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks';
 
@@ -99,9 +100,10 @@ export const ProfileDropdown: React.FC = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="glass rounded-lg px-3 py-1.5 inline-block">
+                    <div className="glass rounded-lg px-3 py-1.5 inline-flex items-center gap-2">
+                        <HandRaisedIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                         <p className="text-xs font-medium text-primary">
-                            👋 Welcome back!
+                            Welcome back!
                         </p>
                     </div>
                 </div>
