@@ -6,7 +6,7 @@ import {
     ComparisonTableResponse,
     CostCalculationResult
 } from '@/services/pricing.service';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { CostCalculatorShimmer } from '../shimmer/CostCalculatorShimmer';
 import {
     CalculatorIcon,
     ArrowDownTrayIcon,
@@ -79,11 +79,7 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
     };
 
     if (isLoading) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <LoadingSpinner />
-            </div>
-        );
+        return <CostCalculatorShimmer />;
     }
 
     if (error) {

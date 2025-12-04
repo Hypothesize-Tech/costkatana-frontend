@@ -10,6 +10,7 @@ import {
 } from '../components/logs';
 import { FiFilter, FiRefreshCw, FiDownload, FiActivity, FiTable, FiClock, FiCode, FiGrid, FiZap } from 'react-icons/fi';
 import { logsService } from '../services/logs.service';
+import { LogsShimmer } from '../components/shimmer/LogsShimmer';
 
 type ViewMode = 'table' | 'timeline' | 'json' | 'dashboard';
 
@@ -154,14 +155,19 @@ export const Logs: React.FC = () => {
         }
     };
 
+    // Show shimmer on initial load (after all hooks)
+    if (loading && logs.length === 0 && !stats && !isRealtime) {
+        return <LogsShimmer viewMode={viewMode} />;
+    }
+
     return (
         <div className="min-h-screen">
             {/* Enhanced Header */}
-            <div className="card mb-6 shadow-xl">
+            <div className="mb-6 shadow-xl card">
                 <div className="px-6 py-5">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-4 justify-between items-center">
                         <div>
-                            <h1 className="text-3xl font-bold gradient-text-primary mb-1">
+                            <h1 className="mb-1 text-3xl font-bold gradient-text-primary">
                                 AI Operation Logs
                             </h1>
                             <p className="text-light-text-secondary dark:text-dark-text-secondary">
@@ -169,7 +175,7 @@ export const Logs: React.FC = () => {
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex flex-wrap gap-3 items-center">
                             {/* AI Assistant Toggle - Only show in dashboard view */}
                             {viewMode === 'dashboard' && (
                                 <button
@@ -231,22 +237,22 @@ export const Logs: React.FC = () => {
                                     <FiDownload />
                                     Export
                                 </button>
-                                <div className="absolute right-0 mt-2 w-40 card rounded-lg shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                <div className="absolute right-0 invisible z-50 mt-2 w-40 rounded-lg shadow-2xl opacity-0 transition-all card group-hover:opacity-100 group-hover:visible">
                                     <button
                                         onClick={() => handleExport('json')}
-                                        className="w-full px-4 py-2 text-left text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 rounded-t-lg transition-colors font-medium"
+                                        className="px-4 py-2 w-full text-sm font-medium text-left rounded-t-lg transition-colors text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
                                     >
                                         JSON
                                     </button>
                                     <button
                                         onClick={() => handleExport('csv')}
-                                        className="w-full px-4 py-2 text-left text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 transition-colors font-medium"
+                                        className="px-4 py-2 w-full text-sm font-medium text-left transition-colors text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
                                     >
                                         CSV
                                     </button>
                                     <button
                                         onClick={() => handleExport('jsonl')}
-                                        className="w-full px-4 py-2 text-left text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 rounded-b-lg transition-colors font-medium"
+                                        className="px-4 py-2 w-full text-sm font-medium text-left rounded-b-lg transition-colors text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10"
                                     >
                                         JSONL
                                     </button>
@@ -271,7 +277,7 @@ export const Logs: React.FC = () => {
                 <div className="flex gap-6">
                     {/* Filters Sidebar */}
                     {showFilters && (
-                        <aside className="w-80 flex-shrink-0">
+                        <aside className="flex-shrink-0 w-80">
                             <div className="sticky top-6">
                                 <LogFilters onFilterChange={handleFilterChange} />
                             </div>
@@ -295,10 +301,10 @@ export const Logs: React.FC = () => {
                         {/* Stats Section */}
                         {!isRealtime && stats && (
                             <div className="mb-6">
-                                <div className="card shadow-xl overflow-hidden">
+                                <div className="overflow-hidden shadow-xl card">
                                     <button
                                         onClick={() => setStatsCollapsed(!statsCollapsed)}
-                                        className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-primary-500/5 transition-colors"
+                                        className="flex justify-between items-center px-6 py-4 w-full text-left transition-colors hover:bg-primary-500/5"
                                     >
                                         <h3 className="text-lg font-bold gradient-text-primary">
                                             Statistics Overview
@@ -317,9 +323,9 @@ export const Logs: React.FC = () => {
                         )}
 
                         {/* View Mode Selector & Log Count */}
-                        <div className="card shadow-xl mb-4 px-6 py-4">
-                            <div className="flex items-center justify-between flex-wrap gap-4">
-                                <div className="flex items-center gap-2 bg-primary-500/10 rounded-lg p-1">
+                        <div className="px-6 py-4 mb-4 shadow-xl card">
+                            <div className="flex flex-wrap gap-4 justify-between items-center">
+                                <div className="flex gap-2 items-center p-1 rounded-lg bg-primary-500/10">
                                     <button
                                         onClick={() => handleViewModeChange('dashboard')}
                                         className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${viewMode === 'dashboard'
@@ -362,7 +368,7 @@ export const Logs: React.FC = () => {
                                     </button>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex gap-2 items-center">
                                     <span className="text-sm font-bold gradient-text-primary">
                                         {logs.length}
                                     </span>
@@ -379,20 +385,15 @@ export const Logs: React.FC = () => {
                                 onApplyQueryToDashboard={handleApplyToDashboard}
                             />
                         ) : (
-                            <div className="card shadow-xl overflow-hidden">
+                            <div className="overflow-hidden shadow-xl card">
                                 {error && (
-                                    <div className="px-6 py-4 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+                                    <div className="px-6 py-4 bg-red-50 border-b border-red-200 dark:bg-red-900/20 dark:border-red-800">
                                         <p className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</p>
                                     </div>
                                 )}
 
-                                {loading && !isRealtime && (
-                                    <div className="flex items-center justify-center py-16">
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin glow-primary"></div>
-                                            <p className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Loading logs...</p>
-                                        </div>
-                                    </div>
+                                {loading && !isRealtime && logs.length === 0 && (
+                                    <LogsShimmer viewMode={viewMode} />
                                 )}
 
                                 {!loading && (

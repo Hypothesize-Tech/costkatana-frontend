@@ -10,7 +10,6 @@ export const TopErrors: React.FC = () => {
         queryKey: ['telemetry-top-errors', timeframe],
         queryFn: () => TelemetryAPI.getMetricsDetail(timeframe),
         staleTime: 60000,
-        refetchInterval: 60000
     });
 
     if (isLoading) return <div className="p-8 h-40 rounded-xl border shadow-lg backdrop-blur-xl animate-pulse glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel" />;

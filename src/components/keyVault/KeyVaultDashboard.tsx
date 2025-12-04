@@ -15,6 +15,7 @@ import { CreateProviderKeyModal } from './CreateProviderKeyModal';
 import { CreateProxyKeyModal } from './CreateProxyKeyModal';
 import { ProviderKeyCard } from './ProviderKeyCard';
 import { ProxyKeyCard } from './ProxyKeyCard';
+import { KeyVaultShimmer } from '../shimmer/KeyVaultShimmer';
 
 export const KeyVaultDashboard: React.FC = () => {
   const [showCreateProviderModal, setShowCreateProviderModal] = useState(false);
@@ -30,7 +31,6 @@ export const KeyVaultDashboard: React.FC = () => {
   } = useQuery<DashboardData>({
     queryKey: ['keyVaultDashboard'],
     queryFn: KeyVaultService.getDashboard,
-    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   // Delete provider key mutation
@@ -78,27 +78,19 @@ export const KeyVaultDashboard: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-12 text-center">
-        <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center animate-pulse shadow-lg">
-          <Lock className="h-8 w-8 text-white" />
-        </div>
-        <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">Loading Key Vault...</h3>
-        <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Fetching your secure keys and analytics</p>
-      </div>
-    );
+    return <KeyVaultShimmer />;
   }
 
   if (error) {
     return (
-      <div className="glass rounded-xl border border-danger-200/30 shadow-2xl backdrop-blur-xl bg-gradient-danger/10 p-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
-            <AlertCircle className="h-6 w-6 text-white" />
+      <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-danger-200/30 bg-gradient-danger/10">
+        <div className="flex gap-4 items-center">
+          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-danger">
+            <AlertCircle className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-display font-bold gradient-text-danger mb-2">Error loading Key Vault</h3>
-            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">
+            <h3 className="mb-2 text-lg font-bold font-display gradient-text-danger">Error loading Key Vault</h3>
+            <p className="mb-4 font-body text-light-text-secondary dark:text-dark-text-secondary">
               Failed to load Key Vault data. Please try again.
             </p>
             <button
@@ -118,16 +110,16 @@ export const KeyVaultDashboard: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="p-8 border-b border-primary-200/30">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <Shield className="h-8 w-8 text-white" />
+          <div className="flex flex-col gap-6 justify-between items-start lg:flex-row lg:items-center">
+            <div className="flex gap-4 items-center">
+              <div className="flex justify-center items-center w-16 h-16 rounded-xl shadow-lg bg-gradient-primary">
+                <Shield className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2 flex items-center gap-2">
-                  <Lock className="h-8 w-8" />
+                <h1 className="flex gap-2 items-center mb-2 text-3xl font-bold font-display gradient-text-primary">
+                  <Lock className="w-8 h-8" />
                   Key Vault
                 </h1>
                 <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -138,16 +130,16 @@ export const KeyVaultDashboard: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowCreateProviderModal(true)}
-                className="btn btn-primary flex items-center gap-2"
+                className="flex gap-2 items-center btn btn-primary"
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="w-5 h-5" />
                 Add Provider Key
               </button>
               <button
                 onClick={() => setShowCreateProxyModal(true)}
-                className="btn btn-secondary flex items-center gap-2"
+                className="flex gap-2 items-center btn btn-secondary"
               >
-                <Key className="h-5 w-5" />
+                <Key className="w-5 h-5" />
                 Create Proxy Key
               </button>
             </div>
@@ -157,51 +149,51 @@ export const KeyVaultDashboard: React.FC = () => {
         {/* Analytics Cards */}
         {analytics && (
           <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <Key className="h-6 w-6 text-white" />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                <div className="flex gap-4 items-center">
+                  <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary">
+                    <Key className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-body text-sm text-primary-600 dark:text-primary-400 mb-1">Total Keys</p>
-                    <p className="text-3xl font-display font-bold gradient-text-primary">{analytics.totalKeys}</p>
+                    <p className="mb-1 text-sm font-body text-primary-600 dark:text-primary-400">Total Keys</p>
+                    <p className="text-3xl font-bold font-display gradient-text-primary">{analytics.totalKeys}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                    <BarChart3 className="h-6 w-6 text-white" />
+              <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-success-200/30 from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105">
+                <div className="flex gap-4 items-center">
+                  <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-success">
+                    <BarChart3 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-body text-sm text-success-600 dark:text-success-400 mb-1">Total Requests</p>
-                    <p className="text-3xl font-display font-bold gradient-text-success">{analytics.totalRequests.toLocaleString()}</p>
+                    <p className="mb-1 text-sm font-body text-success-600 dark:text-success-400">Total Requests</p>
+                    <p className="text-3xl font-bold font-display gradient-text-success">{analytics.totalRequests.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                    <DollarSign className="h-6 w-6 text-white" />
+              <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105">
+                <div className="flex gap-4 items-center">
+                  <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-warning">
+                    <DollarSign className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-body text-sm text-warning-600 dark:text-warning-400 mb-1">Total Cost</p>
-                    <p className="text-3xl font-display font-bold gradient-text-warning">${analytics.totalCost.toFixed(4)}</p>
+                    <p className="mb-1 text-sm font-body text-warning-600 dark:text-warning-400">Total Cost</p>
+                    <p className="text-3xl font-bold font-display gradient-text-warning">${analytics.totalCost.toFixed(4)}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                    <Clock className="h-6 w-6 text-white" />
+              <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105">
+                <div className="flex gap-4 items-center">
+                  <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-accent">
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-body text-sm text-accent-600 dark:text-accent-400 mb-1">Daily Cost</p>
-                    <p className="text-3xl font-display font-bold gradient-text-accent">${analytics.dailyCost.toFixed(4)}</p>
+                    <p className="mb-1 text-sm font-body text-accent-600 dark:text-accent-400">Daily Cost</p>
+                    <p className="text-3xl font-bold font-display gradient-text-accent">${analytics.dailyCost.toFixed(4)}</p>
                   </div>
                 </div>
               </div>
@@ -211,13 +203,13 @@ export const KeyVaultDashboard: React.FC = () => {
       </div>
 
       {/* Provider Keys Section */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="p-6 border-b border-primary-200/30">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <Lock className="h-5 w-5 text-white" />
+          <div className="flex gap-3 items-center mb-2">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
+              <Lock className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-display font-bold gradient-text-primary">Provider Keys</h2>
+            <h2 className="text-xl font-bold font-display gradient-text-primary">Provider Keys</h2>
           </div>
           <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
             Master API keys from your AI providers, stored securely and encrypted.
@@ -225,24 +217,24 @@ export const KeyVaultDashboard: React.FC = () => {
         </div>
         <div className="p-6">
           {dashboardData?.providerKeys.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-20 h-20 rounded-full bg-gradient-secondary mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Key className="h-10 w-10 text-white" />
+            <div className="py-16 text-center">
+              <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-full shadow-lg bg-gradient-secondary">
+                <Key className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No provider keys</h3>
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-8">
+              <h3 className="mb-2 text-xl font-bold font-display gradient-text-primary">No provider keys</h3>
+              <p className="mb-8 font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Get started by adding your first provider API key.
               </p>
               <button
                 onClick={() => setShowCreateProviderModal(true)}
-                className="btn btn-primary flex items-center gap-2 mx-auto"
+                className="flex gap-2 items-center mx-auto btn btn-primary"
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="w-5 h-5" />
                 Add Provider Key
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {dashboardData?.providerKeys.map((providerKey) => (
                 <ProviderKeyCard
                   key={providerKey._id}
@@ -256,13 +248,13 @@ export const KeyVaultDashboard: React.FC = () => {
       </div>
 
       {/* Proxy Keys Section */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="p-6 border-b border-primary-200/30">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <Key className="h-5 w-5 text-white" />
+          <div className="flex gap-3 items-center mb-2">
+            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
+              <Key className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-display font-bold gradient-text-primary">Proxy Keys</h2>
+            <h2 className="text-xl font-bold font-display gradient-text-primary">Proxy Keys</h2>
           </div>
           <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
             Controlled access keys that provide secure, limited access to your provider keys.
@@ -270,26 +262,26 @@ export const KeyVaultDashboard: React.FC = () => {
         </div>
         <div className="p-6">
           {dashboardData?.proxyKeys.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-20 h-20 rounded-full bg-gradient-accent mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Shield className="h-10 w-10 text-white" />
+            <div className="py-16 text-center">
+              <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-full shadow-lg bg-gradient-accent">
+                <Shield className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-primary mb-2">No proxy keys</h3>
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-8">
+              <h3 className="mb-2 text-xl font-bold font-display gradient-text-primary">No proxy keys</h3>
+              <p className="mb-8 font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Create proxy keys to provide controlled access to your applications.
               </p>
               <button
                 onClick={() => setShowCreateProxyModal(true)}
-                className="btn btn-secondary flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex gap-2 items-center mx-auto btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!dashboardData?.providerKeys.length}
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="w-5 h-5" />
                 Create Proxy Key
               </button>
               {!dashboardData?.providerKeys.length && (
-                <div className="glass p-4 rounded-xl border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-warning/10 dark:bg-gradient-warning/20 mt-6 max-w-md mx-auto">
-                  <p className="text-sm font-body text-warning-700 dark:text-warning-300 flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
+                <div className="p-4 mx-auto mt-6 max-w-md rounded-xl border shadow-lg backdrop-blur-xl glass border-warning-200/30 bg-gradient-warning/10 dark:bg-gradient-warning/20">
+                  <p className="flex gap-2 items-center text-sm font-body text-warning-700 dark:text-warning-300">
+                    <AlertCircle className="w-4 h-4" />
                     You need at least one provider key to create proxy keys.
                   </p>
                 </div>

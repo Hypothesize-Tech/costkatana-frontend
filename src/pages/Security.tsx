@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { securityService, SecurityAnalytics, SecurityMetrics, HumanReviewRequest } from '../services/security.service';
+import { SecurityShimmer } from '../components/shimmer/SecurityShimmer';
 import {
     RotateCw,
     FileText,
@@ -87,22 +88,18 @@ export const Security: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            </div>
-        );
+        return <SecurityShimmer />;
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient py-8 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md mx-auto">
-                    <div className="glass rounded-xl border border-danger-200/30 bg-gradient-to-br from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 p-6">
-                        <div className="text-danger-600 dark:text-danger-400 text-sm mb-4 font-body">{error}</div>
+            <div className="px-4 py-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-md">
+                    <div className="p-6 bg-gradient-to-br rounded-xl border glass border-danger-200/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+                        <div className="mb-4 text-sm text-danger-600 dark:text-danger-400 font-body">{error}</div>
                         <button
                             onClick={loadSecurityData}
-                            className="btn btn-primary flex items-center gap-2"
+                            className="flex gap-2 items-center btn btn-primary"
                         >
                             <RotateCw className="w-4 h-4" />
                             Retry
@@ -114,25 +111,25 @@ export const Security: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
+        <div className="px-4 py-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
-                    <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4">LLM Security Dashboard</h1>
-                    <p className="text-secondary-600 dark:text-secondary-300 mb-6">
+                <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">LLM Security Dashboard</h1>
+                    <p className="mb-6 text-secondary-600 dark:text-secondary-300">
                         Monitor and manage your AI security with comprehensive threat detection and analysis
                     </p>
                     <div className="flex gap-4">
                         <button
                             onClick={() => exportSecurityReport('json')}
-                            className="btn btn-secondary flex items-center gap-2"
+                            className="flex gap-2 items-center btn btn-secondary"
                         >
                             <FileText className="w-4 h-4" />
                             Export JSON Report
                         </button>
                         <button
                             onClick={() => exportSecurityReport('csv')}
-                            className="btn btn-secondary flex items-center gap-2"
+                            className="flex gap-2 items-center btn btn-secondary"
                         >
                             <Table className="w-4 h-4" />
                             Export CSV Report
@@ -141,64 +138,64 @@ export const Security: React.FC = () => {
                 </div>
 
                 {/* Security Metrics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-5">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Threats Detected</p>
-                                <p className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{metrics?.totalThreatsDetected || 0}</p>
+                                <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">{metrics?.totalThreatsDetected || 0}</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-danger-500/20 to-danger-600/20 dark:from-danger-900/30 dark:to-danger-800/30">
-                                <AlertTriangle className="h-5 w-5 text-danger-600 dark:text-danger-400" />
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-danger-500/20 to-danger-600/20 dark:from-danger-900/30 dark:to-danger-800/30">
+                                <AlertTriangle className="w-5 h-5 text-danger-600 dark:text-danger-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Cost Saved</p>
-                                <p className="text-2xl font-display font-bold text-success-600 dark:text-success-400">${metrics?.totalCostSaved?.toFixed(2) || '0.00'}</p>
+                                <p className="text-2xl font-bold font-display text-success-600 dark:text-success-400">${metrics?.totalCostSaved?.toFixed(2) || '0.00'}</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-success-500/20 to-success-600/20 dark:from-success-900/30 dark:to-success-800/30">
-                                <DollarSign className="h-5 w-5 text-success-600 dark:text-success-400" />
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20 dark:from-success-900/30 dark:to-success-800/30">
+                                <DollarSign className="w-5 h-5 text-success-600 dark:text-success-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Avg Risk Score</p>
                                 <p className={`text-2xl font-display font-bold ${getRiskScoreColor(metrics?.averageRiskScore || 0)}`}>
                                     {((metrics?.averageRiskScore || 0) * 100).toFixed(1)}%
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-highlight-500/20 to-highlight-600/20 dark:from-highlight-900/30 dark:to-highlight-800/30">
-                                <BarChart3 className="h-5 w-5 text-highlight-600 dark:text-highlight-400" />
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20 dark:from-highlight-900/30 dark:to-highlight-800/30">
+                                <BarChart3 className="w-5 h-5 text-highlight-600 dark:text-highlight-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Detection Rate</p>
-                                <p className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">
+                                <p className="text-2xl font-bold font-display text-primary-600 dark:text-primary-400">
                                     {((analytics?.detectionRate || 0) * 100).toFixed(1)}%
                                 </p>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 dark:from-primary-900/30 dark:to-primary-800/30">
-                                <Target className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20 dark:from-primary-900/30 dark:to-primary-800/30">
+                                <Target className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 card-hover">
-                        <div className="flex items-center justify-between">
+                    <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
+                        <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">Top Threat</p>
-                                <p className="text-sm font-bold text-secondary-900 dark:text-white capitalize">
+                                <p className="text-sm font-bold capitalize text-secondary-900 dark:text-white">
                                     {metrics?.mostCommonThreat?.replace('_', ' ') || 'None'}
                                 </p>
                                 <div className="mt-1">
@@ -210,8 +207,8 @@ export const Security: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-accent-500/20 to-accent-600/20 dark:from-accent-900/30 dark:to-accent-800/30">
-                                <Search className="h-5 w-5 text-accent-600 dark:text-accent-400" />
+                            <div className="p-3 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20 dark:from-accent-900/30 dark:to-accent-800/30">
+                                <Search className="w-5 h-5 text-accent-600 dark:text-accent-400" />
                             </div>
                         </div>
                     </div>
@@ -219,17 +216,17 @@ export const Security: React.FC = () => {
 
                 {/* Human Review Queue */}
                 {pendingReviews.length > 0 && (
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mb-8">
+                    <div className="mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="p-6 border-b border-primary-200/30">
-                            <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">Pending Human Reviews ({pendingReviews.length})</h2>
+                            <h2 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Pending Human Reviews ({pendingReviews.length})</h2>
                         </div>
                         <div className="p-6">
                             <div className="space-y-4">
                                 {pendingReviews.map((review) => (
-                                    <div key={review.id} className="glass rounded-lg border border-warning-200/30 bg-gradient-to-br from-warning-50/30 to-accent-50/30 dark:from-warning-900/20 dark:to-accent-900/20 p-4">
-                                        <div className="flex items-start justify-between">
+                                    <div key={review.id} className="p-4 bg-gradient-to-br rounded-lg border glass border-warning-200/30 from-warning-50/30 to-accent-50/30 dark:from-warning-900/20 dark:to-accent-900/20">
+                                        <div className="flex justify-between items-start">
                                             <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-2">
+                                                <div className="flex gap-2 items-center mb-2">
                                                     <span className={`px-2 py-1 text-xs rounded-full ${getThreatBadgeColor(review.threatResult.threatCategory)}`}>
                                                         {review.threatResult.threatCategory.replace('_', ' ')}
                                                     </span>
@@ -237,7 +234,7 @@ export const Security: React.FC = () => {
                                                         Risk: {((review.threatResult.riskScore || 0) * 100).toFixed(0)}%
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-secondary-700 dark:text-secondary-300 mb-2">{review.threatResult.reason}</p>
+                                                <p className="mb-2 text-sm text-secondary-700 dark:text-secondary-300">{review.threatResult.reason}</p>
                                                 <p className="text-xs text-secondary-500 dark:text-secondary-400">
                                                     Request ID: {review.requestId} • Created: {new Date(review.createdAt).toLocaleString()}
                                                 </p>
@@ -245,7 +242,7 @@ export const Security: React.FC = () => {
                                             <div className="flex gap-2 ml-4">
                                                 <button
                                                     onClick={() => setSelectedReview(review)}
-                                                    className="btn btn-secondary flex items-center gap-2"
+                                                    className="flex gap-2 items-center btn btn-secondary"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                     Review
@@ -260,17 +257,17 @@ export const Security: React.FC = () => {
                 )}
 
                 {/* Analytics Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div className="grid grid-cols-1 gap-8 mb-8 lg:grid-cols-2">
                     {/* Threat Distribution */}
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="p-6 border-b border-primary-200/30">
-                            <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">Threat Distribution</h2>
+                            <h2 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Threat Distribution</h2>
                         </div>
                         <div className="p-6">
                             <div className="space-y-3">
                                 {analytics && Object.entries(analytics.threatDistribution).map(([threat, count]) => (
-                                    <div key={threat} className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
+                                    <div key={threat} className="flex justify-between items-center">
+                                        <div className="flex gap-2 items-center">
                                             <span className={`px-2 py-1 text-xs rounded-full ${getThreatBadgeColor(threat)}`}>
                                                 {threat.replace('_', ' ')}
                                             </span>
@@ -279,27 +276,27 @@ export const Security: React.FC = () => {
                                     </div>
                                 ))}
                                 {!analytics?.threatDistribution || Object.keys(analytics.threatDistribution).length === 0 && (
-                                    <p className="text-secondary-500 dark:text-secondary-400 text-center py-4">No threats detected recently</p>
+                                    <p className="py-4 text-center text-secondary-500 dark:text-secondary-400">No threats detected recently</p>
                                 )}
                             </div>
                         </div>
                     </div>
 
                     {/* Containment Actions */}
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="p-6 border-b border-primary-200/30">
-                            <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">Containment Actions</h2>
+                            <h2 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Containment Actions</h2>
                         </div>
                         <div className="p-6">
                             <div className="space-y-3">
                                 {analytics && Object.entries(analytics.containmentActions).map(([action, count]) => (
-                                    <div key={action} className="flex items-center justify-between">
-                                        <span className="text-sm capitalize font-medium text-secondary-700 dark:text-secondary-300">{action.replace('_', ' ')}</span>
+                                    <div key={action} className="flex justify-between items-center">
+                                        <span className="text-sm font-medium capitalize text-secondary-700 dark:text-secondary-300">{action.replace('_', ' ')}</span>
                                         <span className="text-sm font-semibold text-secondary-900 dark:text-white">{count}</span>
                                     </div>
                                 ))}
                                 {!analytics?.containmentActions || Object.keys(analytics.containmentActions).length === 0 && (
-                                    <p className="text-secondary-500 dark:text-secondary-400 text-center py-4">No containment actions taken recently</p>
+                                    <p className="py-4 text-center text-secondary-500 dark:text-secondary-400">No containment actions taken recently</p>
                                 )}
                             </div>
                         </div>
@@ -307,25 +304,25 @@ export const Security: React.FC = () => {
                 </div>
 
                 {/* Top Risky Patterns */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     <div className="p-6 border-b border-primary-200/30">
-                        <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">Top Risky Patterns</h2>
+                        <h2 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Top Risky Patterns</h2>
                     </div>
                     <div className="p-6">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b border-primary-200/30">
-                                        <th className="text-left py-2 text-secondary-700 dark:text-secondary-300 font-display font-semibold">Pattern</th>
-                                        <th className="text-right py-2 text-secondary-700 dark:text-secondary-300 font-display font-semibold">Count</th>
-                                        <th className="text-right py-2 text-secondary-700 dark:text-secondary-300 font-display font-semibold">Avg Risk Score</th>
+                                        <th className="py-2 font-semibold text-left text-secondary-700 dark:text-secondary-300 font-display">Pattern</th>
+                                        <th className="py-2 font-semibold text-right text-secondary-700 dark:text-secondary-300 font-display">Count</th>
+                                        <th className="py-2 font-semibold text-right text-secondary-700 dark:text-secondary-300 font-display">Avg Risk Score</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {analytics?.topRiskyPatterns?.slice(0, 10).map((pattern, index) => (
                                         <tr key={index} className="border-b border-primary-200/20 hover:bg-primary-50/30 dark:hover:bg-primary-900/10">
                                             <td className="py-2 font-mono text-xs text-secondary-700 dark:text-secondary-300">{pattern.pattern.slice(0, 100)}...</td>
-                                            <td className="text-right py-2 text-secondary-900 dark:text-white">{pattern.count}</td>
+                                            <td className="py-2 text-right text-secondary-900 dark:text-white">{pattern.count}</td>
                                             <td className={`text-right py-2 font-semibold ${getRiskScoreColor(pattern.averageRiskScore)}`}>
                                                 {(pattern.averageRiskScore * 100).toFixed(1)}%
                                             </td>
@@ -333,7 +330,7 @@ export const Security: React.FC = () => {
                                     ))}
                                     {(!analytics?.topRiskyPatterns || analytics.topRiskyPatterns.length === 0) && (
                                         <tr>
-                                            <td colSpan={3} className="text-center py-4 text-secondary-500 dark:text-secondary-400">
+                                            <td colSpan={3} className="py-4 text-center text-secondary-500 dark:text-secondary-400">
                                                 No risky patterns detected recently
                                             </td>
                                         </tr>
@@ -347,14 +344,14 @@ export const Security: React.FC = () => {
 
             {/* Human Review Modal */}
             {selectedReview && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
                     <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-2xl mx-4 max-h-[90vh] overflow-auto">
                         <div className="p-6 border-b border-primary-200/30">
-                            <h2 className="text-xl font-display font-bold text-secondary-900 dark:text-white">Security Review Required</h2>
+                            <h2 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Security Review Required</h2>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                     Threat Category
                                 </label>
                                 <span className={`px-2 py-1 text-xs rounded-full ${getThreatBadgeColor(selectedReview.threatResult.threatCategory)}`}>
@@ -363,7 +360,7 @@ export const Security: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                     Risk Score
                                 </label>
                                 <span className={`font-bold ${getRiskScoreColor(selectedReview.threatResult.riskScore || 0)}`}>
@@ -372,19 +369,19 @@ export const Security: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                     Detection Reason
                                 </label>
-                                <p className="text-sm text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20 p-3 rounded">
+                                <p className="p-3 text-sm rounded text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20">
                                     {selectedReview.threatResult.reason}
                                 </p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
+                                <label className="block mb-1 text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                     Original Prompt (Sanitized)
                                 </label>
-                                <p className="text-sm text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20 p-3 rounded max-h-32 overflow-auto">
+                                <p className="overflow-auto p-3 max-h-32 text-sm rounded text-secondary-900 dark:text-white bg-secondary-50 dark:bg-secondary-900/20">
                                     {selectedReview.originalPrompt}
                                 </p>
                             </div>
@@ -392,21 +389,21 @@ export const Security: React.FC = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'approved')}
-                                    className="btn btn-success flex-1 flex items-center justify-center gap-2"
+                                    className="flex flex-1 gap-2 justify-center items-center btn btn-success"
                                 >
                                     <CheckCircle className="w-4 h-4" />
                                     Approve Request
                                 </button>
                                 <button
                                     onClick={() => handleReviewDecision(selectedReview.id, 'denied')}
-                                    className="btn btn-danger flex-1 flex items-center justify-center gap-2"
+                                    className="flex flex-1 gap-2 justify-center items-center btn btn-danger"
                                 >
                                     <XCircle className="w-4 h-4" />
                                     Deny Request
                                 </button>
                                 <button
                                     onClick={() => setSelectedReview(null)}
-                                    className="btn btn-ghost flex items-center justify-center gap-2"
+                                    className="flex gap-2 justify-center items-center btn btn-ghost"
                                 >
                                     <X className="w-4 h-4" />
                                     Cancel

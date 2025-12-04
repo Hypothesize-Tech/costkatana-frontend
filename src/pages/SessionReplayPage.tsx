@@ -5,6 +5,7 @@ import { TimelineView } from '../components/SessionReplay/TimelineView';
 import { SessionPlayerData, SessionListResponse, getSessionDisplayInfo, SessionFilters } from '../types/sessionReplay.types';
 import { API_BASE_URL } from '../config/api';
 import { Filter, X, Search, Calendar, DollarSign, Clock, Activity, ChevronDown, ChevronUp } from 'lucide-react';
+import { SessionReplayPageShimmer } from '../components/shimmer/SessionsShimmer';
 
 export const SessionReplayPage: React.FC = () => {
     const { sessionId } = useParams<{ sessionId?: string }>();
@@ -177,13 +178,7 @@ export const SessionReplayPage: React.FC = () => {
     };
 
     if (loading && !selectedSession && sessions.length === 0) {
-        return (
-            <div className="flex items-center justify-center h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-                <div className="glass rounded-xl p-8 bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30">
-                    <div className="text-secondary-900 dark:text-secondary-100 text-xl">Loading sessions...</div>
-                </div>
-            </div>
-        );
+        return <SessionReplayPageShimmer />;
     }
 
     if (error && !selectedSession) {

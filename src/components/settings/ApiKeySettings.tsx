@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2, Settings, Key, Sparkles, AlertTriangle, Lock, BookOpen } from "lucide-react";
 import { userService } from "../../services/user.service";
-import { LoadingSpinner } from "../common/LoadingSpinner";
+import { ApiKeySettingsShimmer } from "../shimmer/SettingsShimmer";
 import { useNotifications } from "../../contexts/NotificationContext";
 
 interface ApiKeySettingsProps {
@@ -104,7 +104,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = () => {
     return expiresAt ? new Date(expiresAt) < new Date() : false;
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <ApiKeySettingsShimmer />;
 
   return (
     <div className="space-y-8">

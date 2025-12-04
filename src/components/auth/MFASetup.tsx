@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { MFAService, MFAStatus } from '../../services/mfa.service';
 import { useAuth } from '../../hooks';
+import { MFASetupShimmer } from '../shimmer/AuthShimmer';
 
 interface MFASetupProps {
   onStatusChange?: () => void;
@@ -181,11 +182,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="w-12 h-12 spinner"></div>
-      </div>
-    );
+    return <MFASetupShimmer />;
   }
 
   return (
@@ -468,20 +465,23 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onStatusChange }) => {
 
       {/* Trusted Devices */}
       {mfaStatus?.enabled && mfaStatus.trustedDevices.length > 0 && (
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="mb-3 text-sm font-medium text-gray-900">Trusted Devices</h4>
+        <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+          <h4 className="mb-3 text-sm font-medium text-gray-900 dark:text-gray-100">Trusted Devices</h4>
           <div className="space-y-2">
             {mfaStatus.trustedDevices.map((device, index) => (
-              <div key={index} className="flex justify-between items-center p-2 bg-white rounded border">
+              <div
+                key={index}
+                className="flex justify-between items-center p-2 rounded border bg-white dark:bg-dark-panel border-gray-200 dark:border-gray-700"
+              >
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{device.deviceName}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{device.deviceName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Last used: {new Date(device.lastUsed).toLocaleDateString()}
                   </p>
                 </div>
                 <button
                   onClick={() => MFAService.removeTrustedDevice(device.deviceId)}
-                  className="px-2 py-1 text-xs text-red-600 rounded border border-red-300 btn hover:bg-red-50"
+                  className="px-2 py-1 text-xs rounded border btn border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
                 >
                   Remove
                 </button>

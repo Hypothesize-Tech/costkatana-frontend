@@ -13,7 +13,6 @@ export const ServiceDependencyGraph: React.FC = () => {
     const { data: dependencyData, isLoading, error, refetch } = useQuery<DependencyResponse>({
         queryKey: ['service-dependencies', 'graph'],
         queryFn: TelemetryAPI.getServiceDependencies,
-        refetchInterval: 60000,
         staleTime: 60000
     });
 

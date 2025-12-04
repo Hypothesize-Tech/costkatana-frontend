@@ -15,6 +15,7 @@ import {
 import { Modal } from '../components/common/Modal';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
+import { AdminDiscountShimmer } from '../components/shimmer/AdminDashboardShimmer';
 import {
     AdminDiscountService,
     Discount,
@@ -260,40 +261,31 @@ export const AdminDiscountManagement: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-6">
-                <div className="text-center glass backdrop-blur-xl rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-8">
-                    <LoadingSpinner />
-                    <p className="mt-4 text-base font-display font-semibold gradient-text-primary">
-                        Loading discount management...
-                    </p>
-                </div>
-            </div>
-        );
+        return <AdminDiscountShimmer />;
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+        <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="mx-auto space-y-6 max-w-7xl">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl glow-primary shadow-lg">
+                <div className="flex justify-between items-center">
+                    <div className="flex gap-4 items-center">
+                        <div className="p-3 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary">
                             <TagIcon className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-display font-bold gradient-text-primary">
+                            <h1 className="text-2xl font-bold font-display gradient-text-primary">
                                 Discount Management
                             </h1>
-                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                            <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                 Create and manage discount codes for subscriptions
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex gap-3 items-center">
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-primary-600 dark:text-primary-400"
+                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400"
                         >
                             <FunnelIcon className="w-4 h-4" />
                             Filters
@@ -301,7 +293,7 @@ export const AdminDiscountManagement: React.FC = () => {
                         <button
                             onClick={fetchDiscounts}
                             disabled={refreshing}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-primary-600 dark:text-primary-400 disabled:opacity-50"
+                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400 disabled:opacity-50"
                         >
                             <ArrowPathIcon className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                             Refresh
@@ -311,7 +303,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 resetForm();
                                 setIsCreateModalOpen(true);
                             }}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold text-white bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl glow-primary hover:scale-105"
+                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-br rounded-lg shadow-lg transition-all duration-300 font-display from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl glow-primary hover:scale-105"
                         >
                             <PlusIcon className="w-4 h-4" />
                             Create Discount
@@ -321,25 +313,25 @@ export const AdminDiscountManagement: React.FC = () => {
 
                 {/* Filters */}
                 {showFilters && (
-                    <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                             <div>
-                                <label className="block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Search
                                 </label>
                                 <div className="relative">
-                                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
                                     <input
                                         type="text"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         placeholder="Search by code..."
-                                        className="input pl-10"
+                                        className="pl-10 input"
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Status
                                 </label>
                                 <select
@@ -359,7 +351,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Type
                                 </label>
                                 <select
@@ -381,7 +373,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Plan
                                 </label>
                                 <select
@@ -407,7 +399,7 @@ export const AdminDiscountManagement: React.FC = () => {
 
                 {/* Bulk Actions */}
                 {selectedDiscounts.size > 0 && (
-                    <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 flex items-center justify-between">
+                    <div className="flex justify-between items-center p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
                         <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             {selectedDiscounts.size} discount(s) selected
                         </span>
@@ -444,10 +436,10 @@ export const AdminDiscountManagement: React.FC = () => {
                 )}
 
                 {/* Discounts Table */}
-                <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 overflow-hidden">
+                <div className="overflow-hidden bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gradient-to-r from-primary-50/50 to-success-50/50 dark:from-primary-950/30 dark:to-success-950/30 border-b border-primary-200/30">
+                            <thead className="bg-gradient-to-r border-b from-primary-50/50 to-success-50/50 dark:from-primary-950/30 dark:to-success-950/30 border-primary-200/30">
                                 <tr>
                                     <th className="px-4 py-3 text-left">
                                         <input
@@ -457,25 +449,25 @@ export const AdminDiscountManagement: React.FC = () => {
                                             className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                         />
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Code
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Type
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Amount
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Status
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Valid Until
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Uses
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Actions
                                     </th>
                                 </tr>
@@ -491,7 +483,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                     discounts.map((discount) => (
                                         <tr
                                             key={discount._id}
-                                            className="hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors"
+                                            className="transition-colors hover:bg-primary-50/30 dark:hover:bg-primary-900/10"
                                         >
                                             <td className="px-4 py-3">
                                                 <input
@@ -502,13 +494,13 @@ export const AdminDiscountManagement: React.FC = () => {
                                                 />
                                             </td>
                                             <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex gap-2 items-center">
                                                     <span className="font-mono font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                         {discount.code}
                                                     </span>
                                                     <button
                                                         onClick={() => handleCopyCode(discount.code)}
-                                                        className="p-1 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
+                                                        className="p-1 rounded transition-colors hover:bg-primary-100 dark:hover:bg-primary-900/30"
                                                         title="Copy code"
                                                     >
                                                         <ClipboardDocumentIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -516,7 +508,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 capitalize">
+                                                <span className="px-2 py-1 text-xs font-medium capitalize rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
                                                     {discount.type}
                                                 </span>
                                             </td>
@@ -529,12 +521,12 @@ export const AdminDiscountManagement: React.FC = () => {
                                             </td>
                                             <td className="px-4 py-3">
                                                 {discount.isActive ? (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300">
+                                                    <span className="inline-flex gap-1 items-center px-2 py-1 text-xs font-medium rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300">
                                                         <CheckCircleIcon className="w-3 h-3" />
                                                         Active
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                                                    <span className="inline-flex gap-1 items-center px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-300">
                                                         <XCircleIcon className="w-3 h-3" />
                                                         Inactive
                                                     </span>
@@ -544,7 +536,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                                 {new Date(discount.validUntil).toLocaleDateString()}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex gap-2 items-center">
                                                     <span className="text-sm text-light-text-primary dark:text-dark-text-primary">
                                                         {discount.usageStats?.totalUses || discount.currentUses}
                                                     </span>
@@ -556,7 +548,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex gap-2 items-center">
                                                     <button
                                                         onClick={() => handleViewUsage(discount._id)}
                                                         className="p-1.5 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
@@ -592,7 +584,7 @@ export const AdminDiscountManagement: React.FC = () => {
 
                     {/* Pagination */}
                     {pagination.pages > 1 && (
-                        <div className="px-4 py-3 border-t border-primary-200/30 dark:border-primary-800/30 flex items-center justify-between">
+                        <div className="flex justify-between items-center px-4 py-3 border-t border-primary-200/30 dark:border-primary-800/30">
                             <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
                                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
@@ -631,7 +623,7 @@ export const AdminDiscountManagement: React.FC = () => {
                 title={isEditModalOpen ? 'Edit Discount' : 'Create Discount'}
                 size="2xl"
                 footer={
-                    <div className="flex justify-end gap-3">
+                    <div className="flex gap-3 justify-end">
                         <button
                             onClick={() => {
                                 setIsCreateModalOpen(false);
@@ -639,13 +631,13 @@ export const AdminDiscountManagement: React.FC = () => {
                                 setEditingDiscount(null);
                                 resetForm();
                             }}
-                            className="px-4 py-2 text-sm font-medium glass rounded-lg border border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                            className="px-4 py-2 text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={isEditModalOpen ? handleUpdateDiscount : handleCreateDiscount}
-                            className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                            className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-br rounded-lg shadow-lg transition-all duration-300 from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl"
                         >
                             {isEditModalOpen ? 'Update' : 'Create'}
                         </button>
@@ -664,13 +656,13 @@ export const AdminDiscountManagement: React.FC = () => {
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
                                 }
-                                className="input flex-1 font-mono"
+                                className="flex-1 font-mono input"
                                 placeholder="DISCOUNT123"
                                 required
                             />
                             <button
                                 onClick={generateCode}
-                                className="px-3 py-2 text-sm font-medium glass rounded-lg border border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                                className="px-3 py-2 text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20"
                             >
                                 Generate
                             </button>
@@ -797,7 +789,7 @@ export const AdminDiscountManagement: React.FC = () => {
                         </label>
                         <div className="flex flex-wrap gap-2">
                             {['plus', 'pro', 'enterprise'].map((plan) => (
-                                <label key={plan} className="flex items-center gap-2 cursor-pointer">
+                                <label key={plan} className="flex gap-2 items-center cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={formData.applicablePlans?.includes(plan as any)}
@@ -817,7 +809,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                         }}
                                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                     />
-                                    <span className="text-sm text-light-text-primary dark:text-dark-text-primary capitalize">
+                                    <span className="text-sm capitalize text-light-text-primary dark:text-dark-text-primary">
                                         {plan}
                                     </span>
                                 </label>
@@ -842,7 +834,7 @@ export const AdminDiscountManagement: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex gap-2 items-center cursor-pointer">
                             <input
                                 type="checkbox"
                                 checked={formData.isActive}
@@ -869,36 +861,36 @@ export const AdminDiscountManagement: React.FC = () => {
             >
                 {usageStats ? (
                     <div className="space-y-6">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="glass rounded-lg p-4 border border-primary-200/30">
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            <div className="p-4 rounded-lg border glass border-primary-200/30">
                                 <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Uses
                                 </div>
-                                <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mt-1">
+                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {usageStats.totalUses}
                                 </div>
                             </div>
-                            <div className="glass rounded-lg p-4 border border-primary-200/30">
+                            <div className="p-4 rounded-lg border glass border-primary-200/30">
                                 <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Unique Users
                                 </div>
-                                <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mt-1">
+                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {usageStats.uniqueUsers}
                                 </div>
                             </div>
-                            <div className="glass rounded-lg p-4 border border-primary-200/30">
+                            <div className="p-4 rounded-lg border glass border-primary-200/30">
                                 <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Discount
                                 </div>
-                                <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mt-1">
+                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     ${usageStats.totalDiscountAmount.toFixed(2)}
                                 </div>
                             </div>
-                            <div className="glass rounded-lg p-4 border border-primary-200/30">
+                            <div className="p-4 rounded-lg border glass border-primary-200/30">
                                 <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Average Discount
                                 </div>
-                                <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mt-1">
+                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     ${usageStats.averageDiscountAmount.toFixed(2)}
                                 </div>
                             </div>
@@ -906,14 +898,14 @@ export const AdminDiscountManagement: React.FC = () => {
 
                         {Object.keys(usageStats.usageByPlan).length > 0 && (
                             <div>
-                                <h3 className="text-lg font-semibold mb-3 text-light-text-primary dark:text-dark-text-primary">
+                                <h3 className="mb-3 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                                     Usage by Plan
                                 </h3>
                                 <div className="space-y-2">
                                     {Object.entries(usageStats.usageByPlan).map(([plan, count]) => (
                                         <div
                                             key={plan}
-                                            className="flex items-center justify-between glass rounded-lg p-3 border border-primary-200/30"
+                                            className="flex justify-between items-center p-3 rounded-lg border glass border-primary-200/30"
                                         >
                                             <span className="capitalize text-light-text-primary dark:text-dark-text-primary">
                                                 {plan}
@@ -929,14 +921,14 @@ export const AdminDiscountManagement: React.FC = () => {
 
                         {usageStats.recentUsers.length > 0 && (
                             <div>
-                                <h3 className="text-lg font-semibold mb-3 text-light-text-primary dark:text-dark-text-primary">
+                                <h3 className="mb-3 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                                     Recent Users
                                 </h3>
-                                <div className="space-y-2 max-h-64 overflow-y-auto">
+                                <div className="overflow-y-auto space-y-2 max-h-64">
                                     {usageStats.recentUsers.map((user, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between glass rounded-lg p-3 border border-primary-200/30"
+                                            className="flex justify-between items-center p-3 rounded-lg border glass border-primary-200/30"
                                         >
                                             <div>
                                                 <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -950,7 +942,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                                 <div className="font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                     ${user.discountAmount.toFixed(2)}
                                                 </div>
-                                                <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary capitalize">
+                                                <div className="text-xs capitalize text-light-text-secondary dark:text-dark-text-secondary">
                                                     {user.plan}
                                                 </div>
                                             </div>
@@ -975,19 +967,19 @@ export const AdminDiscountManagement: React.FC = () => {
                 title="Delete Discount"
                 size="md"
                 footer={
-                    <div className="flex justify-end gap-3">
+                    <div className="flex gap-3 justify-end">
                         <button
                             onClick={() => {
                                 setIsDeleteModalOpen(false);
                                 setEditingDiscount(null);
                             }}
-                            className="px-4 py-2 text-sm font-medium glass rounded-lg border border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                            className="px-4 py-2 text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={() => editingDiscount && handleDeleteDiscount(editingDiscount._id)}
-                            className="px-4 py-2 text-sm font-medium text-white bg-danger-600 rounded-lg hover:bg-danger-700 transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors bg-danger-600 hover:bg-danger-700"
                         >
                             Delete
                         </button>
@@ -1011,21 +1003,21 @@ export const AdminDiscountManagement: React.FC = () => {
                 title={`${bulkAction === 'activate' ? 'Activate' : bulkAction === 'deactivate' ? 'Deactivate' : 'Delete'} Discounts`}
                 size="md"
                 footer={
-                    <div className="flex justify-end gap-3">
+                    <div className="flex gap-3 justify-end">
                         <button
                             onClick={() => {
                                 setIsBulkActionModalOpen(false);
                                 setBulkAction(null);
                             }}
-                            className="px-4 py-2 text-sm font-medium glass rounded-lg border border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                            className="px-4 py-2 text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleBulkAction}
                             className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${bulkAction === 'delete'
-                                    ? 'bg-danger-600 hover:bg-danger-700'
-                                    : 'bg-primary-600 hover:bg-primary-700'
+                                ? 'bg-danger-600 hover:bg-danger-700'
+                                : 'bg-primary-600 hover:bg-primary-700'
                                 }`}
                         >
                             {bulkAction === 'activate'

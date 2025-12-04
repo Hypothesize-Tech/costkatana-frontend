@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
 import { emailService, EmailData } from '../../services/email.service';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { EmailManagementShimmer } from '../shimmer/SettingsShimmer';
 
 export const EmailManagement: React.FC = () => {
     const [emails, setEmails] = useState<EmailData[]>([]);
@@ -95,7 +95,7 @@ export const EmailManagement: React.FC = () => {
     const canAddMore = secondaryEmails.length < 2;
 
     if (loading) {
-        return <LoadingSpinner />;
+        return <EmailManagementShimmer />;
     }
 
     return (

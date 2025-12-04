@@ -1,16 +1,14 @@
-// src/pages/Alerts.tsx
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BellIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-
 import { alertService } from "../services/alert.service";
 import { Alert } from "../types";
-import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { AlertFilter } from "../components/alerts/AlertFilter";
 import { AlertList } from "../components/alerts/AlertList";
 import { AlertSummary } from "../components/alerts/AlertSummary";
 import { Pagination } from "../components/common/Pagination";
 import { useNotification } from "../contexts/NotificationContext";
+import { AlertsShimmer } from "../components/shimmer/AlertsShimmer";
 
 export const Alerts: React.FC = () => {
   const queryClient = useQueryClient();
@@ -45,8 +43,7 @@ export const Alerts: React.FC = () => {
 
   const { data: unreadCount } = useQuery({
     queryKey: ["unread-alerts-count"],
-    queryFn: () => alertService.getUnreadCount(),
-    refetchInterval: 60000, // Refetch every minute
+    queryFn: () => alertService.getUnreadCount()
   });
 
   const markAsReadMutation = useMutation({
@@ -107,6 +104,10 @@ export const Alerts: React.FC = () => {
     snoozeMutation.mutate({ id, until });
   };
 
+  if (isLoading) {
+    return <AlertsShimmer />;
+  }
+
   const summary = {
     total: alerts?.pagination.total || 0,
     unread: unreadCount?.data.count || 0,
@@ -122,15 +123,15 @@ export const Alerts: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
+    <div className="p-4 min-h-screen sm:p-6 lg:p-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
+            <div className="flex gap-3 items-center mb-4">
+              <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
                 <BellIcon className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-2xl font-display font-bold gradient-text-primary">
+              <h1 className="text-2xl font-bold font-display gradient-text-primary">
                 Alerts
               </h1>
             </div>
@@ -142,7 +143,7 @@ export const Alerts: React.FC = () => {
             <button
               type="button"
               onClick={() => markAllAsReadMutation.mutate()}
-              className="glass px-4 py-2 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-primary hover:bg-gradient-primary/90 transition-all duration-300 inline-flex items-center gap-2 font-display font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex gap-2 items-center px-4 py-2 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 font-display disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={markAllAsReadMutation.isPending}
             >
               <BellIcon className="w-4 h-4" />
@@ -154,21 +155,17 @@ export const Alerts: React.FC = () => {
 
       <AlertSummary summary={summary} />
 
-      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6">
+      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
         <AlertFilter
           filters={filters}
           onFilterChange={handleFilterChange}
           onReset={handleResetFilters}
         />
 
-        {isLoading ? (
-          <div className="flex justify-center p-8">
-            <LoadingSpinner />
-          </div>
-        ) : isError || !alerts ? (
-          <div className="glass rounded-xl p-6 border border-danger-200/30 dark:border-danger-500/20 shadow-lg backdrop-blur-xl bg-gradient-to-r from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
+        {isError || !alerts ? (
+          <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex gap-3 items-center">
+              <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
                 <ExclamationTriangleIcon className="w-5 h-5 text-white" />
               </div>
               <span className="font-body text-secondary-900 dark:text-white">

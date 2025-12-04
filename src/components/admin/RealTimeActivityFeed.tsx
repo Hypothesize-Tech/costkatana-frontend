@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { AdminDashboardService, ActivityEvent } from '../../services/adminDashboard.service';
 import { API_BASE_URL } from '../../config/api';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { AdminActivityShimmer } from '../shimmer/AdminDashboardShimmer';
 
 interface RealTimeActivityFeedProps {
     limit?: number;
@@ -281,11 +281,7 @@ export const RealTimeActivityFeed: React.FC<RealTimeActivityFeedProps> = ({ limi
     };
 
     if (loading) {
-        return (
-            <div className="glass p-12 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-3xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <LoadingSpinner />
-            </div>
-        );
+        return <AdminActivityShimmer />;
     }
 
     return (

@@ -20,7 +20,7 @@ import {
     InformationCircleIcon,
     RocketLaunchIcon,
 } from '@heroicons/react/24/outline';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { PredictiveIntelligenceShimmer } from '../shimmer/PredictiveIntelligenceShimmer';
 import { predictiveIntelligenceService, PredictiveIntelligenceData } from '../../services/predictiveIntelligence.service';
 
 interface PredictiveCostDashboardProps {
@@ -125,18 +125,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
 
     if (loading) {
-        return (
-            <div className={`p-6 mx-auto max-w-7xl ${className}`}>
-                <div className="p-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-fade-in">
-                    <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl shadow-2xl bg-gradient-primary glow-primary animate-pulse-slow">
-                        <SparklesIcon className="w-10 h-10 text-white" />
-                    </div>
-                    <LoadingSpinner />
-                    <h3 className="mt-6 mb-3 text-2xl font-bold font-display gradient-text-primary">Generating Predictive Intelligence</h3>
-                    <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">Analyzing patterns and identifying optimization opportunities</p>
-                </div>
-            </div>
-        );
+        return <PredictiveIntelligenceShimmer />;
     }
 
     if (error) {
@@ -147,7 +136,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         <XCircleIcon className="w-10 h-10 text-white" />
                     </div>
                     <h3 className="mb-4 text-2xl font-bold font-display gradient-text-danger">Intelligence Generation Failed</h3>
-                    <p className="mb-8 text-base font-body text-light-text-secondary dark:text-dark-text-secondary max-w-md mx-auto">{error}</p>
+                    <p className="mx-auto mb-8 max-w-md text-base font-body text-light-text-secondary dark:text-dark-text-secondary">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
                         className="btn btn-primary"
@@ -238,7 +227,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                                         }`} />
                                 </div>
                                 <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
-                                    <BoltIcon className="inline w-4 h-4 mr-1" />
+                                    <BoltIcon className="inline mr-1 w-4 h-4" />
                                     Auto-Optimize
                                 </span>
                             </label>
@@ -250,7 +239,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
             {/* Key Metrics Cards */}
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
                 {/* Critical Alerts Card */}
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-danger-300/50 dark:hover:border-danger-400/30 animate-fade-in">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-danger-300/50 dark:hover:border-danger-400/30 animate-fade-in">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-danger shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <FireIcon className="w-7 h-7 text-white" />
@@ -269,7 +258,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                 </div>
 
                 {/* Potential Savings Card */}
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-success-300/50 dark:hover:border-success-400/30 animate-fade-in animation-delay-100">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-success-300/50 dark:hover:border-success-400/30 animate-fade-in animation-delay-100">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-success glow-success shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <BanknotesIcon className="w-7 h-7 text-white" />
@@ -286,7 +275,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                 </div>
 
                 {/* Budget Risk Card */}
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-warning-200/30 dark:border-warning-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-warning-300/50 dark:hover:border-warning-400/30 animate-fade-in animation-delay-200">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-warning-200/30 dark:border-warning-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-warning-300/50 dark:hover:border-warning-400/30 animate-fade-in animation-delay-200">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-warning shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <ShieldExclamationIcon className="w-7 h-7 text-white" />
@@ -305,7 +294,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                 </div>
 
                 {/* Growth Rate Card */}
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30 animate-fade-in animation-delay-300">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30 animate-fade-in animation-delay-300">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-primary glow-primary shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <PresentationChartLineIcon className="w-7 h-7 text-white" />
@@ -368,7 +357,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                             {/* Next Budget Exceedance */}
                             {metrics.nextBudgetExceedance && (
-                                <div className="group p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-warning-200/30 dark:border-warning-500/20 from-yellow-50/50 to-yellow-100/30 dark:from-yellow-900/10 dark:to-yellow-800/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                                <div className="p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-warning-200/30 dark:border-warning-500/20 from-yellow-50/50 to-yellow-100/30 dark:from-yellow-900/10 dark:to-yellow-800/10 hover:scale-105 hover:shadow-2xl">
                                     <div className="flex gap-3 items-center mb-5">
                                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-warning group-hover:scale-110 transition-transform duration-300">
                                             <ShieldExclamationIcon className="w-7 h-7 text-white" />
@@ -402,7 +391,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
 
                             {/* Top Optimization Opportunity */}
                             {data.optimizationRecommendations.length > 0 && (
-                                <div className="group p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 dark:border-success-500/20 from-success-50/50 to-success-100/30 dark:from-success-900/10 dark:to-success-800/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                                <div className="p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-success-200/30 dark:border-success-500/20 from-success-50/50 to-success-100/30 dark:from-success-900/10 dark:to-success-800/10 hover:scale-105 hover:shadow-2xl">
                                     <div className="flex gap-3 items-center mb-5">
                                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-success glow-success group-hover:scale-110 transition-transform duration-300">
                                             <LightBulbIcon className="w-7 h-7 text-white" />
@@ -450,7 +439,7 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                             )}
 
                             {/* Token Growth Trend */}
-                            <div className="group p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-primary-50/50 to-primary-100/30 dark:from-primary-900/10 dark:to-primary-800/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                            <div className="p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 from-primary-50/50 to-primary-100/30 dark:from-primary-900/10 dark:to-primary-800/10 hover:scale-105 hover:shadow-2xl">
                                 <div className="flex gap-3 items-center mb-5">
                                     <div className="p-3.5 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
                                         <ChartPieIcon className="w-7 h-7 text-white" />
@@ -590,14 +579,14 @@ const PredictiveCostDashboard: React.FC<PredictiveCostDashboardProps> = ({
                         </div>
 
                         <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
-                            <div className="group p-8 text-center rounded-xl border shadow-xl backdrop-blur-xl glass bg-gradient-success/10 dark:bg-success-500/5 border-success-200/30 dark:border-success-500/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                                <BanknotesIcon className="w-10 h-10 mx-auto mb-4 text-success-500 dark:text-success-400" />
+                            <div className="p-8 text-center rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass bg-gradient-success/10 dark:bg-success-500/5 border-success-200/30 dark:border-success-500/20 hover:scale-105 hover:shadow-2xl">
+                                <BanknotesIcon className="mx-auto mb-4 w-10 h-10 text-success-500 dark:text-success-400" />
                                 <h4 className="mb-3 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Total Potential Savings</h4>
                                 <div className="mb-2 text-4xl font-bold font-display gradient-text-success">{formatCurrency(metrics.totalPotentialSavings)}</div>
                                 <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">per month</span>
                             </div>
-                            <div className="group p-8 text-center bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass from-primary-50/50 to-primary-100/50 dark:from-primary-900/10 dark:to-primary-800/10 border-primary-200/30 dark:border-primary-500/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                                <RocketLaunchIcon className="w-10 h-10 mx-auto mb-4 text-primary-500 dark:text-primary-400" />
+                            <div className="p-8 text-center bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass from-primary-50/50 to-primary-100/50 dark:from-primary-900/10 dark:to-primary-800/10 border-primary-200/30 dark:border-primary-500/20 hover:scale-105 hover:shadow-2xl">
+                                <RocketLaunchIcon className="mx-auto mb-4 w-10 h-10 text-primary-500 dark:text-primary-400" />
                                 <h4 className="mb-3 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">Easy Implementations</h4>
                                 <div className="mb-2 text-4xl font-bold font-display gradient-text-primary">{metrics.easyOptimizations}</div>
                                 <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">can be automated</span>

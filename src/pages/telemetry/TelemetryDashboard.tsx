@@ -22,6 +22,7 @@ import {
 import { apiClient } from '@/config/api';
 import TelemetryConfiguration from '@/components/telemetry/TelemetryConfiguration';
 import { RotateCw } from 'lucide-react';
+import { TelemetryShimmer } from '@/components/shimmer/TelemetryShimmer';
 
 interface EnhancedDashboardData {
     current: {
@@ -128,6 +129,13 @@ const EnhancedTelemetryContent: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'overview' | 'ai-insights' | 'explorer' | 'traces' | 'configuration'>('overview');
     const [enhancedData, setEnhancedData] = useState<EnhancedDashboardData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [tabLoading, setTabLoading] = useState<Record<string, boolean>>({
+        overview: false,
+        'ai-insights': false,
+        explorer: false,
+        traces: false,
+        configuration: false,
+    });
 
     // Fetch enhanced dashboard data
     const fetchEnhancedData = async () => {
@@ -149,6 +157,17 @@ const EnhancedTelemetryContent: React.FC = () => {
     useEffect(() => {
         fetchEnhancedData();
     }, []);
+
+    useEffect(() => {
+        // Simulate loading when switching tabs
+        setTabLoading(prev => ({ ...prev, [activeTab]: true }));
+        
+        const timer = setTimeout(() => {
+            setTabLoading(prev => ({ ...prev, [activeTab]: false }));
+        }, 500); // Short delay to show shimmer
+
+        return () => clearTimeout(timer);
+    }, [activeTab]);
 
     const formatNumber = (num: number) => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -241,6 +260,10 @@ const EnhancedTelemetryContent: React.FC = () => {
             </div>
 
             {/* Tab Content */}
+            {tabLoading[activeTab] || (activeTab === 'ai-insights' && loading) ? (
+                <TelemetryShimmer activeTab={activeTab} />
+            ) : (
+                <>
             {activeTab === 'overview' && (
                 <div className="space-y-6">
                     {/* Header with actions */}
@@ -366,12 +389,7 @@ const EnhancedTelemetryContent: React.FC = () => {
                         </button>
                     </div>
 
-                    {loading ? (
-                        <div className="flex justify-center items-center py-12">
-                            <div className="w-8 h-8 rounded-full border-b-2 animate-spin border-primary-600 dark:border-primary-400"></div>
-                            <span className="ml-2 font-body text-secondary-600 dark:text-secondary-300">Loading AI insights...</span>
-                        </div>
-                    ) : enhancedData ? (
+                    {enhancedData ? (
                         <>
                             {/* AI Enrichment Stats */}
                             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -613,6 +631,8 @@ const EnhancedTelemetryContent: React.FC = () => {
 
             {activeTab === 'configuration' && (
                 <TelemetryConfiguration />
+            )}
+                </>
             )}
         </div>
     );

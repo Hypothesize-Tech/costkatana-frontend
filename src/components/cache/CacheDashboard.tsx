@@ -16,7 +16,7 @@ import {
     ServerStackIcon,
     CircleStackIcon,
 } from '@heroicons/react/24/outline';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { CacheShimmer } from '../shimmer/CacheShimmer';
 
 interface CacheMetrics {
     success: boolean;
@@ -69,11 +69,11 @@ export const CacheDashboard: React.FC = () => {
         return (
             <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-fade-in">
                 <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
+                    <div className="flex justify-center items-center mr-4 w-12 h-12 rounded-xl shadow-lg bg-gradient-danger">
                         <XCircleIcon className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-display font-bold gradient-text-danger mb-1">Error Loading Cache Metrics</h3>
+                        <h3 className="mb-1 text-xl font-bold font-display gradient-text-danger">Error Loading Cache Metrics</h3>
                         <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">{error}</p>
                     </div>
                 </div>
@@ -82,18 +82,7 @@ export const CacheDashboard: React.FC = () => {
     }
 
     if (!metrics) {
-        return (
-            <div className="flex justify-center items-center py-20">
-                <div className="text-center p-12 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl shadow-2xl bg-gradient-primary glow-primary animate-pulse-slow">
-                        <CircleStackIcon className="w-10 h-10 text-white" />
-                    </div>
-                    <LoadingSpinner />
-                    <h3 className="mt-6 mb-3 text-2xl font-display font-bold gradient-text-primary">Loading Cache Metrics</h3>
-                    <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">Fetching cache performance data...</p>
-                </div>
-            </div>
-        );
+        return <CacheShimmer />;
     }
 
     return (
@@ -112,7 +101,7 @@ export const CacheDashboard: React.FC = () => {
                     </div>
                     <button
                         onClick={fetchMetrics}
-                        className="btn btn-primary flex items-center gap-2"
+                        className="flex gap-2 items-center btn btn-primary"
                     >
                         <ArrowPathIcon className="w-5 h-5" />
                         <span>Refresh</span>
@@ -128,7 +117,7 @@ export const CacheDashboard: React.FC = () => {
                     </div>
                     <h2 className="text-2xl font-bold font-display gradient-text-primary">Cache Provider</h2>
                 </div>
-                <p className="text-lg font-semibold font-body text-light-text-primary dark:text-dark-text-primary mb-5">Redis Cache</p>
+                <p className="mb-5 text-lg font-semibold font-body text-light-text-primary dark:text-dark-text-primary">Redis Cache</p>
                 <div className="flex flex-wrap gap-3 mb-6">
                     <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold font-display bg-gradient-success text-white shadow-lg border border-success-300/30 dark:border-success-500/20">
                         <SparklesIcon className="w-4 h-4" />
@@ -147,11 +136,11 @@ export const CacheDashboard: React.FC = () => {
                         Model Specific
                     </span>
                 </div>
-                <div className="p-5 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50">
-                    <div className="flex items-center gap-2">
+                <div className="p-5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50">
+                    <div className="flex gap-2 items-center">
                         <ClockIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
                         <p className="text-sm font-medium font-body text-light-text-secondary dark:text-dark-text-secondary">
-                            Default TTL: <span className="gradient-text-primary font-bold font-display">{metrics.data.config.defaultTTLHours} hours</span> ({metrics.data.config.defaultTTL} seconds)
+                            Default TTL: <span className="font-bold gradient-text-primary font-display">{metrics.data.config.defaultTTLHours} hours</span> ({metrics.data.config.defaultTTL} seconds)
                         </p>
                     </div>
                 </div>
@@ -159,7 +148,7 @@ export const CacheDashboard: React.FC = () => {
 
             {/* Main Metrics Grid */}
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30 animate-fade-in">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30 animate-fade-in">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-primary shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <ChartBarIcon className="w-7 h-7 text-white" />
@@ -170,7 +159,7 @@ export const CacheDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-success-300/50 dark:hover:border-success-400/30 animate-fade-in animation-delay-100">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-success-300/50 dark:hover:border-success-400/30 animate-fade-in animation-delay-100">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-success glow-success shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <CheckCircleIcon className="w-7 h-7 text-white" />
@@ -181,7 +170,7 @@ export const CacheDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-danger-300/50 dark:hover:border-danger-400/30 animate-fade-in animation-delay-200">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-danger-300/50 dark:hover:border-danger-400/30 animate-fade-in animation-delay-200">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-danger shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <XMarkIcon className="w-7 h-7 text-white" />
@@ -192,7 +181,7 @@ export const CacheDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-accent-300/50 dark:hover:border-accent-400/30 animate-fade-in animation-delay-300">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-accent-300/50 dark:hover:border-accent-400/30 animate-fade-in animation-delay-300">
                     <div className="flex gap-4 items-start">
                         <div className="p-3.5 rounded-xl shadow-lg bg-gradient-accent shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <ArrowTrendingUpIcon className="w-7 h-7 text-white" />
@@ -207,9 +196,9 @@ export const CacheDashboard: React.FC = () => {
 
             {/* Performance Metrics */}
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
                     <div className="flex gap-4 items-center">
-                        <div className="p-3 rounded-xl shadow-lg bg-gradient-accent shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-3 rounded-xl shadow-lg transition-transform duration-300 bg-gradient-accent shrink-0 group-hover:scale-110">
                             <BanknotesIcon className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -218,9 +207,9 @@ export const CacheDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
                     <div className="flex gap-4 items-center">
-                        <div className="p-3 rounded-xl shadow-lg bg-gradient-secondary shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-3 rounded-xl shadow-lg transition-transform duration-300 bg-gradient-secondary shrink-0 group-hover:scale-110">
                             <CpuChipIcon className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -229,9 +218,9 @@ export const CacheDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
+                <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
                     <div className="flex gap-4 items-center">
-                        <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-3 rounded-xl shadow-lg transition-transform duration-300 bg-gradient-primary glow-primary shrink-0 group-hover:scale-110">
                             <ClockIcon className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -277,7 +266,7 @@ export const CacheDashboard: React.FC = () => {
                     <div className="space-y-3">
                         {metrics.data.redis.topModels.slice(0, 5).map((model: { model: string; hits: number }, index: number) => (
                             <div key={index} className="flex justify-between items-center p-4 rounded-xl border glass border-success-200/30 dark:border-success-500/20">
-                                <span className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary truncate mr-2">{model.model}</span>
+                                <span className="mr-2 text-sm font-semibold truncate font-display text-light-text-secondary dark:text-dark-text-secondary">{model.model}</span>
                                 <span className="text-lg font-bold font-display gradient-text-success shrink-0">{model.hits.toLocaleString()} hits</span>
                             </div>
                         ))}

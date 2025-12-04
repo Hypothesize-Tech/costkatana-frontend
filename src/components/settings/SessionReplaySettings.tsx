@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Video, Clock, Info, AlertTriangle } from 'lucide-react';
 import { API_BASE_URL } from '../../config/api';
 import { useNotifications } from '../../contexts/NotificationContext';
+import { SessionReplaySettingsShimmer } from '../shimmer/SettingsShimmer';
 
 interface SessionReplayPreferences {
     enableSessionReplay: boolean;
@@ -84,14 +85,7 @@ export const SessionReplaySettings: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
-                <div className="animate-pulse">
-                    <div className="mb-4 w-1/4 h-6 rounded bg-gradient-primary/20"></div>
-                    <div className="w-1/2 h-4 rounded bg-gradient-primary/20"></div>
-                </div>
-            </div>
-        );
+        return <SessionReplaySettingsShimmer />;
     }
 
     return (

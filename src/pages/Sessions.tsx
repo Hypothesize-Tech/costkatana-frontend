@@ -8,6 +8,7 @@ import { getSessionDisplayInfo } from '../types/sessionReplay.types';
 import { SessionDetailsExpanded } from '../components/SessionDetails/SessionDetailsExpanded';
 import { SessionAnalyticsCharts } from '../components/sessions/SessionAnalyticsCharts';
 import { exportData } from '../utils/exportSessions';
+import { SessionsDebugShimmer } from '../components/shimmer/SessionsShimmer';
 
 export const Sessions: React.FC = () => {
     const navigate = useNavigate();
@@ -143,6 +144,10 @@ export const Sessions: React.FC = () => {
                 return null;
         }
     };
+
+    if (loading && sessions.length === 0 && !summary) {
+        return <SessionsDebugShimmer />;
+    }
 
     return (
         <div>
@@ -404,7 +409,7 @@ export const Sessions: React.FC = () => {
 
                 {/* Sessions List */}
                 <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
-                    {loading ? (
+                    {loading && sessions.length > 0 ? (
                         <div className="flex items-center justify-center py-12">
                             <Loader className="w-8 h-8 animate-spin text-primary-600" />
                         </div>

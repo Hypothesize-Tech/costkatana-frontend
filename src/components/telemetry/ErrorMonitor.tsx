@@ -28,7 +28,6 @@ export const ErrorMonitor: React.FC = () => {
             const response = await TelemetryAPI.getDashboard();
             return response.dashboard.recent_errors;
         },
-        refetchInterval: 10000,
         staleTime: 10000
     });
 
