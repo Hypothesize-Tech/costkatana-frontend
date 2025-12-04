@@ -196,23 +196,21 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
         {versions.map((version, index) => {
           const isSelected = selectedVersions.v1 === version.versionNumber || selectedVersions.v2 === version.versionNumber;
           const isLatest = index === 0;
-          
+
           return (
             <div
               key={version.id}
-              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-6 cursor-pointer hover:shadow-xl transition-all ${
-                isSelected
+              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-6 cursor-pointer hover:shadow-xl transition-all ${isSelected
                   ? 'border-[#06ec9e] dark:border-emerald-400 bg-[#06ec9e]/10 dark:bg-emerald-900/20'
                   : 'border-primary-200/30 dark:border-primary-500/20'
-              } ${isLatest ? 'ring-2 ring-[#06ec9e]/20 dark:ring-emerald-400/20' : ''}`}
+                } ${isLatest ? 'ring-2 ring-[#06ec9e]/20 dark:ring-emerald-400/20' : ''}`}
               onClick={() => handleVersionSelect(version.versionNumber)}
             >
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${
-                  isLatest
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${isLatest
                     ? 'from-[#06ec9e] via-emerald-500 to-[#009454]'
                     : 'from-gray-400 to-gray-500'
-                } text-white flex items-center justify-center flex-shrink-0 font-display font-bold`}>
+                  } text-white flex items-center justify-center flex-shrink-0 font-display font-bold`}>
                   v{version.versionNumber}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -232,7 +230,7 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
                   <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-3">
                     {formatDate(version.createdAt)}
                   </p>
-                  
+
                   {/* Snapshot Summary */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                     <div className="p-2 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
@@ -354,11 +352,10 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
               <span className="text-sm font-body font-semibold text-light-text-primary dark:text-dark-text-primary">
                 Cost Impact
               </span>
-              <span className={`text-lg font-display font-bold ${
-                comparison.costImpact >= 0
+              <span className={`text-lg font-display font-bold ${comparison.costImpact >= 0
                   ? 'text-red-600 dark:text-red-400'
                   : 'text-[#06ec9e] dark:text-emerald-400'
-              }`}>
+                }`}>
                 {comparison.costImpact >= 0 ? '+' : ''}{formatCurrency(comparison.costImpact)}
               </span>
             </div>

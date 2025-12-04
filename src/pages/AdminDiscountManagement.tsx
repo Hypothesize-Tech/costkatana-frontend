@@ -4,7 +4,6 @@ import {
     PlusIcon,
     PencilIcon,
     TrashIcon,
-    EyeIcon,
     ClipboardDocumentIcon,
     CheckCircleIcon,
     XCircleIcon,

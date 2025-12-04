@@ -12,7 +12,7 @@ interface OnboardingCheckProps {
 const ONBOARDING_CHECK_KEY = 'onboarding_check_completed';
 
 export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fallback }) => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { projects, isLoading: projectsLoading } = useProject();
     const [needsOnboarding, setNeedsOnboarding] = useState<boolean | null>(null);
     const hasCheckedRef = useRef(false);
@@ -26,40 +26,51 @@ export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fall
             setNeedsOnboarding(null);
         }
 
-        // Skip if already checked in this session
-        if (hasCheckedRef.current) {
-            return;
-        }
-
         // Wait for user and projects to load
         if (!user || projectsLoading) {
             return;
         }
 
-        // Check sessionStorage first - if we've already determined onboarding status this session, use it
-        const cachedCheck = sessionStorage.getItem(`${ONBOARDING_CHECK_KEY}_${user.id}`);
-        if (cachedCheck) {
-            const cachedValue = cachedCheck === 'true';
-            setNeedsOnboarding(cachedValue);
-            hasCheckedRef.current = true;
-            return;
-        }
-
-        // Fast path: Check if onboarding is completed or skipped in localStorage
+        // Always check localStorage first to get the most up-to-date onboarding status
+        // This ensures we pick up changes even if AuthContext hasn't refreshed yet
         const storedUser = localStorage.getItem('user');
+        let onboardingStatus: { completed?: boolean; skipped?: boolean } | null = null;
+
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-                // If onboarding is completed or skipped, no need for further checks
-                if (parsedUser.onboarding?.completed || parsedUser.onboarding?.skipped) {
-                    setNeedsOnboarding(false);
-                    sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
-                    hasCheckedRef.current = true;
-                    return;
+                // Only trust localStorage if the user ID matches
+                if (parsedUser.id === user.id) {
+                    onboardingStatus = parsedUser.onboarding || null;
                 }
             } catch (error) {
                 console.error('Error parsing stored user:', error);
             }
+        }
+
+        // Check sessionStorage - but only trust it if it matches current user ID
+        const cachedCheck = sessionStorage.getItem(`${ONBOARDING_CHECK_KEY}_${user.id}`);
+        if (cachedCheck && hasCheckedRef.current) {
+            const cachedValue = cachedCheck === 'true';
+            // Double-check with localStorage to ensure consistency
+            if (onboardingStatus?.completed || onboardingStatus?.skipped) {
+                setNeedsOnboarding(false);
+                sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
+                return;
+            }
+            setNeedsOnboarding(cachedValue);
+            return;
+        }
+
+        // Fast path: Check if onboarding is completed or skipped
+        const isCompleted = onboardingStatus?.completed === true || user.onboarding?.completed === true;
+        const isSkipped = onboardingStatus?.skipped === true || user.onboarding?.skipped === true;
+
+        if (isCompleted || isSkipped) {
+            setNeedsOnboarding(false);
+            sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
+            hasCheckedRef.current = true;
+            return;
         }
 
         // Check if user has projects - if yes, skip onboarding
@@ -72,49 +83,32 @@ export const OnboardingCheck: React.FC<OnboardingCheckProps> = ({ children, fall
         }
 
         // No projects and onboarding not completed/skipped - show onboarding
-        // Ensure onboarding field exists and has proper structure
-        if (!user.onboarding) {
-            user.onboarding = {
-                completed: false,
-                projectCreated: false,
-                firstLlmCall: false,
-                stepsCompleted: []
-            };
-        }
-
-        // Check onboarding status
-        const isCompleted = user.onboarding.completed === true;
-        const isSkipped = user.onboarding.skipped === true;
-
-        if (!isCompleted && !isSkipped) {
-            setNeedsOnboarding(true);
-            sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'true');
-        } else {
-            setNeedsOnboarding(false);
-            sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
-        }
-
+        setNeedsOnboarding(true);
+        sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'true');
         hasCheckedRef.current = true;
-    }, [user, projects, projectsLoading]);
+    }, [user, user?.onboarding?.completed, user?.onboarding?.skipped, projects, projectsLoading]);
 
     const handleOnboardingComplete = () => {
-        setNeedsOnboarding(false);
-        // Update user object and localStorage
-        if (user) {
-            if (!user.onboarding) {
-                user.onboarding = {
-                    completed: false,
-                    projectCreated: false,
-                    firstLlmCall: false,
-                    stepsCompleted: []
-                };
+        // Read the latest onboarding status from localStorage
+        // This handles both completion and skip cases
+        const storedUser = localStorage.getItem('user');
+        if (storedUser && user) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                // Only update if user ID matches
+                if (parsedUser.id === user.id && (parsedUser.onboarding?.completed || parsedUser.onboarding?.skipped)) {
+                    // Update AuthContext state to sync with localStorage
+                    updateUser(parsedUser);
+                    // Update sessionStorage
+                    sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
+                    // Set needsOnboarding to false
+                    setNeedsOnboarding(false);
+                    // Reset check ref to allow re-evaluation if needed
+                    hasCheckedRef.current = false;
+                }
+            } catch (error) {
+                console.error('Error parsing stored user in handleOnboardingComplete:', error);
             }
-            user.onboarding.completed = true;
-            user.onboarding.completedAt = new Date().toISOString();
-            // Update localStorage and sessionStorage
-            localStorage.setItem('user', JSON.stringify(user));
-            sessionStorage.setItem(`${ONBOARDING_CHECK_KEY}_${user.id}`, 'false');
-            hasCheckedRef.current = true;
         }
     };
 
