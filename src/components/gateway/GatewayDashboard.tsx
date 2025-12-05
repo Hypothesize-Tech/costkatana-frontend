@@ -84,19 +84,19 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
   if (error) {
     return (
-      <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-        <div className="flex gap-4 items-center p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-          <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-danger">
-            <AlertTriangle className="w-6 h-6 text-white" />
+      <div className="p-2 sm:p-3 md:p-4 lg:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center p-3 sm:p-4 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+          <div className="flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-danger shrink-0">
+            <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div className="flex-1">
-            <h2 className="mb-2 text-xl font-bold font-display text-danger-900 dark:text-danger-100">Gateway Error</h2>
-            <p className="mb-4 font-body text-danger-700 dark:text-danger-300">{error}</p>
+          <div className="flex-1 min-w-0">
+            <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl font-bold font-display text-danger-900 dark:text-danger-100">Gateway Error</h2>
+            <p className="mb-3 sm:mb-4 text-sm sm:text-base font-body text-danger-700 dark:text-danger-300">{error}</p>
             <button
               onClick={loadGatewayData}
-              className="inline-flex gap-2 items-center px-4 py-2 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 btn btn-primary glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-danger hover:bg-gradient-danger/90 font-display"
+              className="inline-flex gap-1.5 sm:gap-2 items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 btn btn-primary glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-danger hover:bg-gradient-danger/90 font-display"
             >
-              <RotateCw className="w-5 h-5" />
+              <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
               Try Again
             </button>
           </div>
@@ -106,19 +106,19 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <header className="mb-6">
-        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-3 items-center mb-2">
-              <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                <Globe className="w-6 h-6 text-white" />
+    <div className="p-2 sm:p-3 md:p-4 lg:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <header className="mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 sm:gap-4">
+            <div className="flex gap-2 sm:gap-3 items-center">
+              <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-primary shrink-0">
+                <Globe className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold font-display gradient-text-primary">Gateway Analytics</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text-primary">Gateway Analytics</h1>
             </div>
-            <div className="flex gap-3 items-center">
-              <div className={`w-4 h-4 rounded-full ${health?.status === 'healthy' ? 'bg-gradient-success' : 'bg-gradient-danger'}`}></div>
-              <span className={`px-3 py-1 rounded-full font-display font-medium ${health?.status === 'healthy'
+            <div className="flex flex-wrap gap-2 sm:gap-3 items-center w-full lg:w-auto">
+              <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full shrink-0 ${health?.status === 'healthy' ? 'bg-gradient-success' : 'bg-gradient-danger'}`}></div>
+              <span className={`px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm rounded-full font-display font-medium ${health?.status === 'healthy'
                 ? 'bg-gradient-success/20 text-success-700 dark:text-success-300'
                 : 'bg-gradient-danger/20 text-danger-700 dark:text-danger-300'
                 }`}>
@@ -127,79 +127,79 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
               <button
                 onClick={loadGatewayData}
                 disabled={loading}
-                className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 btn btn-primary glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-display"
+                className="inline-flex gap-1.5 sm:gap-2 items-center px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-200 btn btn-primary glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-display"
               >
-                <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
+                <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
               </button>
             </div>
           </div>
-          <p className="font-body text-secondary-600 dark:text-secondary-300">Real-time gateway performance metrics and analytics</p>
+          <p className="mt-2 sm:mt-2.5 text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">Real-time gateway performance metrics and analytics</p>
         </div>
       </header>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-5 lg:mb-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="p-3 sm:p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium font-display text-secondary-600 dark:text-secondary-300">Total Requests</p>
-              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium font-display text-secondary-600 dark:text-secondary-300">Total Requests</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
                 {analytics?.summary.totalRequests?.toLocaleString() || 0}
               </p>
-              <p className="mt-1 text-xs font-body text-secondary-500 dark:text-secondary-400">via Gateway</p>
+              <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs font-body text-secondary-500 dark:text-secondary-400">via Gateway</p>
             </div>
-            <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-primary/20">
-              <BarChart3 className="w-5 h-5 text-primary-500" />
+            <div className="flex justify-center items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary/20 shrink-0 ml-2">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500" />
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+        <div className="p-3 sm:p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
           <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium font-display text-success-700 dark:text-success-300">Total Cost</p>
-              <p className="text-2xl font-bold font-display text-success-600 dark:text-success-400">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium font-display text-success-700 dark:text-success-300">Total Cost</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-success-600 dark:text-success-400 truncate">
                 ${analytics?.summary.totalCost?.toFixed(4) || '0.0000'}
               </p>
-              <p className="mt-1 text-xs font-body text-secondary-500 dark:text-secondary-400">
+              <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs font-body text-secondary-500 dark:text-secondary-400 truncate">
                 ${analytics?.summary.cost_savings?.toFixed(4) || '0'} saved
               </p>
             </div>
-            <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-success/20">
-              <DollarSign className="w-5 h-5 text-success-500" />
+            <div className="flex justify-center items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-success/20 shrink-0 ml-2">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-success-500" />
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-warning-200/30 from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
+        <div className="p-3 sm:p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-warning-200/30 from-warning-50/30 to-warning-100/30 dark:from-warning-900/20 dark:to-warning-800/20">
           <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium font-display text-warning-700 dark:text-warning-300">Cache Hit Rate</p>
-              <p className="text-2xl font-bold font-display text-warning-600 dark:text-warning-400">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium font-display text-warning-700 dark:text-warning-300">Cache Hit Rate</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-warning-600 dark:text-warning-400">
                 {analytics?.summary.cacheHitRate?.toFixed(1) || 0}%
               </p>
-              <p className="mt-1 text-xs font-body text-secondary-500 dark:text-secondary-400">
+              <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs font-body text-secondary-500 dark:text-secondary-400">
                 {analytics?.cacheMetrics.totalHits || 0} hits
               </p>
             </div>
-            <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-warning/20">
-              <Zap className="w-5 h-5 text-warning-500" />
+            <div className="flex justify-center items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-warning/20 shrink-0 ml-2">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-warning-500" />
             </div>
           </div>
         </div>
 
-        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-accent-200/30 from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
+        <div className="p-3 sm:p-4 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-accent-200/30 from-accent-50/30 to-accent-100/30 dark:from-accent-900/20 dark:to-accent-800/20">
           <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium font-display text-accent-700 dark:text-accent-300">Avg Latency</p>
-              <p className="text-2xl font-bold font-display text-accent-600 dark:text-accent-400">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium font-display text-accent-700 dark:text-accent-300">Avg Latency</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-accent-600 dark:text-accent-400">
                 {analytics?.summary.averageLatency?.toFixed(0) || 0}ms
               </p>
-              <p className="mt-1 text-xs font-body text-secondary-500 dark:text-secondary-400">Gateway overhead</p>
+              <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs font-body text-secondary-500 dark:text-secondary-400">Gateway overhead</p>
             </div>
-            <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-accent/20">
-              <Clock className="w-5 h-5 text-accent-500" />
+            <div className="flex justify-center items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-accent/20 shrink-0 ml-2">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500" />
             </div>
           </div>
         </div>
@@ -207,26 +207,26 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* System Stats */}
       {stats && (
-        <div className="p-6 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex gap-3 items-center mb-6">
-            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
-              <Monitor className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 md:p-5 lg:p-6 mb-3 sm:mb-4 md:mb-5 lg:mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-secondary shrink-0">
+              <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold font-display text-secondary-900 dark:text-white">System Status</h3>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-secondary-900 dark:text-white">System Status</h3>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <h4 className="mb-2 font-semibold font-display text-success-700 dark:text-success-300">Uptime</h4>
-              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">{formatUptime(stats.uptime)}</p>
+          <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="p-3 sm:p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <h4 className="mb-1.5 sm:mb-2 text-xs sm:text-sm font-semibold font-display text-success-700 dark:text-success-300">Uptime</h4>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">{formatUptime(stats.uptime)}</p>
             </div>
-            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-warning-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <h4 className="mb-2 font-semibold font-display text-warning-700 dark:text-warning-300">Memory Usage</h4>
-              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">{formatBytes(stats.memoryUsage.heapUsed)}</p>
-              <p className="text-sm font-body text-secondary-500 dark:text-secondary-400">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
+            <div className="p-3 sm:p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-warning-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <h4 className="mb-1.5 sm:mb-2 text-xs sm:text-sm font-semibold font-display text-warning-700 dark:text-warning-300">Memory Usage</h4>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">{formatBytes(stats.memoryUsage.heapUsed)}</p>
+              <p className="text-xs sm:text-sm font-body text-secondary-500 dark:text-secondary-400">of {formatBytes(stats.memoryUsage.heapTotal)}</p>
             </div>
-            <div className="p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <h4 className="mb-2 font-semibold font-display text-accent-700 dark:text-accent-300">Cache Size</h4>
-              <p className="text-2xl font-bold font-display text-secondary-900 dark:text-white">{stats.cacheSize} items</p>
+            <div className="p-3 sm:p-4 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:col-span-2 md:col-span-1">
+              <h4 className="mb-1.5 sm:mb-2 text-xs sm:text-sm font-semibold font-display text-accent-700 dark:text-accent-300">Cache Size</h4>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">{stats.cacheSize} items</p>
             </div>
           </div>
         </div>
@@ -234,36 +234,36 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Provider Breakdown */}
       {analytics?.providerBreakdown && analytics.providerBreakdown.length > 0 && (
-        <div className="p-6 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex gap-3 items-center mb-6">
-            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-              <Target className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 md:p-5 lg:p-6 mb-3 sm:mb-4 md:mb-5 lg:mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-primary shrink-0">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Provider Usage</h3>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-secondary-900 dark:text-white">Provider Usage</h3>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
             {analytics.providerBreakdown.map((provider, index) => (
-              <div key={index} className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-semibold font-display text-secondary-900 dark:text-white">{provider.provider}</span>
-                  <span className="px-3 py-1 text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display">
+              <div key={index} className="p-3 sm:p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                  <span className="text-sm sm:text-base font-semibold font-display text-secondary-900 dark:text-white truncate flex-1">{provider.provider}</span>
+                  <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display shrink-0">
                     {provider.percentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="mb-3 w-full h-3 rounded-full bg-secondary-200/50 dark:bg-secondary-700/50">
+                <div className="mb-2 sm:mb-3 w-full h-2 sm:h-2.5 md:h-3 rounded-full bg-secondary-200/50 dark:bg-secondary-700/50">
                   <div
-                    className="h-3 rounded-full transition-all duration-300 bg-gradient-primary"
+                    className="h-2 sm:h-2.5 md:h-3 rounded-full transition-all duration-300 bg-gradient-primary"
                     style={{ width: `${provider.percentage}%` }}
                   ></div>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-between">
-                  <span className="px-2 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-between">
+                  <span className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display">
                     {provider.requests} requests
                   </span>
-                  <span className="px-2 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border-warning-200/30 dark:border-warning-500/20 font-display">
+                  <span className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border-warning-200/30 dark:border-warning-500/20 font-display">
                     ${provider.cost.toFixed(4)}
                   </span>
-                  <span className="px-2 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border-accent-200/30 dark:border-accent-500/20 font-display">
+                  <span className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-accent/20 text-accent-700 dark:text-accent-300 border-accent-200/30 dark:border-accent-500/20 font-display">
                     {provider.averageLatency > 0 ? `${provider.averageLatency.toFixed(0)}ms avg` : 'N/A'}
                   </span>
                 </div>
@@ -275,33 +275,33 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Budget Utilization */}
       {analytics?.budgetUtilization && analytics.budgetUtilization.length > 0 && (
-        <div className="p-6 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex gap-3 items-center mb-6">
-            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
-              <DollarSign className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 md:p-5 lg:p-6 mb-3 sm:mb-4 md:mb-5 lg:mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-success shrink-0">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Budget Utilization</h3>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-secondary-900 dark:text-white">Budget Utilization</h3>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
             {analytics.budgetUtilization.map((budget, index) => (
-              <div key={index} className="p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-semibold font-display text-secondary-900 dark:text-white">{budget.budgetName}</span>
-                  <span className="px-3 py-1 text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display">
+              <div key={index} className="p-3 sm:p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-success-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                  <span className="text-sm sm:text-base font-semibold font-display text-secondary-900 dark:text-white truncate flex-1">{budget.budgetName}</span>
+                  <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display shrink-0">
                     {budget.percentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="mb-3 w-full h-3 rounded-full bg-secondary-200/50 dark:bg-secondary-700/50">
+                <div className="mb-2 sm:mb-3 w-full h-2 sm:h-2.5 md:h-3 rounded-full bg-secondary-200/50 dark:bg-secondary-700/50">
                   <div
-                    className="h-3 rounded-full transition-all duration-300 bg-gradient-success"
+                    className="h-2 sm:h-2.5 md:h-3 rounded-full transition-all duration-300 bg-gradient-success"
                     style={{ width: `${budget.percentage}%` }}
                   ></div>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-between">
-                  <span className="px-2 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border-warning-200/30 dark:border-warning-500/20 font-display">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-between">
+                  <span className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-warning/20 text-warning-700 dark:text-warning-300 border-warning-200/30 dark:border-warning-500/20 font-display">
                     ${budget.utilized.toFixed(4)} used
                   </span>
-                  <span className="px-2 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display">
+                  <span className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display">
                     ${budget.total.toFixed(4)} total
                   </span>
                 </div>
@@ -313,19 +313,19 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Features Usage */}
       {analytics?.featuresUsage && (
-        <div className="p-6 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex gap-3 items-center mb-6">
-            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-accent">
-              <Settings className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 md:p-5 lg:p-6 mb-3 sm:mb-4 md:mb-5 lg:mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-accent shrink-0">
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Features Usage</h3>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-secondary-900 dark:text-white">Features Usage</h3>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2 md:grid-cols-3">
             {analytics.featuresUsage.map((feature, index) => (
-              <div key={index} className="p-6 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <h4 className="mb-3 font-semibold font-display text-secondary-900 dark:text-white">{feature.feature}</h4>
-                <p className="mb-2 text-3xl font-bold font-display text-secondary-900 dark:text-white">{feature.count}</p>
-                <p className="text-sm font-body text-secondary-500 dark:text-secondary-400">{feature.percentage.toFixed(1)}% usage</p>
+              <div key={index} className="p-3 sm:p-4 md:p-5 lg:p-6 text-center rounded-lg border shadow-lg backdrop-blur-xl glass border-accent-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <h4 className="mb-2 sm:mb-3 text-xs sm:text-sm md:text-base font-semibold font-display text-secondary-900 dark:text-white truncate">{feature.feature}</h4>
+                <p className="mb-1.5 sm:mb-2 text-xl sm:text-2xl md:text-3xl font-bold font-display text-secondary-900 dark:text-white">{feature.count}</p>
+                <p className="text-xs sm:text-sm font-body text-secondary-500 dark:text-secondary-400">{feature.percentage.toFixed(1)}% usage</p>
               </div>
             ))}
           </div>
@@ -334,25 +334,25 @@ export const GatewayDashboard: React.FC<GatewayDashboardProps> = ({ projectId })
 
       {/* Top Properties */}
       {analytics?.topProperties && analytics.topProperties.length > 0 && (
-        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex gap-3 items-center mb-6">
-            <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-secondary">
-              <Tag className="w-5 h-5 text-white" />
+        <div className="p-3 sm:p-4 md:p-5 lg:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-secondary-200/30 dark:border-secondary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4 md:mb-5 lg:mb-6">
+            <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-secondary shrink-0">
+              <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold font-display text-secondary-900 dark:text-white">Most Used Properties</h3>
+            <h3 className="text-lg sm:text-xl font-bold font-display text-secondary-900 dark:text-white">Most Used Properties</h3>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
             {analytics.topProperties.slice(0, 5).map((prop, index) => (
-              <div key={index} className="flex justify-between items-center p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-secondary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex-1">
-                  <span className="font-semibold font-display text-secondary-900 dark:text-white">{prop.property}:</span>
-                  <span className="ml-2 font-body text-secondary-600 dark:text-secondary-400">{prop.value}</span>
+              <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border shadow-lg backdrop-blur-xl glass border-secondary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm sm:text-base font-semibold font-display text-secondary-900 dark:text-white">{prop.property}:</span>
+                  <span className="ml-1.5 sm:ml-2 text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-400 truncate block sm:inline">{prop.value}</span>
                 </div>
-                <div className="flex flex-col gap-2 text-right">
-                  <div className="px-3 py-1 text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display">
+                <div className="flex flex-row sm:flex-col gap-1.5 sm:gap-2 text-left sm:text-right w-full sm:w-auto">
+                  <div className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-primary/20 text-primary-700 dark:text-primary-300 border-primary-200/30 dark:border-primary-500/20 font-display">
                     {prop.count} requests
                   </div>
-                  <div className="px-3 py-1 text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display">
+                  <div className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full border shadow-lg backdrop-blur-xl glass bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30 dark:border-success-500/20 font-display">
                     ${prop.cost.toFixed(4)}
                   </div>
                 </div>

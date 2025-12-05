@@ -285,26 +285,26 @@ export const RealTimeActivityFeed: React.FC<RealTimeActivityFeedProps> = ({ limi
     }
 
     return (
-        <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+        <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
             {/* Premium Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <div className="relative">
                         <div className="absolute inset-0 bg-gradient-primary rounded-xl blur-lg opacity-50"></div>
-                        <div className="relative p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg glow-primary">
-                            <BoltIcon className="w-6 h-6 text-white" />
+                        <div className="relative p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg glow-primary">
+                            <BoltIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text">
                             Real-Time Activity Feed
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Live platform activity and events
                         </p>
                     </div>
                 </div>
-                <div className={`px-4 py-2 rounded-full font-display font-semibold text-sm shadow-lg ${events.length > 0
+                <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-display font-semibold text-xs sm:text-sm shadow-lg ${events.length > 0
                     ? 'bg-gradient-primary text-white glow-primary'
                     : 'bg-gray-100/50 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
                     }`}>
@@ -313,16 +313,16 @@ export const RealTimeActivityFeed: React.FC<RealTimeActivityFeedProps> = ({ limi
             </div>
 
             {/* Activity Feed */}
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+            <div className="space-y-2 sm:space-y-3 max-h-[400px] sm:max-h-[500px] md:max-h-[600px] overflow-y-auto pr-1 sm:pr-2">
                 {events.length === 0 ? (
-                    <div className="text-center py-12">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100/50 dark:bg-primary-900/30 mb-4">
-                            <ClockIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                    <div className="text-center py-8 sm:py-10 md:py-12">
+                        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-primary-100/50 dark:bg-primary-900/30 mb-3 sm:mb-4">
+                            <ClockIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-600 dark:text-primary-400" />
                         </div>
-                        <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                        <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
                             No Activity Yet
                         </p>
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Activity events will appear here in real-time
                         </p>
                     </div>
@@ -335,52 +335,52 @@ export const RealTimeActivityFeed: React.FC<RealTimeActivityFeedProps> = ({ limi
                         return (
                             <div
                                 key={event.id}
-                                className="p-5 glass rounded-xl border border-primary-200/30 dark:border-primary-700/30 hover:scale-[1.01] transition-all duration-300 bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl"
+                                className="p-3 sm:p-4 md:p-5 glass rounded-xl border border-primary-200/30 dark:border-primary-700/30 hover:scale-[1.01] transition-all duration-300 bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl"
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className={`p-3 rounded-xl ${iconBg} shadow-lg flex-shrink-0`}>
-                                        <Icon className="w-6 h-6 text-white" />
+                                <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
+                                    <div className={`p-2 sm:p-2.5 md:p-3 rounded-xl ${iconBg} shadow-lg flex-shrink-0`}>
+                                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-3 mb-3 flex-wrap">
-                                            <h4 className="font-display font-bold text-lg text-light-text-primary dark:text-dark-text-primary">
+                                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
+                                            <h4 className="font-display font-bold text-sm sm:text-base md:text-lg text-light-text-primary dark:text-dark-text-primary">
                                                 {event.title || event.type || 'Activity Event'}
                                             </h4>
                                             {event.severity && (
-                                                <span className={`px-3 py-1 rounded-lg text-xs font-display font-bold uppercase tracking-wide border ${severityBadge}`}>
+                                                <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-display font-bold uppercase tracking-wide border ${severityBadge}`}>
                                                     {event.severity}
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4 font-body leading-relaxed">
+                                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mb-3 sm:mb-4 font-body leading-relaxed">
                                             {event.message}
                                         </p>
-                                        <div className="flex flex-wrap items-center gap-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-                                            <div className="flex items-center gap-1.5">
-                                                <ClockIcon className="w-4 h-4" />
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                                            <div className="flex items-center gap-1 sm:gap-1.5">
+                                                <ClockIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                 <span>{formatTimestamp(event.timestamp)}</span>
                                             </div>
                                             {event.userEmail && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <UserIcon className="w-4 h-4" />
-                                                    <span className="truncate max-w-[150px]">{event.userEmail}</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                    <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                    <span className="truncate max-w-[100px] sm:max-w-[150px]">{event.userEmail}</span>
                                                 </div>
                                             )}
                                             {event.projectName && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <FolderIcon className="w-4 h-4" />
-                                                    <span className="truncate max-w-[150px]">{event.projectName}</span>
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                    <FolderIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                    <span className="truncate max-w-[100px] sm:max-w-[150px]">{event.projectName}</span>
                                                 </div>
                                             )}
                                             {(event as any).cost && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <CurrencyDollarIcon className="w-4 h-4" />
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                    <CurrencyDollarIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     <span className="font-display font-semibold">${((event as any).cost as number).toFixed(4)}</span>
                                                 </div>
                                             )}
                                             {(event as any).tokens && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <ArrowTrendingUpIcon className="w-4 h-4" />
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                    <ArrowTrendingUpIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     <span>{((event as any).tokens as number).toLocaleString()} tokens</span>
                                                 </div>
                                             )}

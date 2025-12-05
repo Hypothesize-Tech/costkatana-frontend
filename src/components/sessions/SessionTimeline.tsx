@@ -51,18 +51,18 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
     const maxDepth = Math.max(...Array.from(nodesByDepth.keys()));
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-x-auto">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">⏱️</span>
+        <div className="glass rounded-xl p-4 sm:p-6 md:p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-x-auto">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span className="text-white text-base sm:text-lg">⏱️</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text-primary">Session Timeline</h3>
+                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">Session Timeline</h3>
             </div>
 
-            <div className="relative" style={{ minHeight: `${(maxDepth + 1) * 60}px` }}>
+            <div className="relative min-w-[600px] sm:min-w-0" style={{ minHeight: `${(maxDepth + 1) * 60}px` }}>
                 {/* Time axis */}
-                <div className="absolute left-0 right-0 top-0 h-8 border-b border-primary-200/30">
-                    <div className="flex justify-between font-body text-light-text-secondary dark:text-dark-text-secondary px-2 text-sm">
+                <div className="absolute left-0 right-0 top-0 h-6 sm:h-8 border-b border-primary-200/30">
+                    <div className="flex justify-between font-body text-light-text-secondary dark:text-dark-text-secondary px-2 text-xs sm:text-sm">
                         <span>0ms</span>
                         <span>{Math.round(totalDuration / 2)}ms</span>
                         <span>{Math.round(totalDuration)}ms</span>
@@ -115,9 +115,9 @@ export const SessionTimeline: React.FC<SessionTimelineProps> = ({
             </div>
 
             {/* Legend */}
-            <div className="mt-8 pt-6 border-t border-primary-200/30">
-                <h4 className="font-display font-semibold gradient-text-secondary mb-4">Legend</h4>
-                <div className="flex flex-wrap gap-4">
+            <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-primary-200/30">
+                <h4 className="text-sm sm:text-base font-display font-semibold gradient-text-secondary mb-3 sm:mb-4">Legend</h4>
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                     <div className="flex items-center gap-2">
                         <div className="w-4 h-4 bg-gradient-success rounded-lg shadow-lg"></div>
                         <span className="font-body text-light-text-primary dark:text-dark-text-primary">HTTP</span>

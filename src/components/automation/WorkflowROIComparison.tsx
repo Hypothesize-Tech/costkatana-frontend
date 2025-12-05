@@ -160,30 +160,30 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Summary Cards */}
       {summary && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Workflows
               </span>
-              <ChartBarIcon className="w-5 h-5 text-[#06ec9e] dark:text-emerald-400" />
+              <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#06ec9e] dark:text-emerald-400" />
             </div>
-            <div className="text-2xl font-display font-bold gradient-text-primary">
+            <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
               {summary.totalWorkflows}
             </div>
           </div>
 
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Avg Efficiency
               </span>
-              <TrophyIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <TrophyIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="text-2xl font-display font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-xl sm:text-2xl font-display font-bold text-blue-600 dark:text-blue-400">
               {summary.averageEfficiencyScore.toFixed(1)}
             </div>
             <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
@@ -191,26 +191,26 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
             </div>
           </div>
 
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Cost
               </span>
-              <CurrencyDollarIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
+            <div className="text-xl sm:text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
               {formatCurrency(summary.totalCost)}
             </div>
           </div>
 
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Executions
               </span>
-              <BoltIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <BoltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
             </div>
-            <div className="text-2xl font-display font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-xl sm:text-2xl font-display font-bold text-orange-600 dark:text-orange-400">
               {formatNumber(summary.totalExecutions)}
             </div>
           </div>
@@ -219,59 +219,61 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
 
       {/* Comparison Table */}
       <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="overflow-x-auto -mx-2 sm:mx-0">
+          <table className="w-full min-w-[640px]">
             <thead className="bg-primary-50/30 dark:bg-primary-900/10">
               <tr>
-                <th className="px-6 py-4 text-left">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                   <button
                     onClick={() => handleSort('workflowName')}
-                    className="flex items-center text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
                   >
                     Workflow
                     <SortIcon field="workflowName" />
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                   <button
                     onClick={() => handleSort('efficiencyScore')}
-                    className="flex items-center text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
                   >
-                    Efficiency Score
+                    <span className="hidden sm:inline">Efficiency Score</span>
+                    <span className="sm:hidden">Score</span>
                     <SortIcon field="efficiencyScore" />
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                   <button
                     onClick={() => handleSort('totalCost')}
-                    className="flex items-center text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
                   >
                     Total Cost
                     <SortIcon field="totalCost" />
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                   <button
                     onClick={() => handleSort('totalExecutions')}
-                    className="flex items-center text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
                   >
                     Executions
                     <SortIcon field="totalExecutions" />
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                   <button
                     onClick={() => handleSort('averageCostPerExecution')}
-                    className="flex items-center text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-[#06ec9e] dark:hover:text-emerald-400 transition-colors"
                   >
-                    Cost/Execution
+                    <span className="hidden sm:inline">Cost/Execution</span>
+                    <span className="sm:hidden">Cost/Exec</span>
                     <SortIcon field="averageCostPerExecution" />
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                   Platform
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                   Trend
                 </th>
               </tr>
@@ -285,7 +287,7 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
                   } ${index < 3 ? 'bg-gradient-to-r from-[#06ec9e]/5 via-emerald-50/10 to-[#009454]/5 dark:from-[#06ec9e]/10 dark:via-emerald-900/20 dark:to-[#009454]/10' : ''}`}
                   onClick={() => onWorkflowClick && onWorkflowClick(workflow.workflowId)}
                 >
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center gap-3">
                       {index < 3 && (
                         <TrophyIcon className={`w-5 h-5 ${
@@ -302,40 +304,41 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-lg font-display font-bold ${getEfficiencyColor(workflow.efficiencyScore)}`}>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2">
+                      <span className={`text-base sm:text-lg font-display font-bold ${getEfficiencyColor(workflow.efficiencyScore)}`}>
                         {workflow.efficiencyScore.toFixed(1)}
                       </span>
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${getEfficiencyBadge(workflow.efficiencyScore)}`}>
+                      <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium ${getEfficiencyBadge(workflow.efficiencyScore)}`}>
                         {workflow.efficiencyScore >= 80 ? 'Excellent' : workflow.efficiencyScore >= 60 ? 'Good' : workflow.efficiencyScore >= 40 ? 'Fair' : 'Poor'}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="font-display font-semibold gradient-text-primary">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <div className="font-display font-semibold gradient-text-primary text-sm sm:text-base">
                       {formatCurrency(workflow.totalCost)}
                     </div>
                     <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
-                      {formatCurrency(workflow.totalAICost)} AI + {formatCurrency(workflow.totalOrchestrationCost)} orchestration
+                      <span className="hidden sm:inline">{formatCurrency(workflow.totalAICost)} AI + {formatCurrency(workflow.totalOrchestrationCost)} orchestration</span>
+                      <span className="sm:hidden">{formatCurrency(workflow.totalAICost)} + {formatCurrency(workflow.totalOrchestrationCost)}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm sm:text-base">
                       {formatNumber(workflow.totalExecutions)}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <div className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary text-sm sm:text-base">
                       {formatCurrency(workflow.averageCostPerExecution)}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 capitalize">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 capitalize">
                       {workflow.platform}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center gap-2">
                       {workflow.trends.costPerExecutionTrend === 'improving' && (
                         <span className="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm">
@@ -371,12 +374,12 @@ export const WorkflowROIComparison: React.FC<WorkflowROIComparisonProps> = ({
       </div>
 
       {sortedWorkflows.length === 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-12 text-center">
-          <ChartBarIcon className="w-12 h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-4" />
-          <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 sm:p-12 text-center">
+          <ChartBarIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-3 sm:mb-4" />
+          <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
             No workflow data available
           </p>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             No workflows have usage data for the selected time period.
           </p>
         </div>

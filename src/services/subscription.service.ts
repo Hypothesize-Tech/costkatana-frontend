@@ -195,7 +195,48 @@ export class SubscriptionService {
   static async getUsageAnalytics(): Promise<UsageAnalytics> {
     try {
       const response = await apiClient.get('/user/subscription/usage');
-      return response.data.data;
+      const data = response.data.data;
+      
+      // Ensure the response has the expected structure with safe defaults
+      return {
+        tokens: {
+          used: data.tokens?.used || 0,
+          limit: data.tokens?.limit ?? -1,
+          percentage: data.tokens?.percentage || 0,
+          dates: data.tokens?.dates || [],
+          trend: data.tokens?.trend || [],
+        },
+        requests: {
+          used: data.requests?.used || 0,
+          limit: data.requests?.limit ?? -1,
+          percentage: data.requests?.percentage || 0,
+          dates: data.requests?.dates || [],
+          trend: data.requests?.trend || [],
+        },
+        logs: {
+          used: data.logs?.used || 0,
+          limit: data.logs?.limit ?? -1,
+          percentage: data.logs?.percentage || 0,
+          dates: data.logs?.dates || [],
+          trend: data.logs?.trend || [],
+        },
+        workflows: {
+          used: data.workflows?.used || 0,
+          limit: data.workflows?.limit ?? -1,
+          percentage: data.workflows?.percentage || 0,
+        },
+        cortex: {
+          used: data.cortex?.used || 0,
+          limit: data.cortex?.limit ?? -1,
+          percentage: data.cortex?.percentage || 0,
+          resetDate: data.cortex?.resetDate || new Date().toISOString(),
+        },
+        projectedUsage: data.projectedUsage || {
+          tokens: 0,
+          requests: 0,
+          logs: 0,
+        },
+      };
     } catch (error) {
       console.error('Error fetching usage analytics:', error);
       throw error;

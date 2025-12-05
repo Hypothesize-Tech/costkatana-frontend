@@ -159,14 +159,14 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-display font-bold gradient-text-primary">
+          <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
             Version History
           </h3>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             {versions.length} version{versions.length !== 1 ? 's' : ''} tracked
           </p>
         </div>
@@ -174,7 +174,7 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
           <button
             onClick={compareVersions}
             disabled={comparing}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+            className="px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center"
           >
             {comparing ? (
               <>
@@ -184,7 +184,8 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
             ) : (
               <>
                 <DocumentDuplicateIcon className="w-4 h-4" />
-                Compare Versions
+                <span className="hidden sm:inline">Compare Versions</span>
+                <span className="sm:hidden">Compare</span>
               </>
             )}
           </button>
@@ -200,22 +201,22 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
           return (
             <div
               key={version.id}
-              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-6 cursor-pointer hover:shadow-xl transition-all ${isSelected
+              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all ${isSelected
                   ? 'border-[#06ec9e] dark:border-emerald-400 bg-[#06ec9e]/10 dark:bg-emerald-900/20'
                   : 'border-primary-200/30 dark:border-primary-500/20'
                 } ${isLatest ? 'ring-2 ring-[#06ec9e]/20 dark:ring-emerald-400/20' : ''}`}
               onClick={() => handleVersionSelect(version.versionNumber)}
             >
-              <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${isLatest
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-r ${isLatest
                     ? 'from-[#06ec9e] via-emerald-500 to-[#009454]'
                     : 'from-gray-400 to-gray-500'
-                  } text-white flex items-center justify-center flex-shrink-0 font-display font-bold`}>
+                  } text-white flex items-center justify-center flex-shrink-0 font-display font-bold text-sm sm:text-base`}>
                   v{version.versionNumber}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h4 className="text-base sm:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                       Version {version.versionNumber}
                     </h4>
                     {isLatest && (
@@ -232,7 +233,7 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
                   </p>
 
                   {/* Snapshot Summary */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-3">
                     <div className="p-2 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
                       <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-1">
                         Steps
@@ -309,18 +310,18 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
 
       {/* Comparison Results */}
       {comparison && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-          <h4 className="text-lg font-display font-bold mb-4 gradient-text-primary">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+          <h4 className="text-base sm:text-lg font-display font-bold mb-3 sm:mb-4 gradient-text-primary">
             Version Comparison
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
             <div>
-              <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2">
+              <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2">
                 Version {comparison.version1?.versionNumber || 'N/A'}
               </p>
               {comparison.version1 && (
-                <div className="p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
-                  <div className="text-2xl font-display font-bold gradient-text-primary mb-2">
+                <div className="p-3 sm:p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
+                  <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary mb-2">
                     {formatCurrency(comparison.version1.snapshot.totalEstimatedCost)}
                   </div>
                   <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -330,12 +331,12 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
               )}
             </div>
             <div>
-              <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2">
+              <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2">
                 Version {comparison.version2?.versionNumber || 'N/A'}
               </p>
               {comparison.version2 && (
-                <div className="p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
-                  <div className="text-2xl font-display font-bold gradient-text-primary mb-2">
+                <div className="p-3 sm:p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10">
+                  <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary mb-2">
                     {formatCurrency(comparison.version2.snapshot.totalEstimatedCost)}
                   </div>
                   <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -347,12 +348,12 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
           </div>
 
           {/* Cost Impact */}
-          <div className="mb-6 p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10 bg-gradient-to-r from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10 bg-gradient-to-r from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-body font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <span className="text-xs sm:text-sm font-body font-semibold text-light-text-primary dark:text-dark-text-primary">
                 Cost Impact
               </span>
-              <span className={`text-lg font-display font-bold ${comparison.costImpact >= 0
+              <span className={`text-base sm:text-lg font-display font-bold ${comparison.costImpact >= 0
                   ? 'text-red-600 dark:text-red-400'
                   : 'text-[#06ec9e] dark:text-emerald-400'
                 }`}>
@@ -364,26 +365,26 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
           {/* Differences */}
           {comparison.differences && comparison.differences.length > 0 && (
             <div>
-              <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+              <h5 className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
                 Differences:
               </h5>
               <div className="space-y-2">
                 {comparison.differences.map((diff, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-primary-200/20 dark:border-primary-500/10"
+                    className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border border-primary-200/20 dark:border-primary-500/10"
                   >
                     <span className={getChangeTypeColor(diff.type)}>
                       {getChangeTypeIcon(diff.type)}
                     </span>
-                    <div className="flex-1">
-                      <p className="text-sm font-body text-light-text-primary dark:text-dark-text-primary">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary">
                         {diff.description}
                       </p>
                       {diff.details && Object.keys(diff.details).length > 0 && (
                         <div className="mt-2 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                           {Object.entries(diff.details).map(([key, value]) => (
-                            <div key={key}>
+                            <div key={key} className="break-words">
                               <span className="font-semibold">{key}:</span> {String(value)}
                             </div>
                           ))}
@@ -399,12 +400,12 @@ export const WorkflowVersionHistory: React.FC<WorkflowVersionHistoryProps> = ({
       )}
 
       {versions.length === 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-12 text-center">
-          <ClockIcon className="w-12 h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-4" />
-          <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 sm:p-12 text-center">
+          <ClockIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-3 sm:mb-4" />
+          <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
             No version history
           </p>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             Version tracking will begin once workflow changes are detected.
           </p>
         </div>

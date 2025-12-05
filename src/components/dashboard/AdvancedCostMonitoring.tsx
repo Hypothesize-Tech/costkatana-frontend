@@ -67,6 +67,7 @@ const AdvancedCostMonitoring: React.FC = () => {
   const [newTagName, setNewTagName] = useState<string>("");
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [isAddingTag, setIsAddingTag] = useState<boolean>(false);
+  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
 
   // Sample tags for demonstration
   const sampleTags = [
@@ -93,6 +94,19 @@ const AdvancedCostMonitoring: React.FC = () => {
   // Initialize available tags with samples
   useEffect(() => {
     setAvailableTags([...sampleTags]);
+  }, []);
+
+  // Track window width for responsive charts
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
   // Add tag filter functionality
@@ -362,47 +376,47 @@ const AdvancedCostMonitoring: React.FC = () => {
   };
 
   const renderRealTimeTab = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
       {realTimeData.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 md:gap-5 md:grid-cols-2 lg:grid-cols-4">
             {realTimeData.map((metric) => (
-              <div key={metric.tag} className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-semibold font-display gradient-text-primary">
+              <div key={metric.tag} className="p-4 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl sm:p-5 md:p-6">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <span className="text-base font-semibold font-display gradient-text-primary sm:text-lg">
                     {metric.tag}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-display font-bold bg-gradient-success text-white border border-success-300/30 dark:border-success-500/20 animate-pulse">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-display font-bold bg-gradient-success text-white border border-success-300/30 dark:border-success-500/20 animate-pulse sm:px-3 sm:py-1.5">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                     Live
                   </span>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Current Cost</span>
-                    <span className="text-lg font-bold font-display gradient-text-primary">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">Current Cost</span>
+                    <span className="text-base font-bold font-display gradient-text-primary sm:text-lg">
                       ${metric.currentCost.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Hourly Rate</span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">Hourly Rate</span>
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       ${metric.hourlyRate.toFixed(2)}/hr
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                       Daily Projection
                     </span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       ${metric.projectedDailyCost.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                       Monthly Projection
                     </span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       ${metric.projectedMonthlyCost.toFixed(2)}
                     </span>
                   </div>
@@ -411,16 +425,16 @@ const AdvancedCostMonitoring: React.FC = () => {
             ))}
           </div>
 
-          <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex gap-3 items-center mb-6">
-              <div className="p-3 rounded-xl shadow-lg bg-gradient-accent glow-accent">
-                <ChartPieIcon className="w-6 h-6 text-white" />
+          <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6 md:p-8">
+            <div className="flex gap-2 items-center mb-4 sm:gap-3 sm:mb-6">
+              <div className="p-2 rounded-xl shadow-lg bg-gradient-accent glow-accent sm:p-3">
+                <ChartPieIcon className="w-5 h-5 text-white sm:w-6 sm:h-6" />
               </div>
-              <h3 className="text-xl font-bold font-display gradient-text-primary">
+              <h3 className="text-lg font-bold font-display gradient-text-primary sm:text-xl">
                 Tag Cost Distribution
               </h3>
             </div>
-            <div className="h-64">
+            <div className="h-48 sm:h-56 md:h-64">
               {generateTagDistributionData().labels.length > 0 ? (
                 <Doughnut
                   data={generateTagDistributionData()}
@@ -429,14 +443,16 @@ const AdvancedCostMonitoring: React.FC = () => {
                     maintainAspectRatio: false,
                     plugins: {
                       legend: {
-                        position: "right",
+                        position: windowWidth < 640 ? "bottom" : "right",
                         labels: {
                           font: {
                             family: 'Inter, sans-serif',
-                            size: 12,
+                            size: windowWidth < 640 ? 10 : 12,
                             weight: 600
                           },
-                          color: '#374151'
+                          color: '#374151',
+                          boxWidth: windowWidth < 640 ? 12 : 15,
+                          padding: windowWidth < 640 ? 8 : 12
                         }
                       },
                     },
@@ -445,10 +461,10 @@ const AdvancedCostMonitoring: React.FC = () => {
               ) : (
                 <div className="flex justify-center items-center h-full">
                   <div className="text-center">
-                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-accent/10">
-                      <ChartPieIcon className="w-8 h-8 text-accent-500 dark:text-accent-400" />
+                    <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-accent/10 sm:mb-4 sm:w-16 sm:h-16">
+                      <ChartPieIcon className="w-6 h-6 text-accent-500 dark:text-accent-400 sm:w-8 sm:h-8" />
                     </div>
-                    <p className="text-lg font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:text-base md:text-lg">
                       No tag distribution data available
                     </p>
                   </div>
@@ -458,12 +474,12 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="p-12 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex justify-center items-center mx-auto mb-6 w-20 h-20 rounded-2xl shadow-2xl bg-gradient-danger">
-            <ClockIcon className="w-10 h-10 text-white" />
+        <div className="p-6 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-8 md:p-12">
+          <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-2xl shadow-2xl bg-gradient-danger sm:mb-6 sm:w-20 sm:h-20">
+            <ClockIcon className="w-8 h-8 text-white sm:w-10 sm:h-10" />
           </div>
-          <p className="mb-4 text-2xl font-bold font-display gradient-text-danger">No real-time data available</p>
-          <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="mb-3 text-xl font-bold font-display gradient-text-danger sm:mb-4 sm:text-2xl">No real-time data available</p>
+          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-base">
             Start using AI services to see real-time metrics
           </p>
         </div>
@@ -473,19 +489,19 @@ const AdvancedCostMonitoring: React.FC = () => {
 
 
   const renderPerformanceTab = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
       {performanceData.length > 0 ? (
         <>
-          <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex gap-3 items-center mb-4">
-              <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                <RocketLaunchIcon className="w-6 h-6 text-white" />
+          <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
+            <div className="flex gap-2 items-center mb-3 sm:gap-3 sm:mb-4">
+              <div className="p-2 rounded-xl shadow-lg bg-gradient-primary glow-primary sm:p-3">
+                <RocketLaunchIcon className="w-5 h-5 text-white sm:w-6 sm:h-6" />
               </div>
-              <h3 className="text-xl font-bold font-display gradient-text-primary">
+              <h3 className="text-lg font-bold font-display gradient-text-primary sm:text-xl">
                 Cost vs Performance Correlation
               </h3>
             </div>
-            <div className="h-64">
+            <div className="h-48 sm:h-56 md:h-64">
               {generatePerformanceScatterData().datasets[0].data.length > 0 ? (
                 <Scatter
                   data={generatePerformanceScatterData()}
@@ -497,13 +513,29 @@ const AdvancedCostMonitoring: React.FC = () => {
                         title: {
                           display: true,
                           text: "Cost per Request ($)",
+                          font: {
+                            size: windowWidth < 640 ? 11 : 12
+                          }
                         },
+                        ticks: {
+                          font: {
+                            size: windowWidth < 640 ? 10 : 11
+                          }
+                        }
                       },
                       y: {
                         title: {
                           display: true,
                           text: "Latency (ms)",
+                          font: {
+                            size: windowWidth < 640 ? 11 : 12
+                          }
                         },
+                        ticks: {
+                          font: {
+                            size: windowWidth < 640 ? 10 : 11
+                          }
+                        }
                       },
                     },
                     plugins: {
@@ -526,10 +558,10 @@ const AdvancedCostMonitoring: React.FC = () => {
               ) : (
                 <div className="flex justify-center items-center h-full">
                   <div className="text-center">
-                    <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
-                      <RocketLaunchIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+                    <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-primary/10 sm:mb-4 sm:w-16 sm:h-16">
+                      <RocketLaunchIcon className="w-6 h-6 text-primary-500 dark:text-primary-400 sm:w-8 sm:h-8" />
                     </div>
-                    <p className="text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-base">
                       No performance correlation data available
                     </p>
                   </div>
@@ -538,43 +570,43 @@ const AdvancedCostMonitoring: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
             {performanceData.map((corr, index) => (
-              <div key={index} className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+              <div key={index} className="p-4 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl sm:p-5 md:p-6">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                     {corr.service} - {corr.model}
                   </span>
                   <span
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-display font-semibold border ${getPerformanceRatingColor(
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-display font-semibold border ${getPerformanceRatingColor(
                       corr.efficiency.performanceRating,
-                    )}`}
+                    )} sm:px-3 sm:py-1.5`}
                   >
                     {corr.efficiency.performanceRating}
                   </span>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                     <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Cost/Request</span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       ${corr.costPerRequest.toFixed(4)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                     <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Latency</span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       {corr.performance.latency.toFixed(0)}ms
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                     <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Quality</span>
-                    <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                       {(corr.performance.qualityScore * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                  <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                     <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Efficiency</span>
-                    <span className="text-sm font-semibold font-display gradient-text-primary">
+                    <span className="text-xs font-semibold font-display gradient-text-primary sm:text-sm">
                       {(corr.efficiency.costEfficiencyScore * 100).toFixed(1)}%
                     </span>
                   </div>
@@ -584,15 +616,15 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center py-20 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex justify-center items-center py-12 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:py-16 md:py-20">
           <div className="text-center">
-            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
-              <RocketLaunchIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+            <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-primary/10 sm:mb-4 sm:w-16 sm:h-16">
+              <RocketLaunchIcon className="w-6 h-6 text-primary-500 dark:text-primary-400 sm:w-8 sm:h-8" />
             </div>
-            <p className="text-lg font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-base font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:text-lg">
               No performance data available
             </p>
-            <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="mt-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
               Performance correlation data will appear here when available
             </p>
           </div>
@@ -602,34 +634,34 @@ const AdvancedCostMonitoring: React.FC = () => {
   );
 
   const renderTagsTab = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
       {/* Tag Management Section */}
-      <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="flex gap-3 items-center mb-6">
-          <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-            <TagIcon className="w-6 h-6 text-white" />
+      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-5 md:p-6">
+        <div className="flex gap-2 items-center mb-4 sm:gap-3 sm:mb-5 md:mb-6">
+          <div className="p-2 rounded-xl shadow-lg bg-gradient-primary glow-primary sm:p-3">
+            <TagIcon className="w-5 h-5 text-white sm:w-6 sm:h-6" />
           </div>
-          <h3 className="text-xl font-bold font-display gradient-text-primary">Tag Management</h3>
+          <h3 className="text-lg font-bold font-display gradient-text-primary sm:text-xl">Tag Management</h3>
         </div>
 
         {/* Available Tags */}
-        <div className="mb-6">
-          <label className="block mb-3 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+        <div className="mb-4 sm:mb-5 md:mb-6">
+          <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:mb-3 sm:text-sm">
             Available Tags:
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {availableTags.map((tag) => (
               <div
                 key={tag}
-                className="inline-flex gap-2 items-center px-4 py-2 rounded-full border transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/10"
+                className="inline-flex gap-1.5 items-center px-3 py-1.5 rounded-full border transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/10 sm:gap-2 sm:px-4 sm:py-2"
               >
-                <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">{tag}</span>
+                <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">{tag}</span>
                 <button
                   onClick={() => handleRemoveTag(tag)}
                   className="transition-colors text-danger-500 hover:text-danger-700 dark:text-danger-400 dark:hover:text-danger-300"
                   title="Remove tag"
                 >
-                  <XMarkIcon className="w-4 h-4" />
+                  <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             ))}
@@ -637,11 +669,11 @@ const AdvancedCostMonitoring: React.FC = () => {
         </div>
 
         {/* Add New Tag */}
-        <div className="mb-6">
-          <label className="block mb-3 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+        <div className="mb-4 sm:mb-5 md:mb-6">
+          <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:mb-3 sm:text-sm">
             Add New Tag:
           </label>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             {isAddingTag ? (
               <>
                 <input
@@ -649,34 +681,36 @@ const AdvancedCostMonitoring: React.FC = () => {
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   placeholder="Enter tag name"
-                  className="flex-1 input"
+                  className="flex-1 input text-sm sm:text-base"
                   onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
                 />
-                <button
-                  onClick={handleAddTag}
-                  className="flex gap-2 items-center btn btn-primary"
-                >
-                  <PlusIcon className="w-5 h-5" />
-                  Add
-                </button>
-                <button
-                  onClick={() => {
-                    setIsAddingTag(false);
-                    setNewTagName("");
-                  }}
-                  className="flex gap-2 items-center btn btn-secondary"
-                >
-                  <XMarkIcon className="w-5 h-5" />
-                  Cancel
-                </button>
+                <div className="flex gap-2 sm:gap-3">
+                  <button
+                    onClick={handleAddTag}
+                    className="flex flex-1 gap-1.5 items-center justify-center btn btn-primary text-sm sm:flex-initial sm:gap-2"
+                  >
+                    <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="sm:inline">Add</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsAddingTag(false);
+                      setNewTagName("");
+                    }}
+                    className="flex flex-1 gap-1.5 items-center justify-center btn btn-secondary text-sm sm:flex-initial sm:gap-2"
+                  >
+                    <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="sm:inline">Cancel</span>
+                  </button>
+                </div>
               </>
             ) : (
               <button
                 onClick={() => setIsAddingTag(true)}
-                className="flex gap-2 items-center btn btn-success"
+                className="flex gap-1.5 items-center justify-center btn btn-success text-sm sm:gap-2"
               >
-                <PlusIcon className="w-5 h-5" />
-                Add Tag
+                <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Add Tag</span>
               </button>
             )}
           </div>
@@ -684,10 +718,10 @@ const AdvancedCostMonitoring: React.FC = () => {
 
         {/* Selected Tags Filter */}
         <div>
-          <label className="block mb-3 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+          <label className="block mb-2 text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:mb-3 sm:text-sm">
             Filter by tags (click to select/deselect):
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {availableTags.map((tag) => (
               <button
                 key={tag}
@@ -697,25 +731,25 @@ const AdvancedCostMonitoring: React.FC = () => {
                     : [...selectedTags, tag];
                   handleTagFilter(newTags);
                 }}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-display font-semibold transition-all duration-300 border ${selectedTags.includes(tag)
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-display font-semibold transition-all duration-300 border ${selectedTags.includes(tag)
                   ? "bg-gradient-primary text-white shadow-lg glow-primary border-primary-300/30 dark:border-primary-500/20"
                   : "glass border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-bg-300/50 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10 dark:hover:bg-primary-500/10"
-                  }`}
+                  } sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm`}
               >
-                <TagIcon className="w-4 h-4" />
+                <TagIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 {tag}
               </button>
             ))}
           </div>
 
           {selectedTags.length > 0 && (
-            <div className="flex flex-wrap gap-3 items-center p-4 mt-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 bg-primary-500/5 dark:bg-primary-500/10">
-              <span className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
-                Selected: {selectedTags.join(", ")}
+            <div className="flex flex-col gap-2 items-start p-3 mt-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 bg-primary-500/5 dark:bg-primary-500/10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:p-4 sm:mt-4">
+              <span className="text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
+                Selected: <span className="break-all sm:break-normal">{selectedTags.join(", ")}</span>
               </span>
               <button
                 onClick={() => handleTagFilter([])}
-                className="text-sm font-semibold transition-all duration-300 font-display gradient-text-primary hover:scale-110"
+                className="text-xs font-semibold transition-all duration-300 font-display gradient-text-primary hover:scale-110 sm:text-sm"
               >
                 Clear All
               </button>
@@ -726,48 +760,48 @@ const AdvancedCostMonitoring: React.FC = () => {
 
       {/* Tag Analytics */}
       {tagAnalytics.length > 0 ? (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           {tagAnalytics.map((tag) => (
-            <div key={tag.tag} className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-semibold font-display gradient-text-primary">
+            <div key={tag.tag} className="p-4 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 group glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl sm:p-5 md:p-6">
+              <div className="flex justify-between items-center mb-3 sm:mb-4">
+                <span className="text-xs font-semibold font-display gradient-text-primary sm:text-sm">
                   {tag.tag}
                 </span>
-                <span className={`inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-full border ${getTrendColor(tag.trend)}`}>
+                <span className={`inline-flex items-center gap-1 text-xs font-display font-semibold px-2 py-1 rounded-full border ${getTrendColor(tag.trend)} sm:gap-1.5 sm:px-3 sm:py-1.5`}>
                   {getTrendIcon(tag.trend)} {tag.trendPercentage.toFixed(1)}%
                 </span>
               </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                   <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Total Cost</span>
-                  <span className="text-sm font-bold font-display gradient-text-primary">
+                  <span className="text-xs font-bold font-display gradient-text-primary sm:text-sm">
                     ${tag.totalCost.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                   <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Total Calls</span>
-                  <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                  <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">
                     {tag.totalCalls.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between items-center p-3 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
+                <div className="flex justify-between items-center p-2.5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-3">
                   <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Avg Cost/Call</span>
-                  <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">${tag.averageCost.toFixed(4)}</span>
+                  <span className="text-xs font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-sm">${tag.averageCost.toFixed(4)}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="flex justify-center items-center py-20 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex justify-center items-center py-12 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:py-16 md:py-20">
           <div className="text-center">
-            <div className="flex justify-center items-center mx-auto mb-4 w-16 h-16 rounded-xl bg-gradient-primary/10">
-              <TagIcon className="w-8 h-8 text-primary-500 dark:text-primary-400" />
+            <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl bg-gradient-primary/10 sm:mb-4 sm:w-16 sm:h-16">
+              <TagIcon className="w-6 h-6 text-primary-500 dark:text-primary-400 sm:w-8 sm:h-8" />
             </div>
-            <p className="text-lg font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-base font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary sm:text-lg">
               No tag analytics data available
             </p>
-            <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="mt-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
               Tag analytics will appear here when you have tagged usage data
             </p>
           </div>
@@ -782,34 +816,34 @@ const AdvancedCostMonitoring: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-fade-in">
-        <div className="flex gap-4 items-center mb-6">
-          <div className="p-4 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-            <ChartBarIcon className="w-8 h-8 text-white" />
+      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel animate-fade-in sm:p-6 md:p-8">
+        <div className="flex gap-2 items-center mb-4 sm:gap-3 sm:mb-5 md:gap-4 md:mb-6">
+          <div className="p-2 rounded-xl shadow-lg bg-gradient-primary glow-primary sm:p-3 md:p-4">
+            <ChartBarIcon className="w-6 h-6 text-white sm:w-7 sm:h-7 md:w-8 md:h-8" />
           </div>
-          <h2 className="text-3xl font-bold font-display gradient-text-primary">
+          <h2 className="text-xl font-bold font-display gradient-text-primary sm:text-2xl md:text-3xl">
             Advanced Cost Monitoring
           </h2>
         </div>
-        <div className={`p-6 rounded-xl border shadow-xl backdrop-blur-xl glass animate-fade-in ${authError
+        <div className={`p-4 rounded-xl border shadow-xl backdrop-blur-xl glass animate-fade-in sm:p-5 md:p-6 ${authError
           ? "bg-gradient-to-br border-warning-200/30 dark:border-warning-500/20 from-warning-50/50 to-warning-100/30 dark:from-warning-900/10 dark:to-warning-800/10"
           : "bg-gradient-to-br border-danger-200/30 dark:border-danger-500/20 from-danger-50/50 to-danger-100/30 dark:from-danger-900/10 dark:to-danger-800/10"
           }`}>
-          <div className="flex gap-4 items-center">
-            <div className={`p-3.5 rounded-xl shadow-lg ${authError
+          <div className="flex flex-col gap-3 items-start sm:flex-row sm:items-center sm:gap-4">
+            <div className={`p-2.5 rounded-xl shadow-lg ${authError
               ? "bg-gradient-warning glow-warning"
               : "bg-gradient-danger glow-danger"
-              }`}>
-              <ExclamationTriangleIcon className="w-7 h-7 text-white" />
+              } sm:p-3 md:p-3.5`}>
+              <ExclamationTriangleIcon className="w-5 h-5 text-white sm:w-6 sm:h-6 md:w-7 md:h-7" />
             </div>
-            <div className="flex-1">
-              <h3 className={`text-xl font-display font-bold mb-2 ${authError
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-lg font-display font-bold mb-1 sm:text-xl sm:mb-2 ${authError
                 ? "gradient-text-warning"
                 : "gradient-text-danger"
                 }`}>
                 {authError ? "Authentication Required" : "Error Loading Data"}
               </h3>
-              <p className={`text-base font-body ${authError
+              <p className={`text-sm font-body break-words sm:text-base ${authError
                 ? "text-warning-600 dark:text-warning-400"
                 : "text-danger-600 dark:text-danger-400"
                 }`}>
@@ -818,9 +852,9 @@ const AdvancedCostMonitoring: React.FC = () => {
             </div>
             <button
               onClick={fetchData}
-              className="btn btn-primary shrink-0"
+              className="btn btn-primary shrink-0 w-full sm:w-auto"
             >
-              <ArrowPathIcon className="mr-2 w-5 h-5" />
+              <ArrowPathIcon className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
               Retry
             </button>
           </div>
@@ -830,25 +864,25 @@ const AdvancedCostMonitoring: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col gap-6 justify-between items-start lg:flex-row lg:items-center">
-        <div className="flex gap-4 items-center">
-          <div className="p-4 rounded-xl shadow-xl bg-gradient-primary glow-primary">
-            <ChartBarIcon className="w-8 h-8 text-white" />
+    <div className="space-y-4 sm:space-y-5 md:space-y-6 animate-fade-in">
+      <div className="flex flex-col gap-4 justify-between items-start sm:gap-5 md:gap-6 lg:flex-row lg:items-center">
+        <div className="flex gap-2 items-center sm:gap-3 md:gap-4">
+          <div className="p-2.5 rounded-xl shadow-xl bg-gradient-primary glow-primary sm:p-3 md:p-4">
+            <ChartBarIcon className="w-6 h-6 text-white sm:w-7 sm:h-7 md:w-8 md:h-8" />
           </div>
-          <h2 className="text-3xl font-bold font-display gradient-text-primary">
+          <h2 className="text-xl font-bold font-display gradient-text-primary sm:text-2xl md:text-3xl">
             Advanced Cost Monitoring
           </h2>
         </div>
-        <div className="flex flex-wrap gap-3 items-center w-full lg:w-auto">
-          <div className="relative">
-            <ClockIcon className="absolute left-3 top-1/2 z-10 w-5 h-5 transform -translate-y-1/2 pointer-events-none text-primary-500 dark:text-primary-400" />
+        <div className="flex flex-col gap-2 items-stretch w-full sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:w-auto">
+          <div className="relative w-full sm:w-auto">
+            <ClockIcon className="absolute left-2.5 top-1/2 z-10 w-4 h-4 transform -translate-y-1/2 pointer-events-none text-primary-500 dark:text-primary-400 sm:left-3 sm:w-5 sm:h-5" />
             <select
               value={timeRange}
               onChange={(e) =>
                 setTimeRange(e.target.value as "24h" | "7d" | "30d")
               }
-              className="input text-sm py-2.5 pl-11 pr-10 min-w-[160px] appearance-none bg-white/90 dark:bg-dark-bg-300/90 border-primary-200/30 dark:border-primary-500/20 font-display font-semibold text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500/20"
+              className="input text-xs py-2 pl-9 pr-8 w-full appearance-none bg-white/90 dark:bg-dark-bg-300/90 border-primary-200/30 dark:border-primary-500/20 font-display font-semibold text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500/20 sm:text-sm sm:py-2.5 sm:pl-11 sm:pr-10 sm:min-w-[160px] sm:w-auto"
             >
               <option value="24h">Last 24 hours</option>
               <option value="7d">Last 7 days</option>
@@ -857,16 +891,16 @@ const AdvancedCostMonitoring: React.FC = () => {
           </div>
           <button
             onClick={fetchData}
-            className="flex gap-2 items-center btn btn-primary"
+            className="flex gap-1.5 items-center justify-center btn btn-primary text-sm w-full sm:gap-2 sm:w-auto"
           >
-            <ArrowPathIcon className="w-5 h-5" />
-            Refresh
+            <ArrowPathIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Refresh</span>
           </button>
         </div>
       </div>
 
-      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <nav className="flex flex-wrap gap-3">
+      <div className="p-3 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-4">
+        <nav className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:gap-3 sm:overflow-x-visible sm:pb-0">
           {[
             { key: "realtime", label: "Real-time", icon: ClockIcon },
             { key: "performance", label: "Performance", icon: RocketLaunchIcon },
@@ -877,12 +911,12 @@ const AdvancedCostMonitoring: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as "realtime" | "performance" | "tags")}
-                className={`flex items-center gap-2.5 px-6 py-3 rounded-xl font-display font-semibold text-sm transition-all duration-300 shrink-0 ${activeTab === tab.key
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-display font-semibold text-xs transition-all duration-300 shrink-0 ${activeTab === tab.key
                   ? "bg-gradient-primary text-white shadow-xl glow-primary scale-105"
                   : "glass hover:bg-primary-500/10 dark:hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary border border-primary-200/30 dark:border-primary-500/20 hover:scale-105 hover:border-primary-300/50 dark:hover:border-primary-400/30"
-                  }`}
+                  } sm:gap-2.5 sm:px-6 sm:py-3 sm:text-sm`}
               >
-                <IconComponent className={`w-5 h-5 shrink-0 ${activeTab === tab.key ? 'text-white' : ''}`} />
+                <IconComponent className={`w-4 h-4 shrink-0 sm:w-5 sm:h-5 ${activeTab === tab.key ? 'text-white' : ''}`} />
                 <span>{tab.label}</span>
               </button>
             );

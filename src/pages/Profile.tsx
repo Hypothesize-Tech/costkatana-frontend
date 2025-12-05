@@ -217,16 +217,16 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div className="px-3 py-4 mx-auto max-w-7xl sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
         <ProfileHeader
           user={profileData}
           onAvatarChange={handleAvatarChange}
           editable={true}
         />
 
-        <div className="mt-8">
-          <div className="p-2 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <nav className="flex overflow-x-auto space-x-2">
+        <div className="mt-4 sm:mt-6 md:mt-8">
+          <div className="p-1.5 sm:p-2 mb-4 sm:mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <nav className="flex overflow-x-auto space-x-1.5 sm:space-x-2 scrollbar-hide">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -234,7 +234,7 @@ export const Profile: React.FC = () => {
                     setActiveTab(tab.id);
                     navigate(`/profile?tab=${tab.id}`, { replace: true });
                   }}
-                  className={`py-3 px-4 rounded-xl font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
+                  className={`py-2 px-3 sm:py-3 sm:px-4 rounded-xl font-display font-semibold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
                     ? 'bg-gradient-primary text-white shadow-lg glow-primary transform scale-105'
                     : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
                     }`}
@@ -245,9 +245,9 @@ export const Profile: React.FC = () => {
             </nav>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-4 sm:mt-6 md:mt-8">
             {activeTab === 'overview' && (
-              <div className="space-y-8">
+              <div className="space-y-4 sm:space-y-6 md:space-y-8">
                 {statsLoading ? (
                   <ProfileOverviewShimmer />
                 ) : (
@@ -266,12 +266,12 @@ export const Profile: React.FC = () => {
                       savingsRate: 0
                     }} />
 
-                    <div className="mt-8">
-                      <div className="flex items-center mb-4">
-                        <ChartBarIcon className="mr-3 w-6 h-6 text-primary-600 dark:text-primary-400" />
-                        <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Usage Overview</h3>
+                    <div className="mt-4 sm:mt-6 md:mt-8">
+                      <div className="flex items-center mb-3 sm:mb-4">
+                        <ChartBarIcon className="mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
+                        <h3 className="text-base sm:text-lg font-medium text-secondary-900 dark:text-white">Usage Overview</h3>
                       </div>
-                      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
                         <div className="lg:col-span-2">
                           <UsageOverview />
                         </div>
@@ -279,7 +279,7 @@ export const Profile: React.FC = () => {
                           <UsageAlerts />
                         </div>
                       </div>
-                      <div className="mt-6">
+                      <div className="mt-4 sm:mt-6">
                         <UsageTrendChart days={7} chartType="area" />
                       </div>
                     </div>
@@ -310,20 +310,20 @@ export const Profile: React.FC = () => {
               profileLoading ? (
                 <ProfileSecurityShimmer />
               ) : (
-                <div className="space-y-6">
-                  <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex items-center mb-4">
-                      <ShieldCheckIcon className="mr-3 w-6 h-6 text-success-600 dark:text-success-400" />
-                      <h3 className="text-lg font-medium text-secondary-900 dark:text-white">Security Settings</h3>
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                      <ShieldCheckIcon className="mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6 text-success-600 dark:text-success-400" />
+                      <h3 className="text-base sm:text-lg font-medium text-secondary-900 dark:text-white">Security Settings</h3>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                        <div>
-                          <h4 className="font-medium text-secondary-900 dark:text-white">Email Verification</h4>
-                          <p className="text-sm text-secondary-600 dark:text-secondary-300">Verify your email address for enhanced security</p>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 p-3 sm:p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm sm:text-base text-secondary-900 dark:text-white">Email Verification</h4>
+                          <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">Verify your email address for enhanced security</p>
                         </div>
-                        <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${profileData?.emailVerified
+                        <span className={`px-3 py-1.5 rounded-full text-xs font-semibold self-start sm:self-auto ${profileData?.emailVerified
                           ? 'bg-gradient-success text-white shadow-md'
                           : 'bg-gradient-warning text-white shadow-md'
                           }`}>
@@ -331,18 +331,18 @@ export const Profile: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                      <div className="p-3 sm:p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <MFASetup />
                       </div>
 
-                      <div className="flex justify-between items-center p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                        <div>
-                          <h4 className="font-medium text-secondary-900 dark:text-white">API Keys</h4>
-                          <p className="text-sm text-secondary-600 dark:text-secondary-300">Manage your API keys and access tokens</p>
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 p-3 sm:p-4 rounded-lg border backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm sm:text-base text-secondary-900 dark:text-white">API Keys</h4>
+                          <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">Manage your API keys and access tokens</p>
                         </div>
                         <button
                           onClick={() => navigate('/settings?tab=api-keys')}
-                          className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-xs sm:text-sm self-start sm:self-auto"
                         >
                           Manage Keys
                         </button>

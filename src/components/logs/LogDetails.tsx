@@ -35,12 +35,12 @@ export const LogDetails: React.FC<LogDetailsProps> = ({ log, onClose }) => {
     );
 
     const DetailRow = ({ label, value, copyable }: { label: string; value: any; copyable?: boolean }) => (
-        <div className="flex items-start justify-between py-3 border-b border-primary-200/30 dark:border-primary-500/20 last:border-0">
-            <span className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary min-w-[140px]">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between py-2 md:py-3 border-b border-primary-200/30 dark:border-primary-500/20 last:border-0 gap-1 sm:gap-2">
+            <span className="text-xs md:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary sm:min-w-[140px]">
                 {label}
             </span>
-            <div className="flex items-center gap-2 flex-1 justify-end">
-                <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary text-right break-all">
+            <div className="flex items-center gap-2 flex-1 justify-end sm:justify-end">
+                <span className="text-xs md:text-sm font-bold text-light-text-primary dark:text-dark-text-primary text-right break-all">
                     {value}
                 </span>
                 {copyable && <CopyButton text={String(value)} field={label} />}
@@ -81,56 +81,58 @@ export const LogDetails: React.FC<LogDetailsProps> = ({ log, onClose }) => {
             <div className="absolute inset-y-0 right-0 max-w-4xl w-full flex">
                 <div className="relative w-full card shadow-2xl flex flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/50 to-transparent dark:from-primary-900/10 dark:to-transparent">
-                        <div>
-                            <h2 className="text-xl font-bold gradient-text-primary">
+                    <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/50 to-transparent dark:from-primary-900/10 dark:to-transparent">
+                        <div className="min-w-0 flex-1 pr-2">
+                            <h2 className="text-lg md:text-xl font-bold gradient-text-primary truncate">
                                 Log Details
                             </h2>
-                            <p className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                            <p className="text-xs md:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary mt-1 truncate">
                                 {log.aiModel || log.model} • {log.service}
                             </p>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all duration-300"
+                            className="p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all duration-300 flex-shrink-0"
                         >
-                            <FiX className="w-6 h-6 text-light-text-secondary dark:text-dark-text-secondary" />
+                            <FiX className="w-5 h-5 md:w-6 md:h-6 text-light-text-secondary dark:text-dark-text-secondary" />
                         </button>
                     </div>
 
                     {/* Status Banner */}
-                    <div className={`px-6 py-3 border-b border-primary-200/30 dark:border-primary-500/20 ${log.success
+                    <div className={`px-4 py-2.5 md:px-6 md:py-3 border-b border-primary-200/30 dark:border-primary-500/20 ${log.success
                         ? 'bg-gradient-to-r from-success-50 to-transparent dark:from-success-900/20 dark:to-transparent'
                         : 'bg-gradient-to-r from-red-50 to-transparent dark:from-red-900/20 dark:to-transparent'
                         }`}>
-                        <div className="flex items-center gap-3">
-                            {log.success ? (
-                                <FiCheck className="w-5 h-5 text-success-600 dark:text-success-400 glow-success" />
-                            ) : (
-                                <FiAlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 glow-danger" />
-                            )}
-                            <div className="flex-1">
-                                <p className={`text-sm font-bold ${log.success
-                                    ? 'text-success-700 dark:text-success-300'
-                                    : 'text-red-700 dark:text-red-300'
-                                    }`}>
-                                    {log.success ? 'Success' : 'Failed'}
-                                </p>
-                                <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
-                                    {format(new Date(log.timestamp), 'PPpp')}
-                                </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3">
+                            <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                                {log.success ? (
+                                    <FiCheck className="w-4 h-4 md:w-5 md:h-5 text-success-600 dark:text-success-400 glow-success flex-shrink-0" />
+                                ) : (
+                                    <FiAlertCircle className="w-4 h-4 md:w-5 md:h-5 text-red-600 dark:text-red-400 glow-danger flex-shrink-0" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <p className={`text-xs md:text-sm font-bold ${log.success
+                                        ? 'text-success-700 dark:text-success-300'
+                                        : 'text-red-700 dark:text-red-300'
+                                        }`}>
+                                        {log.success ? 'Success' : 'Failed'}
+                                    </p>
+                                    <p className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary truncate">
+                                        {format(new Date(log.timestamp), 'PPpp')}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-6 text-sm">
-                                <div className="flex items-center gap-1.5">
-                                    <FiClock className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                            <div className="flex items-center gap-3 md:gap-6 text-xs md:text-sm flex-wrap">
+                                <div className="flex items-center gap-1 md:gap-1.5">
+                                    <FiClock className="w-3.5 h-3.5 md:w-4 md:h-4 text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0" />
                                     <span className="font-bold text-light-text-primary dark:text-dark-text-primary">{log.responseTime}ms</span>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                    <FiCpu className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                                <div className="flex items-center gap-1 md:gap-1.5">
+                                    <FiCpu className="w-3.5 h-3.5 md:w-4 md:h-4 text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0" />
                                     <span className="font-bold text-light-text-primary dark:text-dark-text-primary">{log.totalTokens || (log.inputTokens + log.outputTokens)} tokens</span>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                    <FiDollarSign className="w-4 h-4 text-primary-500 dark:text-primary-400" />
+                                <div className="flex items-center gap-1 md:gap-1.5">
+                                    <FiDollarSign className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary-500 dark:text-primary-400 flex-shrink-0" />
                                     <span className="font-bold gradient-text-primary">${log.cost?.toFixed(4) || '0.0000'}</span>
                                 </div>
                             </div>
@@ -138,7 +140,7 @@ export const LogDetails: React.FC<LogDetailsProps> = ({ log, onClose }) => {
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent">
+                    <div className="flex border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent overflow-x-auto">
                         {[
                             { id: 'overview', label: 'Overview', icon: FiInfo },
                             { id: 'request', label: 'Request', icon: FiActivity },
@@ -148,12 +150,12 @@ export const LogDetails: React.FC<LogDetailsProps> = ({ log, onClose }) => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
-                                className={`flex items-center gap-2 px-6 py-3 font-semibold transition-all duration-300 relative ${activeTab === tab.id
+                                className={`flex items-center gap-1.5 md:gap-2 px-3 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold transition-all duration-300 relative whitespace-nowrap flex-shrink-0 ${activeTab === tab.id
                                     ? 'text-primary-600 dark:text-primary-400 gradient-text-primary'
                                     : 'text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary'
                                     }`}
                             >
-                                <tab.icon className="w-4 h-4" />
+                                <tab.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 {tab.label}
                                 {activeTab === tab.id && (
                                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-primary glow-primary" />
@@ -163,13 +165,13 @@ export const LogDetails: React.FC<LogDetailsProps> = ({ log, onClose }) => {
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 overflow-y-auto p-6">
+                    <div className="flex-1 overflow-y-auto p-4 md:p-6">
                         {activeTab === 'overview' && (
-                            <div className="space-y-6">
+                            <div className="space-y-4 md:space-y-6">
                                 {/* Basic Info */}
-                                <div className="card p-6">
-                                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                        <FiInfo className="text-primary-500" />
+                                <div className="card p-4 md:p-6">
+                                    <h3 className="text-xs md:text-sm font-semibold text-slate-900 dark:text-white mb-3 md:mb-4 flex items-center gap-2">
+                                        <FiInfo className="text-primary-500 w-4 h-4" />
                                         Basic Information
                                     </h3>
                                     <div className="space-y-1">

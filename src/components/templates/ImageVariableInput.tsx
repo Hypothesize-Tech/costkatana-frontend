@@ -121,11 +121,11 @@ export const ImageVariableInput: React.FC<ImageVariableInputProps> = ({
             </div>
 
             {/* Input Method Toggle */}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
                 <button
                     type="button"
                     onClick={() => setInputMethod('upload')}
-                    className={`flex gap-2 items-center px-4 py-2 text-sm rounded-lg font-medium transition-all ${inputMethod === 'upload'
+                    className={`flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-lg font-medium transition-all ${inputMethod === 'upload'
                         ? 'bg-primary-500 text-white shadow-lg'
                         : 'bg-secondary-200 text-secondary-700 dark:bg-secondary-700 dark:text-secondary-300'
                         }`}
@@ -136,7 +136,7 @@ export const ImageVariableInput: React.FC<ImageVariableInputProps> = ({
                 <button
                     type="button"
                     onClick={() => setInputMethod('s3url')}
-                    className={`flex gap-2 items-center px-4 py-2 text-sm rounded-lg font-medium transition-all ${inputMethod === 's3url'
+                    className={`flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-lg font-medium transition-all ${inputMethod === 's3url'
                         ? 'bg-primary-500 text-white shadow-lg'
                         : 'bg-secondary-200 text-secondary-700 dark:bg-secondary-700 dark:text-secondary-300'
                         }`}
@@ -192,7 +192,7 @@ export const ImageVariableInput: React.FC<ImageVariableInputProps> = ({
             {/* S3 URL Method */}
             {inputMethod === 's3url' && !preview && (
                 <div className="space-y-3">
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <input
                             type="url"
                             value={s3UrlInput}
@@ -204,7 +204,7 @@ export const ImageVariableInput: React.FC<ImageVariableInputProps> = ({
                             type="button"
                             onClick={handleS3UrlSubmit}
                             disabled={!s3UrlInput.trim()}
-                            className="px-6 py-2 text-sm font-medium text-white transition-all bg-gradient-to-r rounded-lg from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full sm:w-auto px-6 py-2 text-sm font-medium text-white transition-all bg-gradient-to-r rounded-lg from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Load Image
                         </button>

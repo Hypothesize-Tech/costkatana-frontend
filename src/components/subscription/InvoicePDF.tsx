@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Invoice } from '../../types/subscription.types';
 import { User } from '../../types/auth.types';
 import { Subscription } from '../../types/subscription.types';
@@ -14,13 +14,13 @@ const styles = StyleSheet.create({
     },
     header: {
         marginBottom: 30,
-        borderBottom: '2px solid #06ec9e',
+        borderBottom: '2px solid #009454',
         paddingBottom: 20,
     },
     companyName: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#06ec9e',
+        color: '#009454',
         marginBottom: 5,
     },
     companyInfo: {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     tableHeader: {
         flexDirection: 'row',
-        backgroundColor: '#06ec9e',
+        backgroundColor: '#009454',
         padding: 10,
         borderRadius: 4,
     },
@@ -120,13 +120,13 @@ const styles = StyleSheet.create({
     grandTotal: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#06ec9e',
+        color: '#009454',
         marginTop: 10,
         paddingTop: 10,
         borderTop: '1px solid #e5e7eb',
     },
     statusBadge: {
-        backgroundColor: '#06ec9e',
+        backgroundColor: '#007a42',
         color: '#ffffff',
         padding: 5,
         borderRadius: 4,
@@ -151,7 +151,7 @@ interface InvoicePDFProps {
     subscription: Subscription;
 }
 
-export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user, subscription }) => {
+export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user }) => {
     const formatDate = (dateString?: string) => {
         if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -177,7 +177,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user, subscript
             case 'failed':
                 return '#ef4444';
             default:
-                return '#06ec9e';
+                return '#009454';
         }
     };
 
@@ -230,14 +230,24 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user, subscript
                         <Text style={[styles.tableHeaderText, styles.colPrice]}>Unit Price</Text>
                         <Text style={[styles.tableHeaderText, styles.colTotal]}>Total</Text>
                     </View>
-                    {invoice.lineItems?.map((item, index) => (
-                        <View key={index} style={styles.tableRow}>
-                            <Text style={[styles.tableCell, styles.colDescription]}>{item.description}</Text>
-                            <Text style={[styles.tableCell, styles.colQuantity]}>{item.quantity}</Text>
-                            <Text style={[styles.tableCell, styles.colPrice]}>{formatCurrency(item.unitPrice)}</Text>
-                            <Text style={[styles.tableCell, styles.colTotal]}>{formatCurrency(item.amount)}</Text>
-                        </View>
-                    ))}
+                    {invoice.lineItems?.map((item, index) => {
+                        // Calculate total: use item.amount (from type) or calculate from quantity * unitPrice
+                        // The backend uses 'total' but the frontend type uses 'amount'
+                        const itemAmount = (item as any).total !== undefined && !isNaN((item as any).total)
+                            ? (item as any).total
+                            : (item.amount !== undefined && !isNaN(item.amount))
+                                ? item.amount
+                                : (item.quantity || 1) * (item.unitPrice || 0);
+
+                        return (
+                            <View key={index} style={styles.tableRow}>
+                                <Text style={[styles.tableCell, styles.colDescription]}>{item.description}</Text>
+                                <Text style={[styles.tableCell, styles.colQuantity]}>{item.quantity || 1}</Text>
+                                <Text style={[styles.tableCell, styles.colPrice]}>{formatCurrency(item.unitPrice || 0)}</Text>
+                                <Text style={[styles.tableCell, styles.colTotal]}>{formatCurrency(itemAmount)}</Text>
+                            </View>
+                        );
+                    })}
                 </View>
 
                 {/* Totals */}
@@ -262,7 +272,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, user, subscript
                     )}
                     <View style={[styles.totalRow, styles.grandTotal]}>
                         <Text style={styles.totalLabel}>Total:</Text>
-                        <Text style={[styles.totalValue, { color: '#06ec9e' }]}>{formatCurrency(invoice.total)}</Text>
+                        <Text style={[styles.totalValue, { color: '#009454' }]}>{formatCurrency(invoice.total)}</Text>
                     </View>
                 </View>
 

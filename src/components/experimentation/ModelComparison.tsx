@@ -8,6 +8,8 @@ import {
   Download,
   AlertTriangle,
   Beaker,
+  Rocket,
+  Check,
 } from "lucide-react";
 import { ExperimentationService } from "../../services/experimentation.service";
 import { Modal } from "../common/Modal";
@@ -963,22 +965,23 @@ const ModelComparison: React.FC = () => {
   };
 
   return (
-    <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
-      <div className="flex justify-between items-center mb-8">
+    <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 md:mb-8 gap-4 sm:gap-0">
         <div className="flex items-center">
-          <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-            <Beaker className="h-6 w-6 text-white" />
+          <div className="bg-gradient-primary p-2 sm:p-3 rounded-xl glow-primary shadow-lg mr-3 sm:mr-4">
+            <Beaker className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
-          <h2 className="text-3xl font-display font-bold gradient-text">Model Comparison</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text">Model Comparison</h2>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
           {results.length > 0 && (
             <button
               onClick={exportResults}
-              className="btn btn-secondary flex items-center gap-2"
+              className="btn btn-secondary flex items-center justify-center gap-2 text-xs sm:text-sm"
             >
               <Download className="w-4 h-4" />
-              Export Results
+              <span className="hidden sm:inline">Export Results</span>
+              <span className="sm:hidden">Export</span>
             </button>
           )}
           <button
@@ -986,17 +989,19 @@ const ModelComparison: React.FC = () => {
             disabled={
               isRunning || !prompt.trim() || selectedModels.length === 0
             }
-            className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
           >
             {isRunning ? (
               <>
                 <RotateCw className="w-4 h-4 animate-spin" />
-                <span>{realTimeMode ? "Executing Models..." : "Running..."}</span>
+                <span className="hidden sm:inline">{realTimeMode ? "Executing Models..." : "Running..."}</span>
+                <span className="sm:hidden">Running...</span>
               </>
             ) : (
               <>
                 <Play className="w-4 h-4" />
-                <span>{realTimeMode ? "Run Real-time Comparison" : "Run Comparison"}</span>
+                <span className="hidden sm:inline">{realTimeMode ? "Run Real-time Comparison" : "Run Comparison"}</span>
+                <span className="sm:hidden">Run</span>
               </>
             )}
           </button>
@@ -1015,58 +1020,61 @@ const ModelComparison: React.FC = () => {
       )}
 
       {/* Configuration Section */}
-      <div className="grid grid-cols-1 gap-8 mb-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 mb-4 sm:mb-6 md:mb-8 lg:grid-cols-2">
         {/* Prompt Input */}
         <div className="lg:col-span-2">
-          <label className="label mb-3">
+          <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
             Test Prompt
           </label>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter the prompt you want to test across different models..."
-            className="input min-h-[120px] resize-y"
+            className="input min-h-[100px] sm:min-h-[120px] resize-y text-sm"
             rows={3}
           />
         </div>
 
         {/* Real-time Comparison Settings */}
         <div className="lg:col-span-2">
-          <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-6">
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-3">
+          <div className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+              <label className="flex items-start sm:items-center gap-2 sm:gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={realTimeMode}
                   onChange={(e) => setRealTimeMode(e.target.checked)}
-                  className="w-5 h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 rounded border-primary-300 focus:ring-primary-500 mt-0.5 sm:mt-0 flex-shrink-0"
                 />
-                <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
-                  🚀 Real-time Bedrock Execution
-                </span>
-                <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                  (Actually runs models for authentic comparison)
-                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                  <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary flex items-center gap-1.5">
+                    <Rocket className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 dark:text-primary-400" />
+                    Real-time Bedrock Execution
+                  </span>
+                  <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                    (Actually runs models for authentic comparison)
+                  </span>
+                </div>
               </label>
             </div>
 
             {realTimeMode && (
-              <div className="space-y-4 pl-6 border-l-4 border-primary-500/30 glass p-4 rounded-xl">
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center gap-3">
+              <div className="space-y-3 sm:space-y-4 pl-4 sm:pl-6 border-l-4 border-primary-500/30 glass p-3 sm:p-4 rounded-xl">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+                  <label className="flex items-center gap-2 sm:gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={executeOnBedrock}
                       onChange={(e) => setExecuteOnBedrock(e.target.checked)}
-                      className="w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                      className="w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500 flex-shrink-0"
                     />
-                    <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Execute on AWS Bedrock</span>
+                    <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Execute on AWS Bedrock</span>
                   </label>
 
                   <select
                     value={comparisonMode}
                     onChange={(e) => setComparisonMode(e.target.value as any)}
-                    className="input text-sm"
+                    className="input text-xs sm:text-sm w-full sm:w-auto"
                   >
                     <option value="comprehensive">
                       Comprehensive Analysis
@@ -1078,9 +1086,10 @@ const ModelComparison: React.FC = () => {
                 </div>
 
                 <div className="glass p-3 rounded-xl border border-accent-200/30 bg-accent-500/5">
-                  <div className="text-xs font-body text-accent-700 dark:text-accent-300">
-                    ⚠️ Real-time mode will take longer but provides authentic
-                    model responses and AI-driven evaluation
+                  <div className="text-xs font-body text-accent-700 dark:text-accent-300 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-accent-600 dark:text-accent-400 flex-shrink-0 mt-0.5" />
+                    <span>Real-time mode will take longer but provides authentic
+                      model responses and AI-driven evaluation</span>
                   </div>
                 </div>
               </div>
@@ -1116,27 +1125,28 @@ const ModelComparison: React.FC = () => {
 
         {/* Model Selection */}
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <label className="label">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2 sm:gap-0">
+            <label className="label text-xs sm:text-sm">
               Selected Models ({selectedModels.length})
             </label>
             <button
               onClick={addModel}
               disabled={selectedModels.length >= availableModels.length}
-              className="btn btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
-              Add Model
+              <span className="hidden sm:inline">Add Model</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
-          <div className="overflow-y-auto space-y-4 max-h-80">
+          <div className="overflow-y-auto space-y-3 sm:space-y-4 max-h-60 sm:max-h-80">
             {selectedModels.map((model, index) => (
               <div
                 key={index}
-                className="glass p-4 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300"
+                className="glass p-3 sm:p-4 shadow-lg backdrop-blur-xl border border-primary-200/30 sm:hover:scale-105 transition-all duration-300"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
+                <div className="flex flex-col sm:flex-row justify-between items-start mb-3 gap-3 sm:gap-0">
+                  <div className="flex-1 min-w-0 w-full sm:w-auto">
                     <select
                       value={`${model.provider}:${model.model}`}
                       onChange={(e) => {
@@ -1162,7 +1172,7 @@ const ModelComparison: React.FC = () => {
                         };
                         setSelectedModels(updated);
                       }}
-                      className="input text-sm"
+                      className="input text-xs sm:text-sm w-full"
                     >
                       {availableModels.map((m) => (
                         <option
@@ -1205,15 +1215,15 @@ const ModelComparison: React.FC = () => {
                   </div>
                   <button
                     onClick={() => removeModel(index)}
-                    className="btn btn-ghost ml-3 p-2 text-danger-500 hover:text-white hover:bg-gradient-danger"
+                    className="btn btn-ghost sm:ml-3 p-2 text-danger-500 hover:text-white hover:bg-gradient-danger self-start sm:self-auto"
                     title="Remove this model"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div>
-                    <label className="block mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <label className="block mb-1 sm:mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Temperature
                     </label>
                     <input
@@ -1229,11 +1239,11 @@ const ModelComparison: React.FC = () => {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="input text-sm"
+                      className="input text-xs sm:text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <label className="block mb-1 sm:mb-2 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Max Tokens
                     </label>
                     <input
@@ -1248,7 +1258,7 @@ const ModelComparison: React.FC = () => {
                           parseInt(e.target.value),
                         )
                       }
-                      className="input text-sm"
+                      className="input text-xs sm:text-sm"
                     />
                   </div>
                 </div>
@@ -1269,12 +1279,12 @@ const ModelComparison: React.FC = () => {
 
         {/* Evaluation Criteria */}
         <div>
-          <label className="label mb-4">
+          <label className="label mb-3 sm:mb-4 text-xs sm:text-sm">
             Evaluation Criteria
           </label>
-          <div className="overflow-y-auto space-y-3 max-h-80">
+          <div className="overflow-y-auto space-y-2 sm:space-y-3 max-h-60 sm:max-h-80">
             {criteriaOptions.map((criterion) => (
-              <label key={criterion} className="flex items-center glass p-3 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300 cursor-pointer">
+              <label key={criterion} className="flex items-center glass p-2 sm:p-3 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 transition-all duration-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={evaluationCriteria.includes(criterion)}
@@ -1287,9 +1297,9 @@ const ModelComparison: React.FC = () => {
                       );
                     }
                   }}
-                  className="mr-3 w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500"
+                  className="mr-2 sm:mr-3 w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-primary-500 flex-shrink-0"
                 />
-                <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary capitalize">
+                <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary capitalize">
                   {criterion.replace("_", " ")}
                 </span>
               </label>
@@ -1298,9 +1308,9 @@ const ModelComparison: React.FC = () => {
         </div>
 
         {/* Additional Settings */}
-        <div className="flex items-center space-x-8 lg:col-span-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 lg:col-span-2">
           <div>
-            <label className="label mb-2">
+            <label className="label mb-2 text-xs sm:text-sm">
               Iterations
             </label>
             <input
@@ -1309,15 +1319,15 @@ const ModelComparison: React.FC = () => {
               max="10"
               value={iterations}
               onChange={(e) => setIterations(parseInt(e.target.value))}
-              className="input w-24 text-sm"
+              className="input w-full sm:w-24 text-xs sm:text-sm"
             />
           </div>
           {estimatedCost !== null && (
-            <div className="glass p-4 rounded-xl border border-success-200/30 bg-success-500/5 dark:bg-success-500/20">
-              <div className="flex items-center text-sm">
-                <DollarSign className="h-5 w-5 mr-2 text-success-500 dark:text-success-400" />
+            <div className="glass p-3 sm:p-4 rounded-xl border border-success-200/30 bg-success-500/5 dark:bg-success-500/20 w-full sm:w-auto">
+              <div className="flex items-center text-xs sm:text-sm">
+                <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-success-500 dark:text-success-400 flex-shrink-0" />
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary mr-2">Estimated Cost:</span>
-                <span className="font-display font-bold gradient-text text-lg">
+                <span className="font-display font-bold gradient-text text-base sm:text-lg">
                   ${estimatedCost < 0.001
                     ? estimatedCost.toFixed(6)
                     : estimatedCost.toFixed(4)}
@@ -1330,13 +1340,13 @@ const ModelComparison: React.FC = () => {
 
       {/* Results Section */}
       {(isRunning || results.length > 0) && (
-        <div className="pt-8 border-t border-primary-200/30">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-display font-bold gradient-text">Results</h3>
+        <div className="pt-4 sm:pt-6 md:pt-8 border-t border-primary-200/30">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
+            <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">Results</h3>
             {currentExperiment && (
-              <div className="glass p-3 rounded-xl border border-primary-200/30">
-                <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
-                  <span className="font-display font-semibold">Experiment ID:</span> {currentExperiment.id}
+              <div className="glass p-2 sm:p-3 rounded-xl border border-primary-200/30 w-full sm:w-auto">
+                <div className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <span className="font-display font-semibold">Experiment ID:</span> <span className="break-all">{currentExperiment.id}</span>
                 </div>
               </div>
             )}
@@ -1352,18 +1362,18 @@ const ModelComparison: React.FC = () => {
           )}
 
           {results.length > 0 && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {results.map((result, index) => (
                 <div
                   key={index}
-                  className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 hover:scale-105 transition-all duration-300 animate-fade-in"
+                  className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 sm:hover:scale-105 transition-all duration-300 animate-fade-in"
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h4 className="text-xl font-display font-bold gradient-text">
+                  <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3 sm:gap-0">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-lg sm:text-xl font-display font-bold gradient-text break-words">
                         {result.provider} - {result.model}
                       </h4>
-                      <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
+                      <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed">
                         {result.recommendation}
                       </p>
                     </div>
@@ -1372,43 +1382,44 @@ const ModelComparison: React.FC = () => {
                         setSelectedResult(result);
                         setShowResultsModal(true);
                       }}
-                      className="btn btn-secondary flex items-center gap-2"
+                      className="btn btn-secondary flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center"
                     >
-                      View Details
+                      <span className="hidden sm:inline">View Details</span>
+                      <span className="sm:hidden">Details</span>
                     </button>
                   </div>
 
                   {result.actualUsage ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
-                        <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
+                        <div className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                           Total Calls
                         </div>
-                        <div className="text-2xl font-display font-bold gradient-text">
+                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text">
                           {result.actualUsage.totalCalls.toLocaleString()}
                         </div>
                       </div>
-                      <div className="glass rounded-xl p-4 bg-gradient-success/10 border-l-4 border-success-500">
-                        <div className="text-sm font-display font-semibold text-success-700 dark:text-success-300">
+                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-success/10 border-l-4 border-success-500">
+                        <div className="text-xs sm:text-sm font-display font-semibold text-success-700 dark:text-success-300">
                           Avg Cost
                         </div>
-                        <div className="text-2xl font-display font-bold text-success-600 dark:text-success-400">
+                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-success-600 dark:text-success-400">
                           ${result.actualUsage.avgCost.toFixed(4)}
                         </div>
                       </div>
-                      <div className="glass rounded-xl p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
-                        <div className="text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
+                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-accent/10 border-l-4 border-accent-500">
+                        <div className="text-xs sm:text-sm font-display font-semibold text-accent-700 dark:text-accent-300">
                           Avg Response Time
                         </div>
-                        <div className="text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
+                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-accent-600 dark:text-accent-400">
                           {result.actualUsage.avgResponseTime.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="glass rounded-xl p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
-                        <div className="text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
+                      <div className="glass rounded-xl p-3 sm:p-4 bg-gradient-danger/10 border-l-4 border-danger-500">
+                        <div className="text-xs sm:text-sm font-display font-semibold text-danger-700 dark:text-danger-300">
                           Error Rate
                         </div>
-                        <div className="text-2xl font-display font-bold text-danger-600 dark:text-danger-400">
+                        <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-danger-600 dark:text-danger-400">
                           {result.actualUsage.errorRate.toFixed(2)}%
                         </div>
                       </div>
@@ -1416,7 +1427,7 @@ const ModelComparison: React.FC = () => {
                   ) : (
                     <div className="space-y-3">
                       {/* Pricing Information */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                         <div className="glass rounded-xl p-4 bg-gradient-primary/10 border-l-4 border-primary-500">
                           <div className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
                             Input Cost
@@ -1497,7 +1508,7 @@ const ModelComparison: React.FC = () => {
                                   {result.analysis.strengths.map(
                                     (strength: string, i: number) => (
                                       <li key={i} className="flex items-start">
-                                        <span className="text-success-500 mr-2">✓</span>
+                                        <Check className="w-4 h-4 text-success-500 mr-2 flex-shrink-0 mt-0.5" />
                                         {strength}
                                       </li>
                                     ),
@@ -1754,7 +1765,7 @@ const ModelComparison: React.FC = () => {
                             {selectedResult.analysis.strengths.map(
                               (strength: string, i: number) => (
                                 <li key={i} className="flex items-start">
-                                  <span className="text-green-600 mr-2">✓</span>
+                                  <Check className="w-4 h-4 text-green-600 mr-2 flex-shrink-0 mt-0.5" />
                                   <span>{strength}</span>
                                 </li>
                               ),
@@ -1774,9 +1785,7 @@ const ModelComparison: React.FC = () => {
                             {selectedResult.analysis.considerations.map(
                               (consideration: string, i: number) => (
                                 <li key={i} className="flex items-start">
-                                  <span className="text-amber-600 mr-2">
-                                    ⚠
-                                  </span>
+                                  <AlertTriangle className="w-4 h-4 text-amber-600 mr-2 flex-shrink-0 mt-0.5" />
                                   <span>{consideration}</span>
                                 </li>
                               ),

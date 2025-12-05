@@ -88,35 +88,35 @@ const ShimmerTokenBreakdownCard: React.FC = () => {
 const ShimmerUsageTableRow: React.FC = () => {
     return (
         <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-            <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                    <div className="skeleton w-8 h-8 rounded-full" />
-                    <div className="flex-1">
-                        <div className="skeleton h-4 w-24 mb-2 rounded" />
-                        <div className="skeleton h-3 w-32 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="skeleton w-7 h-7 sm:w-8 sm:h-8 rounded-full flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                        <div className="skeleton h-3 sm:h-4 w-20 sm:w-24 mb-2 rounded" />
+                        <div className="skeleton h-3 w-28 sm:w-32 rounded" />
                     </div>
                 </div>
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-20 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-16 sm:w-20 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-32 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-28 sm:w-32 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-16 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-14 sm:w-16 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-20 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-16 sm:w-20 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-16 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-14 sm:w-16 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-12 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-10 sm:w-12 rounded" />
             </td>
-            <td className="px-6 py-4">
-                <div className="skeleton h-4 w-24 rounded" />
+            <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                <div className="skeleton h-3 sm:h-4 w-20 sm:w-24 rounded" />
             </td>
         </tr>
     );
@@ -155,35 +155,35 @@ export const UsageShimmer: React.FC = () => {
             {/* Cost Optimization Banner Shimmer */}
             <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div className="flex items-center gap-3 sm:gap-4">
-                        <div className="skeleton w-10 h-10 sm:w-12 sm:h-12 rounded-xl" />
-                        <div>
-                            <div className="skeleton h-5 w-56 mb-2 rounded" />
-                            <div className="skeleton h-4 w-64 rounded" />
+                    <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                        <div className="skeleton w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                            <div className="skeleton h-4 sm:h-5 w-full sm:w-48 md:w-56 mb-2 rounded" />
+                            <div className="skeleton h-3 sm:h-4 w-full sm:w-56 md:w-64 rounded" />
                         </div>
                     </div>
-                    <div className="skeleton h-11 w-40 rounded-xl" />
+                    <div className="skeleton h-10 sm:h-11 w-full sm:w-40 rounded-xl" />
                 </div>
             </div>
 
             {/* Usage List Shimmer */}
             <div className="overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Table Header */}
-                <div className="px-6 py-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                    <div className="flex justify-between items-center">
-                        <div className="skeleton h-6 w-32 rounded" />
-                        <div className="skeleton w-10 h-10 rounded-xl" />
+                <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div className="skeleton h-5 sm:h-6 w-full sm:w-32 rounded" />
+                        <div className="skeleton w-9 h-9 sm:w-10 sm:h-10 rounded-xl" />
                     </div>
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-primary-200/30">
+                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                    <table className="min-w-full divide-y divide-primary-200/30" style={{ minWidth: '800px' }}>
                         <thead className="bg-gradient-to-r glass from-primary-50/30 to-secondary-50/30 dark:from-primary-900/20 dark:to-secondary-900/20">
                             <tr>
                                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                                    <th key={i} className="px-6 py-4">
-                                        <div className="skeleton h-4 w-20 rounded" />
+                                    <th key={i} className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                                        <div className="skeleton h-3 sm:h-4 w-16 sm:w-20 rounded" />
                                     </th>
                                 ))}
                             </tr>
@@ -197,12 +197,12 @@ export const UsageShimmer: React.FC = () => {
                 </div>
 
                 {/* Pagination Shimmer */}
-                <div className="px-6 py-4 border-t border-primary-200/30 dark:border-primary-700/30">
-                    <div className="flex justify-between items-center">
-                        <div className="skeleton h-4 w-32 rounded" />
+                <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-primary-200/30 dark:border-primary-700/30">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div className="skeleton h-3 sm:h-4 w-full sm:w-32 rounded" />
                         <div className="flex gap-2">
                             {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="skeleton h-9 w-9 rounded-lg" />
+                                <div key={i} className="skeleton h-8 w-8 sm:h-9 sm:w-9 rounded-lg" />
                             ))}
                         </div>
                     </div>

@@ -168,7 +168,7 @@ export const TemplateExecutionModal: React.FC<TemplateExecutionModalProps> = ({
                         <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
                             Execution Mode
                         </label>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <button
                                 onClick={() => {
                                     setExecutionMode('recommended');
@@ -290,10 +290,10 @@ export const TemplateExecutionModal: React.FC<TemplateExecutionModalProps> = ({
                 </div>
 
                 {/* Execute Button */}
-                <div className="flex justify-end gap-4">
+                <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 glass border-primary-200/30 dark:border-primary-700/30 rounded-xl 
+                        className="w-full sm:w-auto px-6 py-3 glass border-primary-200/30 dark:border-primary-700/30 rounded-xl 
               text-light-text-primary dark:text-dark-text-primary font-display font-medium
               hover:scale-105 transition-all duration-300"
                     >
@@ -302,9 +302,9 @@ export const TemplateExecutionModal: React.FC<TemplateExecutionModalProps> = ({
                     <button
                         onClick={handleExecute}
                         disabled={executing || (executionMode === 'single' && !selectedModel)}
-                        className="px-6 py-3 bg-gradient-primary text-white shadow-lg hover:shadow-xl 
+                        className="w-full sm:w-auto px-6 py-3 bg-gradient-primary text-white shadow-lg hover:shadow-xl 
               rounded-xl font-display font-bold disabled:opacity-50 disabled:cursor-not-allowed
-              hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
+              hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
                     >
                         {executing ? (
                             <>

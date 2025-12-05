@@ -10,33 +10,33 @@ interface Props {
 
 export const AIInteractionCard: React.FC<Props> = ({ interaction, isExpanded, onToggle }) => {
     return (
-        <div className="border border-secondary-200 dark:border-secondary-700 rounded-lg p-3 bg-white dark:bg-secondary-800">
-            <div className="flex items-center justify-between cursor-pointer" onClick={onToggle}>
-                <div className="flex items-center gap-2 flex-wrap">
+        <div className="border border-secondary-200 dark:border-secondary-700 rounded-lg p-2 sm:p-3 bg-white dark:bg-secondary-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 cursor-pointer" onClick={onToggle}>
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0 flex-1">
                     {isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-secondary-500 flex-shrink-0" />
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-500 flex-shrink-0" />
                     ) : (
-                        <ChevronRight className="w-4 h-4 text-secondary-500 flex-shrink-0" />
+                        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-500 flex-shrink-0" />
                     )}
-                    <span className="text-xs text-secondary-500 dark:text-secondary-400">
+                    <span className="text-xs text-secondary-500 dark:text-secondary-400 whitespace-nowrap">
                         {new Date(interaction.timestamp).toLocaleTimeString()}
                     </span>
-                    <span className="text-sm font-medium text-secondary-900 dark:text-secondary-100">
+                    <span className="text-xs sm:text-sm font-medium text-secondary-900 dark:text-secondary-100 truncate">
                         {interaction.model}
                     </span>
                     {interaction.provider && (
-                        <span className="text-xs px-2 py-0.5 bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-300 rounded">
+                        <span className="text-xs px-1.5 sm:px-2 py-0.5 bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-300 rounded whitespace-nowrap">
                             {interaction.provider}
                         </span>
                     )}
-                    <span className="text-xs px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded">
+                    <span className="text-xs px-1.5 sm:px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded whitespace-nowrap">
                         {interaction.tokens?.input || 0}↑ {interaction.tokens?.output || 0}↓
                     </span>
-                    <span className="text-xs font-semibold text-success-600 dark:text-success-400">
+                    <span className="text-xs font-semibold text-success-600 dark:text-success-400 whitespace-nowrap">
                         ${interaction.cost?.toFixed(4) || '0.0000'}
                     </span>
                 </div>
-                <span className="text-xs text-secondary-400 ml-2 flex-shrink-0">
+                <span className="text-xs text-secondary-400 ml-2 flex-shrink-0 whitespace-nowrap">
                     {interaction.latency}ms
                 </span>
             </div>

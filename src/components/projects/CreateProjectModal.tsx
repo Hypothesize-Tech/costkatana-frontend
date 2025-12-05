@@ -163,14 +163,14 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Project" size="4xl">
-      <form onSubmit={handleSubmit} className="p-8 space-y-8">
+      <form onSubmit={handleSubmit} className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
         {/* Basic Information */}
-        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <DocumentTextIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+              <DocumentTextIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
               Basic Information
             </h3>
           </div>
@@ -204,19 +204,19 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Budget Settings */}
-        <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-              <CurrencyDollarIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg flex-shrink-0">
+              <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
               Budget Settings
             </h3>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block mb-2 sm:mb-3 text-sm sm:text-base font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Amount ($)
               </label>
               <input
@@ -228,13 +228,13 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                     Number(e.target.value),
                   )
                 }
-                className="input"
+                className="input text-sm sm:text-base"
                 min="1"
                 required
               />
             </div>
             <div>
-              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block mb-2 sm:mb-3 text-sm sm:text-base font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Period
               </label>
               <select
@@ -242,7 +242,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 onChange={(e) =>
                   handleNestedInputChange(["budget", "period"], e.target.value)
                 }
-                className="input"
+                className="input text-sm sm:text-base"
               >
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
@@ -252,12 +252,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Team Members */}
-        <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-              <UserGroupIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+              <UserGroupIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
               Team Members
             </h3>
           </div>
@@ -298,12 +298,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Tags */}
-        <div className="glass rounded-xl p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg">
-              <TagIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg flex-shrink-0">
+              <TagIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
               Tags
             </h3>
           </div>
@@ -344,12 +344,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Settings */}
-        <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-              <Cog6ToothIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg flex-shrink-0">
+              <Cog6ToothIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h3 className="text-xl font-display font-bold gradient-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
               Project Settings
             </h3>
           </div>
@@ -397,18 +397,18 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4 justify-end pt-8 border-t border-primary-200/30">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 justify-end pt-6 sm:pt-8 border-t border-primary-200/30">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+            className="w-full sm:w-auto px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading || !formData.name.trim()}
-            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
+            className="w-full sm:w-auto px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-display font-semibold text-sm"
           >
             {loading ? (
               <>

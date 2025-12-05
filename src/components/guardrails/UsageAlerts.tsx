@@ -108,14 +108,14 @@ export const UsageAlerts: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-center mb-6">
-                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                        <Bell className="w-5 h-5 text-white" />
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-center mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                        <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
                 </div>
-                <div className="flex justify-center items-center h-32">
+                <div className="flex justify-center items-center h-24 sm:h-28 md:h-32">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
             </div>
@@ -124,60 +124,62 @@ export const UsageAlerts: React.FC = () => {
 
     if (alerts.length === 0) {
         return (
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-center mb-6">
-                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                        <Bell className="w-5 h-5 text-white" />
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-center mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                        <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
                 </div>
-                <div className="flex flex-col justify-center items-center h-32 text-center">
-                    <div className="flex justify-center items-center mb-4 w-16 h-16 rounded-2xl shadow-2xl animate-pulse bg-gradient-success">
-                        <CheckCircle className="w-8 h-8 text-white" />
+                <div className="flex flex-col justify-center items-center h-24 sm:h-28 md:h-32 text-center">
+                    <div className="flex justify-center items-center mb-3 sm:mb-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl shadow-2xl animate-pulse bg-gradient-success">
+                        <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
                     </div>
-                    <p className="mb-2 text-lg font-bold font-display gradient-text-success">No Active Alerts</p>
-                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Your usage is within normal limits</p>
+                    <p className="mb-2 text-base sm:text-lg font-bold font-display gradient-text-success">No Active Alerts</p>
+                    <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Your usage is within normal limits</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex justify-between items-center mb-6">
+        <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
                 <div className="flex items-center">
-                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                        <Bell className="w-5 h-5 text-white" />
+                    <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                        <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Alerts</h3>
                 </div>
                 {alerts.length > 0 && (
-                    <span className="px-3 py-1 text-sm font-bold text-white rounded-full shadow-lg font-display bg-gradient-danger">
+                    <span className="px-2.5 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm font-bold text-white rounded-full shadow-lg font-display bg-gradient-danger self-start sm:self-auto">
                         {alerts.length} active
                     </span>
                 )}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 {alerts.map(alert => (
                     <div
                         key={alert._id}
-                        className={`glass rounded-xl p-6 border ${getSeverityColor(alert.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}
+                        className={`glass rounded-xl p-4 sm:p-5 md:p-6 border ${getSeverityColor(alert.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}
                     >
-                        <div className="flex justify-between items-start">
-                            <div className="flex flex-1 gap-4 items-start">
+                        <div className="flex justify-between items-start gap-3 sm:gap-4">
+                            <div className="flex flex-1 gap-3 sm:gap-4 items-start min-w-0">
+                                <div className="flex-shrink-0">
                                 {getSeverityIcon(alert.severity)}
-                                <div className="flex-1">
-                                    <h4 className={`font-display font-bold text-lg ${getSeverityTextColor(alert.severity)}`}>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className={`font-display font-bold text-base sm:text-lg ${getSeverityTextColor(alert.severity)}`}>
                                         {alert.title}
                                     </h4>
-                                    <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="mt-2 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                         {alert.message}
                                     </p>
 
                                     {alert.metadata?.suggestions && alert.metadata.suggestions.length > 0 && (
-                                        <div className="p-4 mt-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
-                                            <p className="flex gap-2 items-center mb-3 text-sm font-bold font-display gradient-text-primary">
-                                                <Lightbulb className="w-4 h-4" />
+                                        <div className="p-3 sm:p-4 mt-3 sm:mt-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
+                                            <p className="flex gap-1.5 sm:gap-2 items-center mb-2 sm:mb-3 text-xs sm:text-sm font-bold font-display gradient-text-primary">
+                                                <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                 Recommendations:
                                             </p>
                                             <ul className="space-y-2">
@@ -226,10 +228,10 @@ export const UsageAlerts: React.FC = () => {
                             </div>
                             <button
                                 onClick={() => dismissAlert(alert._id)}
-                                className="p-2 ml-4 rounded-xl transition-all duration-300 btn hover:bg-primary-500/10 hover:scale-110"
+                                className="p-1.5 sm:p-2 rounded-xl transition-all duration-300 btn hover:bg-primary-500/10 hover:scale-110 flex-shrink-0"
                                 aria-label="Dismiss alert"
                             >
-                                <X className="w-4 h-4 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500" />
+                                <X className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500" />
                             </button>
                         </div>
                     </div>
@@ -237,25 +239,25 @@ export const UsageAlerts: React.FC = () => {
             </div>
 
             {alerts.some(alert => alert.severity === 'high') && (
-                <div className="p-6 mt-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary">
-                    <div className="flex items-center mb-4">
-                        <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-white/20">
-                            <AlertCircle className="w-4 h-4 text-white" />
+                <div className="p-4 sm:p-5 md:p-6 mt-4 sm:mt-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                        <div className="flex justify-center items-center mr-2 sm:mr-3 w-7 h-7 sm:w-8 sm:h-8 rounded-lg shadow-lg bg-white/20 flex-shrink-0">
+                            <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                         </div>
-                        <p className="text-lg font-bold text-white font-display">
+                        <p className="text-base sm:text-lg font-bold text-white font-display">
                             Approaching Usage Limits
                         </p>
                     </div>
-                    <p className="mb-4 text-sm font-body text-white/90">
+                    <p className="mb-3 sm:mb-4 text-xs sm:text-sm font-body text-white/90">
                         Upgrade your plan for increased limits and access to all features.
                     </p>
                     <a
                         href="https://www.costkatana.com/#pricing"
-                        className="inline-flex items-center px-4 py-2 text-sm font-semibold bg-white rounded-xl shadow-lg transition-all duration-300 btn btn-primary font-display text-primary-600 hover:bg-primary-50 hover:scale-105"
+                        className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold bg-white rounded-xl shadow-lg transition-all duration-300 btn btn-primary font-display text-primary-600 hover:bg-primary-50 hover:scale-105"
                     >
-                        <Sparkles className="mr-1 w-4 h-4" />
+                        <Sparkles className="mr-1 w-3 h-3 sm:w-4 sm:h-4" />
                         View Plans
-                        <ArrowRight className="ml-1 w-4 h-4" />
+                        <ArrowRight className="ml-1 w-3 h-3 sm:w-4 sm:h-4" />
                     </a>
                 </div>
             )}

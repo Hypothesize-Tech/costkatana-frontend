@@ -223,33 +223,33 @@ export default function Usage() {
 
 
   return (
-    <div className="p-4 sm:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="mx-auto space-y-4 sm:space-y-6 lg:space-y-8 max-w-7xl">
+    <div className="p-2 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="mx-auto space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 max-w-7xl">
         {/* Header */}
-        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 lg:p-8 relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
-                <ChartBarIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-xl sm:rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 sm:p-4 md:p-6 lg:p-8 relative z-10">
+          <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+              <div className="p-2 sm:p-2.5 md:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 flex-shrink-0">
+                <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display gradient-text-primary">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold font-display gradient-text-primary truncate">
                   API Usage
                 </h1>
-                <p className="mt-1 sm:mt-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
-                  Track and manage your AI API usage across all providers{selectedProject !== 'all' ? ` • ${getSelectedProjectName()}` : ''}
+                <p className="mt-0.5 sm:mt-1 md:mt-2 text-xs sm:text-sm md:text-base text-secondary-600 dark:text-secondary-300 line-clamp-2">
+                  Track and manage your AI API usage{selectedProject !== 'all' ? ` • ${getSelectedProjectName()}` : ''}
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3">
               {/* Project Selection */}
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="inline-flex justify-center items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95">
-                    <FolderIcon className="w-5 h-5" />
-                    <span className="hidden sm:inline">{getSelectedProjectName()}</span>
+                  <Menu.Button className="inline-flex justify-center items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 flex-shrink-0">
+                    <FolderIcon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                    <span className="hidden sm:inline truncate max-w-[120px] md:max-w-none">{getSelectedProjectName()}</span>
                     <span className="sm:hidden">Project</span>
-                    <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+                    <ChevronDownIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0" aria-hidden="true" />
                   </Menu.Button>
                 </div>
                 <Transition
@@ -261,7 +261,7 @@ export default function Usage() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-[9999] mt-2 w-56 sm:w-64 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl origin-top-right glass bg-gradient-light-panel dark:bg-gradient-dark-panel focus:outline-none">
+                  <Menu.Items className="absolute right-0 z-[9999] mt-2 w-48 sm:w-56 md:w-64 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl origin-top-right glass bg-gradient-light-panel dark:bg-gradient-dark-panel focus:outline-none max-h-[60vh] overflow-y-auto">
                     <div className="py-2">
                       <Menu.Item>
                         {({ active }) => (
@@ -299,34 +299,34 @@ export default function Usage() {
               {/* View Requests Button */}
               <button
                 onClick={() => navigate('/requests')}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
-                <DocumentTextIcon className="w-5 h-5" />
+                <DocumentTextIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Requests</span>
               </button>
 
               {/* Quick Actions - Direct buttons instead of dropdown for better UX */}
               <button
                 onClick={() => setShowTrackModal(true)}
-                className="group relative flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation] whitespace-nowrap flex-shrink-0"
+                className="group relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] whitespace-nowrap flex-shrink-0 text-xs sm:text-sm"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Track</span>
               </button>
 
               <button
                 onClick={() => setShowExportModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
-                <ArrowDownTrayIcon className="w-5 h-5" />
+                <ArrowDownTrayIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Export</span>
               </button>
 
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 whitespace-nowrap flex-shrink-0"
               >
-                <CloudArrowUpIcon className="w-5 h-5" />
+                <CloudArrowUpIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Import</span>
               </button>
             </div>
@@ -379,18 +379,18 @@ export default function Usage() {
 
             {/* Stats Cards */}
             {data?.usage && data.usage.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {/* Total Cost */}
-                <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-success-500/20 to-success-600/20 dark:from-success-500/30 dark:to-success-600/30">
-                      <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-success-600 dark:text-success-400" />
+                    <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-success-500/20 to-success-600/20 dark:from-success-500/30 dark:to-success-600/30 flex-shrink-0">
+                      <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-success-600 dark:text-success-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                         Total Cost
                       </dt>
-                      <dd className="text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                      <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
                         ${data.usage.reduce((sum: number, item: any) => sum + (item.cost || 0), 0).toFixed(2)}
                       </dd>
                     </div>
@@ -398,16 +398,16 @@ export default function Usage() {
                 </div>
 
                 {/* Total Tokens */}
-                <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-[#06ec9e]/20 to-emerald-500/20 dark:from-[#06ec9e]/30 dark:to-emerald-500/30">
-                      <HashtagIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#06ec9e] dark:text-emerald-400" />
+                    <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-[#06ec9e]/20 to-emerald-500/20 dark:from-[#06ec9e]/30 dark:to-emerald-500/30 flex-shrink-0">
+                      <HashtagIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-[#06ec9e] dark:text-emerald-400" />
                     </div>
-                    <div className="flex-1">
-                      <dt className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                    <div className="flex-1 min-w-0">
+                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                         Total Tokens
                       </dt>
-                      <dd className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                      <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
                         {data.usage.reduce((sum: number, item: any) => sum + (item.totalTokens || 0), 0).toLocaleString()}
                       </dd>
                     </div>
@@ -415,24 +415,24 @@ export default function Usage() {
                 </div>
 
                 {/* Token Breakdown */}
-                <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-highlight-500/20 to-highlight-600/20 dark:from-highlight-500/30 dark:to-highlight-600/30">
-                      <CircleStackIcon className="w-5 h-5 sm:w-6 sm:h-6 text-highlight-600 dark:text-highlight-400" />
+                    <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-highlight-500/20 to-highlight-600/20 dark:from-highlight-500/30 dark:to-highlight-600/30 flex-shrink-0">
+                      <CircleStackIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-highlight-600 dark:text-highlight-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                         Token Breakdown
                       </dt>
                       <dd className="text-xs sm:text-sm text-secondary-900 dark:text-white">
-                        <div className="mt-2 space-y-1.5 sm:space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium text-secondary-600 dark:text-secondary-300">Input:</span>
-                            <span className="font-semibold">{data.usage.reduce((sum: number, item: any) => sum + ((item as any).promptTokens || 0), 0).toLocaleString()}</span>
+                        <div className="mt-1.5 sm:mt-2 space-y-1 sm:space-y-1.5 md:space-y-2">
+                          <div className="flex justify-between items-center gap-2">
+                            <span className="font-medium text-secondary-600 dark:text-secondary-300 text-xs sm:text-sm">Input:</span>
+                            <span className="font-semibold text-xs sm:text-sm truncate">{data.usage.reduce((sum: number, item: any) => sum + ((item as any).promptTokens || 0), 0).toLocaleString()}</span>
                           </div>
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium text-secondary-600 dark:text-secondary-300">Output:</span>
-                            <span className="font-semibold">{data.usage.reduce((sum: number, item: any) => sum + ((item as any).completionTokens || 0), 0).toLocaleString()}</span>
+                          <div className="flex justify-between items-center gap-2">
+                            <span className="font-medium text-secondary-600 dark:text-secondary-300 text-xs sm:text-sm">Output:</span>
+                            <span className="font-semibold text-xs sm:text-sm truncate">{data.usage.reduce((sum: number, item: any) => sum + ((item as any).completionTokens || 0), 0).toLocaleString()}</span>
                           </div>
                         </div>
                       </dd>
@@ -441,16 +441,16 @@ export default function Usage() {
                 </div>
 
                 {/* Average Response Time */}
-                <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
+                <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-[1.02] transition-transform duration-300 [touch-action:manipulation]">
                   <div className="flex items-center">
-                    <div className="p-3 mr-3 sm:mr-4 bg-gradient-to-br rounded-xl from-accent-500/20 to-accent-600/20 dark:from-accent-500/30 dark:to-accent-600/30">
-                      <ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 text-accent-600 dark:text-accent-400" />
+                    <div className="p-2 sm:p-2.5 md:p-3 mr-2 sm:mr-3 md:mr-4 bg-gradient-to-br rounded-lg sm:rounded-xl from-accent-500/20 to-accent-600/20 dark:from-accent-500/30 dark:to-accent-600/30 flex-shrink-0">
+                      <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-accent-600 dark:text-accent-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                      <dt className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                         Avg Response
                       </dt>
-                      <dd className="text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                      <dd className="text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white truncate">
                         {(() => {
                           const avgTime = data.usage.reduce((sum: number, item: any) => sum + (item.responseTime || 0), 0) / data.usage.length;
                           return avgTime > 1000 ? `${(avgTime / 1000).toFixed(1)}s` : `${Math.round(avgTime)}ms`;
@@ -463,9 +463,9 @@ export default function Usage() {
             )}
 
             {/* Search and Filters */}
-            <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row">
-                <div className="relative flex-1">
+            <div className="p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 sm:flex-row">
+                <div className="relative flex-1 min-w-0">
                   <UsageSearch
                     onSearch={setSearchQuery}
                     placeholder="Search prompts, models, services..."
@@ -473,12 +473,12 @@ export default function Usage() {
                 </div>
                 <button
                   onClick={() => setShowFilters(true)}
-                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[44px] [touch-action:manipulation] active:scale-95"
+                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-400/50 transition-all duration-300 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] active:scale-95 flex-shrink-0"
                 >
-                  <FunnelIcon className="w-5 h-5" />
+                  <FunnelIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Filters</span>
                   {Object.keys(filters).length > 0 && (
-                    <span className="inline-flex justify-center items-center w-5 h-5 text-xs font-medium text-white rounded-full shadow-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
+                    <span className="inline-flex justify-center items-center w-4 h-4 sm:w-5 sm:h-5 text-[10px] sm:text-xs font-medium text-white rounded-full shadow-lg bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
                       {Object.keys(filters).length}
                     </span>
                   )}
@@ -511,18 +511,18 @@ export default function Usage() {
 
             {/* Cost Optimization Opportunities Banner */}
             {data?.usage && data.usage.length > 0 && (
-              <div className="mb-4 sm:mb-6 lg:mb-8">
-                <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="flex flex-shrink-0 justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shadow-lg bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454]">
-                        <SparklesIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="mb-3 sm:mb-4 md:mb-6 lg:mb-8">
+                <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-br rounded-lg sm:rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="flex flex-shrink-0 justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl shadow-lg bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454]">
+                        <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                       </div>
-                      <div>
-                        <h3 className="text-base sm:text-lg font-bold font-display gradient-text-primary">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold font-display gradient-text-primary truncate">
                           Cost Optimization Opportunities
                         </h3>
-                        <p className="mt-1 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
+                        <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 line-clamp-2">
                           Scroll down to see AI-powered suggestions for reducing your costs
                         </p>
                       </div>
@@ -546,7 +546,7 @@ export default function Usage() {
                         };
                         scrollToOpportunities();
                       }}
-                      className="w-full sm:w-auto group relative flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[44px] [touch-action:manipulation]"
+                      className="w-full sm:w-auto group relative flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-display font-semibold text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 hover:from-emerald-500 hover:to-emerald-600 dark:hover:from-emerald-600 dark:hover:to-emerald-700 min-h-[40px] sm:min-h-[44px] [touch-action:manipulation] text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
                     >
                       View Opportunities
                     </button>

@@ -134,22 +134,22 @@ const AutomationDashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 justify-between items-start sm:flex-row sm:items-center">
-        <div className="flex gap-3 items-center">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 flex items-center justify-center shadow-lg">
-            <BoltIcon className="w-5 h-5 text-white" />
+      <div className="flex flex-col gap-3 sm:gap-4 justify-between items-start sm:flex-row sm:items-center">
+        <div className="flex gap-2 sm:gap-3 items-center">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 flex items-center justify-center shadow-lg">
+            <BoltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-bold sm:text-3xl font-display gradient-text-primary">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-display gradient-text-primary">
             Automation Cost Tracking
           </h1>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full sm:w-auto">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value as '7d' | '30d' | '90d')}
-            className="px-3 py-2 text-sm bg-white rounded-xl border border-primary-200/30 dark:border-primary-500/20 dark:bg-dark-card font-body"
+            className="px-3 py-2 text-xs sm:text-sm bg-white rounded-xl border border-primary-200/30 dark:border-primary-500/20 dark:bg-dark-card font-body"
           >
             <option value="7d">Last 7 days</option>
             <option value="30d">Last 30 days</option>
@@ -158,25 +158,26 @@ const AutomationDashboard: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={refreshing}
-            className="flex gap-2 items-center px-4 py-2 rounded-xl btn btn-secondary"
+            className="flex gap-2 items-center justify-center px-3 sm:px-4 py-2 rounded-xl btn btn-secondary text-xs sm:text-sm"
           >
             <ArrowPathIcon className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            <span className="hidden sm:inline">Refresh</span>
+            <span className="sm:hidden">Refresh</span>
           </button>
         </div>
       </div>
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Cost
               </span>
-              <CurrencyDollarIcon className="w-5 h-5 text-[#06ec9e] dark:text-emerald-400" />
+              <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#06ec9e] dark:text-emerald-400" />
             </div>
-            <div className="text-2xl font-bold font-display gradient-text-primary">
+            <div className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
               {formatCurrency(stats.totalCost)}
             </div>
             <div className="mt-1 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -184,14 +185,14 @@ const AutomationDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
+          <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Requests
               </span>
-              <ChartBarIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="text-2xl font-bold text-blue-600 font-display dark:text-blue-400">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600 font-display dark:text-blue-400">
               {formatNumber(stats.totalRequests)}
             </div>
             <div className="mt-1 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -199,14 +200,14 @@ const AutomationDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
+          <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Total Tokens
               </span>
-              <BoltIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <BoltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="text-2xl font-bold text-purple-600 font-display dark:text-purple-400">
+            <div className="text-xl sm:text-2xl font-bold text-purple-600 font-display dark:text-purple-400">
               {formatNumber(stats.totalTokens)}
             </div>
             <div className="mt-1 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -214,14 +215,14 @@ const AutomationDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
+          <div className="p-4 sm:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                 Connections
               </span>
-              <CheckCircleIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
             </div>
-            <div className="text-2xl font-bold text-orange-600 font-display dark:text-orange-400">
+            <div className="text-xl sm:text-2xl font-bold text-orange-600 font-display dark:text-orange-400">
               {stats.totalConnections}
             </div>
             <div className="mt-1 text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -232,11 +233,11 @@ const AutomationDashboard: React.FC = () => {
       )}
 
       {/* Tabs */}
-      <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
-        <div className="flex flex-wrap gap-2">
+      <div className="p-3 sm:p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
           <button
             onClick={() => { setActiveTab('overview'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'overview'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'overview'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -245,7 +246,7 @@ const AutomationDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => { setActiveTab('platforms'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'platforms'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'platforms'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -254,7 +255,7 @@ const AutomationDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => { setActiveTab('workflows'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'workflows'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'workflows'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -263,7 +264,7 @@ const AutomationDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => { setActiveTab('quota'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'quota'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'quota'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -272,25 +273,27 @@ const AutomationDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => { setActiveTab('optimization'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'optimization'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'optimization'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
           >
-            Optimization
+            <span className="hidden sm:inline">Optimization</span>
+            <span className="sm:hidden">Optimize</span>
           </button>
           <button
             onClick={() => { setActiveTab('roi'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'roi'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'roi'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
           >
-            ROI Analysis
+            <span className="hidden sm:inline">ROI Analysis</span>
+            <span className="sm:hidden">ROI</span>
           </button>
           <button
             onClick={() => { setActiveTab('overhead'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'overhead'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'overhead'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -299,7 +302,7 @@ const AutomationDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => { setActiveTab('alerts'); setSelectedWorkflowId(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'alerts'
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'alerts'
               ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
               : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary'
               }`}
@@ -325,14 +328,14 @@ const AutomationDashboard: React.FC = () => {
 
       {/* Tab Content */}
       {!selectedWorkflowId && activeTab === 'overview' && stats && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Time Series Chart */}
           {analytics.length > 0 && analytics[0].timeSeries && analytics[0].timeSeries.length > 0 && (
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
-              <h3 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+            <div className="p-4 sm:p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
+              <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                 Cost & Usage Trends
               </h3>
-              <div className="h-64">
+              <div className="h-48 sm:h-64">
                 <Line
                   data={{
                     labels: analytics[0].timeSeries.map((d) => {
@@ -380,10 +383,10 @@ const AutomationDashboard: React.FC = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
             {/* Platform Breakdown */}
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
-              <h3 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+            <div className="p-4 sm:p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
+              <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                 Platform Breakdown
               </h3>
               {stats.platformBreakdown.length > 0 ? (
@@ -419,7 +422,7 @@ const AutomationDashboard: React.FC = () => {
                     ))}
                   </div>
                   {/* Platform Cost Distribution Chart */}
-                  <div className="mt-4 h-48">
+                  <div className="mt-4 h-40 sm:h-48">
                     <Bar
                       data={{
                         labels: stats.platformBreakdown.map((p) => p.platform.toUpperCase()),
@@ -473,8 +476,8 @@ const AutomationDashboard: React.FC = () => {
             </div>
 
             {/* Top Workflows */}
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
-              <h3 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+            <div className="p-4 sm:p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
+              <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                 Top Workflows
               </h3>
               {stats.topWorkflows.length > 0 ? (
@@ -506,7 +509,7 @@ const AutomationDashboard: React.FC = () => {
                   </div>
                   {/* Workflow Cost Distribution */}
                   {stats.topWorkflows.length > 0 && (
-                    <div className="mt-4 h-48">
+                    <div className="mt-4 h-40 sm:h-48">
                       <Bar
                         data={{
                           labels: stats.topWorkflows.slice(0, 5).map((w) =>
@@ -558,11 +561,11 @@ const AutomationDashboard: React.FC = () => {
 
           {/* Additional Metrics */}
           {analytics.length > 0 && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 md:grid-cols-3">
               {analytics.map((platformData, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20"
+                  className="p-3 sm:p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20"
                 >
                   <div className="flex gap-2 items-center mb-3">
                     <div className={`w-6 h-6 rounded-lg bg-gradient-to-r ${getPlatformColor(platformData.platform)} flex items-center justify-center`}>
@@ -664,28 +667,28 @@ const AutomationDashboard: React.FC = () => {
       )}
 
       {!selectedWorkflowId && activeTab === 'platforms' && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {analytics.map((platformData, index) => (
             <div
               key={index}
-              className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20"
+              className="p-4 sm:p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20"
             >
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex gap-3 items-center">
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${getPlatformColor(platformData.platform)} flex items-center justify-center`}>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-3">
+                <div className="flex gap-2 sm:gap-3 items-center">
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-r ${getPlatformColor(platformData.platform)} flex items-center justify-center`}>
                     {getPlatformIcon(platformData.platform)}
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold capitalize font-display text-light-text-primary dark:text-dark-text-primary">
+                    <h3 className="text-base sm:text-lg font-bold capitalize font-display text-light-text-primary dark:text-dark-text-primary">
                       {platformData.platform}
                     </h3>
-                    <div className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                    <div className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                       {formatNumber(platformData.totalRequests)} requests
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold font-display gradient-text-primary">
+                <div className="text-left sm:text-right">
+                  <div className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                     {formatCurrency(platformData.totalCost)}
                   </div>
                   <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -754,24 +757,24 @@ const AutomationDashboard: React.FC = () => {
       )}
 
       {!selectedWorkflowId && activeTab === 'workflows' && (
-        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
-          <h3 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+        <div className="p-4 sm:p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
             All Workflows
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {analytics.flatMap(platform =>
               platform.workflows.map((workflow, index) => (
                 <div
                   key={`${platform.platform}-${index}`}
                   onClick={() => setSelectedWorkflowId(workflow.workflowId)}
-                  className="flex justify-between items-center p-4 rounded-lg border transition-colors cursor-pointer border-primary-200/20 dark:border-primary-500/10 hover:bg-primary-50/30 dark:hover:bg-primary-900/10"
+                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 sm:p-4 rounded-lg border transition-colors cursor-pointer border-primary-200/20 dark:border-primary-500/10 hover:bg-primary-50/30 dark:hover:bg-primary-900/10 gap-2 sm:gap-0"
                 >
-                  <div className="flex flex-1 gap-3 items-center min-w-0">
-                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getPlatformColor(platform.platform)} flex items-center justify-center flex-shrink-0`}>
+                  <div className="flex flex-1 gap-2 sm:gap-3 items-center min-w-0 w-full sm:w-auto">
+                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-r ${getPlatformColor(platform.platform)} flex items-center justify-center flex-shrink-0`}>
                       {getPlatformIcon(platform.platform)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold truncate font-display text-light-text-primary dark:text-dark-text-primary">
+                      <div className="font-semibold truncate font-display text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary">
                         {workflow.workflowName}
                       </div>
                       <div className="text-xs capitalize font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -779,8 +782,8 @@ const AutomationDashboard: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="ml-4 text-right">
-                    <div className="font-bold font-display gradient-text-primary">
+                  <div className="ml-0 sm:ml-4 text-left sm:text-right w-full sm:w-auto">
+                    <div className="font-bold font-display gradient-text-primary text-sm sm:text-base">
                       {formatCurrency(workflow.totalCost)}
                     </div>
                     <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">

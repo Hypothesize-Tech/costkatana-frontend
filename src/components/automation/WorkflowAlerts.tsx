@@ -130,21 +130,21 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-display font-bold gradient-text-primary">
+          <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
             Workflow Alerts
           </h3>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             Monitor and manage workflow alerts
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => setConfigOpen(!configOpen)}
-            className="px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center gap-2"
+            className="px-3 sm:px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-xs sm:text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center justify-center gap-2"
           >
             <Cog6ToothIcon className="w-4 h-4" />
             Configure
@@ -153,7 +153,7 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
             <button
               onClick={checkAlerts}
               disabled={loading}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center gap-2 disabled:opacity-50"
+              className="px-3 sm:px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-xs sm:text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Check Alerts
@@ -164,13 +164,13 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
 
       {/* Configuration Panel */}
       {configOpen && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-          <h4 className="text-lg font-display font-bold mb-4 gradient-text-primary">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+          <h4 className="text-base sm:text-lg font-display font-bold mb-3 sm:mb-4 gradient-text-primary">
             Alert Configuration
           </h4>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <label className="block text-sm font-body font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
+              <label className="block text-xs sm:text-sm font-body font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                 Budget Threshold (%)
               </label>
               <input
@@ -179,7 +179,7 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
                 max="100"
                 value={config.budgetThreshold}
                 onChange={(e) => setConfig({ ...config, budgetThreshold: Number(e.target.value) })}
-                className="w-full px-4 py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-dark-card text-sm font-body"
+                className="w-full px-3 sm:px-4 py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-dark-card text-xs sm:text-sm font-body"
               />
             </div>
             <div>
@@ -257,23 +257,23 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
           </div>
         </div>
       ) : alerts.length === 0 ? (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-12 text-center">
-          <BellIcon className="w-12 h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-4" />
-          <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 sm:p-12 text-center">
+          <BellIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-3 sm:mb-4" />
+          <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
             No alerts found
           </p>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             {workflowId
               ? 'No alerts for this workflow. All systems are operating normally.'
               : 'Select a workflow to check for alerts.'}
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-6 cursor-pointer hover:shadow-xl transition-shadow ${
+              className={`glass rounded-xl border shadow-lg backdrop-blur-xl p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-shadow ${
                 alert.severity === 'critical'
                   ? 'border-red-200/30 dark:border-red-500/20 bg-red-50/30 dark:bg-red-900/20'
                   : alert.severity === 'high'
@@ -284,13 +284,13 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
               }`}
               onClick={() => onAlertClick && onAlertClick(alert)}
             >
-              <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${getSeverityColor(alert.severity)} flex items-center justify-center flex-shrink-0`}>
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-r ${getSeverityColor(alert.severity)} flex items-center justify-center flex-shrink-0`}>
                   {getSeverityIcon(alert.severity)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h4 className="text-base sm:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                       {alert.title}
                     </h4>
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -310,7 +310,7 @@ export const WorkflowAlerts: React.FC<WorkflowAlertsProps> = ({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
+                  <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
                     {alert.message}
                   </p>
                   {alert.data && (

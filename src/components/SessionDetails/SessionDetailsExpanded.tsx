@@ -9,9 +9,9 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ label, value }) => {
     return (
-        <div className="bg-white dark:bg-secondary-800 rounded-lg p-3 border border-secondary-200 dark:border-secondary-700">
+        <div className="bg-white dark:bg-secondary-800 rounded-lg p-2 sm:p-3 border border-secondary-200 dark:border-secondary-700">
             <div className="text-xs text-secondary-500 dark:text-secondary-400 mb-1">{label}</div>
-            <div className="text-lg font-semibold text-secondary-900 dark:text-secondary-100">{value}</div>
+            <div className="text-sm sm:text-base md:text-lg font-semibold text-secondary-900 dark:text-secondary-100 break-words">{value}</div>
         </div>
     );
 };
@@ -26,9 +26,9 @@ export const SessionDetailsExpanded: React.FC<Props> = ({ session }) => {
     const interactions = session.replayData?.aiInteractions || [];
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
             {/* Summary Stats */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                 <StatCard
                     label="Total Cost"
                     value={`$${session.summary?.totalCost?.toFixed(4) || '0.0000'}`}

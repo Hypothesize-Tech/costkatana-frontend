@@ -240,8 +240,8 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
     switch (activeTab) {
       case "budget":
         return (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6 sm:space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Amount
@@ -279,7 +279,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
             </div>
 
             <div>
-              <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block mb-2 sm:mb-3 text-sm sm:text-base font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                 Budget Period
               </label>
               <select
@@ -287,7 +287,7 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
                 onChange={(e) =>
                   handleInputChange(["budget", "period"], e.target.value)
                 }
-                className="input"
+                className="input text-sm sm:text-base"
               >
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
@@ -297,8 +297,8 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-display font-bold gradient-text-primary">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
+                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                   Budget Alerts
                 </h3>
                 <button
@@ -698,24 +698,24 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="5xl">
       <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
-        <div className="glass rounded-t-xl p-8 border-b border-primary-200/30">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <Cog6ToothIcon className="w-6 h-6 text-white" />
+        <div className="glass rounded-t-xl p-4 sm:p-6 md:p-8 border-b border-primary-200/30">
+          <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-0">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                <Cog6ToothIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div>
-                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text-primary truncate">
                   {project.name} Settings
                 </h2>
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Configure advanced settings for your project
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-secondary-600 dark:text-secondary-300 hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
+              className="p-2 rounded-xl text-secondary-600 dark:text-secondary-300 hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110 flex-shrink-0"
             >
               <XMarkIcon className="w-5 h-5" />
             </button>
@@ -723,43 +723,51 @@ export const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-primary-200/30 bg-gradient-primary/5">
+        <div className="flex overflow-x-auto border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-4 font-display font-medium transition-all duration-200 ${activeTab === tab.id
-                ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
-                : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
-                }`}
+              className={`relative flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 font-display font-semibold transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
+                activeTab === tab.id
+                  ? "text-primary-600 dark:text-primary-400"
+                  : "text-secondary-500 dark:text-secondary-400 hover:text-primary-500 dark:hover:text-primary-400"
+              }`}
             >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
+              <tab.icon className={`w-4 h-4 flex-shrink-0 transition-colors duration-300 ${
+                activeTab === tab.id
+                  ? "text-primary-600 dark:text-primary-400"
+                  : "text-secondary-500 dark:text-secondary-400"
+              }`} />
+              <span className="text-xs sm:text-sm">{tab.label}</span>
+              {activeTab === tab.id && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-primary rounded-t-full"></span>
+              )}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8">{renderTabContent()}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">{renderTabContent()}</div>
 
         {/* Footer */}
-        <div className="glass rounded-b-xl p-6 border-t border-primary-200/30">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 font-body text-secondary-600 dark:text-secondary-300">
-              <InformationCircleIcon className="w-4 h-4" />
+        <div className="glass rounded-b-xl p-4 sm:p-5 md:p-6 border-t border-primary-200/30">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+            <div className="flex items-center gap-2 font-body text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
+              <InformationCircleIcon className="w-4 h-4 flex-shrink-0" />
               <span>Changes will be applied immediately</span>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
               <button
                 onClick={onClose}
-                className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                className="w-full sm:w-auto px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={!hasChanges || loading}
-                className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
+                className="w-full sm:w-auto px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-display font-semibold text-sm"
               >
                 <DocumentArrowDownIcon className="w-4 h-4" />
                 {loading ? "Saving..." : "Save Changes"}

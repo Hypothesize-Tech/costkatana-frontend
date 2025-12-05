@@ -135,27 +135,27 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="4xl">
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
-        <div className="glass flex justify-between items-start p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex-1 min-w-0">
-            <div className="flex gap-3 items-center mb-2">
-              <h2 className="text-3xl font-display font-bold gradient-text-primary truncate">
+        <div className="glass flex flex-col sm:flex-row justify-between items-start p-4 sm:p-6 md:p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel gap-4">
+          <div className="flex-1 min-w-0 w-full">
+            <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text-primary truncate">
                 {template.name}
               </h2>
-              <span className="badge-primary btn">
+              <span className="badge-primary btn text-xs sm:text-sm">
                 {template.category}
               </span>
               {template.isFavorite && (
-                <FiStar className="w-5 h-5 text-accent-500 fill-current shadow-lg" />
+                <FiStar className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 fill-current shadow-lg" />
               )}
             </div>
 
             {template.description && (
-              <p className="mb-4 font-body text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="mb-3 sm:mb-4 text-sm sm:text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
                 {template.description}
               </p>
             )}
 
-            <div className="flex gap-6 items-center text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+            <div className="flex flex-wrap gap-3 sm:gap-6 items-center text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
               <div className="flex gap-2 items-center">
                 {getVisibilityIcon(template.sharing.visibility)}
                 <span className="capitalize">
@@ -163,23 +163,24 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
                 </span>
               </div>
               <div className="flex gap-2 items-center">
-                <FiClock className="w-4 h-4" />
-                <span>Updated {formatDate(template.updatedAt)}</span>
+                <FiClock className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Updated {formatDate(template.updatedAt)}</span>
+                <span className="sm:hidden">{new Date(template.updatedAt).toLocaleDateString()}</span>
               </div>
               <div className="flex gap-2 items-center">
-                <FiTrendingUp className="w-4 h-4" />
+                <FiTrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>{template.usage.count} uses</span>
               </div>
               {template.usage.averageRating && (
                 <div className="flex gap-2 items-center">
-                  <FiStar className="w-4 h-4" />
+                  <FiStar className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{template.usage.averageRating.toFixed(1)}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="flex gap-2 items-center ml-4">
+          <div className="flex gap-2 items-center w-full sm:w-auto sm:ml-4 justify-end sm:justify-start">
             <button
               onClick={() => onFavorite(template)}
               className={`btn-icon-secondary ${template.isFavorite
@@ -220,18 +221,19 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="glass flex border-b border-primary-200/30 backdrop-blur-xl">
+        <div className="glass flex border-b border-primary-200/30 backdrop-blur-xl overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 text-sm font-display font-medium transition-all ${activeTab === tab.id
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-display font-medium transition-all whitespace-nowrap ${activeTab === tab.id
                 ? "gradient-text-primary border-b-2 border-primary-500 bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10 shadow-lg"
                 : "text-light-text-secondary dark:text-dark-text-secondary hover:gradient-text-primary"
                 }`}
             >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
+              <tab.icon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
             </button>
           ))}
         </div>
@@ -239,14 +241,14 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
         {/* Content */}
         <div className="overflow-y-auto flex-1 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
           {activeTab === "content" && (
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-display font-semibold gradient-text-primary">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+                <h3 className="text-lg sm:text-xl font-display font-semibold gradient-text-primary">
                   Template Content
                 </h3>
                 <button
                   onClick={handleCopyContent}
-                  className={`btn btn-secondary inline-flex items-center gap-2 ${copied
+                  className={`btn btn-secondary inline-flex items-center gap-2 w-full sm:w-auto justify-center ${copied
                     ? "text-success-600 bg-success-50/20 shadow-lg"
                     : ""
                     }`}
@@ -421,11 +423,11 @@ export const ViewTemplateModal: React.FC<ViewTemplateModalProps> = ({
           )}
 
           {activeTab === "usage" && (
-            <div className="p-6">
-              <h3 className="mb-6 text-xl font-display font-semibold gradient-text-primary">
+            <div className="p-4 sm:p-6">
+              <h3 className="mb-4 sm:mb-6 text-lg sm:text-xl font-display font-semibold gradient-text-primary">
                 Usage Statistics
               </h3>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
                 <div className="glass p-4 rounded-lg border border-info-200/30 shadow-lg backdrop-blur-xl">
                   <div className="flex gap-2 items-center gradient-text-info">
                     <FiTrendingUp className="w-5 h-5" />

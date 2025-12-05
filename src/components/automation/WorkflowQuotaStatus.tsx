@@ -87,23 +87,23 @@ export const WorkflowQuotaStatusComponent: React.FC<WorkflowQuotaStatusProps> = 
     };
 
     return (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${getStatusColor()} flex items-center justify-center shadow-lg`}>
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r ${getStatusColor()} flex items-center justify-center shadow-lg flex-shrink-0`}>
                         {getStatusIcon()}
                     </div>
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
                             Workflow Quota
                         </h3>
-                        <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                             {quotaStatus.plan.charAt(0).toUpperCase() + quotaStatus.plan.slice(1)} Plan
                         </p>
                     </div>
                 </div>
-                <div className="text-right">
-                    <div className="text-2xl font-display font-bold gradient-text-primary">
+                <div className="text-left sm:text-right">
+                    <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                         {quotaStatus.current} / {quotaStatus.limit === -1 ? '∞' : quotaStatus.limit}
                     </div>
                     <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">

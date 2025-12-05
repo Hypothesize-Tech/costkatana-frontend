@@ -18,26 +18,26 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
   onReset,
 }) => {
   return (
-    <div className="glass rounded-xl p-6 border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-      <div className="flex items-center mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-3 shadow-lg">
-          <FunnelIcon className="h-5 w-5 text-white" />
+    <div className="glass rounded-xl p-4 sm:p-6 border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="flex items-center mb-4 sm:mb-6">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary flex items-center justify-center mr-2 sm:mr-3 shadow-lg">
+          <FunnelIcon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
         </div>
-        <div className="flex items-center gap-2">
-          <MagnifyingGlassIcon className="w-5 h-5 text-primary-500" />
-          <h3 className="text-lg font-display font-semibold gradient-text-primary">Filters</h3>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <MagnifyingGlassIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500" />
+          <h3 className="text-base sm:text-lg font-display font-semibold gradient-text-primary">Filters</h3>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         <div>
-          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
+          <label className="block text-xs sm:text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Type
           </label>
           <select
             value={filters.type}
             onChange={(e) => onFilterChange("type", e.target.value)}
-            className="input"
+            className="input text-sm"
           >
             <option value="">All Types</option>
             <option value="cost_alert">Cost Alert</option>
@@ -51,13 +51,13 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
+          <label className="block text-xs sm:text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Severity
           </label>
           <select
             value={filters.severity}
             onChange={(e) => onFilterChange("severity", e.target.value)}
-            className="input"
+            className="input text-sm"
           >
             <option value="">All Severities</option>
             <option value="critical">Critical</option>
@@ -67,14 +67,14 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
+        <div className="sm:col-span-2 md:col-span-1">
+          <label className="block text-xs sm:text-sm font-display font-semibold text-secondary-900 dark:text-white mb-2">
             Status
           </label>
           <select
             value={filters.read}
             onChange={(e) => onFilterChange("read", e.target.value)}
-            className="input"
+            className="input text-sm"
           >
             <option value="all">All</option>
             <option value="unread">Unread</option>
@@ -83,10 +83,10 @@ export const AlertFilter: React.FC<AlertFilterProps> = ({
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-4 sm:mt-6 flex justify-end">
         <button
           onClick={onReset}
-          className="btn-ghost text-sm font-display font-medium"
+          className="btn-ghost text-xs sm:text-sm font-display font-medium px-3 py-2 btn"
         >
           Reset filters
         </button>

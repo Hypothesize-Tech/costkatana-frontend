@@ -1,4 +1,3 @@
-// src/components/optimization/OptimizationWidget.tsx
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -76,12 +75,12 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
       {/* Optimize Button */}
       <button
         onClick={handleOptimize}
         disabled={optimizeMutation.isPending || !prompt.trim()}
-        className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] [touch-action:manipulation] active:scale-95"
       >
         {optimizeMutation.isPending ? (
           <>
@@ -98,19 +97,19 @@ const OptimizationWidget: React.FC<OptimizationWidgetProps> = ({
 
       {/* Results */}
       {optimizationResult && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
           {/* Savings Summary */}
-          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                  <CurrencyDollarIcon className="w-5 h-5 text-white" />
+          <div className="glass rounded-lg p-3 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-4 md:p-6 md:rounded-xl">
+            <div className="flex flex-col gap-2 items-start justify-between mb-2 sm:flex-row sm:items-center sm:mb-3 sm:gap-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                  <CurrencyDollarIcon className="w-4 h-4 text-white sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" />
                 </div>
-                <span className="font-display font-semibold gradient-text-success">
+                <span className="text-xs font-display font-semibold gradient-text-success sm:text-sm">
                   Estimated Savings
                 </span>
               </div>
-              <span className="text-2xl font-display font-bold gradient-text-success">
+              <span className="text-lg font-display font-bold gradient-text-success sm:text-xl md:text-2xl break-words">
                 ${formatSmartNumber(optimizationResult.totalSavings)}
               </span>
             </div>

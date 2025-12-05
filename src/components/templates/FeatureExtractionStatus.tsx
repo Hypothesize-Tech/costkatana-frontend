@@ -99,12 +99,12 @@ export const FeatureExtractionStatus: React.FC<FeatureExtractionStatusProps> = (
                                         Cost Savings
                                     </span>
                                 </div>
-                                <div className="grid grid-cols-3 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div>
                                         <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                                             Checks
                                         </p>
-                                        <p className="text-lg font-display font-bold text-success-700 dark:text-success-300">
+                                        <p className="text-base sm:text-lg font-display font-bold text-success-700 dark:text-success-300">
                                             {usageStats.checksPerformed}
                                         </p>
                                     </div>
@@ -112,7 +112,7 @@ export const FeatureExtractionStatus: React.FC<FeatureExtractionStatusProps> = (
                                         <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                                             Tokens Saved
                                         </p>
-                                        <p className="text-lg font-display font-bold text-success-700 dark:text-success-300">
+                                        <p className="text-base sm:text-lg font-display font-bold text-success-700 dark:text-success-300">
                                             {usageStats.tokensSaved.toLocaleString()}
                                         </p>
                                     </div>
@@ -120,7 +120,7 @@ export const FeatureExtractionStatus: React.FC<FeatureExtractionStatusProps> = (
                                         <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                                             Cost Saved
                                         </p>
-                                        <p className="text-lg font-display font-bold text-success-700 dark:text-success-300">
+                                        <p className="text-base sm:text-lg font-display font-bold text-success-700 dark:text-success-300">
                                             ${usageStats.costSaved.toFixed(4)}
                                         </p>
                                     </div>

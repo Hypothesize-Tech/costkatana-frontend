@@ -192,47 +192,47 @@ export const SessionReplayPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-3 sm:p-4 md:p-6">
             <div className="max-w-[1920px] mx-auto">
                 {/* Header with Filters */}
-                <div className="mb-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <h1 className="text-3xl font-display font-bold gradient-text-primary flex items-center gap-3">
-                                <Activity className="w-8 h-8" />
-                                Session Replay
+                <div className="mb-4 sm:mb-5 md:mb-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-5 md:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+                        <div className="min-w-0 flex-1">
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text-primary flex items-center gap-2 sm:gap-3">
+                                <Activity className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 flex-shrink-0" />
+                                <span className="truncate">Session Replay</span>
                             </h1>
-                            <p className="text-secondary-600 dark:text-secondary-400 mt-2">
+                            <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 mt-1 sm:mt-2">
                                 {totalSessions} total sessions • {sessions.length} shown
                             </p>
                         </div>
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all font-medium glow-primary"
+                            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-primary text-white rounded-lg hover:shadow-lg transition-all text-xs sm:text-sm font-medium glow-primary flex-shrink-0 w-full sm:w-auto justify-center"
                         >
-                            <Filter className="w-4 h-4" />
-                            Filters
+                            <Filter className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Filters</span>
                             {getActiveFilterCount() > 0 && (
-                                <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+                                <span className="px-1.5 sm:px-2 py-0.5 bg-white/20 rounded-full text-[10px] sm:text-xs font-bold">
                                     {getActiveFilterCount()}
                                 </span>
                             )}
-                            {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            {showFilters ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />}
                         </button>
                     </div>
 
                     {/* Filters Panel */}
                     {showFilters && (
-                        <div className="pt-4 border-t border-primary-200/30">
-                            <div className="space-y-4">
+                        <div className="pt-3 sm:pt-4 border-t border-primary-200/30">
+                            <div className="space-y-3 sm:space-y-4">
                                 {/* Row 1: Search and Basic Filters */}
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                                     <div className="relative">
-                                        <Search className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <Search className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="text"
                                             placeholder="Search by label or ID..."
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.searchQuery}
                                             onChange={(e) => handleFilterChange('searchQuery', e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -240,27 +240,27 @@ export const SessionReplayPage: React.FC = () => {
                                     </div>
 
                                     <div className="relative">
-                                        <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <Calendar className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="date"
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.from?.toISOString().split('T')[0] || ''}
                                             onChange={(e) => handleFilterChange('from', e.target.value ? new Date(e.target.value) : undefined)}
                                         />
                                     </div>
 
                                     <div className="relative">
-                                        <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <Calendar className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="date"
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.to?.toISOString().split('T')[0] || ''}
                                             onChange={(e) => handleFilterChange('to', e.target.value ? new Date(e.target.value) : undefined)}
                                         />
                                     </div>
 
                                     <select
-                                        className="input"
+                                        className="input text-sm"
                                         value={filters.status || ''}
                                         onChange={(e) => handleFilterChange('status', e.target.value || undefined)}
                                     >
@@ -272,7 +272,7 @@ export const SessionReplayPage: React.FC = () => {
                                 </div>
 
                                 {/* Row 2: Advanced Filters */}
-                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                                     <select
                                         className="input"
                                         value={filters.source || ''}
@@ -287,42 +287,42 @@ export const SessionReplayPage: React.FC = () => {
                                     </select>
 
                                     <div className="relative">
-                                        <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <DollarSign className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="number"
                                             step="0.01"
                                             placeholder="Min Cost"
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.minCost || ''}
                                             onChange={(e) => handleFilterChange('minCost', e.target.value ? parseFloat(e.target.value) : undefined)}
                                         />
                                     </div>
 
                                     <div className="relative">
-                                        <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <DollarSign className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="number"
                                             step="0.01"
                                             placeholder="Max Cost"
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.maxCost || ''}
                                             onChange={(e) => handleFilterChange('maxCost', e.target.value ? parseFloat(e.target.value) : undefined)}
                                         />
                                     </div>
 
                                     <div className="relative">
-                                        <Clock className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                        <Clock className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                         <input
                                             type="number"
                                             placeholder="Min Duration (min)"
-                                            className="input pl-10"
+                                            className="input pl-8 sm:pl-10 text-sm"
                                             value={filters.minDuration ? filters.minDuration / 60000 : ''}
                                             onChange={(e) => handleFilterChange('minDuration', e.target.value ? parseInt(e.target.value) * 60000 : undefined)}
                                         />
                                     </div>
 
                                     <select
-                                        className="input"
+                                        className="input text-sm"
                                         value={filters.sortBy || 'startedAt'}
                                         onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                                     >
@@ -334,24 +334,24 @@ export const SessionReplayPage: React.FC = () => {
                                 </div>
 
                                 {/* Row 3: Action Buttons */}
-                                <div className="flex gap-3">
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                                     <button
                                         onClick={handleSearch}
-                                        className="btn btn-primary flex-1 md:flex-none"
+                                        className="btn btn-primary flex-1 sm:flex-none text-sm px-4 py-2 sm:py-2.5"
                                     >
-                                        <Search className="w-4 h-4 mr-2" />
+                                        <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                                         Search
                                     </button>
                                     <button
                                         onClick={clearFilters}
-                                        className="btn btn-secondary flex-1 md:flex-none"
+                                        className="btn btn-secondary flex-1 sm:flex-none text-sm px-4 py-2 sm:py-2.5"
                                     >
-                                        <X className="w-4 h-4 mr-2" />
+                                        <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                                         Clear Filters
                                     </button>
                                     <button
                                         onClick={() => handleFilterChange('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
-                                        className="btn btn-secondary px-4"
+                                        className="btn btn-secondary px-3 sm:px-4 py-2 sm:py-2.5 text-sm"
                                         title={filters.sortOrder === 'asc' ? 'Ascending' : 'Descending'}
                                     >
                                         {filters.sortOrder === 'asc' ? '↑' : '↓'}
@@ -362,13 +362,13 @@ export const SessionReplayPage: React.FC = () => {
                     )}
                 </div>
 
-                <div className="grid grid-cols-12 gap-6">
+                <div className="grid grid-cols-12 gap-3 sm:gap-4 md:gap-6">
                     {/* Session List Sidebar */}
                     <div className="col-span-12 lg:col-span-3">
                         <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
-                            <div className="p-4 border-b border-primary-200/30">
-                                <h2 className="text-lg font-display font-semibold gradient-text-primary">Sessions</h2>
-                                <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1">{sessions.length} shown</p>
+                            <div className="p-3 sm:p-4 border-b border-primary-200/30">
+                                <h2 className="text-base sm:text-lg font-display font-semibold gradient-text-primary">Sessions</h2>
+                                <p className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400 mt-1">{sessions.length} shown</p>
                             </div>
 
                             <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
@@ -378,23 +378,23 @@ export const SessionReplayPage: React.FC = () => {
                                         <button
                                             key={session.sessionId}
                                             onClick={() => handleSelectSession(session)}
-                                            className={`w-full text-left p-4 border-b border-primary-200/20 hover:bg-primary-500/10 transition-all ${sessionId === session.sessionId
+                                            className={`w-full text-left p-3 sm:p-4 border-b border-primary-200/20 hover:bg-primary-500/10 transition-all ${sessionId === session.sessionId
                                                 ? 'bg-gradient-primary/20 border-l-4 border-l-primary-500'
                                                 : ''
                                                 }`}
                                         >
-                                            <div className="flex justify-between items-start mb-2">
+                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0 mb-1 sm:mb-2">
                                                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                    <div className="flex flex-col min-w-0">
-                                                        <span className="font-semibold text-secondary-900 dark:text-secondary-100 truncate text-sm">
+                                                    <div className="flex flex-col min-w-0 flex-1">
+                                                        <span className="font-semibold text-secondary-900 dark:text-secondary-100 truncate text-xs sm:text-sm">
                                                             {session.label || displayInfo.label}
                                                         </span>
-                                                        <span className="text-xs text-secondary-500 dark:text-secondary-400">
+                                                        <span className="text-xs text-secondary-500 dark:text-secondary-400 truncate">
                                                             {displayInfo.type} • {new Date(session.startedAt).toLocaleString()}
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <span className={`px-2 py-0.5 rounded-full text-xs ml-2 font-medium flex-shrink-0 ${session.status === 'completed' ? 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400' :
+                                                <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs ml-0 sm:ml-2 font-medium flex-shrink-0 ${session.status === 'completed' ? 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400' :
                                                     session.status === 'active' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400' :
                                                         session.status === 'error' ? 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400' :
                                                             'bg-secondary-100 text-secondary-700 dark:bg-secondary-800 dark:text-secondary-400'
@@ -403,14 +403,14 @@ export const SessionReplayPage: React.FC = () => {
                                                 </span>
                                             </div>
 
-                                            <div className="flex gap-2 text-xs mt-2">
+                                            <div className="flex flex-wrap gap-1.5 sm:gap-2 text-xs mt-1 sm:mt-2">
                                                 {session.source && (
-                                                    <span className="px-2 py-0.5 bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 rounded-full">
+                                                    <span className="px-1.5 sm:px-2 py-0.5 bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 rounded-full">
                                                         {session.source}
                                                     </span>
                                                 )}
                                                 {session.sessionReplayEnabled && (
-                                                    <span className="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full">
+                                                    <span className="px-1.5 sm:px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full">
                                                         ●  Replay
                                                     </span>
                                                 )}
@@ -422,21 +422,21 @@ export const SessionReplayPage: React.FC = () => {
 
                             {/* Pagination */}
                             {totalPages > 1 && (
-                                <div className="p-4 border-t border-primary-200/30 flex justify-between items-center">
+                                <div className="p-3 sm:p-4 border-t border-primary-200/30 flex justify-between items-center gap-2">
                                     <button
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="btn btn-primary px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
+                                        className="btn btn-primary px-2 sm:px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-xs sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
                                     >
                                         Previous
                                     </button>
-                                    <span className="text-secondary-600 dark:text-secondary-400 text-sm font-medium">
+                                    <span className="text-secondary-600 dark:text-secondary-400 text-xs sm:text-sm font-medium">
                                         {page} / {totalPages}
                                     </span>
                                     <button
                                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="btn btn-primary px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
+                                        className="btn btn-primary px-2 sm:px-3 py-1.5 bg-gradient-primary text-white rounded-lg text-xs sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all"
                                     >
                                         Next
                                     </button>
@@ -448,7 +448,7 @@ export const SessionReplayPage: React.FC = () => {
                     {/* Main Content */}
                     <div className="col-span-12 lg:col-span-9">
                         {selectedSession ? (
-                            <div className="grid grid-cols-12 gap-6">
+                            <div className="grid grid-cols-12 gap-3 sm:gap-4 md:gap-6">
                                 {/* Player */}
                                 <div className={`${showTimeline ? 'col-span-12 xl:col-span-8' : 'col-span-12'} transition-all`}>
                                     <SessionReplayPlayer sessionData={selectedSession} />
@@ -468,19 +468,20 @@ export const SessionReplayPage: React.FC = () => {
                                 {/* Timeline Toggle Button */}
                                 <button
                                     onClick={() => setShowTimeline(!showTimeline)}
-                                    className="fixed bottom-8 right-8 z-10 px-4 py-2 bg-gradient-primary text-white rounded-lg shadow-xl hover:shadow-2xl transition-all font-medium glow-primary"
+                                    className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-10 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gradient-primary text-white rounded-lg shadow-xl hover:shadow-2xl transition-all font-medium glow-primary"
                                 >
-                                    {showTimeline ? '← Hide Timeline' : 'Show Timeline →'}
+                                    <span className="hidden sm:inline">{showTimeline ? '← Hide Timeline' : 'Show Timeline →'}</span>
+                                    <span className="sm:hidden">{showTimeline ? '← Hide' : 'Show →'}</span>
                                 </button>
                             </div>
                         ) : (
-                            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-16 flex items-center justify-center min-h-[600px]">
+                            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 sm:p-12 md:p-16 flex items-center justify-center min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
                                 <div className="text-center">
-                                    <div className="text-6xl mb-4">🎬</div>
-                                    <h3 className="text-2xl font-display font-bold gradient-text-primary mb-2">
+                                    <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🎬</div>
+                                    <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text-primary mb-2">
                                         Select a Session to Replay
                                     </h3>
-                                    <p className="text-lg text-secondary-600 dark:text-secondary-400">
+                                    <p className="text-sm sm:text-base md:text-lg text-secondary-600 dark:text-secondary-400">
                                         Choose a session from the list to start playback
                                     </p>
                                 </div>

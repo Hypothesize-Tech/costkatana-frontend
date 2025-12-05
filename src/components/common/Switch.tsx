@@ -39,16 +39,16 @@ export const Switch: React.FC<SwitchProps> = ({
 
   return (
     <HeadlessSwitch.Group>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
         {(label || description) && (
-          <div className="flex-1 mr-4">
+          <div className="flex-1 sm:mr-4">
             {label && (
-              <HeadlessSwitch.Label className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <HeadlessSwitch.Label className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                 {label}
               </HeadlessSwitch.Label>
             )}
             {description && (
-              <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{description}</p>
+              <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{description}</p>
             )}
           </div>
         )}
@@ -58,7 +58,7 @@ export const Switch: React.FC<SwitchProps> = ({
           disabled={disabled}
           className={`${checked ? "bg-gradient-primary shadow-lg glow-primary" : "bg-primary-200/30"
             } relative inline-flex ${sizeConfig.switch} items-center rounded-full transition-all duration-300 ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:scale-105"
-            }`}
+            } flex-shrink-0 self-start sm:self-auto`}
         >
           <span className="sr-only">{label || "Toggle"}</span>
           <span

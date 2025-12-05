@@ -42,31 +42,31 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
   };
 
   return (
-    <div className={`space-y-2 ${className}`}>
-      <div className="flex items-center justify-between text-sm">
+    <div className={`space-y-1.5 sm:space-y-2 ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-xs sm:text-sm">
         <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
           {label}
         </span>
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-light-text dark:text-dark-text">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <span className="font-semibold text-light-text dark:text-dark-text text-xs sm:text-sm">
             {formatNumber(used)}
             {unit && ` ${unit}`}
           </span>
           {!isUnlimited && (
             <>
               <span className="text-light-text-tertiary dark:text-dark-text-tertiary">/</span>
-              <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+              <span className="text-light-text-tertiary dark:text-dark-text-tertiary text-xs sm:text-sm">
                 {formatNumber(limit)}
                 {unit && ` ${unit}`}
               </span>
             </>
           )}
           {isUnlimited && (
-            <span className="text-primary-500 font-semibold">Unlimited</span>
+            <span className="text-primary-500 font-semibold text-xs sm:text-sm">Unlimited</span>
           )}
           {showPercentage && !isUnlimited && (
             <span
-              className={`font-semibold ${
+              className={`font-semibold text-xs sm:text-sm ${
                 isCritical
                   ? 'text-red-500'
                   : isWarning

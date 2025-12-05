@@ -198,14 +198,14 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         onSubmit={handleSubmit}
         className="flex flex-col h-full max-h-[90vh]"
       >
-        <div className="overflow-y-auto flex-1 p-8 space-y-8">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           {/* Basic Information */}
-          <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <DocumentTextIcon className="w-6 h-6 text-white" />
+          <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                <DocumentTextIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-primary">
+              <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                 Basic Information
               </h3>
             </div>
@@ -276,19 +276,19 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Budget Configuration */}
-          <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                <CurrencyDollarIcon className="w-6 h-6 text-white" />
+          <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg flex-shrink-0">
+                <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-primary">
+              <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                 Budget Configuration
               </h3>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block mb-2 sm:mb-3 text-sm sm:text-base font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Amount ($) *
                 </label>
                 <input
@@ -300,7 +300,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       parseFloat(e.target.value) || 0,
                     )
                   }
-                  className="input"
+                  className="input text-sm sm:text-base"
                   placeholder="0.00"
                   min="0"
                   step="0.01"
@@ -309,7 +309,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
               </div>
 
               <div>
-                <label className="block mb-3 font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                <label className="block mb-2 sm:mb-3 text-sm sm:text-base font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                   Budget Period
                 </label>
                 <select
@@ -320,7 +320,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                       e.target.value,
                     )
                   }
-                  className="input"
+                  className="input text-sm sm:text-base"
                 >
                   <option value="monthly">Monthly</option>
                   <option value="quarterly">Quarterly</option>
@@ -391,12 +391,12 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Project Settings */}
-          <div className="glass rounded-xl p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg">
-                <Cog6ToothIcon className="w-6 h-6 text-white" />
+          <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-warning-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-warning flex items-center justify-center shadow-lg flex-shrink-0">
+                <Cog6ToothIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-display font-bold gradient-text-primary">
+              <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                 Project Settings
               </h3>
             </div>
@@ -486,8 +486,8 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-between items-center p-8 border-t border-primary-200/30">
-          <div className="flex gap-2 items-center font-body text-light-text-secondary dark:text-dark-text-secondary">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 sm:p-6 md:p-8 border-t border-primary-200/30">
+          <div className="flex gap-2 items-center font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
             {hasChanges ? (
               <span className="text-warning-600 dark:text-warning-400">
                 You have unsaved changes
@@ -496,18 +496,18 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
               <span>No changes made</span>
             )}
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+              className="w-full sm:w-auto px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !hasChanges}
-              className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 font-display font-semibold text-sm"
+              className="w-full sm:w-auto px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-display font-semibold text-sm"
             >
               {loading ? (
                 <>

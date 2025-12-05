@@ -137,7 +137,7 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
             {/* Query Input */}
             <div className="relative mb-8">
                 <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary-500 w-5 h-5" />
+                    <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-primary-500 w-4 h-4 sm:w-5 sm:h-5" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -146,18 +146,18 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
                         onKeyDown={handleKeyDown}
                         onFocus={() => query.length > 2 && setShowSuggestions(suggestions.length > 0)}
                         placeholder="Ask anything about your costs and performance... (e.g., 'What are my most expensive AI operations today?')"
-                        className="input w-full pl-12 pr-16 py-4 text-lg rounded-2xl shadow-lg"
+                        className="input w-full pl-10 sm:pl-12 pr-14 sm:pr-16 py-3 sm:py-4 text-sm sm:text-base rounded-2xl shadow-lg"
                         disabled={isLoading}
                     />
                     <button
                         onClick={() => executeQuery()}
                         disabled={isLoading || !query.trim()}
-                        className="btn btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-xl transition-all duration-300 hover:scale-105"
+                        className="btn btn-primary absolute right-2 top-1/2 transform -translate-y-1/2 p-2 sm:p-3 rounded-xl transition-all duration-300 hover:scale-105"
                     >
                         {isLoading ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                         ) : (
-                            <Play className="w-5 h-5" />
+                            <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                         )}
                     </button>
                 </div>
@@ -202,10 +202,10 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
 
             {/* Results Display */}
             {results && (
-                <div className="mb-8 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 animate-fade-in">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-display text-xl font-bold gradient-text-primary">Query Results</h3>
-                        <div className="flex items-center gap-4 text-sm">
+                <div className="mb-6 sm:mb-8 glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8 animate-fade-in">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <h3 className="font-display text-lg sm:text-xl font-bold gradient-text-primary">Query Results</h3>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                             <span className="flex items-center gap-1 glass px-3 py-1 rounded-xl shadow-lg backdrop-blur-xl border border-primary-200/30">
                                 <Clock className="w-4 h-4 text-primary-500" />
                                 <span className="font-display font-medium text-light-text-secondary dark:text-dark-text-secondary">{results.execution_time_ms}ms</span>
@@ -296,14 +296,16 @@ export const CKQLQueryInterface: React.FC<CKQLQueryInterfaceProps> = ({
 
             {/* Example Queries */}
             {!results && examples.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {examples.map((category, categoryIndex) => {
                         const Icon = category.icon || TrendingUp;
                         return (
-                            <div key={categoryIndex} className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <Icon className="w-4 h-4 text-primary-500" />
-                                    <h3 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{category.category}</h3>
+                            <div key={categoryIndex} className="glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 sm:p-4">
+                                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                                    </div>
+                                    <h3 className="font-display font-semibold text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary">{category.category}</h3>
                                 </div>
                                 <div className="space-y-2">
                                     {category.queries.map((exampleQuery, queryIndex) => (

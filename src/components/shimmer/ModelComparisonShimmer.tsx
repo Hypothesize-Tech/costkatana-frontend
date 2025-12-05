@@ -2,28 +2,28 @@ import React from "react";
 
 export const ModelComparisonShimmer: React.FC = () => {
   return (
-    <div className="p-4 sm:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="mx-auto space-y-6 max-w-7xl">
+    <div className="p-3 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:p-4 md:p-6">
+      <div className="mx-auto space-y-4 max-w-7xl sm:space-y-5 md:space-y-6">
         {/* Header */}
-        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 lg:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40">
-                <div className="w-6 h-6 rounded skeleton" />
+        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 sm:p-4 md:p-6 lg:p-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <div className="flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:gap-3 md:gap-4">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg shadow-[#06ec9e]/30 dark:shadow-[#06ec9e]/40 shrink-0 sm:p-2.5 md:p-3">
+                <div className="w-5 h-5 rounded skeleton sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </div>
-              <div>
-                <div className="mb-1 sm:mb-2 w-64 h-8 rounded skeleton sm:w-80 sm:h-10" />
-                <div className="w-96 h-4 rounded skeleton sm:w-[500px] sm:h-5" />
+              <div className="flex-1 min-w-0 w-full">
+                <div className="mb-1 w-full h-7 rounded skeleton sm:mb-2 sm:w-64 sm:h-8 md:w-80 md:h-10" />
+                <div className="w-full h-3 rounded skeleton sm:w-96 sm:h-4 md:w-[500px] md:h-5" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-2">
-          <div className="flex gap-2">
-            <div className="flex-1 h-12 rounded-xl skeleton" />
-            <div className="flex-1 h-12 rounded-xl skeleton" />
+        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-1.5 sm:p-2">
+          <div className="flex gap-1.5 sm:gap-2">
+            <div className="flex-1 h-10 rounded-xl skeleton sm:h-11 md:h-12" />
+            <div className="flex-1 h-10 rounded-xl skeleton sm:h-11 md:h-12" />
           </div>
         </div>
 

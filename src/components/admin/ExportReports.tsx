@@ -105,13 +105,13 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
     ];
 
     return (
-        <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
-                    <SparklesIcon className="w-5 h-5 text-white" />
+        <div className="glass p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
+                    <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                    <h3 className="text-lg font-display font-bold gradient-text">
+                    <h3 className="text-base sm:text-lg font-display font-bold gradient-text">
                         Export Reports
                     </h3>
                     <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">
@@ -119,7 +119,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
                     </p>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
                 {exportButtons.map((button) => {
                     const Icon = button.icon;
                     const isExporting = exporting && exportFormat === button.format;
@@ -130,8 +130,8 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
                             onClick={() => handleExport(button.format)}
                             disabled={exporting}
                             className={`
-                                group relative flex items-center gap-2 px-5 py-3 rounded-xl 
-                                font-display font-semibold text-white
+                                group relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-xl 
+                                font-display font-semibold text-white text-xs sm:text-sm
                                 transition-all duration-300 
                                 disabled:opacity-50 disabled:cursor-not-allowed 
                                 hover:scale-105 active:scale-95
@@ -146,12 +146,12 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
                         >
                             {isExporting ? (
                                 <>
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                     <span className="text-white font-medium">Exporting...</span>
                                 </>
                             ) : (
                                 <>
-                                    <Icon className="w-5 h-5 text-white" />
+                                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                     <span className="text-white font-medium">{button.label}</span>
                                 </>
                             )}

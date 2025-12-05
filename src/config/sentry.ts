@@ -426,11 +426,32 @@ export function trackNavigation(from: string, to: string, method: 'push' | 'repl
 
 /**
  * Sanitize object to remove sensitive information
+ * Handles circular references to prevent stack overflow
  */
-function sanitizeObject(obj: any): any {
+function sanitizeObject(obj: any, visited: WeakSet<object> = new WeakSet()): any {
   if (!obj || typeof obj !== 'object') return obj;
 
-  const sanitized = { ...obj };
+  // Handle circular references
+  if (visited.has(obj)) {
+    return '[Circular Reference]';
+  }
+  
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    visited.add(obj);
+    const sanitized = obj.map(item => sanitizeObject(item, visited));
+    visited.delete(obj);
+    return sanitized;
+  }
+  
+  // Handle Date objects
+  if (obj instanceof Date) {
+    return obj.toISOString();
+  }
+  
+  // Handle other objects
+  visited.add(obj);
+  const sanitized: Record<string, any> = {};
 
   // Remove sensitive fields
   const sensitiveFields = [
@@ -438,19 +459,22 @@ function sanitizeObject(obj: any): any {
     'authorization', 'cookie', 'sessionId', 'creditCard', 'ssn'
   ];
 
-  sensitiveFields.forEach(field => {
-    if (sanitized[field]) {
-      sanitized[field] = '[REDACTED]';
+  Object.keys(obj).forEach(key => {
+    // Skip sensitive fields
+    if (sensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
+      sanitized[key] = '[REDACTED]';
+      return;
     }
-  });
 
   // Recursively sanitize nested objects
-  Object.keys(sanitized).forEach(key => {
-    if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
-      sanitized[key] = sanitizeObject(sanitized[key]);
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      sanitized[key] = sanitizeObject(obj[key], visited);
+    } else {
+      sanitized[key] = obj[key];
     }
   });
 
+  visited.delete(obj);
   return sanitized;
 }
 

@@ -42,11 +42,11 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
   };
 
   const getCostChangeIcon = (percentage: number) => {
-    if (percentage <= 0) return <TrendingDown className="w-5 h-5" />;
-    if (percentage <= 5) return <BarChart3 className="w-5 h-5" />;
-    if (percentage <= 20) return <AlertTriangle className="w-5 h-5" />;
-    if (percentage <= 50) return <AlertOctagon className="w-5 h-5" />;
-    return <Zap className="w-5 h-5" />;
+    if (percentage <= 0) return <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />;
+    if (percentage <= 5) return <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />;
+    if (percentage <= 20) return <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />;
+    if (percentage <= 50) return <AlertOctagon className="w-4 h-4 sm:w-5 sm:h-5" />;
+    return <Zap className="w-4 h-4 sm:w-5 sm:h-5" />;
   };
 
   const handleExportReport = () => {
@@ -61,40 +61,46 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
   };
 
   return (
-    <div className="p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h2 className="text-2xl font-display font-bold gradient-text-primary">Daily Cost Story</h2>
-          <p className="mt-1 text-secondary-600 dark:text-secondary-300">Why your costs changed on {report.date}</p>
+    <div className="p-4 sm:p-5 md:p-6 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-5 md:mb-6 gap-3 sm:gap-0">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">Daily Cost Story</h2>
+          <p className="mt-1 text-xs sm:text-sm md:text-base text-secondary-600 dark:text-secondary-300">Why your costs changed on {report.date}</p>
         </div>
 
-        <div className="text-right">
-          <div className="text-3xl font-display font-bold gradient-text-primary">
+        <div className="text-left sm:text-right flex-shrink-0">
+          <div className="text-2xl sm:text-3xl font-display font-bold gradient-text-primary">
             {formatCurrency(report.total_cost)}
           </div>
-          <div className={`text-lg font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
+          <div className={`text-base sm:text-lg font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
             {getCostChangeIcon(report.cost_increase_percentage)} {formatPercentage(report.cost_increase_percentage)}
           </div>
-          <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">vs. baseline</div>
+          <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">vs. baseline</div>
         </div>
       </div>
 
       {/* Cost Story */}
-      <div className="p-4 mb-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/50 to-highlight-50/50 dark:from-primary-900/20 dark:to-highlight-900/20">
+      <div className="p-3 sm:p-4 mb-4 sm:mb-5 md:mb-6 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/50 to-highlight-50/50 dark:from-primary-900/20 dark:to-highlight-900/20">
         <div className="flex items-start">
           <div className="flex-shrink-0 mt-1">
-            <Info className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <Info className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
           </div>
-          <div className="ml-3 flex-1">
-            <h3 className="mb-2 text-lg font-display font-bold text-primary-900 dark:text-primary-300">Cost Explanation</h3>
-            <div className="prose prose-sm max-w-none text-primary-800 dark:text-primary-300">
+          <div className="ml-2 sm:ml-3 flex-1 min-w-0">
+            <h3 className="mb-2 text-base sm:text-lg font-display font-bold text-primary-900 dark:text-primary-300">Cost Explanation</h3>
+            <div className="prose prose-sm max-w-none text-xs sm:text-sm md:text-base text-primary-800 dark:text-primary-300">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  h4: ({ children }) => <h4 className="text-lg font-display font-bold mt-4 mb-2 text-primary-900 dark:text-primary-300">{children}</h4>,
+                  h4: ({ children }) => <h4 className="text-base sm:text-lg font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h4>,
+                  h3: ({ children }) => <h3 className="text-lg sm:text-xl font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h3>,
+                  h2: ({ children }) => <h2 className="text-xl sm:text-2xl font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h2>,
                   strong: ({ children }) => <strong className="font-display font-bold">{children}</strong>,
-                  li: ({ children }) => <li className="ml-4 mb-1">{children}</li>,
-                  p: ({ children }) => <p className="mb-2 leading-relaxed">{children}</p>
+                  li: ({ children }) => <li className="ml-3 sm:ml-4 mb-1 text-xs sm:text-sm md:text-base leading-relaxed">{children}</li>,
+                  ul: ({ children }) => <ul className="ml-3 sm:ml-4 mb-2 space-y-1">{children}</ul>,
+                  ol: ({ children }) => <ol className="ml-3 sm:ml-4 mb-2 space-y-1">{children}</ol>,
+                  p: ({ children }) => <p className="mb-2 sm:mb-3 leading-relaxed text-xs sm:text-sm md:text-base">{children}</p>,
+                  code: ({ children }) => <code className="text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 rounded bg-primary-100 dark:bg-primary-900">{children}</code>,
+                  pre: ({ children }) => <pre className="text-xs sm:text-sm p-2 sm:p-3 rounded-lg bg-primary-50 dark:bg-primary-900/30 overflow-x-auto mb-2 sm:mb-3">{children}</pre>
                 }}
               >
                 {report.cost_story}
@@ -105,27 +111,27 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       </div>
 
       {/* Cost Breakdown */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-2">
         {/* Top Cost Drivers */}
         <div>
-          <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">Top Cost Drivers</h3>
-          <div className="space-y-3">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-display font-bold gradient-text-primary">Top Cost Drivers</h3>
+          <div className="space-y-2 sm:space-y-3">
             {report.top_cost_drivers.map((driver, index) => (
-              <div key={index} className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-center">
-                  <div className="mr-3 w-3 h-3 bg-gradient-primary rounded-full glow-primary"></div>
-                  <div>
-                    <div className="font-display font-medium gradient-text-primary capitalize">
+              <div key={index} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-center flex-1 min-w-0">
+                  <div className="mr-2 sm:mr-3 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-primary rounded-full glow-primary flex-shrink-0"></div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm sm:text-base font-display font-medium gradient-text-primary capitalize break-words">
                       {driver.driver_type.replace('_', ' ')}
                     </div>
-                    <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">{driver.explanation}</div>
+                    <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary break-words mt-0.5">{driver.explanation}</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="font-display font-bold gradient-text-primary">
+                <div className="text-left sm:text-right flex-shrink-0 sm:ml-3">
+                  <div className="text-sm sm:text-base font-display font-bold gradient-text-primary break-words">
                     {formatCurrency(driver.cost_impact)}
                   </div>
-                  <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                     {driver.percentage_of_total.toFixed(1)}%
                   </div>
                 </div>
@@ -136,28 +142,28 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
 
         {/* Cost Summary */}
         <div>
-          <h3 className="mb-4 text-lg font-display font-bold gradient-text-primary">Cost Summary</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <span className="text-light-text-secondary dark:text-dark-text-secondary">Total Cost</span>
-              <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.total_cost)}</span>
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-display font-bold gradient-text-primary">Cost Summary</h3>
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Total Cost</span>
+              <span className="text-sm sm:text-base font-display font-bold gradient-text-primary break-words">{formatCurrency(report.total_cost)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <span className="text-light-text-secondary dark:text-dark-text-secondary">Baseline Cost</span>
-              <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.baseline_cost)}</span>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Baseline Cost</span>
+              <span className="text-sm sm:text-base font-display font-bold gradient-text-primary break-words">{formatCurrency(report.baseline_cost)}</span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <span className="text-light-text-secondary dark:text-dark-text-secondary">Cost Increase</span>
-              <span className={`font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Cost Increase</span>
+              <span className={`text-sm sm:text-base font-display font-bold break-words ${getCostChangeColor(report.cost_increase_percentage)}`}>
                 {formatCurrency(report.cost_increase)}
               </span>
             </div>
 
-            <div className="flex justify-between items-center p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <span className="text-light-text-secondary dark:text-dark-text-secondary">Percentage Change</span>
-              <span className={`font-display font-bold ${getCostChangeColor(report.cost_increase_percentage)}`}>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Percentage Change</span>
+              <span className={`text-sm sm:text-base font-display font-bold break-words ${getCostChangeColor(report.cost_increase_percentage)}`}>
                 {formatPercentage(report.cost_increase_percentage)}
               </span>
             </div>
@@ -166,29 +172,29 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="pt-6 mt-6 border-t border-primary-200/30">
-        <div className="flex flex-wrap gap-3">
+      <div className="pt-4 sm:pt-5 md:pt-6 mt-4 sm:mt-5 md:mt-6 border-t border-primary-200/30">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
           <button
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
-            className="btn btn-primary inline-flex items-center"
+            className="btn btn-primary inline-flex items-center text-xs sm:text-sm"
           >
-            <BarChart3 className="mr-2 w-4 h-4" />
+            <BarChart3 className="mr-1.5 sm:mr-2 w-3.5 h-3.5 sm:w-4 sm:h-4" />
             {showDetailedAnalysis ? 'Hide' : 'View'} Detailed Analysis
           </button>
 
           <button
             onClick={handleExportReport}
-            className="btn btn-secondary inline-flex items-center"
+            className="btn btn-secondary inline-flex items-center text-xs sm:text-sm"
           >
-            <FileDown className="mr-2 w-4 h-4" />
+            <FileDown className="mr-1.5 sm:mr-2 w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Export Report
           </button>
 
           <button
             onClick={() => setShowHelp(!showHelp)}
-            className="btn btn-secondary inline-flex items-center"
+            className="btn btn-secondary inline-flex items-center text-xs sm:text-sm"
           >
-            <HelpCircle className="mr-2 w-4 h-4" />
+            <HelpCircle className="mr-1.5 sm:mr-2 w-3.5 h-3.5 sm:w-4 sm:h-4" />
             {showHelp ? 'Hide' : 'Get'} Help
           </button>
         </div>
@@ -196,59 +202,73 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
 
       {/* Detailed Analysis Modal */}
       {showDetailedAnalysis && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 md:p-6">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-4 sm:p-5 md:p-6 w-full max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-display font-bold gradient-text-primary">Detailed Cost Analysis for {report.date}</h3>
+              <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary break-words">Detailed Cost Analysis for {report.date}</h3>
               <button
                 onClick={() => setShowDetailedAnalysis(false)}
-                className="btn btn-icon-secondary"
+                className="btn btn-icon-secondary flex-shrink-0 ml-2"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
-                  <h4 className="font-display font-bold text-primary-900 dark:text-primary-300 mb-2">Cost Overview</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-3 sm:p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                  <h4 className="text-sm sm:text-base font-display font-bold text-primary-900 dark:text-primary-300 mb-2">Cost Overview</h4>
+                  <div className="space-y-2 text-xs sm:text-sm">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Total Cost:</span>
-                      <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.total_cost)}</span>
+                      <span className="font-display font-bold gradient-text-primary break-words">{formatCurrency(report.total_cost)}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Baseline Cost:</span>
-                      <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.baseline_cost)}</span>
+                      <span className="font-display font-bold gradient-text-primary break-words">{formatCurrency(report.baseline_cost)}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Cost Increase:</span>
-                      <span className="font-display font-bold gradient-text-primary">{formatCurrency(report.cost_increase)}</span>
+                      <span className="font-display font-bold gradient-text-primary break-words">{formatCurrency(report.cost_increase)}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Percentage Change:</span>
-                      <span className="font-display font-bold gradient-text-primary">{formatPercentage(report.cost_increase_percentage)}</span>
+                      <span className="font-display font-bold gradient-text-primary break-words">{formatPercentage(report.cost_increase_percentage)}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
-                  <h4 className="font-display font-bold text-success-900 dark:text-success-300 mb-2">Top Cost Drivers</h4>
-                  <div className="space-y-2 text-sm">
+                <div className="p-3 sm:p-4 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20">
+                  <h4 className="text-sm sm:text-base font-display font-bold text-success-900 dark:text-success-300 mb-2">Top Cost Drivers</h4>
+                  <div className="space-y-2 text-xs sm:text-sm">
                     {report.top_cost_drivers.map((driver, index) => (
-                      <div key={index} className="flex justify-between">
-                        <span className="capitalize text-light-text-secondary dark:text-dark-text-secondary">{driver.driver_type.replace('_', ' ')}:</span>
-                        <span className="font-display font-bold text-success-800 dark:text-success-300">{formatCurrency(driver.cost_impact)} ({driver.percentage_of_total.toFixed(1)}%)</span>
+                      <div key={index} className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                        <span className="capitalize text-light-text-secondary dark:text-dark-text-secondary break-words">{driver.driver_type.replace('_', ' ')}:</span>
+                        <span className="font-display font-bold text-success-800 dark:text-success-300 break-words">{formatCurrency(driver.cost_impact)} ({driver.percentage_of_total.toFixed(1)}%)</span>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <h4 className="font-display font-bold gradient-text-primary mb-2">Full Cost Story</h4>
-                <div className="prose prose-sm max-w-none text-light-text-primary dark:text-dark-text-primary">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <div className="p-3 sm:p-4 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <h4 className="text-sm sm:text-base font-display font-bold gradient-text-primary mb-2">Full Cost Story</h4>
+                <div className="prose prose-sm max-w-none text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h4: ({ children }) => <h4 className="text-base sm:text-lg font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h4>,
+                      h3: ({ children }) => <h3 className="text-lg sm:text-xl font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h3>,
+                      h2: ({ children }) => <h2 className="text-xl sm:text-2xl font-display font-bold mt-3 sm:mt-4 mb-1.5 sm:mb-2 text-primary-900 dark:text-primary-300">{children}</h2>,
+                      strong: ({ children }) => <strong className="font-display font-bold">{children}</strong>,
+                      li: ({ children }) => <li className="ml-3 sm:ml-4 mb-1 text-xs sm:text-sm md:text-base leading-relaxed">{children}</li>,
+                      ul: ({ children }) => <ul className="ml-3 sm:ml-4 mb-2 space-y-1">{children}</ul>,
+                      ol: ({ children }) => <ol className="ml-3 sm:ml-4 mb-2 space-y-1">{children}</ol>,
+                      p: ({ children }) => <p className="mb-2 sm:mb-3 leading-relaxed text-xs sm:text-sm md:text-base">{children}</p>,
+                      code: ({ children }) => <code className="text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 rounded bg-primary-100 dark:bg-primary-900">{children}</code>,
+                      pre: ({ children }) => <pre className="text-xs sm:text-sm p-2 sm:p-3 rounded-lg bg-primary-50 dark:bg-primary-900/30 overflow-x-auto mb-2 sm:mb-3">{children}</pre>
+                    }}
+                  >
                     {report.cost_story}
                   </ReactMarkdown>
                 </div>
@@ -260,49 +280,49 @@ export const CostStoryCard: React.FC<CostStoryCardProps> = ({ report }) => {
 
       {/* Help Modal */}
       {showHelp && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 md:p-6">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl p-4 sm:p-5 md:p-6 w-full max-w-2xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-display font-bold gradient-text-primary">Cost Analysis Help</h3>
+              <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">Cost Analysis Help</h3>
               <button
                 onClick={() => setShowHelp(false)}
-                className="btn btn-icon-secondary"
+                className="btn btn-icon-secondary flex-shrink-0 ml-2"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="space-y-4 text-sm">
+            <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
               <div>
-                <h4 className="font-display font-bold gradient-text-primary mb-2">Understanding Your Cost Story</h4>
-                <p className="text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                <h4 className="text-sm sm:text-base font-display font-bold gradient-text-primary mb-1.5 sm:mb-2">Understanding Your Cost Story</h4>
+                <p className="text-light-text-secondary dark:text-dark-text-secondary mb-2 leading-relaxed">
                   The Daily Cost Story explains why your AI costs changed compared to your baseline.
                   It analyzes cost drivers and provides actionable insights.
                 </p>
               </div>
 
               <div>
-                <h4 className="font-display font-bold gradient-text-primary mb-2">Cost Drivers Explained</h4>
-                <ul className="list-disc list-inside space-y-1 text-light-text-secondary dark:text-dark-text-secondary">
-                  <li><strong>System Prompt:</strong> Initial instructions given to AI models</li>
-                  <li><strong>Tool Calls:</strong> External API calls and function executions</li>
-                  <li><strong>Context Window:</strong> Amount of information processed by AI</li>
-                  <li><strong>Retries:</strong> Failed request attempts and error handling</li>
+                <h4 className="text-sm sm:text-base font-display font-bold gradient-text-primary mb-1.5 sm:mb-2">Cost Drivers Explained</h4>
+                <ul className="list-disc list-inside space-y-1 sm:space-y-1.5 text-light-text-secondary dark:text-dark-text-secondary">
+                  <li className="leading-relaxed"><strong>System Prompt:</strong> Initial instructions given to AI models</li>
+                  <li className="leading-relaxed"><strong>Tool Calls:</strong> External API calls and function executions</li>
+                  <li className="leading-relaxed"><strong>Context Window:</strong> Amount of information processed by AI</li>
+                  <li className="leading-relaxed"><strong>Retries:</strong> Failed request attempts and error handling</li>
                 </ul>
               </div>
 
               <div>
-                <h4 className="font-display font-bold gradient-text-primary mb-2">How to Use This Information</h4>
-                <ul className="list-disc list-inside space-y-1 text-light-text-secondary dark:text-dark-text-secondary">
-                  <li>Review cost drivers to identify optimization opportunities</li>
-                  <li>Compare current costs with baseline to understand trends</li>
-                  <li>Export data for further analysis and reporting</li>
-                  <li>Use insights to adjust AI usage patterns</li>
+                <h4 className="text-sm sm:text-base font-display font-bold gradient-text-primary mb-1.5 sm:mb-2">How to Use This Information</h4>
+                <ul className="list-disc list-inside space-y-1 sm:space-y-1.5 text-light-text-secondary dark:text-dark-text-secondary">
+                  <li className="leading-relaxed">Review cost drivers to identify optimization opportunities</li>
+                  <li className="leading-relaxed">Compare current costs with baseline to understand trends</li>
+                  <li className="leading-relaxed">Export data for further analysis and reporting</li>
+                  <li className="leading-relaxed">Use insights to adjust AI usage patterns</li>
                 </ul>
               </div>
 
-              <div className="p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
-                <p className="text-primary-800 dark:text-primary-300 text-sm">
+              <div className="p-2.5 sm:p-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20">
+                <p className="text-primary-800 dark:text-primary-300 text-xs sm:text-sm leading-relaxed">
                   <strong>Need more help?</strong> Contact our support team for personalized assistance
                   with cost optimization strategies.
                 </p>

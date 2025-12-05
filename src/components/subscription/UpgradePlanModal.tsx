@@ -117,26 +117,26 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
     }, [discountCode, selectedPlan, basePrice]);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto card p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
+            <div className="relative w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto card p-4 sm:p-6 md:p-8">
                 <button
                     onClick={onClose}
-                    className="btn absolute top-4 right-4 p-2 rounded-lg hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors"
+                    className="btn absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors z-10"
                 >
-                    <XMarkIcon className="w-6 h-6" />
+                    <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
 
-                <h2 className="text-3xl font-bold text-light-text dark:text-dark-text mb-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-light-text dark:text-dark-text mb-4 sm:mb-5 md:mb-6 pr-8 sm:pr-0">
                     Upgrade Your Plan
                 </h2>
 
                 {!showPaymentForm ? (
                     <>
                         {/* Billing Interval Toggle */}
-                        <div className="flex items-center justify-center gap-4 mb-8 p-1 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
+                        <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8 p-1 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
                             <button
                                 onClick={() => setBillingInterval('monthly')}
-                                className={`btn px-6 py-2 rounded-lg font-semibold transition-all ${billingInterval === 'monthly'
+                                className={`btn px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 text-xs sm:text-sm md:text-base rounded-lg font-semibold transition-all ${billingInterval === 'monthly'
                                     ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
                                     : 'text-light-text-secondary dark:text-dark-text-secondary'
                                     }`}
@@ -145,51 +145,51 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                             </button>
                             <button
                                 onClick={() => setBillingInterval('yearly')}
-                                className={`btn px-6 py-2 rounded-lg font-semibold transition-all ${billingInterval === 'yearly'
+                                className={`btn px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 text-xs sm:text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 sm:gap-2 ${billingInterval === 'yearly'
                                     ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
                                     : 'text-light-text-secondary dark:text-dark-text-secondary'
                                     }`}
                             >
                                 Yearly
-                                <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded">
+                                <span className="text-xs bg-green-500 text-white px-1.5 sm:px-2 py-0.5 rounded">
                                     Save 20%
                                 </span>
                             </button>
                         </div>
 
                         {/* Plan Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
                             {plans.map((plan) => (
                                 <div
                                     key={plan.name}
                                     onClick={() => setSelectedPlan(plan.name as SubscriptionPlan)}
-                                    className={`card p-6 cursor-pointer transition-all ${(selectedPlan || '').toLowerCase() === plan.name.toLowerCase()
+                                    className={`card p-4 sm:p-5 md:p-6 cursor-pointer transition-all ${(selectedPlan || '').toLowerCase() === plan.name.toLowerCase()
                                         ? 'ring-2 ring-primary-500 scale-105'
                                         : 'hover:scale-102'
                                         } ${(plan as any).popular ? 'border-primary-500/50' : ''}`}
                                 >
                                     {(plan as any).popular && (
                                         <div className="mb-2">
-                                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500 to-primary-600 text-white">
+                                            <span className="inline-block px-2 py-0.5 sm:px-3 sm:py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-primary-500 to-primary-600 text-white">
                                                 Most Popular
                                             </span>
                                         </div>
                                     )}
-                                    <h3 className="text-2xl font-bold text-light-text dark:text-dark-text mb-2">
+                                    <h3 className="text-xl sm:text-2xl font-bold text-light-text dark:text-dark-text mb-2">
                                         {plan.displayName}
                                     </h3>
-                                    <div className="mb-4">
-                                        <span className="text-4xl font-bold text-light-text dark:text-dark-text">
+                                    <div className="mb-3 sm:mb-4">
+                                        <span className="text-3xl sm:text-4xl font-bold text-light-text dark:text-dark-text">
                                             ${billingInterval === 'monthly' ? plan.price : plan.yearlyPrice}
                                         </span>
-                                        <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+                                        <span className="text-sm sm:text-base text-light-text-tertiary dark:text-dark-text-tertiary">
                                             /{billingInterval === 'monthly' ? 'mo' : 'yr'}
                                         </span>
                                     </div>
-                                    <ul className="space-y-2 mb-6">
+                                    <ul className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-5 md:mb-6">
                                         {plan.features.slice(0, 5).map((feature, idx) => (
-                                            <li key={idx} className="flex items-start gap-2 text-sm">
-                                                <CheckIcon className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
+                                            <li key={idx} className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                                                <CheckIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 flex-shrink-0 mt-0.5" />
                                                 <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                                     {feature}
                                                 </span>
@@ -206,8 +206,8 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                         </div>
 
                         {/* Discount Code */}
-                        <div className="mb-6">
-                            <label className="block mb-2 text-sm font-semibold text-light-text dark:text-dark-text">
+                        <div className="mb-4 sm:mb-5 md:mb-6">
+                            <label className="block mb-2 text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                 Discount Code (Optional)
                             </label>
                             <div className="relative">
@@ -225,21 +225,21 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                 )}
                             </div>
                             {discountError && (
-                                <p className="mt-1 text-sm text-danger-500">{discountError}</p>
+                                <p className="mt-1 text-xs sm:text-sm text-danger-500">{discountError}</p>
                             )}
                             {discountInfo && !discountError && (
-                                <p className="mt-1 text-sm text-success-500">
+                                <p className="mt-1 text-xs sm:text-sm text-success-500">
                                     Discount applied! Save ${discountAmount.toFixed(2)}
                                 </p>
                             )}
                         </div>
 
                         {/* Payment Gateway Selection */}
-                        <div className="mb-6">
-                            <label className="block mb-2 text-sm font-semibold text-light-text dark:text-dark-text">
+                        <div className="mb-4 sm:mb-5 md:mb-6">
+                            <label className="block mb-2 text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                 Payment Method
                             </label>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 {(['razorpay'/*, 'paypal'*/] as PaymentGateway[]).map((gateway) => {
                                     const getLogo = () => {
                                         switch (gateway) {
@@ -260,7 +260,7 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                         <button
                                             key={gateway}
                                             onClick={() => setSelectedGateway(gateway)}
-                                            className={`btn p-4 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-2 min-h-[100px] ${selectedGateway === gateway
+                                            className={`btn p-3 sm:p-4 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1.5 sm:gap-2 min-h-[80px] sm:min-h-[100px] ${selectedGateway === gateway
                                                 ? 'border-primary-500 bg-primary-500/10'
                                                 : 'border-primary-200/30 dark:border-primary-800/30 hover:border-primary-400/50'
                                                 }`}
@@ -269,10 +269,10 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                                 <img
                                                     src={logo}
                                                     alt={gateway}
-                                                    className="h-8 w-auto object-contain rounded-lg"
+                                                    className="h-6 sm:h-8 w-auto object-contain rounded-lg"
                                                 />
                                             )}
-                                            <div className="text-xs font-semibold text-light-text dark:text-dark-text capitalize">
+                                            <div className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text capitalize">
                                                 {gateway}
                                             </div>
                                         </button>
@@ -282,54 +282,54 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                         </div>
 
                         {/* Summary */}
-                        <div className="card p-4 mb-6 bg-primary-500/5">
+                        <div className="card p-3 sm:p-4 md:p-5 mb-4 sm:mb-5 md:mb-6 bg-primary-500/5">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Plan
                                 </span>
-                                <span className="font-semibold text-light-text dark:text-dark-text">
+                                <span className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                     {selectedPlanDetails.displayName}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Billing
                                 </span>
-                                <span className="font-semibold text-light-text dark:text-dark-text">
+                                <span className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                     {billingInterval === 'monthly' ? 'Monthly' : 'Yearly'}
                                 </span>
                             </div>
                             {discountInfo && discountAmount > 0 && (
                                 <>
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                        <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                             Subtotal
                                         </span>
-                                        <span className="font-semibold text-light-text dark:text-dark-text">
+                                        <span className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text">
                                             ${basePrice.toFixed(2)}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                                        <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                             Discount ({discountCode})
                                         </span>
-                                        <span className="font-semibold text-success-500">
+                                        <span className="text-xs sm:text-sm font-semibold text-success-500">
                                             -${discountAmount.toFixed(2)}
                                         </span>
                                     </div>
                                 </>
                             )}
                             <div className="flex items-center justify-between pt-2 mt-2 border-t border-primary-200/20 dark:border-primary-800/20">
-                                <span className="text-lg font-bold text-light-text dark:text-dark-text">
+                                <span className="text-base sm:text-lg font-bold text-light-text dark:text-dark-text">
                                     Total
                                 </span>
                                 <div className="text-right">
                                     {discountInfo && discountAmount > 0 && (
-                                        <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-through mb-1">
+                                        <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary line-through mb-1">
                                             ${basePrice.toFixed(2)}
                                         </div>
                                     )}
-                                    <span className="text-2xl font-bold text-primary-500">
+                                    <span className="text-xl sm:text-2xl font-bold text-primary-500">
                                         ${finalPrice.toFixed(2)}/{billingInterval === 'monthly' ? 'mo' : 'yr'}
                                     </span>
                                 </div>
@@ -337,14 +337,14 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex items-center gap-4">
-                            <button onClick={onClose} className="btn btn-outline flex-1">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                            <button onClick={onClose} className="btn btn-outline flex-1 text-sm sm:text-base">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleUpgrade}
                                 disabled={upgradeMutation.isLoading}
-                                className="btn btn-primary flex-1"
+                                className="btn btn-primary flex-1 text-sm sm:text-base"
                             >
                                 {upgradeMutation.isLoading ? 'Processing...' : 'Continue to Payment'}
                             </button>
@@ -352,10 +352,10 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                     </>
                 ) : (
                     <div>
-                        <h3 className="text-xl font-bold text-light-text dark:text-dark-text mb-4">
+                        <h3 className="text-lg sm:text-xl font-bold text-light-text dark:text-dark-text mb-3 sm:mb-4">
                             Payment Information
                         </h3>
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
+                        <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary mb-4 sm:mb-5 md:mb-6">
                             {/* {selectedGateway === 'paypal'
                                 ? 'Complete your subscription with PayPal'
                                 // : selectedGateway === 'stripe'
@@ -442,7 +442,7 @@ export const UpgradePlanModal: React.FC<UpgradePlanModalProps> = ({
                                     />
                                     <button
                                         onClick={() => setShowPaymentForm(false)}
-                                        className="btn btn-outline w-full"
+                                        className="btn btn-outline w-full text-sm sm:text-base"
                                     >
                                         Back
                                     </button>

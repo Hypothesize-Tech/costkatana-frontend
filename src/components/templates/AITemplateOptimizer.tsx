@@ -198,27 +198,27 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                         <FiTrendingUp className="mr-2 text-highlight-500" />
                         Template Performance Insights
                     </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="glass rounded-xl p-4 border border-primary-200/30 text-center">
-                            <p className="text-2xl font-display font-bold text-primary-500">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                        <div className="glass rounded-xl p-3 sm:p-4 border border-primary-200/30 text-center">
+                            <p className="text-xl sm:text-2xl font-display font-bold text-primary-500">
                                 {insights.usagePatterns?.successRate || 0}%
                             </p>
                             <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">Success Rate</p>
                         </div>
-                        <div className="glass rounded-xl p-4 border border-success-200/30 text-center">
-                            <p className="text-2xl font-display font-bold text-success-500">
+                        <div className="glass rounded-xl p-3 sm:p-4 border border-success-200/30 text-center">
+                            <p className="text-xl sm:text-2xl font-display font-bold text-success-500">
                                 ${insights.performance?.costPerUse?.toFixed(4) || 0}
                             </p>
                             <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">Cost per Use</p>
                         </div>
-                        <div className="glass rounded-xl p-4 border border-highlight-200/30 text-center">
-                            <p className="text-2xl font-display font-bold text-highlight-500">
+                        <div className="glass rounded-xl p-3 sm:p-4 border border-highlight-200/30 text-center">
+                            <p className="text-xl sm:text-2xl font-display font-bold text-highlight-500">
                                 {insights.performance?.outputQuality || 0}%
                             </p>
                             <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">Output Quality</p>
                         </div>
-                        <div className="glass rounded-xl p-4 border border-accent-200/30 text-center">
-                            <p className="text-2xl font-display font-bold text-accent-500">
+                        <div className="glass rounded-xl p-3 sm:p-4 border border-accent-200/30 text-center">
+                            <p className="text-xl sm:text-2xl font-display font-bold text-accent-500">
                                 {insights.usagePatterns?.averageTokensUsed || 0}
                             </p>
                             <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body">Avg Tokens</p>
@@ -244,11 +244,11 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
             )}
 
             {/* Optimization Type Selection */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <label className="block text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
+            <div className="glass rounded-xl p-4 sm:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <label className="block text-base sm:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-3 sm:mb-4">
                     Select Optimization Type
                 </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {optimizationTypes.map((opt) => {
                         const Icon = opt.icon;
                         const isSelected = optimizationType === opt.type;
@@ -331,22 +331,22 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                             <FiCheckCircle className="mr-2 text-success-500" />
                             Optimization Results
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div className="glass rounded-xl p-4 border border-success-200/30 text-center">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                            <div className="glass rounded-xl p-3 sm:p-4 border border-success-200/30 text-center">
                                 <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Token Reduction</p>
-                                <p className="text-2xl font-display font-bold text-success-500">
+                                <p className="text-xl sm:text-2xl font-display font-bold text-success-500">
                                     {optimizationResult.metrics.tokenReduction}%
                                 </p>
                             </div>
-                            <div className="glass rounded-xl p-4 border border-primary-200/30 text-center">
+                            <div className="glass rounded-xl p-3 sm:p-4 border border-primary-200/30 text-center">
                                 <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Cost Saving</p>
-                                <p className="text-2xl font-display font-bold text-primary-500">
+                                <p className="text-xl sm:text-2xl font-display font-bold text-primary-500">
                                     ${optimizationResult.metrics.costSaving.toFixed(4)}
                                 </p>
                             </div>
-                            <div className="glass rounded-xl p-4 border border-highlight-200/30 text-center">
+                            <div className="glass rounded-xl p-3 sm:p-4 border border-highlight-200/30 text-center">
                                 <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-body mb-1">Quality Score</p>
-                                <p className="text-2xl font-display font-bold text-highlight-500">
+                                <p className="text-xl sm:text-2xl font-display font-bold text-highlight-500">
                                     {optimizationResult.metrics.qualityScore}%
                                 </p>
                             </div>
@@ -371,7 +371,7 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                     </div>
 
                     {/* Before/After Comparison */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                         <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                             <h5 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
                                 Original Template
@@ -405,19 +405,19 @@ export const AITemplateOptimizer: React.FC<AITemplateOptimizerProps> = ({
                     </div>
 
                     {/* Apply/Cancel Buttons */}
-                    <div className="flex justify-end space-x-4">
+                    <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 sm:space-x-0">
                         <button
                             onClick={() => {
                                 setOptimizationResult(null);
                                 setShowComparison(false);
                             }}
-                            className="px-6 py-3 glass border border-secondary-200/30 text-light-text-primary dark:text-dark-text-primary rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 font-display font-semibold"
+                            className="w-full sm:w-auto px-6 py-3 glass border border-secondary-200/30 text-light-text-primary dark:text-dark-text-primary rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 font-display font-semibold"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={applyOptimization}
-                            className="px-6 py-3 bg-gradient-success text-white rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center font-display font-semibold shadow-lg"
+                            className="w-full sm:w-auto px-6 py-3 bg-gradient-success text-white rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center font-display font-semibold shadow-lg"
                         >
                             <FiCheckCircle className="mr-2" />
                             Apply Optimization

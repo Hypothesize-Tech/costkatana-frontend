@@ -29,11 +29,11 @@ export const ZapierSetupGuide: React.FC<ZapierSetupGuideProps> = ({ connection, 
             id: 1,
             title: 'Get Your API Key',
             content: (
-                <div className="space-y-4">
-                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="space-y-3 sm:space-y-4">
+                    <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                         You need an API key to authenticate webhook requests from Zapier.
                     </p>
-                    <div className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50">
+                    <div className="p-3 sm:p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50">
                         <div className="flex items-center justify-between">
                             <div>
                                 <label className="text-xs font-body font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1 block">
@@ -229,39 +229,39 @@ export const ZapierSetupGuide: React.FC<ZapierSetupGuideProps> = ({ connection, 
     ];
 
     return (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 flex items-center justify-center">
-                    <BoltIcon className="w-5 h-5 text-white" />
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 flex items-center justify-center">
+                    <BoltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                    <h2 className="text-xl font-display font-bold gradient-text-primary">
+                    <h2 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                         Zapier Setup Guide
                     </h2>
-                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                         Step-by-step instructions to connect Zapier
                     </p>
                 </div>
             </div>
 
             {/* Step Navigation */}
-            <div className="flex items-center justify-between mb-6 overflow-x-auto pb-2">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
                 {steps.map((step, index) => (
                     <React.Fragment key={step.id}>
                         <button
                             onClick={() => setActiveStep(step.id)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeStep === step.id
-                                    ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
-                                    : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${activeStep === step.id
+                                ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white'
+                                : 'bg-white dark:bg-dark-card text-light-text-primary dark:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20'
                                 }`}
                         >
-                            <span className="w-6 h-6 rounded-full bg-white/20 dark:bg-white/10 flex items-center justify-center text-xs font-bold">
+                            <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 dark:bg-white/10 flex items-center justify-center text-xs font-bold">
                                 {step.id}
                             </span>
                             <span className="hidden sm:inline">{step.title}</span>
                         </button>
                         {index < steps.length - 1 && (
-                            <div className={`h-0.5 w-8 sm:w-12 ${activeStep > step.id ? 'bg-[#06ec9e]' : 'bg-gray-300 dark:bg-gray-600'
+                            <div className={`h-0.5 w-4 sm:w-8 md:w-12 ${activeStep > step.id ? 'bg-[#06ec9e]' : 'bg-gray-300 dark:bg-gray-600'
                                 }`} />
                         )}
                     </React.Fragment>
@@ -269,16 +269,16 @@ export const ZapierSetupGuide: React.FC<ZapierSetupGuideProps> = ({ connection, 
             </div>
 
             {/* Step Content */}
-            <div className="min-h-[300px]">
+            <div className="min-h-[250px] sm:min-h-[300px]">
                 {steps.find(s => s.id === activeStep)?.content}
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-primary-200/30 dark:border-primary-500/20">
+            <div className="flex items-center justify-between mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-primary-200/30 dark:border-primary-500/20 gap-2">
                 <button
                     onClick={() => setActiveStep(Math.max(1, activeStep - 1))}
                     disabled={activeStep === 1}
-                    className="btn btn-secondary px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-secondary px-3 sm:px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
                 >
                     Previous
                 </button>
@@ -288,29 +288,31 @@ export const ZapierSetupGuide: React.FC<ZapierSetupGuideProps> = ({ connection, 
                 <button
                     onClick={() => setActiveStep(Math.min(steps.length, activeStep + 1))}
                     disabled={activeStep === steps.length}
-                    className="btn btn-primary px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary px-3 sm:px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
                 >
                     Next
                 </button>
             </div>
 
             {/* Quick Links */}
-            <div className="mt-6 pt-6 border-t border-primary-200/30 dark:border-primary-500/20">
+            <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-primary-200/30 dark:border-primary-500/20">
                 <div className="flex flex-wrap gap-2">
                     <a
                         href="https://zapier.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 text-xs font-medium hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 text-xs font-medium hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                     >
-                        <LinkIcon className="w-4 h-4" />
-                        Open Zapier
+                        <LinkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="hidden sm:inline">Open Zapier</span>
+                        <span className="sm:hidden">Zapier</span>
                     </a>
                     <a
                         href="/settings"
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     >
-                        Get API Key
+                        <span className="hidden sm:inline">Get API Key</span>
+                        <span className="sm:hidden">API Key</span>
                     </a>
                 </div>
             </div>

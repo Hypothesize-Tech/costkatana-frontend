@@ -269,16 +269,16 @@ export const Sessions: React.FC = () => {
                 )}
 
                 {/* Filters */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 mb-6">
-                    <div className="space-y-4">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-5 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                    <div className="space-y-3 sm:space-y-4">
                         {/* Row 1: Basic Filters */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             <div className="relative">
-                                <Search className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <Search className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="text"
                                     placeholder="Search by label..."
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.label}
                                     onChange={(e) => setFilters(prev => ({ ...prev, label: e.target.value }))}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -286,27 +286,27 @@ export const Sessions: React.FC = () => {
                             </div>
 
                             <div className="relative">
-                                <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <Calendar className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="datetime-local"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.from}
                                     onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))}
                                 />
                             </div>
 
                             <div className="relative">
-                                <Calendar className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <Calendar className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="datetime-local"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.to}
                                     onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))}
                                 />
                             </div>
 
                             <select
-                                className="input"
+                                className="input text-sm"
                                 value={filters.status}
                                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
                             >
@@ -318,7 +318,7 @@ export const Sessions: React.FC = () => {
                         </div>
 
                         {/* Row 2: Advanced Filters */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                             <select
                                 className="input"
                                 value={filters.source}
@@ -332,46 +332,46 @@ export const Sessions: React.FC = () => {
                             </select>
 
                             <div className="relative">
-                                <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <DollarSign className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="number"
                                     step="0.0001"
                                     placeholder="Min Cost"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.minCost}
                                     onChange={(e) => setFilters(prev => ({ ...prev, minCost: e.target.value }))}
                                 />
                             </div>
 
                             <div className="relative">
-                                <DollarSign className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <DollarSign className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="number"
                                     step="0.0001"
                                     placeholder="Max Cost"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.maxCost}
                                     onChange={(e) => setFilters(prev => ({ ...prev, maxCost: e.target.value }))}
                                 />
                             </div>
 
                             <div className="relative">
-                                <Hash className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <Hash className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="number"
                                     placeholder="Min Spans"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.minSpans}
                                     onChange={(e) => setFilters(prev => ({ ...prev, minSpans: e.target.value }))}
                                 />
                             </div>
 
                             <div className="relative">
-                                <Hash className="absolute left-3 top-3 w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                                <Hash className="absolute left-2 sm:left-3 top-2.5 sm:top-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-600 dark:text-secondary-300" />
                                 <input
                                     type="number"
                                     placeholder="Max Spans"
-                                    className="input pl-10"
+                                    className="input pl-8 sm:pl-10 text-sm"
                                     value={filters.maxSpans}
                                     onChange={(e) => setFilters(prev => ({ ...prev, maxSpans: e.target.value }))}
                                 />
@@ -379,16 +379,16 @@ export const Sessions: React.FC = () => {
                         </div>
 
                         {/* Row 3: Action Buttons */}
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                             <button
                                 onClick={handleSearch}
-                                className="btn btn-primary flex-1 md:flex-none"
+                                className="btn btn-primary flex-1 sm:flex-none text-sm px-4 py-2 sm:py-2.5"
                             >
                                 Search
                             </button>
                             <button
                                 onClick={handleClearFilters}
-                                className="btn btn-secondary flex-1 md:flex-none"
+                                className="btn btn-secondary flex-1 sm:flex-none text-sm px-4 py-2 sm:py-2.5"
                             >
                                 Clear Filters
                             </button>

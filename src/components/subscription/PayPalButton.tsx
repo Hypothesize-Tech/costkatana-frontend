@@ -460,27 +460,27 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
     return (
         <div className="w-full relative">
             {loading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 space-y-3 bg-white/90 dark:bg-secondary-900/90 backdrop-blur-sm rounded-lg z-10">
-                    <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-6 space-y-2 sm:space-y-3 bg-white/90 dark:bg-secondary-900/90 backdrop-blur-sm rounded-lg z-10">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                         Loading PayPal...
                     </span>
                 </div>
             )}
 
             {error && !loading && (
-                <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                    <div className="flex items-start space-x-3">
+                <div className="p-4 sm:p-5 md:p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <div className="flex items-start space-x-2 sm:space-x-3">
                         <div className="flex-shrink-0">
-                            <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                             </svg>
                         </div>
-                        <div className="flex-1">
-                            <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                        <div className="flex-1 min-w-0">
+                            <h4 className="text-xs sm:text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
                                 PayPal Payment Unavailable
                             </h4>
-                            <p className="text-sm text-red-700 dark:text-red-300">
+                            <p className="text-xs sm:text-sm text-red-700 dark:text-red-300">
                                 {error}
                             </p>
                         </div>
@@ -489,7 +489,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
             )}
 
             {disabled && !loading && !error && (
-                <div className="p-4 text-center text-light-text-secondary dark:text-dark-text-secondary bg-secondary-100 dark:bg-secondary-800 rounded-lg">
+                <div className="p-3 sm:p-4 text-center text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary bg-secondary-100 dark:bg-secondary-800 rounded-lg">
                     PayPal payment is currently unavailable
                 </div>
             )}
@@ -500,9 +500,9 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
                 className={`paypal-button-container ${!paypalLoaded && paypalClientId && !loading && !error ? 'min-h-[200px] flex items-center justify-center' : 'min-h-[50px]'}`}
             >
                 {!paypalLoaded && paypalClientId && !loading && !error && !disabled && (
-                    <div className="flex flex-col items-center justify-center space-y-3">
-                        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-light-text-secondary dark:text-dark-text-secondary">
+                    <div className="flex flex-col items-center justify-center space-y-2 sm:space-y-3">
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                             Initializing PayPal...
                         </span>
                     </div>
@@ -510,7 +510,7 @@ export const PayPalButton: React.FC<PayPalButtonProps> = ({
             </div>
 
             {!paypalLoaded && paypalClientId && !loading && !error && (
-                <div className="mt-2 text-xs text-center text-light-text-tertiary dark:text-dark-text-tertiary">
+                <div className="mt-2 text-xs text-center text-light-text-tertiary dark:text-dark-text-tertiary px-2">
                     If the PayPal button doesn't appear, please refresh the page or try another payment method.
                 </div>
             )}

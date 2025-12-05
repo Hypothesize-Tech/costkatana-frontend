@@ -40,6 +40,7 @@ import {
   CommandLineIcon,
   CircleStackIcon,
   Cog6ToothIcon,
+  ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
@@ -2188,13 +2189,106 @@ export const ConversationalAgent: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-[600px] w-full animate-fade-in">
-      {/* Sidebar */}
+    <div className="flex h-full light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient min-h-0 w-full animate-fade-in relative">
+      {/* Mobile Conversations Drawer */}
+      {showConversations && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setShowConversations(false)}
+          />
+          <div className="fixed left-0 top-0 bottom-0 w-72 max-w-[85vw] glass backdrop-blur-xl border-r border-primary-200/30 shadow-2xl z-50 md:hidden flex flex-col transform transition-transform duration-300">
+            {/* Mobile Drawer Header */}
+            <div className="p-2 border-b border-primary-200/30 flex items-center justify-between shrink-0">
+              <h3 className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary">
+                Conversations
+              </h3>
+              <button
+                onClick={() => setShowConversations(false)}
+                className="p-1.5 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 rounded-lg hover:bg-primary-500/10 transition-all"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* New Chat Button - Mobile */}
+            <div className="p-2 border-b border-primary-200/30">
+              <button
+                onClick={() => {
+                  startNewConversation();
+                  setShowConversations(false);
+                }}
+                className="btn btn-primary w-full flex items-center justify-center text-sm py-1.5 font-display font-semibold"
+              >
+                <PlusIcon className="w-4 h-4 mr-2" />
+                New Chat
+              </button>
+            </div>
+
+            {/* Conversations List - Mobile */}
+            <div className="flex-1 overflow-y-auto p-1.5">
+              {conversationsLoading ? (
+                <ConversationsShimmer count={5} collapsed={false} />
+              ) : conversations.length === 0 ? (
+                <div className="p-3 text-center">
+                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
+                    No conversations yet
+                  </p>
+                </div>
+              ) : (
+                conversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    className={`group p-2 mb-1 rounded-lg cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
+                      ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
+                      : "hover:shadow-md"
+                      }`}
+                    onClick={() => {
+                      loadConversationHistory(conversation.id);
+                      setShowConversations(false);
+                    }}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-0.5">
+                          {conversation.title}
+                        </h4>
+                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-light-text-muted dark:text-dark-text-muted">
+                          <span>{conversation.messageCount} msgs</span>
+                          <span>•</span>
+                          <span>{formatTimestamp(conversation.updatedAt)}</span>
+                        </div>
+                        {conversation.totalCost && (
+                          <p className="text-[10px] font-bold gradient-text mt-0.5 inline-block bg-gradient-success/10 px-1.5 py-0.5 rounded">
+                            ${conversation.totalCost.toFixed(4)}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(conversation.id, e);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 ml-1.5 p-1 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10"
+                        title="Delete conversation"
+                      >
+                        <TrashIcon className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Sidebar - Desktop/Tablet */}
       <div
-        className={`${showConversations ? "w-80" : "w-16"} glass backdrop-blur-xl border-r border-primary-200/30 transition-all duration-300 flex flex-col shadow-2xl relative z-10`}
+        className={`hidden md:flex ${showConversations ? "w-64 lg:w-80" : "w-16"} glass backdrop-blur-xl border-r border-primary-200/30 transition-all duration-300 flex-col shadow-2xl relative z-10 overflow-hidden`}
       >
-        {/* Sidebar Header */}
-        <div className="p-3 border-b border-primary-200/30 flex items-center justify-center">
+        {/* Sidebar Header - Desktop/Tablet */}
+        <div className="p-2 md:p-3 border-b border-primary-200/30 flex items-center justify-center">
           <button
             onClick={() => setShowConversations(!showConversations)}
             className={`p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300 hover:scale-110 ${showConversations ? 'w-full flex items-center justify-between' : 'flex items-center justify-center'}`}
@@ -2211,25 +2305,25 @@ export const ConversationalAgent: React.FC = () => {
           </button>
         </div>
 
-        {/* New Chat Button */}
+        {/* New Chat Button - Desktop/Tablet */}
         {showConversations ? (
-          <div className="p-3">
+          <div className="p-2 md:p-3">
             <button
               onClick={startNewConversation}
-              className="btn btn-primary w-full flex items-center justify-center text-sm py-2 font-display font-semibold"
+              className="btn btn-primary w-full flex items-center justify-center text-sm py-1.5 md:py-2 font-display font-semibold"
             >
               <PlusIcon className="w-4 h-4 mr-2" />
               New Chat
             </button>
           </div>
         ) : (
-          <div className="p-3 flex justify-center">
+          <div className="p-2 md:p-3 flex justify-center">
             <button
               onClick={startNewConversation}
-              className="p-2 rounded-xl bg-gradient-primary text-white hover:scale-110 transition-all duration-300 glow-primary shadow-lg"
+              className="p-1.5 md:p-2 rounded-xl bg-gradient-primary text-white hover:scale-110 transition-all duration-300 glow-primary shadow-lg"
               title="New Chat"
             >
-              <PlusIcon className="h-5 w-5" />
+              <PlusIcon className="h-4 w-4 md:h-5 md:w-5" />
             </button>
           </div>
         )}
@@ -2250,7 +2344,7 @@ export const ConversationalAgent: React.FC = () => {
                 conversations.map((conversation) => (
                   <div
                     key={conversation.id}
-                    className={`group p-3 mx-2 mb-2 rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
+                    className={`group p-2 md:p-2.5 lg:p-3 mx-1 md:mx-2 mb-1.5 md:mb-2 rounded-lg md:rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
                       ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
                       : "hover:shadow-md"
                       }`}
@@ -2305,8 +2399,62 @@ export const ConversationalAgent: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <div className="glass backdrop-blur-xl border-b border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 shrink-0">
-          <div className="px-5 py-3.5">
-            <div className="flex items-center justify-between gap-4">
+          <div className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 md:py-3.5">
+            {/* Mobile: Stacked Layout */}
+            <div className="flex flex-col gap-2 md:hidden">
+              {/* Top Row: Title & Conversations Button */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 sm:p-2 rounded-lg glow-primary shadow-lg shrink-0">
+                    <SparklesIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="font-display font-bold text-sm sm:text-base gradient-text-primary truncate">
+                      AI Assistant
+                    </h2>
+                  </div>
+                </div>
+                {/* Conversations Button - Mobile */}
+                <button
+                  onClick={() => setShowConversations(!showConversations)}
+                  className="relative p-1.5 sm:p-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 transition-all duration-300 glass rounded-lg border border-primary-200/30 shrink-0"
+                  title="Conversations"
+                >
+                  <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {conversations.length > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 bg-gradient-to-br from-primary-500 to-primary-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                      {conversations.length > 9 ? '9+' : conversations.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+              {/* Bottom Row: Essential Controls Only */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 -mx-0.5 px-0.5">
+                {/* Chat Mode - Mobile */}
+                <div className="glass rounded-lg border border-primary-200/30 p-0.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 shrink-0">
+                  <div className="relative">
+                    <div className="absolute left-1.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                      {chatMode === 'fastest' && <BoltIcon className="w-3 h-3 text-primary-500" />}
+                      {chatMode === 'balanced' && <AdjustmentsHorizontalIcon className="w-3 h-3 text-primary-500" />}
+                      {chatMode === 'cheapest' && <CurrencyDollarIcon className="w-3 h-3 text-primary-500" />}
+                    </div>
+                    <select
+                      value={chatMode}
+                      onChange={(e) => setChatMode(e.target.value as 'fastest' | 'cheapest' | 'balanced')}
+                      className="input text-xs py-1 pl-6 pr-5 min-w-[75px] appearance-none bg-white/80 dark:bg-gray-800/80 border-primary-200/30 font-display font-semibold cursor-pointer"
+                    >
+                      <option value="fastest">Fastest</option>
+                      <option value="balanced">Balanced</option>
+                      <option value="cheapest">Cheapest</option>
+                    </select>
+                    <ChevronDownIcon className="absolute right-1 top-1/2 transform -translate-y-1/2 w-3 h-3 text-primary-500 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tablet & Desktop: Horizontal Layout */}
+            <div className="hidden md:flex items-center justify-between gap-4">
               {/* Left: Title */}
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg shrink-0">
@@ -2320,8 +2468,8 @@ export const ConversationalAgent: React.FC = () => {
               </div>
 
               {/* Right: Controls and Actions */}
-              <div className="flex items-center gap-2.5 shrink-0">
-                {/* Chat Mode Selector */}
+              <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                {/* Chat Mode Selector - Tablet & Desktop */}
                 <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
                   <div className="relative">
                     <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
@@ -2373,8 +2521,8 @@ export const ConversationalAgent: React.FC = () => {
                   </label>
                 </div>
 
-                {/* Preview Mode Selector */}
-                <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                {/* Preview Mode Selector - Hidden on Mobile */}
+                <div className="hidden lg:block glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
                   <div className="relative">
                     <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                       {previewMode === 'strict' && <ShieldCheckIcon className="w-3.5 h-3.5 text-primary-500" />}
@@ -2394,15 +2542,15 @@ export const ConversationalAgent: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-1.5 ml-1">
+                {/* Action Buttons - Hidden on Mobile */}
+                <div className="hidden xl:flex items-center gap-1.5 ml-1">
                   <button
                     onClick={() => { setShowOptimizations(!showOptimizations); navigate('/optimizations') }}
                     className="glass hover:bg-gradient-to-br hover:from-primary-500/20 hover:to-primary-600/20 transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary-200/30 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-primary-600 dark:hover:text-primary-400 group"
                     title="View Optimizations"
                   >
                     <ChartBarIcon className="w-4 h-4 text-primary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors shrink-0" />
-                    <span className="hidden xl:inline whitespace-nowrap">Optimizations</span>
+                    <span className="whitespace-nowrap">Optimizations</span>
                   </button>
 
                   <button
@@ -2411,7 +2559,7 @@ export const ConversationalAgent: React.FC = () => {
                     title="Manage AI Memory & Personalization"
                   >
                     <BoltIcon className="w-4 h-4 text-primary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors shrink-0" />
-                    <span className="hidden xl:inline whitespace-nowrap">Memory</span>
+                    <span className="whitespace-nowrap">Memory</span>
                   </button>
                 </div>
               </div>
@@ -2420,7 +2568,7 @@ export const ConversationalAgent: React.FC = () => {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-1.5 sm:p-2 md:p-3 lg:p-4 xl:p-6 space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-5 xl:space-y-6">
           {error && (
             <div className="glass border border-danger-200/30 bg-gradient-to-br from-danger-500/20 to-danger-600/20 p-5 animate-scale-in shadow-2xl backdrop-blur-xl rounded-xl">
               <div className="flex items-center gap-3">
@@ -2438,10 +2586,10 @@ export const ConversationalAgent: React.FC = () => {
                 <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-5 rounded-3xl w-20 h-20 mx-auto mb-6 glow-primary animate-pulse shadow-2xl flex items-center justify-center">
                   <SparklesIcon className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="font-display font-bold text-3xl gradient-text-primary mb-4">
+                <h3 className="font-display font-bold text-xl sm:text-2xl md:text-3xl gradient-text-primary mb-3 sm:mb-4">
                   Welcome to your AI Assistant
                 </h3>
-                <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-lg mx-auto leading-relaxed font-body text-base">
+                <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-lg mx-auto leading-relaxed font-body text-sm sm:text-base px-4">
                   I'm here to help you manage your AI costs, create projects,
                   analyze usage patterns, and optimize your AI operations. Ask
                   me anything!
@@ -2460,7 +2608,7 @@ export const ConversationalAgent: React.FC = () => {
                 {questionsLoading ? (
                   <SuggestionsShimmer count={6} />
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {suggestedQuestions.map((question, index) => {
                       const IconComponent = question.icon;
                       return (
@@ -2765,8 +2913,8 @@ export const ConversationalAgent: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="glass backdrop-blur-xl border-t border-primary-200/30 dark:border-primary-500/20 shadow-2xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="max-w-4xl mx-auto p-4 space-y-3">
+        <div className="glass backdrop-blur-xl border-t border-primary-200/30 dark:border-primary-500/20 shadow-2xl bg-gradient-light-panel dark:bg-gradient-dark-panel shrink-0">
+          <div className="max-w-4xl mx-auto p-1.5 sm:p-2 md:p-3 lg:p-4 space-y-1.5 sm:space-y-2 md:space-y-3">
             {/* Selected Repository Indicator - Right Aligned */}
             {selectedRepo && (
               <div className="flex items-center justify-between px-4 py-2.5 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-md ml-auto animate-fade-in">
@@ -2834,16 +2982,16 @@ export const ConversationalAgent: React.FC = () => {
             )}
 
             {/* Message Input Container */}
-            <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
-              <div className="flex items-end gap-3">
+            <div className="glass rounded-lg sm:rounded-xl md:rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-1 sm:p-1.5 md:p-2 lg:p-2.5 xl:p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
+              <div className="flex items-end gap-1 sm:gap-1.5 md:gap-2 lg:gap-3">
                 {/* Attachments Popover Button */}
                 <div className="relative">
                   <button
                     onClick={() => setShowAttachmentsPopover(!showAttachmentsPopover)}
-                    className="w-11 h-11 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 shadow-sm hover:shadow-md shrink-0"
                     title="Attach files, GitHub, or integrations"
                   >
-                    <PlusIcon className="w-5 h-5" />
+                    <PlusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                   </button>
 
                   {/* Attachments Popover */}
@@ -3056,7 +3204,7 @@ export const ConversationalAgent: React.FC = () => {
                         ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
                         : "Ask me anything about your AI costs, projects, or optimizations..."
                     }
-                    className="w-full px-4 pt-6 pb-2 pr-14 resize-none min-h-[56px] max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none"
+                    className="w-full px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-5 lg:pt-6 pb-1.5 sm:pb-2 pr-8 sm:pr-10 md:pr-12 lg:pr-14 resize-none min-h-[44px] sm:min-h-[48px] md:min-h-[52px] lg:min-h-[56px] max-h-28 sm:max-h-32 md:max-h-36 lg:max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none"
                     rows={1}
                     style={{
                       scrollbarWidth: 'thin',
@@ -3079,29 +3227,142 @@ export const ConversationalAgent: React.FC = () => {
                 <div className="relative">
                   <button
                     onClick={() => setShowModelDropdown(!showModelDropdown)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-secondary-50 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-200 shadow-sm hover:shadow-md"
-                    title="Select model"
+                    className="flex items-center gap-1 px-1.5 sm:px-2 md:px-2.5 py-1.5 sm:py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-secondary-50 dark:bg-secondary-800/50 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-200 shadow-sm hover:shadow-md shrink-0"
+                    title={`Select model: ${formatModelDisplay(selectedModel)}`}
                   >
-                    <div className="bg-gradient-primary p-1 rounded glow-primary">
-                      <SparklesIcon className="w-3 h-3 text-white" />
+                    <div className="bg-gradient-primary p-0.5 sm:p-1 rounded glow-primary shrink-0">
+                      <SparklesIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                     </div>
-                    <span className="text-xs font-display font-semibold text-secondary-900 dark:text-white max-w-[120px] truncate">
+                    <span className="hidden md:inline text-xs font-display font-semibold text-secondary-900 dark:text-white max-w-[80px] lg:max-w-[100px] truncate">
                       {formatModelDisplay(selectedModel)}
                     </span>
-                    <ChevronDownIcon className="w-3 h-3 text-secondary-600 dark:text-secondary-400" />
+                    <ChevronDownIcon className="hidden md:block w-3 h-3 text-secondary-600 dark:text-secondary-400 shrink-0" />
                   </button>
 
-                  {/* Model Dropdown - Top 5 + More Models */}
+                  {/* Model Dropdown - Mobile Bottom Sheet / Desktop Dropdown */}
                   {showModelDropdown && (
                     <>
                       <div
-                        className="fixed inset-0 z-40"
+                        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
                         onClick={() => {
                           setShowModelDropdown(false);
                           setShowAllModelsDropdown(false);
                         }}
                       />
-                      <div className="absolute bottom-full right-0 mb-2 w-80 shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 z-50 max-h-[500px] overflow-y-auto animate-scale-in rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel bg-white/95 dark:bg-dark-card/95">
+                      {/* Mobile: Bottom Sheet */}
+                      <div className="fixed md:hidden bottom-0 left-0 right-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl backdrop-blur-xl border-t border-l border-r border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel bg-white/95 dark:bg-dark-card/95 animate-slide-up">
+                        {/* Bottom Sheet Handle */}
+                        <div className="sticky top-0 bg-gradient-light-panel dark:bg-gradient-dark-panel z-10 pt-3 pb-2 px-4 border-b border-primary-200/30">
+                          <div className="w-12 h-1 bg-primary-300 dark:bg-primary-700 rounded-full mx-auto mb-2"></div>
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-display font-bold text-base gradient-text-primary">Select Model</h3>
+                            <button
+                              onClick={() => {
+                                setShowModelDropdown(false);
+                                setShowAllModelsDropdown(false);
+                              }}
+                              className="p-1.5 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 rounded-lg hover:bg-primary-500/10 transition-all"
+                            >
+                              <XMarkIcon className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="p-3 space-y-2">
+                          {/* Top Models - Mobile Compact */}
+                          <div className="mb-3">
+                            <div className="px-2 py-1 mb-2 rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
+                              <span className="text-[10px] font-display font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">⭐ Top Models</span>
+                            </div>
+                            {getTopModels().map((model) => (
+                              <button
+                                key={model.id}
+                                onClick={() => {
+                                  setSelectedModel(model);
+                                  setShowModelDropdown(false);
+                                  setShowAllModelsDropdown(false);
+                                }}
+                                className={`w-full p-2.5 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg border touch-manipulation mb-1.5 ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                  }`}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <div className="font-display font-semibold text-xs text-secondary-900 dark:text-white truncate">
+                                        {formatModelDisplay(model)}
+                                      </div>
+                                      {selectedModel?.id === model.id && (
+                                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                      )}
+                                    </div>
+                                    {model.pricing && (
+                                      <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold">
+                                        ${model.pricing.input.toFixed(2)}/1M in
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* More Models - Mobile */}
+                          {getOtherModels().length > 0 && (
+                            <div className="pt-2 border-t border-primary-200/30 dark:border-primary-500/20">
+                              <button
+                                onClick={() => setShowAllModelsDropdown(!showAllModelsDropdown)}
+                                className="w-full p-2.5 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg flex items-center justify-between bg-white/30 dark:bg-dark-card/30 touch-manipulation"
+                              >
+                                <span className="font-display font-semibold text-xs text-secondary-900 dark:text-white">
+                                  More Models ({getOtherModels().length})
+                                </span>
+                                <ChevronDownIcon
+                                  className={`w-4 h-4 text-secondary-600 dark:text-secondary-400 transition-transform duration-300 shrink-0 ${showAllModelsDropdown ? 'rotate-180' : ''
+                                    }`}
+                                />
+                              </button>
+
+                              {showAllModelsDropdown && (
+                                <div className="mt-1.5 space-y-1 max-h-[40vh] overflow-y-auto">
+                                  {getOtherModels().map((model) => (
+                                    <button
+                                      key={model.id}
+                                      onClick={() => {
+                                        setSelectedModel(model);
+                                        setShowModelDropdown(false);
+                                        setShowAllModelsDropdown(false);
+                                      }}
+                                      className={`w-full p-2 text-left active:bg-primary-500/20 transition-all duration-200 rounded-lg border touch-manipulation ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                        }`}
+                                    >
+                                      <div className="flex items-center justify-between gap-2">
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-1.5">
+                                            <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
+                                              {formatModelDisplay(model)}
+                                            </div>
+                                            {selectedModel?.id === model.id && (
+                                              <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
+                                            )}
+                                          </div>
+                                          {model.pricing && (
+                                            <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
+                                              ${model.pricing.input.toFixed(2)}/1M in
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Desktop: Dropdown */}
+                      <div className="hidden md:block absolute bottom-full right-0 mb-2 w-72 shadow-2xl backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 z-50 max-h-[500px] overflow-y-auto rounded-xl bg-gradient-light-panel dark:bg-gradient-dark-panel bg-white/95 dark:bg-dark-card/95 animate-scale-in">
                         {/* Top 5 Models */}
                         <div className="p-2">
                           <div className="px-2 py-1.5 mb-1 rounded-lg bg-primary-50/50 dark:bg-primary-900/20">
@@ -3115,12 +3376,12 @@ export const ConversationalAgent: React.FC = () => {
                                 setShowModelDropdown(false);
                                 setShowAllModelsDropdown(false);
                               }}
-                              className={`w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                              className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
                                 } mb-2 last:mb-0`}
                             >
-                              <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center justify-between gap-2">
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-1">
+                                  <div className="flex items-center gap-2 mb-0.5">
                                     <div className="font-display font-semibold text-sm text-secondary-900 dark:text-white truncate">
                                       {formatModelDisplay(model)}
                                     </div>
@@ -3128,35 +3389,16 @@ export const ConversationalAgent: React.FC = () => {
                                       <div className="w-2 h-2 rounded-full bg-gradient-primary flex-shrink-0" />
                                     )}
                                   </div>
-                                  <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium mb-1.5">
-                                    {getModelSubtitle(model)}
+                                  <div className="flex items-center gap-2">
+                                    <div className="text-xs text-secondary-500 dark:text-secondary-400 font-medium truncate">
+                                      {getModelSubtitle(model)}
+                                    </div>
+                                    {model.pricing && (
+                                      <div className="text-xs text-success-600 dark:text-success-400 font-semibold whitespace-nowrap">
+                                        ${model.pricing.input.toFixed(2)}/1M
+                                      </div>
+                                    )}
                                   </div>
-
-                                  {/* Capabilities */}
-                                  {model.capabilities && model.capabilities.length > 0 && (
-                                    <div className="flex flex-wrap gap-1 mb-1.5">
-                                      {model.capabilities.slice(0, 3).map((cap, idx) => (
-                                        <span key={idx} className="px-1.5 py-0.5 text-xs rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
-                                          {cap}
-                                        </span>
-                                      ))}
-                                      {model.capabilities.length > 3 && (
-                                        <span className="px-1.5 py-0.5 text-xs rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
-                                          +{model.capabilities.length - 3}
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-
-                                  {/* Pricing */}
-                                  {model.pricing && (
-                                    <div className="text-xs text-success-600 dark:text-success-400 font-semibold">
-                                      ${model.pricing.input.toFixed(2)}/${model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'} in
-                                      {model.pricing.output > 0 && (
-                                        <span> • ${model.pricing.output.toFixed(2)}/{model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'} out</span>
-                                      )}
-                                    </div>
-                                  )}
                                 </div>
                               </div>
                             </button>
@@ -3168,18 +3410,18 @@ export const ConversationalAgent: React.FC = () => {
                               <div className="relative">
                                 <button
                                   onClick={() => setShowAllModelsDropdown(!showAllModelsDropdown)}
-                                  className="w-full p-3 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between bg-white/30 dark:bg-dark-card/30"
+                                  className="w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg flex items-center justify-between bg-white/30 dark:bg-dark-card/30"
                                 >
                                   <span className="font-display font-semibold text-sm text-secondary-900 dark:text-white">
                                     More Models ({getOtherModels().length})
                                   </span>
                                   <ChevronDownIcon
-                                    className={`w-4 h-4 text-secondary-600 dark:text-secondary-400 transition-transform duration-300 ${showAllModelsDropdown ? 'rotate-180' : ''
+                                    className={`w-4 h-4 text-secondary-600 dark:text-secondary-400 transition-transform duration-300 shrink-0 ${showAllModelsDropdown ? 'rotate-180' : ''
                                       }`}
                                   />
                                 </button>
 
-                                {/* Nested Dropdown for Other Models */}
+                                {/* Nested Dropdown for Other Models - Desktop */}
                                 {showAllModelsDropdown && (
                                   <div className="mt-1 space-y-1 max-h-[400px] overflow-y-auto">
                                     {getOtherModels().map((model) => (
@@ -3190,12 +3432,12 @@ export const ConversationalAgent: React.FC = () => {
                                           setShowModelDropdown(false);
                                           setShowAllModelsDropdown(false);
                                         }}
-                                        className={`w-full p-2.5 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
+                                        className={`w-full p-2 text-left hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 rounded-lg border ${selectedModel?.id === model.id ? "bg-gradient-primary/10 border-primary-300 dark:border-primary-600" : "border-primary-100/50 dark:border-primary-800/50 bg-white/50 dark:bg-dark-card/50"
                                           }`}
                                       >
-                                        <div className="flex items-start justify-between gap-2">
+                                        <div className="flex items-center justify-between gap-2">
                                           <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-1.5 mb-1">
+                                            <div className="flex items-center gap-1.5">
                                               <div className="font-display font-medium text-xs text-secondary-900 dark:text-white truncate">
                                                 {formatModelDisplay(model)}
                                               </div>
@@ -3203,30 +3445,9 @@ export const ConversationalAgent: React.FC = () => {
                                                 <div className="w-1.5 h-1.5 rounded-full bg-gradient-primary flex-shrink-0" />
                                               )}
                                             </div>
-                                            <div className="text-xs text-secondary-500 dark:text-secondary-400 mb-1">
-                                              {getModelSubtitle(model)}
-                                            </div>
-
-                                            {/* Capabilities - compact */}
-                                            {model.capabilities && model.capabilities.length > 0 && (
-                                              <div className="flex flex-wrap gap-0.5 mb-1">
-                                                {model.capabilities.slice(0, 2).map((cap, idx) => (
-                                                  <span key={idx} className="px-1 py-0.5 text-[10px] rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
-                                                    {cap}
-                                                  </span>
-                                                ))}
-                                                {model.capabilities.length > 2 && (
-                                                  <span className="px-1 py-0.5 text-[10px] rounded bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium">
-                                                    +{model.capabilities.length - 2}
-                                                  </span>
-                                                )}
-                                              </div>
-                                            )}
-
-                                            {/* Pricing - compact */}
                                             {model.pricing && (
-                                              <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold">
-                                                ${model.pricing.input.toFixed(2)}/{model.pricing.unit === 'PER_1M_TOKENS' ? '1M' : 'req'}
+                                              <div className="text-[10px] text-success-600 dark:text-success-400 font-semibold mt-0.5">
+                                                ${model.pricing.input.toFixed(2)}/1M
                                               </div>
                                             )}
                                           </div>
@@ -3247,17 +3468,17 @@ export const ConversationalAgent: React.FC = () => {
                 <button
                   onClick={() => sendMessage()}
                   disabled={!currentMessage.trim() || isLoading}
-                  className={`relative flex items-center justify-center transition-all duration-300 ${!currentMessage.trim() || isLoading
-                    ? 'w-11 h-11 bg-secondary-200/50 dark:bg-secondary-700/50 text-secondary-400 dark:text-secondary-500 cursor-not-allowed rounded-full'
-                    : 'w-11 h-11 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-full hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl glow-primary'
+                  className={`relative flex items-center justify-center transition-all duration-300 shrink-0 ${!currentMessage.trim() || isLoading
+                    ? 'w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 bg-secondary-200/50 dark:bg-secondary-700/50 text-secondary-400 dark:text-secondary-500 cursor-not-allowed rounded-full'
+                    : 'w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-full hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl glow-primary'
                     }`}
                   title={!currentMessage.trim() ? "Enter a message to send" : "Send message"}
                 >
                   {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <Send
-                      className={`w-5 h-5 ${!currentMessage.trim()
+                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${!currentMessage.trim()
                         ? 'opacity-50'
                         : ''
                         }`}
@@ -3267,7 +3488,7 @@ export const ConversationalAgent: React.FC = () => {
                 </button>
               </div>
               {/* Helper text */}
-              <div className="flex items-center justify-between mt-2 px-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mt-2 px-1">
                 <div className="text-xs text-secondary-400 dark:text-secondary-500 font-medium">
                   {currentMessage.length > 0 && (
                     <span className="text-primary-500 dark:text-primary-400">
@@ -3275,18 +3496,21 @@ export const ConversationalAgent: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-xs pt-2 text-secondary-400 dark:text-secondary-500 font-medium flex items-center gap-1">
+                <div className="text-xs text-secondary-400 dark:text-secondary-500 font-medium flex flex-wrap items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
                     Enter
                   </kbd>
-                  <span>to send</span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs ml-2">
-                    Shift
-                  </kbd>
-                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
-                    Enter
-                  </kbd>
-                  <span>for new line</span>
+                  <span className="hidden sm:inline">to send</span>
+                  <span className="sm:hidden">send</span>
+                  <span className="hidden lg:inline">
+                    <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs ml-2">
+                      Shift
+                    </kbd>
+                    <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
+                      Enter
+                    </kbd>
+                    <span>for new line</span>
+                  </span>
                 </div>
               </div>
             </div>

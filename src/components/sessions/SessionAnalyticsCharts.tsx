@@ -703,18 +703,18 @@ export const SessionAnalyticsCharts: React.FC<SessionAnalyticsChartsProps> = ({ 
     }
 
     return (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 sm:p-4 md:p-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-lg bg-gradient-primary glow-primary shadow-lg">
-                        <ChartBarIcon className="w-6 h-6 text-white" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-2 sm:p-2.5 rounded-lg bg-gradient-primary glow-primary shadow-lg flex-shrink-0">
+                        <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div>
-                        <h3 className="text-xl font-display font-bold text-secondary-900 dark:text-white">
+                    <div className="min-w-0">
+                        <h3 className="text-lg sm:text-xl font-display font-bold text-secondary-900 dark:text-white">
                             Session Analytics
                         </h3>
-                        <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-0.5">
+                        <p className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400 mt-0.5">
                             Interactive chart visualizations
                         </p>
                     </div>
@@ -773,58 +773,61 @@ export const SessionAnalyticsCharts: React.FC<SessionAnalyticsChartsProps> = ({ 
             </div>
 
             {/* Chart Tabs */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-5 md:mb-6">
                 <div className="inline-flex rounded-lg border border-primary-200/30 dark:border-primary-500/20 p-1 bg-secondary-50 dark:bg-secondary-900/50 w-full sm:w-auto">
                     <button
                         onClick={() => setActiveChart('line')}
-                        className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'line'
+                        className={`flex-1 sm:flex-none px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'line'
                             ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-500/10'
                             }`}
                     >
-                        <span className="flex items-center justify-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-current opacity-80"></span>
-                            Line Chart
+                        <span className="flex items-center justify-center gap-1 sm:gap-2">
+                            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current opacity-80"></span>
+                            <span className="hidden sm:inline">Line Chart</span>
+                            <span className="sm:hidden">Line</span>
                         </span>
                     </button>
                     <button
                         onClick={() => setActiveChart('bar')}
-                        className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'bar'
+                        className={`flex-1 sm:flex-none px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'bar'
                             ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-500/10'
                             }`}
                     >
-                        <span className="flex items-center justify-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-current opacity-80"></span>
-                            Bar Chart
+                        <span className="flex items-center justify-center gap-1 sm:gap-2">
+                            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current opacity-80"></span>
+                            <span className="hidden sm:inline">Bar Chart</span>
+                            <span className="sm:hidden">Bar</span>
                         </span>
                     </button>
                     <button
                         onClick={() => setActiveChart('pie')}
-                        className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'pie'
+                        className={`flex-1 sm:flex-none px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-md transition-all duration-300 ${activeChart === 'pie'
                             ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                             : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-500/10'
                             }`}
                     >
-                        <span className="flex items-center justify-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-current opacity-80"></span>
-                            Pie Chart
+                        <span className="flex items-center justify-center gap-1 sm:gap-2">
+                            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current opacity-80"></span>
+                            <span className="hidden sm:inline">Pie Chart</span>
+                            <span className="sm:hidden">Pie</span>
                         </span>
                     </button>
                 </div>
             </div>
 
             {/* Active Chart Display */}
-            <div className="glass rounded-lg border border-primary-200/20 dark:border-primary-500/10 p-6 bg-gradient-to-br from-light-bg-100/30 to-light-bg-200/20 dark:from-dark-bg-200/30 dark:to-dark-bg-300/20">
+            <div className="glass rounded-lg border border-primary-200/20 dark:border-primary-500/10 p-3 sm:p-4 md:p-6 bg-gradient-to-br from-light-bg-100/30 to-light-bg-200/20 dark:from-dark-bg-200/30 dark:to-dark-bg-300/20">
                 {/* Line Chart */}
                 {activeChart === 'line' && (
                     <div className="animate-fade-in">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="w-1 h-6 bg-gradient-primary rounded-full"></div>
-                            <h4 className="text-lg font-semibold text-secondary-900 dark:text-white">Line Chart</h4>
+                        <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                            <div className="w-1 h-4 sm:h-6 bg-gradient-primary rounded-full"></div>
+                            <h4 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Line Chart</h4>
                             <span className="text-xs text-secondary-500 dark:text-secondary-400 ml-auto">Trend Analysis</span>
                         </div>
-                        <div className="h-80 sm:h-96">
+                        <div className="h-64 sm:h-80 md:h-96">
                             <Line data={lineChartData} options={lineChartOptions} />
                         </div>
                     </div>
@@ -833,12 +836,12 @@ export const SessionAnalyticsCharts: React.FC<SessionAnalyticsChartsProps> = ({ 
                 {/* Bar Chart */}
                 {activeChart === 'bar' && (
                     <div className="animate-fade-in">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="w-1 h-6 bg-gradient-highlight rounded-full"></div>
-                            <h4 className="text-lg font-semibold text-secondary-900 dark:text-white">Bar Chart</h4>
+                        <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                            <div className="w-1 h-4 sm:h-6 bg-gradient-highlight rounded-full"></div>
+                            <h4 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Bar Chart</h4>
                             <span className="text-xs text-secondary-500 dark:text-secondary-400 ml-auto">Comparison View</span>
                         </div>
-                        <div className="h-80 sm:h-96">
+                        <div className="h-64 sm:h-80 md:h-96">
                             <Bar data={barChartData} options={barChartOptions} />
                         </div>
                     </div>
@@ -847,12 +850,12 @@ export const SessionAnalyticsCharts: React.FC<SessionAnalyticsChartsProps> = ({ 
                 {/* Pie Chart */}
                 {activeChart === 'pie' && (
                     <div className="animate-fade-in">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="w-1 h-6 bg-gradient-accent rounded-full"></div>
-                            <h4 className="text-lg font-semibold text-secondary-900 dark:text-white">Distribution</h4>
+                        <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                            <div className="w-1 h-4 sm:h-6 bg-gradient-accent rounded-full"></div>
+                            <h4 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">Distribution</h4>
                             <span className="text-xs text-secondary-500 dark:text-secondary-400 ml-auto">Total Breakdown</span>
                         </div>
-                        <div className="h-80 sm:h-96 flex items-center justify-center">
+                        <div className="h-64 sm:h-80 md:h-96 flex items-center justify-center">
                             <Doughnut data={pieChartData} options={pieChartOptions} />
                         </div>
                     </div>

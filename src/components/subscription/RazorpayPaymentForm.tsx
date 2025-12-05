@@ -227,14 +227,14 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
     }
 
     return (
-        <div className="space-y-4">
-            <div className="card p-4">
-                <div className="mb-4">
-                    <h4 className="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <div className="space-y-3 sm:space-y-4">
+            <div className="card p-3 sm:p-4 md:p-5">
+                <div className="mb-3 sm:mb-4">
+                    <h4 className="text-sm sm:text-base md:text-lg font-semibold text-light-text dark:text-dark-text mb-2 sm:mb-3">
                         Payment Summary
                     </h4>
-                    <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
+                    <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
+                        <div className="flex justify-between items-center">
                             <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                 Plan:
                             </span>
@@ -242,7 +242,7 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                                 {plan}
                             </span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-center">
                             <span className="text-light-text-secondary dark:text-dark-text-secondary">
                                 Billing:
                             </span>
@@ -250,11 +250,11 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                                 {billingInterval}
                             </span>
                         </div>
-                        <div className="flex justify-between pt-2 border-t border-primary-200/20 dark:border-primary-800/20">
-                            <span className="text-lg font-semibold text-light-text dark:text-dark-text">
+                        <div className="flex justify-between items-center pt-2 border-t border-primary-200/20 dark:border-primary-800/20">
+                            <span className="text-sm sm:text-base md:text-lg font-semibold text-light-text dark:text-dark-text">
                                 Total:
                             </span>
-                            <span className="text-xl font-bold text-primary-500">
+                            <span className="text-base sm:text-lg md:text-xl font-bold text-primary-500">
                                 {orderData?.currency === 'INR' && orderData?.convertedAmount
                                     ? `₹${orderData.convertedAmount.toFixed(2)}`
                                     : `$${amount.toFixed(2)}`
@@ -263,7 +263,7 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                         </div>
                     </div>
                 </div>
-                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mb-4">
+                <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary mb-3 sm:mb-4">
                     Click the button below to complete your payment securely through Razorpay
                 </p>
             </div>
@@ -271,7 +271,7 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
             <button
                 onClick={handlePayment}
                 disabled={!razorpayKeyId || !window.Razorpay || isProcessing}
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full text-sm sm:text-base"
             >
                 {isProcessing
                     ? 'Processing...'
@@ -281,9 +281,14 @@ export const RazorpayPaymentForm: React.FC<RazorpayPaymentFormProps> = ({
                 }
             </button>
 
-            <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary text-center">
-                Your payment information is secure and encrypted
-            </p>
+            <div className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                    Your payment information is secure and encrypted
+                </p>
+            </div>
 
             {/* Success Modal */}
             {successData && (

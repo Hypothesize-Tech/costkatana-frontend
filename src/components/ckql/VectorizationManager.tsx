@@ -96,13 +96,13 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
     };
 
     return (
-        <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 animate-fade-in ${className}`}>
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-2xl">
-                        <Database className="w-6 h-6 text-white" />
+        <div className={`glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8 animate-fade-in ${className}`}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-2xl">
+                        <Database className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <h2 className="font-display text-2xl font-bold gradient-text-primary">Vector Search Setup</h2>
+                    <h2 className="font-display text-xl sm:text-2xl font-bold gradient-text-primary">Vector Search Setup</h2>
                 </div>
                 <button
                     onClick={() => loadStatus()}
@@ -128,30 +128,30 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
 
             {/* Statistics */}
             {stats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="font-display text-3xl font-bold gradient-text-primary">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
+                    <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-4 sm:p-5 md:p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">
                             {stats.total_records.toLocaleString()}
                         </div>
-                        <div className="font-body text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Total Records</div>
+                        <div className="font-body text-xs sm:text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Total Records</div>
                     </div>
-                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="font-display text-3xl font-bold gradient-text-success">
+                    <div className="glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl p-4 sm:p-5 md:p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-success">
                             {stats.vectorized_records.toLocaleString()}
                         </div>
-                        <div className="font-body text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Vectorized</div>
+                        <div className="font-body text-xs sm:text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Vectorized</div>
                     </div>
-                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="font-display text-3xl font-bold gradient-text-accent">
+                    <div className="glass rounded-xl border border-accent-200/30 shadow-lg backdrop-blur-xl p-4 sm:p-5 md:p-6 bg-gradient-to-br from-accent-50/50 to-accent-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-accent">
                             {stats.vectorization_rate.toFixed(1)}%
                         </div>
-                        <div className="font-body text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Coverage</div>
+                        <div className="font-body text-xs sm:text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Coverage</div>
                     </div>
-                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
-                        <div className="font-display text-3xl font-bold gradient-text-secondary">
+                    <div className="glass rounded-xl border border-secondary-200/30 shadow-lg backdrop-blur-xl p-4 sm:p-5 md:p-6 bg-gradient-to-br from-secondary-50/50 to-secondary-100/50 hover:scale-105 transition-transform duration-300">
+                        <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-secondary">
                             {stats.avg_embedding_dimensions}
                         </div>
-                        <div className="font-body text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Dimensions</div>
+                        <div className="font-body text-xs sm:text-sm font-medium text-light-text-muted dark:text-dark-text-muted">Dimensions</div>
                     </div>
                 </div>
             )}
@@ -209,13 +209,13 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 {(!job || job.status !== 'processing') && (
                     <>
                         <button
                             onClick={() => startVectorization({ timeframe: '24h' })}
                             disabled={isLoading}
-                            className="btn btn-primary flex items-center gap-2"
+                            className="btn btn-primary flex items-center justify-center gap-2 text-sm sm:text-base"
                         >
                             <Play className="w-4 h-4" />
                             Vectorize Last 24h
@@ -223,7 +223,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                         <button
                             onClick={() => startVectorization({ timeframe: '7d' })}
                             disabled={isLoading}
-                            className="btn btn-secondary flex items-center gap-2"
+                            className="btn btn-secondary flex items-center justify-center gap-2 text-sm sm:text-base"
                         >
                             <TrendingUp className="w-4 h-4" />
                             Vectorize Last 7d
@@ -231,7 +231,7 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
                         <button
                             onClick={() => startVectorization({ forceReprocess: true })}
                             disabled={isLoading}
-                            className="flex items-center gap-2 bg-gradient-accent text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 bg-gradient-accent text-white px-3 sm:px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                         >
                             <RefreshCw className="w-4 h-4" />
                             Reprocess All
@@ -252,14 +252,14 @@ export const VectorizationManager: React.FC<VectorizationManagerProps> = ({
             </div>
 
             {/* Info */}
-            <div className="mt-8 p-6 glass border border-primary-200/30 shadow-lg backdrop-blur-xl rounded-2xl">
-                <h3 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                        <Lightbulb className="w-3 h-3 text-white" />
+            <div className="mt-6 sm:mt-8 p-4 sm:p-5 md:p-6 glass border border-primary-200/30 shadow-lg backdrop-blur-xl rounded-2xl">
+                <h3 className="font-display font-bold text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary mb-2 sm:mb-3 flex items-center gap-2">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <Lightbulb className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                     </div>
                     About Vector Search
                 </h3>
-                <p className="font-body text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
+                <p className="font-body text-xs sm:text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
                     Vector search enables semantic queries like "find operations similar to high-cost AI calls"
                     or "show me patterns like yesterday's spike". Vectorization processes your telemetry data
                     to create embeddings that power intelligent cost analysis and anomaly detection.

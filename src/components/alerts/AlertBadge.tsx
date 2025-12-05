@@ -1,4 +1,3 @@
-// src/components/alerts/AlertBadge.tsx
 import React from "react";
 import { BellIcon } from "@heroicons/react/24/outline";
 

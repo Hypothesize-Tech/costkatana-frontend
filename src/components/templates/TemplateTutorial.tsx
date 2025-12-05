@@ -66,7 +66,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
             <div className="glass p-6 rounded-2xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-xl transition-all">
               <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center mb-4 shadow-lg">
                 <FiDollarSign className="w-6 h-6 text-white" />
@@ -596,20 +596,22 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
               <h3 className="text-2xl font-display font-semibold gradient-text-secondary mb-4">
                 What's Next?
               </h3>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <button
-                  className="btn-primary inline-flex items-center justify-center gap-3 px-8 py-4"
+                  className="btn-primary inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base"
                   onClick={onCreateTemplate}
                 >
-                  <FiZap className="w-5 h-5" />
-                  Create Your First Real Template
+                  <FiZap className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Create Your First Real Template</span>
+                  <span className="sm:hidden">Create Template</span>
                 </button>
                 <button
-                  className="btn-secondary inline-flex items-center justify-center gap-3 px-8 py-4"
+                  className="btn-secondary inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base"
                   onClick={onViewMarketplace}
                 >
-                  <FiEye className="w-5 h-5" />
-                  Explore Template Marketplace
+                  <FiEye className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Explore Template Marketplace</span>
+                  <span className="sm:hidden">Explore</span>
                 </button>
               </div>
             </div>
@@ -690,23 +692,23 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
     .reduce((sum, step) => sum + step.estimatedTime, 0);
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="glass rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden shadow-2xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
         {/* Header */}
-        <div className="bg-gradient-primary text-white p-8 relative rounded-t-3xl shadow-lg">
+        <div className="bg-gradient-primary text-white p-4 sm:p-6 md:p-8 relative rounded-t-2xl sm:rounded-t-3xl shadow-lg">
           <button
             onClick={onClose}
-            className="btn-icon-secondary absolute top-6 right-6 bg-white/20 hover:bg-white/30 text-white"
+            className="btn-icon-secondary absolute top-3 right-3 sm:top-6 sm:right-6 bg-white/20 hover:bg-white/30 text-white"
           >
-            <FiX className="w-5 h-5" />
+            <FiX className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
-          <div className="mb-6">
-            <h1 className="text-3xl font-display font-bold mb-2 text-white">{currentStepData.title}</h1>
-            <p className="font-body text-primary-100">{currentStepData.description}</p>
+          <div className="mb-4 sm:mb-6 pr-8 sm:pr-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold mb-2 text-white">{currentStepData.title}</h1>
+            <p className="text-sm sm:text-base font-body text-primary-100">{currentStepData.description}</p>
           </div>
 
-          <div className="flex justify-between items-center text-sm font-body text-primary-100 mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs sm:text-sm font-body text-primary-100 mb-3 sm:mb-4">
             <span>
               Step {currentStep + 1} of {tutorialSteps.length}
             </span>
@@ -738,17 +740,17 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto max-h-[60vh] bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+        <div className="p-4 sm:p-6 md:p-8 overflow-y-auto max-h-[60vh] bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
           {currentStepData.content}
         </div>
 
         {/* Footer */}
-        <div className="glass p-6 border-t border-primary-200/30 backdrop-blur-xl rounded-b-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex justify-between items-center">
+        <div className="glass p-4 sm:p-6 border-t border-primary-200/30 backdrop-blur-xl rounded-b-2xl sm:rounded-b-3xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
             <button
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="btn-secondary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-secondary inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               <FiSkipBack className="w-4 h-4" />
               Previous
@@ -758,7 +760,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
               {currentStep === tutorialSteps.length - 1 ? (
                 <button
                   onClick={onClose}
-                  className="btn-secondary inline-flex items-center gap-2"
+                  className="btn-secondary inline-flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   <FiHome className="w-4 h-4" />
                   Finish Tutorial
@@ -767,7 +769,7 @@ export const TemplateTutorial: React.FC<TemplateTutorialProps> = ({
                 <button
                   onClick={handleNext}
                   disabled={!canProceed()}
-                  className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                 >
                   Next
                   <FiSkipForward className="w-4 h-4" />

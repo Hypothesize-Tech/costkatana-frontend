@@ -25,30 +25,30 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
     };
 
     return (
-        <div className="space-y-6 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 p-6 animate-fade-in">
-            <div className="flex items-center space-x-3 pb-4 border-b border-primary-200/30">
-                <div className="bg-gradient-primary p-2 rounded-lg glow-primary">
-                    <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" />
+        <div className="space-y-4 glass shadow-2xl backdrop-blur-xl border border-primary-200/30 p-3 animate-fade-in sm:space-y-5 sm:p-4 md:space-y-6 md:p-6">
+            <div className="flex items-center space-x-2 pb-3 border-b border-primary-200/30 sm:space-x-3 sm:pb-4">
+                <div className="bg-gradient-primary p-1.5 rounded-lg glow-primary sm:p-2">
+                    <AdjustmentsHorizontalIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text">Cortex Configuration</h3>
+                <h3 className="text-base font-display font-bold gradient-text sm:text-lg md:text-xl">Cortex Configuration</h3>
             </div>
 
             {/* Processing Mode - NEW ARCHITECTURE */}
-            <div className="space-y-3">
-                <label className="flex items-center space-x-3">
-                    <div className="bg-gradient-accent/20 p-2 rounded-lg">
-                        <ChartBarIcon className="h-4 w-4 text-accent-600" />
+            <div className="space-y-2 sm:space-y-3">
+                <label className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="bg-gradient-accent/20 p-1.5 rounded-lg sm:p-2">
+                        <ChartBarIcon className="h-3.5 w-3.5 text-accent-600 sm:h-4 sm:w-4" />
                     </div>
-                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Processing Mode</span>
+                    <span className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary sm:text-sm">Processing Mode</span>
                 </label>
-                <div className="p-4 bg-gradient-primary/10 border border-primary-200/30 rounded-xl glass backdrop-blur-xl">
-                    <div className="flex items-center space-x-3 mb-3">
-                        <div className="bg-gradient-success p-2 rounded-lg glow-success">
-                            <CheckCircleIcon className="h-5 w-5 text-white" />
+                <div className="p-3 bg-gradient-primary/10 border border-primary-200/30 rounded-lg glass backdrop-blur-xl sm:p-4 md:rounded-xl">
+                    <div className="flex items-center space-x-2 mb-2 sm:space-x-3 sm:mb-3">
+                        <div className="bg-gradient-success p-1.5 rounded-lg glow-success sm:p-2">
+                            <CheckCircleIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                         </div>
-                        <span className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">Answer Generation Mode</span>
+                        <span className="text-xs font-display font-semibold text-primary-700 dark:text-primary-300 sm:text-sm">Answer Generation Mode</span>
                     </div>
-                    <p className="text-sm font-body text-primary-600 dark:text-primary-400 leading-relaxed">
+                    <p className="text-xs font-body text-primary-600 dark:text-primary-400 leading-relaxed sm:text-sm">
                         Cortex now generates answers in LISP format, reducing output tokens by 70-85%.
                         The system processes queries through: Query → LISP → Answer (LISP) → Natural Language
                     </p>
@@ -56,14 +56,14 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
             </div>
 
             {/* Answer Generation Settings */}
-            <div className="space-y-3">
-                <label className="flex items-center space-x-3">
-                    <div className="bg-gradient-secondary/20 p-2 rounded-lg">
-                        <CpuChipIcon className="h-4 w-4 text-secondary-600" />
+            <div className="space-y-2 sm:space-y-3">
+                <label className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="bg-gradient-secondary/20 p-1.5 rounded-lg sm:p-2">
+                        <CpuChipIcon className="h-3.5 w-3.5 text-secondary-600 sm:h-4 sm:w-4" />
                     </div>
-                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">Answer Generation Settings</span>
+                    <span className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary sm:text-sm">Answer Generation Settings</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                     {[
                         { value: 'concise', label: 'Concise', desc: 'Brief LISP answers' },
                         { value: 'detailed', label: 'Detailed', desc: 'Comprehensive LISP responses' },
@@ -75,13 +75,13 @@ export const CortexConfigPanel: React.FC<CortexConfigPanelProps> = ({
                                 outputStyle: level.value === 'concise' ? 'conversational' : 'formal'
                             })}
                             disabled={disabled}
-                            className={`p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 ${(config.outputStyle === 'conversational' && level.value === 'concise') || (config.outputStyle === 'formal' && level.value === 'detailed')
+                            className={`p-3 rounded-lg text-center transition-all duration-300 hover:scale-105 min-h-[44px] sm:p-4 md:rounded-xl [touch-action:manipulation] active:scale-95 ${(config.outputStyle === 'conversational' && level.value === 'concise') || (config.outputStyle === 'formal' && level.value === 'detailed')
                                 ? 'bg-gradient-primary text-white shadow-lg glow-primary border border-primary-300'
                                 : 'glass border border-primary-200/30 hover:bg-primary-500/10 text-light-text-primary dark:text-dark-text-primary'
                                 } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
-                            <div className="text-sm font-display font-semibold">{level.label}</div>
-                            <div className="text-xs font-body opacity-75 mt-1">{level.desc}</div>
+                            <div className="text-xs font-display font-semibold sm:text-sm">{level.label}</div>
+                            <div className="text-[10px] font-body opacity-75 mt-0.5 sm:text-xs sm:mt-1">{level.desc}</div>
                         </button>
                     ))}
                 </div>

@@ -10,10 +10,6 @@ export const SessionsUnified: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'replays' | 'debug'>('replays');
     const [tabLoading, setTabLoading] = useState(false);
 
-    // If sessionId is provided in URL, show the replay player directly
-    if (sessionId) {
-        return <SessionReplayPage />;
-    }
 
     useEffect(() => {
         // Show shimmer when switching tabs
@@ -24,44 +20,51 @@ export const SessionsUnified: React.FC = () => {
         return () => clearTimeout(timer);
     }, [activeTab]);
 
+    // If sessionId is provided in URL, show the replay player directly
+    if (sessionId) {
+        return <SessionReplayPage />;
+    }
+
     if (tabLoading) {
         return <SessionsUnifiedShimmer activeTab={activeTab} />;
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-6">
+        <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient p-3 sm:p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 mb-8">
-                    <h1 className="text-3xl font-display font-bold gradient-text-primary mb-2">Sessions</h1>
-                    <p className="text-secondary-600 dark:text-secondary-300">View session replays and debug AI traces</p>
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8">
+                    <h1 className="text-2xl sm:text-3xl font-display font-bold gradient-text-primary mb-2">Sessions</h1>
+                    <p className="text-sm sm:text-base text-secondary-600 dark:text-secondary-300">View session replays and debug AI traces</p>
                 </div>
 
                 {/* Tabs */}
-                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mb-8">
+                <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel mb-4 sm:mb-6 md:mb-8">
                     <nav className="flex space-x-2 p-2">
                         <button
                             onClick={() => setActiveTab('replays')}
-                            className={`flex-1 py-3 px-4 font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === 'replays'
+                            className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 font-display font-semibold text-xs sm:text-sm transition-all duration-300 rounded-lg ${activeTab === 'replays'
                                 ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                                 : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                                 }`}
                         >
                             <div className="flex items-center justify-center">
-                                <PlayCircleIcon className="mr-2 w-5 h-5" />
-                                Session Replays
+                                <PlayCircleIcon className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">Session Replays</span>
+                                <span className="sm:hidden">Replays</span>
                             </div>
                         </button>
                         <button
                             onClick={() => setActiveTab('debug')}
-                            className={`flex-1 py-3 px-4 font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === 'debug'
+                            className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 font-display font-semibold text-xs sm:text-sm transition-all duration-300 rounded-lg ${activeTab === 'debug'
                                 ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                                 : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                                 }`}
                         >
                             <div className="flex items-center justify-center">
-                                <BugAntIcon className="mr-2 w-5 h-5" />
-                                Debug Traces
+                                <BugAntIcon className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">Debug Traces</span>
+                                <span className="sm:hidden">Debug</span>
                             </div>
                         </button>
                     </nav>
@@ -70,11 +73,11 @@ export const SessionsUnified: React.FC = () => {
                 {/* Tab Content */}
                 <div>
                     {activeTab === 'replays' ? (
-                        <div className="mt-[-24px]"> {/* Negative margin to remove extra spacing */}
+                        <div className="mt-[-12px] sm:mt-[-24px]"> {/* Negative margin to remove extra spacing */}
                             <SessionReplayPage />
                         </div>
                     ) : (
-                        <div className="mt-[-24px]">
+                        <div className="mt-[-12px] sm:mt-[-24px]">
                             <DebugSessions />
                         </div>
                     )}

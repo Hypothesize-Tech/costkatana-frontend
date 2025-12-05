@@ -16,10 +16,11 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { VisualComplianceTemplateCreator } from '../templates/VisualComplianceTemplateCreator';
 import type { ComplianceResult, Industry, MetaPromptPreset } from '../../types/visualCompliance.types';
 import type { PromptTemplate } from '../../types/promptTemplate.types';
+import type { Optimization } from '../../types/optimization.types';
 import { EyeIcon } from 'lucide-react';
 
 interface VisualComplianceTabProps {
-    onOptimizationCreated?: (optimization: any) => void;
+    onOptimizationCreated?: (optimization: Optimization) => void;
 }
 
 export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOptimizationCreated }) => {
@@ -324,28 +325,28 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
     }
 
     return (
-        <div className="space-y-6">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
-                    <div className="flex items-center gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <EyeIcon className="w-6 h-6 text-white" />
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="glass rounded-lg border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel sm:rounded-xl">
+                <div className="bg-gradient-primary/10 p-4 rounded-t-lg border-b border-primary-200/30 sm:p-6 md:p-8 sm:rounded-t-xl">
+                    <div className="flex flex-col gap-3 items-start mb-3 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg sm:w-11 sm:h-11 md:w-12 md:h-12 md:rounded-xl">
+                            <EyeIcon className="w-5 h-5 text-white sm:w-5.5 sm:h-5.5 md:w-6 md:h-6" />
                         </div>
-                        <div className="flex-1">
-                            <h2 className="text-3xl font-display font-bold gradient-text-primary">
+                        <div className="flex-1 w-full sm:w-auto">
+                            <h2 className="text-xl font-display font-bold gradient-text-primary sm:text-2xl md:text-3xl">
                                 Visual Compliance
                             </h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg mt-1">
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm mt-0.5 sm:text-base md:text-lg sm:mt-1">
                                 Ultra-optimized AI-powered visual compliance verification
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
                         {/* Template Toggle */}
-                        <div className="p-4 bg-gradient-to-br rounded-xl border from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-800/20 border-accent-200/50 dark:border-accent-700/50">
+                        <div className="p-3 bg-gradient-to-br rounded-lg border from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-800/20 border-accent-200/50 dark:border-accent-700/50 sm:p-4 md:rounded-xl">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h3 className="text-lg font-bold text-accent-700 dark:text-accent-300">
@@ -440,10 +441,10 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                         </div>
 
                         {/* Image Upload Section */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
                             {/* Reference Image */}
                             <div>
-                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3 flex items-center gap-2">
+                                <label className="flex items-center gap-2 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2 sm:mb-3">
                                     Reference Image {selectedTemplate?.referenceImage?.extractedFeatures?.status === 'completed' ? '(Optional - Using Cached Features)' : '(Required)'}
                                     {selectedTemplate?.referenceImage && (
                                         <span className="text-xs px-2 py-1 rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300 font-medium">
@@ -457,10 +458,11 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                     onChange={(e) => handleFileChange(e, 'reference')}
                                     className="hidden"
                                     id="reference-image"
+                                    disabled={useTemplate && selectedTemplate?.referenceImage?.extractedFeatures?.status === 'completed'}
                                 />
                                 <label
                                     htmlFor="reference-image"
-                                    className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent"
+                                    className={`flex flex-col items-center justify-center w-full h-32 sm:h-40 md:h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-lg sm:rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg ${useTemplate && selectedTemplate?.referenceImage?.extractedFeatures?.status === 'completed' ? 'opacity-60 cursor-not-allowed' : ''}`}
                                 >
                                     {referencePreview ? (
                                         <div className="relative w-full h-full">
@@ -469,16 +471,16 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                                 alt="Reference preview"
                                                 className="w-full h-full object-contain rounded-xl p-2"
                                             />
-                                            {selectedTemplate?.referenceImage && (
-                                                <div className="absolute top-2 right-2 px-2 py-1 rounded-md bg-success-500/90 text-white text-xs font-medium shadow-lg">
-                                                    From Template
+                                            {selectedTemplate?.referenceImage?.extractedFeatures?.status === 'completed' && (
+                                                <div className="absolute top-1 right-1 px-2 py-1 rounded-md bg-success-500/90 text-white text-xs font-medium shadow-lg">
+                                                    Cached Features
                                                 </div>
                                             )}
                                         </div>
                                     ) : (
                                         <>
-                                            <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
-                                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                            <PhotoIcon className="w-8 h-8 sm:w-10 sm:h-10 text-primary-500 dark:text-primary-400 mb-1 sm:mb-2" />
+                                            <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 Click to upload reference image
                                             </p>
                                         </>
@@ -488,8 +490,8 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
 
                             {/* Evidence Image */}
                             <div>
-                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
-                                    Evidence Image (User Upload)
+                                <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-2 sm:mb-3">
+                                    Evidence Image (Required)
                                 </label>
                                 <input
                                     type="file"
@@ -500,18 +502,18 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                 />
                                 <label
                                     htmlFor="evidence-image"
-                                    className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent"
+                                    className="flex flex-col items-center justify-center w-full h-32 sm:h-40 md:h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-lg sm:rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg"
                                 >
                                     {evidencePreview ? (
                                         <img
                                             src={evidencePreview}
                                             alt="Evidence preview"
-                                            className="w-full h-full object-contain rounded-xl p-2"
+                                            className="w-full h-full object-contain rounded-lg sm:rounded-xl p-1 sm:p-2"
                                         />
                                     ) : (
                                         <>
-                                            <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
-                                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                            <PhotoIcon className="w-8 h-8 sm:w-10 sm:h-10 text-primary-500 dark:text-primary-400 mb-1 sm:mb-2" />
+                                            <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 Click to upload evidence image
                                             </p>
                                         </>
@@ -642,7 +644,7 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
                                 // Only require reference image if NOT using template with cached features
                                 (!useTemplate || !selectedTemplate?.referenceImage?.extractedFeatures?.status) && !referenceImage
                             }
-                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] [touch-action:manipulation] active:scale-95"
                         >
                             {loading ? (
                                 <>
@@ -662,10 +664,10 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
 
             {/* Compression Status Display */}
             {compressionStatus && (
-                <div className="glass rounded-xl p-4 border border-primary-200/30 dark:border-primary-800/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
-                    <div className="flex items-center gap-3">
+                <div className="glass rounded-lg p-3 border border-primary-200/30 dark:border-primary-800/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 sm:p-4 md:rounded-xl">
+                    <div className="flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:gap-3">
                         <LoadingSpinner size="small" />
-                        <p className="font-body text-primary-800 dark:text-primary-200">
+                        <p className="text-sm sm:text-base font-body text-primary-800 dark:text-primary-200">
                             {compressionStatus}
                         </p>
                     </div>
@@ -674,8 +676,8 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
 
             {/* Error Display */}
             {error && (
-                <div className="glass rounded-xl p-4 border border-danger-200/30 dark:border-danger-800/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-                    <p className="font-body text-danger-800 dark:text-danger-200">
+                <div className="glass rounded-lg p-3 border border-danger-200/30 dark:border-danger-800/30 backdrop-blur-xl bg-gradient-to-br from-danger-50/50 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20 sm:p-4 md:rounded-xl">
+                    <p className="text-sm sm:text-base font-body text-danger-800 dark:text-danger-200">
                         <strong>Error:</strong> {error}
                     </p>
                 </div>
@@ -684,16 +686,16 @@ export const VisualComplianceTab: React.FC<VisualComplianceTabProps> = ({ onOpti
             {/* Results Display */}
             {result && (
                 <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="bg-gradient-success/10 p-8 rounded-t-xl border-b border-success-200/30 dark:border-success-800/30">
-                        <h3 className="text-2xl font-display font-bold gradient-text-success">
+                    <div className="bg-gradient-success/10 p-4 rounded-t-lg border-b border-success-200/30 dark:border-success-800/30 sm:p-6 md:p-8 sm:rounded-t-xl">
+                        <h3 className="text-lg font-display font-bold gradient-text-success sm:text-xl md:text-2xl">
                             Compliance Result
                         </h3>
                     </div>
 
-                    <div className="p-8">
+                    <div className="p-3 sm:p-4 md:p-6 lg:p-8">
                         {/* Score and Pass/Fail */}
-                        <div className="flex items-center gap-6 mb-6">
-                            <div className="text-6xl font-display font-bold" style={{
+                        <div className="flex flex-col gap-4 items-start mb-4 sm:flex-row sm:items-center sm:gap-6 sm:mb-5 md:mb-6">
+                            <div className="text-4xl font-display font-bold sm:text-5xl md:text-6xl" style={{
                                 color: result.pass_fail ? '#06ec9e' : '#ef4444'
                             }}>
                                 {result.compliance_score.toFixed(1)}%
