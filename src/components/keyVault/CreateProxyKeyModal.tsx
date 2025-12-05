@@ -166,47 +166,47 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex items-center justify-center min-h-screen pt-4 px-3 sm:px-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={handleClose} />
 
-        <div className="inline-block align-bottom glass rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel px-6 pt-6 pb-6 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
-          <div className="absolute top-4 right-4">
+        <div className="inline-block align-bottom glass rounded-xl sm:rounded-2xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel px-4 pt-5 pb-4 sm:px-6 sm:pt-6 sm:pb-6 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full w-full max-h-[90vh] overflow-y-auto">
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
             <button
               type="button"
               onClick={handleClose}
               className="btn btn-ghost p-2 rounded-lg hover:bg-danger-500/10 hover:text-danger-500 transition-all"
               aria-label="Close modal"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
           </div>
 
           <div className="sm:flex sm:items-start">
             <div className="w-full">
-              <div className="text-center sm:text-left mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <Key className="h-6 w-6 text-white" />
+              <div className="text-center sm:text-left mb-4 sm:mb-6 pr-8 sm:pr-0">
+                <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+                    <Key className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-display font-bold gradient-text-primary">
+                    <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                       Create Proxy Key
                     </h3>
                   </div>
                 </div>
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <p className="text-sm sm:text-base font-body text-light-text-secondary dark:text-dark-text-secondary">
                   Create a controlled access key that provides secure, limited access to your provider keys.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                 {/* Basic Information */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                      <FileText className="h-4 w-4 text-white" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-display font-bold gradient-text-primary">Basic Information</h4>
+                    <h4 className="text-base sm:text-lg font-display font-bold gradient-text-primary">Basic Information</h4>
                   </div>
 
                   {/* Name */}
@@ -272,13 +272,13 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Permissions */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                      <Lock className="h-4 w-4 text-white" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg flex-shrink-0">
+                      <Lock className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-display font-bold gradient-text-primary">Permissions</h4>
+                    <h4 className="text-base sm:text-lg font-display font-bold gradient-text-primary">Permissions</h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     {['read', 'write', 'admin'].map((permission) => (
                       <label key={permission} className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl cursor-pointer hover:border-primary-300/50 transition-all duration-300">
                         <div className="flex items-center gap-3">
@@ -297,13 +297,13 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Budget Limits */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                      <DollarSign className="h-4 w-4 text-white" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg flex-shrink-0">
+                      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-display font-bold gradient-text-primary">Budget Limits (Optional)</h4>
+                    <h4 className="text-base sm:text-lg font-display font-bold gradient-text-primary">Budget Limits (Optional)</h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     <div>
                       <label className="block font-display font-semibold gradient-text-primary mb-2">
                         Total Budget ($)
@@ -369,11 +369,11 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Rate Limiting */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg">
-                      <Zap className="h-4 w-4 text-white" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-warning flex items-center justify-center shadow-lg flex-shrink-0">
+                      <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-display font-bold gradient-text-primary">Rate Limiting (Optional)</h4>
+                    <h4 className="text-base sm:text-lg font-display font-bold gradient-text-primary">Rate Limiting (Optional)</h4>
                   </div>
                   <div>
                     <label className="block font-display font-semibold gradient-text-primary mb-2">
@@ -399,15 +399,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
 
                 {/* Security Restrictions */}
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                      <Lock className="h-4 w-4 text-white" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg flex-shrink-0">
+                      <Lock className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-display font-bold gradient-text-primary">Security Restrictions (Optional)</h4>
+                    <h4 className="text-base sm:text-lg font-display font-bold gradient-text-primary">Security Restrictions (Optional)</h4>
                   </div>
 
                   {/* Allowed IPs */}
-                  <div className="mb-6">
+                  <div className="mb-4 sm:mb-6">
                     <label className="block font-display font-semibold gradient-text-primary mb-2">
                       Allowed IP Addresses
                     </label>
@@ -416,15 +416,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         type="text"
                         value={newIP}
                         onChange={(e) => setNewIP(e.target.value)}
-                        className="input flex-1"
+                        className="input flex-1 text-sm sm:text-base"
                         placeholder="192.168.1.100"
                       />
                       <button
                         type="button"
                         onClick={addIP}
-                        className="btn btn-ghost w-12 h-12 flex items-center justify-center"
+                        className="btn btn-ghost w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0"
                       >
-                        <Plus className="h-5 w-5" />
+                        <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
                     </div>
                     {formData.allowedIPs && formData.allowedIPs.length > 0 && (
@@ -459,15 +459,15 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                         type="text"
                         value={newDomain}
                         onChange={(e) => setNewDomain(e.target.value)}
-                        className="input flex-1"
+                        className="input flex-1 text-sm sm:text-base"
                         placeholder="example.com"
                       />
                       <button
                         type="button"
                         onClick={addDomain}
-                        className="btn btn-ghost w-12 h-12 flex items-center justify-center"
+                        className="btn btn-ghost w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0"
                       >
-                        <Plus className="h-5 w-5" />
+                        <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
                     </div>
                     {formData.allowedDomains && formData.allowedDomains.length > 0 && (
@@ -506,26 +506,26 @@ export const CreateProxyKeyModal: React.FC<CreateProxyKeyModalProps> = ({
                 )}
 
                 {/* Actions */}
-                <div className="flex justify-end gap-3 pt-6 border-t border-primary-200/30">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-primary-200/30">
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="btn btn-ghost"
+                    className="btn btn-ghost text-sm sm:text-base w-full sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createProxyKeyMutation.isPending}
-                    className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto"
                   >
                     {createProxyKeyMutation.isPending ? (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         Creating...
                       </span>
                     ) : (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
                         <Key className="h-4 w-4" />
                         Create Proxy Key
                       </span>

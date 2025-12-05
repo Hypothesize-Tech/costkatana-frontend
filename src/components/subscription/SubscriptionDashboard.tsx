@@ -107,13 +107,13 @@ export const SubscriptionDashboard: React.FC = () => {
 
     if (!subscription) {
         return (
-            <div className="p-8 text-center card">
-                <p className="mb-4 text-light-text-secondary dark:text-dark-text-secondary">
+            <div className="p-6 sm:p-8 text-center card">
+                <p className="mb-3 sm:mb-4 text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary">
                     No subscription found
                 </p>
                 <button
                     onClick={() => setShowUpgradeModal(true)}
-                    className="btn-primary"
+                    className="btn-primary text-sm sm:text-base"
                 >
                     Create Subscription
                 </button>
@@ -126,44 +126,46 @@ export const SubscriptionDashboard: React.FC = () => {
         : null;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Current Plan Card */}
-            <div className="p-6 card">
-                <div className="flex justify-between items-start mb-6">
-                    <div>
-                        <h2 className="mb-2 text-2xl font-bold text-light-text dark:text-dark-text">
+            <div className="p-4 sm:p-5 md:p-6 card">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-0 mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex-1">
+                        <h2 className="mb-2 text-xl sm:text-2xl font-bold text-light-text dark:text-dark-text">
                             {subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1)} Plan
                         </h2>
-                        <div className="flex gap-3 items-center">
+                        <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
                             {getStatusBadge(subscription.status)}
                             {subscription.isTrial && trialDaysRemaining !== null && (
-                                <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     {trialDaysRemaining} days remaining
                                 </span>
                             )}
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="text-3xl font-bold text-light-text dark:text-dark-text">
-                            {subscription.billing.amount === 0
+                    <div className="text-left sm:text-right">
+                        <div className="text-2xl sm:text-3xl font-bold text-light-text dark:text-dark-text">
+                            {subscription.billing.amount === 0 && subscription.plan === 'free'
                                 ? 'Free'
-                                : `$${subscription.billing.amount}`}
+                                : subscription.billing.amount === 0 && subscription.plan === 'enterprise'
+                                    ? 'Custom Pricing'
+                                    : `$${subscription.billing.amount}`}
                         </div>
-                        <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                             /{subscription.billing.interval}
                         </div>
                     </div>
                 </div>
 
                 {/* Billing Info */}
-                <div className="grid grid-cols-1 gap-4 pt-4 border-t md:grid-cols-2 border-primary-200/20 dark:border-primary-800/20">
-                    <div className="flex gap-3 items-center">
-                        <CreditCardIcon className="w-5 h-5 text-primary-500" />
-                        <div>
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t sm:grid-cols-2 border-primary-200/20 dark:border-primary-800/20">
+                    <div className="flex gap-2 sm:gap-3 items-center">
+                        <CreditCardIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
                             <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                 Payment Method
                             </div>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-1.5 sm:gap-2 items-center">
                                 {subscription.paymentMethod && subscription.paymentMethod.paymentGateway !== 'none' && (() => {
                                     const gateway = subscription.paymentMethod.paymentGateway;
                                     const getLogo = () => {
@@ -183,11 +185,11 @@ export const SubscriptionDashboard: React.FC = () => {
                                         <img
                                             src={logo}
                                             alt={gateway || 'payment gateway'}
-                                            className="object-contain w-auto h-5 rounded-lg"
+                                            className="object-contain w-auto h-4 sm:h-5 rounded-lg flex-shrink-0"
                                         />
                                     ) : null;
                                 })()}
-                                <span className="text-sm font-medium text-light-text dark:text-dark-text">
+                                <span className="text-xs sm:text-sm font-medium text-light-text dark:text-dark-text truncate">
                                     {!subscription.paymentMethod || subscription.paymentMethod.paymentGateway === 'none'
                                         ? 'No payment method'
                                         : `${subscription.paymentMethod.paymentGateway.charAt(0).toUpperCase() + subscription.paymentMethod.paymentGateway.slice(1)}${subscription.paymentMethod.lastFour ? ` •••• ${subscription.paymentMethod.lastFour}` : ''}`}
@@ -195,13 +197,13 @@ export const SubscriptionDashboard: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex gap-3 items-center">
-                        <CalendarIcon className="w-5 h-5 text-primary-500" />
-                        <div>
+                    <div className="flex gap-2 sm:gap-3 items-center">
+                        <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
                             <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                                 {subscription.billing.cancelAtPeriodEnd ? 'Cancels on' : 'Next billing'}
                             </div>
-                            <div className="text-sm font-medium text-light-text dark:text-dark-text">
+                            <div className="text-xs sm:text-sm font-medium text-light-text dark:text-dark-text truncate">
                                 {subscription.billing.nextBillingDate
                                     ? formatDate(subscription.billing.nextBillingDate)
                                     : 'N/A'}
@@ -211,11 +213,11 @@ export const SubscriptionDashboard: React.FC = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 items-center pt-6 mt-6 border-t border-primary-200/20 dark:border-primary-800/20">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center pt-4 sm:pt-5 md:pt-6 mt-4 sm:mt-5 md:mt-6 border-t border-primary-200/20 dark:border-primary-800/20">
                     {subscription.plan !== 'enterprise' && (
                         <button
                             onClick={() => setShowUpgradeModal(true)}
-                            className="flex-1 btn btn-primary"
+                            className="flex-1 btn btn-primary text-sm sm:text-base"
                         >
                             {subscription.plan === 'free' ? 'Upgrade Plan' : 'Change Plan'}
                         </button>
@@ -223,7 +225,7 @@ export const SubscriptionDashboard: React.FC = () => {
                     {subscription.status === 'active' && !subscription.billing.cancelAtPeriodEnd && (
                         <button
                             onClick={() => setShowCancelModal(true)}
-                            className="btn btn-outline"
+                            className="btn btn-outline text-sm sm:text-base"
                         >
                             Cancel Subscription
                         </button>
@@ -240,7 +242,7 @@ export const SubscriptionDashboard: React.FC = () => {
                                         showNotification('Failed to reactivate subscription', 'error');
                                     });
                             }}
-                            className="flex-1 btn btn-primary"
+                            className="flex-1 btn btn-primary text-sm sm:text-base"
                         >
                             Reactivate Subscription
                         </button>
@@ -250,11 +252,11 @@ export const SubscriptionDashboard: React.FC = () => {
 
             {/* Usage Meters */}
             {usage && (
-                <div className="p-6 card">
-                    <h3 className="mb-6 text-xl font-bold text-light-text dark:text-dark-text">
+                <div className="p-4 sm:p-5 md:p-6 card">
+                    <h3 className="mb-4 sm:mb-5 md:mb-6 text-lg sm:text-xl font-bold text-light-text dark:text-dark-text">
                         Usage Overview
                     </h3>
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-5 md:space-y-6">
                         {usage.tokens && (
                             <UsageMeter
                                 label="Tokens"
@@ -332,54 +334,54 @@ export const SubscriptionDashboard: React.FC = () => {
 
             {/* Spending Breakdown */}
             {spendingSummary && (
-                <div className="p-6 card">
-                    <h3 className="mb-6 text-xl font-bold text-light-text dark:text-dark-text">
+                <div className="p-4 sm:p-5 md:p-6 card">
+                    <h3 className="mb-4 sm:mb-5 md:mb-6 text-lg sm:text-xl font-bold text-light-text dark:text-dark-text">
                         Spending Details
                     </h3>
 
                     {/* Summary Cards */}
-                    <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
-                        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                            <div className="flex gap-3 items-center mb-2">
-                                <CurrencyDollarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                                <span className="text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                    <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                            <div className="flex gap-2 sm:gap-3 items-center mb-2">
+                                <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Cost
                                 </span>
                             </div>
-                            <p className="text-xl font-bold font-display gradient-text-primary">
+                            <p className="text-base sm:text-lg md:text-xl font-bold font-display gradient-text-primary">
                                 {formatCurrency(spendingSummary.totalCost || 0)}
                             </p>
                         </div>
-                        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                            <div className="flex gap-3 items-center mb-2">
-                                <HashtagIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                                <span className="text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                            <div className="flex gap-2 sm:gap-3 items-center mb-2">
+                                <HashtagIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Tokens
                                 </span>
                             </div>
-                            <p className="text-xl font-bold font-display gradient-text-primary">
+                            <p className="text-base sm:text-lg md:text-xl font-bold font-display gradient-text-primary">
                                 {formatNumber(spendingSummary.totalTokens || 0)}
                             </p>
                         </div>
-                        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                            <div className="flex gap-3 items-center mb-2">
-                                <ChartBarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                                <span className="text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                            <div className="flex gap-2 sm:gap-3 items-center mb-2">
+                                <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Requests
                                 </span>
                             </div>
-                            <p className="text-xl font-bold font-display gradient-text-primary">
+                            <p className="text-base sm:text-lg md:text-xl font-bold font-display gradient-text-primary">
                                 {formatNumber(spendingSummary.totalRequests || 0)}
                             </p>
                         </div>
-                        <div className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                            <div className="flex gap-3 items-center mb-2">
-                                <CurrencyDollarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                                <span className="text-xs font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                            <div className="flex gap-2 sm:gap-3 items-center mb-2">
+                                <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
                                     Avg Cost/Req
                                 </span>
                             </div>
-                            <p className="text-xl font-bold font-display gradient-text-primary">
+                            <p className="text-base sm:text-lg md:text-xl font-bold font-display gradient-text-primary">
                                 {formatCurrency(spendingSummary.averageCostPerRequest || 0)}
                             </p>
                         </div>
@@ -387,26 +389,26 @@ export const SubscriptionDashboard: React.FC = () => {
 
                     {/* Feature Breakdown */}
                     {spendingSummary.features && spendingSummary.features.length > 0 && (
-                        <div className="mb-6">
-                            <h4 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+                        <div className="mb-4 sm:mb-5 md:mb-6">
+                            <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                                 Spending by Feature
                             </h4>
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 {spendingSummary.features.slice(0, 6).map((feature: any) => (
                                     <div
                                         key={feature.feature}
-                                        className="p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl"
+                                        className="p-3 sm:p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl"
                                     >
-                                        <div className="flex gap-3 items-center mb-3">
-                                            <div className="p-2 bg-gradient-to-br rounded-lg from-primary-500/20 to-primary-600/20">
-                                                <ChartBarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                        <div className="flex gap-2 sm:gap-3 items-center mb-2 sm:mb-3">
+                                            <div className="p-1.5 sm:p-2 bg-gradient-to-br rounded-lg from-primary-500/20 to-primary-600/20 flex-shrink-0">
+                                                <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                                             </div>
-                                            <h5 className="text-base font-bold font-display gradient-text-primary">
+                                            <h5 className="text-sm sm:text-base font-bold font-display gradient-text-primary truncate">
                                                 {feature.feature}
                                             </h5>
                                         </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center text-sm">
+                                        <div className="space-y-1.5 sm:space-y-2">
+                                            <div className="flex justify-between items-center text-xs sm:text-sm">
                                                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                     Cost:
                                                 </span>
@@ -414,7 +416,7 @@ export const SubscriptionDashboard: React.FC = () => {
                                                     {formatCurrency(feature.cost || 0)}
                                                 </span>
                                             </div>
-                                            <div className="flex justify-between items-center text-sm">
+                                            <div className="flex justify-between items-center text-xs sm:text-sm">
                                                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                     Tokens:
                                                 </span>
@@ -422,7 +424,7 @@ export const SubscriptionDashboard: React.FC = () => {
                                                     {formatNumber(feature.tokens || 0)}
                                                 </span>
                                             </div>
-                                            <div className="flex justify-between items-center text-sm">
+                                            <div className="flex justify-between items-center text-xs sm:text-sm">
                                                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                     Requests:
                                                 </span>
@@ -439,24 +441,24 @@ export const SubscriptionDashboard: React.FC = () => {
 
                     {/* Services Breakdown */}
                     {spendingSummary.services && spendingSummary.services.length > 0 && (
-                        <div className="mb-6">
-                            <h4 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+                        <div className="mb-4 sm:mb-5 md:mb-6">
+                            <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                                 Spending by Service
                             </h4>
                             <div className="space-y-2">
                                 {spendingSummary.services.slice(0, 10).map((service: any) => (
                                     <div
                                         key={service.service}
-                                        className="flex justify-between items-center p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 p-2.5 sm:p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                     >
-                                        <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                                        <span className="text-xs sm:text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary truncate">
                                             {service.service}
                                         </span>
-                                        <div className="flex gap-4 items-center">
-                                            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                        <div className="flex gap-3 sm:gap-4 items-center">
+                                            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 {formatNumber(service.requests || 0)} requests
                                             </span>
-                                            <span className="text-sm font-bold font-display gradient-text-primary">
+                                            <span className="text-xs sm:text-sm font-bold font-display gradient-text-primary">
                                                 {formatCurrency(service.cost || 0)}
                                             </span>
                                         </div>
@@ -468,24 +470,24 @@ export const SubscriptionDashboard: React.FC = () => {
 
                     {/* Models Breakdown */}
                     {spendingSummary.models && spendingSummary.models.length > 0 && (
-                        <div className="mb-6">
-                            <h4 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+                        <div className="mb-4 sm:mb-5 md:mb-6">
+                            <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                                 Spending by Model
                             </h4>
                             <div className="space-y-2">
                                 {spendingSummary.models.slice(0, 10).map((model: any) => (
                                     <div
                                         key={model.model}
-                                        className="flex justify-between items-center p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 p-2.5 sm:p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                     >
-                                        <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[200px]">
+                                        <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-full sm:max-w-[200px]">
                                             {model.model}
                                         </span>
-                                        <div className="flex gap-4 items-center">
-                                            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                        <div className="flex gap-3 sm:gap-4 items-center">
+                                            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 {formatNumber(model.requests || 0)} requests
                                             </span>
-                                            <span className="text-sm font-bold font-display gradient-text-primary">
+                                            <span className="text-xs sm:text-sm font-bold font-display gradient-text-primary">
                                                 {formatCurrency(model.cost || 0)}
                                             </span>
                                         </div>
@@ -498,23 +500,23 @@ export const SubscriptionDashboard: React.FC = () => {
                     {/* Projects Breakdown */}
                     {spendingSummary.projects && spendingSummary.projects.length > 0 && (
                         <div>
-                            <h4 className="mb-4 text-lg font-bold font-display gradient-text-primary">
+                            <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-bold font-display gradient-text-primary">
                                 Spending by Project
                             </h4>
                             <div className="space-y-2">
                                 {spendingSummary.projects.slice(0, 10).map((project: any) => (
                                     <div
                                         key={project.projectId}
-                                        className="flex justify-between items-center p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 p-2.5 sm:p-3 bg-gradient-to-br rounded-lg border shadow-sm backdrop-blur-xl glass border-primary-200/30 from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                     >
-                                        <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[200px]">
+                                        <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-full sm:max-w-[200px]">
                                             {project.projectName || project.projectId}
                                         </span>
-                                        <div className="flex gap-4 items-center">
-                                            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                        <div className="flex gap-3 sm:gap-4 items-center">
+                                            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 {formatNumber(project.requests || 0)} requests
                                             </span>
-                                            <span className="text-sm font-bold font-display gradient-text-primary">
+                                            <span className="text-xs sm:text-sm font-bold font-display gradient-text-primary">
                                                 {formatCurrency(project.cost || 0)}
                                             </span>
                                         </div>

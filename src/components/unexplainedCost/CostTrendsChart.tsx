@@ -68,23 +68,23 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
     };
 
     return (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6">
-            <div className="flex items-center justify-between mb-6">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-5 md:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-5 md:mb-6 gap-3 sm:gap-0">
                 <div>
-                    <h2 className="text-xl font-display font-bold gradient-text-primary">Cost Trends & Predictions</h2>
-                    <p className="text-secondary-600 dark:text-secondary-300 mt-1">Historical patterns and future projections</p>
+                    <h2 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">Cost Trends & Predictions</h2>
+                    <p className="text-xs sm:text-sm md:text-base text-secondary-600 dark:text-secondary-300 mt-1">Historical patterns and future projections</p>
                 </div>
 
-                <div className="text-right">
-                    <div className="text-2xl font-display font-bold gradient-text-primary">
+                <div className="text-left sm:text-right">
+                    <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                         {formatCurrency(trends.trends.daily_average)}
                     </div>
-                    <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Daily Average</div>
+                    <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Daily Average</div>
                 </div>
             </div>
 
             {/* Growth Metrics */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
                 <div className="p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
                     <div className="flex items-center justify-between">
                         <div>
@@ -115,28 +115,28 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             </div>
 
             {/* Cost Driver Trends */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Cost Driver Trends</h3>
-                <div className="space-y-3">
+            <div className="mb-4 sm:mb-5 md:mb-6">
+                <h3 className="text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 sm:mb-4">Cost Driver Trends</h3>
+                <div className="space-y-2 sm:space-y-3">
                     {trends.trends.cost_drivers_trend.map((driver, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-md transition-all duration-300">
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-primary-400 to-primary-500 mr-3"></div>
-                                <div>
-                                    <div className="font-medium text-light-text-primary dark:text-dark-text-primary capitalize">
+                        <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:shadow-md transition-all duration-300 gap-2 sm:gap-0">
+                            <div className="flex items-center flex-1 min-w-0">
+                                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-primary-400 to-primary-500 mr-2 sm:mr-3 flex-shrink-0"></div>
+                                <div className="min-w-0">
+                                    <div className="font-medium text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary capitalize break-words">
                                         {driver.driver.replace('_', ' ')}
                                     </div>
-                                    <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                         {getTrendDescription(driver.trend)}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="text-right">
-                                <div className={`font-semibold ${getTrendColor(driver.trend)}`}>
+                            <div className="text-left sm:text-right flex-shrink-0">
+                                <div className={`text-sm sm:text-base font-semibold ${getTrendColor(driver.trend)}`}>
                                     {formatPercentage(driver.rate)}
                                 </div>
-                                <div className={`text-sm ${getTrendColor(driver.trend)}`}>
+                                <div className={`text-xs sm:text-sm ${getTrendColor(driver.trend)}`}>
                                     {getTrendIcon(driver.trend)}
                                 </div>
                             </div>
@@ -146,9 +146,9 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             </div>
 
             {/* Predictions */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Cost Predictions</h3>
-                <div className="grid grid-cols-2 gap-4">
+            <div className="mb-4 sm:mb-5 md:mb-6">
+                <h3 className="text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 sm:mb-4">Cost Predictions</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="p-4 glass rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-br from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
                         <div className="text-center">
                             <div className="text-sm font-medium text-success-700 dark:text-success-300 mb-1">Next Week</div>
@@ -234,8 +234,8 @@ export const CostTrendsChart: React.FC<CostTrendsChartProps> = ({ trends }) => {
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-6 pt-6 border-t border-primary-200/30">
-                <div className="flex flex-wrap gap-3">
+            <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-primary-200/30">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
                     <button
                         onClick={() => {
                             const csvContent = `data:text/csv;charset=utf-8,Period,Daily Average,Weekly Growth,Monthly Growth,Next Week,Next Month,Confidence\n${trends.period},${trends.trends.daily_average},${trends.trends.weekly_growth},${trends.trends.monthly_growth},${trends.predictions.next_week},${trends.predictions.next_month},${trends.predictions.confidence}`;

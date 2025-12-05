@@ -33,16 +33,16 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
 
     if (loading || !trendsData || trendsData.length === 0) {
         return (
-            <div className="glass backdrop-blur-xl rounded-xl p-8 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                        <ChartBarIcon className="w-5 h-5 text-white" />
+            <div className="glass backdrop-blur-xl rounded-xl p-4 sm:p-6 md:p-8 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                        <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-display font-bold gradient-text-primary">
+                    <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
                         Spending Trends
                     </h3>
                 </div>
-                <div className="skeleton h-64 rounded-lg" />
+                <div className="skeleton h-48 sm:h-56 md:h-64 rounded-lg" />
             </div>
         );
     }
@@ -146,7 +146,7 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
                         options={chartOptions.bar}
                     />
                 );
-            case 'doughnut':
+            case 'doughnut': {
                 // For doughnut, we aggregate by time period
                 const totalCost = costData.reduce((a, b) => a + b, 0);
                 const averageCost = totalCost / costData.length;
@@ -160,6 +160,7 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
                         options={chartOptions.doughnut}
                     />
                 );
+            }
             default:
                 return null;
         }
@@ -182,14 +183,14 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
     const IconComponent = chartIcons[chartType];
 
     return (
-        <div className="glass backdrop-blur-xl rounded-xl p-5 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                        <IconComponent className="w-5 h-5 text-white" />
+        <div className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 md:p-5 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                        <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
                             Spending Trends
                         </h3>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -200,11 +201,12 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
 
                 {/* Chart Type Switcher */}
                 <Menu as="div" className="relative">
-                    <Menu.Button className="inline-flex items-center gap-2 px-3 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-light-text-primary dark:text-dark-text-primary">
-                        <IconComponent className="w-4 h-4 text-primary-500" />
-                        <span>{chartLabels[chartType]}</span>
+                    <Menu.Button className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-light-text-primary dark:text-dark-text-primary">
+                        <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-500" />
+                        <span className="hidden xs:inline">{chartLabels[chartType]}</span>
+                        <span className="xs:hidden">Chart</span>
                         <svg
-                            className="w-4 h-4 text-primary-500"
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -236,8 +238,8 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
                                                 <button
                                                     onClick={() => setChartType(type)}
                                                     className={`${active
-                                                            ? 'bg-primary-500/10 dark:bg-primary-900/20'
-                                                            : ''
+                                                        ? 'bg-primary-500/10 dark:bg-primary-900/20'
+                                                        : ''
                                                         } ${chartType === type
                                                             ? 'text-primary-600 dark:text-primary-400 font-semibold bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20 border-l-2 border-primary-500'
                                                             : 'text-light-text-primary dark:text-dark-text-primary'
@@ -256,7 +258,7 @@ export const SpendingChartSwitcher: React.FC<SpendingChartSwitcherProps> = ({
                 </Menu>
             </div>
 
-            <div className="h-64 chart-container">{renderChart()}</div>
+            <div className="h-48 sm:h-56 md:h-64 chart-container">{renderChart()}</div>
         </div>
     );
 };

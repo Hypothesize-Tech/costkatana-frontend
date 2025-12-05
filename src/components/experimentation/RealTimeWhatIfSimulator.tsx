@@ -204,67 +204,67 @@ const RealTimeWhatIfSimulator: React.FC = () => {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto p-6 space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
+        <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 md:space-y-8 light:bg-gradient-light-ambient dark:bg-gradient-dark-ambient relative overflow-hidden">
             {/* Ambient glow effects */}
-            <div className="absolute top-10 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-10 right-10 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-secondary-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 sm:w-64 h-40 sm:h-64 bg-accent-500/10 rounded-full blur-3xl animate-pulse"></div>
 
             {/* Header */}
-            <div className="text-center mb-12 relative z-10">
-                <div className="bg-gradient-primary p-4 rounded-2xl shadow-2xl glow-primary w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-                    <Beaker className="h-10 w-10 text-white" />
+            <div className="text-center mb-6 sm:mb-8 md:mb-12 relative z-10">
+                <div className="bg-gradient-primary p-3 sm:p-4 rounded-2xl shadow-2xl glow-primary w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                    <Beaker className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                 </div>
-                <h1 className="text-4xl font-display font-bold gradient-text-primary mb-4 flex items-center justify-center gap-3">
-                    <Sparkles className="h-10 w-10 text-primary-600 dark:text-primary-400" />
-                    Real-Time What-If Cost Simulator
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold gradient-text-primary mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+                    <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-primary-600 dark:text-primary-400" />
+                    <span>Real-Time What-If Cost Simulator</span>
                 </h1>
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto text-lg leading-relaxed">
+                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary max-w-4xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-2 sm:px-0">
                     See instant cost optimizations for your prompts using AWS Bedrock models. Compare models, trim context, optimize structure - all in real-time with confidence scores.
                 </p>
-                <div className="glass p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 dark:bg-primary-900/20 mt-6 max-w-3xl mx-auto backdrop-blur-xl flex items-center gap-2">
-                    <Lightbulb className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
-                    <div className="font-body text-primary-700 dark:text-primary-300">
+                <div className="glass p-3 sm:p-4 rounded-xl border border-primary-200/30 bg-primary-500/5 dark:bg-primary-900/20 mt-4 sm:mt-6 max-w-3xl mx-auto backdrop-blur-xl flex items-center gap-2">
+                    <Lightbulb className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                    <div className="font-body text-primary-700 dark:text-primary-300 text-xs sm:text-sm">
                         <span className="font-display font-bold">Bedrock Focus:</span> All models shown have verified pricing data and are available through AWS Bedrock
                     </div>
                 </div>
             </div>
 
             {/* Input Section */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl relative z-10 animate-fade-in">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl relative z-10 animate-fade-in">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                     {/* Prompt Input */}
                     <div className="lg:col-span-2">
-                        <label className="label mb-3">
+                        <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
                             Your Prompt
                         </label>
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder="Paste your prompt here to see instant cost analysis and optimization suggestions..."
-                            className="input h-40 resize-none"
+                            className="input h-32 sm:h-36 md:h-40 resize-none text-sm"
                             rows={6}
                         />
-                        <div className="mt-3 glass p-3 rounded-xl border border-primary-200/30">
-                            <div className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="mt-2 sm:mt-3 glass p-2 sm:p-3 rounded-xl border border-primary-200/30">
+                            <div className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                 <span className="font-display font-semibold">Length:</span> {prompt.length} characters
-                                <span className="mx-2">•</span>
+                                <span className="mx-1 sm:mx-2">•</span>
                                 <span className="font-display font-semibold gradient-text">~{Math.ceil(prompt.length / 4)}</span> tokens
                             </div>
                         </div>
                     </div>
 
                     {/* Controls */}
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                         {/* Model Selection */}
                         <div>
-                            <label className="label mb-3">
+                            <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
                                 Current Model
                             </label>
                             <select
                                 value={currentModel}
                                 onChange={(e) => setCurrentModel(e.target.value)}
-                                className="input text-sm"
+                                className="input text-xs sm:text-sm"
                             >
                                 {availableModels.map(model => {
                                     const displayInfo = getModelDisplayInfo(model);
@@ -282,8 +282,9 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                                         return (
                                             <>
                                                 <span className="font-display font-semibold text-primary-600">{displayInfo.name}</span>
-                                                <span className="mx-2">•</span>
-                                                Input→Output tokens pricing
+                                                <span className="mx-1 sm:mx-2">•</span>
+                                                <span className="hidden sm:inline">Input→Output tokens pricing</span>
+                                                <span className="sm:hidden">Pricing</span>
                                             </>
                                         );
                                     })()}
@@ -293,13 +294,13 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                         {/* Simulation Type */}
                         <div>
-                            <label className="label mb-3">
+                            <label className="label mb-2 sm:mb-3 text-xs sm:text-sm">
                                 Analysis Type
                             </label>
                             <select
                                 value={simulationType}
                                 onChange={(e) => setSimulationType(e.target.value as 'real_time_analysis' | 'prompt_optimization' | 'context_trimming' | 'model_comparison')}
-                                className="input"
+                                className="input text-xs sm:text-sm"
                             >
                                 {simulationTypes.map(type => (
                                     <option key={type.value} value={type.value}>{type.label}</option>
@@ -313,10 +314,10 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         </div>
 
                         {/* Advanced Parameters */}
-                        <div className="glass p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-4">
-                            <h4 className="text-sm font-display font-bold gradient-text-primary flex items-center">
-                                <div className="bg-gradient-primary p-2 rounded-lg glow-primary shadow-lg mr-3">
-                                    <Settings className="w-5 h-5 text-white" />
+                        <div className="glass p-4 sm:p-5 md:p-6 shadow-lg backdrop-blur-xl border border-primary-200/30 space-y-3 sm:space-y-4">
+                            <h4 className="text-xs sm:text-sm font-display font-bold gradient-text-primary flex items-center">
+                                <div className="bg-gradient-primary p-1.5 sm:p-2 rounded-lg glow-primary shadow-lg mr-2 sm:mr-3">
+                                    <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                 </div>
                                 Advanced Parameters
                             </h4>
@@ -404,17 +405,19 @@ const RealTimeWhatIfSimulator: React.FC = () => {
                         <button
                             onClick={runSimulation}
                             disabled={isSimulating || !prompt.trim() || !currentModel}
-                            className="btn btn-primary w-full py-4 font-display font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl glow-primary flex items-center justify-center gap-2"
+                            className="btn btn-primary w-full py-3 sm:py-4 font-display font-bold text-sm sm:text-base md:text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl glow-primary flex items-center justify-center gap-2"
                         >
                             {isSimulating ? (
                                 <>
-                                    <div className="spinner mr-3"></div>
-                                    Analyzing...
+                                    <div className="spinner mr-2 sm:mr-3"></div>
+                                    <span className="hidden sm:inline">Analyzing...</span>
+                                    <span className="sm:hidden">Analyzing</span>
                                 </>
                             ) : (
                                 <>
-                                    <Zap className="h-5 w-5" />
-                                    Run Analysis
+                                    <Zap className="h-4 w-4 sm:h-5 sm:w-5" />
+                                    <span className="hidden sm:inline">Run Analysis</span>
+                                    <span className="sm:hidden">Run</span>
                                 </>
                             )}
                         </button>
@@ -435,57 +438,57 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
             {/* Results Section */}
             {results && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     {/* Current Cost Overview */}
-                    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
-                        <div className="flex items-center mb-6">
-                            <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-                                <BarChart3 className="h-6 w-6 text-white" />
+                    <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+                        <div className="flex items-center mb-4 sm:mb-6">
+                            <div className="bg-gradient-primary p-2 sm:p-3 rounded-xl glow-primary shadow-lg mr-3 sm:mr-4">
+                                <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                             </div>
-                            <h3 className="text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text">Current Cost Analysis</h3>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                            <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center justify-center mb-2">
-                                    <DollarSign className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                    <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400 mr-1 sm:mr-2" />
                                 </div>
-                                <div className="text-2xl font-display font-bold text-secondary-900 dark:text-white">{formatCost(results.currentCost.totalCost)}</div>
-                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Cost</div>
+                                <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-secondary-900 dark:text-white">{formatCost(results.currentCost.totalCost)}</div>
+                                <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Cost</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel">
                                 <div className="flex items-center justify-center mb-2">
-                                    <BarChart3 className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
+                                    <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400 mr-1 sm:mr-2" />
                                 </div>
-                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{formatTokens(results.currentCost.totalTokens)}</div>
-                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Tokens</div>
+                                <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{formatTokens(results.currentCost.totalTokens)}</div>
+                                <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 font-body">Total Tokens</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-success-200/30 text-center shadow-lg bg-gradient-success/10 dark:bg-gradient-success/20">
+                            <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-success-200/30 text-center shadow-lg bg-gradient-success/10 dark:bg-gradient-success/20">
                                 <div className="flex items-center justify-center mb-2">
-                                    <DollarSign className="h-5 w-5 text-success-600 dark:text-success-400" />
+                                    <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-success-600 dark:text-success-400" />
                                 </div>
-                                <div className="text-2xl font-display font-bold text-success-600 dark:text-success-400">{results.potentialSavings.toFixed(1)}%</div>
-                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Max Savings</div>
+                                <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-success-600 dark:text-success-400">{results.potentialSavings.toFixed(1)}%</div>
+                                <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 font-body">Max Savings</div>
                             </div>
-                            <div className="glass p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-primary/10 dark:bg-gradient-primary/20">
+                            <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 text-center shadow-lg bg-gradient-primary/10 dark:bg-gradient-primary/20">
                                 <div className="flex items-center justify-center mb-2">
-                                    <BarChart3 className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                                    <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400" />
                                 </div>
-                                <div className="text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{results.confidence}%</div>
-                                <div className="text-sm text-secondary-600 dark:text-secondary-300 font-body">Confidence</div>
+                                <div className="text-lg sm:text-xl md:text-2xl font-display font-bold text-primary-600 dark:text-primary-400">{results.confidence}%</div>
+                                <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 font-body">Confidence</div>
                             </div>
                         </div>
                     </div>
 
                     {/* Top Recommendations */}
                     {results.recommendations.length > 0 && (
-                        <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
-                            <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
-                                <Lightbulb className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                        <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+                            <h3 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
+                                <Lightbulb className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400" />
                                 Top Recommendations
                             </h3>
-                            <div className="space-y-3">
+                            <div className="space-y-2 sm:space-y-3">
                                 {results.recommendations.map((rec, index) => (
-                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300">
+                                    <div key={index} className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 sm:hover:bg-primary-500/5 dark:sm:hover:bg-primary-500/10 transition-all duration-300">
                                         <div className={`w-3 h-3 rounded-full mt-1 ${getPriorityColor(rec.priority)}`}></div>
                                         <div className="flex-1">
                                             <div className="font-medium text-secondary-900 dark:text-white">{rec.title}</div>
@@ -508,14 +511,14 @@ const RealTimeWhatIfSimulator: React.FC = () => {
 
                     {/* Detailed Optimization Options */}
                     {results.optimizedOptions.length > 0 && (
-                        <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
-                            <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
-                                <Zap className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                        <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 animate-fade-in">
+                            <h3 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
+                                <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400" />
                                 Optimization Options
                             </h3>
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                                 {results.optimizedOptions.map((option, index) => (
-                                    <div key={index} className="glass p-6 rounded-xl border border-primary-200/30 hover:bg-primary-500/5 dark:hover:bg-primary-500/10 transition-all duration-300">
+                                    <div key={index} className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 sm:hover:bg-primary-500/5 dark:sm:hover:bg-primary-500/10 transition-all duration-300">
                                         <div className="flex items-center justify-between mb-2">
                                             <h4 className="font-medium text-secondary-900 dark:text-white">{option.description}</h4>
                                             <span className={`px-2 py-1 text-xs rounded-full border ${getRiskColor(option.risk)}`}>

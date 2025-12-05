@@ -3,10 +3,10 @@ import React from "react";
 // Team Management Header Shimmer
 export const TeamManagementHeaderShimmer: React.FC = () => {
     return (
-        <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-            <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+        <div className="glass rounded-xl p-4 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                 {/* Workspace Switcher */}
-                <div className="w-48 h-10 rounded-lg skeleton" />
+                <div className="w-full sm:w-48 h-10 rounded-lg skeleton" />
                 {/* Role Badge */}
                 <div className="flex items-center gap-2">
                     <div className="w-20 h-4 rounded skeleton" />
@@ -15,9 +15,9 @@ export const TeamManagementHeaderShimmer: React.FC = () => {
             </div>
 
             {/* Section Tabs */}
-            <div className="flex gap-2">
-                <div className="w-40 h-10 rounded-xl skeleton" />
-                <div className="w-32 h-10 rounded-xl skeleton" />
+            <div className="flex flex-col sm:flex-row gap-2">
+                <div className="w-full sm:w-40 h-10 rounded-xl skeleton" />
+                <div className="w-full sm:w-32 h-10 rounded-xl skeleton" />
             </div>
         </div>
     );
@@ -26,20 +26,20 @@ export const TeamManagementHeaderShimmer: React.FC = () => {
 // Workspace Settings Section Shimmer
 export const WorkspaceSettingsShimmer: React.FC = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Workspace Info */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-4 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl skeleton" />
-                    <div className="w-48 h-6 rounded skeleton" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl skeleton" />
+                    <div className="w-40 md:w-48 h-5 md:h-6 rounded skeleton" />
                 </div>
 
                 <div className="space-y-4">
                     <div>
-                        <div className="mb-2 w-32 h-4 rounded skeleton" />
+                        <div className="mb-2 w-28 md:w-32 h-4 rounded skeleton" />
                         <div className="w-full h-11 rounded-lg skeleton" />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {[1, 2, 3, 4].map((i) => (
                             <div key={i}>
                                 <div className="mb-1 w-20 h-3 rounded skeleton" />
@@ -51,18 +51,18 @@ export const WorkspaceSettingsShimmer: React.FC = () => {
             </div>
 
             {/* Settings */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-4 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl skeleton" />
-                    <div className="w-40 h-6 rounded skeleton" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl skeleton" />
+                    <div className="w-32 md:w-40 h-5 md:h-6 rounded skeleton" />
                 </div>
 
                 <div className="space-y-4">
                     {[1, 2].map((i) => (
-                        <div key={i} className="flex items-center justify-between p-3 glass-hover rounded-xl">
-                            <div className="flex-1">
-                                <div className="mb-1 w-48 h-5 rounded skeleton" />
-                                <div className="w-64 h-4 rounded skeleton" />
+                        <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 glass-hover rounded-xl">
+                            <div className="flex-1 w-full sm:w-auto">
+                                <div className="mb-1 w-full sm:w-48 h-5 rounded skeleton" />
+                                <div className="w-full sm:w-64 h-4 rounded skeleton" />
                             </div>
                             <div className="w-5 h-5 rounded skeleton" />
                         </div>
@@ -70,17 +70,17 @@ export const WorkspaceSettingsShimmer: React.FC = () => {
                 </div>
 
                 <div className="mt-4">
-                    <div className="w-32 h-10 rounded-xl skeleton" />
+                    <div className="w-full sm:w-32 h-10 rounded-xl skeleton" />
                 </div>
             </div>
 
             {/* Billing Info */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-4 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl skeleton" />
-                    <div className="w-24 h-6 rounded skeleton" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl skeleton" />
+                    <div className="w-20 md:w-24 h-5 md:h-6 rounded skeleton" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[1, 2].map((i) => (
                         <div key={i}>
                             <div className="mb-1 w-28 h-3 rounded skeleton" />
@@ -91,10 +91,10 @@ export const WorkspaceSettingsShimmer: React.FC = () => {
             </div>
 
             {/* Danger Zone */}
-            <div className="glass rounded-xl p-6 border border-red-500/30 shadow-lg backdrop-blur-xl">
+            <div className="glass rounded-xl p-4 md:p-6 border border-red-500/30 shadow-lg backdrop-blur-xl">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl skeleton" />
-                    <div className="w-32 h-6 rounded skeleton" />
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl skeleton" />
+                    <div className="w-28 md:w-32 h-5 md:h-6 rounded skeleton" />
                 </div>
                 <div className="mb-4 w-full h-4 rounded skeleton" />
                 <div className="space-y-2">
@@ -110,13 +110,13 @@ export const WorkspaceSettingsShimmer: React.FC = () => {
 export const TeamMembersTableShimmer: React.FC = () => {
     return (
         <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden">
-            <div className="overflow-x-auto">
-                <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <table className="w-full min-w-[640px]">
                     <thead className="glass-hover">
                         <tr className="border-b border-primary-200/30">
                             {["Member", "Role", "Status", "Joined", "Actions"].map((header, idx) => (
-                                <th key={idx} className="px-6 py-4 text-left">
-                                    <div className="w-20 h-4 rounded skeleton" />
+                                <th key={idx} className="px-3 sm:px-6 py-3 sm:py-4 text-left">
+                                    <div className="w-16 sm:w-20 h-4 rounded skeleton" />
                                 </th>
                             ))}
                         </tr>
@@ -125,30 +125,30 @@ export const TeamMembersTableShimmer: React.FC = () => {
                         {[1, 2, 3, 4, 5].map((row) => (
                             <tr key={row} className="glass-hover transition-all">
                                 {/* Member Column */}
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full skeleton" />
-                                        <div className="flex-1">
-                                            <div className="mb-1 w-24 h-5 rounded skeleton" />
-                                            <div className="w-40 h-4 rounded skeleton" />
+                                <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full skeleton flex-shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <div className="mb-1 w-20 sm:w-24 h-4 sm:h-5 rounded skeleton" />
+                                            <div className="w-32 sm:w-40 h-3 sm:h-4 rounded skeleton" />
                                         </div>
                                     </div>
                                 </td>
                                 {/* Role Column */}
-                                <td className="px-6 py-4">
-                                    <div className="w-16 h-6 rounded-full skeleton" />
+                                <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                    <div className="w-14 sm:w-16 h-5 sm:h-6 rounded-full skeleton" />
                                 </td>
                                 {/* Status Column */}
-                                <td className="px-6 py-4">
-                                    <div className="w-20 h-6 rounded-full skeleton" />
+                                <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                    <div className="w-16 sm:w-20 h-5 sm:h-6 rounded-full skeleton" />
                                 </td>
                                 {/* Joined Column */}
-                                <td className="px-6 py-4">
-                                    <div className="w-24 h-4 rounded skeleton" />
+                                <td className="px-3 sm:px-6 py-3 sm:py-4">
+                                    <div className="w-20 sm:w-24 h-3 sm:h-4 rounded skeleton" />
                                 </td>
                                 {/* Actions Column */}
-                                <td className="px-6 py-4 text-right">
-                                    <div className="w-8 h-8 rounded-lg skeleton ml-auto" />
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 text-right">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg skeleton ml-auto" />
                                 </td>
                             </tr>
                         ))}
@@ -165,9 +165,9 @@ export const TeamMembersShimmer: React.FC = () => {
         <>
             {/* Members Header */}
             <div className="glass rounded-xl p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                <div className="flex items-center justify-between">
-                    <div className="w-32 h-6 rounded skeleton" />
-                    <div className="w-32 h-10 rounded-xl skeleton" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <div className="w-28 sm:w-32 h-5 sm:h-6 rounded skeleton" />
+                    <div className="w-full sm:w-32 h-10 rounded-xl skeleton" />
                 </div>
             </div>
 
@@ -187,7 +187,7 @@ export const TeamManagementShimmer: React.FC<{
     activeSection?: "workspace" | "members";
 }> = ({ activeSection = "members" }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6 px-4 sm:px-0">
             <TeamManagementHeaderShimmer />
 
             {/* Workspace Settings Section */}

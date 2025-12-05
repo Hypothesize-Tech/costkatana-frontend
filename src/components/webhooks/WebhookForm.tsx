@@ -183,22 +183,22 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-            <div className="flex justify-between items-center mb-4 sm:mb-6 gap-4">
-                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
+        <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-6">
+            <div className="flex justify-between items-center mb-3 sm:mb-4 md:mb-6 gap-3 sm:gap-4">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text-primary">
                     {webhook ? 'Edit Webhook' : 'Create Webhook'}
                 </h2>
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[32px] min-w-[32px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation]"
+                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300 p-1.5 sm:p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[36px] min-w-[36px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation]"
                 >
                     <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
             </div>
 
             {/* Basic Information */}
-            <div className="space-y-4 mb-4 sm:mb-6">
+            <div className="space-y-3 sm:space-y-4 mb-3 sm:mb-4 md:mb-6">
                 <div>
                     <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                         Name *
@@ -252,26 +252,26 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Events Selection */}
-            <div className="mb-4 sm:mb-6">
-                <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
+            <div className="mb-3 sm:mb-4 md:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                     Events *
                 </label>
-                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 p-3 sm:p-4 max-h-64 overflow-y-auto">
+                <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-white/50 dark:bg-dark-card/50 p-2.5 sm:p-3 md:p-4 max-h-64 overflow-y-auto">
                     {eventCategories.map(category => (
-                        <div key={category} className="mb-3 sm:mb-4 last:mb-0">
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-medium text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary capitalize">
+                        <div key={category} className="mb-2.5 sm:mb-3 md:mb-4 last:mb-0">
+                            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                                <h4 className="font-medium text-xs sm:text-sm md:text-base text-light-text-primary dark:text-dark-text-primary capitalize">
                                     {category.replace(/_/g, ' ')}
                                 </h4>
                                 <button
                                     type="button"
                                     onClick={() => selectAllInCategory(category)}
-                                    className="text-xs text-[#06ec9e] dark:text-emerald-400 hover:text-[#009454] dark:hover:text-emerald-300 font-medium transition-colors"
+                                    className="text-xs text-[#06ec9e] dark:text-emerald-400 hover:text-[#009454] dark:hover:text-emerald-300 font-medium transition-colors min-h-[32px] px-2 [touch-action:manipulation]"
                                 >
                                     Select all
                                 </button>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 sm:gap-2">
                                 {availableEvents
                                     .filter(e => e.category === category)
                                     .map(event => (
@@ -295,22 +295,22 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Authentication Section */}
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-3 sm:mb-4 md:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('authentication')}
-                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
+                    className="flex items-center justify-between w-full text-left p-2 sm:p-2.5 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation] min-h-[44px]"
                 >
-                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Authentication</h3>
+                    <h3 className="text-sm sm:text-base md:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Authentication</h3>
                     {expandedSections.authentication ? (
-                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     ) : (
-                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     )}
                 </button>
 
                 {expandedSections.authentication && (
-                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
+                    <div className="mt-2 sm:mt-3 md:mt-4 space-y-2.5 sm:space-y-3 md:space-y-4 pl-1 sm:pl-2">
                         <div>
                             <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Authentication Type
@@ -319,7 +319,7 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
                                 value={formData.auth.type}
                                 onChange={(e) => setFormData({
                                     ...formData,
-                                    auth: { ...formData.auth, type: e.target.value as any }
+                                    auth: { ...formData.auth, type: e.target.value as 'none' | 'basic' | 'bearer' | 'custom_header' }
                                 })}
                                 className="input w-full"
                             >
@@ -427,22 +427,22 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Custom Headers Section */}
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-3 sm:mb-4 md:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('headers')}
-                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
+                    className="flex items-center justify-between w-full text-left p-2 sm:p-2.5 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation] min-h-[44px]"
                 >
-                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Custom Headers</h3>
+                    <h3 className="text-sm sm:text-base md:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Custom Headers</h3>
                     {expandedSections.headers ? (
-                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     ) : (
-                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     )}
                 </button>
 
                 {expandedSections.headers && (
-                    <div className="mt-3 sm:mt-4 pl-2">
+                    <div className="mt-2 sm:mt-3 md:mt-4 pl-1 sm:pl-2">
                         <div className="space-y-2 mb-3 sm:mb-4">
                             {Object.entries(formData.headers).map(([key, value]) => (
                                 <div key={key} className="flex items-center gap-2 p-2 rounded-lg bg-white/30 dark:bg-dark-card/30">
@@ -489,22 +489,22 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Filters Section */}
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-3 sm:mb-4 md:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('filters')}
-                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
+                    className="flex items-center justify-between w-full text-left p-2 sm:p-2.5 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation] min-h-[44px]"
                 >
-                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Filters</h3>
+                    <h3 className="text-sm sm:text-base md:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Filters</h3>
                     {expandedSections.filters ? (
-                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     ) : (
-                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     )}
                 </button>
 
                 {expandedSections.filters && (
-                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
+                    <div className="mt-2 sm:mt-3 md:mt-4 space-y-2.5 sm:space-y-3 md:space-y-4 pl-1 sm:pl-2">
                         <div>
                             <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
                                 Severity Levels
@@ -606,22 +606,22 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Advanced Settings */}
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-3 sm:mb-4 md:mb-6">
                 <button
                     type="button"
                     onClick={() => toggleSection('advanced')}
-                    className="flex items-center justify-between w-full text-left p-2 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation]"
+                    className="flex items-center justify-between w-full text-left p-2 sm:p-2.5 rounded-lg hover:bg-white/30 dark:hover:bg-dark-card/30 transition-colors [touch-action:manipulation] min-h-[44px]"
                 >
-                    <h3 className="text-base sm:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Advanced Settings</h3>
+                    <h3 className="text-sm sm:text-base md:text-lg font-medium text-light-text-primary dark:text-dark-text-primary">Advanced Settings</h3>
                     {expandedSections.advanced ? (
-                        <ChevronUpIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     ) : (
-                        <ChevronDownIcon className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                     )}
                 </button>
 
                 {expandedSections.advanced && (
-                    <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 pl-2">
+                    <div className="mt-2 sm:mt-3 md:mt-4 space-y-2.5 sm:space-y-3 md:space-y-4 pl-1 sm:pl-2">
                         <div>
                             <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
                                 Timeout (ms)
@@ -706,17 +706,17 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="btn-secondary w-full sm:w-auto min-h-[36px] px-4 py-2 text-sm font-medium rounded-xl [touch-action:manipulation] active:scale-95"
+                    className="btn-secondary w-full sm:w-auto min-h-[44px] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl [touch-action:manipulation] active:scale-95"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="btn-primary w-full sm:w-auto min-h-[36px] px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 [touch-action:manipulation] active:scale-95"
+                    className="btn-primary w-full sm:w-auto min-h-[44px] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 [touch-action:manipulation] active:scale-95"
                 >
                     {webhook ? 'Update Webhook' : 'Create Webhook'}
                 </button>

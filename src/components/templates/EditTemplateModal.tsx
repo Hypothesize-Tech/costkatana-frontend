@@ -230,16 +230,16 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="xl">
       <div className="flex flex-col h-full max-h-[90vh]">
         {/* Header */}
-        <div className="glass flex items-center justify-between p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <span className="text-white text-xl">✏️</span>
+        <div className="glass flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 md:p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <span className="text-white text-lg sm:text-xl">✏️</span>
             </div>
             <div>
-              <h2 className="text-2xl font-display font-bold gradient-text-primary">
+              <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                 Edit Template
               </h2>
-              <p className="font-body text-light-text-secondary dark:text-white">
+              <p className="text-sm sm:text-base font-body text-light-text-secondary dark:text-white">
                 Modify your template settings and content
               </p>
             </div>
@@ -247,28 +247,30 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="glass flex border-b border-primary-200/30 backdrop-blur-xl">
+        <div className="glass flex border-b border-primary-200/30 backdrop-blur-xl overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab("edit")}
-            className={`px-6 py-3 font-display font-semibold text-sm transition-all duration-300 hover:scale-105 ${activeTab === "edit"
+            className={`px-4 sm:px-6 py-2 sm:py-3 font-display font-semibold text-xs sm:text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap ${activeTab === "edit"
               ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-gradient-primary/10"
               : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
               }`}
           >
-            <FiSave className="inline-block mr-2 mb-1" />
-            Edit Template
+            <FiSave className="inline-block mr-1 sm:mr-2 mb-0.5 sm:mb-1" />
+            <span className="hidden sm:inline">Edit Template</span>
+            <span className="sm:hidden">Edit</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("optimize")}
-            className={`px-6 py-3 font-display font-semibold text-sm transition-all duration-300 hover:scale-105 ${activeTab === "optimize"
+            className={`px-4 sm:px-6 py-2 sm:py-3 font-display font-semibold text-xs sm:text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap ${activeTab === "optimize"
               ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-500 bg-gradient-primary/10"
               : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
               }`}
           >
-            <FiBrain className="inline-block mr-2 mb-1" />
-            AI Optimization
+            <FiBrain className="inline-block mr-1 sm:mr-2 mb-0.5 sm:mb-1" />
+            <span className="hidden sm:inline">AI Optimization</span>
+            <span className="sm:hidden">Optimize</span>
           </button>
         </div>
 
@@ -277,7 +279,7 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             onSubmit={handleSubmit}
             className="flex flex-col flex-1"
           >
-            <div className="overflow-y-auto flex-1 p-8 space-y-8">
+            <div className="overflow-y-auto flex-1 p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
               {/* Basic Information */}
               <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel space-y-6">
                 <div className="flex items-center gap-3">
@@ -474,7 +476,7 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="form-label text-sm">
                           Name *
@@ -628,7 +630,7 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="form-label">
                       Language
@@ -730,9 +732,9 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center text-sm">
+            <div className="glass rounded-xl p-4 sm:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-b-3xl">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+                <div className="flex gap-2 items-center text-xs sm:text-sm">
                   {hasChanges ? (
                     <span className="gradient-text-accent font-medium">
                       You have unsaved changes
@@ -743,18 +745,18 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="btn-secondary"
+                    className="btn-secondary w-full sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading || !hasChanges}
-                    className="btn-primary inline-flex items-center gap-2"
+                    className="btn-primary inline-flex items-center justify-center gap-2 w-full sm:w-auto"
                   >
                     {loading ? (
                       <>
@@ -773,7 +775,7 @@ export const EditTemplateModal: React.FC<EditTemplateModalProps> = ({
             </div>
           </form>
         ) : (
-          <div className="overflow-y-auto flex-1 p-8">
+          <div className="overflow-y-auto flex-1 p-4 sm:p-6 md:p-8">
             <AITemplateOptimizer
               templateId={template._id}
               onOptimizationApplied={(optimizedContent, metadata) => {

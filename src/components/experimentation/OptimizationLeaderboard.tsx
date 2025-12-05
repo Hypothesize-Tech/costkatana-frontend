@@ -7,7 +7,9 @@ import {
     Calendar,
     Users,
     RotateCw,
-    AlertTriangle
+    AlertTriangle,
+    Scissors,
+    Target
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { SimulationTrackingService, LeaderboardEntry } from '../../services/simulationTracking.service';
@@ -136,9 +138,9 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             case 'model_switch':
                 return <RotateCw {...iconProps} />;
             case 'context_trim':
-                return <span className="text-lg">✂️</span>; // Keep scissors emoji as there's no good Lucide equivalent
+                return <Scissors {...iconProps} />;
             case 'prompt_optimize':
-                return <span className="text-lg">🎯</span>; // Keep target emoji as there's no good Lucide equivalent
+                return <Target {...iconProps} />;
             default:
                 return <Sparkles {...iconProps} />;
         }
@@ -190,42 +192,42 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
     return (
         <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-primary/10 text-light-text-primary dark:text-dark-text-primary p-8 rounded-t-xl border-b border-primary-200/30">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary mr-4">
-                            <Trophy className="h-6 w-6 text-white" />
+            <div className="bg-gradient-primary/10 text-light-text-primary dark:text-dark-text-primary p-4 sm:p-6 md:p-8 rounded-t-xl border-b border-primary-200/30">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+                    <div className="flex items-center flex-1 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary mr-3 sm:mr-4 flex-shrink-0">
+                            <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                         </div>
-                        <div>
-                            <h2 className="text-xl font-display font-bold gradient-text">Top Optimization Wins</h2>
-                            <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm font-body">{getTimeRangeLabel()}</p>
+                        <div className="min-w-0 flex-1">
+                            <h2 className="text-lg sm:text-xl font-display font-bold gradient-text">Top Optimization Wins</h2>
+                            <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm font-body">{getTimeRangeLabel()}</p>
                         </div>
                     </div>
-                    <div className="text-right">
-                        <div className="text-2xl font-display font-bold gradient-text">
+                    <div className="text-left sm:text-right flex-shrink-0">
+                        <div className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             {formatCurrency(leaderboard.reduce((sum, entry) => sum + entry.totalSavings, 0))}
                         </div>
-                        <div className="text-light-text-secondary dark:text-dark-text-secondary text-sm font-body">Total Saved</div>
+                        <div className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm font-body">Total Saved</div>
                     </div>
                 </div>
             </div>
 
             {/* Current User Rank (if applicable) */}
             {showUserRank && userRank && (
-                <div className="glass p-6 border-b border-primary-200/30 bg-primary-500/5">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <div className="mr-3">
+                <div className="glass p-4 sm:p-5 md:p-6 border-b border-primary-200/30 bg-primary-500/5">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                        <div className="flex items-center flex-1 min-w-0">
+                            <div className="mr-2 sm:mr-3 flex-shrink-0">
                                 {getRankIcon(userRank.rank || 0)}
                             </div>
-                            <div>
-                                <div className="font-display font-bold text-primary-700 dark:text-primary-300">Your Rank: #{userRank.rank}</div>
-                                <div className="text-sm text-primary-600 dark:text-primary-400 font-body">
+                            <div className="min-w-0 flex-1">
+                                <div className="font-display font-bold text-primary-700 dark:text-primary-300 text-sm sm:text-base">Your Rank: #{userRank.rank}</div>
+                                <div className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 font-body">
                                     {formatCurrency(userRank.totalSavings)} saved • {userRank.optimizationsApplied} optimizations
                                 </div>
                             </div>
                         </div>
-                        <div className={`px-3 py-1 rounded-full text-sm font-display font-bold shadow-lg border ${getRankBadgeColor(userRank.rank || 0)}`}>
+                        <div className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-display font-bold shadow-lg border ${getRankBadgeColor(userRank.rank || 0)} flex-shrink-0`}>
                             Rank #{userRank.rank}
                         </div>
                     </div>
@@ -248,35 +250,35 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                     leaderboard.map((entry, index) => (
                         <div
                             key={entry.userId}
-                            className={`p-6 hover:bg-primary-500/5 transition-all duration-300 hover:scale-105 ${entry.userId === currentUserId ? 'glass bg-primary-500/10 border-l-4 border-primary-500 shadow-lg' : ''
+                            className={`p-4 sm:p-5 md:p-6 sm:hover:bg-primary-500/5 transition-all duration-300 sm:hover:scale-105 ${entry.userId === currentUserId ? 'glass bg-primary-500/10 border-l-4 border-primary-500 shadow-lg' : ''
                                 }`}
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center flex-1">
-                                    <div className="mr-6">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div className="flex items-start sm:items-center flex-1 min-w-0 w-full sm:w-auto">
+                                    <div className="mr-3 sm:mr-6 flex-shrink-0">
                                         {getRankIcon(entry.rank || index + 1)}
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center">
-                                            <h4 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary text-lg">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <h4 className="font-display font-bold text-light-text-primary dark:text-dark-text-primary text-base sm:text-lg break-words">
                                                 {entry.userName || `User ${entry.userId.slice(-6)}`}
                                             </h4>
                                             {entry.userId === currentUserId && (
-                                                <span className="ml-3 px-3 py-1 bg-gradient-primary text-white text-xs rounded-xl font-display font-bold shadow-lg animate-pulse">
+                                                <span className="px-2 sm:px-3 py-1 bg-gradient-primary text-white text-xs rounded-xl font-display font-bold shadow-lg animate-pulse">
                                                     You
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="flex items-center mt-2 space-x-6 text-sm">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2 gap-2 sm:gap-6 text-xs sm:text-sm">
                                             <div className="flex items-center glass p-2 rounded-lg border border-success-200/30">
-                                                <DollarSign className="h-4 w-4 mr-2 text-success-500 dark:text-success-400" />
+                                                <DollarSign className="h-4 w-4 mr-2 text-success-500 dark:text-success-400 flex-shrink-0" />
                                                 <span className="font-display font-semibold text-success-600 dark:text-success-400">
                                                     {formatCurrency(entry.totalSavings)}
                                                 </span>
                                                 <span className="text-xs font-body text-light-text-muted dark:text-dark-text-muted ml-1">saved</span>
                                             </div>
                                             <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
-                                                <BarChart3 className="h-4 w-4 mr-2 text-primary-500 dark:text-primary-400" />
+                                                <BarChart3 className="h-4 w-4 mr-2 text-primary-500 dark:text-primary-400 flex-shrink-0" />
                                                 <span className="font-display font-semibold text-primary-600 dark:text-primary-400">
                                                     {entry.optimizationsApplied}
                                                 </span>
@@ -291,11 +293,11 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-display font-bold gradient-text">
+                                <div className="text-left sm:text-right flex-shrink-0 w-full sm:w-auto border-t sm:border-t-0 border-primary-200/30 pt-3 sm:pt-0">
+                                    <div className="text-xl sm:text-2xl font-display font-bold gradient-text">
                                         {formatCurrency(entry.totalSavings)}
                                     </div>
-                                    <div className="text-sm font-body text-light-text-muted dark:text-dark-text-muted">
+                                    <div className="text-xs sm:text-sm font-body text-light-text-muted dark:text-dark-text-muted">
                                         <span className="font-display font-semibold">~{formatCurrency(entry.averageSavings)}</span>/opt
                                     </div>
                                 </div>
@@ -306,12 +308,17 @@ export const OptimizationLeaderboard: React.FC<OptimizationLeaderboardProps> = (
             </div>
 
             {/* Footer */}
-            <div className="glass p-6 rounded-b-xl border-t border-primary-200/30 text-center">
-                <div className="flex items-center justify-center text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
-                    <Calendar className="h-4 w-4 mr-1 text-primary-500 dark:text-primary-400" />
-                    Updated in real-time •
-                    <Users className="h-4 w-4 ml-2 mr-1 text-primary-500 dark:text-primary-400" />
-                    {leaderboard.length} participants
+            <div className="glass p-4 sm:p-5 md:p-6 rounded-b-xl border-t border-primary-200/30 text-center">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                    <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1 text-primary-500 dark:text-primary-400" />
+                        Updated in real-time
+                    </div>
+                    <span className="hidden sm:inline"> • </span>
+                    <div className="flex items-center">
+                        <Users className="h-4 w-4 ml-0 sm:ml-2 mr-1 text-primary-500 dark:text-primary-400" />
+                        {leaderboard.length} participants
+                    </div>
                 </div>
             </div>
         </div>

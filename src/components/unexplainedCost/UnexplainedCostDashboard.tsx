@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { UnexplainedCostService, CostAnalysis, DailyCostReport, CostAnomaly, CostTrends } from '../../services/unexplainedCost.service';
 import { CostStoryCard } from './CostStoryCard';
 import { CostAttributionTree } from './CostAttributionTree';
@@ -25,11 +25,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
         trends: false
     });
 
-    useEffect(() => {
-        loadDashboardData();
-    }, [timeframe, workspaceId]);
-
-    const loadDashboardData = async () => {
+    const loadDashboardData = useCallback(async () => {
         setLoading(true);
         setError(null);
         setLoadingStates({
@@ -90,7 +86,11 @@ export const UnexplainedCostDashboard: React.FC = () => {
                 return prev;
             });
         }, 100);
-    };
+    }, [timeframe, workspaceId]);
+
+    useEffect(() => {
+        loadDashboardData();
+    }, [loadDashboardData]);
 
     const handleTimeframeChange = (newTimeframe: string) => {
         setTimeframe(newTimeframe);
@@ -106,21 +106,21 @@ export const UnexplainedCostDashboard: React.FC = () => {
 
     if (error) {
         return (
-            <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="p-3 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
                 <div className="mx-auto max-w-7xl">
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-error-200/30 from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20">
-                        <div className="flex items-center">
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass border-error-200/30 from-error-50/30 to-error-100/30 dark:from-error-900/20 dark:to-error-800/20">
+                        <div className="flex items-start sm:items-center">
                             <div className="flex-shrink-0">
                                 <svg className="w-5 h-5 text-error-500" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                 </svg>
                             </div>
-                            <div className="ml-3">
-                                <h3 className="text-sm font-medium text-error-800 dark:text-error-200">Error Loading Dashboard</h3>
-                                <div className="mt-2 text-sm text-error-700 dark:text-error-300">{error}</div>
+                            <div className="ml-3 flex-1 min-w-0">
+                                <h3 className="text-sm sm:text-base font-medium text-error-800 dark:text-error-200">Error Loading Dashboard</h3>
+                                <div className="mt-2 text-xs sm:text-sm text-error-700 dark:text-error-300 break-words">{error}</div>
                                 <button
                                     onClick={loadDashboardData}
-                                    className="mt-3 btn btn-primary"
+                                    className="mt-3 btn btn-primary text-sm sm:text-base"
                                 >
                                     Retry
                                 </button>
@@ -133,24 +133,24 @@ export const UnexplainedCostDashboard: React.FC = () => {
     }
 
     return (
-        <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+        <div className="p-3 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
             <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold font-display gradient-text-primary">Unexplained Cost Analyzer</h1>
-                            <p className="mt-2 text-lg text-secondary-600 dark:text-secondary-300">
+                <div className="p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div className="mb-4 md:mb-0">
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text-primary">Unexplained Cost Analyzer</h1>
+                            <p className="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg text-secondary-600 dark:text-secondary-300">
                                 Understand why your AI costs changed and get actionable optimization insights
                             </p>
                         </div>
 
                         {/* Controls */}
-                        <div className="flex flex-col gap-3 mt-4 sm:mt-0 sm:flex-row">
+                        <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:mt-0">
                             <select
                                 value={timeframe}
                                 onChange={(e) => handleTimeframeChange(e.target.value)}
-                                className="select"
+                                className="select text-sm sm:text-base"
                             >
                                 <option value="1h">Last Hour</option>
                                 <option value="24h">Last 24 Hours</option>
@@ -161,7 +161,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                             <select
                                 value={workspaceId}
                                 onChange={(e) => handleWorkspaceChange(e.target.value)}
-                                className="select"
+                                className="select text-sm sm:text-base"
                             >
                                 <option value="default">Default Workspace</option>
                                 <option value="development">Development</option>
@@ -173,13 +173,13 @@ export const UnexplainedCostDashboard: React.FC = () => {
                 </div>
 
                 {/* Dashboard Grid */}
-                <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-6 md:mb-8 lg:grid-cols-2">
                     {/* Cost Story Card */}
                     <div className="lg:col-span-2">
                         {dailyReport ? (
                             <CostStoryCard report={dailyReport} />
                         ) : loadingStates.dailyReport ? (
-                            <div className="h-64 rounded-xl animate-pulse glass bg-light-bg-300 dark:bg-dark-bg-300"></div>
+                            <div className="h-48 sm:h-56 md:h-64 rounded-xl animate-pulse glass bg-light-bg-300 dark:bg-dark-bg-300"></div>
                         ) : null}
                     </div>
 
@@ -195,7 +195,7 @@ export const UnexplainedCostDashboard: React.FC = () => {
                 </div>
 
                 {/* Bottom Row */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 lg:grid-cols-2">
                     {/* Cost Anomaly Alerts */}
                     <div>
                         <CostAnomalyAlerts anomalies={anomalies} />

@@ -162,21 +162,21 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
     return (
         <div className="h-full flex flex-col glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
             {/* Header */}
-            <div className="p-4 border-b border-primary-200/30">
+            <div className="p-3 sm:p-4 border-b border-primary-200/30">
                 <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-display font-semibold gradient-text-primary">Timeline</h3>
+                    <h3 className="text-base sm:text-lg font-display font-semibold gradient-text-primary">Timeline</h3>
                     <button
                         onClick={() => setShowFilters(!showFilters)}
-                        className={`p-2 rounded-lg transition-all ${showFilters || hasActiveFilters
+                        className={`p-1.5 sm:p-2 rounded-lg transition-all flex-shrink-0 ${showFilters || hasActiveFilters
                             ? 'bg-gradient-primary text-white'
                             : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-600 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'
                             }`}
                         title="Filter events"
                     >
-                        <Filter className="w-4 h-4" />
+                        <Filter className="w-3 h-3 sm:w-4 sm:h-4" />
                     </button>
                 </div>
-                <div className="text-sm text-secondary-600 dark:text-secondary-400 font-medium">
+                <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 font-medium">
                     {timelineEvents.length} events
                     {hasActiveFilters && ' (filtered)'}
                 </div>
@@ -189,7 +189,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
                             placeholder="Filter by model..."
                             value={filterModel}
                             onChange={(e) => setFilterModel(e.target.value)}
-                            className="w-full px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                            className="w-full px-2 sm:px-3 py-1.5 text-xs sm:text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
                         />
                         <div className="flex gap-2">
                             <input
@@ -198,7 +198,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
                                 placeholder="Min $"
                                 value={minCost}
                                 onChange={(e) => setMinCost(e.target.value ? parseFloat(e.target.value) : '')}
-                                className="flex-1 px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                                className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
                             />
                             <input
                                 type="number"
@@ -206,13 +206,13 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
                                 placeholder="Max $"
                                 value={maxCost}
                                 onChange={(e) => setMaxCost(e.target.value ? parseFloat(e.target.value) : '')}
-                                className="flex-1 px-3 py-1.5 text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
+                                className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-secondary-900 dark:text-secondary-100"
                             />
                         </div>
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="w-full px-3 py-1.5 text-xs text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 transition-all"
+                                className="w-full px-2 sm:px-3 py-1.5 text-xs text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 transition-all"
                             >
                                 Clear Filters
                             </button>
@@ -222,7 +222,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
             </div>
 
             {/* Timeline */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3">
                 {timelineEvents.map((event, idx) => {
                     if (event.type === 'ai_interaction') {
                         const interaction = event.data as AIInteraction;
@@ -261,25 +261,25 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ sessionData, onSelec
             </div>
 
             {/* Summary */}
-            <div className="p-4 border-t border-primary-200/30 bg-secondary-50/50 dark:bg-secondary-900/20">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-success-50 dark:bg-success-900/20 rounded-lg p-3 border border-success-200/30">
+            <div className="p-3 sm:p-4 border-t border-primary-200/30 bg-secondary-50/50 dark:bg-secondary-900/20">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-center">
+                    <div className="bg-success-50 dark:bg-success-900/20 rounded-lg p-2 sm:p-3 border border-success-200/30">
                         <div className="text-xs text-secondary-600 dark:text-secondary-400 mb-1 font-medium">Total Cost</div>
-                        <div className="text-lg font-bold text-success-700 dark:text-success-400">
+                        <div className="text-sm sm:text-base md:text-lg font-bold text-success-700 dark:text-success-400">
                             ${sessionData.summary?.totalCost?.toFixed(4) || '0.00'}
                         </div>
                     </div>
-                    <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3 border border-primary-200/30">
+                    <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-2 sm:p-3 border border-primary-200/30">
                         <div className="text-xs text-secondary-600 dark:text-secondary-400 mb-1 font-medium">Total Tokens</div>
-                        <div className="text-lg font-bold gradient-text-primary">
+                        <div className="text-sm sm:text-base md:text-lg font-bold gradient-text-primary">
                             {sessionData.summary?.totalTokens
                                 ? (sessionData.summary.totalTokens.input + sessionData.summary.totalTokens.output).toLocaleString()
                                 : '0'}
                         </div>
                     </div>
-                    <div className="bg-secondary-100 dark:bg-secondary-800/50 rounded-lg p-3 border border-secondary-200/30">
+                    <div className="bg-secondary-100 dark:bg-secondary-800/50 rounded-lg p-2 sm:p-3 border border-secondary-200/30">
                         <div className="text-xs text-secondary-600 dark:text-secondary-400 mb-1 font-medium">Duration</div>
-                        <div className="text-lg font-bold text-secondary-800 dark:text-secondary-200">
+                        <div className="text-sm sm:text-base md:text-lg font-bold text-secondary-800 dark:text-secondary-200">
                             {Math.floor(sessionData.duration / 1000 / 60)}m
                         </div>
                     </div>

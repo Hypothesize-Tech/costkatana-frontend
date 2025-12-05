@@ -93,37 +93,37 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
     };
 
     return (
-        <div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50" onClick={() => onClose(false)}>
+        <div className="flex fixed inset-0 z-50 justify-center items-center p-2 sm:p-3 md:p-4 backdrop-blur-sm bg-black/50" onClick={() => onClose(false)}>
             <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="flex justify-between items-center p-6 border-b border-primary-200/30 dark:border-primary-500/20">
-                    <div className="flex gap-3 items-center">
-                        <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                            <Settings className="w-6 h-6 text-white" />
+                <div className="flex justify-between items-center p-3 sm:p-4 md:p-5 lg:p-6 border-b border-primary-200/30 dark:border-primary-500/20">
+                    <div className="flex gap-2 sm:gap-3 items-center min-w-0 flex-1">
+                        <div className="flex justify-center items-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl shadow-lg bg-gradient-primary shrink-0">
+                            <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <h2 className="text-xl font-bold font-display gradient-text-primary">
+                        <h2 className="text-base sm:text-lg md:text-xl font-bold font-display gradient-text-primary truncate">
                             {config ? 'Edit' : 'Add'} Telemetry Configuration
                         </h2>
                     </div>
                     <button
                         onClick={() => onClose(false)}
-                        className="p-2 rounded-lg transition-all duration-200 btn btn-icon text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400"
+                        className="p-1.5 sm:p-2 rounded-lg transition-all duration-200 btn btn-icon text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-primary-600 dark:hover:text-primary-400 shrink-0"
                     >
-                        <X size={24} />
+                        <X size={20} className="sm:w-6 sm:h-6" />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-6 space-y-6">
-                    <div className="space-y-2">
-                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-3 sm:p-4 md:p-5 lg:p-6 space-y-4 sm:space-y-5 md:space-y-6">
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Endpoint Type *
                         </label>
                         <select
                             name="endpointType"
                             value={formData.endpointType}
                             onChange={handleChange}
-                            className="input"
+                            className="input text-xs sm:text-sm"
                             required
                             disabled={!!config}
                         >
@@ -134,11 +134,11 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             <option value="prometheus">Prometheus</option>
                             <option value="custom">Custom</option>
                         </select>
-                        <span className="text-xs text-secondary-600 dark:text-secondary-300">Select your telemetry backend type</span>
+                        <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">Select your telemetry backend type</span>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Endpoint URL *
                         </label>
                         <input
@@ -146,24 +146,24 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             name="endpoint"
                             value={formData.endpoint}
                             onChange={handleChange}
-                            className="input"
+                            className="input text-xs sm:text-sm"
                             placeholder="https://tempo.example.com"
                             required
                         />
-                        <span className="text-xs text-secondary-600 dark:text-secondary-300">
+                        <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">
                             Full URL to your telemetry endpoint (e.g., https://tempo.example.com)
                         </span>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Authentication Type
                         </label>
                         <select
                             name="authType"
                             value={formData.authType}
                             onChange={handleChange}
-                            className="input"
+                            className="input text-xs sm:text-sm"
                         >
                             <option value="none">None</option>
                             <option value="bearer">Bearer Token</option>
@@ -173,8 +173,8 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                     </div>
 
                     {formData.authType !== 'none' && (
-                        <div className="space-y-2">
-                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 {formData.authType === 'bearer' ? 'Bearer Token' : 'API Key'}
                             </label>
                             <input
@@ -182,18 +182,18 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                                 name="authToken"
                                 value={formData.authToken}
                                 onChange={handleChange}
-                                className="input"
+                                className="input text-xs sm:text-sm"
                                 placeholder={config ? 'Leave blank to keep existing' : 'Enter token'}
                             />
-                            <span className="text-xs text-secondary-600 dark:text-secondary-300">
+                            <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">
                                 {config ? 'Leave empty to keep existing token' : 'Your authentication token'}
                             </span>
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 Sync Interval (minutes)
                             </label>
                             <input
@@ -201,16 +201,16 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                                 name="syncIntervalMinutes"
                                 value={formData.syncIntervalMinutes}
                                 onChange={handleChange}
-                                className="input"
+                                className="input text-xs sm:text-sm"
                                 min="1"
                                 max="1440"
                                 required
                             />
-                            <span className="text-xs text-secondary-600 dark:text-secondary-300">How often to poll (1-1440)</span>
+                            <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">How often to poll (1-1440)</span>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                                 Query Range (minutes)
                             </label>
                             <input
@@ -218,17 +218,17 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                                 name="queryTimeRangeMinutes"
                                 value={formData.queryTimeRangeMinutes}
                                 onChange={handleChange}
-                                className="input"
+                                className="input text-xs sm:text-sm"
                                 min="1"
                                 max="1440"
                                 required
                             />
-                            <span className="text-xs text-secondary-600 dark:text-secondary-300">How far back to query</span>
+                            <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">How far back to query</span>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-sm font-semibold font-display text-secondary-900 dark:text-white">
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label className="block text-xs sm:text-sm font-semibold font-display text-secondary-900 dark:text-white">
                             Service Name Filter (optional)
                         </label>
                         <input
@@ -236,13 +236,13 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             name="serviceName"
                             value={formData.serviceName}
                             onChange={handleChange}
-                            className="input"
+                            className="input text-xs sm:text-sm"
                             placeholder="my-ai-service"
                         />
-                        <span className="text-xs text-secondary-600 dark:text-secondary-300">Only sync data from this service</span>
+                        <span className="text-[10px] sm:text-xs text-secondary-600 dark:text-secondary-300">Only sync data from this service</span>
                     </div>
 
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-2 sm:gap-3 items-center">
                         <input
                             type="checkbox"
                             name="syncEnabled"
@@ -250,7 +250,7 @@ const TelemetryConfigModal: React.FC<TelemetryConfigModalProps> = ({ config, onC
                             onChange={handleChange}
                             className="toggle-switch-sm"
                         />
-                        <label className="text-sm font-medium cursor-pointer font-display text-secondary-900 dark:text-white">
+                        <label className="text-xs sm:text-sm font-medium cursor-pointer font-display text-secondary-900 dark:text-white">
                             Enable automatic syncing
                         </label>
                     </div>

@@ -21,32 +21,32 @@ export const Pagination = ({
       className={cn("flex items-center justify-between py-4", className)}
       aria-label="Pagination"
     >
-      <div className="flex flex-1 justify-between sm:hidden">
+      <div className="flex flex-1 justify-between sm:hidden gap-2">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="btn-secondary font-display font-medium"
+          className="flex-1 btn btn-secondary font-display font-medium text-sm px-4 py-2"
         >
           Previous
         </button>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="btn-secondary font-display font-medium"
+          className="flex-1 btn btn-secondary font-display font-medium text-sm px-4 py-2"
         >
           Next
         </button>
       </div>
 
-      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between sm:gap-4">
+        <div className="flex-shrink-0">
+          <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary whitespace-nowrap">
             Page <span className="font-display font-semibold gradient-text">{currentPage}</span> of{" "}
             <span className="font-display font-semibold gradient-text">{totalPages}</span>
           </p>
         </div>
 
-        <div>
+        <div className="flex-shrink-0 overflow-x-auto">
           <nav
             className="isolate inline-flex -space-x-px rounded-xl shadow-lg glass backdrop-blur-xl border border-primary-200/30"
             aria-label="Pagination"
@@ -54,7 +54,7 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center rounded-l-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
+              className="btn relative inline-flex items-center rounded-l-xl px-2 py-2 sm:px-3 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
             >
               <span className="sr-only">Previous</span>
               <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
@@ -72,7 +72,7 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center rounded-r-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
+              className="btn relative inline-flex items-center rounded-r-xl px-2 py-2 sm:px-3 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
             >
               <span className="sr-only">Next</span>
               <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
@@ -106,7 +106,7 @@ const PageButton = ({ page, currentPage, onClick }: PageButtonProps) => {
       onClick={() => onClick(page)}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "relative inline-flex items-center px-4 py-2 text-sm font-display font-semibold focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300",
+        "relative inline-flex items-center px-2 py-2 sm:px-4 text-xs sm:text-sm font-display font-semibold focus:z-20 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300",
         isActive
           ? "z-10 bg-gradient-primary text-white shadow-lg glow-primary"
           : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-500 hover:bg-primary-500/10 hover:scale-105",

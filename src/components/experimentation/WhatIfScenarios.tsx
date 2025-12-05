@@ -380,28 +380,30 @@ const WhatIfScenarios: React.FC = () => {
   };
 
   return (
-    <div className="p-8 shadow-2xl backdrop-blur-xl glass animate-fade-in">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl glass animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 md:mb-8 gap-4 sm:gap-0">
         <div className="flex items-center">
-          <div className="p-3 mr-4 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-            <Beaker className="w-6 h-6 text-white" />
+          <div className="p-2 sm:p-3 mr-3 sm:mr-4 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+            <Beaker className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <h2 className="text-3xl font-bold font-display gradient-text">What-If Scenarios</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text">What-If Scenarios</h2>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
           <button
             onClick={() => setShowTemplatesModal(true)}
-            className="flex gap-2 items-center btn btn-secondary"
+            className="flex gap-2 items-center justify-center btn btn-secondary text-xs sm:text-sm"
           >
             <Beaker className="w-4 h-4" />
-            Templates
+            <span className="hidden sm:inline">Templates</span>
+            <span className="sm:hidden">Templates</span>
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex gap-2 items-center btn btn-primary"
+            className="flex gap-2 items-center justify-center btn btn-primary text-xs sm:text-sm"
           >
             <Plus className="w-4 h-4" />
-            Create Scenario
+            <span className="hidden sm:inline">Create Scenario</span>
+            <span className="sm:hidden">Create</span>
           </button>
         </div>
       </div>
@@ -418,41 +420,42 @@ const WhatIfScenarios: React.FC = () => {
       )}
 
       {/* Scenarios List */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {scenarios.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="flex justify-center items-center p-4 mx-auto mb-6 w-16 h-16 rounded-2xl shadow-2xl bg-gradient-primary glow-primary">
-              <Beaker className="w-8 h-8 text-white" />
+          <div className="py-8 sm:py-12 text-center">
+            <div className="flex justify-center items-center p-3 sm:p-4 mx-auto mb-4 sm:mb-6 w-14 h-14 sm:w-16 sm:h-16 rounded-2xl shadow-2xl bg-gradient-primary glow-primary">
+              <Beaker className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h3 className="mb-3 text-xl font-bold font-display gradient-text">
+            <h3 className="mb-2 sm:mb-3 text-lg sm:text-xl font-bold font-display gradient-text">
               No Scenarios Yet
             </h3>
-            <p className="mb-6 font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="mb-4 sm:mb-6 text-sm sm:text-base font-body text-light-text-secondary dark:text-dark-text-secondary px-4">
               Create your first what-if scenario to analyze potential changes.
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex gap-2 justify-center items-center btn btn-primary"
+              className="flex gap-2 justify-center items-center btn btn-primary text-xs sm:text-sm"
             >
-              <Plus className="w-5 h-5" />
-              Create your first scenario
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Create your first scenario</span>
+              <span className="sm:hidden">Create Scenario</span>
             </button>
           </div>
         ) : (
           scenarios.map((scenario) => (
             <div
               key={scenario.name}
-              className="p-6 border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 hover:scale-105 animate-fade-in"
+              className="p-4 sm:p-5 md:p-6 border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 sm:hover:scale-105 animate-fade-in"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold font-display gradient-text">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-bold font-display gradient-text break-words">
                     {scenario.name}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed font-body text-light-text-secondary dark:text-dark-text-secondary">
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed font-body text-light-text-secondary dark:text-dark-text-secondary">
                     {scenario.description}
                   </p>
-                  <div className="flex items-center mt-3 space-x-6">
+                  <div className="flex flex-wrap items-center mt-3 gap-3 sm:gap-6">
                     <div className="p-2 rounded-lg border glass border-primary-200/30">
                       <span className="text-xs font-semibold font-display text-primary-600 dark:text-primary-400">
                         Timeframe: {scenario.timeframe}
@@ -466,16 +469,17 @@ const WhatIfScenarios: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
                   <button
                     onClick={() => runAnalysis(scenario)}
                     disabled={isAnalyzing[scenario.name]}
-                    className="flex gap-2 items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex gap-2 items-center justify-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm flex-1 sm:flex-none"
                   >
                     {isAnalyzing[scenario.name] ? (
                       <>
                         <RotateCw className="w-4 h-4 animate-spin" />
-                        <span>Analyzing...</span>
+                        <span className="hidden sm:inline">Analyzing...</span>
+                        <span className="sm:hidden">Analyzing</span>
                       </>
                     ) : (
                       <>
@@ -486,7 +490,7 @@ const WhatIfScenarios: React.FC = () => {
                   </button>
                   <button
                     onClick={() => deleteScenario(scenario.name)}
-                    className="p-2 btn btn-ghost text-danger-500 hover:text-white hover:bg-gradient-danger"
+                    className="p-2 btn btn-ghost text-danger-500 hover:text-white hover:bg-gradient-danger flex-shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -534,19 +538,19 @@ const WhatIfScenarios: React.FC = () => {
                       View Details
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                    <div className="p-6 text-center rounded-xl border-l-4 glass bg-gradient-primary/10 border-primary-500">
-                      <div className="flex justify-center items-center mb-2 space-x-2">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4">
+                    <div className="p-3 sm:p-4 md:p-6 text-center rounded-xl border-l-4 glass bg-gradient-primary/10 border-primary-500">
+                      <div className="flex justify-center items-center mb-2 sm:mb-3 space-x-1 sm:space-x-2">
                         {scenarioResults[scenario.name].projectedImpact
                           .costChange >= 0 ? (
-                          <TrendingUp className="w-4 h-4 text-danger-500 dark:text-danger-400 glow-danger" />
+                          <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-danger-500 dark:text-danger-400 glow-danger" />
                         ) : (
-                          <TrendingDown className="w-4 h-4 text-success-500 dark:text-success-400 glow-success" />
+                          <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-success-500 dark:text-success-400 glow-success" />
                         )}
-                        <span className="text-sm font-semibold font-display text-primary-600 dark:text-primary-400">Cost Impact</span>
+                        <span className="text-xs sm:text-sm font-semibold font-display text-primary-600 dark:text-primary-400">Cost Impact</span>
                       </div>
                       <div
-                        className={`text-3xl font-display font-bold gradient-text ${scenarioResults[scenario.name].projectedImpact.costChange >= 0 ? "text-danger-600" : "text-success-600"}`}
+                        className={`text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text ${scenarioResults[scenario.name].projectedImpact.costChange >= 0 ? "text-danger-600" : "text-success-600"}`}
                       >
                         {formatCurrency(
                           scenarioResults[scenario.name].projectedImpact
@@ -560,28 +564,28 @@ const WhatIfScenarios: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="p-6 text-center rounded-xl border-l-4 glass bg-gradient-accent/10 border-accent-500">
-                      <div className="flex justify-center items-center mb-2 space-x-2">
-                        <Lightbulb className="w-4 h-4 text-accent-500 dark:text-accent-400 glow-accent" />
-                        <span className="text-sm font-semibold font-display text-accent-600 dark:text-accent-400">Confidence</span>
+                    <div className="p-3 sm:p-4 md:p-6 text-center rounded-xl border-l-4 glass bg-gradient-accent/10 border-accent-500">
+                      <div className="flex justify-center items-center mb-2 sm:mb-3 space-x-1 sm:space-x-2">
+                        <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4 text-accent-500 dark:text-accent-400 glow-accent" />
+                        <span className="text-xs sm:text-sm font-semibold font-display text-accent-600 dark:text-accent-400">Confidence</span>
                       </div>
-                      <div className="text-3xl font-bold font-display gradient-text">
+                      <div className="text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text">
                         {formatPercentage(
                           scenarioResults[scenario.name].projectedImpact
                             .confidence,
                         )}
                       </div>
                     </div>
-                    <div className="p-6 text-center rounded-xl border-l-4 glass bg-gradient-secondary/10 border-secondary-500">
-                      <div className="flex justify-center items-center mb-2 space-x-2">
+                    <div className="p-3 sm:p-4 md:p-6 text-center rounded-xl border-l-4 glass bg-gradient-secondary/10 border-secondary-500">
+                      <div className="flex justify-center items-center mb-2 sm:mb-3 space-x-1 sm:space-x-2">
                         {getRiskIcon(
                           scenarioResults[scenario.name].projectedImpact
                             .riskLevel,
                         )}
-                        <span className="text-sm font-semibold font-display text-secondary-600 dark:text-secondary-400">Risk Level</span>
+                        <span className="text-xs sm:text-sm font-semibold font-display text-secondary-600 dark:text-secondary-400">Risk Level</span>
                       </div>
                       <div
-                        className={`inline-flex items-center px-3 py-1 rounded-xl border text-xs font-display font-bold shadow-lg ${riskLevelColors[scenarioResults[scenario.name].projectedImpact.riskLevel]}`}
+                        className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-xl border text-xs font-display font-bold shadow-lg ${riskLevelColors[scenarioResults[scenario.name].projectedImpact.riskLevel]}`}
                       >
                         {scenarioResults[
                           scenario.name

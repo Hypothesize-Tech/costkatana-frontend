@@ -33,7 +33,7 @@ export const AlertItem: React.FC<AlertItemProps> = ({
   const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
 
   const getIcon = () => {
-    const iconProps = "h-6 w-6";
+    const iconProps = "h-5 w-5 sm:h-6 sm:w-6";
 
     switch (alert.severity) {
       case "critical":
@@ -77,99 +77,100 @@ export const AlertItem: React.FC<AlertItemProps> = ({
 
   return (
     <div
-      className={`p-6 glass rounded-xl border backdrop-blur-xl ${getSeverityColor()} ${!alert.read ? "ring-2 ring-primary-500 ring-opacity-50 shadow-xl" : "shadow-lg"
+      className={`p-4 sm:p-6 glass rounded-xl border backdrop-blur-xl ${getSeverityColor()} ${!alert.read ? "ring-2 ring-primary-500 ring-opacity-50 shadow-xl" : "shadow-lg"
         } transition-all duration-300 hover:shadow-xl hover:scale-[1.01] animate-fade-in bg-gradient-light-panel dark:bg-gradient-dark-panel`}
     >
       <div className="flex items-start">
-        <div className="flex-shrink-0 mt-1 w-10 h-10 rounded-xl glass backdrop-blur-xl flex items-center justify-center shadow-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex-shrink-0 mt-1 w-8 h-8 sm:w-10 sm:h-10 rounded-xl glass backdrop-blur-xl flex items-center justify-center shadow-lg border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           {getIcon()}
         </div>
-        <div className="ml-4 flex-1">
-          <h3 className="text-lg font-display font-semibold text-secondary-900 dark:text-white">{alert.title}</h3>
-          <p className="mt-2 text-sm font-body text-secondary-600 dark:text-secondary-300">{alert.message}</p>
+        <div className="ml-3 sm:ml-4 flex-1 min-w-0">
+          <h3 className="text-base sm:text-lg font-display font-semibold text-secondary-900 dark:text-white break-words">{alert.title}</h3>
+          <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300 break-words">{alert.message}</p>
 
           {/* Metadata */}
           {alert.data && (
-            <div className="mt-3 p-3 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 shadow-sm backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <div className="flex items-center gap-2 text-sm font-display font-semibold">
+            <div className="mt-2 sm:mt-3 p-2 sm:p-3 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 shadow-sm backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-display font-semibold">
                 {alert.type === "cost_threshold" && alert.data.amount && (
-                  <span className="flex items-center gap-2 gradient-text-accent">
-                    <CurrencyDollarIcon className="w-4 h-4" />
-                    Amount: {formatCurrency(alert.data.amount)}
+                  <span className="flex items-center gap-1 sm:gap-2 gradient-text-accent">
+                    <CurrencyDollarIcon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="break-words">Amount: {formatCurrency(alert.data.amount)}</span>
                   </span>
                 )}
                 {alert.type === "optimization_available" &&
                   alert.data.savings && (
-                    <span className="flex items-center gap-2 gradient-text-success">
-                      <LightBulbIcon className="w-4 h-4" />
-                      Potential savings: {formatCurrency(alert.data.savings)}
+                    <span className="flex items-center gap-1 sm:gap-2 gradient-text-success">
+                      <LightBulbIcon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="break-words">Potential savings: {formatCurrency(alert.data.savings)}</span>
                     </span>
                   )}
                 {alert.type === "usage_spike" && alert.data.deviation && (
-                  <span className="flex items-center gap-2 gradient-text-primary">
-                    <ChartBarIcon className="w-4 h-4" />
-                    Deviation: {alert.data.deviation.toFixed(1)}%
+                  <span className="flex items-center gap-1 sm:gap-2 gradient-text-primary">
+                    <ChartBarIcon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="break-words">Deviation: {alert.data.deviation.toFixed(1)}%</span>
                   </span>
                 )}
               </div>
             </div>
           )}
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-2">
-              <ClockIcon className="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
-              <span className="text-sm font-display font-medium text-secondary-600 dark:text-secondary-300">
+              <ClockIcon className="w-3 h-3 sm:w-4 sm:h-4 text-secondary-500 dark:text-secondary-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-display font-medium text-secondary-600 dark:text-secondary-300">
                 {formatDate(alert.createdAt, "relative")}
               </span>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center flex-wrap gap-2 sm:gap-3">
               {!alert.read && (
                 <button
                   onClick={() => onMarkAsRead(alert._id)}
-                  className="btn-ghost text-xs px-3 py-1"
+                  className="btn-ghost text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 whitespace-nowrap rounded-lg font-display font-medium transition-all duration-200 hover:scale-105"
                 >
-                  Mark as read
+                  <span className="hidden sm:inline">Mark as read</span>
+                  <span className="sm:hidden">Read</span>
                 </button>
               )}
 
               <div className="relative">
                 <button
                   onClick={() => setShowSnoozeMenu(!showSnoozeMenu)}
-                  className="btn btn-ghost text-xs px-3 py-1 flex items-center"
+                  className="btn-ghost text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 flex items-center whitespace-nowrap rounded-lg font-display font-medium transition-all duration-200 hover:scale-105"
                 >
-                  <BellSlashIcon className="h-4 w-4 mr-1" />
-                  Snooze
+                  <BellSlashIcon className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1.5" />
+                  <span className="hidden sm:inline">Snooze</span>
                 </button>
 
                 {showSnoozeMenu && (
-                  <div className="absolute right-0 mt-2 w-48 glass shadow-xl py-2 z-20 animate-scale-in border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
+                  <div className="absolute right-0 mt-2 w-40 sm:w-48 glass shadow-xl py-2 z-20 animate-scale-in border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel rounded-xl">
                     <button
                       onClick={() => handleSnooze(1)}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
+                      className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
                     >
-                      <ClockIcon className="w-4 h-4" />
+                      <ClockIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                       1 hour
                     </button>
                     <button
                       onClick={() => handleSnooze(4)}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
+                      className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
                     >
-                      <ClockIcon className="w-4 h-4" />
+                      <ClockIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                       4 hours
                     </button>
                     <button
                       onClick={() => handleSnooze(24)}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
+                      className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
                     >
-                      <CalendarIcon className="w-4 h-4" />
+                      <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                       1 day
                     </button>
                     <button
                       onClick={() => handleSnooze(168)}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
+                      className="flex items-center gap-2 w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm font-display font-medium text-secondary-900 dark:text-white hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-colors duration-200"
                     >
-                      <CalendarIcon className="w-4 h-4" />
+                      <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                       1 week
                     </button>
                   </div>
@@ -178,9 +179,10 @@ export const AlertItem: React.FC<AlertItemProps> = ({
 
               <button
                 onClick={() => onDelete(alert._id)}
-                className="p-2 rounded-lg text-danger-500 hover:bg-danger-500/10 transition-all duration-200 hover:scale-110"
+                className="p-1.5 sm:p-2 rounded-lg text-danger-500 hover:bg-danger-500/10 transition-all duration-200 hover:scale-110 flex-shrink-0"
+                aria-label="Delete alert"
               >
-                <TrashIcon className="h-4 w-4" />
+                <TrashIcon className="h-3 w-3 sm:h-4 sm:w-4" />
               </button>
             </div>
           </div>

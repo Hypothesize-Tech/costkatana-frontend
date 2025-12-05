@@ -72,14 +72,6 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
     }
   };
 
-  const getTrendIcon = (direction: string) => {
-    switch (direction) {
-      case 'increasing': return TrendingUp;
-      case 'decreasing': return TrendingDown;
-      case 'stable': return ArrowRight;
-      default: return ArrowRight;
-    }
-  };
 
   const getHealthScoreColor = (score: number) => {
     if (score >= 80) return 'gradient-text-success bg-gradient-to-br from-success-50/50 to-success-100/50 border-success-200/30';
@@ -142,19 +134,19 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Header */}
-      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <Brain className="w-6 h-6 text-white" />
+      <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h2 className="font-display text-3xl font-bold gradient-text-primary">AI-Powered Insights</h2>
+            <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">AI-Powered Insights</h2>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <select
               value={selectedTimeframe}
               onChange={(e) => setSelectedTimeframe(e.target.value)}
-              className="input px-4 py-2 font-display font-semibold"
+              className="input px-3 sm:px-4 py-2 font-display font-semibold text-sm sm:text-base"
             >
               <option value="1h">Last Hour</option>
               <option value="24h">Last 24 Hours</option>
@@ -163,7 +155,7 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
             </select>
             <button
               onClick={loadInsights}
-              className="btn btn-primary px-6 py-2 font-display font-semibold transition-all duration-300 hover:scale-105"
+              className="btn btn-primary px-4 sm:px-6 py-2 font-display font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
@@ -173,53 +165,53 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
       </div>
 
       {/* Health Score & Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className={`glass rounded-xl p-6 border ${getHealthScoreColor(insights.overall_health_score)} text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300`}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <div className={`glass rounded-xl p-3 sm:p-4 md:p-6 border ${getHealthScoreColor(insights.overall_health_score)} text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300`}>
           <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <Target className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div className="font-display text-3xl font-bold">{insights.overall_health_score}</div>
+            <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold">{insights.overall_health_score}</div>
           </div>
-          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Health Score</div>
+          <div className="font-display text-xs sm:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Health Score</div>
         </div>
-        <div className="glass rounded-xl p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
+        <div className="glass rounded-xl p-3 sm:p-4 md:p-6 bg-gradient-to-br from-danger-50/50 to-danger-100/50 border border-danger-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
-              <AlertTriangle className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-danger flex items-center justify-center shadow-lg">
+              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div className="font-display text-3xl font-bold gradient-text-danger">{insights.anomalies.length}</div>
+            <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-danger">{insights.anomalies.length}</div>
           </div>
-          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Anomalies</div>
+          <div className="font-display text-xs sm:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Anomalies</div>
         </div>
-        <div className="glass rounded-xl p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
+        <div className="glass rounded-xl p-3 sm:p-4 md:p-6 bg-gradient-to-br from-success-50/50 to-success-100/50 border border-success-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-              <Zap className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div className="font-display text-3xl font-bold gradient-text-success">{insights.optimizations.length}</div>
+            <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-success">{insights.optimizations.length}</div>
           </div>
-          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Optimizations</div>
+          <div className="font-display text-xs sm:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Optimizations</div>
         </div>
-        <div className="glass rounded-xl p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
+        <div className="glass rounded-xl p-3 sm:p-4 md:p-6 bg-gradient-to-br from-primary-50/50 to-primary-100/50 border border-primary-200/30 text-center shadow-lg backdrop-blur-xl hover:scale-105 transition-transform duration-300">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div className="font-display text-3xl font-bold gradient-text-primary">0</div>
+            <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">0</div>
           </div>
-          <div className="font-display text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Forecasts</div>
+          <div className="font-display text-xs sm:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">Forecasts</div>
         </div>
       </div>
 
       {/* Key Insights */}
       {insights.key_insights.length > 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-4 shadow-lg">
-              <Brain className="w-5 h-5 text-white" />
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8">
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="font-display text-2xl font-bold gradient-text-primary">Key Insights</h3>
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold gradient-text-primary">Key Insights</h3>
           </div>
           <div className="space-y-4">
             {insights.key_insights.map((insight, index) => (
@@ -236,12 +228,12 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Priority Actions */}
       {insights.priority_actions.length > 0 && (
-        <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-8">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-4 shadow-lg">
-              <Target className="w-5 h-5 text-white" />
+        <div className="glass rounded-xl border border-warning-200/30 shadow-2xl backdrop-blur-xl bg-gradient-warning/10 p-4 sm:p-6 md:p-8">
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-warning flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="font-display text-2xl font-bold gradient-text-warning">Priority Actions</h3>
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold gradient-text-warning">Priority Actions</h3>
           </div>
           <div className="space-y-4">
             {insights.priority_actions.map((action, index) => (
@@ -260,37 +252,40 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Anomalies */}
       {insights.anomalies.length > 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-4 shadow-lg">
-              <AlertTriangle className="w-5 h-5 text-white" />
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8">
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-danger flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="font-display text-2xl font-bold gradient-text-primary">Anomaly Detection</h3>
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold gradient-text-primary">Anomaly Detection</h3>
           </div>
           <div className="space-y-6">
             {insights.anomalies.map((anomaly) => {
               const SeverityIcon = getSeverityIcon(anomaly.severity);
               return (
-                <div key={anomaly.id} className={`glass rounded-xl p-6 border ${getSeverityColor(anomaly.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg">
-                        <SeverityIcon className="w-4 h-4 text-white" />
+                <div key={anomaly.id} className={`glass rounded-xl p-4 sm:p-5 md:p-6 border ${getSeverityColor(anomaly.severity)} shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-105`}>
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-4">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-danger flex items-center justify-center shadow-lg flex-shrink-0">
+                        <SeverityIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <div className="font-display font-bold text-lg text-light-text-primary dark:text-dark-text-primary mb-2">{anomaly.description}</div>
-                        <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">
-                          Type: {anomaly.type.replace('_', ' ')} •
-                          Detected: {new Date(anomaly.detected_at).toLocaleString()}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-display font-bold text-base sm:text-lg text-light-text-primary dark:text-dark-text-primary mb-2">{anomaly.description}</div>
+                        <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                          <span className="block sm:inline">Type: {anomaly.type.replace('_', ' ')}</span>
+                          <span className="hidden sm:inline"> • </span>
+                          <span className="block sm:inline">Detected: {new Date(anomaly.detected_at).toLocaleString()}</span>
                         </div>
-                        <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                          Current: {anomaly.metrics.current_value.toFixed(2)} •
-                          Expected: {anomaly.metrics.expected_value.toFixed(2)} •
-                          Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%
+                        <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                          <span className="block sm:inline">Current: {anomaly.metrics.current_value.toFixed(2)}</span>
+                          <span className="hidden sm:inline"> • </span>
+                          <span className="block sm:inline">Expected: {anomaly.metrics.expected_value.toFixed(2)}</span>
+                          <span className="hidden sm:inline"> • </span>
+                          <span className="block sm:inline">Deviation: {anomaly.metrics.deviation_percentage.toFixed(1)}%</span>
                         </div>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getSeverityColor(anomaly.severity)} shadow-lg`}>
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-display font-bold ${getSeverityColor(anomaly.severity)} shadow-lg flex-shrink-0`}>
                       {anomaly.severity}
                     </span>
                   </div>
@@ -316,44 +311,44 @@ export const AIInsightsDashboard: React.FC<AIInsightsDashboardProps> = ({
 
       {/* Cost Optimizations */}
       {insights.optimizations.length > 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-4 shadow-lg">
-              <Zap className="w-5 h-5 text-white" />
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8">
+          <div className="flex items-center mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-success flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="font-display text-2xl font-bold gradient-text-primary">Cost Optimization Opportunities</h3>
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold gradient-text-primary">Cost Optimization Opportunities</h3>
           </div>
           <div className="space-y-6">
             {insights.optimizations.map((optimization) => (
-              <div key={optimization.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-6 transition-all duration-300 hover:scale-105">
+              <div key={optimization.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl p-4 sm:p-5 md:p-6 transition-all duration-300 hover:scale-105">
                 <div className="mb-4">
-                  <div className="font-display font-bold text-xl text-light-text-primary dark:text-dark-text-primary mb-2">{optimization.title}</div>
-                  <div className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{optimization.description}</div>
-                  <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex items-center gap-2 glass p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                        <DollarSign className="w-3 h-3 text-white" />
+                  <div className="font-display font-bold text-lg sm:text-xl text-light-text-primary dark:text-dark-text-primary mb-2">{optimization.title}</div>
+                  <div className="font-body text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary mb-4">{optimization.description}</div>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 flex-wrap">
+                    <div className="flex items-center gap-2 glass p-2 sm:p-3 rounded-xl border border-success-200/30 shadow-lg backdrop-blur-xl">
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                        <DollarSign className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                       </div>
-                      <span className="font-display text-sm font-bold gradient-text-success">
+                      <span className="font-display text-xs sm:text-sm font-bold gradient-text-success">
                         ${optimization.potential_savings.amount_usd.toFixed(2)}
                         ({optimization.potential_savings.percentage}%)
                       </span>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getImpactColor(optimization.impact)} shadow-lg`}>
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-display font-bold ${getImpactColor(optimization.impact)} shadow-lg`}>
                       {optimization.impact} impact
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-display font-bold ${getEffortColor(optimization.implementation_effort)} shadow-lg`}>
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-display font-bold ${getEffortColor(optimization.implementation_effort)} shadow-lg`}>
                       {optimization.implementation_effort} effort
                     </span>
                   </div>
                 </div>
                 {optimization.steps.length > 0 && (
-                  <div className="glass p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
-                    <div className="font-display text-sm font-bold gradient-text-primary mb-3">Implementation Steps:</div>
+                  <div className="glass p-3 sm:p-4 rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl mt-4">
+                    <div className="font-display text-xs sm:text-sm font-bold gradient-text-primary mb-3">Implementation Steps:</div>
                     <div className="space-y-2">
                       {optimization.steps.slice(0, 3).map((step, index) => (
-                        <div key={index} className="font-body text-sm text-light-text-primary dark:text-dark-text-primary flex items-start">
-                          <div className="w-6 h-6 bg-gradient-primary text-white rounded-lg flex items-center justify-center text-xs font-display font-bold mr-3 mt-0.5 flex-shrink-0 shadow-lg">
+                        <div key={index} className="font-body text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary flex items-start">
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-primary text-white rounded-lg flex items-center justify-center text-xs font-display font-bold mr-2 sm:mr-3 mt-0.5 flex-shrink-0 shadow-lg">
                             {index + 1}
                           </div>
                           <span>{step}</span>

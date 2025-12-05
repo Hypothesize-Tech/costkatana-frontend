@@ -131,67 +131,69 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="mb-2 text-3xl font-bold font-display gradient-text-primary">
+    <div className="p-3 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="p-4 sm:p-5 md:p-6 mb-6 sm:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+          <div className="w-full sm:w-auto">
+            <h1 className="mb-2 text-2xl sm:text-3xl font-bold font-display gradient-text-primary">
               Projects
             </h1>
-            <p className="text-secondary-600 dark:text-secondary-300">
+            <p className="text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
               Manage your AI cost tracking projects
             </p>
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center w-full sm:w-auto">
             <button
               onClick={handleRefreshSpending}
               disabled={refreshing}
-              className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+              className="w-full sm:w-auto px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
             >
               <ArrowPathIcon
                 className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
               />
-              {refreshing ? "Refreshing..." : "Refresh Spending"}
+              <span className="hidden sm:inline">{refreshing ? "Refreshing..." : "Refresh Spending"}</span>
+              <span className="sm:hidden">{refreshing ? "Refreshing..." : "Refresh"}</span>
             </button>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+              className="w-full sm:w-auto px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
             >
               <PlusIcon className="w-4 h-4" />
-              New Project
+              <span className="hidden sm:inline">New Project</span>
+              <span className="sm:hidden">New</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
-        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="p-4 sm:p-5 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
           <div className="flex items-center">
-            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-primary-200/30 dark:border-primary-500/20">
-              <UserGroupIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            <div className="p-2 sm:p-3 mr-3 sm:mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-primary-200/30 dark:border-primary-500/20">
+              <UserGroupIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
+              <p className="text-xs sm:text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Total Projects
               </p>
-              <p className="text-2xl font-bold font-display gradient-text-primary">
+              <p className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                 {safeProjects.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+        <div className="p-4 sm:p-5 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-success-200/30 dark:border-success-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
           <div className="flex items-center">
-            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-success-200/30 dark:border-success-500/20">
-              <CurrencyDollarIcon className="w-6 h-6 text-success-600 dark:text-success-400" />
+            <div className="p-2 sm:p-3 mr-3 sm:mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-success-200/30 dark:border-success-500/20">
+              <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-success-600 dark:text-success-400" />
             </div>
             <div>
-              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
+              <p className="text-xs sm:text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Total Budget
               </p>
-              <p className="text-2xl font-bold font-display gradient-text-success">
+              <p className="text-xl sm:text-2xl font-bold font-display gradient-text-success">
                 $
                 {safeProjects
                   .reduce((sum, p) => sum + (p.budget?.amount || 0), 0)
@@ -201,16 +203,16 @@ const Projects: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105">
+        <div className="p-4 sm:p-5 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-accent-200/30 dark:border-accent-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center">
-            <div className="p-3 mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-accent-200/30 dark:border-accent-500/20">
-              <ArrowTrendingUpIcon className="w-6 h-6 text-accent-600 dark:text-accent-400" />
+            <div className="p-2 sm:p-3 mr-3 sm:mr-4 rounded-xl border shadow-lg bg-gradient-light-panel dark:bg-gradient-dark-panel border-accent-200/30 dark:border-accent-500/20">
+              <ArrowTrendingUpIcon className="w-5 h-5 sm:w-6 sm:h-6 text-accent-600 dark:text-accent-400" />
             </div>
             <div>
-              <p className="text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
+              <p className="text-xs sm:text-sm font-medium font-body text-secondary-600 dark:text-secondary-300">
                 Active Projects
               </p>
-              <p className="text-2xl font-bold font-display gradient-text-accent">
+              <p className="text-xl sm:text-2xl font-bold font-display gradient-text-accent">
                 {safeProjects.filter((p) => p.isActive !== false).length}
               </p>
             </div>
@@ -220,26 +222,26 @@ const Projects: React.FC = () => {
 
       {/* Projects Grid */}
       {safeProjects.length === 0 ? (
-        <div className="py-16 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex justify-center items-center p-4 mx-auto mb-6 w-20 h-20 rounded-full border shadow-lg glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <UserGroupIcon className="w-10 h-10 text-primary-600 dark:text-primary-400" />
+        <div className="py-12 sm:py-16 text-center rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel px-4 sm:px-6">
+          <div className="flex justify-center items-center p-4 mx-auto mb-4 sm:mb-6 w-16 h-16 sm:w-20 sm:h-20 rounded-full border shadow-lg glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <UserGroupIcon className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600 dark:text-primary-400" />
           </div>
-          <h3 className="mb-4 text-2xl font-bold font-display gradient-text-primary">
+          <h3 className="mb-3 sm:mb-4 text-xl sm:text-2xl font-bold font-display gradient-text-primary">
             No projects yet
           </h3>
-          <p className="mx-auto mb-8 max-w-md font-body text-secondary-600 dark:text-secondary-300">
+          <p className="mx-auto mb-6 sm:mb-8 max-w-md text-sm sm:text-base font-body text-secondary-600 dark:text-secondary-300">
             Create your first project to start managing AI costs as a team
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex gap-2 items-center px-6 py-3 font-semibold text-white rounded-xl shadow-lg transition-all duration-300 transform bg-gradient-primary hover:bg-gradient-primary/90 hover:shadow-xl glow-primary hover:scale-105 active:scale-95 font-display"
+            className="inline-flex gap-2 items-center px-5 sm:px-6 py-2.5 sm:py-3 font-semibold text-white rounded-xl shadow-lg transition-all duration-300 transform bg-gradient-primary hover:bg-gradient-primary/90 hover:shadow-xl glow-primary hover:scale-105 active:scale-95 font-display text-sm sm:text-base"
           >
-            <PlusIcon className="w-5 h-5" />
+            <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             Create Project
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {safeProjects.map((project) => (
             <ProjectCard
               key={project._id}

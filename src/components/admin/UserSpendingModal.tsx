@@ -65,61 +65,61 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
             closeOnBackdropClick={true}
             footer={modalFooter}
         >
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
                 {/* User Info */}
-                <div className="flex items-center gap-4 mb-4 pb-4 border-b border-primary-200/30">
-                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl glow-primary shadow-lg">
-                        <ChartBarIcon className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-primary-200/30">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 sm:p-2.5 md:p-3 rounded-xl glow-primary shadow-lg">
+                        <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div>
-                        <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">
                             {user.userName} ({user.userEmail})
                         </p>
                     </div>
                 </div>
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="flex items-center gap-3 mb-2">
-                            <CurrencyDollarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                            <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                             <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                                 Total Cost
                             </span>
                         </div>
-                        <p className="text-xl font-display font-bold gradient-text-primary">
+                        <p className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                             {formatCurrency(user.totalCost)}
                         </p>
                     </div>
-                    <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="flex items-center gap-3 mb-2">
-                            <HashtagIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <div className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                            <HashtagIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                             <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                                 Total Tokens
                             </span>
                         </div>
-                        <p className="text-xl font-display font-bold gradient-text-primary">
+                        <p className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                             {formatNumber(user.totalTokens)}
                         </p>
                     </div>
-                    <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="flex items-center gap-3 mb-2">
-                            <ChartBarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <div className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                            <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                             <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                                 Total Requests
                             </span>
                         </div>
-                        <p className="text-xl font-display font-bold gradient-text-primary">
+                        <p className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                             {formatNumber(user.totalRequests)}
                         </p>
                     </div>
-                    <div className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="flex items-center gap-3 mb-2">
-                            <CurrencyDollarIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <div className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                            <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                             <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">
                                 Avg Cost/Req
                             </span>
                         </div>
-                        <p className="text-xl font-display font-bold gradient-text-primary">
+                        <p className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                             {formatCurrency(user.averageCostPerRequest)}
                         </p>
                     </div>
@@ -127,10 +127,10 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
 
                 {/* Feature Breakdown */}
                 <div>
-                    <h3 className="text-lg font-display font-bold gradient-text-primary mb-4">
+                    <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                         Spending by Feature
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                         {Object.entries(featureGroups)
                             .filter(([_, features]) => features.length > 0)
                             .map(([featureName, features]) => {
@@ -142,13 +142,13 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
                                 return (
                                     <div
                                         key={featureName}
-                                        className="glass backdrop-blur-xl rounded-xl p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300"
+                                        className="glass backdrop-blur-xl rounded-xl p-3 sm:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300"
                                     >
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="bg-gradient-to-br from-primary-500/20 to-primary-600/20 p-2 rounded-lg">
-                                                <IconComponent className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                            <div className="bg-gradient-to-br from-primary-500/20 to-primary-600/20 p-1.5 sm:p-2 rounded-lg">
+                                                <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                                             </div>
-                                            <h4 className="text-base font-display font-bold gradient-text-primary">
+                                            <h4 className="text-sm sm:text-base font-display font-bold gradient-text-primary">
                                                 {featureName}
                                             </h4>
                                         </div>
@@ -187,23 +187,23 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
                 {/* Services Breakdown */}
                 {user.services.length > 0 && (
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary mb-4">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                             Spending by Service
                         </h3>
                         <div className="space-y-2">
                             {user.services.slice(0, 10).map((service) => (
                                 <div
                                     key={service.service}
-                                    className="flex items-center justify-between p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2.5 sm:p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                 >
-                                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                    <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                         {service.service}
                                     </span>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex items-center gap-3 sm:gap-4">
+                                        <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                             {formatNumber(service.requests)} requests
                                         </span>
-                                        <span className="text-sm font-display font-bold gradient-text-primary">
+                                        <span className="text-xs sm:text-sm font-display font-bold gradient-text-primary">
                                             {formatCurrency(service.cost)}
                                         </span>
                                     </div>
@@ -216,23 +216,23 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
                 {/* Models Breakdown */}
                 {user.models.length > 0 && (
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary mb-4">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                             Spending by Model
                         </h3>
                         <div className="space-y-2">
                             {user.models.slice(0, 10).map((model) => (
                                 <div
                                     key={model.model}
-                                    className="flex items-center justify-between p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2.5 sm:p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                 >
-                                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[200px]">
+                                    <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-full sm:max-w-[200px]">
                                         {model.model}
                                     </span>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex items-center gap-3 sm:gap-4">
+                                        <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                             {formatNumber(model.requests)} requests
                                         </span>
-                                        <span className="text-sm font-display font-bold gradient-text-primary">
+                                        <span className="text-xs sm:text-sm font-display font-bold gradient-text-primary">
                                             {formatCurrency(model.cost)}
                                         </span>
                                     </div>
@@ -245,23 +245,23 @@ export const UserSpendingModal: React.FC<UserSpendingModalProps> = ({
                 {/* Projects Breakdown */}
                 {user.projects.length > 0 && (
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary mb-4">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                             Spending by Project
                         </h3>
                         <div className="space-y-2">
                             {user.projects.slice(0, 10).map((project) => (
                                 <div
                                     key={project.projectId}
-                                    className="flex items-center justify-between p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
+                                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2.5 sm:p-3 glass backdrop-blur-xl rounded-lg border border-primary-200/30 shadow-sm bg-gradient-to-br from-white/50 to-white/30 dark:from-dark-card/50 dark:to-dark-card/30"
                                 >
-                                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-[200px]">
+                                    <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate max-w-full sm:max-w-[200px]">
                                         {project.projectName || project.projectId}
                                     </span>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    <div className="flex items-center gap-3 sm:gap-4">
+                                        <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                             {formatNumber(project.requests)} requests
                                         </span>
-                                        <span className="text-sm font-display font-bold gradient-text-primary">
+                                        <span className="text-xs sm:text-sm font-display font-bold gradient-text-primary">
                                             {formatCurrency(project.cost)}
                                         </span>
                                     </div>

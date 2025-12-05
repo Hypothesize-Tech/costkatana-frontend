@@ -69,10 +69,10 @@ const DiscordCallback: React.FC = () => {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4">
                 <div className="text-center">
                     <LoadingSpinner size="large" />
-                    <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                    <p className="mt-4 text-base text-gray-600 dark:text-gray-300 sm:text-lg">
                         Completing Discord OAuth...
                     </p>
                 </div>
@@ -82,26 +82,26 @@ const DiscordCallback: React.FC = () => {
 
     if (status === 'success') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
-                <div className="max-w-md w-full glass rounded-xl border border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 text-center shadow-2xl">
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                        <CheckCircleIcon className="w-12 h-12 text-green-600 dark:text-green-400" />
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4">
+                <div className="max-w-md w-full glass rounded-xl border border-primary-200/30 dark:border-primary-200/40 bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 text-center shadow-2xl sm:p-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center sm:w-20 sm:h-20 sm:mb-6">
+                        <CheckCircleIcon className="w-10 h-10 text-green-600 dark:text-green-400 sm:w-12 sm:h-12" />
                     </div>
-                    <h1 className="text-3xl font-display font-bold gradient-text-primary mb-3">
+                    <h1 className="text-2xl font-display font-bold gradient-text-primary mb-2 sm:text-3xl sm:mb-3">
                         Discord Connected!
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6">
-                        Your Discord integration has been successfully set up. You can now use chat commands like <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">@discord:list-channels</code> and receive alerts!
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 sm:text-base sm:mb-6">
+                        Your Discord integration has been successfully set up. You can now use chat commands like <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs sm:px-2 sm:py-1 sm:text-sm">@discord:list-channels</code> and receive alerts!
                     </p>
                     {integrationId && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                            Integration ID: <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">{integrationId}</code>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 break-all sm:text-sm sm:mb-6">
+                            Integration ID: <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs">{integrationId}</code>
                         </p>
                     )}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                         <button
                             onClick={() => navigate('/integrations', { replace: true })}
-                            className="w-full px-6 py-3 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all"
+                            className="w-full px-5 py-2.5 rounded-lg text-xs font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all sm:px-6 sm:py-3 sm:text-sm"
                         >
                             Go to Integrations
                         </button>
@@ -116,27 +116,27 @@ const DiscordCallback: React.FC = () => {
 
     // Error state
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
-            <div className="max-w-md w-full glass rounded-xl border border-red-200/30 dark:border-red-500/40 bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 text-center shadow-2xl">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                    <XCircleIcon className="w-12 h-12 text-red-600 dark:text-red-400" />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4">
+            <div className="max-w-md w-full glass rounded-xl border border-red-200/30 dark:border-red-500/40 bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 text-center shadow-2xl sm:p-8">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center sm:w-20 sm:h-20 sm:mb-6">
+                    <XCircleIcon className="w-10 h-10 text-red-600 dark:text-red-400 sm:w-12 sm:h-12" />
                 </div>
-                <h1 className="text-3xl font-display font-bold text-red-600 dark:text-red-400 mb-3">
+                <h1 className="text-2xl font-display font-bold text-red-600 dark:text-red-400 mb-2 sm:text-3xl sm:mb-3">
                     Connection Failed
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 break-words sm:text-base sm:mb-6">
                     {errorMessage}
                 </p>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                     <button
                         onClick={() => navigate('/integrations', { replace: true })}
-                        className="w-full px-6 py-3 rounded-lg text-sm font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all"
+                        className="w-full px-5 py-2.5 rounded-lg text-xs font-semibold bg-gradient-primary text-white shadow-lg shadow-primary-500/40 hover:shadow-xl hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all sm:px-6 sm:py-3 sm:text-sm"
                     >
                         Back to Integrations
                     </button>
                     <button
                         onClick={() => window.location.reload()}
-                        className="w-full px-6 py-3 rounded-lg text-sm font-semibold bg-white/80 dark:bg-gray-800/80 text-primary-600 dark:text-primary-400 border border-primary-200/30 dark:border-primary-200/40 hover:bg-primary-50/90 dark:hover:bg-primary-900/30 transition-all"
+                        className="w-full px-5 py-2.5 rounded-lg text-xs font-semibold bg-white/80 dark:bg-gray-800/80 text-primary-600 dark:text-primary-400 border border-primary-200/30 dark:border-primary-200/40 hover:bg-primary-50/90 dark:hover:bg-primary-900/30 transition-all sm:px-6 sm:py-3 sm:text-sm"
                     >
                         Try Again
                     </button>

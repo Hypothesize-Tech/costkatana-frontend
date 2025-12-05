@@ -6,6 +6,9 @@ export { UsageShimmer } from "./UsageShimmer";
 export { UserSessionShimmer } from "./UserSessionShimmer";
 export { AnalyticsShimmer } from "./AnalyticsShimmer";
 export { FeedbackAnalyticsShimmer } from "./FeedbackAnalyticsShimmer";
+export { PaymentMethodManagerShimmer } from "./PaymentMethodManagerShimmer";
+export { BillingHistoryShimmer } from "./BillingHistoryShimmer";
+export { UsageAnalyticsShimmer } from "./UsageAnalyticsShimmer";
 
 // Team Management Shimmer Components
 export {

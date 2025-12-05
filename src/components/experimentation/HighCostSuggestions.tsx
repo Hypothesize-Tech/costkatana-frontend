@@ -33,10 +33,6 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
     const [suggestions, setSuggestions] = useState<HighCostSuggestion[]>([]);
     const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
-    useEffect(() => {
-        analyzeCosts();
-    }, [usages]);
-
     const analyzeCosts = () => {
         if (!usages || usages.length === 0) return;
 
@@ -138,6 +134,11 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
         setSuggestions(newSuggestions.slice(0, 5)); // Show top 5 suggestions
     };
 
+    useEffect(() => {
+        analyzeCosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [usages]);
+
     const handleDismiss = (usageId: string) => {
         setDismissed(prev => new Set([...prev, usageId]));
         setSuggestions(prev => prev.filter(s => s.usage._id !== usageId));
@@ -176,27 +177,27 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
 
     return (
         <>
-            <div className={`space-y-6 ${className}`}>
-                <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <div className="bg-gradient-danger p-3 rounded-xl glow-danger shadow-lg mr-4">
-                                <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+            <div className={`space-y-4 sm:space-y-6 ${className}`}>
+                <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-danger-200/30 animate-fade-in">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+                        <div className="flex items-center flex-1 min-w-0">
+                            <div className="bg-gradient-danger p-2 sm:p-3 rounded-xl glow-danger shadow-lg mr-3 sm:mr-4 flex-shrink-0">
+                                <ExclamationTriangleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                             </div>
-                            <div>
-                                <h3 className="text-xl font-display font-bold gradient-text-primary">
+                            <div className="min-w-0 flex-1">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary">
                                     High-Cost Optimization Opportunities
                                 </h3>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
                                     We found {suggestions.length} expensive requests that could save you money
                                 </p>
                             </div>
                         </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-display font-bold gradient-text">
+                        <div className="text-center sm:text-right flex-shrink-0">
+                            <div className="text-3xl sm:text-4xl font-display font-bold gradient-text">
                                 {suggestions.length}
                             </div>
-                            <div className="text-sm font-display font-semibold text-danger-500">Opportunities</div>
+                            <div className="text-xs sm:text-sm font-display font-semibold text-danger-500">Opportunities</div>
                         </div>
                     </div>
                 </div>
@@ -204,35 +205,35 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                 {suggestions.map((suggestion) => (
                     <div
                         key={suggestion.usage._id}
-                        className={`glass p-6 shadow-lg ${getPriorityColor(suggestion.priority)} hover:scale-105 transition-all duration-300 animate-fade-in`}
+                        className={`glass p-4 sm:p-5 md:p-6 shadow-lg ${getPriorityColor(suggestion.priority)} sm:hover:scale-105 transition-all duration-300 animate-fade-in`}
                     >
-                        <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                                <div className="flex items-center mb-3">
+                        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                            <div className="flex-1 min-w-0 w-full sm:w-auto">
+                                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
                                     <ExclamationTriangleIcon
-                                        className={`h-5 w-5 mr-3 ${getPriorityIconColor(suggestion.priority)}`}
+                                        className={`h-4 w-4 sm:h-5 sm:w-5 ${getPriorityIconColor(suggestion.priority)} flex-shrink-0`}
                                     />
-                                    <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
+                                    <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
                                         {suggestion.priority} Priority
                                     </span>
-                                    <span className="ml-3 px-2 py-1 bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded-lg text-xs font-display font-medium border border-primary-200/30">
+                                    <span className="px-2 py-1 bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded-lg text-xs font-display font-medium border border-primary-200/30 truncate max-w-full">
                                         {suggestion.usage.model}
                                     </span>
                                 </div>
 
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 leading-relaxed">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3 leading-relaxed">
                                     {suggestion.reason}
                                 </p>
 
-                                <div className="flex items-center space-x-6 text-sm mb-4">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-xs sm:text-sm mb-4">
                                     <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
-                                        <CurrencyDollarIcon className="h-4 w-4 mr-2 text-success-500" />
+                                        <CurrencyDollarIcon className="h-4 w-4 mr-2 text-success-500 flex-shrink-0" />
                                         <span className="font-display font-semibold gradient-text">
                                             {formatCurrency(suggestion.usage.cost)}
                                         </span>
                                     </div>
                                     <div className="flex items-center glass p-2 rounded-lg border border-primary-200/30">
-                                        <ChartBarIcon className="h-4 w-4 mr-2 text-primary-500" />
+                                        <ChartBarIcon className="h-4 w-4 mr-2 text-primary-500 flex-shrink-0" />
                                         <span className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                             {suggestion.usage.totalTokens.toLocaleString()}
                                         </span>
@@ -240,24 +241,25 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between">
-                                    <div className="glass p-3 rounded-xl border border-success-200/30 bg-gradient-success/10 flex items-center gap-2">
-                                        <CurrencyDollarIcon className="h-4 w-4 text-success-600 dark:text-success-400" />
-                                        <span className="text-sm font-display font-bold text-success-600 dark:text-success-400">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                                    <div className="glass p-2 sm:p-3 rounded-xl border border-success-200/30 bg-gradient-success/10 flex items-center gap-2">
+                                        <CurrencyDollarIcon className="h-4 w-4 text-success-600 dark:text-success-400 flex-shrink-0" />
+                                        <span className="text-xs sm:text-sm font-display font-bold text-success-600 dark:text-success-400">
                                             {suggestion.potentialSavings}
                                         </span>
                                     </div>
-                                    <div className="flex space-x-3">
+                                    <div className="flex space-x-2 sm:space-x-3">
                                         <button
                                             onClick={() => onSimulate(suggestion.usage)}
-                                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+                                            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-xs sm:text-sm"
                                         >
                                             <BeakerIcon className="h-4 w-4" />
-                                            Simulate
+                                            <span className="hidden sm:inline">Simulate</span>
+                                            <span className="sm:hidden">Run</span>
                                         </button>
                                         <button
                                             onClick={() => handleDismiss(suggestion.usage._id)}
-                                            className="p-2 rounded-xl text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
+                                            className="p-2 rounded-xl text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110 flex-shrink-0"
                                         >
                                             <XMarkIcon className="h-4 w-4" />
                                         </button>
@@ -282,23 +284,24 @@ export const HighCostSuggestions: React.FC<HighCostSuggestionsProps> = ({
 
             {/* Floating Action Button for Quick Access */}
             {suggestions.length > 0 && (
-                <div className="fixed bottom-6 right-6 z-50">
+                <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
                     <button
                         onClick={() => document.getElementById('cost-opportunities')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="flex items-center px-6 py-4 bg-gradient-primary text-white rounded-2xl shadow-2xl glow-primary hover:scale-110 transition-all duration-300 backdrop-blur-xl"
+                        className="flex items-center px-4 py-3 sm:px-6 sm:py-4 bg-gradient-primary text-white rounded-xl sm:rounded-2xl shadow-2xl glow-primary hover:scale-110 transition-all duration-300 backdrop-blur-xl"
                         title="View cost optimization opportunities"
                     >
-                        <SparklesIcon className="h-6 w-6 mr-3" />
-                        <span className="font-display font-bold text-lg">
-                            {suggestions.length} Savings
+                        <SparklesIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
+                        <span className="font-display font-bold text-sm sm:text-lg">
+                            <span className="hidden sm:inline">{suggestions.length} Savings</span>
+                            <span className="sm:hidden">{suggestions.length}</span>
                         </span>
                         {highPriorityCount > 0 ? (
-                            <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl flex items-center justify-center">
-                                <BellAlertIcon className="h-4 w-4 text-white animate-pulse" />
+                            <div className="ml-2 sm:ml-3 px-2 sm:px-3 py-1.5 sm:py-2 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                                <BellAlertIcon className="h-3 w-3 sm:h-4 sm:w-4 text-white animate-pulse" />
                             </div>
                         ) : (
-                            <div className="ml-3 px-3 py-2 bg-white/20 rounded-xl flex items-center justify-center">
-                                <CurrencyDollarIcon className="h-4 w-4 text-white" />
+                            <div className="ml-2 sm:ml-3 px-2 sm:px-3 py-1.5 sm:py-2 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                                <CurrencyDollarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                             </div>
                         )}
                     </button>

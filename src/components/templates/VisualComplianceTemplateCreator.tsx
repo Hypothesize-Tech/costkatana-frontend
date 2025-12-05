@@ -132,29 +132,29 @@ export const VisualComplianceTemplateCreator: React.FC<VisualComplianceTemplateC
 
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-            <div className="p-6 mx-auto max-w-5xl">
+            <div className="p-3 sm:p-4 md:p-6 mx-auto max-w-5xl">
                 {/* Header */}
-                <div className="relative mb-8">
+                <div className="relative mb-6 sm:mb-8">
                     <div className="absolute inset-0 bg-gradient-to-r rounded-2xl blur-3xl from-primary-600/10 to-success-600/10"></div>
-                    <div className="relative p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="relative p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex gap-4 items-center mb-4">
                             <button
                                 onClick={() => onCancel ? onCancel() : navigate('/templates')}
-                                className="flex gap-2 items-center btn btn-secondary"
+                                className="flex gap-2 items-center btn btn-secondary text-sm sm:text-base"
                             >
                                 <FiArrowLeft className="w-4 h-4" />
                                 Back
                             </button>
                         </div>
-                        <div className="flex gap-4 items-center">
-                            <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                                <FiEye className="w-6 h-6 text-white" />
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
+                            <div className="p-2 sm:p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                                <FiEye className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold font-display gradient-text-primary">
+                                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display gradient-text-primary">
                                     Create Visual Compliance Template
                                 </h1>
-                                <p className="mt-2 text-secondary-600 dark:text-secondary-300">
+                                <p className="mt-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
                                     Create reusable templates for visual compliance checks with Cortex optimization
                                 </p>
                             </div>
@@ -163,10 +163,10 @@ export const VisualComplianceTemplateCreator: React.FC<VisualComplianceTemplateC
                 </div>
 
                 {/* Form */}
-                <div className="p-6 space-y-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="p-4 sm:p-6 space-y-6 sm:space-y-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                     {/* Basic Information */}
                     <div className="space-y-4">
-                        <h2 className="text-2xl font-bold font-display gradient-text-primary">
+                        <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                             Basic Information
                         </h2>
 
@@ -255,13 +255,13 @@ export const VisualComplianceTemplateCreator: React.FC<VisualComplianceTemplateC
 
                     {/* Compliance Criteria */}
                     <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold font-display gradient-text-primary">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                                 Compliance Criteria
                             </h2>
                             <button
                                 onClick={addCriterion}
-                                className="flex gap-2 items-center btn btn-primary"
+                                className="flex gap-2 items-center btn btn-primary w-full sm:w-auto justify-center"
                             >
                                 <FiPlus className="w-4 h-4" />
                                 Add Criterion
@@ -342,17 +342,17 @@ export const VisualComplianceTemplateCreator: React.FC<VisualComplianceTemplateC
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3 justify-end pt-6 border-t border-secondary-200 dark:border-secondary-700">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-6 border-t border-secondary-200 dark:border-secondary-700">
                         <button
                             onClick={() => setShowPreview(!showPreview)}
-                            className="flex gap-2 items-center btn btn-secondary"
+                            className="flex gap-2 items-center justify-center btn btn-secondary w-full sm:w-auto"
                         >
                             <FiEye className="w-4 h-4" />
                             {showPreview ? 'Hide' : 'Preview'}
                         </button>
                         <button
                             onClick={() => onCancel ? onCancel() : navigate('/templates')}
-                            className="btn btn-ghost"
+                            className="btn btn-ghost w-full sm:w-auto"
                             disabled={loading}
                         >
                             Cancel
@@ -360,7 +360,7 @@ export const VisualComplianceTemplateCreator: React.FC<VisualComplianceTemplateC
                         <button
                             onClick={handleCreate}
                             disabled={loading || !templateName.trim() || complianceCriteria.filter(c => c.trim()).length === 0}
-                            className="flex gap-2 items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex gap-2 items-center justify-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                         >
                             {loading ? (
                                 <>

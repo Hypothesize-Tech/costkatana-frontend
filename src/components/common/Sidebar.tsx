@@ -35,9 +35,11 @@ import {
   ClipboardDocumentListIcon,
   ChartPieIcon,
   TagIcon,
+  CreditCardIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
+import logo from '../../assets/logo.jpg';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -131,6 +133,7 @@ const navCategories: NavCategory[] = [
     label: 'Settings',
     items: [
       { name: 'Profile', href: '/profile', icon: UserCircleIcon, description: 'User profile' },
+      { name: 'Subscription', href: '/subscription', icon: CreditCardIcon, description: 'Subscription & billing' },
       { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, description: 'Application settings' },
     ],
   },
@@ -525,8 +528,8 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
 
                 <div className="flex overflow-y-auto flex-col gap-y-5 px-4 sm:px-6 pb-6 glass backdrop-blur-xl border-r border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel grow overscroll-contain">
                   <div className="flex items-center h-16 shrink-0 mt-4">
-                    <div className="relative flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-xl shadow-[#06ec9e]/30">
-                      <span className="text-xl font-display font-bold text-white">CK</span>
+                    <div className="relative flex justify-center items-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-xl shadow-[#06ec9e]/30 p-2">
+                      <img src={logo} alt="Cost Katana" className="w-full h-full rounded-lg object-contain" />
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
                       <div className="absolute -inset-0.5 bg-gradient-to-br from-[#06ec9e] to-[#009454] rounded-xl blur opacity-30 animate-pulse" />
                     </div>

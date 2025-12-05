@@ -150,26 +150,26 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
         <div className="space-y-6">
             {/* Filters */}
             <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
                     {/* Search */}
                     <div className="relative">
-                        <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400" />
+                        <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-secondary-400" />
                         <input
                             type="text"
                             placeholder="Search models..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+                            className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-sm sm:text-base rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
                         />
                     </div>
 
                     {/* Provider Filter */}
                     <div className="relative">
-                        <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400" />
+                        <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-secondary-400" />
                         <select
                             value={selectedProvider}
                             onChange={(e) => setSelectedProvider(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50 appearance-none"
+                            className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-sm sm:text-base rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50 appearance-none"
                         >
                             <option value="all">All Providers</option>
                             {providers.map(provider => (
@@ -180,11 +180,11 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
 
                     {/* Task Type Filter */}
                     <div className="relative">
-                        <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400" />
+                        <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-secondary-400" />
                         <select
                             value={selectedTaskType}
                             onChange={(e) => setSelectedTaskType(e.target.value as any)}
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50 appearance-none"
+                            className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-sm sm:text-base rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/50 appearance-none"
                         >
                             <option value="all">All Task Types</option>
                             <option value="chat">Chat</option>
@@ -195,142 +195,149 @@ export const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({
                 </div>
 
                 {/* Results count */}
-                <div className="mt-4 text-sm text-secondary-600 dark:text-secondary-300">
+                <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                     Showing {filteredAndSortedModels.length} of {data?.totalModels || 0} models
                 </div>
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <table className="w-full">
-                    <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 border-b border-primary-200/30 dark:border-primary-700/30">
-                        <tr>
-                            <th
-                                className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
-                                onClick={() => handleSort('modelName')}
-                            >
-                                <div className="flex items-center gap-2">
-                                    Model Name
-                                    <SortIcon field="modelName" />
-                                </div>
-                            </th>
-                            <th
-                                className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
-                                onClick={() => handleSort('provider')}
-                            >
-                                <div className="flex items-center gap-2">
-                                    Provider
-                                    <SortIcon field="provider" />
-                                </div>
-                            </th>
-                            <th
-                                className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
-                                onClick={() => handleSort('inputPricePer1M')}
-                            >
-                                <div className="flex items-center gap-2">
-                                    Input (per 1M)
-                                    <SortIcon field="inputPricePer1M" />
-                                </div>
-                            </th>
-                            <th
-                                className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
-                                onClick={() => handleSort('outputPricePer1M')}
-                            >
-                                <div className="flex items-center gap-2">
-                                    Output (per 1M)
-                                    <SortIcon field="outputPricePer1M" />
-                                </div>
-                            </th>
-                            <th
-                                className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
-                                onClick={() => handleSort('contextWindow')}
-                            >
-                                <div className="flex items-center gap-2">
-                                    Context Window
-                                    <SortIcon field="contextWindow" />
-                                </div>
-                            </th>
-                            <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                Task Types
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-primary-200/30 dark:divide-primary-700/30">
-                        {filteredAndSortedModels.length === 0 ? (
+            <div className="overflow-x-auto -mx-4 sm:mx-0 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="inline-block min-w-full align-middle">
+                    <table className="min-w-full divide-y divide-primary-200/30 dark:divide-primary-700/30">
+                        <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 border-b border-primary-200/30 dark:border-primary-700/30">
                             <tr>
-                                <td colSpan={6} className="px-4 py-8 text-center text-secondary-600 dark:text-secondary-300">
-                                    No models found matching your filters
-                                </td>
-                            </tr>
-                        ) : (
-                            filteredAndSortedModels.map((model, index) => (
-                                <tr
-                                    key={`${model.provider}-${model.modelId}`}
-                                    className={`hover:bg-primary-50/30 dark:hover:bg-primary-900/20 transition-colors ${onModelSelect ? 'cursor-pointer' : ''
-                                        }`}
-                                    onClick={() => onModelSelect?.(model)}
+                                <th
+                                    className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
+                                    onClick={() => handleSort('modelName')}
                                 >
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-semibold text-secondary-900 dark:text-white">
-                                                {model.modelName}
-                                            </span>
-                                            {model.isLatest && (
-                                                <span className="px-2 py-0.5 text-xs font-bold text-white uppercase rounded-full bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454]">
-                                                    Latest
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                                            {model.provider}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        <span className="text-sm font-mono font-semibold gradient-text-primary">
-                                            {pricingService.formatPricePer1M(model.inputPricePer1M)}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        <span className="text-sm font-mono font-semibold gradient-text-primary">
-                                            {pricingService.formatPricePer1M(model.outputPricePer1M)}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-4 whitespace-nowrap">
-                                        <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                                            {model.contextWindow > 0
-                                                ? `${(model.contextWindow / 1000).toFixed(0)}K`
-                                                : 'N/A'}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                        <div className="flex flex-wrap gap-2">
-                                            {model.taskTypes.includes('chat') && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
-                                                    <ChatBubbleLeftRightIcon className="w-3 h-3" />
-                                                    Chat
-                                                </span>
-                                            )}
-                                            {model.taskTypes.includes('code') && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700">
-                                                    <CodeBracketIcon className="w-3 h-3" />
-                                                    Code
-                                                </span>
-                                            )}
-                                            {model.taskTypes.includes('vision') && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
-                                                    <EyeIcon className="w-3 h-3" />
-                                                    Vision
-                                                </span>
-                                            )}
-                                        </div>
+                                    <div className="flex items-center gap-1 sm:gap-2">
+                                        <span className="hidden sm:inline">Model Name</span>
+                                        <span className="sm:hidden">Model</span>
+                                        <SortIcon field="modelName" />
+                                    </div>
+                                </th>
+                                <th
+                                    className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
+                                    onClick={() => handleSort('provider')}
+                                >
+                                    <div className="flex items-center gap-1 sm:gap-2">
+                                        Provider
+                                        <SortIcon field="provider" />
+                                    </div>
+                                </th>
+                                <th
+                                    className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
+                                    onClick={() => handleSort('inputPricePer1M')}
+                                >
+                                    <div className="flex items-center gap-1 sm:gap-2">
+                                        <span className="hidden sm:inline">Input (per 1M)</span>
+                                        <span className="sm:hidden">Input</span>
+                                        <SortIcon field="inputPricePer1M" />
+                                    </div>
+                                </th>
+                                <th
+                                    className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
+                                    onClick={() => handleSort('outputPricePer1M')}
+                                >
+                                    <div className="flex items-center gap-1 sm:gap-2">
+                                        <span className="hidden sm:inline">Output (per 1M)</span>
+                                        <span className="sm:hidden">Output</span>
+                                        <SortIcon field="outputPricePer1M" />
+                                    </div>
+                                </th>
+                                <th
+                                    className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300 cursor-pointer hover:bg-primary-100/50 dark:hover:bg-primary-800/20 transition-colors"
+                                    onClick={() => handleSort('contextWindow')}
+                                >
+                                    <div className="flex items-center gap-1 sm:gap-2">
+                                        <span className="hidden sm:inline">Context Window</span>
+                                        <span className="sm:hidden">Context</span>
+                                        <SortIcon field="contextWindow" />
+                                    </div>
+                                </th>
+                                <th className="px-3 sm:px-4 py-3 sm:py-4 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                    <span className="hidden sm:inline">Task Types</span>
+                                    <span className="sm:hidden">Tasks</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-primary-200/30 dark:divide-primary-700/30">
+                            {filteredAndSortedModels.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="px-3 sm:px-4 py-6 sm:py-8 text-center text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
+                                        No models found matching your filters
                                     </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                filteredAndSortedModels.map((model, index) => (
+                                    <tr
+                                        key={`${model.provider}-${model.modelId}`}
+                                        className={`hover:bg-primary-50/30 dark:hover:bg-primary-900/20 transition-colors ${onModelSelect ? 'cursor-pointer' : ''
+                                            }`}
+                                        onClick={() => onModelSelect?.(model)}
+                                    >
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4 whitespace-nowrap">
+                                            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                                <span className="text-xs sm:text-sm font-semibold text-secondary-900 dark:text-white">
+                                                    {model.modelName}
+                                                </span>
+                                                {model.isLatest && (
+                                                    <span className="px-1.5 sm:px-2 py-0.5 text-xs font-bold text-white uppercase rounded-full bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] flex-shrink-0">
+                                                        Latest
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4 whitespace-nowrap">
+                                            <span className="text-xs sm:text-sm text-secondary-700 dark:text-secondary-300">
+                                                {model.provider}
+                                            </span>
+                                        </td>
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4 whitespace-nowrap">
+                                            <span className="text-xs sm:text-sm font-mono font-semibold gradient-text-primary">
+                                                {pricingService.formatPricePer1M(model.inputPricePer1M)}
+                                            </span>
+                                        </td>
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4 whitespace-nowrap">
+                                            <span className="text-xs sm:text-sm font-mono font-semibold gradient-text-primary">
+                                                {pricingService.formatPricePer1M(model.outputPricePer1M)}
+                                            </span>
+                                        </td>
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4 whitespace-nowrap">
+                                            <span className="text-xs sm:text-sm text-secondary-700 dark:text-secondary-300">
+                                                {model.contextWindow > 0
+                                                    ? `${(model.contextWindow / 1000).toFixed(0)}K`
+                                                    : 'N/A'}
+                                            </span>
+                                        </td>
+                                        <td className="px-3 sm:px-4 py-3 sm:py-4">
+                                            <div className="flex flex-wrap gap-1 sm:gap-2">
+                                                {model.taskTypes.includes('chat') && (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
+                                                        <ChatBubbleLeftRightIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                                        <span className="hidden sm:inline">Chat</span>
+                                                    </span>
+                                                )}
+                                                {model.taskTypes.includes('code') && (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700">
+                                                        <CodeBracketIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                                        <span className="hidden sm:inline">Code</span>
+                                                    </span>
+                                                )}
+                                                {model.taskTypes.includes('vision') && (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
+                                                        <EyeIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                                        <span className="hidden sm:inline">Vision</span>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

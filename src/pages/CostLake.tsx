@@ -173,41 +173,41 @@ export const CostLake: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Header */}
-      <div className="mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="px-6 py-8 mx-auto max-w-7xl">
-          <div className="flex gap-4 items-center mb-4">
-            <div className="p-3 bg-gradient-to-r rounded-xl border glass border-primary-200/30 from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50">
-              <Database className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+      <div className="mx-2 sm:mx-4 md:mx-6 mt-3 sm:mt-4 md:mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-7xl">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center mb-3 sm:mb-4">
+            <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-r rounded-xl border glass border-primary-200/30 from-primary-100/50 to-primary-200/50 dark:from-primary-800/50 dark:to-primary-700/50 shrink-0">
+              <Database className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-600 dark:text-primary-400" />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold font-display gradient-text-primary">Cost Lake</h1>
-              <p className="mt-1 font-body text-secondary-600 dark:text-secondary-300">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text-primary">Cost Lake</h1>
+              <p className="mt-1 text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                 Unified telemetry lake with semantic search and AI-powered cost analysis
               </p>
             </div>
           </div>
 
           {/* Key Features */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
-              <Sparkles className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-              <div>
-                <div className="font-medium font-display text-primary-900 dark:text-primary-100">Natural Language Queries</div>
-                <div className="text-sm font-body text-primary-700 dark:text-primary-300">Ask "why did costs spike?" in plain English</div>
+          <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="flex gap-2 sm:gap-3 items-center p-3 sm:p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400 shrink-0" />
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm md:text-base font-medium font-display text-primary-900 dark:text-primary-100">Natural Language Queries</div>
+                <div className="text-[10px] sm:text-xs md:text-sm font-body text-primary-700 dark:text-primary-300">Ask "why did costs spike?" in plain English</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
-              <TrendingUp className="w-5 h-5 text-success-600 dark:text-success-400" />
-              <div>
-                <div className="font-medium font-display text-success-900 dark:text-success-100">Semantic Search</div>
-                <div className="text-sm font-body text-success-700 dark:text-success-300">Find patterns and anomalies automatically</div>
+            <div className="flex gap-2 sm:gap-3 items-center p-3 sm:p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-success-50/30 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-success-600 dark:text-success-400 shrink-0" />
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm md:text-base font-medium font-display text-success-900 dark:text-success-100">Semantic Search</div>
+                <div className="text-[10px] sm:text-xs md:text-sm font-body text-success-700 dark:text-success-300">Find patterns and anomalies automatically</div>
               </div>
             </div>
-            <div className="flex gap-3 items-center p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20">
-              <Brain className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
-              <div>
-                <div className="font-medium font-display text-secondary-900 dark:text-secondary-100">AI-Powered Insights</div>
-                <div className="text-sm font-body text-secondary-700 dark:text-secondary-300">Get intelligent cost narratives</div>
+            <div className="flex gap-2 sm:gap-3 items-center p-3 sm:p-4 bg-gradient-to-br rounded-xl border glass border-primary-200/30 from-secondary-50/30 to-secondary-100/30 dark:from-secondary-900/20 dark:to-secondary-800/20 sm:col-span-2 md:col-span-1">
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-secondary-600 dark:text-secondary-400 shrink-0" />
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm md:text-base font-medium font-display text-secondary-900 dark:text-secondary-100">AI-Powered Insights</div>
+                <div className="text-[10px] sm:text-xs md:text-sm font-body text-secondary-700 dark:text-secondary-300">Get intelligent cost narratives</div>
               </div>
             </div>
           </div>
@@ -215,22 +215,23 @@ export const CostLake: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="px-6 mx-auto max-w-7xl">
-          <nav className="flex space-x-8">
+      <div className="mx-2 sm:mx-4 md:mx-6 mt-3 sm:mt-4 md:mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="px-2 sm:px-4 md:px-6 mx-auto max-w-7xl">
+          <nav className="flex overflow-x-auto space-x-1 sm:space-x-2 md:space-x-4 lg:space-x-8 scrollbar-hide pb-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`btn flex items-center gap-2 py-4 px-1 border-b-2 font-display font-medium text-sm transition-all duration-300 ${activeTab === tab.id
+                  className={`btn flex items-center gap-1 sm:gap-2 py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 border-b-2 font-display font-medium text-[10px] xs:text-xs sm:text-sm transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === tab.id
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                     : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:border-primary-300/50'
                     }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  {tab.name}
+                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">{tab.name}</span>
+                  <span className="sm:hidden">{tab.name.split(' ')[0]}</span>
                 </button>
               );
             })}
@@ -239,16 +240,16 @@ export const CostLake: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="px-6 py-8 mx-auto max-w-7xl">
+      <div className="px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-7xl">
         {tabLoading[activeTab] || (activeTab === 'optimization' && loadingPatterns) ? (
           <CostLakeShimmer activeTab={activeTab} />
         ) : (
           <>
             {activeTab === 'query' && (
               <div>
-                <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Ask Anything About Your Costs</h2>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                <div className="mb-4 sm:mb-6 md:mb-8">
+                  <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">Ask Anything About Your Costs</h2>
+                  <p className="text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                     Use natural language to query your telemetry data. Ask questions like "What are my most expensive AI operations?"
                     or "Show me slow requests that cost more than $0.01"
                   </p>
@@ -261,9 +262,9 @@ export const CostLake: React.FC = () => {
               <div>
                 {showNotebookGallery ? (
                   <div>
-                    <div className="mb-8">
-                      <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Analysis Notebooks</h2>
-                      <p className="font-body text-secondary-600 dark:text-secondary-300">
+                    <div className="mb-4 sm:mb-6 md:mb-8">
+                      <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">Analysis Notebooks</h2>
+                      <p className="text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                         Create and execute interactive cost analysis notebooks with embedded queries,
                         visualizations, and AI-generated insights.
                       </p>
@@ -275,12 +276,12 @@ export const CostLake: React.FC = () => {
                   </div>
                 ) : (
                   <div>
-                    <div className="mb-6">
+                    <div className="mb-3 sm:mb-4 md:mb-6">
                       <button
                         onClick={handleBackToGallery}
-                        className="flex gap-2 items-center font-medium transition-colors duration-300 btn font-display text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
+                        className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm md:text-base font-medium transition-colors duration-300 btn font-display text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
                       >
-                        <ChevronLeft className="w-4 h-4" />
+                        <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         Back to Notebooks
                       </button>
                     </div>
@@ -295,9 +296,9 @@ export const CostLake: React.FC = () => {
 
             {activeTab === 'vectorization' && (
               <div>
-                <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Vector Search Setup</h2>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                <div className="mb-4 sm:mb-6 md:mb-8">
+                  <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">Vector Search Setup</h2>
+                  <p className="text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                     Configure and manage semantic search capabilities for your telemetry data
                   </p>
                 </div>
@@ -313,9 +314,9 @@ export const CostLake: React.FC = () => {
 
             {activeTab === 'telemetry' && (
               <div>
-                <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Telemetry Data Management</h2>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                <div className="mb-4 sm:mb-6 md:mb-8">
+                  <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">Telemetry Data Management</h2>
+                  <p className="text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                     View your telemetry records and vectorize them for semantic search capabilities.
                     Vectorized data enables natural language queries and AI-powered insights.
                   </p>
@@ -326,9 +327,9 @@ export const CostLake: React.FC = () => {
 
             {activeTab === 'optimization' && (
               <div>
-                <div className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold font-display text-secondary-900 dark:text-white">Auto-Scaling Recommendations</h2>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                <div className="mb-4 sm:mb-6 md:mb-8">
+                  <h2 className="mb-1.5 sm:mb-2 text-lg sm:text-xl md:text-2xl font-bold font-display text-secondary-900 dark:text-white">Auto-Scaling Recommendations</h2>
+                  <p className="text-xs sm:text-sm md:text-base font-body text-secondary-600 dark:text-secondary-300">
                     AI-powered scaling recommendations based on your actual usage patterns and cost optimization opportunities.
                   </p>
                 </div>

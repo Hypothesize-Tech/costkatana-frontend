@@ -6,7 +6,7 @@ export const Integration: React.FC = () => {
   const { selectedProject } = useProject();
 
   return (
-    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+    <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient overflow-x-hidden">
       <IntegrationDashboard projectId={selectedProject} />
     </div>
   );

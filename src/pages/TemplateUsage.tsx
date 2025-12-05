@@ -142,29 +142,30 @@ const TemplateUsagePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="p-6 mx-auto max-w-7xl">
+      <div className="p-3 sm:p-4 md:p-6 mx-auto max-w-7xl">
         {/* Enhanced Header */}
-        <div className="relative mb-8">
+        <div className="relative mb-6 sm:mb-8">
           <div className="absolute inset-0 bg-gradient-to-r rounded-2xl blur-3xl from-primary-600/10 to-success-600/10"></div>
-          <div className="relative p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="relative p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
             <div className="flex gap-4 items-center mb-4">
               <button
                 onClick={() => navigate("/templates")}
-                className="flex gap-2 items-center btn btn-secondary"
+                className="flex gap-2 items-center btn btn-secondary text-sm sm:text-base"
               >
                 <FiArrowLeft className="w-4 h-4" />
-                Back to Templates
+                <span className="hidden sm:inline">Back to Templates</span>
+                <span className="sm:hidden">Back</span>
               </button>
             </div>
-            <div className="flex gap-4 items-center">
-              <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                <FiEdit3 className="w-6 h-6 text-white" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
+              <div className="p-2 sm:p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                <FiEdit3 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold font-display gradient-text-primary">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display gradient-text-primary">
                   Template Workshop
                 </h1>
-                <p className="mt-2 text-secondary-600 dark:text-secondary-300">
+                <p className="mt-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
                   Select and customize prompt templates to match your exact needs
                 </p>
               </div>
@@ -172,27 +173,27 @@ const TemplateUsagePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 xl:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 xl:grid-cols-12">
           {/* Enhanced Template Selection */}
           <div className="xl:col-span-4">
-            <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <div className="flex gap-3 items-center mb-6">
+            <div className="p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="flex gap-3 items-center mb-4 sm:mb-6">
                 <div className="p-2 rounded-lg bg-gradient-success">
                   <FiTag className="w-4 h-4 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
                   Template Library
                 </h2>
               </div>
 
               {/* Search Bar */}
-              <div className="relative mb-6">
+              <div className="relative mb-4 sm:mb-6">
                 <input
                   type="text"
                   placeholder="Search templates..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 input"
+                  className="pl-10 input text-sm sm:text-base"
                 />
                 <div className="absolute left-3 top-3.5">
                   <svg className="w-4 h-4 text-secondary-600 dark:text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +203,7 @@ const TemplateUsagePage: React.FC = () => {
               </div>
 
               {/* Template Stats */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-2 gap-3 mb-4 sm:mb-6">
                 <div className="p-3 bg-gradient-to-br rounded-lg border from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 border-primary-200/50 dark:border-primary-700/50">
                   <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">{filteredTemplates.length}</div>
                   <div className="text-xs text-primary-600/80 dark:text-primary-400/80">Available</div>
@@ -274,23 +275,23 @@ const TemplateUsagePage: React.FC = () => {
           {/* Enhanced Template Customization */}
           <div className="xl:col-span-8">
             {selectedTemplate ? (
-              <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Template Header */}
-                <div className="pb-6 mb-6 border-b border-primary-200/50 dark:border-primary-600/50">
+                <div className="pb-4 sm:pb-6 mb-4 sm:mb-6 border-b border-primary-200/50 dark:border-primary-600/50">
                   <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex gap-3 items-center mb-2">
-                        <h2 className="text-2xl font-bold text-secondary-900 dark:text-white">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap gap-2 sm:gap-3 items-center mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-secondary-900 dark:text-white truncate">
                           {selectedTemplate.name}
                         </h2>
                         {selectedTemplate.isFavorite && (
-                          <FiStar className="w-5 h-5 fill-current text-accent-500" />
+                          <FiStar className="w-4 h-4 sm:w-5 sm:h-5 fill-current text-accent-500 flex-shrink-0" />
                         )}
                       </div>
-                      <p className="mb-3 text-secondary-600 dark:text-secondary-400">
+                      <p className="mb-3 text-sm sm:text-base text-secondary-600 dark:text-secondary-400">
                         {selectedTemplate.description}
                       </p>
-                      <div className="flex gap-2 items-center">
+                      <div className="flex flex-wrap gap-2 items-center">
                         <span className="px-3 py-1 text-sm font-medium bg-gradient-to-r rounded-full from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 text-primary-700 dark:text-primary-300">
                           {selectedTemplate.category}
                         </span>
@@ -400,20 +401,20 @@ const TemplateUsagePage: React.FC = () => {
                   <div className="relative">
                     <div className="overflow-hidden bg-gradient-to-br rounded-xl border shadow-2xl from-secondary-900 to-secondary-800 dark:from-secondary-800 dark:to-secondary-900 border-primary-300 dark:border-primary-600">
                       {/* Code Header */}
-                      <div className="flex justify-between items-center px-4 py-3 border-b bg-secondary-800/50 dark:bg-secondary-700/50 border-primary-600">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 px-4 py-3 border-b bg-secondary-800/50 dark:bg-secondary-700/50 border-primary-600">
                         <div className="flex gap-3 items-center">
                           <div className="flex gap-2">
                             <div className="w-3 h-3 rounded-full bg-danger-500"></div>
                             <div className="w-3 h-3 rounded-full bg-accent-500"></div>
                             <div className="w-3 h-3 rounded-full bg-success-500"></div>
                           </div>
-                          <span className="text-sm font-medium text-secondary-300">prompt.txt</span>
+                          <span className="text-xs sm:text-sm font-medium text-secondary-300">prompt.txt</span>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                           <button
                             onClick={handleCopyPrompt}
                             disabled={!generatedPrompt}
-                            className={`flex gap-2 items-center px-4 py-2 text-sm rounded-lg font-medium transition-all duration-200 ${copySuccess
+                            className={`flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-lg font-medium transition-all duration-200 w-full sm:w-auto ${copySuccess
                               ? "text-white bg-success-500"
                               : !generatedPrompt
                                 ? "cursor-not-allowed bg-secondary-600 text-secondary-400"
@@ -426,7 +427,7 @@ const TemplateUsagePage: React.FC = () => {
                           <button
                             onClick={handleTemplateUsage}
                             disabled={!generatedPrompt || usingTemplate}
-                            className={`btn flex gap-2 items-center px-4 py-2 text-sm rounded-lg font-medium transition-all duration-200 ${!generatedPrompt
+                            className={`btn flex gap-2 items-center justify-center px-4 py-2 text-sm rounded-lg font-medium transition-all duration-200 w-full sm:w-auto ${!generatedPrompt
                               ? "cursor-not-allowed bg-secondary-600 text-secondary-400"
                               : usingTemplate
                                 ? "text-white cursor-not-allowed bg-primary-400"

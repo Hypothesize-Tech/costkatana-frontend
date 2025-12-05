@@ -146,28 +146,28 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30 p-8 text-left align-middle transition-all animate-scale-in">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div className="flex items-center">
-                                        <div className="bg-gradient-primary p-3 rounded-xl glow-primary shadow-lg mr-4">
-                                            <BeakerIcon className="h-6 w-6 text-white" />
+                            <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden glass rounded-xl shadow-2xl backdrop-blur-xl border border-primary-200/30 p-4 sm:p-6 md:p-8 text-left align-middle transition-all animate-scale-in mx-4 sm:mx-0">
+                                <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 gap-3">
+                                    <div className="flex items-center min-w-0 flex-1">
+                                        <div className="bg-gradient-primary p-2 sm:p-3 rounded-xl glow-primary shadow-lg mr-2 sm:mr-3 md:mr-4 flex-shrink-0">
+                                            <BeakerIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                                         </div>
-                                        <Dialog.Title as="h3" className="text-2xl font-display font-bold gradient-text">
+                                        <Dialog.Title as="h3" className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text truncate">
                                             What-If Cost Simulation
                                         </Dialog.Title>
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110"
+                                        className="p-2 rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:text-danger-500 hover:bg-danger-500/10 transition-all duration-300 hover:scale-110 flex-shrink-0"
                                     >
-                                        <XMarkIcon className="h-6 w-6" />
+                                        <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                                     </button>
                                 </div>
 
                                 {/* Original Usage Info */}
-                                <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-6">
-                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">Original Request</h4>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 mb-4 sm:mb-6">
+                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 sm:mb-4 text-sm sm:text-base">Original Request</h4>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
                                         <div>
                                             <span className="font-body text-light-text-muted dark:text-dark-text-muted">Model:</span>
                                             <p className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{usage?.model || 'Unknown'}</p>
@@ -220,32 +220,32 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 {simulationResult && (
                                     <div className="space-y-6">
                                         {/* Summary */}
-                                        <div className="glass p-8 bg-gradient-primary/10 border border-primary-200/30 rounded-xl shadow-lg animate-fade-in">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h4 className="text-xl font-display font-bold gradient-text">Optimization Opportunities</h4>
-                                                <div className="text-right">
-                                                    <p className="text-4xl font-display font-bold gradient-text">
+                                        <div className="glass p-4 sm:p-6 md:p-8 bg-gradient-primary/10 border border-primary-200/30 rounded-xl shadow-lg animate-fade-in">
+                                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
+                                                <h4 className="text-lg sm:text-xl font-display font-bold gradient-text">Optimization Opportunities</h4>
+                                                <div className="text-left sm:text-right">
+                                                    <p className="text-2xl sm:text-3xl md:text-4xl font-display font-bold gradient-text">
                                                         {formatCurrency(simulationResult.potentialSavings || 0)}
                                                     </p>
-                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Potential Savings</p>
+                                                    <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">Potential Savings</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center">
-                                                <ChartBarIcon className="h-5 w-5 text-primary-500 mr-3 glow-primary" />
-                                                <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                <ChartBarIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-500 mr-2 sm:mr-3 glow-primary flex-shrink-0" />
+                                                <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                     Confidence: <span className="font-display font-semibold gradient-text">{Math.round(simulationResult.confidence || 0)}%</span>
                                                 </span>
                                             </div>
                                         </div>
 
                                         {/* Optimization Options */}
-                                        <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
-                                            <h4 className="text-xl font-display font-bold gradient-text mb-6">Optimization Options</h4>
-                                            <div className="space-y-4">
+                                        <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                            <h4 className="text-lg sm:text-xl font-display font-bold gradient-text mb-4 sm:mb-6">Optimization Options</h4>
+                                            <div className="space-y-3 sm:space-y-4">
                                                 {(simulationResult.optimizedOptions || []).map((option, index) => (
                                                     <div
                                                         key={index}
-                                                        className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 hover:bg-primary-500/10 transition-all duration-300"
+                                                        className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 bg-primary-500/5 sm:hover:bg-primary-500/10 transition-all duration-300"
                                                     >
                                                         <div className="flex items-start justify-between">
                                                             <div className="flex-1">
@@ -305,10 +305,10 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
 
                                         {/* Recommendations */}
                                         {(simulationResult.recommendations || []).length > 0 && (
-                                            <div className="glass p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
-                                                <h4 className="text-xl font-display font-bold gradient-text mb-6">AI Recommendations</h4>
-                                                <div className="glass p-6 rounded-xl border border-primary-200/30 bg-primary-500/5">
-                                                    <ul className="space-y-4">
+                                            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+                                                <h4 className="text-lg sm:text-xl font-display font-bold gradient-text mb-4 sm:mb-6">AI Recommendations</h4>
+                                                <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border border-primary-200/30 bg-primary-500/5">
+                                                    <ul className="space-y-3 sm:space-y-4">
                                                         {(simulationResult.recommendations || []).map((rec, index) => {
                                                             const recommendation = typeof rec === 'string' ? { title: rec } : rec;
                                                             return (
@@ -359,20 +359,21 @@ export const WhatIfSimulationModal: React.FC<WhatIfSimulationModalProps> = ({
                                 )}
 
                                 {/* Actions */}
-                                <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-primary-200/30">
+                                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 mt-4 sm:mt-6 md:mt-8 pt-4 sm:pt-5 md:pt-6 border-t border-primary-200/30">
                                     <button
                                         onClick={onClose}
-                                        className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                                        className="px-4 py-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white rounded-xl hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-xs sm:text-sm"
                                     >
                                         Close
                                     </button>
                                     {simulationResult && (
                                         <button
                                             onClick={runSimulation}
-                                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+                                            className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-xs sm:text-sm"
                                         >
                                             <BeakerIcon className="w-4 h-4" />
-                                            Rerun Simulation
+                                            <span className="hidden sm:inline">Rerun Simulation</span>
+                                            <span className="sm:hidden">Rerun</span>
                                         </button>
                                     )}
                                 </div>

@@ -141,40 +141,40 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
   };
 
   return (
-    <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm">
-      <div className="glass rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="flex justify-between items-center p-6 border-b border-primary-200/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <SparklesIcon className="w-6 h-6 text-white" />
+    <div className="flex fixed inset-0 z-50 justify-center items-center p-2 bg-black/50 dark:bg-black/70 backdrop-blur-sm sm:p-4">
+      <div className="glass rounded-lg shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden border border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:max-h-[90vh] sm:rounded-xl md:rounded-2xl">
+        <div className="flex justify-between items-center p-3 border-b border-primary-200/30 sm:p-4 md:p-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg sm:w-9 sm:h-9 md:w-10 md:h-10 md:rounded-xl">
+              <SparklesIcon className="w-4 h-4 text-white sm:w-5 sm:h-5 md:w-6 md:h-6" />
             </div>
-            <h2 className="text-2xl font-display font-bold gradient-text-primary">
+            <h2 className="text-lg font-display font-bold gradient-text-primary sm:text-xl md:text-2xl">
               AI Prompt Optimization
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 glass rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-105"
+            className="p-2 glass rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-105 min-h-[40px] min-w-[40px] [touch-action:manipulation] active:scale-95"
           >
-            <XMarkIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <XMarkIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-5 sm:h-5" />
           </button>
         </div>
 
-        <div className="flex h-[calc(90vh-theme(spacing.20))]">
+        <div className="flex flex-col h-[calc(95vh-theme(spacing.16))] sm:h-[calc(90vh-theme(spacing.20))] md:flex-row">
           {/* Form Section */}
           <div
-            className={`overflow-y-auto p-6 ${showPreview ? "w-1/2" : "w-full"}`}
+            className={`overflow-y-auto p-3 sm:p-4 md:p-6 ${showPreview ? "w-full md:w-1/2" : "w-full"}`}
           >
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
               {/* Quick Setup */}
-              <div className="glass rounded-xl p-5 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+              <div className="glass rounded-lg p-3 border border-primary-200/30 backdrop-blur-xl bg-gradient-to-br from-primary-50/30 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10 sm:p-4 md:p-5 md:rounded-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <SparklesIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  <h3 className="text-sm font-display font-semibold gradient-text-primary">
+                  <SparklesIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-5 sm:h-5" />
+                  <h3 className="text-xs font-display font-semibold gradient-text-primary sm:text-sm">
                     Quick Start
                   </h3>
                 </div>
-                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                   Simply paste your prompt below and we'll automatically
                   optimize it for cost and performance. No API keys or complex
                   configuration required.
@@ -182,7 +182,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Provider & Model Selection */}
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 md:grid-cols-2">
                 <div>
                   <label className="block mb-3 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                     AI Provider
@@ -262,14 +262,14 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-6 border-t border-primary-200/30">
+              <div className="flex flex-col gap-2 pt-4 border-t border-primary-200/30 sm:flex-row sm:gap-4 sm:pt-6">
                 <button
                   type="button"
                   onClick={handlePreview}
                   disabled={
                     previewMutation.isPending || !formData.prompt.trim()
                   }
-                  className="flex-1 btn btn-secondary"
+                  className="flex-1 btn btn-secondary min-h-[44px] [touch-action:manipulation] active:scale-95"
                 >
                   {previewMutation.isPending ? (
                     <>
@@ -278,8 +278,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                     </>
                   ) : (
                     <>
-                      <EyeIcon className="w-5 h-5 mr-2" />
-                      Preview Optimization
+                      <EyeIcon className="w-4 h-4 mr-2 sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Preview Optimization</span>
+                      <span className="sm:hidden">Preview</span>
                     </>
                   )}
                 </button>
@@ -288,7 +289,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                   type="button"
                   onClick={handleCreate}
                   disabled={createMutation.isPending || !formData.prompt.trim()}
-                  className="flex-1 btn btn-primary"
+                  className="flex-1 btn btn-primary min-h-[44px] [touch-action:manipulation] active:scale-95"
                 >
                   {createMutation.isPending ? (
                     <>
@@ -297,8 +298,9 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                     </>
                   ) : (
                     <>
-                      <SparklesIcon className="w-5 h-5 mr-2" />
-                      Create Optimization
+                      <SparklesIcon className="w-4 h-4 mr-2 sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">Create Optimization</span>
+                      <span className="sm:hidden">Create</span>
                     </>
                   )}
                 </button>
@@ -308,7 +310,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
 
           {/* Preview Section */}
           {showPreview && previewData && previewData.suggestions && (
-            <div className="w-1/2 p-6 border-l border-primary-200/30 overflow-y-auto bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="w-full p-3 border-t border-primary-200/30 overflow-y-auto bg-gradient-light-ambient dark:bg-gradient-dark-ambient md:w-1/2 md:border-l md:border-t-0 sm:p-4 md:p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-display font-bold gradient-text-primary">
                   Optimization Preview

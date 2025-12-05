@@ -83,11 +83,11 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
   }, [showTooltip]);
 
   return (
-    <div className="overflow-hidden glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-      <div className="p-6">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 flex-wrap">
+    <div className="overflow-hidden glass rounded-lg border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel sm:rounded-xl">
+      <div className="p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col gap-3 justify-between items-start sm:flex-row sm:items-start sm:gap-0">
+          <div className="flex-1 w-full">
+            <div className="flex items-center gap-2 flex-wrap sm:gap-3">
               {/* Optimization Type Badge */}
               {isVisualCompliance ? (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-display font-medium bg-emerald-50/50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50">
@@ -134,13 +134,13 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
               </span>
             </div>
 
-            <h3 className="mt-3 text-lg font-display font-semibold gradient-text-primary">
+            <h3 className="mt-2 text-base font-display font-semibold gradient-text-primary sm:mt-3 sm:text-lg">
               {optimization?.improvementPercentage
                 ? `${Math.abs(optimization.improvementPercentage).toFixed(1)}% Token ${optimization.improvementPercentage < 0 ? 'Increase' : 'Reduction'}`
                 : '0.0% Token Reduction'}
             </h3>
 
-            <div className="grid grid-cols-2 gap-4 mt-4 text-sm md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 mt-3 text-xs sm:gap-3 sm:mt-4 sm:text-sm md:grid-cols-4">
               <div className="glass rounded-lg p-3 border border-secondary-200/30 hover:scale-105 transition-transform duration-200">
                 <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1">
                   {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Token Increase' : 'Tokens Saved'}
@@ -158,7 +158,7 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
                 onMouseEnter={() => isVisualCompliance && optimization.metadata?.costBreakdown && setShowTooltip(true)}
                 onMouseLeave={() => setShowTooltip(false)}
               >
-                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary block mb-1 flex items-center gap-1">
+                <span className="font-body text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-1 mb-1">
                   {optimization.improvementPercentage && optimization.improvementPercentage < 0 ? 'Cost Increase' : (isVisualCompliance && optimization.metadata?.costBreakdown?.netSavings ? 'Net Savings' : 'Cost Saved')}
                   {isVisualCompliance && optimization.metadata?.costBreakdown && (
                     <svg className="w-3.5 h-3.5 text-success-600 dark:text-success-400 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -234,34 +234,34 @@ export const OptimizationCard: React.FC<OptimizationCardProps> = ({
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="p-2 ml-4 glass rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-105"
+            className="p-2 glass rounded-lg border border-primary-200/30 hover:border-primary-300/50 transition-all duration-200 hover:scale-105 min-h-[40px] min-w-[40px] self-start sm:ml-4 [touch-action:manipulation] active:scale-95"
           >
             {expanded ? (
-              <ChevronUpIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <ChevronUpIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-5 sm:h-5" />
             ) : (
-              <ChevronDownIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <ChevronDownIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-5 sm:h-5" />
             )}
           </button>
         </div>
 
         {expanded && (
-          <div className="mt-6 space-y-6">
+          <div className="mt-4 space-y-4 sm:mt-5 sm:space-y-5 md:mt-6 md:space-y-6">
             {/* Visual Compliance Section */}
             {isVisualCompliance && optimization.visualComplianceData && (
-              <div className="space-y-5">
+              <div className="space-y-3 sm:space-y-4 md:space-y-5">
                 {/* Main Compliance Result Card - Hero Section */}
-                <div className="glass rounded-2xl p-6 border-2 border-emerald-200/40 backdrop-blur-xl bg-gradient-to-br from-emerald-50/40 to-teal-50/30 dark:from-emerald-900/20 dark:to-teal-900/15 shadow-2xl">
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 flex items-center justify-center shadow-xl shrink-0">
-                      <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="glass rounded-lg p-3 border-2 border-emerald-200/40 backdrop-blur-xl bg-gradient-to-br from-emerald-50/40 to-teal-50/30 dark:from-emerald-900/20 dark:to-teal-900/15 shadow-2xl sm:p-4 md:p-6 md:rounded-xl lg:rounded-2xl">
+                  <div className="flex items-start gap-2 mb-3 sm:gap-3 md:gap-4 sm:mb-4 md:mb-5">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 flex items-center justify-center shadow-xl shrink-0 sm:w-12 sm:h-12 md:w-14 md:h-14 md:rounded-xl lg:rounded-2xl">
+                      <svg className="w-5 h-5 text-white sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-2xl font-display font-bold bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent mb-2">
+                      <h4 className="text-lg font-display font-bold bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent mb-1.5 sm:text-xl md:text-2xl sm:mb-2">
                         Visual Compliance Analysis
                       </h4>
-                      <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-display font-semibold bg-white/80 dark:bg-black/30 border border-emerald-200/50 text-emerald-700 dark:text-emerald-300 shadow-sm">
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />

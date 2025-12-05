@@ -47,22 +47,22 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <div className="glass rounded-xl shadow-xl border border-primary-200/30 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 hover:border-primary-300/50 overflow-hidden">
-      <div className="p-6">
+      <div className="p-4 sm:p-5 md:p-6">
         {/* Header */}
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex-1 min-w-0">
-            <div className="flex gap-3 items-center mb-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                <span className="text-white font-display font-bold text-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6 gap-3 sm:gap-0">
+          <div className="flex-1 min-w-0 w-full sm:w-auto">
+            <div className="flex gap-2 sm:gap-3 items-center mb-2 sm:mb-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                <span className="text-white font-display font-bold text-base sm:text-lg">
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-display font-bold gradient-text-primary truncate mb-1">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary truncate mb-1">
                   {project.name}
                 </h3>
                 <span
-                  className={`px-3 py-1 text-xs font-display font-bold rounded-full border ${project.isActive
+                  className={`px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-display font-bold rounded-full border ${project.isActive
                     ? "bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-200/30"
                     : "bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 border-secondary-200/30"
                     }`}
@@ -72,12 +72,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               </div>
             </div>
             {project.description && (
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
+              <p className="text-sm sm:text-base font-body text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
                 {project.description}
               </p>
             )}
           </div>
-          <div className="flex gap-2 ml-4">
+          <div className="flex gap-2 sm:ml-4 w-full sm:w-auto justify-end sm:justify-start">
             <button
               onClick={onView}
               className="p-2.5 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
@@ -131,30 +131,30 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="glass rounded-lg p-4 border border-secondary-200/30 dark:border-secondary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg mx-auto mb-2">
-              <UserGroupIcon className="w-4 h-4 text-white" />
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          <div className="glass rounded-lg p-3 sm:p-4 border border-secondary-200/30 dark:border-secondary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg mx-auto mb-1 sm:mb-2">
+              <UserGroupIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold text-secondary-900 dark:text-white">
+            <p className="text-base sm:text-lg font-display font-bold text-secondary-900 dark:text-white">
               {project.tags?.length || 0}
             </p>
             <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Tags</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-success-200/30 dark:border-success-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg mx-auto mb-2">
-              <CurrencyDollarIcon className="w-4 h-4 text-white" />
+          <div className="glass rounded-lg p-3 sm:p-4 border border-success-200/30 dark:border-success-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg mx-auto mb-1 sm:mb-2">
+              <CurrencyDollarIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold text-success-600 dark:text-success-400">
+            <p className="text-sm sm:text-lg font-display font-bold text-success-600 dark:text-success-400 truncate">
               {formatCurrency(budgetAmount)}
             </p>
             <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Budget</p>
           </div>
-          <div className="glass rounded-lg p-4 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
-            <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg mx-auto mb-2">
-              <ArrowTrendingUpIcon className="w-4 h-4 text-white" />
+          <div className="glass rounded-lg p-3 sm:p-4 border border-accent-200/30 dark:border-accent-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg mx-auto mb-1 sm:mb-2">
+              <ArrowTrendingUpIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
-            <p className="text-lg font-display font-bold text-accent-600 dark:text-accent-400">
+            <p className="text-sm sm:text-lg font-display font-bold text-accent-600 dark:text-accent-400 truncate">
               {formatCurrency(budgetSpent)}
             </p>
             <p className="text-xs font-body text-secondary-600 dark:text-secondary-300">Spent</p>

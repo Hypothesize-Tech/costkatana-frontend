@@ -192,45 +192,45 @@ export const WorkflowOptimizationRecommendations: React.FC<WorkflowOptimizationR
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header with Summary */}
-      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
           <div>
-            <h3 className="text-lg font-display font-bold gradient-text-primary mb-2">
+            <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary mb-2">
               Optimization Recommendations
             </h3>
-            <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
               {filteredAndSorted.length} recommendation{filteredAndSorted.length !== 1 ? 's' : ''} found
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="text-right">
               <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                 Total Potential Savings
               </div>
-              <div className="text-2xl font-display font-bold gradient-text-primary">
+              <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                 {formatCurrency(totalPotentialSavings)}
               </div>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] flex items-center justify-center">
-              <ArrowTrendingDownIcon className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] flex items-center justify-center">
+              <ArrowTrendingDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters and Sort */}
-      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4">
-        <div className="flex flex-wrap gap-4 items-center">
+      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-3 sm:p-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4 items-center">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <label className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Type:
             </label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
-              className="px-3 py-1.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-dark-card text-sm font-body"
+              className="px-2 sm:px-3 py-1.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-dark-card text-xs sm:text-sm font-body"
             >
               <option value="all">All Types</option>
               <option value="immediate">Immediate</option>
@@ -275,19 +275,19 @@ export const WorkflowOptimizationRecommendations: React.FC<WorkflowOptimizationR
 
       {/* Recommendations List */}
       {filteredAndSorted.length === 0 ? (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-12 text-center">
-          <LightBulbIcon className="w-12 h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-4" />
-          <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 sm:p-12 text-center">
+          <LightBulbIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-light-text-tertiary dark:text-dark-text-tertiary mb-3 sm:mb-4" />
+          <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
             No recommendations found
           </p>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             {filterType !== 'all' || filterCategory !== 'all'
               ? 'Try adjusting your filters'
               : 'All workflows are optimized!'}
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredAndSorted.map((recommendation, index) => {
             const isExpanded = expandedCards.has(index);
             return (
@@ -296,17 +296,17 @@ export const WorkflowOptimizationRecommendations: React.FC<WorkflowOptimizationR
                 className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl overflow-hidden"
               >
                 <div
-                  className="p-6 cursor-pointer hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors"
+                  className="p-4 sm:p-6 cursor-pointer hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors"
                   onClick={() => toggleCard(index)}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${getCategoryColor(recommendation.category)} flex items-center justify-center text-white flex-shrink-0`}>
+                  <div className="flex items-start justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-r ${getCategoryColor(recommendation.category)} flex items-center justify-center text-white flex-shrink-0`}>
                         {getCategoryIcon(recommendation.category)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h4 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <h4 className="text-base sm:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
                             {recommendation.title}
                           </h4>
                           <span className={`px-2 py-1 rounded text-xs font-medium ${getTypeColor(recommendation.type)}`}>
@@ -316,18 +316,18 @@ export const WorkflowOptimizationRecommendations: React.FC<WorkflowOptimizationR
                             {recommendation.implementationEffort} effort
                           </span>
                         </div>
-                        <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
+                        <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-3">
                           {recommendation.description}
                         </p>
                         {recommendation.workflowName && (
-                          <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2">
+                          <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-2 truncate">
                             Workflow: {recommendation.workflowName}
                           </p>
                         )}
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                           <div className="flex items-center gap-2">
                             <ArrowTrendingDownIcon className="w-4 h-4 text-[#06ec9e] dark:text-emerald-400" />
-                            <span className="text-sm font-display font-bold gradient-text-primary">
+                            <span className="text-xs sm:text-sm font-display font-bold gradient-text-primary">
                               {formatCurrency(recommendation.potentialSavings)}
                             </span>
                             <span className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -347,18 +347,18 @@ export const WorkflowOptimizationRecommendations: React.FC<WorkflowOptimizationR
                     </div>
                     <button className="flex-shrink-0">
                       {isExpanded ? (
-                        <ChevronUpIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                        <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
                       ) : (
-                        <ChevronDownIcon className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                        <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
                       )}
                     </button>
                   </div>
                 </div>
 
                 {isExpanded && (
-                  <div className="px-6 pb-6 pt-0 border-t border-primary-200/20 dark:border-primary-500/10">
-                    <div className="mt-4">
-                      <h5 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 border-t border-primary-200/20 dark:border-primary-500/10">
+                    <div className="mt-3 sm:mt-4">
+                      <h5 className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
                         Implementation Steps:
                       </h5>
                       <ol className="space-y-2">

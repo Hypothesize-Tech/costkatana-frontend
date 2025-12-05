@@ -102,9 +102,9 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
     };
 
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-md p-6">
-          <h3 className="font-display text-xl font-bold gradient-text-primary mb-6">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+        <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel w-full max-w-md p-4 sm:p-5 md:p-6">
+          <h3 className="font-display text-lg sm:text-xl font-bold gradient-text-primary mb-4 sm:mb-6">
             {selectedTemplateData ? `Create from Template: ${selectedTemplateData.name}` : 'Create New Notebook'}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -185,18 +185,18 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
   return (
     <div className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b border-primary-200/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+      <div className="p-4 sm:p-5 md:p-6 border-b border-primary-200/30">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h2 className="font-display text-2xl font-bold gradient-text-primary">Analysis Notebooks</h2>
+            <h2 className="font-display text-xl sm:text-2xl font-bold gradient-text-primary">Analysis Notebooks</h2>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => setShowGuide(true)}
-              className="btn btn-secondary flex items-center gap-2"
+              className="btn btn-secondary flex items-center justify-center gap-2 text-sm sm:text-base"
               title="Learn how to create notebooks"
             >
               <HelpCircle className="w-4 h-4" />
@@ -204,7 +204,7 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
             </button>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary flex items-center gap-2"
+              className="btn btn-primary flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <Plus className="w-4 h-4" />
               New Notebook
@@ -213,10 +213,10 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex mt-6 border-b border-primary-200/30">
+        <div className="flex mt-4 sm:mt-6 border-b border-primary-200/30 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => setActiveTab('notebooks')}
-            className={`px-6 py-3 font-display font-semibold border-b-2 transition-all duration-300 ${activeTab === 'notebooks'
+            className={`px-4 sm:px-6 py-2 sm:py-3 font-display font-semibold text-sm sm:text-base border-b-2 transition-all duration-300 whitespace-nowrap ${activeTab === 'notebooks'
               ? 'border-primary-500 gradient-text-primary'
               : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary'
               }`}
@@ -225,7 +225,7 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('templates')}
-            className={`px-6 py-3 font-display font-semibold border-b-2 transition-all duration-300 ${activeTab === 'templates'
+            className={`px-4 sm:px-6 py-2 sm:py-3 font-display font-semibold text-sm sm:text-base border-b-2 transition-all duration-300 whitespace-nowrap ${activeTab === 'templates'
               ? 'border-primary-500 gradient-text-primary'
               : 'border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary'
               }`}
@@ -236,7 +236,7 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-5 md:p-6">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="text-center">
@@ -264,11 +264,11 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
               </div>
             ) : (
               notebooks.map((notebook) => (
-                <div key={notebook.id} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.01]">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="font-display text-lg font-bold gradient-text-primary">{notebook.title}</h3>
+                <div key={notebook.id} className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.01]">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
+                        <h3 className="font-display text-base sm:text-lg font-bold gradient-text-primary truncate">{notebook.title}</h3>
                         {notebook.template_type && (
                           <span className="px-3 py-1 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 rounded-full font-display font-medium text-sm">
                             {notebook.template_type.replace('_', ' ')}
@@ -290,21 +290,21 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onSelectNotebook?.(notebook.id)}
-                        className="w-10 h-10 rounded-lg glass border border-success-200/30 flex items-center justify-center text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg glass border border-success-200/30 flex items-center justify-center text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-110"
                         title="Open notebook"
                       >
                         <Play className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => onSelectNotebook?.(notebook.id)}
-                        className="w-10 h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg glass border border-primary-200/30 flex items-center justify-center text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-110"
                         title="Edit notebook"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => deleteNotebook(notebook.id)}
-                        className="w-10 h-10 rounded-lg glass border border-danger-200/30 flex items-center justify-center text-danger-600 hover:text-danger-800 hover:border-danger-300/50 transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg glass border border-danger-200/30 flex items-center justify-center text-danger-600 hover:text-danger-800 hover:border-danger-300/50 transition-all duration-300 hover:scale-110"
                         title="Delete notebook"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -316,22 +316,22 @@ export const NotebookGallery: React.FC<NotebookGalleryProps> = ({
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {templates.map((template) => (
-              <div key={template.id} className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-primary/20 flex items-center justify-center shadow-lg text-2xl">
+              <div key={template.id} className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.02]">
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary/20 flex items-center justify-center shadow-lg text-xl sm:text-2xl">
                     {(() => {
                       const Icon = getTemplateIcon(template.id);
                       return <Icon />;
                     })()}
                   </div>
-                  <span className={`px-3 py-1 rounded-full font-display font-medium text-sm ${getCategoryColor(template.category)}`}>
+                  <span className={`px-2 sm:px-3 py-1 rounded-full font-display font-medium text-xs sm:text-sm ${getCategoryColor(template.category)}`}>
                     {template.category}
                   </span>
                 </div>
-                <h3 className="font-display text-lg font-bold gradient-text-primary mb-3">{template.name}</h3>
-                <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4">{template.description}</p>
+                <h3 className="font-display text-base sm:text-lg font-bold gradient-text-primary mb-2 sm:mb-3">{template.name}</h3>
+                <p className="font-body text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary mb-3 sm:mb-4">{template.description}</p>
                 <div className="flex items-center justify-between mb-6">
                   <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300 font-display font-medium text-sm">
                     <FileText className="w-3 h-3" />

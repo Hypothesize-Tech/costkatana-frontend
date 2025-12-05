@@ -95,9 +95,9 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
         return (
             <div key={node.id} className="select-none">
                 <div
-                    className={`flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg transition-all duration-200 hover:scale-102 ${isSelected ? 'glass border border-primary-300/50 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20' : 'hover:bg-gradient-primary/5'
+                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 cursor-pointer rounded-lg transition-all duration-200 hover:scale-102 ${isSelected ? 'glass border border-primary-300/50 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/30 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/20' : 'hover:bg-gradient-primary/5'
                         }`}
-                    style={{ paddingLeft: `${level * 20 + 12}px` }}
+                    style={{ paddingLeft: `${level * 16 + 8}px` }}
                     onClick={() => onNodeSelect?.(node.id)}
                     onKeyDown={(e) => handleKeyDown(e, node.id)}
                     tabIndex={0}
@@ -107,7 +107,7 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
                 >
                     {hasChildren && (
                         <button
-                            className="glass p-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-gradient-primary/20 transition-all duration-200 hover:scale-110"
+                            className="glass p-0.5 sm:p-1 rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl hover:bg-gradient-primary/20 transition-all duration-200 hover:scale-110 flex-shrink-0"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 toggleExpand(node.id);
@@ -115,36 +115,36 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
                             aria-label={isExpanded ? 'Collapse' : 'Expand'}
                         >
                             {isExpanded ? (
-                                <ChevronDown className="w-4 h-4 text-primary-600" />
+                                <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" />
                             ) : (
-                                <ChevronRight className="w-4 h-4 text-primary-600" />
+                                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" />
                             )}
                         </button>
                     )}
-                    {!hasChildren && <div className="w-6" />}
+                    {!hasChildren && <div className="w-4 sm:w-6" />}
 
-                    {isError && <AlertCircle className="w-4 h-4 text-danger-500 flex-shrink-0" />}
+                    {isError && <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 text-danger-500 flex-shrink-0" />}
 
-                    <span className={`flex-1 font-body truncate ${isError ? 'text-danger-600' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                    <span className={`flex-1 font-body truncate text-xs sm:text-sm ${isError ? 'text-danger-600' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
                         {node.label}
                     </span>
 
-                    <div className="flex items-center gap-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">
+                    <div className="flex items-center gap-1 sm:gap-2 md:gap-3 font-body text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm flex-shrink-0">
                         {node.duration !== undefined && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-accent-50/20 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
-                                <Clock className="w-3 h-3 text-accent-500" />
-                                {node.duration}ms
+                            <span className="hidden sm:flex items-center gap-1 glass px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-accent-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-accent-50/20 to-accent-100/20 dark:from-accent-900/10 dark:to-accent-800/10">
+                                <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-accent-500" />
+                                <span className="hidden md:inline">{node.duration}ms</span>
                             </span>
                         )}
                         {node.aiModel && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
-                                <Cpu className="w-3 h-3 text-primary-500" />
-                                {node.aiModel.split('/').pop()?.split('-').slice(0, 2).join('-')}
+                            <span className="hidden md:flex items-center gap-1 glass px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-primary-50/20 to-primary-100/20 dark:from-primary-900/10 dark:to-primary-800/10">
+                                <Cpu className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary-500" />
+                                <span className="hidden lg:inline">{node.aiModel.split('/').pop()?.split('-').slice(0, 2).join('-')}</span>
                             </span>
                         )}
                         {node.costUSD !== undefined && (
-                            <span className="flex items-center gap-1 glass px-2 py-1 rounded-full border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/20 to-success-100/20 dark:from-success-900/10 dark:to-success-800/10">
-                                <DollarSign className="w-3 h-3 text-success-500" />
+                            <span className="hidden lg:flex items-center gap-1 glass px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-success-50/20 to-success-100/20 dark:from-success-900/10 dark:to-success-800/10">
+                                <DollarSign className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500" />
                                 ${node.costUSD.toFixed(4)}
                             </span>
                         )}
@@ -174,12 +174,12 @@ export const TraceTree: React.FC<TraceTreeProps> = ({
     }
 
     return (
-        <div className="glass rounded-xl p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">🌳</span>
+        <div className="glass rounded-xl p-4 sm:p-6 md:p-8 border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span className="text-white text-base sm:text-lg">🌳</span>
                 </div>
-                <h3 className="text-xl font-display font-bold gradient-text-secondary">Trace Tree</h3>
+                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-secondary">Trace Tree</h3>
             </div>
             <div className="overflow-auto" role="tree" aria-label="Trace Tree">
                 {treeData.map(root => renderNode(root))}

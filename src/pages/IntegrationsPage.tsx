@@ -220,20 +220,20 @@ export const IntegrationsPage: React.FC = () => {
     ];
 
     return (
-        <div className="px-4 py-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="px-3 py-4 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:px-4 sm:py-6 md:px-6 lg:px-8 lg:py-8">
+            <div className="mx-auto max-w-7xl">
                 {/* Page Header */}
-                <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">Integrations</h1>
-                            <p className="text-secondary-600 dark:text-secondary-300">
+                <div className="p-4 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6 lg:p-8 lg:mb-8">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
+                        <div className="flex-1">
+                            <h1 className="mb-3 text-2xl font-bold font-display gradient-text-primary sm:text-3xl lg:text-4xl lg:mb-4">Integrations</h1>
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300 sm:text-base">
                                 Connect Cost Katana with GitHub, Slack, Discord, Linear, JIRA, and custom webhooks
                             </p>
                         </div>
                         <button
                             onClick={() => setShowLogs(!showLogs)}
-                            className="px-6 py-3 font-semibold text-white rounded-lg transition-all duration-300 bg-gradient-secondary hover:shadow-lg glow-secondary"
+                            className="px-4 py-2.5 font-semibold text-white rounded-lg transition-all duration-300 bg-gradient-secondary hover:shadow-lg glow-secondary text-sm sm:text-base sm:px-6 sm:py-3 w-full sm:w-auto"
                         >
                             {showLogs ? 'Hide Logs' : 'View Logs'}
                         </button>
@@ -251,15 +251,15 @@ export const IntegrationsPage: React.FC = () => {
                             <>
                                 {/* Error Message */}
                                 {error && (
-                                    <div className="p-4 mb-6 rounded-lg border backdrop-blur-sm glass border-red-200/30 bg-red-50/80 dark:bg-red-900/20">
+                                    <div className="p-3 mb-4 rounded-lg border backdrop-blur-sm glass border-red-200/30 bg-red-50/80 dark:bg-red-900/20 sm:p-4 sm:mb-6">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0">
-                                                <svg className="w-5 h-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg className="w-4 h-4 text-red-400 sm:w-5 sm:h-5" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
                                             <div className="ml-3">
-                                                <p className="text-sm text-red-700 dark:text-red-200">
+                                                <p className="text-xs text-red-700 dark:text-red-200 sm:text-sm">
                                                     Failed to load integrations. You can still add new integrations below.
                                                 </p>
                                             </div>
@@ -269,13 +269,13 @@ export const IntegrationsPage: React.FC = () => {
 
                                 {/* Unified Integrations List */}
                                 <div>
-                                    <div className="flex justify-between items-center mb-6">
-                                        <h2 className="text-2xl font-bold font-display gradient-text-primary">Integrations</h2>
-                                        <span className="px-3 py-1 text-sm font-semibold rounded-full border bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-300 dark:border-success-700 font-display">
+                                    <div className="flex flex-col gap-3 justify-between items-start mb-4 sm:flex-row sm:items-center sm:mb-6">
+                                        <h2 className="text-xl font-bold font-display gradient-text-primary sm:text-2xl">Integrations</h2>
+                                        <span className="px-2.5 py-1 text-xs font-semibold rounded-full border bg-gradient-success/20 text-success-700 dark:text-success-300 border-success-300 dark:border-success-700 font-display sm:px-3 sm:text-sm">
                                             {integrations.length + (githubConnections.filter(c => c.isActive).length)} Connected
                                         </span>
                                     </div>
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                                         {availableIntegrations.map((integration) => {
                                             const isConnected = isIntegrationConnected(integration.type);
 
@@ -300,25 +300,25 @@ export const IntegrationsPage: React.FC = () => {
                                                     className={`glass rounded-xl border ${isConnected
                                                         ? 'border-success-200/50 dark:border-success-500/30'
                                                         : 'border-primary-200/30 dark:border-primary-500/20'
-                                                        } shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-6 hover:shadow-xl transition-all duration-300 flex flex-col h-full`}
+                                                        } shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 hover:shadow-xl transition-all duration-300 flex flex-col h-full sm:p-5 lg:p-6`}
                                                 >
                                                     {/* Header */}
-                                                    <div className="flex justify-between items-start mb-4">
-                                                        <div className="flex flex-1 gap-3 items-center min-w-0">
+                                                    <div className="flex justify-between items-start mb-3 sm:mb-4">
+                                                        <div className="flex flex-1 gap-2 items-center min-w-0 sm:gap-3">
                                                             <div
-                                                                className="flex flex-shrink-0 justify-center items-center w-12 h-12 rounded-xl shadow-lg"
+                                                                className="flex flex-shrink-0 justify-center items-center w-10 h-10 rounded-xl shadow-lg sm:w-12 sm:h-12"
                                                                 style={{ backgroundColor: `${integration.color}20` }}
                                                             >
-                                                                <div style={{ color: integration.color, width: '24px', height: '24px' }}>
+                                                                <div style={{ color: integration.color, width: '20px', height: '20px' }} className="sm:w-6 sm:h-6">
                                                                     {integration.icon}
                                                                 </div>
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <h3 className="mb-1 text-lg font-bold truncate font-display text-secondary-900 dark:text-white">
+                                                                <h3 className="mb-1 text-base font-bold truncate font-display text-secondary-900 dark:text-white sm:text-lg">
                                                                     {integration.name}
                                                                 </h3>
                                                                 {githubConnection && (
-                                                                    <p className="text-sm truncate text-secondary-600 dark:text-secondary-300">
+                                                                    <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
                                                                         @{githubConnection.githubUsername}
                                                                     </p>
                                                                 )}
@@ -329,22 +329,22 @@ export const IntegrationsPage: React.FC = () => {
                                                                 )}
                                                             </div>
                                                             {isConnected && (
-                                                                <span className="px-2.5 py-1 bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700 rounded-full text-xs font-display font-semibold flex items-center gap-1 flex-shrink-0">
-                                                                    <CheckCircleSolidIcon className="w-3.5 h-3.5" />
-                                                                    Connected
+                                                                <span className="px-2 py-0.5 bg-gradient-success/20 text-success-700 dark:text-success-300 border border-success-300 dark:border-success-700 rounded-full text-xs font-display font-semibold flex items-center gap-1 flex-shrink-0 sm:px-2.5 sm:py-1">
+                                                                    <CheckCircleSolidIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                                                                    <span className="hidden sm:inline">Connected</span>
                                                                 </span>
                                                             )}
                                                         </div>
                                                     </div>
 
                                                     {/* Description */}
-                                                    <p className="flex-grow mb-4 text-sm text-secondary-600 dark:text-secondary-300 font-body">
+                                                    <p className="flex-grow mb-3 text-xs text-secondary-600 dark:text-secondary-300 font-body sm:text-sm sm:mb-4">
                                                         {integration.description}
                                                     </p>
 
                                                     {/* GitHub Specific Info */}
                                                     {isConnected && githubConnection && (
-                                                        <div className="p-3 mb-4 rounded-lg border glass border-primary-200/20 dark:border-primary-500/10">
+                                                        <div className="p-2.5 mb-3 rounded-lg border glass border-primary-200/20 dark:border-primary-500/10 sm:p-3 sm:mb-4">
                                                             <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
                                                                 {githubConnection.repositories?.length || 0} {githubConnection.repositories?.length === 1 ? 'Repository' : 'Repositories'}
                                                                 {githubIntegrations.length > 0 && (
@@ -365,10 +365,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                     <>
                                                                         <button
                                                                             onClick={() => navigate('/github')}
-                                                                            className="flex-1 px-3 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm"
+                                                                            className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
                                                                         >
-                                                                            <Cog6ToothIcon className="w-4 h-4" />
-                                                                            Manage
+                                                                            <Cog6ToothIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                            <span>Manage</span>
                                                                         </button>
                                                                         <button
                                                                             onClick={async () => {
@@ -376,10 +376,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                                     await handleDisconnectGitHub(githubConnection._id);
                                                                                 }
                                                                             }}
-                                                                            className="px-3 py-2.5 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md"
+                                                                            className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
                                                                             title="Disconnect GitHub"
                                                                         >
-                                                                            <XMarkIcon className="w-4 h-4" />
+                                                                            <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                         </button>
                                                                     </>
                                                                 ) : (
@@ -396,10 +396,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                                     setSetupModal(integration.type);
                                                                                 }
                                                                             }}
-                                                                            className="flex-1 px-3 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm"
+                                                                            className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
                                                                         >
-                                                                            <Cog6ToothIcon className="w-4 h-4" />
-                                                                            {regularIntegrations.length > 1 ? 'Manage' : 'View'}
+                                                                            <Cog6ToothIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                            <span>{regularIntegrations.length > 1 ? 'Manage' : 'View'}</span>
                                                                         </button>
                                                                         <button
                                                                             onClick={async () => {
@@ -414,10 +414,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                                     }
                                                                                 }
                                                                             }}
-                                                                            className="px-3 py-2.5 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md"
+                                                                            className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
                                                                             title={`Disconnect ${integration.name}`}
                                                                         >
-                                                                            <XMarkIcon className="w-4 h-4" />
+                                                                            <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                         </button>
                                                                     </>
                                                                 )}
@@ -428,10 +428,10 @@ export const IntegrationsPage: React.FC = () => {
                                                                     e.stopPropagation();
                                                                     setSetupModal(integration.type);
                                                                 }}
-                                                                className="w-full px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2"
+                                                                className="w-full px-3 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-2 text-sm sm:px-4 sm:py-2.5"
                                                             >
-                                                                <PlusIcon className="w-5 h-5" />
-                                                                Connect
+                                                                <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                                <span>Connect</span>
                                                             </button>
                                                         )}
                                                     </div>

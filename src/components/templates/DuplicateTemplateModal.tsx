@@ -98,21 +98,21 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
   return (
     <Modal isOpen={true} onClose={onClose} size="4xl" title="">
       <div className="glass rounded-3xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="glass flex items-center gap-4 p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
-          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <FiCopy className="w-6 h-6 text-white" />
+        <div className="glass flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 md:p-8 border-b border-primary-200/30 backdrop-blur-xl rounded-t-3xl">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+            <FiCopy className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div>
-            <h2 className="text-2xl font-display font-bold gradient-text-primary">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
               Duplicate Template
             </h2>
-            <p className="font-body text-light-text-secondary dark:text-white">
+            <p className="text-sm sm:text-base font-body text-light-text-secondary dark:text-white truncate">
               Create a copy of "{template.name}" with customizable settings
             </p>
           </div>
         </div>
 
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="glass rounded-xl p-6 border border-highlight-200/30 shadow-lg backdrop-blur-xl bg-gradient-to-r from-highlight-50/30 to-highlight-100/30 dark:from-highlight-900/20 dark:to-highlight-800/20">
               <div className="flex gap-4 items-start">
@@ -337,19 +337,19 @@ export const DuplicateTemplateModal: React.FC<DuplicateTemplateModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-              <div className="flex gap-4 justify-end">
+            <div className="glass rounded-xl p-4 sm:p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="btn btn-secondary"
+                  className="btn btn-secondary w-full sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn btn-primary inline-flex items-center gap-2"
+                  className="btn btn-primary inline-flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   {loading ? (
                     <>

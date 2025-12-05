@@ -300,22 +300,24 @@ const Experimentation: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Header */}
-      <div className="mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="flex items-center text-3xl font-bold font-display gradient-text-primary">
-                <Beaker className="mr-3 w-8 h-8 text-primary-600 dark:text-primary-400" />
-                Experimentation & A/B Testing
+      <div className="mx-3 sm:mx-4 md:mx-6 mt-3 sm:mt-4 md:mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="px-3 sm:px-6 mx-auto max-w-7xl lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
+            <div className="flex-1">
+              <h1 className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl md:text-3xl font-bold font-display gradient-text-primary">
+                <span className="flex items-center">
+                  <Beaker className="mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary-600 dark:text-primary-400" />
+                  <span className="leading-tight">Experimentation & A/B Testing</span>
+                </span>
               </h1>
-              <p className="mt-2 text-sm text-secondary-600 dark:text-secondary-300">
+              <p className="mt-2 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                 Discover the most cost-effective solutions for your unique use
                 cases using real data
               </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-accent-600 dark:text-accent-400" />
-              <span className="text-sm font-medium text-secondary-900 dark:text-white">
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent-600 dark:text-accent-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium text-secondary-900 dark:text-white">
                 {recommendations.length > 0
                   ? `${recommendations.length} ${recommendations.length === 1 ? "recommendation" : "recommendations"} available`
                   : "Start experimenting to get recommendations"}
@@ -326,38 +328,38 @@ const Experimentation: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div className="px-3 sm:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-7xl lg:px-8">
         {isLoading || tabLoading[activeTab] ? (
           <ExperimentationShimmer activeTab={activeTab} />
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8 sm:grid-cols-2 lg:grid-cols-4">
               {generateStatCards().map((card, index) => (
                 <div
                   key={index}
-                  className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"
+                  className="p-4 sm:p-5 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel"
                 >
                   <div className="flex justify-between items-center">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-secondary-600 dark:text-secondary-300 truncate">
                         {card.title}
                       </p>
-                      <p className="mt-1 text-2xl font-bold font-display text-secondary-900 dark:text-white">
+                      <p className="mt-1 text-xl sm:text-2xl font-bold font-display text-secondary-900 dark:text-white">
                         {card.value}
                       </p>
-                      <div className="flex items-center mt-2">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2 gap-1 sm:gap-0">
                         <span
                           className={`text-xs font-medium ${card.change.color === 'text-green-600' ? 'text-success-600' : card.change.color === 'text-red-600' ? 'text-danger-600' : 'text-secondary-600'}`}
                         >
                           {card.change.text}
                         </span>
-                        <span className="ml-1 text-xs text-secondary-500 dark:text-secondary-400">
+                        <span className="text-xs text-secondary-500 dark:text-secondary-400 sm:ml-1">
                           vs previous period
                         </span>
                       </div>
                     </div>
                     <div
-                      className={`flex-shrink-0 p-3 bg-gradient-to-br rounded-lg border glass border-primary-200/30 from-primary-500/20 to-secondary-500/20`}
+                      className={`flex-shrink-0 p-2 sm:p-3 bg-gradient-to-br rounded-lg border glass border-primary-200/30 from-primary-500/20 to-secondary-500/20 ml-2`}
                     >
                       {card.icon}
                     </div>
@@ -368,17 +370,17 @@ const Experimentation: React.FC = () => {
 
             {/* Dynamic Recommendations from Backend */}
             {recommendations.length > 0 ? (
-              <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="flex items-center text-lg font-semibold text-secondary-900 dark:text-white">
-                    <Sparkles className="mr-2 w-5 h-5 text-accent-600 dark:text-accent-400" />
+              <div className="p-4 sm:p-5 md:p-6 mb-4 sm:mb-6 md:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-0">
+                  <h2 className="flex items-center text-base sm:text-lg font-semibold text-secondary-900 dark:text-white">
+                    <Sparkles className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-accent-600 dark:text-accent-400" />
                     AI-Powered Recommendations
                   </h2>
-                  <span className="text-sm text-secondary-500 dark:text-secondary-400">
+                  <span className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400">
                     Based on your actual usage patterns
                   </span>
                 </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {recommendations.slice(0, 6).map((rec, index) => (
                     <div
                       key={index}
@@ -483,13 +485,13 @@ const Experimentation: React.FC = () => {
         {/* Main Content */}
         <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
           {/* Tab Navigation */}
-          <div className="border-b border-primary-200/30">
-            <nav className="flex px-6 space-x-8">
+          <div className="border-b border-primary-200/30 overflow-x-auto">
+            <nav className="flex px-3 sm:px-4 md:px-6 space-x-2 sm:space-x-4 md:space-x-8 min-w-max sm:min-w-0">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${activeTab === tab.id
+                  className={`flex items-center space-x-1 sm:space-x-2 py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
                     ? "border-primary-500 text-primary-600 dark:text-primary-400"
                     : "border-transparent text-secondary-500 dark:text-secondary-400 hover:text-primary-500 hover:border-primary-300"
                     }`}
@@ -501,21 +503,22 @@ const Experimentation: React.FC = () => {
                   >
                     {tab.icon}
                   </span>
-                  <span>{tab.name}</span>
+                  <span className="hidden sm:inline">{tab.name}</span>
+                  <span className="sm:hidden">{tab.name.split(' ')[0]}</span>
                 </button>
               ))}
             </nav>
           </div>
 
           {/* Tab Descriptions */}
-          <div className="px-6 py-4 bg-gradient-to-r border-b from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50 border-primary-200/30">
-            <div className="flex items-start space-x-3">
-              <Info className="h-5 w-5 text-primary-600 dark:text-primary-400 mt-0.5" />
-              <div>
-                <h3 className="text-sm font-medium text-secondary-900 dark:text-white">
+          <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-gradient-to-r border-b from-light-bg-300/50 to-light-bg-400/50 dark:from-dark-bg-300/50 dark:to-dark-bg-400/50 border-primary-200/30">
+            <div className="flex items-start space-x-2 sm:space-x-3">
+              <Info className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 dark:text-primary-400 mt-0.5 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-xs sm:text-sm font-medium text-secondary-900 dark:text-white">
                   {tabs.find((tab) => tab.id === activeTab)?.name}
                 </h3>
-                <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-300">
+                <p className="mt-1 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                   {tabs.find((tab) => tab.id === activeTab)?.description}
                 </p>
               </div>
@@ -523,7 +526,7 @@ const Experimentation: React.FC = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div className="p-3 sm:p-4 md:p-6">
             {error && (
               <div className="p-4 mb-4 bg-gradient-to-br rounded-lg border glass border-danger-200/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
                 <div className="flex items-center">

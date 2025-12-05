@@ -37,21 +37,21 @@ export const LogStats: React.FC<LogStatsProps> = ({ stats }) => {
     }
 
     return (
-        <div className="space-y-6 mt-6">
+        <div className="space-y-4 md:space-y-6 mt-4 md:mt-6">
             {/* Summary Cards - Matching StatsCard.tsx Style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {/* Total Calls */}
-                <div className="group p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30">
+                <div className="group p-4 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 hover:shadow-2xl hover:border-primary-300/50 dark:hover:border-primary-400/30">
                     <div className="flex justify-between items-center">
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-3">Total Calls</p>
-                            <p className="text-3xl font-bold gradient-text-primary">
+                            <p className="text-xs md:text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2 md:mb-3">Total Calls</p>
+                            <p className="text-2xl md:text-3xl font-bold gradient-text-primary">
                                 {stats.totalCalls.toLocaleString()}
                             </p>
                         </div>
-                        <div className="ml-6 shrink-0">
-                            <div className="p-3.5 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
-                                <FiActivity className="w-7 h-7 text-white" />
+                        <div className="ml-3 md:ml-6 shrink-0">
+                            <div className="p-2.5 md:p-3.5 rounded-xl shadow-lg bg-gradient-primary glow-primary group-hover:scale-110 transition-transform duration-300">
+                                <FiActivity className="w-5 h-5 md:w-7 md:h-7 text-white" />
                             </div>
                         </div>
                     </div>
@@ -110,14 +110,14 @@ export const LogStats: React.FC<LogStatsProps> = ({ stats }) => {
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 {/* Calls by Service */}
                 {stats.callsByService && stats.callsByService.length > 0 && (
-                    <div className="card shadow-xl p-6">
-                        <h4 className="text-lg font-bold gradient-text-primary mb-4">
+                    <div className="card shadow-xl p-4 md:p-6">
+                        <h4 className="text-base md:text-lg font-bold gradient-text-primary mb-3 md:mb-4">
                             Calls by Service
                         </h4>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="100%" height={200}>
                             <PieChart>
                                 <Pie
                                     data={stats.callsByService}
@@ -148,11 +148,11 @@ export const LogStats: React.FC<LogStatsProps> = ({ stats }) => {
 
                 {/* Errors by Type */}
                 {stats.errorsByType && stats.errorsByType.length > 0 && (
-                    <div className="card shadow-xl p-6">
-                        <h4 className="text-lg font-bold gradient-text-primary mb-4">
+                    <div className="card shadow-xl p-4 md:p-6">
+                        <h4 className="text-base md:text-lg font-bold gradient-text-primary mb-3 md:mb-4">
                             Errors by Type
                         </h4>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="100%" height={200}>
                             <BarChart data={stats.errorsByType}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
                                 <XAxis dataKey="name" stroke="#64748b" className="dark:stroke-slate-400" />
@@ -173,14 +173,14 @@ export const LogStats: React.FC<LogStatsProps> = ({ stats }) => {
             </div>
 
             {/* Trends */}
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-4 md:gap-6">
                 {/* Latency Trend */}
                 {stats.latencyTrend && stats.latencyTrend.length > 0 && (
-                    <div className="card shadow-xl p-6">
-                        <h4 className="text-lg font-bold gradient-text-primary mb-4">
+                    <div className="card shadow-xl p-4 md:p-6">
+                        <h4 className="text-base md:text-lg font-bold gradient-text-primary mb-3 md:mb-4">
                             Latency Trend
                         </h4>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="100%" height={200}>
                             <LineChart data={stats.latencyTrend}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
                                 <XAxis dataKey="timestamp" stroke="#64748b" className="dark:stroke-slate-400" />
@@ -209,11 +209,11 @@ export const LogStats: React.FC<LogStatsProps> = ({ stats }) => {
 
                 {/* Cost Trend */}
                 {stats.costTrend && stats.costTrend.length > 0 && (
-                    <div className="card shadow-xl p-6">
-                        <h4 className="text-lg font-bold gradient-text-primary mb-4">
+                    <div className="card shadow-xl p-4 md:p-6">
+                        <h4 className="text-base md:text-lg font-bold gradient-text-primary mb-3 md:mb-4">
                             Cost Trend
                         </h4>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="100%" height={200}>
                             <LineChart data={stats.costTrend}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
                                 <XAxis dataKey="timestamp" stroke="#64748b" className="dark:stroke-slate-400" />

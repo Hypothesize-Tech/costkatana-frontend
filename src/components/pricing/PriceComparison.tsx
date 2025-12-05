@@ -288,37 +288,38 @@ export const PriceComparison: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Modern Header with Gradient */}
-      <div className="p-8 mx-6 mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+      <div className="p-4 sm:p-6 lg:p-8 mx-4 sm:mx-6 mt-4 sm:mt-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-6 justify-between items-start md:flex-row md:items-center">
-            <div className="flex-1">
-              <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">
+          <div className="flex flex-col gap-4 sm:gap-6 justify-between items-start md:flex-row md:items-center">
+            <div className="flex-1 w-full">
+              <h1 className="mb-2 sm:mb-4 text-2xl sm:text-3xl lg:text-4xl font-bold font-display gradient-text-primary">
                 AI Pricing Dashboard
               </h1>
-              <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-base sm:text-lg text-light-text-secondary dark:text-dark-text-secondary">
                 Compare costs across leading AI providers in real-time
               </p>
             </div>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center w-full sm:w-auto">
               {lastUpdate && (
-                <div className="px-4 py-2 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
-                  <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="px-3 sm:px-4 py-2 rounded-lg border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 text-center sm:text-left">
+                  <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     Updated {lastUpdate.toLocaleTimeString()}
                   </span>
                 </div>
               )}
               <button
                 onClick={() => navigate('/model-comparison')}
-                className="flex gap-2 items-center px-4 py-2 rounded-xl btn btn-secondary border border-primary-300 dark:border-primary-600 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 hover:from-primary-100 hover:to-primary-200 dark:hover:from-primary-800/50 dark:hover:to-primary-700/50 text-primary-700 dark:text-primary-300 transition-all"
+                className="flex gap-2 items-center justify-center px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl btn btn-secondary border border-primary-300 dark:border-primary-600 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 hover:from-primary-100 hover:to-primary-200 dark:hover:from-primary-800/50 dark:hover:to-primary-700/50 text-primary-700 dark:text-primary-300 transition-all"
                 title="View Model Comparison Table"
               >
                 <ChartBarIcon className="w-4 h-4" />
-                Model Comparison
+                <span className="hidden sm:inline">Model Comparison</span>
+                <span className="sm:hidden">Comparison</span>
               </button>
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="flex gap-2 items-center px-4 py-2 rounded-xl btn btn-primary"
+                className="flex gap-2 items-center justify-center px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl btn btn-primary"
                 title="Refresh pricing data"
               >
                 <RefreshIcon className="w-4 h-4" />
@@ -329,34 +330,34 @@ export const PriceComparison: React.FC = () => {
         </div>
 
         {error && (
-          <div className="p-4 mt-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-            <div className="flex gap-3 items-center text-danger-600 dark:text-danger-400">
-              <AlertIcon className="flex-shrink-0 w-5 h-5" />
-              <span>{error}</span>
+          <div className="p-3 sm:p-4 mt-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex gap-2 sm:gap-3 items-start sm:items-center text-danger-600 dark:text-danger-400">
+              <AlertIcon className="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 mt-0.5 sm:mt-0" />
+              <span className="text-sm sm:text-base">{error}</span>
             </div>
           </div>
         )}
       </div>
 
       {/* Enhanced Comparison Form */}
-      <div className="px-6 mx-auto mt-8 mb-8 max-w-7xl">
-        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="mb-8 text-center">
-            <h2 className="mb-4 text-3xl font-bold font-display gradient-text-primary">
+      <div className="px-4 sm:px-6 mx-auto mt-4 sm:mt-6 lg:mt-8 mb-6 sm:mb-8 max-w-7xl">
+        <div className="p-4 sm:p-6 lg:p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="mb-6 sm:mb-8 text-center">
+            <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl font-bold font-display gradient-text-primary">
               Compare Pricing
             </h2>
-            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-sm sm:text-base lg:text-lg text-light-text-secondary dark:text-dark-text-secondary">
               Enter your task details to see cost comparisons across providers
             </p>
           </div>
 
           <div className="mx-auto max-w-4xl">
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label
                 htmlFor="task"
-                className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+                className="flex gap-2 items-center mb-2 sm:mb-3 text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
               >
-                <DocumentIcon className="w-4 h-4" />
+                <DocumentIcon className="w-4 h-4 flex-shrink-0" />
                 Task Description
               </label>
               <input
@@ -365,17 +366,17 @@ export const PriceComparison: React.FC = () => {
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
                 placeholder="e.g., Generate a 500-word article, Summarize documents, Code review"
-                className="w-full input"
+                className="w-full input text-sm sm:text-base"
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8 md:grid-cols-2">
               <div>
                 <label
                   htmlFor="tokens"
-                  className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+                  className="flex gap-2 items-center mb-2 sm:mb-3 text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
                 >
-                  <CalculatorIcon className="w-4 h-4" />
+                  <CalculatorIcon className="w-4 h-4 flex-shrink-0" />
                   Estimated Tokens
                 </label>
                 <input
@@ -384,23 +385,23 @@ export const PriceComparison: React.FC = () => {
                   value={estimatedTokens}
                   onChange={(e) => setEstimatedTokens(Number(e.target.value))}
                   min="1"
-                  className="w-full input"
+                  className="w-full input text-sm sm:text-base"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="category"
-                  className="flex gap-2 items-center mb-3 font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
+                  className="flex gap-2 items-center mb-2 sm:mb-3 text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-display"
                 >
-                  <TagIcon className="w-4 h-4" />
+                  <TagIcon className="w-4 h-4 flex-shrink-0" />
                   Category
                 </label>
                 <select
                   id="category"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full input"
+                  className="w-full input text-sm sm:text-base"
                 >
                   <option value="all">All Categories</option>
                   <option value="text">Text Generation</option>
@@ -414,7 +415,7 @@ export const PriceComparison: React.FC = () => {
             <button
               onClick={handleComparePrice}
               disabled={comparing}
-              className="flex gap-3 justify-center items-center py-4 w-full text-lg font-bold rounded-xl shadow-lg btn btn-primary font-display"
+              className="flex gap-2 sm:gap-3 justify-center items-center py-3 sm:py-4 w-full text-base sm:text-lg font-bold rounded-xl shadow-lg btn btn-primary font-display"
             >
               {comparing ? (
                 <>
@@ -434,25 +435,25 @@ export const PriceComparison: React.FC = () => {
 
       {/* Beautiful Comparison Results */}
       {comparison && (
-        <div className="px-6 mx-auto mb-8 max-w-7xl">
-          <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex flex-col gap-6 justify-between items-start pb-6 mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
-              <div>
-                <h2 className="mb-2 text-2xl font-bold font-display gradient-text-primary">
+        <div className="px-4 sm:px-6 mx-auto mb-6 sm:mb-8 max-w-7xl">
+          <div className="p-4 sm:p-6 lg:p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="flex flex-col gap-4 sm:gap-6 justify-between items-start pb-4 sm:pb-6 mb-6 sm:mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
+              <div className="w-full md:w-auto">
+                <h2 className="mb-2 text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                   Price Comparison Results
                 </h2>
-                <span className="px-3 py-1 text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
+                <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
                   {comparison.providers.length} models found
                 </span>
               </div>
-              <div className="flex gap-3 items-center">
-                <label className="text-sm font-semibold text-secondary-600 dark:text-secondary-300">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center w-full md:w-auto">
+                <label className="text-xs sm:text-sm font-semibold text-secondary-600 dark:text-secondary-300">
                   Sort by:
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as "cost" | "provider" | "model")}
-                  className="px-4 py-2 text-sm font-semibold rounded-lg input"
+                  className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg input"
                 >
                   <option value="cost">Best Price</option>
                   <option value="provider">Provider</option>
@@ -461,33 +462,34 @@ export const PriceComparison: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
               {getSortedComparison().map((item, index) => (
                 <div
                   key={`${item.provider}-${item.model}`}
-                  className={`glass rounded-2xl border backdrop-blur-xl p-6 transition-all duration-300 relative overflow-hidden ${index === 0
+                  className={`glass rounded-xl sm:rounded-2xl border backdrop-blur-xl p-4 sm:p-6 transition-all duration-300 relative overflow-hidden ${index === 0
                     ? "border-primary-500 dark:border-primary-400 bg-gradient-to-br from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 shadow-xl"
                     : "border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1"
                     }`}
                 >
                   {index === 0 && (
-                    <div className="flex absolute top-0 right-0 gap-1 items-center px-4 py-1 text-xs font-bold tracking-wider text-white uppercase rounded-tr-2xl rounded-bl-2xl shadow-lg bg-gradient-primary">
+                    <div className="flex absolute top-0 right-0 gap-1 items-center px-2 sm:px-4 py-1 text-xs font-bold tracking-wider text-white uppercase rounded-tr-xl sm:rounded-tr-2xl rounded-bl-xl sm:rounded-bl-2xl shadow-lg bg-gradient-primary">
                       <TrophyIcon className="w-3 h-3" />
-                      Best Price
+                      <span className="hidden sm:inline">Best Price</span>
+                      <span className="sm:hidden">Best</span>
                     </div>
                   )}
 
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex-1">
-                      <h3 className="mb-1 text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                  <div className="flex justify-between items-start mb-4 sm:mb-6">
+                    <div className="flex-1 pr-2">
+                      <h3 className="mb-1 text-lg sm:text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
                         {item.provider}
                       </h3>
-                      <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                      <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 truncate">
                         {item.model}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <span className="block text-2xl font-bold gradient-text-primary">
+                    <div className="text-right flex-shrink-0">
+                      <span className="block text-xl sm:text-2xl font-bold gradient-text-primary">
                         {formatPrice(item.estimatedCost)}
                       </span>
                       <span className="text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
@@ -496,7 +498,7 @@ export const PriceComparison: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 p-4 mb-6 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 mb-4 sm:mb-6 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
                     <div className="text-center">
                       <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
                         Input
@@ -548,19 +550,19 @@ export const PriceComparison: React.FC = () => {
       )}
 
       {/* Modern Models Overview */}
-      <div className="px-6 mx-auto mb-8 max-w-7xl">
-        <div className="p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="flex flex-col gap-6 justify-between items-start pb-6 mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
-            <h2 className="text-2xl font-bold font-display gradient-text-primary">
+      <div className="px-4 sm:px-6 mx-auto mb-6 sm:mb-8 max-w-7xl">
+        <div className="p-4 sm:p-6 lg:p-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+          <div className="flex flex-col gap-4 sm:gap-6 justify-between items-start pb-4 sm:pb-6 mb-6 sm:mb-8 border-b md:flex-row md:items-center border-primary-200/50 dark:border-primary-700/50">
+            <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
               Available Models
             </h2>
-            <span className="px-3 py-1 text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
+            <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20">
               {getFilteredModels().length} models across {allPricing.length}{" "}
               providers
             </span>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {allPricing.map((provider) => {
               const filteredModels = provider.models.filter(
                 (model) =>
@@ -575,14 +577,14 @@ export const PriceComparison: React.FC = () => {
               return (
                 <div
                   key={provider.provider}
-                  className="overflow-hidden rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 border-secondary-200/50 dark:border-secondary-700/50 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-secondary-50/30 dark:bg-secondary-900/20"
+                  className="overflow-hidden rounded-xl sm:rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 border-secondary-200/50 dark:border-secondary-700/50 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-secondary-50/30 dark:bg-secondary-900/20"
                 >
-                  <div className="flex flex-col gap-4 justify-between items-start p-6 bg-gradient-to-r border-b from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 md:flex-row md:items-center border-primary-200/30 dark:border-primary-700/30">
-                    <div className="flex-1">
-                      <h3 className="mb-1 text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                  <div className="flex flex-col gap-3 sm:gap-4 justify-between items-start p-4 sm:p-6 bg-gradient-to-r border-b from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 md:flex-row md:items-center border-primary-200/30 dark:border-primary-700/30">
+                    <div className="flex-1 w-full">
+                      <h3 className="mb-1 text-lg sm:text-xl font-bold font-display text-light-text-primary dark:text-dark-text-primary">
                         {provider.provider}
                       </h3>
-                      <span className="text-sm text-secondary-600 dark:text-secondary-300">
+                      <span className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                         {filteredModels.length} models • Updated{" "}
                         {new Date(provider.lastUpdated).toLocaleDateString()}
                       </span>
@@ -590,7 +592,7 @@ export const PriceComparison: React.FC = () => {
                     {filteredModels.length > 3 && (
                       <button
                         onClick={() => toggleProviderExpansion(provider.provider)}
-                        className="flex gap-2 items-center px-4 py-2 text-sm rounded-xl btn btn-primary"
+                        className="flex gap-2 items-center px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-xl btn btn-primary w-full sm:w-auto"
                       >
                         <span>
                           {isExpanded
@@ -604,7 +606,7 @@ export const PriceComparison: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6 p-4 sm:p-6 md:grid-cols-2 lg:grid-cols-3">
                     {visibleModels.map((model) => {
                       const categoryColor = getCategoryColor(model.category);
                       const categoryColorClasses = {
@@ -617,22 +619,22 @@ export const PriceComparison: React.FC = () => {
                       return (
                         <div
                           key={`${provider.provider}-${model.modelId}`}
-                          className="p-6 rounded-xl border backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-gradient-light-panel dark:bg-gradient-dark-panel"
+                          className="p-4 sm:p-6 rounded-xl border backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-700/30 hover:border-primary-300/50 dark:hover:border-primary-600/50 hover:shadow-lg hover:-translate-y-1 bg-gradient-light-panel dark:bg-gradient-dark-panel"
                         >
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex-1">
-                              <div className="flex gap-2 items-center mb-2">
-                                <span className="text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                          <div className="flex justify-between items-start mb-3 sm:mb-4">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-wrap gap-2 items-center mb-2">
+                                <span className="text-base sm:text-lg font-bold font-display text-light-text-primary dark:text-dark-text-primary truncate">
                                   {model.modelName}
                                 </span>
                                 {model.isLatest && (
-                                  <span className="bg-gradient-primary text-white px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
+                                  <span className="bg-gradient-primary text-white px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md flex-shrink-0">
                                     Latest
                                   </span>
                                 )}
                               </div>
                               <span
-                                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${categoryColorClasses[categoryColor as keyof typeof categoryColorClasses] || categoryColorClasses.gray
+                                className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-semibold border ${categoryColorClasses[categoryColor as keyof typeof categoryColorClasses] || categoryColorClasses.gray
                                   }`}
                               >
                                 {model.category}
@@ -640,8 +642,8 @@ export const PriceComparison: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="mt-4">
-                            <div className="grid grid-cols-2 gap-4 p-4 mb-4 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
+                          <div className="mt-3 sm:mt-4">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 mb-3 sm:mb-4 rounded-xl border bg-secondary-50/50 dark:bg-secondary-900/20 border-secondary-200/50 dark:border-secondary-700/50">
                               <div className="text-center">
                                 <span className="block mb-1 text-xs tracking-wider uppercase text-secondary-500 dark:text-secondary-400">
                                   Input

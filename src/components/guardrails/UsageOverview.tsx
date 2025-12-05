@@ -125,8 +125,8 @@ export const UsageOverview: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex justify-center items-center h-64">
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex justify-center items-center h-48 sm:h-56 md:h-64">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
             </div>
@@ -135,14 +135,14 @@ export const UsageOverview: React.FC = () => {
 
     if (error || !usageStats) {
         return (
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/10">
-                <div className="flex items-center mb-4">
-                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
-                        <AlertTriangle className="w-5 h-5 text-white" />
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-danger-200/30 dark:border-danger-700/30 bg-gradient-danger/10">
+                <div className="flex items-center mb-3 sm:mb-4">
+                    <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-danger flex-shrink-0">
+                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold font-display gradient-text-danger">Error Loading Usage Data</h3>
+                    <h3 className="text-lg sm:text-xl font-bold font-display gradient-text-danger">Error Loading Usage Data</h3>
                 </div>
-                <p className="font-body text-danger-700 dark:text-danger-300">{error || 'Unable to load usage data'}</p>
+                <p className="text-sm sm:text-base font-body text-danger-700 dark:text-danger-300">{error || 'Unable to load usage data'}</p>
             </div>
         );
     }
@@ -150,27 +150,27 @@ export const UsageOverview: React.FC = () => {
     const { current, limits, percentages, plan, recommendations, predictions } = usageStats;
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-6 md:space-y-8">
             {/* Plan Overview */}
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex justify-between items-center mb-6">
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                            <Database className="w-5 h-5 text-white" />
+                        <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                            <Database className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Overview</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Overview</h3>
                     </div>
-                    <span className="flex gap-2 items-center px-4 py-2 text-sm font-bold text-white rounded-full shadow-lg font-display bg-gradient-primary">
-                        <Sparkles className="w-4 h-4" />
+                    <span className="flex gap-2 items-center px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold text-white rounded-full shadow-lg font-display bg-gradient-primary self-start sm:self-auto">
+                        <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
                         {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
                     </span>
                 </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {/* Tokens Usage */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <Coins className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Coins className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Tokens
                             </span>
                             {getStatusIcon(percentages.tokens)}
@@ -191,10 +191,10 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Requests Usage */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <Zap className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 API Requests
                             </span>
                             {getStatusIcon(percentages.requests)}
@@ -215,10 +215,10 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Logs Usage */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 dark:border-accent-700/30 from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <FileText className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-accent-200/30 dark:border-accent-700/30 from-accent-50/50 to-accent-100/50 dark:from-accent-900/20 dark:to-accent-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Logs
                             </span>
                             {getStatusIcon(percentages.logs)}
@@ -239,10 +239,10 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Projects */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-success-200/30 dark:border-success-700/30 from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <Folder className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-success-200/30 dark:border-success-700/30 from-success-50/50 to-success-100/50 dark:from-success-900/20 dark:to-success-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Folder className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Projects
                             </span>
                             {getStatusIcon(percentages.projects)}
@@ -263,10 +263,10 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Workflows */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 dark:border-warning-700/30 from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <Settings className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-warning-200/30 dark:border-warning-700/30 from-warning-50/50 to-warning-100/50 dark:from-warning-900/20 dark:to-warning-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Workflows
                             </span>
                             {getStatusIcon(percentages.workflows)}
@@ -287,17 +287,17 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Monthly Cost */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <DollarSign className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Monthly Cost
                             </span>
-                            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-primary">
-                                <TrendingUp className="w-3 h-3 text-white" />
+                            <div className="flex justify-center items-center w-5 h-5 sm:w-6 sm:h-6 rounded-lg shadow-lg bg-gradient-primary">
+                                <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                             </div>
                         </div>
-                        <div className="mb-2 text-3xl font-bold font-display gradient-text-primary">
+                        <div className="mb-2 text-2xl sm:text-3xl font-bold font-display gradient-text-primary">
                             ${current.cost.toFixed(2)}
                         </div>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -306,14 +306,14 @@ export const UsageOverview: React.FC = () => {
                     </div>
 
                     {/* Model Usage */}
-                    <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="flex gap-2 items-center text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
-                                <Bot className="w-4 h-4" />
+                    <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-secondary-200/30 dark:border-secondary-700/30 from-secondary-50/50 to-secondary-100/50 dark:from-secondary-900/20 dark:to-secondary-800/20 hover:scale-105">
+                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                            <span className="flex gap-1.5 sm:gap-2 items-center text-xs sm:text-sm font-bold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Available Models
                             </span>
-                            <div className="flex justify-center items-center w-6 h-6 rounded-lg shadow-lg bg-gradient-secondary">
-                                <Database className="w-3 h-3 text-white" />
+                            <div className="flex justify-center items-center w-5 h-5 sm:w-6 sm:h-6 rounded-lg shadow-lg bg-gradient-secondary">
+                                <Database className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                             </div>
                         </div>
                         <div className="mb-3 text-sm font-body text-light-text-primary dark:text-dark-text-primary">
@@ -349,20 +349,20 @@ export const UsageOverview: React.FC = () => {
 
             {/* Predictions */}
             {predictions && (
-                <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex items-center mb-6">
-                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-accent">
-                            <Wand2 className="w-5 h-5 text-white" />
+                <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center mb-4 sm:mb-6">
+                        <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-accent flex-shrink-0">
+                            <Wand2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold font-display gradient-text-primary">End of Month Predictions</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">End of Month Predictions</h3>
                     </div>
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                        <div className="p-6 text-center bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
-                            <p className="flex gap-2 justify-center items-center mb-2 text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
-                                <Coins className="w-4 h-4" />
+                    <div className="grid grid-cols-1 gap-4 sm:gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="p-4 sm:p-5 md:p-6 text-center bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl transition-transform duration-300 glass border-primary-200/30 dark:border-primary-700/30 from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:scale-105">
+                            <p className="flex gap-1.5 sm:gap-2 justify-center items-center mb-2 text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">
+                                <Coins className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 Predicted Tokens
                             </p>
-                            <p className="mb-2 text-2xl font-bold font-display gradient-text-primary">{formatNumber(predictions.tokens)}</p>
+                            <p className="mb-2 text-xl sm:text-2xl font-bold font-display gradient-text-primary">{formatNumber(predictions.tokens)}</p>
                             {predictions.tokens > limits.tokensPerMonth && limits.tokensPerMonth !== -1 && (
                                 <p className="flex gap-1 justify-center items-center text-xs font-bold font-display gradient-text-danger">
                                     <AlertCircle className="w-3 h-3" />
@@ -402,12 +402,12 @@ export const UsageOverview: React.FC = () => {
 
             {/* Recommendations */}
             {recommendations && recommendations.length > 0 && (
-                <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex items-center mb-6">
-                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-success">
-                            <Lightbulb className="w-5 h-5 text-white" />
+                <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex items-center mb-4 sm:mb-6">
+                        <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-success flex-shrink-0">
+                            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Optimization Recommendations</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Optimization Recommendations</h3>
                     </div>
                     <div className="space-y-4">
                         {recommendations.map((rec, index) => (
@@ -424,23 +424,23 @@ export const UsageOverview: React.FC = () => {
 
             {/* Upgrade Prompt for Free Users */}
             {plan === 'free' && (percentages.tokens > 70 || percentages.requests > 70) && (
-                <div className="p-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary">
-                    <div className="flex items-center mb-4">
-                        <div className="flex justify-center items-center mr-3 w-8 h-8 rounded-lg shadow-lg bg-white/20">
-                            <TrendingUp className="w-4 h-4 text-white" />
+                <div className="p-4 sm:p-5 md:p-6 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-primary">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                        <div className="flex justify-center items-center mr-2 sm:mr-3 w-7 h-7 sm:w-8 sm:h-8 rounded-lg shadow-lg bg-white/20 flex-shrink-0">
+                            <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                         </div>
-                        <h3 className="text-lg font-bold text-white font-display">Approaching Limits</h3>
+                        <h3 className="text-base sm:text-lg font-bold text-white font-display">Approaching Limits</h3>
                     </div>
-                    <p className="mb-4 text-sm font-body text-white/90">
+                    <p className="mb-3 sm:mb-4 text-xs sm:text-sm font-body text-white/90">
                         You're approaching your plan limits. Consider upgrading to Plus or Pro for increased limits and access to all AI models.
                     </p>
                     <a
                         href="https://www.costkatana.com/#pricing"
-                        className="inline-flex items-center px-4 py-2 text-sm font-semibold bg-white rounded-xl shadow-lg transition-all duration-300 btn btn-primary font-display text-primary-600 hover:bg-primary-50 hover:scale-105"
+                        className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold bg-white rounded-xl shadow-lg transition-all duration-300 btn btn-primary font-display text-primary-600 hover:bg-primary-50 hover:scale-105"
                     >
-                        <Sparkles className="mr-1 w-4 h-4" />
+                        <Sparkles className="mr-1 w-3 h-3 sm:w-4 sm:h-4" />
                         View Plans
-                        <ArrowRight className="ml-1 w-4 h-4" />
+                        <ArrowRight className="ml-1 w-3 h-3 sm:w-4 sm:h-4" />
                     </a>
                 </div>
             )}

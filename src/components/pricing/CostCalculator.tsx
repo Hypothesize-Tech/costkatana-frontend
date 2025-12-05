@@ -99,21 +99,21 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
         <div className="space-y-6">
             {/* Input Section */}
             <div className="p-4 sm:p-6 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg">
-                        <CalculatorIcon className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <div className="p-2 sm:p-3 rounded-xl bg-gradient-to-br from-[#06ec9e] via-emerald-500 to-[#009454] shadow-lg flex-shrink-0">
+                        <CalculatorIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div>
-                        <h2 className="text-2xl font-bold font-display gradient-text-primary">
+                    <div className="min-w-0">
+                        <h2 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                             Cost Calculator
                         </h2>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                        <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
                             Calculate costs across all models for your token usage
                         </p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
                     {/* Input Tokens */}
                     <div>
                         <label className="block mb-2 text-sm font-semibold text-secondary-700 dark:text-secondary-300">
@@ -181,49 +181,49 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
 
                 {/* Summary Stats */}
                 {costResults.length > 0 && (
-                    <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-3">
-                        <div className="p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-emerald-50/50 to-emerald-100/30 dark:from-emerald-900/20 dark:to-emerald-800/10">
+                    <div className="grid grid-cols-1 gap-3 sm:gap-4 mt-4 sm:mt-6 md:grid-cols-3">
+                        <div className="p-3 sm:p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-emerald-50/50 to-emerald-100/30 dark:from-emerald-900/20 dark:to-emerald-800/10">
                             <div className="flex items-center gap-2 mb-2">
-                                <TrophyIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                                <span className="text-sm font-semibold text-secondary-700 dark:text-secondary-300">
+                                <TrophyIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold text-secondary-700 dark:text-secondary-300">
                                     Cheapest
                                 </span>
                             </div>
-                            <p className="text-lg font-bold text-secondary-900 dark:text-white">
+                            <p className="text-sm sm:text-base lg:text-lg font-bold text-secondary-900 dark:text-white truncate">
                                 {cheapestModel?.modelName}
                             </p>
-                            <p className="text-2xl font-bold gradient-text-primary">
+                            <p className="text-xl sm:text-2xl font-bold gradient-text-primary">
                                 {cheapestModel ? pricingService.formatPrice(cheapestModel.totalCost) : '$0.00'}
                             </p>
                         </div>
 
-                        <div className="p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-red-50/50 to-red-100/30 dark:from-red-900/20 dark:to-red-800/10">
+                        <div className="p-3 sm:p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-red-50/50 to-red-100/30 dark:from-red-900/20 dark:to-red-800/10">
                             <div className="flex items-center gap-2 mb-2">
-                                <ChartBarIcon className="w-5 h-5 text-red-600 dark:text-red-400" />
-                                <span className="text-sm font-semibold text-secondary-700 dark:text-secondary-300">
+                                <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold text-secondary-700 dark:text-secondary-300">
                                     Most Expensive
                                 </span>
                             </div>
-                            <p className="text-lg font-bold text-secondary-900 dark:text-white">
+                            <p className="text-sm sm:text-base lg:text-lg font-bold text-secondary-900 dark:text-white truncate">
                                 {mostExpensiveModel?.modelName}
                             </p>
-                            <p className="text-2xl font-bold gradient-text-primary">
+                            <p className="text-xl sm:text-2xl font-bold gradient-text-primary">
                                 {mostExpensiveModel ? pricingService.formatPrice(mostExpensiveModel.totalCost) : '$0.00'}
                             </p>
                         </div>
 
-                        <div className="p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-blue-50/50 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/10">
+                        <div className="p-3 sm:p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-br from-blue-50/50 to-blue-100/30 dark:from-blue-900/20 dark:to-blue-800/10">
                             <div className="flex items-center gap-2 mb-2">
-                                <CalculatorIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                <span className="text-sm font-semibold text-secondary-700 dark:text-secondary-300">
+                                <CalculatorIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold text-secondary-700 dark:text-secondary-300">
                                     Models Compared
                                 </span>
                             </div>
-                            <p className="text-3xl font-bold gradient-text-primary">
+                            <p className="text-2xl sm:text-3xl font-bold gradient-text-primary">
                                 {costResults.length}
                             </p>
                             {cheapestModel && mostExpensiveModel && (
-                                <p className="text-sm text-secondary-600 dark:text-secondary-300 mt-1">
+                                <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 mt-1">
                                     Savings: {pricingService.formatPrice(mostExpensiveModel.totalCost - cheapestModel.totalCost)}
                                 </p>
                             )}
@@ -235,94 +235,97 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
             {/* Results Table */}
             {costResults.length > 0 && (
                 <div className="rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex justify-between items-center p-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                        <h3 className="text-lg font-bold font-display gradient-text-primary">
+                    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-0 p-3 sm:p-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                        <h3 className="text-base sm:text-lg font-bold font-display gradient-text-primary">
                             Cost Comparison Results
                         </h3>
                         <button
                             onClick={handleExport}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-primary-200/30 dark:border-primary-700/30 bg-white/50 dark:bg-dark-card/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                         >
                             <ArrowDownTrayIcon className="w-4 h-4" />
-                            Export CSV
+                            <span className="hidden sm:inline">Export CSV</span>
+                            <span className="sm:hidden">Export</span>
                         </button>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 border-b border-primary-200/30 dark:border-primary-700/30">
-                                <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Rank
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Model
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Provider
-                                    </th>
-                                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Input Cost
-                                    </th>
-                                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Output Cost
-                                    </th>
-                                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
-                                        Total Cost
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-primary-200/30 dark:divide-primary-700/30">
-                                {costResults.slice(0, 50).map((result, index) => (
-                                    <tr
-                                        key={`${result.provider}-${result.modelId}`}
-                                        className={`hover:bg-primary-50/30 dark:hover:bg-primary-900/20 transition-colors ${index === 0 ? 'bg-emerald-50/50 dark:bg-emerald-900/20' : ''
-                                            }`}
-                                    >
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            <div className="flex items-center gap-2">
-                                                {index === 0 && (
-                                                    <TrophyIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                )}
-                                                <span className="text-sm font-semibold text-secondary-700 dark:text-secondary-300">
-                                                    #{index + 1}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            <span className="text-sm font-semibold text-secondary-900 dark:text-white">
-                                                {result.modelName}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                                                {result.provider}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-right">
-                                            <span className="text-sm font-mono text-secondary-700 dark:text-secondary-300">
-                                                {pricingService.formatPrice(result.inputCost)}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-right">
-                                            <span className="text-sm font-mono text-secondary-700 dark:text-secondary-300">
-                                                {pricingService.formatPrice(result.outputCost)}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-right">
-                                            <span className={`text-sm font-mono font-bold ${index === 0 ? 'gradient-text-primary' : 'text-secondary-900 dark:text-white'
-                                                }`}>
-                                                {pricingService.formatPrice(result.totalCost)}
-                                            </span>
-                                        </td>
+                    <div className="overflow-x-auto -mx-4 sm:mx-0">
+                        <div className="inline-block min-w-full align-middle">
+                            <table className="min-w-full divide-y divide-primary-200/30 dark:divide-primary-700/30">
+                                <thead className="bg-gradient-to-r from-primary-50/50 to-primary-100/30 dark:from-primary-900/20 dark:to-primary-800/10 border-b border-primary-200/30 dark:border-primary-700/30">
+                                    <tr>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Rank
+                                        </th>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Model
+                                        </th>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Provider
+                                        </th>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Input Cost
+                                        </th>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Output Cost
+                                        </th>
+                                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold uppercase tracking-wider text-secondary-700 dark:text-secondary-300">
+                                            Total Cost
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-primary-200/30 dark:divide-primary-700/30">
+                                    {costResults.slice(0, 50).map((result, index) => (
+                                        <tr
+                                            key={`${result.provider}-${result.modelId}`}
+                                            className={`hover:bg-primary-50/30 dark:hover:bg-primary-900/20 transition-colors ${index === 0 ? 'bg-emerald-50/50 dark:bg-emerald-900/20' : ''
+                                                }`}
+                                        >
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                                <div className="flex items-center gap-1 sm:gap-2">
+                                                    {index === 0 && (
+                                                        <TrophyIcon className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                                                    )}
+                                                    <span className="text-xs sm:text-sm font-semibold text-secondary-700 dark:text-secondary-300">
+                                                        #{index + 1}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                                <span className="text-xs sm:text-sm font-semibold text-secondary-900 dark:text-white">
+                                                    {result.modelName}
+                                                </span>
+                                            </td>
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
+                                                <span className="text-xs sm:text-sm text-secondary-700 dark:text-secondary-300">
+                                                    {result.provider}
+                                                </span>
+                                            </td>
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                                <span className="text-xs sm:text-sm font-mono text-secondary-700 dark:text-secondary-300">
+                                                    {pricingService.formatPrice(result.inputCost)}
+                                                </span>
+                                            </td>
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                                <span className="text-xs sm:text-sm font-mono text-secondary-700 dark:text-secondary-300">
+                                                    {pricingService.formatPrice(result.outputCost)}
+                                                </span>
+                                            </td>
+                                            <td className="px-3 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-right">
+                                                <span className={`text-xs sm:text-sm font-mono font-bold ${index === 0 ? 'gradient-text-primary' : 'text-secondary-900 dark:text-white'
+                                                    }`}>
+                                                    {pricingService.formatPrice(result.totalCost)}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     {costResults.length > 50 && (
-                        <div className="p-4 text-center text-sm text-secondary-600 dark:text-secondary-300 border-t border-primary-200/30 dark:border-primary-700/30">
+                        <div className="p-3 sm:p-4 text-center text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 border-t border-primary-200/30 dark:border-primary-700/30">
                             Showing top 50 of {costResults.length} models. Export CSV to see all results.
                         </div>
                     )}
@@ -330,8 +333,8 @@ export const CostCalculator: React.FC<CostCalculatorProps> = ({ taskType = 'all'
             )}
 
             {costResults.length === 0 && inputTokens > 0 && (
-                <div className="p-6 text-center rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <p className="text-secondary-600 dark:text-secondary-300">
+                <div className="p-4 sm:p-6 text-center rounded-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <p className="text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
                         No models found matching your criteria. Try adjusting the task type filter.
                     </p>
                 </div>

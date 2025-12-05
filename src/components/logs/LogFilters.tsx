@@ -137,27 +137,28 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
                 }
             `}</style>
 
-            <div className="card shadow-xl p-6 space-y-6">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold gradient-text-primary flex items-center gap-2">
-                        <FiFilter className="text-primary-500 dark:text-primary-400" />
+            <div className="card shadow-xl p-4 md:p-6 space-y-4 md:space-y-6">
+                <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-base md:text-lg font-bold gradient-text-primary flex items-center gap-2">
+                        <FiFilter className="text-primary-500 dark:text-primary-400 w-4 h-4 md:w-5 md:h-5" />
                         Filters
                     </h3>
                     {(startDate || endDate || service || aiModel || projectId || status || searchText) && (
                         <button
                             onClick={handleClearFilters}
-                            className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold flex items-center gap-1 transition-colors"
+                            className="text-xs md:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold flex items-center gap-1 transition-colors flex-shrink-0"
                         >
-                            <FiX />
-                            Clear All
+                            <FiX className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                            <span className="hidden sm:inline">Clear All</span>
+                            <span className="sm:hidden">Clear</span>
                         </button>
                     )}
                 </div>
 
                 {/* Search */}
                 <div>
-                    <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-                        <FiSearch className="inline mr-1" />
+                    <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">
+                        <FiSearch className="inline mr-1 w-3.5 h-3.5 md:w-4 md:h-4" />
                         Search
                     </label>
                     <div className="relative">
@@ -166,20 +167,20 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             placeholder="Search in logs..."
-                            className="w-full pl-10 pr-4 py-2.5 bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
+                            className="w-full pl-9 md:pl-10 pr-3 md:pr-4 py-2 md:py-2.5 text-sm bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
                         />
-                        <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
+                        <FiSearch className="absolute left-2.5 md:left-3 top-1/2 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary w-4 h-4" />
                     </div>
                 </div>
 
                 {/* Date Range */}
-                <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-                        <FiCalendar className="inline mr-1" />
+                <div className="space-y-2 md:space-y-3">
+                    <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">
+                        <FiCalendar className="inline mr-1 w-3.5 h-3.5 md:w-4 md:h-4" />
                         Date Range
                     </label>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2 md:gap-3">
                         <div>
                             <label className="text-xs text-light-text-secondary dark:text-dark-text-secondary mb-1 block font-medium">From</label>
                             <DatePicker
@@ -189,7 +190,7 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
                                 startDate={startDate}
                                 endDate={endDate}
                                 placeholderText="Start date"
-                                className="w-full px-4 py-2.5 bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
+                                className="w-full px-3 py-2 md:px-4 md:py-2.5 text-sm bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
                                 dateFormat="MMM d, yyyy"
                             />
                         </div>
@@ -203,14 +204,14 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
                                 endDate={endDate}
                                 minDate={startDate || undefined}
                                 placeholderText="End date"
-                                className="w-full px-4 py-2.5 bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
+                                className="w-full px-3 py-2 md:px-4 md:py-2.5 text-sm bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
                                 dateFormat="MMM d, yyyy"
                             />
                         </div>
                     </div>
 
                     {/* Quick date presets */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
                         <button
                             onClick={() => {
                                 const now = new Date();
@@ -246,7 +247,7 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
 
                 {/* Service */}
                 <div>
-                    <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">Service</label>
+                    <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">Service</label>
                     <Select
                         value={serviceOptions.find(opt => opt.value === service)}
                         onChange={(option) => setService(option?.value || null)}
@@ -261,19 +262,19 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
 
                 {/* Model */}
                 <div>
-                    <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">AI Model</label>
+                    <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">AI Model</label>
                     <input
                         type="text"
                         value={aiModel || ''}
                         onChange={(e) => setAiModel(e.target.value || null)}
                         placeholder="e.g., claude-3-sonnet, gpt-4"
-                        className="w-full px-4 py-2.5 bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
+                        className="w-full px-3 py-2 md:px-4 md:py-2.5 text-sm bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
                     />
                 </div>
 
                 {/* Status */}
                 <div>
-                    <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">Status</label>
+                    <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">Status</label>
                     <Select
                         value={statusOptions.find(opt => opt.value === status)}
                         onChange={(option) => setStatus(option?.value || null)}
@@ -290,23 +291,23 @@ export const LogFilters: React.FC<LogFiltersProps> = ({ onFilterChange }) => {
                 <div>
                     <button
                         onClick={() => setShowAdvanced(!showAdvanced)}
-                        className="w-full flex items-center justify-between py-2 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                        className="w-full flex items-center justify-between py-2 text-xs md:text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
                     >
                         <span>Advanced Filters</span>
-                        {showAdvanced ? <FiChevronUp /> : <FiChevronDown />}
+                        {showAdvanced ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
                     </button>
 
                     {showAdvanced && (
-                        <div className="mt-4 space-y-4 pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
+                        <div className="mt-3 md:mt-4 space-y-3 md:space-y-4 pt-3 md:pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
                             {/* Project ID */}
                             <div>
-                                <label className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">Project ID</label>
+                                <label className="block text-xs md:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1.5 md:mb-2">Project ID</label>
                                 <input
                                     type="text"
                                     value={projectId || ''}
                                     onChange={(e) => setProjectId(e.target.value || null)}
                                     placeholder="Enter project ID"
-                                    className="w-full px-4 py-2.5 bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
+                                    className="w-full px-3 py-2 md:px-4 md:py-2.5 text-sm bg-light-panel dark:bg-dark-panel border border-primary-200/30 dark:border-primary-500/20 rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder-light-text-muted dark:placeholder-dark-text-muted focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all backdrop-blur-xl"
                                 />
                             </div>
                         </div>

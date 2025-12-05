@@ -125,7 +125,7 @@ export const ProfileDropdown: React.FC = () => {
                     </Link>
 
                     <Link
-                        to="/profile?tab=subscription"
+                        to="/subscription"
                         onClick={() => setIsOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-primary hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all mx-2 rounded-xl group"
                     >

@@ -13,7 +13,7 @@ import {
 import { templateAnalyticsService, TemplateUsageStats, TopTemplate, CostSavingsReport } from '../services/templateAnalytics.service';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useNotification } from '../contexts/NotificationContext';
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, LineChart, Line, CartesianGrid } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
 
@@ -83,46 +83,48 @@ const TemplateAnalyticsPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-            <div className="p-6 mx-auto max-w-7xl">
+            <div className="p-3 sm:p-4 md:p-6 mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="relative mb-8">
+                <div className="relative mb-6 sm:mb-8">
                     <div className="absolute inset-0 bg-gradient-to-r rounded-2xl blur-3xl from-primary-600/10 to-success-600/10"></div>
-                    <div className="relative p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="relative p-4 sm:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex gap-4 items-center mb-4">
                             <button
                                 onClick={() => navigate('/templates')}
-                                className="flex gap-2 items-center btn btn-secondary"
+                                className="flex gap-2 items-center btn btn-secondary text-sm sm:text-base"
                             >
                                 <FiArrowLeft className="w-4 h-4" />
-                                Back to Templates
+                                <span className="hidden sm:inline">Back to Templates</span>
+                                <span className="sm:hidden">Back</span>
                             </button>
                         </div>
-                        <div className="flex justify-between items-start">
-                            <div className="flex gap-4 items-center">
-                                <div className="p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                                    <FiBarChart2 className="w-6 h-6 text-white" />
+                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
+                                <div className="p-2 sm:p-3 rounded-xl shadow-lg bg-gradient-primary glow-primary">
+                                    <FiBarChart2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-4xl font-bold font-display gradient-text-primary">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display gradient-text-primary">
                                         Template Analytics
                                     </h1>
-                                    <p className="mt-2 text-secondary-600 dark:text-secondary-300">
+                                    <p className="mt-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-300">
                                         Track template usage, cost savings, and performance metrics
                                     </p>
                                 </div>
                             </div>
                             {/* Period Selector */}
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2 w-full lg:w-auto">
                                 {(['24h', '7d', '30d', '90d'] as const).map((p) => (
                                     <button
                                         key={p}
                                         onClick={() => setPeriod(p)}
-                                        className={`px-4 py-2 rounded-lg font-medium transition-all ${period === p
+                                        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all flex-1 sm:flex-none ${period === p
                                             ? 'bg-gradient-primary text-white shadow-lg'
                                             : 'bg-white dark:bg-secondary-700 text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-600'
                                             }`}
                                     >
-                                        {getPeriodLabel(p)}
+                                        <span className="hidden sm:inline">{getPeriodLabel(p)}</span>
+                                        <span className="sm:hidden">{p}</span>
                                     </button>
                                 ))}
                             </div>
@@ -131,7 +133,7 @@ const TemplateAnalyticsPage: React.FC = () => {
                 </div>
 
                 {/* Overview Stats */}
-                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex gap-3 items-center mb-3">
                             <div className="p-2 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600">
@@ -191,7 +193,7 @@ const TemplateAnalyticsPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-2">
                     {/* Context Breakdown */}
                     <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex gap-3 items-center mb-6">
@@ -242,70 +244,75 @@ const TemplateAnalyticsPage: React.FC = () => {
                 </div>
 
                 {/* Top Templates Table */}
-                <div className="p-6 mt-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                    <div className="flex gap-3 items-center mb-6">
+                <div className="p-4 sm:p-6 mt-6 sm:mt-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="flex gap-3 items-center mb-4 sm:mb-6">
                         <div className="p-2 rounded-lg bg-gradient-accent">
                             <FiTrendingUp className="w-5 h-5 text-white" />
                         </div>
-                        <h2 className="text-2xl font-bold text-secondary-900 dark:text-white">Top Templates</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold text-secondary-900 dark:text-white">Top Templates</h2>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-secondary-200 dark:border-secondary-700">
-                                    <th className="px-4 py-3 text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300">Rank</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300">Template</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300">Category</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Uses</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Total Cost</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Avg Cost</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Savings</th>
-                                    <th className="px-4 py-3 text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Last Used</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {topTemplates.map((template) => (
-                                    <tr
-                                        key={template.templateId}
-                                        className="border-b border-secondary-100 dark:border-secondary-700/50 hover:bg-secondary-50 dark:hover:bg-secondary-700/30 transition-colors cursor-pointer"
-                                        onClick={() => navigate(`/templates/${template.templateId}`)}
-                                    >
-                                        <td className="px-4 py-3">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${template.rank === 1 ? 'bg-gradient-to-br from-warning-400 to-warning-600' :
-                                                template.rank === 2 ? 'bg-gradient-to-br from-secondary-400 to-secondary-600' :
-                                                    template.rank === 3 ? 'bg-gradient-to-br from-accent-400 to-accent-600' :
-                                                        'bg-gradient-to-br from-secondary-300 to-secondary-500'
-                                                }`}>
-                                                {template.rank}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="font-medium text-secondary-900 dark:text-white">{template.templateName}</div>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
-                                                {template.templateCategory}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 text-right font-medium text-secondary-900 dark:text-white">
-                                            {formatNumber(template.usageCount)}
-                                        </td>
-                                        <td className="px-4 py-3 text-right text-secondary-600 dark:text-secondary-400">
-                                            {formatCurrency(template.totalCost)}
-                                        </td>
-                                        <td className="px-4 py-3 text-right text-secondary-600 dark:text-secondary-400">
-                                            {formatCurrency(template.averageCost)}
-                                        </td>
-                                        <td className="px-4 py-3 text-right font-medium text-success-600 dark:text-success-400">
-                                            {formatCurrency(template.costSavingsEstimate)}
-                                        </td>
-                                        <td className="px-4 py-3 text-right text-sm text-secondary-600 dark:text-secondary-400">
-                                            {new Date(template.lastUsed).toLocaleDateString()}
-                                        </td>
+                    <div className="overflow-x-auto -mx-4 sm:mx-0">
+                        <div className="inline-block min-w-full align-middle">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-secondary-200 dark:border-secondary-700">
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300">Rank</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300">Template</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-left text-secondary-700 dark:text-secondary-300 hidden md:table-cell">Category</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Uses</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300 hidden lg:table-cell">Total Cost</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300 hidden lg:table-cell">Avg Cost</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300">Savings</th>
+                                        <th className="px-2 sm:px-4 py-3 text-xs sm:text-sm font-semibold text-right text-secondary-700 dark:text-secondary-300 hidden xl:table-cell">Last Used</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {topTemplates.map((template) => (
+                                        <tr
+                                            key={template.templateId}
+                                            className="border-b border-secondary-100 dark:border-secondary-700/50 hover:bg-secondary-50 dark:hover:bg-secondary-700/30 transition-colors cursor-pointer"
+                                            onClick={() => navigate(`/templates/${template.templateId}`)}
+                                        >
+                                            <td className="px-2 sm:px-4 py-3">
+                                                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-white text-xs sm:text-sm ${template.rank === 1 ? 'bg-gradient-to-br from-warning-400 to-warning-600' :
+                                                    template.rank === 2 ? 'bg-gradient-to-br from-secondary-400 to-secondary-600' :
+                                                        template.rank === 3 ? 'bg-gradient-to-br from-accent-400 to-accent-600' :
+                                                            'bg-gradient-to-br from-secondary-300 to-secondary-500'
+                                                    }`}>
+                                                    {template.rank}
+                                                </div>
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3">
+                                                <div className="font-medium text-sm sm:text-base text-secondary-900 dark:text-white truncate max-w-[150px] sm:max-w-none">{template.templateName}</div>
+                                                <span className="md:hidden px-2 py-0.5 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 mt-1 inline-block">
+                                                    {template.templateCategory}
+                                                </span>
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 hidden md:table-cell">
+                                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                                                    {template.templateCategory}
+                                                </span>
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 text-right font-medium text-sm sm:text-base text-secondary-900 dark:text-white">
+                                                {formatNumber(template.usageCount)}
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 text-right text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 hidden lg:table-cell">
+                                                {formatCurrency(template.totalCost)}
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 text-right text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 hidden lg:table-cell">
+                                                {formatCurrency(template.averageCost)}
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 text-right font-medium text-xs sm:text-sm text-success-600 dark:text-success-400">
+                                                {formatCurrency(template.costSavingsEstimate)}
+                                            </td>
+                                            <td className="px-2 sm:px-4 py-3 text-right text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 hidden xl:table-cell">
+                                                {new Date(template.lastUsed).toLocaleDateString()}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 

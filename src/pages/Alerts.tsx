@@ -123,31 +123,32 @@ export const Alerts: React.FC = () => {
   };
 
   return (
-    <div className="p-4 min-h-screen sm:p-6 lg:p-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="sm:flex sm:items-center">
-          <div className="sm:flex-auto">
-            <div className="flex gap-3 items-center mb-4">
-              <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-danger">
-                <BellIcon className="w-6 h-6 text-white" />
+    <div className="p-2 min-h-screen sm:p-4 md:p-6 lg:p-8 bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+      <div className="p-4 mb-4 sm:p-6 md:p-8 md:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <div className="flex-auto">
+            <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4">
+              <div className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-danger">
+                <BellIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold font-display gradient-text-primary">
+              <h1 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                 Alerts
               </h1>
             </div>
-            <p className="my-2 text-sm text-secondary-600 dark:text-secondary-300">
+            <p className="my-1 sm:my-2 text-xs sm:text-sm text-secondary-600 dark:text-secondary-300">
               Manage and review system alerts and notifications.
             </p>
           </div>
-          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <div className="mt-3 sm:mt-4 sm:ml-16 sm:flex-none">
             <button
               type="button"
               onClick={() => markAllAsReadMutation.mutate()}
-              className="inline-flex gap-2 items-center px-4 py-2 font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 font-display disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto inline-flex gap-2 items-center justify-center px-3 py-2 sm:px-4 text-sm sm:text-base font-semibold text-white rounded-xl border shadow-lg backdrop-blur-xl transition-all duration-300 glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary hover:bg-gradient-primary/90 font-display disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={markAllAsReadMutation.isPending}
             >
               <BellIcon className="w-4 h-4" />
-              {markAllAsReadMutation.isPending ? 'Marking...' : 'Mark all as read'}
+              <span className="hidden sm:inline">{markAllAsReadMutation.isPending ? 'Marking...' : 'Mark all as read'}</span>
+              <span className="sm:hidden">{markAllAsReadMutation.isPending ? 'Marking...' : 'Mark all read'}</span>
             </button>
           </div>
         </div>
@@ -155,7 +156,7 @@ export const Alerts: React.FC = () => {
 
       <AlertSummary summary={summary} />
 
-      <div className="p-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
+      <div className="p-3 sm:p-4 md:p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
         <AlertFilter
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -163,21 +164,21 @@ export const Alerts: React.FC = () => {
         />
 
         {isError || !alerts ? (
-          <div className="p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
-            <div className="flex gap-3 items-center">
-              <div className="flex justify-center items-center w-8 h-8 rounded-lg shadow-lg bg-gradient-danger">
-                <ExclamationTriangleIcon className="w-5 h-5 text-white" />
+          <div className="p-4 sm:p-6 bg-gradient-to-r rounded-xl border shadow-lg backdrop-blur-xl glass border-danger-200/30 dark:border-danger-500/20 from-danger-50/30 to-danger-100/30 dark:from-danger-900/20 dark:to-danger-800/20">
+            <div className="flex gap-2 sm:gap-3 items-center">
+              <div className="flex justify-center items-center w-6 h-6 sm:w-8 sm:h-8 rounded-lg shadow-lg bg-gradient-danger flex-shrink-0">
+                <ExclamationTriangleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="font-body text-secondary-900 dark:text-white">
+              <span className="text-sm sm:text-base font-body text-secondary-900 dark:text-white">
                 Failed to load alerts. Please try again.
               </span>
             </div>
           </div>
         ) : alerts.data.length === 0 ? (
-          <div className="p-8 text-center text-secondary-600 dark:text-secondary-300">No alerts found.</div>
+          <div className="p-6 sm:p-8 text-center text-sm sm:text-base text-secondary-600 dark:text-secondary-300">No alerts found.</div>
         ) : (
           <>
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
               <AlertList
                 alerts={alerts.data}
                 onMarkAsRead={handleMarkAsRead}
@@ -185,7 +186,7 @@ export const Alerts: React.FC = () => {
                 onSnooze={handleSnooze}
               />
             </div>
-            <div className="mt-6">
+            <div className="mt-6 sm:mt-8 pt-4 border-t border-primary-200/20 dark:border-primary-500/10">
               <Pagination
                 currentPage={page}
                 totalPages={alerts.pagination.pages}

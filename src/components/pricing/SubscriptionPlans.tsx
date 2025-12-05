@@ -46,22 +46,22 @@ export const SubscriptionPlans: React.FC = () => {
     }
 
     return (
-        <div className="px-4 py-12 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+        <div className="px-4 sm:px-6 py-8 sm:py-12 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
             <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="mb-12 text-center">
-                    <h1 className="mb-4 text-5xl font-bold font-display gradient-text-primary">
+                <div className="mb-8 sm:mb-12 text-center">
+                    <h1 className="mb-3 sm:mb-4 text-3xl sm:text-4xl lg:text-5xl font-bold font-display gradient-text-primary">
                         Choose Your Plan
                     </h1>
-                    <p className="mb-8 text-xl text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl text-light-text-secondary dark:text-dark-text-secondary px-4">
                         Select the perfect plan for your AI cost optimization needs
                     </p>
 
                     {/* Billing Toggle */}
-                    <div className="inline-flex relative gap-4 items-center p-1 pt-6 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
+                    <div className="inline-flex relative gap-2 sm:gap-4 items-center p-1 pt-6 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
                         <button
                             onClick={() => setBillingInterval('monthly')}
-                            className={`btn px-6 py-2 !rounded-xl ${billingInterval === 'monthly'
+                            className={`btn px-4 sm:px-6 py-2 text-sm sm:text-base !rounded-xl ${billingInterval === 'monthly'
                                 ? 'btn-primary'
                                 : 'btn-outline !border-2 !border-[#009454] dark:!border-[#06ec9e] [border-image:none]'
                                 }`}
@@ -70,7 +70,7 @@ export const SubscriptionPlans: React.FC = () => {
                         </button>
                         <button
                             onClick={() => setBillingInterval('yearly')}
-                            className={`px-6 py-2 relative !rounded-xl ${billingInterval === 'yearly'
+                            className={`px-4 sm:px-6 py-2 relative text-sm sm:text-base !rounded-xl ${billingInterval === 'yearly'
                                 ? 'btn-primary'
                                 : 'btn-outline !border-2 !border-[#009454] dark:!border-[#06ec9e] [border-image:none]'
                                 }`}
@@ -84,7 +84,7 @@ export const SubscriptionPlans: React.FC = () => {
                 </div>
 
                 {/* Plan Cards */}
-                <div className="grid grid-cols-1 gap-6 pt-8 mb-12 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 pt-6 sm:pt-8 mb-8 sm:mb-12 md:grid-cols-2 lg:grid-cols-4">
                     {plans.map((plan) => {
                         const isCurrentPlan = currentSubscription?.plan?.toLowerCase() === plan.name.toLowerCase();
                         const isEnterprise = plan.name.toLowerCase() === 'enterprise'.toLowerCase();

@@ -649,16 +649,16 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
   return (
     <div className={`glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}>
       {/* Enhanced Notebook Header */}
-      <div className="p-6 border-b border-primary-200/30 bg-gradient-primary/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+      <div className="p-4 sm:p-5 md:p-6 border-b border-primary-200/30 bg-gradient-primary/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
-              <h2 className="font-display text-3xl font-bold gradient-text-primary">{notebook.title}</h2>
-              <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">{notebook.description}</p>
-              <div className="flex items-center gap-4 mt-3 text-sm">
+              <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">{notebook.title}</h2>
+              <p className="font-body text-xs sm:text-sm md:text-base text-light-text-secondary dark:text-dark-text-secondary mt-2">{notebook.description}</p>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-3 text-xs sm:text-sm">
                 <span className="px-3 py-1 rounded-full bg-gradient-primary/20 text-primary-700 dark:text-primary-300 font-display font-medium">
                   <BarChart3 className="w-3 h-3 inline mr-1" />
                   {notebook.cells?.length || 0} cells
@@ -683,10 +683,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={saveNotebook}
-              className="btn btn-secondary flex items-center gap-2"
+              className="btn btn-secondary flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <Save className="w-4 h-4" />
               Save
@@ -694,7 +694,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             <button
               onClick={executeNotebook}
               disabled={isExecuting}
-              className={`btn btn-primary flex items-center gap-2 ${isExecuting ? 'opacity-75 cursor-not-allowed' : ''}`}
+              className={`btn btn-primary flex items-center justify-center gap-2 text-sm sm:text-base ${isExecuting ? 'opacity-75 cursor-not-allowed' : ''}`}
             >
               {isExecuting ? (
                 <>
@@ -745,8 +745,8 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
       </div>
 
       {/* Notebook Cells */}
-      <div className="p-6">
-        <div className="space-y-6">
+      <div className="p-4 sm:p-5 md:p-6">
+        <div className="space-y-4 sm:space-y-6">
           {notebook.cells.map((cell, index) => {
             const Icon = getCellIcon(cell.type);
             const isEditing = editingCell === cell.id;
@@ -754,12 +754,12 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
             return (
               <div key={cell.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                 {/* Cell Header */}
-                <div className="flex items-center justify-between p-4 bg-gradient-primary/5 border-b border-primary-200/30">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
-                      <Icon className="w-4 h-4 text-primary-600" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-primary/5 border-b border-primary-200/30">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600" />
                     </div>
-                    <span className={`px-3 py-1 rounded-full font-display font-medium ${getCellTypeColor(cell.type)}`}>
+                    <span className={`px-2 sm:px-3 py-1 rounded-full font-display font-medium text-xs sm:text-sm ${getCellTypeColor(cell.type)}`}>
                       {cell.type}
                     </span>
                   </div>
@@ -789,7 +789,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                 </div>
 
                 {/* Cell Content */}
-                <div className="p-6">
+                <div className="p-4 sm:p-5 md:p-6">
                   {isEditing ? (
                     <textarea
                       value={cell.content}
@@ -823,40 +823,40 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
           })}
 
           {/* Add Cell Buttons */}
-          <div className="glass p-6 rounded-xl border-2 border-dashed border-primary-200/50 shadow-lg backdrop-blur-xl text-center">
-            <div className="flex items-center justify-center gap-4">
+          <div className="glass p-4 sm:p-5 md:p-6 rounded-xl border-2 border-dashed border-primary-200/50 shadow-lg backdrop-blur-xl text-center">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
               <button
                 onClick={() => addCell('markdown')}
-                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 glass rounded-lg border border-secondary-200/30 shadow-lg backdrop-blur-xl text-secondary-600 hover:text-secondary-800 hover:border-secondary-300/50 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-secondary/20 flex items-center justify-center shadow-lg">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-secondary/20 flex items-center justify-center shadow-lg">
                   <FileText className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Markdown</span>
               </button>
               <button
                 onClick={() => addCell('query')}
-                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 glass rounded-lg border border-primary-200/30 shadow-lg backdrop-blur-xl text-primary-600 hover:text-primary-800 hover:border-primary-300/50 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-primary/20 flex items-center justify-center shadow-lg">
                   <Search className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Query</span>
               </button>
               <button
                 onClick={() => addCell('visualization')}
-                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 glass rounded-lg border border-success-200/30 shadow-lg backdrop-blur-xl text-success-600 hover:text-success-800 hover:border-success-300/50 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-success/20 flex items-center justify-center shadow-lg">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-success/20 flex items-center justify-center shadow-lg">
                   <BarChart3 className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Chart</span>
               </button>
               <button
                 onClick={() => addCell('insight')}
-                className="btn flex items-center gap-2 px-4 py-3 glass rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105"
+                className="btn flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 glass rounded-lg border border-accent-200/30 shadow-lg backdrop-blur-xl text-accent-600 hover:text-accent-800 hover:border-accent-300/50 transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-accent/20 flex items-center justify-center shadow-lg">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-gradient-accent/20 flex items-center justify-center shadow-lg">
                   <Lightbulb className="w-3 h-3" />
                 </div>
                 <span className="font-display font-medium">Insight</span>
@@ -868,16 +868,16 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
 
       {/* Drill-Down Modal */}
       {showDrillDownModal && selectedHeatmapCell && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-auto">
+            <div className="p-4 sm:p-5 md:p-6">
               {/* Modal Header */}
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
                 <div>
-                  <h2 className="font-display text-3xl font-bold gradient-text-primary">
+                  <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">
                     {selectedHeatmapCell.day} {selectedHeatmapCell.timeSlot}
                   </h2>
-                  <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mt-2">Detailed usage analysis for this time period</p>
+                  <p className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">Detailed usage analysis for this time period</p>
                 </div>
                 <button
                   onClick={() => setShowDrillDownModal(false)}
@@ -888,33 +888,33 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
 
               {/* Key Metrics Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="glass p-6 rounded-xl border border-primary-200/30 text-center">
-                  <div className="font-display text-4xl font-bold gradient-text-primary mb-2">{selectedHeatmapCell.requests}</div>
-                  <div className="font-display font-semibold text-primary-700 dark:text-primary-300">Total Requests</div>
-                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">API calls made</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                <div className="glass p-3 sm:p-4 md:p-6 rounded-xl border border-primary-200/30 text-center">
+                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold gradient-text-primary mb-2">{selectedHeatmapCell.requests}</div>
+                  <div className="font-display font-semibold text-xs sm:text-sm text-primary-700 dark:text-primary-300">Total Requests</div>
+                  <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">API calls made</div>
                 </div>
-                <div className="glass p-6 rounded-xl border border-success-200/30 text-center">
-                  <div className="font-display text-4xl font-bold gradient-text-success mb-2">${selectedHeatmapCell.cost}</div>
-                  <div className="font-display font-semibold text-success-700 dark:text-success-300">Total Cost</div>
-                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                <div className="glass p-3 sm:p-4 md:p-6 rounded-xl border border-success-200/30 text-center">
+                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold gradient-text-success mb-2">${selectedHeatmapCell.cost}</div>
+                  <div className="font-display font-semibold text-xs sm:text-sm text-success-700 dark:text-success-300">Total Cost</div>
+                  <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                     ${(selectedHeatmapCell.cost / selectedHeatmapCell.requests).toFixed(4)} per request
                   </div>
                 </div>
-                <div className="glass p-6 rounded-xl border border-danger-200/30 text-center">
-                  <div className="font-display text-4xl font-bold gradient-text-danger mb-2">{selectedHeatmapCell.errorRate}%</div>
-                  <div className="font-display font-semibold text-danger-700 dark:text-danger-300">Error Rate</div>
-                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{selectedHeatmapCell.errors} failed requests</div>
+                <div className="glass p-3 sm:p-4 md:p-6 rounded-xl border border-danger-200/30 text-center">
+                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold gradient-text-danger mb-2">{selectedHeatmapCell.errorRate}%</div>
+                  <div className="font-display font-semibold text-xs sm:text-sm text-danger-700 dark:text-danger-300">Error Rate</div>
+                  <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">{selectedHeatmapCell.errors} failed requests</div>
                 </div>
-                <div className="glass p-6 rounded-xl border border-accent-200/30 text-center">
-                  <div className="font-display text-4xl font-bold gradient-text-accent mb-2">{selectedHeatmapCell.avgDuration}ms</div>
-                  <div className="font-display font-semibold text-accent-700 dark:text-accent-300">Avg Duration</div>
-                  <div className="font-body text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">Response time</div>
+                <div className="glass p-3 sm:p-4 md:p-6 rounded-xl border border-accent-200/30 text-center">
+                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold gradient-text-accent mb-2">{selectedHeatmapCell.avgDuration}ms</div>
+                  <div className="font-display font-semibold text-xs sm:text-sm text-accent-700 dark:text-accent-300">Avg Duration</div>
+                  <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">Response time</div>
                 </div>
               </div>
 
               {/* Performance Analysis */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {/* Top Operations */}
                 <div className="glass p-4 rounded-lg">
                   <h3 className="font-display text-lg font-semibold text-secondary-900 dark:text-white mb-3">Top Operation</h3>
@@ -1005,10 +1005,10 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
                 <button
                   onClick={() => setShowDrillDownModal(false)}
-                  className="btn btn-secondary"
+                  className="btn btn-secondary text-sm sm:text-base"
                 >
                   Close
                 </button>
@@ -1017,7 +1017,7 @@ export const InteractiveNotebook: React.FC<InteractiveNotebookProps> = ({
                     // Detailed query for this time period will be implemented in future versions
                     console.log('Querying detailed data for:', selectedHeatmapCell);
                   }}
-                  className="btn btn-primary"
+                  className="btn btn-primary text-sm sm:text-base"
                 >
                   <Search className="w-4 h-4 mr-2" />
                   View Detailed Logs

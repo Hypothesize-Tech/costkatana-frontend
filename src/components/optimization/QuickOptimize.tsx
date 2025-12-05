@@ -91,29 +91,29 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
 
   return (
     <div
-      className={`glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel ${className}`}
+      className={`glass rounded-lg border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel sm:rounded-xl ${className}`}
     >
-      <div className="p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-            <SparklesIcon className="w-5 h-5 text-white" />
+      <div className="p-3 sm:p-4 md:p-6">
+        <div className="flex items-center gap-2 mb-4 sm:gap-3 sm:mb-5 md:mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg sm:w-9 sm:h-9 md:w-10 md:h-10 md:rounded-xl">
+            <SparklesIcon className="w-4 h-4 text-white sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" />
           </div>
-          <h3 className="text-xl font-display font-bold gradient-text-primary">
+          <h3 className="text-lg font-display font-bold gradient-text-primary sm:text-xl">
             Quick Optimize
           </h3>
         </div>
 
         {!showResult ? (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-5 md:space-y-6">
             <div>
-              <label className="block mb-3 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+              <label className="block mb-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:mb-3 sm:text-sm">
                 Enter your prompt
               </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={6}
-                className="input resize-none"
+                className="input resize-none text-sm"
                 placeholder="Paste your AI prompt here for instant optimization..."
               />
             </div>
@@ -142,7 +142,7 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             <button
               onClick={handleOptimize}
               disabled={optimizeMutation.isPending || !prompt.trim()}
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full min-h-[44px] [touch-action:manipulation] active:scale-95"
             >
               {optimizeMutation.isPending ? (
                 <>
@@ -151,31 +151,31 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
                 </>
               ) : (
                 <>
-                  <SparklesIcon className="mr-2 w-5 h-5" />
+                  <SparklesIcon className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                   Optimize Now
                 </>
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
-              <SparklesIcon className="w-4 h-4" />
-              <span>AI-powered optimization • No configuration needed • Instant results</span>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:gap-2 sm:text-xs">
+              <SparklesIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="text-center">AI-powered optimization • No configuration needed • Instant results</span>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Success Header */}
-            <div className="glass rounded-xl p-4 border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                    <CheckIcon className="w-5 h-5 text-white" />
+            <div className="glass rounded-lg p-3 border border-success-200/30 backdrop-blur-xl bg-gradient-to-br from-success-50/50 to-success-100/30 dark:from-success-900/20 dark:to-success-800/20 sm:p-4 md:rounded-xl">
+              <div className="flex flex-col gap-2 justify-between items-start sm:flex-row sm:items-center sm:gap-0">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                    <CheckIcon className="w-4 h-4 text-white sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" />
                   </div>
-                  <span className="text-sm font-display font-semibold gradient-text-success">
+                  <span className="text-xs font-display font-semibold gradient-text-success sm:text-sm">
                     Optimization Complete!
                   </span>
                 </div>
-                <span className="text-lg font-display font-bold gradient-text-success">
+                <span className="text-base font-display font-bold gradient-text-success sm:text-lg break-words">
                   ${optimizationResult.costSaved?.toFixed(4) || "0.0000"} saved
                 </span>
               </div>
@@ -202,60 +202,60 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
             </div>
 
             {/* Optimization Stats */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <div className="glass rounded-xl p-4 border border-primary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
-                <div className="flex justify-center mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                    <ChartBarIcon className="w-4 h-4 text-white" />
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4">
+              <div className="glass rounded-lg p-2 border border-primary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
+                <div className="flex justify-center mb-1.5 sm:mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                    <ChartBarIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className={`text-lg font-display font-bold ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-primary'
                   }`}>
                   {Math.abs(optimizationResult.improvementPercentage || 0).toFixed(1)}%
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">
                   {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Improvement'}
                 </div>
               </div>
-              <div className="glass rounded-xl p-4 border border-secondary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
-                <div className="flex justify-center mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                    <CpuChipIcon className="w-4 h-4 text-white" />
+              <div className="glass rounded-lg p-2 border border-secondary-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
+                <div className="flex justify-center mb-1.5 sm:mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                    <CpuChipIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className={`text-lg font-display font-bold ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
+                <div className={`text-sm font-display font-bold sm:text-base md:text-lg ${optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0
                   ? 'text-danger-600 dark:text-danger-400'
                   : 'gradient-text-secondary'
                   }`}>
                   {optimizationResult.tokensSaved || 0}
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">
                   {optimizationResult.improvementPercentage && optimizationResult.improvementPercentage < 0 ? 'Token Increase' : 'Tokens Saved'}
                 </div>
               </div>
-              <div className="glass rounded-xl p-4 border border-success-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
-                <div className="flex justify-center mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                    <CurrencyDollarIcon className="w-4 h-4 text-white" />
+              <div className="glass rounded-lg p-2 border border-success-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
+                <div className="flex justify-center mb-1.5 sm:mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                    <CurrencyDollarIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className="text-lg font-display font-bold gradient-text-success">
+                <div className="text-sm font-display font-bold gradient-text-success sm:text-base md:text-lg">
                   {optimizationResult.originalTokens || 0}
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Original Tokens</div>
+                <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">Original Tokens</div>
               </div>
-              <div className="glass rounded-xl p-4 border border-accent-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200">
-                <div className="flex justify-center mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg">
-                    <CurrencyDollarIcon className="w-4 h-4 text-white" />
+              <div className="glass rounded-lg p-2 border border-accent-200/30 backdrop-blur-xl text-center hover:scale-105 transition-transform duration-200 sm:p-3 md:p-4 md:rounded-xl">
+                <div className="flex justify-center mb-1.5 sm:mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-gradient-accent flex items-center justify-center shadow-lg sm:w-7 sm:h-7 md:w-8 md:h-8">
+                    <CurrencyDollarIcon className="w-3 h-3 text-white sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                   </div>
                 </div>
-                <div className="text-lg font-display font-bold gradient-text-accent">
+                <div className="text-sm font-display font-bold gradient-text-accent sm:text-base md:text-lg">
                   {optimizationResult.optimizedTokens || 0}
                 </div>
-                <div className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">Optimized Tokens</div>
+                <div className="text-[10px] font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-xs">Optimized Tokens</div>
               </div>
             </div>
 
@@ -377,16 +377,16 @@ export const QuickOptimize: React.FC<QuickOptimizeProps> = ({
               )}
 
             {/* Action Buttons */}
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <button
                 onClick={handleReset}
-                className="flex-1 btn btn-secondary"
+                className="flex-1 btn btn-secondary min-h-[44px] [touch-action:manipulation] active:scale-95"
               >
                 Optimize Another
               </button>
               <button
                 onClick={() => handleCopy(optimizationResult.generatedAnswer || optimizationResult.optimizedPrompt || '')}
-                className="flex-1 btn btn-primary"
+                className="flex-1 btn btn-primary min-h-[44px] [touch-action:manipulation] active:scale-95"
               >
                 Copy Result
               </button>

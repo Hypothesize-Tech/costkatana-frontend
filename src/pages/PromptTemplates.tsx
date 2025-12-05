@@ -289,7 +289,7 @@ const PromptTemplates: React.FC = () => {
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+    <div className="p-3 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Real-time extraction monitors for processing templates */}
       {Array.from(processingTemplates).map(templateId => (
         <ExtractionMonitor
@@ -300,44 +300,47 @@ const PromptTemplates: React.FC = () => {
       ))}
 
       {/* Header */}
-      <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">
+      <div className="p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex-1">
+            <h1 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold font-display gradient-text-primary">
               Prompt Templates
             </h1>
-            <p className="text-lg text-secondary-600 dark:text-secondary-300">
+            <p className="text-base sm:text-lg text-secondary-600 dark:text-secondary-300">
               Create, manage, and use reusable prompt templates
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
             <Link
               to="/templates/analytics"
-              className="flex gap-2 items-center px-6 py-3 font-semibold bg-gradient-to-br rounded-lg border transition-all border-success-500/30 from-success-500/10 to-success-600/10 text-success-600 dark:text-success-400 hover:from-success-500/20 hover:to-success-600/20 hover:shadow-lg"
+              className="flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold bg-gradient-to-br rounded-lg border transition-all border-success-500/30 from-success-500/10 to-success-600/10 text-success-600 dark:text-success-400 hover:from-success-500/20 hover:to-success-600/20 hover:shadow-lg"
             >
-              <FiBarChart2 className="w-5 h-5" />
-              Analytics
+              <FiBarChart2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Analytics</span>
+              <span className="sm:hidden">Stats</span>
             </Link>
             <Link
               to="/templates/use"
-              className="flex gap-2 items-center px-6 py-3 btn-secondary btn"
+              className="flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base btn-secondary btn"
             >
-              <FiPlay className="w-5 h-5" />
-              Use Template
+              <FiPlay className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Use Template</span>
+              <span className="sm:hidden">Use</span>
             </Link>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex gap-2 items-center px-6 py-3 btn btn-primary"
+              className="flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base btn btn-primary"
             >
-              <FiPlus className="w-5 h-5" />
-              New Template
+              <FiPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">New Template</span>
+              <span className="sm:hidden">New</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8 sm:grid-cols-2 lg:grid-cols-4">
         <div className="p-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel card-hover">
           <div className="flex items-center">
             <div className="flex justify-center items-center mr-4 w-12 h-12 bg-gradient-to-br rounded-xl from-primary-500/20 to-primary-600/20">
@@ -407,23 +410,23 @@ const PromptTemplates: React.FC = () => {
       </div>
 
       {/* Enhanced Filters */}
-      <div className="p-6 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary-600 dark:text-secondary-300" />
+      <div className="p-4 sm:p-6 mb-6 sm:mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+        <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center">
+          <div className="relative flex-1 w-full">
+            <FiSearch className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-secondary-600 dark:text-secondary-300 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type="text"
-              placeholder="Search templates by name, description, or tags..."
+              placeholder="Search templates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 text-lg input"
+              className="pl-10 sm:pl-12 text-sm sm:text-base md:text-lg input w-full"
             />
           </div>
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="text-lg select"
+            className="text-sm sm:text-base md:text-lg select w-full sm:w-auto"
           >
             {categories.map((category) => (
               <option key={category.value} value={category.value}>
@@ -434,13 +437,14 @@ const PromptTemplates: React.FC = () => {
 
           <button
             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            className={`btn flex gap-2 items-center px-6 py-3 rounded-xl font-semibold transition-all ${showFavoritesOnly
+            className={`btn flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-xl font-semibold transition-all w-full sm:w-auto ${showFavoritesOnly
               ? "bg-gradient-to-r border-2 text-accent-600 dark:text-accent-400 from-accent-500/20 to-warning-500/20 border-accent-200/50 dark:border-accent-600/50"
               : "border-2 text-secondary-600 dark:text-secondary-300 bg-gradient-professional dark:bg-gradient-secondary border-secondary-200/30 dark:border-secondary-600/30"
               }`}
           >
-            <FiStar className={`w-5 h-5 ${showFavoritesOnly ? "fill-current" : ""}`} />
-            Favorites Only
+            <FiStar className={`w-4 h-4 sm:w-5 sm:h-5 ${showFavoritesOnly ? "fill-current" : ""}`} />
+            <span className="hidden sm:inline">Favorites Only</span>
+            <span className="sm:hidden">Favorites</span>
           </button>
         </div>
       </div>
@@ -472,7 +476,7 @@ const PromptTemplates: React.FC = () => {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {sortedTemplates.map((template) => (
             <PromptTemplateCard
               key={template._id}

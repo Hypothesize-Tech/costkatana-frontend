@@ -98,20 +98,20 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
     <Modal isOpen={true} onClose={onClose} title="" size="6xl">
       <div className="flex flex-col h-full max-h-[90vh] glass rounded-xl border border-primary-200/30 shadow-2xl backdrop-blur-xl">
         {/* Header */}
-        <div className="flex justify-between items-start p-8 border-b border-primary-200/30 glass rounded-t-xl">
-          <div className="flex-1 min-w-0">
-            <div className="flex gap-4 items-center mb-4">
-              <div className="flex justify-center items-center w-16 h-16 bg-gradient-primary rounded-2xl shadow-lg">
-                <span className="text-white font-display font-bold text-2xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start p-4 sm:p-6 md:p-8 border-b border-primary-200/30 glass rounded-t-xl gap-4 sm:gap-0">
+          <div className="flex-1 min-w-0 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center mb-3 sm:mb-4">
+              <div className="flex justify-center items-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-primary rounded-xl sm:rounded-2xl shadow-lg flex-shrink-0">
+                <span className="text-white font-display font-bold text-xl sm:text-2xl">
                   {project.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div>
-                <h2 className="text-4xl font-display font-bold gradient-text-primary">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold gradient-text-primary break-words">
                   {project.name}
                 </h2>
                 <span
-                  className={`glass px-4 py-2 rounded-full font-display font-semibold border ${project.isActive
+                  className={`glass px-3 sm:px-4 py-1 sm:py-2 rounded-full font-display font-semibold border text-xs sm:text-sm mt-2 inline-block ${project.isActive
                     ? "border-success-200/30 bg-gradient-success/20 text-success-700 dark:text-success-300"
                     : "border-secondary-200/30 bg-gradient-secondary/20 text-secondary-700 dark:text-secondary-300"
                     }`}
@@ -122,25 +122,25 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
             </div>
 
             {project.description && (
-              <p className="mb-4 text-secondary-600 dark:text-secondary-300 text-lg font-body">
+              <p className="mb-3 sm:mb-4 text-secondary-600 dark:text-secondary-300 text-sm sm:text-base md:text-lg font-body">
                 {project.description}
               </p>
             )}
 
             {/* Project ID Section */}
-            <div className="mb-4 glass p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-              <div className="flex items-center justify-between">
-                <div>
+            <div className="mb-3 sm:mb-4 glass p-3 sm:p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                <div className="flex-1 min-w-0">
                   <label className="text-xs font-display font-semibold text-secondary-600 dark:text-secondary-300 uppercase tracking-wide">
                     Project ID
                   </label>
-                  <code className="block text-sm font-mono text-secondary-900 dark:text-white mt-1">
+                  <code className="block text-xs sm:text-sm font-mono text-secondary-900 dark:text-white mt-1 break-all">
                     {project._id}
                   </code>
                 </div>
                 <button
                   onClick={handleCopyProjectId}
-                  className="px-3 py-2 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center gap-2 font-display font-semibold text-sm"
+                  className="w-full sm:w-auto px-3 py-2 glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-2 font-display font-semibold text-sm"
                 >
                   {copied ? (
                     <>
@@ -157,26 +157,26 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
               </div>
             </div>
 
-            <div className="flex gap-6 items-center text-sm text-secondary-600 dark:text-secondary-300 font-body">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-start sm:items-center text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 font-body">
               <div className="flex gap-2 items-center">
-                <CalendarIcon className="w-4 h-4" />
+                <CalendarIcon className="w-4 h-4 flex-shrink-0" />
                 <span>Created {formatDate(project.createdAt)}</span>
               </div>
               <div className="flex gap-2 items-center">
-                <ClockIcon className="w-4 h-4" />
+                <ClockIcon className="w-4 h-4 flex-shrink-0" />
                 <span>Updated {formatDate(project.updatedAt)}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex gap-3 items-center ml-4">
+          <div className="flex gap-2 sm:gap-3 items-center sm:ml-4 w-full sm:w-auto justify-end sm:justify-start">
             <button
               onClick={() => onEdit(project)}
-              className="px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 font-display font-semibold text-sm"
+              className="flex-1 sm:flex-none px-4 py-2.5 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 font-display font-semibold text-sm"
               title="Edit project"
             >
               <PencilIcon className="w-4 h-4" />
-              Edit
+              <span className="hidden sm:inline">Edit</span>
             </button>
             <button
               onClick={onClose}
@@ -188,74 +188,80 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-primary-200/30 bg-gradient-primary/5">
+        <div className="flex overflow-x-auto border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-8 py-4 font-display font-medium transition-all duration-200 ${activeTab === tab.id
-                ? "text-primary-700 dark:text-primary-300 border-b-2 border-primary-500 bg-gradient-primary/10"
-                : "text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gradient-primary/5"
+              className={`relative flex items-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 font-display font-semibold transition-all duration-300 whitespace-nowrap flex-shrink-0 ${activeTab === tab.id
+                ? "text-primary-600 dark:text-primary-400"
+                : "text-secondary-500 dark:text-secondary-400 hover:text-primary-500 dark:hover:text-primary-400"
                 }`}
             >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
+              <tab.icon className={`w-4 h-4 flex-shrink-0 transition-colors duration-300 ${activeTab === tab.id
+                ? "text-primary-600 dark:text-primary-400"
+                : "text-secondary-500 dark:text-secondary-400"
+                }`} />
+              <span className="text-sm sm:text-base">{tab.label}</span>
+              {activeTab === tab.id && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-primary rounded-t-full"></span>
+              )}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 p-8 bg-gradient-primary/5">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-6 md:p-8 bg-gradient-primary/5">
           {activeTab === "overview" && (
             <div className="space-y-8">
               {/* Key Metrics */}
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-                  <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                      <CurrencyDollarIcon className="w-6 h-6 text-white" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
+                  <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <CurrencyDollarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <span className="font-display font-semibold text-secondary-900 dark:text-white">Total Budget</span>
+                    <span className="text-sm sm:text-base font-display font-semibold text-secondary-900 dark:text-white">Total Budget</span>
                   </div>
-                  <p className="text-3xl font-display font-bold gradient-text-primary mb-2">
+                  <p className="text-2xl sm:text-3xl font-display font-bold gradient-text-primary mb-2">
                     {formatCurrency(project.budget?.amount || 0)}
                   </p>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                  <p className="text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">
                     {project.budget?.period || "monthly"}
                   </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-                  <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg">
-                      <ArrowTrendingUpIcon className="w-6 h-6 text-white" />
+                <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-success-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
+                  <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-success flex items-center justify-center shadow-lg flex-shrink-0">
+                      <ArrowTrendingUpIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <span className="font-display font-semibold text-secondary-900 dark:text-white">Spent</span>
+                    <span className="text-sm sm:text-base font-display font-semibold text-secondary-900 dark:text-white">Spent</span>
                   </div>
-                  <p className="text-3xl font-display font-bold gradient-text-success mb-2">
+                  <p className="text-2xl sm:text-3xl font-display font-bold gradient-text-success mb-2">
                     {formatCurrency(project.spending?.current || 0)}
                   </p>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                  <p className="text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">
                     {project.budget?.amount > 0
                       ? `${Math.round(percentage)}% used`
                       : "0% used"}
                   </p>
                 </div>
 
-                <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300">
-                  <div className="flex gap-3 items-center mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg">
-                      <ArrowTrendingDownIcon className="w-6 h-6 text-white" />
+                <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:scale-105 transition-all duration-300 sm:col-span-2 lg:col-span-1">
+                  <div className="flex gap-2 sm:gap-3 items-center mb-3 sm:mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <ArrowTrendingDownIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <span className="font-display font-semibold text-secondary-900 dark:text-white">Remaining</span>
+                    <span className="text-sm sm:text-base font-display font-semibold text-secondary-900 dark:text-white">Remaining</span>
                   </div>
-                  <p className="text-3xl font-display font-bold gradient-text-secondary mb-2">
+                  <p className="text-2xl sm:text-3xl font-display font-bold gradient-text-secondary mb-2">
                     {formatCurrency(
                       (project.budget?.amount || 0) -
                       (project.spending?.current || 0),
                     )}
                   </p>
-                  <p className="font-body text-secondary-600 dark:text-secondary-300">
+                  <p className="text-xs sm:text-sm font-body text-secondary-600 dark:text-secondary-300">
                     Available budget
                   </p>
                 </div>
@@ -298,18 +304,18 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
           )}
 
           {activeTab === "budget" && (
-            <div className="p-6">
-              <h3 className="mb-6 text-lg font-display font-bold gradient-text-primary">
+            <div className="p-0 sm:p-4 md:p-6">
+              <h3 className="mb-4 sm:mb-6 text-base sm:text-lg font-display font-bold gradient-text-primary">
                 Budget Management
               </h3>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Budget Overview */}
-                <div className="glass p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <h4 className="mb-4 font-display font-semibold text-secondary-900 dark:text-white">
+                <div className="glass p-3 sm:p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                  <h4 className="mb-3 sm:mb-4 text-sm sm:text-base font-display font-semibold text-secondary-900 dark:text-white">
                     Budget Overview
                   </h4>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     <div>
                       <p className="text-sm font-body text-secondary-600 dark:text-secondary-300">
                         Total Budget
@@ -406,12 +412,12 @@ export const ViewProjectModal: React.FC<ViewProjectModalProps> = ({
           )}
 
           {activeTab === "settings" && (
-            <div className="p-6">
-              <h3 className="mb-6 text-lg font-display font-bold gradient-text-primary">
+            <div className="p-0 sm:p-4 md:p-6">
+              <h3 className="mb-4 sm:mb-6 text-base sm:text-lg font-display font-bold gradient-text-primary">
                 Project Settings
               </h3>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Cost Optimization */}
                 <div className="glass p-4 rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
                   <h4 className="mb-4 font-display font-semibold text-secondary-900 dark:text-white">

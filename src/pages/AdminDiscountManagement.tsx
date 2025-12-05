@@ -265,73 +265,74 @@ export const AdminDiscountManagement: React.FC = () => {
     }
 
     return (
-        <div className="p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-            <div className="mx-auto space-y-6 max-w-7xl">
+        <div className="p-3 sm:p-4 md:p-6 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+            <div className="mx-auto space-y-4 sm:space-y-5 md:space-y-6 max-w-7xl">
                 {/* Header */}
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-4 items-center">
-                        <div className="p-3 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary">
-                            <TagIcon className="w-6 h-6 text-white" />
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+                    <div className="flex gap-2 sm:gap-3 md:gap-4 items-center">
+                        <div className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary">
+                            <TagIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold font-display gradient-text-primary">
+                            <h1 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">
                                 Discount Management
                             </h1>
-                            <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                 Create and manage discount codes for subscriptions
                             </p>
                         </div>
                     </div>
-                    <div className="flex gap-3 items-center">
+                    <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
                         <button
                             onClick={() => setShowFilters(!showFilters)}
-                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400"
+                            className="flex gap-1.5 sm:gap-2 items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400"
                         >
-                            <FunnelIcon className="w-4 h-4" />
-                            Filters
+                            <FunnelIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden xs:inline">Filters</span>
                         </button>
                         <button
                             onClick={fetchDiscounts}
                             disabled={refreshing}
-                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400 disabled:opacity-50"
+                            className="flex gap-1.5 sm:gap-2 items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg border shadow-sm backdrop-blur-sm transition-all duration-300 font-display glass bg-white/80 dark:bg-gray-800/80 border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 hover:shadow-md text-primary-600 dark:text-primary-400 disabled:opacity-50"
                         >
-                            <ArrowPathIcon className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                            Refresh
+                            <ArrowPathIcon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                            <span className="hidden xs:inline">Refresh</span>
                         </button>
                         <button
                             onClick={() => {
                                 resetForm();
                                 setIsCreateModalOpen(true);
                             }}
-                            className="flex gap-2 items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-br rounded-lg shadow-lg transition-all duration-300 font-display from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl glow-primary hover:scale-105"
+                            className="flex gap-1.5 sm:gap-2 items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-br rounded-lg shadow-lg transition-all duration-300 font-display from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl glow-primary hover:scale-105"
                         >
-                            <PlusIcon className="w-4 h-4" />
-                            Create Discount
+                            <PlusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden xs:inline">Create Discount</span>
+                            <span className="xs:hidden">Create</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Filters */}
                 {showFilters && (
-                    <div className="p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Search
                                 </label>
                                 <div className="relative">
-                                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
+                                    <MagnifyingGlassIcon className="absolute left-2.5 sm:left-3 top-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 transform -translate-y-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
                                     <input
                                         type="text"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         placeholder="Search by code..."
-                                        className="pl-10 input"
+                                        className="pl-9 sm:pl-10 input text-xs sm:text-sm py-2 sm:py-2.5"
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Status
                                 </label>
                                 <select
@@ -343,7 +344,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                             page: 1,
                                         }))
                                     }
-                                    className="input"
+                                    className="input text-xs sm:text-sm py-2 sm:py-2.5"
                                 >
                                     <option value="">All</option>
                                     <option value="true">Active</option>
@@ -351,7 +352,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Type
                                 </label>
                                 <select
@@ -365,7 +366,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                             page: 1,
                                         }))
                                     }
-                                    className="input"
+                                    className="input text-xs sm:text-sm py-2 sm:py-2.5"
                                 >
                                     <option value="">All</option>
                                     <option value="percentage">Percentage</option>
@@ -373,7 +374,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                     Plan
                                 </label>
                                 <select
@@ -385,7 +386,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                             page: 1,
                                         }))
                                     }
-                                    className="input"
+                                    className="input text-xs sm:text-sm py-2 sm:py-2.5"
                                 >
                                     <option value="">All Plans</option>
                                     <option value="plus">Plus</option>
@@ -399,17 +400,17 @@ export const AdminDiscountManagement: React.FC = () => {
 
                 {/* Bulk Actions */}
                 {selectedDiscounts.size > 0 && (
-                    <div className="flex justify-between items-center p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                        <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                        <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             {selectedDiscounts.size} discount(s) selected
                         </span>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             <button
                                 onClick={() => {
                                     setBulkAction('activate');
                                     setIsBulkActionModalOpen(true);
                                 }}
-                                className="px-3 py-1.5 text-sm font-medium text-success-600 bg-success-50 dark:bg-success-900/20 rounded-lg hover:bg-success-100 dark:hover:bg-success-900/30 transition-colors"
+                                className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-success-600 bg-success-50 dark:bg-success-900/20 rounded-lg hover:bg-success-100 dark:hover:bg-success-900/30 transition-colors"
                             >
                                 Activate
                             </button>
@@ -418,7 +419,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                     setBulkAction('deactivate');
                                     setIsBulkActionModalOpen(true);
                                 }}
-                                className="px-3 py-1.5 text-sm font-medium text-warning-600 bg-warning-50 dark:bg-warning-900/20 rounded-lg hover:bg-warning-100 dark:hover:bg-warning-900/30 transition-colors"
+                                className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-warning-600 bg-warning-50 dark:bg-warning-900/20 rounded-lg hover:bg-warning-100 dark:hover:bg-warning-900/30 transition-colors"
                             >
                                 Deactivate
                             </button>
@@ -427,7 +428,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                     setBulkAction('delete');
                                     setIsBulkActionModalOpen(true);
                                 }}
-                                className="px-3 py-1.5 text-sm font-medium text-danger-600 bg-danger-50 dark:bg-danger-900/20 rounded-lg hover:bg-danger-100 dark:hover:bg-danger-900/30 transition-colors"
+                                className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-danger-600 bg-danger-50 dark:bg-danger-900/20 rounded-lg hover:bg-danger-100 dark:hover:bg-danger-900/30 transition-colors"
                             >
                                 Delete
                             </button>
@@ -437,37 +438,37 @@ export const AdminDiscountManagement: React.FC = () => {
 
                 {/* Discounts Table */}
                 <div className="overflow-hidden bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
+                    <div className="overflow-x-auto -mx-3 sm:mx-0">
+                        <table className="w-full min-w-[800px]">
                             <thead className="bg-gradient-to-r border-b from-primary-50/50 to-success-50/50 dark:from-primary-950/30 dark:to-success-950/30 border-primary-200/30">
                                 <tr>
-                                    <th className="px-4 py-3 text-left">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left">
                                         <input
                                             type="checkbox"
                                             checked={selectedDiscounts.size === discounts.length && discounts.length > 0}
                                             onChange={toggleSelectAll}
-                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4"
                                         />
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Code
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Type
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Amount
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Status
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Valid Until
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Uses
                                     </th>
-                                    <th className="px-4 py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
+                                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs font-semibold tracking-wider text-left uppercase text-light-text-primary dark:text-dark-text-primary">
                                         Actions
                                     </th>
                                 </tr>
@@ -475,7 +476,7 @@ export const AdminDiscountManagement: React.FC = () => {
                             <tbody className="divide-y divide-primary-200/20 dark:divide-primary-800/20">
                                 {discounts.length === 0 ? (
                                     <tr>
-                                        <td colSpan={8} className="px-4 py-8 text-center text-light-text-secondary dark:text-dark-text-secondary">
+                                        <td colSpan={8} className="px-3 sm:px-4 py-6 sm:py-8 text-center text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                             No discounts found
                                         </td>
                                     </tr>
@@ -485,59 +486,59 @@ export const AdminDiscountManagement: React.FC = () => {
                                             key={discount._id}
                                             className="transition-colors hover:bg-primary-50/30 dark:hover:bg-primary-900/10"
                                         >
-                                            <td className="px-4 py-3">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedDiscounts.has(discount._id)}
                                                     onChange={() => toggleSelect(discount._id)}
-                                                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 w-4 h-4"
                                                 />
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex gap-2 items-center">
-                                                    <span className="font-mono font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                                <div className="flex gap-1.5 sm:gap-2 items-center">
+                                                    <span className="font-mono font-semibold text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary truncate max-w-[100px] sm:max-w-none">
                                                         {discount.code}
                                                     </span>
                                                     <button
                                                         onClick={() => handleCopyCode(discount.code)}
-                                                        className="p-1 rounded transition-colors hover:bg-primary-100 dark:hover:bg-primary-900/30"
+                                                        className="p-1 rounded transition-colors hover:bg-primary-100 dark:hover:bg-primary-900/30 flex-shrink-0"
                                                         title="Copy code"
                                                     >
-                                                        <ClipboardDocumentIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                                        <ClipboardDocumentIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 dark:text-primary-400" />
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                                                 <span className="px-2 py-1 text-xs font-medium capitalize rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
                                                     {discount.type}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 text-light-text-primary dark:text-dark-text-primary">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                                                 {discount.type === 'percentage' ? (
                                                     <span className="font-semibold">{discount.amount}%</span>
                                                 ) : (
                                                     <span className="font-semibold">${discount.amount.toFixed(2)}</span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                                                 {discount.isActive ? (
                                                     <span className="inline-flex gap-1 items-center px-2 py-1 text-xs font-medium rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300">
                                                         <CheckCircleIcon className="w-3 h-3" />
-                                                        Active
+                                                        <span className="hidden xs:inline">Active</span>
                                                     </span>
                                                 ) : (
                                                     <span className="inline-flex gap-1 items-center px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-300">
                                                         <XCircleIcon className="w-3 h-3" />
-                                                        Inactive
+                                                        <span className="hidden xs:inline">Inactive</span>
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                                 {new Date(discount.validUntil).toLocaleDateString()}
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex gap-2 items-center">
-                                                    <span className="text-sm text-light-text-primary dark:text-dark-text-primary">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                                <div className="flex gap-1.5 sm:gap-2 items-center">
+                                                    <span className="text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                                                         {discount.usageStats?.totalUses || discount.currentUses}
                                                     </span>
                                                     {discount.maxUses !== -1 && (
@@ -547,31 +548,31 @@ export const AdminDiscountManagement: React.FC = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex gap-2 items-center">
+                                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                                <div className="flex gap-1 sm:gap-2 items-center">
                                                     <button
                                                         onClick={() => handleViewUsage(discount._id)}
-                                                        className="p-1.5 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
+                                                        className="p-1 sm:p-1.5 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
                                                         title="View usage"
                                                     >
-                                                        <ChartBarIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                                        <ChartBarIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 dark:text-primary-400" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleEdit(discount)}
-                                                        className="p-1.5 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
+                                                        className="p-1 sm:p-1.5 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded transition-colors"
                                                         title="Edit"
                                                     >
-                                                        <PencilIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                                        <PencilIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 dark:text-primary-400" />
                                                     </button>
                                                     <button
                                                         onClick={() => {
                                                             setEditingDiscount(discount);
                                                             setIsDeleteModalOpen(true);
                                                         }}
-                                                        className="p-1.5 hover:bg-danger-100 dark:hover:bg-danger-900/30 rounded transition-colors"
+                                                        className="p-1 sm:p-1.5 hover:bg-danger-100 dark:hover:bg-danger-900/30 rounded transition-colors"
                                                         title="Delete"
                                                     >
-                                                        <TrashIcon className="w-4 h-4 text-danger-600 dark:text-danger-400" />
+                                                        <TrashIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-danger-600 dark:text-danger-400" />
                                                     </button>
                                                 </div>
                                             </td>
@@ -584,24 +585,24 @@ export const AdminDiscountManagement: React.FC = () => {
 
                     {/* Pagination */}
                     {pagination.pages > 1 && (
-                        <div className="flex justify-between items-center px-4 py-3 border-t border-primary-200/30 dark:border-primary-800/30">
-                            <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-primary-200/30 dark:border-primary-800/30">
+                            <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary text-center sm:text-left">
                                 Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
                                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
                                 {pagination.total} discounts
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 justify-center sm:justify-end">
                                 <button
                                     onClick={() => setFilters((prev) => ({ ...prev, page: prev.page! - 1 }))}
                                     disabled={pagination.page === 1}
-                                    className="px-3 py-1.5 text-sm font-medium glass rounded-lg border border-primary-200/30 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                                    className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium glass rounded-lg border border-primary-200/30 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
                                 >
                                     Previous
                                 </button>
                                 <button
                                     onClick={() => setFilters((prev) => ({ ...prev, page: prev.page! + 1 }))}
                                     disabled={pagination.page === pagination.pages}
-                                    className="px-3 py-1.5 text-sm font-medium glass rounded-lg border border-primary-200/30 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
+                                    className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium glass rounded-lg border border-primary-200/30 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-colors"
                                 >
                                     Next
                                 </button>
@@ -644,34 +645,34 @@ export const AdminDiscountManagement: React.FC = () => {
                     </div>
                 }
             >
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-5 md:space-y-6">
                     <div>
-                        <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                        <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                             Discount Code *
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
                                 value={formData.code}
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
                                 }
-                                className="flex-1 font-mono input"
+                                className="flex-1 font-mono input text-xs sm:text-sm py-2 sm:py-2.5"
                                 placeholder="DISCOUNT123"
                                 required
                             />
                             <button
                                 onClick={generateCode}
-                                className="px-3 py-2 text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20"
+                                className="px-3 py-2 text-xs sm:text-sm font-medium rounded-lg border transition-colors glass border-primary-200/30 hover:bg-primary-500/10 dark:hover:bg-primary-900/20 whitespace-nowrap"
                             >
                                 Generate
                             </button>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                            <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Type *
                             </label>
                             <select
@@ -682,7 +683,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                         type: e.target.value as 'percentage' | 'fixed',
                                     }))
                                 }
-                                className="input"
+                                className="input text-xs sm:text-sm py-2 sm:py-2.5 w-full"
                                 required
                             >
                                 <option value="percentage">Percentage</option>
@@ -690,7 +691,7 @@ export const AdminDiscountManagement: React.FC = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                            <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Amount *
                             </label>
                             <input
@@ -699,7 +700,7 @@ export const AdminDiscountManagement: React.FC = () => {
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))
                                 }
-                                className="input"
+                                className="input text-xs sm:text-sm py-2 sm:py-2.5 w-full"
                                 min="0"
                                 max={formData.type === 'percentage' ? 100 : undefined}
                                 step={formData.type === 'percentage' ? 1 : 0.01}
@@ -713,34 +714,34 @@ export const AdminDiscountManagement: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                            <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Valid From *
                             </label>
                             <input
                                 type="date"
                                 value={formData.validFrom}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, validFrom: e.target.value }))}
-                                className="input"
+                                className="input text-xs sm:text-sm py-2 sm:py-2.5 w-full"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                            <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Valid Until *
                             </label>
                             <input
                                 type="date"
                                 value={formData.validUntil}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, validUntil: e.target.value }))}
-                                className="input"
+                                className="input text-xs sm:text-sm py-2 sm:py-2.5 w-full"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                                 Max Uses
@@ -860,37 +861,37 @@ export const AdminDiscountManagement: React.FC = () => {
                 size="3xl"
             >
                 {usageStats ? (
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            <div className="p-4 rounded-lg border glass border-primary-200/30">
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                    <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                            <div className="p-3 sm:p-4 rounded-lg border glass border-primary-200/30">
+                                <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Uses
                                 </div>
-                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <div className="mt-1 text-xl sm:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {usageStats.totalUses}
                                 </div>
                             </div>
-                            <div className="p-4 rounded-lg border glass border-primary-200/30">
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="p-3 sm:p-4 rounded-lg border glass border-primary-200/30">
+                                <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Unique Users
                                 </div>
-                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <div className="mt-1 text-xl sm:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     {usageStats.uniqueUsers}
                                 </div>
                             </div>
-                            <div className="p-4 rounded-lg border glass border-primary-200/30">
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="p-3 sm:p-4 rounded-lg border glass border-primary-200/30">
+                                <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Total Discount
                                 </div>
-                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <div className="mt-1 text-xl sm:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     ${usageStats.totalDiscountAmount.toFixed(2)}
                                 </div>
                             </div>
-                            <div className="p-4 rounded-lg border glass border-primary-200/30">
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <div className="p-3 sm:p-4 rounded-lg border glass border-primary-200/30">
+                                <div className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                     Average Discount
                                 </div>
-                                <div className="mt-1 text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                                <div className="mt-1 text-xl sm:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
                                     ${usageStats.averageDiscountAmount.toFixed(2)}
                                 </div>
                             </div>
@@ -898,19 +899,19 @@ export const AdminDiscountManagement: React.FC = () => {
 
                         {Object.keys(usageStats.usageByPlan).length > 0 && (
                             <div>
-                                <h3 className="mb-3 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                <h3 className="mb-2 sm:mb-3 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                                     Usage by Plan
                                 </h3>
                                 <div className="space-y-2">
                                     {Object.entries(usageStats.usageByPlan).map(([plan, count]) => (
                                         <div
                                             key={plan}
-                                            className="flex justify-between items-center p-3 rounded-lg border glass border-primary-200/30"
+                                            className="flex justify-between items-center p-2.5 sm:p-3 rounded-lg border glass border-primary-200/30"
                                         >
-                                            <span className="capitalize text-light-text-primary dark:text-dark-text-primary">
+                                            <span className="capitalize text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                                                 {plan}
                                             </span>
-                                            <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                            <span className="font-semibold text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary">
                                                 {count}
                                             </span>
                                         </div>
@@ -921,25 +922,25 @@ export const AdminDiscountManagement: React.FC = () => {
 
                         {usageStats.recentUsers.length > 0 && (
                             <div>
-                                <h3 className="mb-3 text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                <h3 className="mb-2 sm:mb-3 text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                                     Recent Users
                                 </h3>
-                                <div className="overflow-y-auto space-y-2 max-h-64">
+                                <div className="overflow-y-auto space-y-2 max-h-48 sm:max-h-64">
                                     {usageStats.recentUsers.map((user, index) => (
                                         <div
                                             key={index}
-                                            className="flex justify-between items-center p-3 rounded-lg border glass border-primary-200/30"
+                                            className="flex justify-between items-center p-2.5 sm:p-3 rounded-lg border glass border-primary-200/30"
                                         >
-                                            <div>
-                                                <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                                            <div className="flex-1 min-w-0 pr-2">
+                                                <div className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
                                                     {user.userEmail}
                                                 </div>
                                                 <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                                                     {new Date(user.appliedAt).toLocaleString()}
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                            <div className="text-right flex-shrink-0">
+                                                <div className="text-xs sm:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                     ${user.discountAmount.toFixed(2)}
                                                 </div>
                                                 <div className="text-xs capitalize text-light-text-secondary dark:text-dark-text-secondary">

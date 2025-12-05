@@ -118,7 +118,7 @@ export const SubscriptionSuccessModal: React.FC<SubscriptionSuccessModalProps> =
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -135,58 +135,58 @@ export const SubscriptionSuccessModal: React.FC<SubscriptionSuccessModalProps> =
             )}
 
             {/* Modal */}
-            <div className="relative z-10 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8 max-w-md w-full transform transition-all">
+            <div className="relative z-10 glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-4 sm:p-6 md:p-8 max-w-md w-full transform transition-all max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={onClose}
-                    className="btn absolute top-4 right-4 p-2 rounded-lg hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors"
+                    className="btn absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors z-10"
                 >
-                    <XMarkIcon className="w-6 h-6 text-light-text-secondary dark:text-dark-text-secondary" />
+                    <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-light-text-secondary dark:text-dark-text-secondary" />
                 </button>
 
                 <div className="flex flex-col items-center text-center">
                     {/* Success Icon with Animation */}
-                    <div className="relative mb-6">
-                        <div className="w-16 h-16 rounded-full bg-gradient-success flex items-center justify-center shadow-lg shadow-success-500/30 animate-bounce">
-                            <CheckCircleIcon className="w-10 h-10 text-white" />
+                    <div className="relative mb-4 sm:mb-5 md:mb-6">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-success flex items-center justify-center shadow-lg shadow-success-500/30 animate-bounce">
+                            <CheckCircleIcon className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 text-white" />
                         </div>
-                        <div className="absolute -top-2 -right-2 animate-pulse">
-                            <SparklesIcon className="w-8 h-8 text-yellow-400" />
+                        <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 animate-pulse">
+                            <SparklesIcon className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
                         </div>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-2xl font-display font-bold gradient-text-primary mb-2">
+                    <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary mb-2">
                         Payment Successful!
                     </h2>
 
                     {/* Message */}
-                    <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-6">
+                    <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-300 mb-4 sm:mb-5 md:mb-6">
                         Your subscription has been activated successfully. You can now enjoy all the features of your plan.
                     </p>
 
                     {/* Subscription Details */}
-                    <div className="w-full glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 p-4 mb-6 space-y-2 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                    <div className="w-full glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 p-3 sm:p-4 mb-4 sm:mb-5 md:mb-6 space-y-2 bg-gradient-light-panel dark:bg-gradient-dark-panel">
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Plan:
                             </span>
-                            <span className="font-semibold text-light-text dark:text-dark-text capitalize">
+                            <span className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text capitalize">
                                 {plan}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Billing:
                             </span>
-                            <span className="font-semibold text-light-text dark:text-dark-text capitalize">
+                            <span className="text-xs sm:text-sm font-semibold text-light-text dark:text-dark-text capitalize">
                                 {billingInterval}
                             </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t border-primary-200/20 dark:border-primary-800/20">
-                            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <span className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
                                 Amount:
                             </span>
-                            <span className="text-lg font-bold text-primary-500">
+                            <span className="text-base sm:text-lg font-bold text-primary-500">
                                 {currency === 'INR' ? '₹' : '$'}
                                 {amount.toFixed(2)}
                             </span>
@@ -196,12 +196,12 @@ export const SubscriptionSuccessModal: React.FC<SubscriptionSuccessModalProps> =
                     {/* Action Button */}
                     <button
                         onClick={onClose}
-                        className="btn btn-primary w-full px-6 py-3 font-semibold rounded-lg hover:shadow-lg transition-all duration-300 glow-primary"
+                        className="btn btn-primary w-full px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-lg hover:shadow-lg transition-all duration-300 glow-primary"
                     >
                         Continue
                     </button>
 
-                    <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-4">
+                    <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-3 sm:mt-4">
                         You can now enjoy all the features of your plan!
                     </p>
                 </div>

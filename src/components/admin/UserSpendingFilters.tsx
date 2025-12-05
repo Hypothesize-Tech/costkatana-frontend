@@ -134,14 +134,14 @@ export const UserSpendingFilters: React.FC<UserSpendingFiltersProps> = ({
     ).length;
 
     return (
-        <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-5">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-sm">
-                        <FunnelIcon className="w-5 h-5 text-white" />
+        <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-3 sm:p-4 md:p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 sm:p-2 rounded-lg glow-primary shadow-sm">
+                        <FunnelIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-display font-bold gradient-text-primary">
+                        <h3 className="text-xs sm:text-sm font-display font-bold gradient-text-primary">
                             Filters
                         </h3>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -154,15 +154,15 @@ export const UserSpendingFilters: React.FC<UserSpendingFiltersProps> = ({
                 {hasActiveFilters && (
                     <button
                         onClick={clearFilters}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass rounded-lg hover:bg-primary-500/10 transition-all duration-300 border border-primary-200/30"
+                        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass rounded-lg hover:bg-primary-500/10 transition-all duration-300 border border-primary-200/30 w-fit"
                     >
-                        <XMarkIcon className="w-4 h-4" />
+                        <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         Clear All
                     </button>
                 )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {/* Date Range Picker */}
                 <div className="flex flex-col gap-2">
                     <label className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">

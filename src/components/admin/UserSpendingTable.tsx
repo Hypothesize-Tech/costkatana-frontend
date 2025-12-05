@@ -120,13 +120,13 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
     return (
         <div className="glass backdrop-blur-xl rounded-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 overflow-hidden">
             {/* Table Header */}
-            <div className="flex items-center justify-between p-5 border-b border-primary-200/30">
-                <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-lg glow-primary shadow-sm">
-                        <CurrencyDollarIcon className="w-5 h-5 text-white" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-3 sm:p-4 md:p-5 border-b border-primary-200/30">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 sm:p-2 rounded-lg glow-primary shadow-sm">
+                        <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-display font-bold gradient-text-primary">
+                        <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
                             User Spending
                         </h3>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
@@ -137,29 +137,29 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                 {onExport && (
                     <button
                         onClick={onExport}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-primary-600 dark:text-primary-400"
+                        className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md text-primary-600 dark:text-primary-400 w-full sm:w-auto justify-center"
                     >
-                        <ArrowDownTrayIcon className="w-4 h-4" />
+                        <ArrowDownTrayIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         Export
                     </button>
                 )}
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto">
-                <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <table className="w-full min-w-[700px]">
                     <thead className="bg-primary-50/30 dark:bg-primary-900/10">
                         <tr>
-                            <th className="px-5 py-3 text-left">
+                            <th className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left">
                                 <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                     User
                                 </span>
                             </th>
                             <th
-                                className="px-5 py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
+                                className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
                                 onClick={() => handleSort('totalCost')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 sm:gap-2">
                                     <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                         Total Cost
                                     </span>
@@ -167,10 +167,10 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                                 </div>
                             </th>
                             <th
-                                className="px-5 py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
+                                className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
                                 onClick={() => handleSort('totalTokens')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 sm:gap-2">
                                     <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                         Tokens
                                     </span>
@@ -178,27 +178,27 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                                 </div>
                             </th>
                             <th
-                                className="px-5 py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
+                                className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left cursor-pointer hover:bg-primary-100/30 dark:hover:bg-primary-800/20 transition-colors"
                                 onClick={() => handleSort('totalRequests')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 sm:gap-2">
                                     <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                         Requests
                                     </span>
                                     <SortIcon field="totalRequests" />
                                 </div>
                             </th>
-                            <th className="px-5 py-3 text-left">
+                            <th className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left">
                                 <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                     Avg Cost/Req
                                 </span>
                             </th>
-                            <th className="px-5 py-3 text-left">
+                            <th className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left">
                                 <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
                                     Last Activity
                                 </span>
                             </th>
-                            <th className="px-5 py-3 text-left w-12"></th>
+                            <th className="px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 text-left w-10 sm:w-12"></th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-primary-200/30">
@@ -213,42 +213,42 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                                             setIsModalOpen(true);
                                         }}
                                     >
-                                        <td className="px-5 py-4">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                                <span className="text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">
                                                     {user.userName || 'Unknown User'}
                                                 </span>
-                                                <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                                <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary truncate">
                                                     {user.userEmail}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-5 py-4">
-                                            <span className="text-sm font-display font-semibold gradient-text-primary">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
+                                            <span className="text-xs sm:text-sm font-display font-semibold gradient-text-primary">
                                                 {formatCurrency(user.totalCost)}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4">
-                                            <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 {formatNumber(user.totalTokens)}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4">
-                                            <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 {formatNumber(user.totalRequests)}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4">
-                                            <span className="text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">
                                                 {formatCurrency(user.averageCostPerRequest)}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
                                             <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                                                 {formatDate(user.lastActivity, 'MMM d, yyyy')}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4">
+                                        <td className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -257,17 +257,17 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                                                 className="p-1 hover:bg-primary-100/30 dark:hover:bg-primary-800/20 rounded-lg transition-colors"
                                             >
                                                 {isExpanded ? (
-                                                    <ChevronDownIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                                    <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                                                 ) : (
-                                                    <ChevronRightIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                                    <ChevronRightIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                                                 )}
                                             </button>
                                         </td>
                                     </tr>
                                     {isExpanded && (
                                         <tr className="bg-primary-50/10 dark:bg-primary-900/5">
-                                            <td colSpan={7} className="px-5 py-4">
-                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                            <td colSpan={7} className="px-3 sm:px-4 md:px-5 py-3 sm:py-4">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
                                                     {/* Services Breakdown */}
                                                     <div>
                                                         <h4 className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2 uppercase tracking-wider">
@@ -350,7 +350,7 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between px-5 py-4 border-t border-primary-200/30">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 px-3 sm:px-4 md:px-5 py-3 sm:py-4 border-t border-primary-200/30">
                     <div className="flex items-center gap-2">
                         <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                             Show
@@ -376,7 +376,7 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                         <button
                             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1.5 text-xs font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary"
+                            className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary"
                         >
                             Previous
                         </button>
@@ -386,7 +386,7 @@ export const UserSpendingTable: React.FC<UserSpendingTableProps> = ({
                         <button
                             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1.5 text-xs font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary"
+                            className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-display font-semibold glass bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/30 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-500/10 dark:hover:bg-primary-900/20 transition-all duration-300 text-light-text-primary dark:text-dark-text-primary"
                         >
                             Next
                         </button>

@@ -114,20 +114,20 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-display font-bold gradient-text-primary">
+          <h3 className="text-base sm:text-lg font-display font-bold gradient-text-primary">
             Orchestration Overhead
           </h3>
-          <p className="text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-xs sm:text-sm font-body text-light-text-tertiary dark:text-dark-text-tertiary">
             Hidden costs from automation platforms
           </p>
         </div>
         <button
           onClick={fetchOverhead}
-          className="px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center gap-2"
+          className="px-3 sm:px-4 py-2 rounded-xl bg-white dark:bg-dark-card border border-primary-200/30 dark:border-primary-500/20 text-xs sm:text-sm font-medium hover:bg-primary-50/30 dark:hover:bg-primary-900/10 transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
         >
           <ArrowPathIcon className="w-4 h-4" />
           Refresh
@@ -135,15 +135,15 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Total Cost
             </span>
-            <CurrencyDollarIcon className="w-5 h-5 text-[#06ec9e] dark:text-emerald-400" />
+            <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#06ec9e] dark:text-emerald-400" />
           </div>
-          <div className="text-2xl font-display font-bold gradient-text-primary">
+          <div className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
             {formatCurrency(analytics.totalCost)}
           </div>
           <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
@@ -151,14 +151,14 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               AI Cost
             </span>
-            <BoltIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <BoltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
           </div>
-          <div className="text-2xl font-display font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-xl sm:text-2xl font-display font-bold text-blue-600 dark:text-blue-400">
             {formatCurrency(analytics.totalAICost)}
           </div>
           <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
@@ -168,14 +168,14 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-orange-50/50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/20">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Orchestration Cost
             </span>
-            <ChartBarIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
           </div>
-          <div className="text-2xl font-display font-bold text-orange-600 dark:text-orange-400">
+          <div className="text-xl sm:text-2xl font-display font-bold text-orange-600 dark:text-orange-400">
             {formatCurrency(analytics.totalOrchestrationCost)}
           </div>
           <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
@@ -185,14 +185,14 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
           </div>
         </div>
 
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
               Avg Overhead %
             </span>
-            <InformationCircleIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <InformationCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
           </div>
-          <div className="text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
+          <div className="text-xl sm:text-2xl font-display font-bold text-purple-600 dark:text-purple-400">
             {analytics.averageOverheadPercentage.toFixed(1)}%
           </div>
           <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
@@ -202,12 +202,12 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
       </div>
 
       {/* Cost Breakdown Chart */}
-      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-        <h4 className="text-lg font-display font-bold mb-4 gradient-text-primary">
+      <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+        <h4 className="text-base sm:text-lg font-display font-bold mb-3 sm:mb-4 gradient-text-primary">
           Cost Breakdown
         </h4>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-64">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="h-48 sm:h-64">
             <Pie
               data={{
                 labels: ['AI Cost', 'Orchestration Cost'],
@@ -244,7 +244,7 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
               }}
             />
           </div>
-          <div className="h-64">
+          <div className="h-48 sm:h-64">
             <Bar
               data={{
                 labels: ['AI Cost', 'Orchestration Cost'],
@@ -290,27 +290,27 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
 
       {/* Platform Breakdown */}
       {analytics.platformBreakdown && analytics.platformBreakdown.length > 0 && (
-        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-6">
-          <h4 className="text-lg font-display font-bold mb-4 gradient-text-primary">
+        <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl p-4 sm:p-6">
+          <h4 className="text-base sm:text-lg font-display font-bold mb-3 sm:mb-4 gradient-text-primary">
             Platform Breakdown
           </h4>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {analytics.platformBreakdown.map((platform, index) => (
               <div
                 key={index}
-                className="p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10"
+                className="p-3 sm:p-4 rounded-lg border border-primary-200/20 dark:border-primary-500/10"
               >
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
                   <div>
-                    <h5 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
+                    <h5 className="text-sm sm:text-base font-display font-semibold text-light-text-primary dark:text-dark-text-primary capitalize">
                       {platform.platform}
                     </h5>
                     <p className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
                       Overhead: {platform.overheadPercentage.toFixed(1)}%
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="font-display font-bold gradient-text-primary">
+                  <div className="text-left sm:text-right">
+                    <div className="text-base sm:text-lg font-display font-bold gradient-text-primary">
                       {formatCurrency(platform.totalCost)}
                     </div>
                     <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -318,7 +318,7 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-3">
                   <div className="p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200/30 dark:border-blue-500/20">
                     <div className="text-xs font-body text-light-text-tertiary dark:text-dark-text-tertiary mb-1">
                       AI Cost
@@ -345,7 +345,7 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
               </div>
             ))}
           </div>
-          <div className="mt-6 h-64">
+          <div className="mt-4 sm:mt-6 h-48 sm:h-64">
             <Bar
               data={{
                 labels: analytics.platformBreakdown.map((p) => p.platform.toUpperCase()),
@@ -397,11 +397,11 @@ export const OrchestrationOverhead: React.FC<OrchestrationOverheadProps> = ({
       )}
 
       {/* Info Message */}
-      <div className="glass rounded-xl border border-blue-200/30 dark:border-blue-500/20 shadow-lg backdrop-blur-xl p-4 bg-blue-50/50 dark:bg-blue-900/20">
-        <div className="flex items-start gap-3">
-          <InformationCircleIcon className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+      <div className="glass rounded-xl border border-blue-200/30 dark:border-blue-500/20 shadow-lg backdrop-blur-xl p-3 sm:p-4 bg-blue-50/50 dark:bg-blue-900/20">
+        <div className="flex items-start gap-2 sm:gap-3">
+          <InformationCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-body font-semibold text-blue-800 dark:text-blue-300 mb-1">
+            <p className="text-xs sm:text-sm font-body font-semibold text-blue-800 dark:text-blue-300 mb-1">
               What is Orchestration Overhead?
             </p>
             <p className="text-xs font-body text-blue-700 dark:text-blue-400">

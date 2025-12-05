@@ -127,26 +127,26 @@ export const VisualComplianceBatch: React.FC = () => {
         : 0;
 
     return (
-        <div className="space-y-6">
-            <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
-                    <div className="flex items-center gap-4 mb-3">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <RocketLaunchIcon className="w-7 h-7 text-white" />
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="glass rounded-lg border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel sm:rounded-xl">
+                <div className="bg-gradient-primary/10 p-4 rounded-t-lg border-b border-primary-200/30 sm:p-6 md:p-8 sm:rounded-t-xl">
+                    <div className="flex flex-col gap-3 items-start mb-3 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg sm:w-12 sm:h-12 md:w-14 md:h-14 md:rounded-xl">
+                            <RocketLaunchIcon className="w-5 h-5 text-white sm:w-6 sm:h-6 md:w-7 md:h-7" />
                         </div>
-                        <div className="flex-1">
-                            <h2 className="text-3xl font-display font-bold gradient-text-primary">
+                        <div className="flex-1 w-full sm:w-auto">
+                            <h2 className="text-xl font-display font-bold gradient-text-primary sm:text-2xl md:text-3xl">
                                 Batch Visual Compliance Check
                             </h2>
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-base mt-2">
+                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs mt-1.5 sm:text-sm md:text-base sm:mt-2">
                                 Process up to 10 evidence images against a single reference standard • Ultra-fast AI analysis
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
                         {/* Reference Image */}
                         <div>
                             <label className="block text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary mb-3">
@@ -161,18 +161,18 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-reference"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg"
+                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-lg cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg sm:h-40 md:h-48 md:rounded-xl [touch-action:manipulation] active:scale-95"
                             >
                                 {referencePreview ? (
                                     <img
                                         src={referencePreview}
                                         alt="Reference preview"
-                                        className="w-full h-full object-contain rounded-xl p-2"
+                                        className="w-full h-full object-contain rounded-lg p-2 md:rounded-xl"
                                     />
                                 ) : (
                                     <>
-                                        <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
-                                        <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                        <PhotoIcon className="w-8 h-8 text-primary-500 dark:text-primary-400 mb-1.5 sm:w-10 sm:h-10 md:w-12 md:h-12 sm:mb-2" />
+                                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm text-center px-2">
                                             Click to upload reference image
                                         </p>
                                     </>
@@ -195,23 +195,23 @@ export const VisualComplianceBatch: React.FC = () => {
                             />
                             <label
                                 htmlFor="batch-evidence"
-                                className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-xl cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg"
+                                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary-300/50 dark:border-primary-600/50 rounded-lg cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 dark:to-transparent hover:shadow-lg sm:h-40 md:h-48 md:rounded-xl [touch-action:manipulation] active:scale-95"
                             >
-                                <PhotoIcon className="w-12 h-12 text-primary-500 dark:text-primary-400 mb-2" />
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <PhotoIcon className="w-8 h-8 text-primary-500 dark:text-primary-400 mb-1.5 sm:w-10 sm:h-10 md:w-12 md:h-12 sm:mb-2" />
+                                <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm text-center px-2">
                                     Click to upload evidence images ({evidenceImages.length} selected)
                                 </p>
                             </label>
                             {evidenceImages.length > 0 && (
-                                <div className="mt-4 grid grid-cols-5 gap-3">
+                                <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 md:grid-cols-5">
                                     {evidencePreviews.map((preview, i) => (
                                         <div key={i} className="relative group">
                                             <img
                                                 src={preview}
                                                 alt={`Evidence ${i + 1}`}
-                                                className="w-full h-24 object-cover rounded-lg border-2 border-primary-200/50 dark:border-primary-700/50 glass shadow-md group-hover:scale-105 transition-transform duration-200"
+                                                className="w-full h-16 object-cover rounded-lg border-2 border-primary-200/50 dark:border-primary-700/50 glass shadow-md group-hover:scale-105 transition-transform duration-200 sm:h-20 md:h-24"
                                             />
-                                            <span className="absolute top-1 right-1 bg-gradient-primary text-white text-xs font-display font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
+                                            <span className="absolute top-0.5 right-0.5 bg-gradient-primary text-white text-[10px] font-display font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg sm:text-xs sm:w-6 sm:h-6 sm:top-1 sm:right-1">
                                                 {i + 1}
                                             </span>
                                         </div>
@@ -283,7 +283,7 @@ export const VisualComplianceBatch: React.FC = () => {
                         <button
                             type="submit"
                             disabled={loading || !referenceImage || evidenceImages.length === 0}
-                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] [touch-action:manipulation] active:scale-95"
                         >
                             {loading ? (
                                 <>
@@ -303,30 +303,31 @@ export const VisualComplianceBatch: React.FC = () => {
 
             {/* Results */}
             {results.length > 0 && (
-                <div className="glass rounded-xl border border-success-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/10 to-emerald-50/10 dark:from-success-900/10 dark:to-emerald-900/10">
-                    <div className="bg-gradient-to-r from-success-500/10 to-emerald-500/10 p-8 rounded-t-xl border-b border-success-200/30 dark:border-success-800/30">
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success-500 to-emerald-600 flex items-center justify-center shadow-lg">
-                                    <CheckCircleIcon className="w-6 h-6 text-white" />
+                <div className="glass rounded-lg border border-success-200/30 shadow-xl backdrop-blur-xl bg-gradient-to-br from-success-50/10 to-emerald-50/10 dark:from-success-900/10 dark:to-emerald-900/10 sm:rounded-xl">
+                    <div className="bg-gradient-to-r from-success-500/10 to-emerald-500/10 p-4 rounded-t-lg border-b border-success-200/30 dark:border-success-800/30 sm:p-6 md:p-8 sm:rounded-t-xl">
+                        <div className="flex flex-col gap-3 justify-between items-start sm:flex-row sm:items-center sm:gap-0">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-success-500 to-emerald-600 flex items-center justify-center shadow-lg sm:w-9 sm:h-9 md:w-10 md:h-10 md:rounded-xl">
+                                    <CheckCircleIcon className="w-4 h-4 text-white sm:w-5 sm:h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h3 className="text-2xl font-display font-bold bg-gradient-to-r from-success-600 to-emerald-600 dark:from-success-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                <h3 className="text-lg font-display font-bold bg-gradient-to-r from-success-600 to-emerald-600 dark:from-success-400 dark:to-emerald-400 bg-clip-text text-transparent sm:text-xl md:text-2xl">
                                     Batch Processing Results
                                 </h3>
                             </div>
                             <button
                                 onClick={exportToCSV}
-                                className="btn inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-semibold text-white bg-gradient-to-r from-success-500 to-emerald-600 shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200"
+                                className="btn inline-flex items-center gap-2 px-3 py-2 rounded-lg font-display font-semibold text-white bg-gradient-to-r from-success-500 to-emerald-600 shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200 w-full min-h-[44px] sm:w-auto sm:px-4 sm:py-2.5 sm:rounded-xl [touch-action:manipulation] active:scale-95"
                             >
-                                <ArrowDownTrayIcon className="w-5 h-5" />
-                                Export CSV
+                                <ArrowDownTrayIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">Export CSV</span>
+                                <span className="sm:hidden">Export</span>
                             </button>
                         </div>
                     </div>
 
-                    <div className="p-8">
+                    <div className="p-3 sm:p-4 md:p-6 lg:p-8">
                         {/* Summary Stats */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-2 gap-2 mb-4 sm:gap-3 sm:mb-5 md:grid-cols-4 md:gap-4 md:mb-6">
                             <div className="glass rounded-xl p-5 border border-accent-200/30 backdrop-blur-xl bg-gradient-to-br from-accent-50/50 to-transparent dark:from-accent-900/20 dark:to-transparent hover:scale-105 transition-transform duration-200">
                                 <div className="flex items-center gap-2 mb-2">
                                     <svg className="w-4 h-4 text-accent-600 dark:text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -372,59 +373,59 @@ export const VisualComplianceBatch: React.FC = () => {
                         </div>
 
                         {/* Results Table */}
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
+                        <div className="overflow-x-auto scrollbar-hide">
+                            <table className="w-full min-w-[600px]">
                                 <thead>
                                     <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">#</th>
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Image</th>
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Score</th>
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Status</th>
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Cost</th>
-                                        <th className="text-left py-3 px-4 text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary">Feedback</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">#</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">Image</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">Score</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">Status</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">Cost</th>
+                                        <th className="text-left py-2 px-2 text-xs font-display font-medium text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">Feedback</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {results.map((result, index) => (
                                         <tr key={index} className="border-b border-primary-100/30 dark:border-primary-800/30 hover:bg-primary-50/20 dark:hover:bg-primary-900/10 transition-colors">
-                                            <td className="py-3 px-4 font-body text-light-text-primary dark:text-dark-text-primary">{index + 1}</td>
-                                            <td className="py-3 px-4">
+                                            <td className="py-2 px-2 font-body text-xs text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">{index + 1}</td>
+                                            <td className="py-2 px-2 sm:py-3 sm:px-3 md:px-4">
                                                 {evidencePreviews[index] && (
                                                     <img
                                                         src={evidencePreviews[index]}
                                                         alt={`Evidence ${index + 1}`}
-                                                        className="w-16 h-16 object-cover rounded-lg border border-primary-200/30 dark:border-primary-700/30"
+                                                        className="w-12 h-12 object-cover rounded-lg border border-primary-200/30 dark:border-primary-700/30 sm:w-14 sm:h-14 md:w-16 md:h-16"
                                                     />
                                                 )}
                                             </td>
-                                            <td className="py-3 px-4">
+                                            <td className="py-2 px-2 sm:py-3 sm:px-3 md:px-4">
                                                 {result.data ? (
-                                                    <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">{result.data.compliance_score.toFixed(1)}%</span>
+                                                    <span className="text-xs font-display font-bold text-light-text-primary dark:text-dark-text-primary sm:text-sm">{result.data.compliance_score.toFixed(1)}%</span>
                                                 ) : (
-                                                    <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">N/A</span>
+                                                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">N/A</span>
                                                 )}
                                             </td>
-                                            <td className="py-3 px-4">
+                                            <td className="py-2 px-2 sm:py-3 sm:px-3 md:px-4">
                                                 {result.success && result.data ? (
                                                     result.data.pass_fail ? (
-                                                        <span className="flex items-center gap-1 gradient-text-success font-display font-semibold">
-                                                            <CheckCircleIcon className="w-5 h-5" />
+                                                        <span className="flex items-center gap-1 gradient-text-success text-xs font-display font-semibold sm:text-sm">
+                                                            <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                                                             Pass
                                                         </span>
                                                     ) : (
-                                                        <span className="flex items-center gap-1 text-danger-600 dark:text-danger-400 font-display font-semibold">
-                                                            <XCircleIcon className="w-5 h-5" />
+                                                        <span className="flex items-center gap-1 text-danger-600 dark:text-danger-400 text-xs font-display font-semibold sm:text-sm">
+                                                            <XCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                                                             Fail
                                                         </span>
                                                     )
                                                 ) : (
-                                                    <span className="font-body text-danger-600 dark:text-danger-400">Error</span>
+                                                    <span className="text-xs font-body text-danger-600 dark:text-danger-400 sm:text-sm">Error</span>
                                                 )}
                                             </td>
-                                            <td className="py-3 px-4 font-body text-light-text-primary dark:text-dark-text-primary">
+                                            <td className="py-2 px-2 font-body text-xs text-light-text-primary dark:text-dark-text-primary sm:py-3 sm:px-3 sm:text-sm md:px-4">
                                                 {result.data ? `$${result.data.metadata.cost.toFixed(4)}` : '-'}
                                             </td>
-                                            <td className="py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                            <td className="py-2 px-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:py-3 sm:px-3 sm:text-sm md:px-4 line-clamp-2">
                                                 {result.data?.feedback_message || result.error || '-'}
                                             </td>
                                         </tr>

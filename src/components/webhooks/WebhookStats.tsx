@@ -81,9 +81,9 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
     };
 
     return (
-        <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-            <div className="p-4 sm:p-6 border-b border-primary-200/30 dark:border-primary-500/20">
-                <h3 className="text-base sm:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">Recent Deliveries</h3>
+        <div className="glass rounded-xl sm:rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+            <div className="p-3 sm:p-4 md:p-6 border-b border-primary-200/30 dark:border-primary-500/20">
+                <h3 className="text-sm sm:text-base md:text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">Recent Deliveries</h3>
                 <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
                     Showing the last {deliveries.length} webhook deliveries
                 </p>
@@ -91,19 +91,19 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
 
             <div className="divide-y divide-primary-200/30 dark:divide-primary-500/20">
                 {deliveries.length === 0 ? (
-                    <div className="p-6 sm:p-8 text-center text-light-text-secondary dark:text-dark-text-secondary">
-                        <p className="text-sm sm:text-base">No deliveries yet. Send a test webhook to get started.</p>
+                    <div className="p-4 sm:p-6 md:p-8 text-center text-light-text-secondary dark:text-dark-text-secondary">
+                        <p className="text-xs sm:text-sm md:text-base">No deliveries yet. Send a test webhook to get started.</p>
                     </div>
                 ) : (
                     deliveries.map((delivery) => (
                         <div
                             key={delivery.id}
-                            className={`p-3 sm:p-4 hover:bg-white/50 dark:hover:bg-dark-card/50 cursor-pointer transition-all duration-300 min-h-[44px] [touch-action:manipulation] ${selectedDelivery?.id === delivery.id ? 'bg-gradient-to-r from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20 border-l-4 border-[#06ec9e] dark:border-emerald-400' : ''
+                            className={`p-2.5 sm:p-3 md:p-4 hover:bg-white/50 dark:hover:bg-dark-card/50 cursor-pointer transition-all duration-300 min-h-[44px] [touch-action:manipulation] ${selectedDelivery?.id === delivery.id ? 'bg-gradient-to-r from-[#06ec9e]/10 via-emerald-50/50 to-[#009454]/10 dark:from-[#06ec9e]/20 dark:via-emerald-900/30 dark:to-[#009454]/20 border-l-4 border-[#06ec9e] dark:border-emerald-400' : ''
                                 }`}
                             onClick={() => setSelectedDelivery(delivery)}
                         >
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-                                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4">
+                                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0 flex-1">
                                     {getStatusIcon(delivery.status)}
                                     <div className="min-w-0 flex-1">
                                         <p className="font-medium text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary truncate">
@@ -114,8 +114,8 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-                                    <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(delivery.status)}`}>
+                                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-wrap">
+                                    <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full border ${getStatusColor(delivery.status)}`}>
                                         {delivery.status}
                                     </span>
                                     {delivery.response?.responseTime && (
@@ -133,7 +133,7 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
                                             e.stopPropagation();
                                             onReplay(delivery.id);
                                         }}
-                                        className="p-1.5 sm:p-2 rounded-lg text-light-text-secondary dark:text-dark-text-secondary hover:text-[#06ec9e] dark:hover:text-emerald-400 hover:bg-[#06ec9e]/10 dark:hover:bg-emerald-400/20 transition-all duration-300 min-h-[32px] min-w-[32px] flex items-center justify-center [touch-action:manipulation]"
+                                        className="p-1.5 sm:p-2 rounded-lg text-light-text-secondary dark:text-dark-text-secondary hover:text-[#06ec9e] dark:hover:text-emerald-400 hover:bg-[#06ec9e]/10 dark:hover:bg-emerald-400/20 transition-all duration-300 min-h-[36px] min-w-[36px] flex items-center justify-center [touch-action:manipulation]"
                                         title="Replay delivery"
                                     >
                                         <ArrowPathIcon className="w-4 h-4" />
@@ -147,12 +147,12 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
 
             {/* Delivery Details Modal */}
             {selectedDelivery && detailedDelivery && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
-                    <div className="glass rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-white/95 to-white/90 dark:from-dark-card/95 dark:to-dark-card/90 max-w-4xl w-full max-h-[90vh] overflow-hidden">
-                        <div className="p-4 sm:p-6 border-b border-primary-200/30 dark:border-primary-500/20">
-                            <div className="flex justify-between items-start gap-4">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-0 sm:p-2 md:p-4 z-50">
+                    <div className="glass rounded-none sm:rounded-xl md:rounded-2xl border-0 sm:border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-to-br from-white/95 to-white/90 dark:from-dark-card/95 dark:to-dark-card/90 max-w-4xl w-full h-full sm:h-auto sm:max-h-[90vh] overflow-hidden">
+                        <div className="p-3 sm:p-4 md:p-6 border-b border-primary-200/30 dark:border-primary-500/20">
+                            <div className="flex justify-between items-start gap-3 sm:gap-4">
                                 <div className="min-w-0 flex-1">
-                                    <h3 className="text-lg sm:text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Delivery Details</h3>
+                                    <h3 className="text-base sm:text-lg md:text-xl font-display font-bold text-light-text-primary dark:text-dark-text-primary">Delivery Details</h3>
                                     <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1 truncate">
                                         Event ID: {detailedDelivery.eventId}
                                     </p>
@@ -162,21 +162,21 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
                                         setSelectedDelivery(null);
                                         setDetailedDelivery(null);
                                     }}
-                                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[32px] min-w-[32px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation]"
+                                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors duration-300 p-1.5 sm:p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 min-h-[36px] min-w-[36px] flex items-center justify-center flex-shrink-0 [touch-action:manipulation]"
                                 >
                                     <XCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+                        <div className="overflow-y-auto h-[calc(100vh-5rem)] sm:h-auto sm:max-h-[calc(90vh-8rem)]">
                             {loading ? (
-                                <div className="p-6 sm:p-8 text-center">
+                                <div className="p-4 sm:p-6 md:p-8 text-center">
                                     <ArrowPathIcon className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-[#06ec9e] dark:text-emerald-400 mx-auto" />
-                                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">Loading details...</p>
+                                    <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-2">Loading details...</p>
                                 </div>
                             ) : (
-                                <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                                <div className="p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6">
                                     {/* Status Section */}
                                     <div>
                                         <h4 className="font-medium text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary mb-2">Status</h4>
@@ -302,13 +302,13 @@ export const WebhookStats: React.FC<WebhookStatsProps> = ({
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
+                                    <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-primary-200/30 dark:border-primary-500/20">
                                         <button
                                             onClick={() => onReplay(detailedDelivery.id)}
-                                            className="btn-primary flex items-center gap-2 min-h-[36px] px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 [touch-action:manipulation] active:scale-95"
+                                            className="btn-primary flex items-center gap-1.5 sm:gap-2 min-h-[44px] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] dark:from-emerald-600 dark:via-emerald-600 dark:to-emerald-700 text-white hover:shadow-lg hover:shadow-[#06ec9e]/30 dark:hover:shadow-emerald-500/50 transition-all duration-300 [touch-action:manipulation] active:scale-95"
                                         >
                                             <ArrowPathIcon className="w-4 h-4" />
-                                            Replay Delivery
+                                            <span>Replay Delivery</span>
                                         </button>
                                     </div>
                                 </div>

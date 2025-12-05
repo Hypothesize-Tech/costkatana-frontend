@@ -102,14 +102,14 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
 
     if (loading) {
         return (
-            <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="flex items-center mb-6">
-                    <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                        <TrendingUp className="w-5 h-5 text-white" />
+            <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex items-center mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
                 </div>
-                <div className="flex justify-center items-center h-64">
+                <div className="flex justify-center items-center h-48 sm:h-56 md:h-64">
                     <div className="spinner-lg text-primary-500"></div>
                 </div>
             </div>
@@ -319,19 +319,19 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     };
 
     return (
-        <div className="p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="space-y-6">
-                <div className="flex justify-between items-center">
+        <div className="p-4 sm:p-6 md:p-8 rounded-xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
                     <div className="flex items-center">
-                        <div className="flex justify-center items-center mr-4 w-10 h-10 rounded-xl shadow-lg bg-gradient-primary">
-                            <TrendingUp className="w-5 h-5 text-white" />
+                        <div className="flex justify-center items-center mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg bg-gradient-primary flex-shrink-0">
+                            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold font-display gradient-text-primary">Usage Trend</h3>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => setSelectedMetric('all')}
-                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedMetric === 'all'
                                 ? 'bg-gradient-primary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
@@ -340,108 +340,111 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
                         </button>
                         <button
                             onClick={() => setSelectedMetric('requests')}
-                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'requests'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-1.5 sm:gap-2 ${selectedMetric === 'requests'
                                 ? 'bg-gradient-secondary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-secondary-500/10'
                                 }`}
                         >
-                            <Zap className="w-4 h-4" />
-                            Requests
+                            <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Requests</span>
+                            <span className="sm:hidden">Req</span>
                         </button>
                         <button
                             onClick={() => setSelectedMetric('tokens')}
-                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'tokens'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-1.5 sm:gap-2 ${selectedMetric === 'tokens'
                                 ? 'bg-gradient-success text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-success-500/10'
                                 }`}
                         >
-                            <Coins className="w-4 h-4" />
+                            <Coins className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             Tokens
                         </button>
                         <button
                             onClick={() => setSelectedMetric('cost')}
-                            className={`btn px-4 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedMetric === 'cost'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-1.5 sm:gap-2 ${selectedMetric === 'cost'
                                 ? 'bg-gradient-warning text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-warning-500/10'
                                 }`}
                         >
-                            <DollarSign className="w-4 h-4" />
+                            <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             Cost
                         </button>
                     </div>
                 </div>
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+                    <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => setSelectedRange('7d')}
-                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '7d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
-                            7 Days
+                            7d
                         </button>
                         <button
                             onClick={() => setSelectedRange('30d')}
-                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '30d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
-                            30 Days
+                            30d
                         </button>
                         <button
                             onClick={() => setSelectedRange('60d')}
-                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '60d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
-                            60 Days
+                            60d
                         </button>
                         <button
                             onClick={() => setSelectedRange('90d')}
-                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 ${selectedRange === '90d'
                                 ? 'bg-gradient-primary text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/10'
                                 }`}
                         >
-                            90 Days
+                            90d
                         </button>
                         <button
                             onClick={() => setSelectedRange('custom')}
-                            className={`btn px-3 py-2 text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${selectedRange === 'custom'
+                            className={`btn px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-xl font-display font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-1.5 sm:gap-2 ${selectedRange === 'custom'
                                 ? 'bg-gradient-accent text-white shadow-lg'
                                 : 'glass border border-primary-200/30 dark:border-primary-700/30 shadow-lg backdrop-blur-xl text-light-text-primary dark:text-dark-text-primary hover:bg-accent-500/10'
                                 }`}
                         >
-                            <Calendar className="w-4 h-4" />
-                            Custom
+                            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Custom</span>
                         </button>
                     </div>
                     {selectedRange === 'custom' && (
-                        <div className="flex gap-3 items-center p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center p-2 sm:p-3 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-700/30">
                             <input
                                 type="date"
                                 value={customStartDate?.toISOString().split('T')[0] || ''}
                                 onChange={(e) => setCustomStartDate(e.target.value ? new Date(e.target.value) : null)}
-                                className="text-sm input"
+                                className="text-xs sm:text-sm input flex-1"
                             />
-                            <span className="text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary">to</span>
+                            <span className="text-xs sm:text-sm font-semibold font-display text-light-text-secondary dark:text-dark-text-secondary text-center sm:text-left">to</span>
                             <input
                                 type="date"
                                 value={customEndDate?.toISOString().split('T')[0] || ''}
                                 onChange={(e) => setCustomEndDate(e.target.value ? new Date(e.target.value) : null)}
-                                className="text-sm input"
+                                className="text-xs sm:text-sm input flex-1"
                             />
                         </div>
                     )}
                 </div>
             </div>
-            <div className="mt-6">
-                <ResponsiveContainer width="100%" height={300}>
+            <div className="mt-4 sm:mt-6">
+                <div className="h-[250px] sm:h-[300px] md:h-[350px]">
+                    <ResponsiveContainer width="100%" height="100%">
                     {renderChart()}
                 </ResponsiveContainer>
+                </div>
             </div>
         </div>
     );

@@ -158,14 +158,14 @@ export const AutoScalingRecommendations: React.FC<AutoScalingRecommendationsProp
         <div className="space-y-8">
             {/* Header */}
             <div className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="bg-gradient-primary/10 p-8 rounded-t-xl border-b border-primary-200/30">
-                    <div className="flex items-center gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-                            <TrendingUp className="w-6 h-6 text-white" />
+                <div className="bg-gradient-primary/10 p-4 sm:p-6 md:p-8 rounded-t-xl border-b border-primary-200/30">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <h2 className="font-display text-3xl font-bold gradient-text-primary">Auto-Scaling Recommendations</h2>
+                        <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold gradient-text-primary">Auto-Scaling Recommendations</h2>
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-lg">
+                    <p className="font-body text-sm sm:text-base md:text-lg text-light-text-secondary dark:text-dark-text-secondary">
                         AI-powered scaling recommendations based on your usage patterns
                     </p>
                 </div>
@@ -181,28 +181,28 @@ export const AutoScalingRecommendations: React.FC<AutoScalingRecommendationsProp
                         Active Alerts
                     </h3>
                     {alerts.map(alert => (
-                        <div key={alert.id} className={`glass rounded-xl p-6 border shadow-lg backdrop-blur-xl ${alert.type === 'error' ? 'border-danger-200/30 bg-gradient-danger/10' : 'border-warning-200/30 bg-gradient-warning/10'
+                        <div key={alert.id} className={`glass rounded-xl p-4 sm:p-5 md:p-6 border shadow-lg backdrop-blur-xl ${alert.type === 'error' ? 'border-danger-200/30 bg-gradient-danger/10' : 'border-warning-200/30 bg-gradient-warning/10'
                             }`}>
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center shadow-lg ${alert.type === 'error' ? 'bg-gradient-danger' : 'bg-gradient-warning'
+                                    <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                                        <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center shadow-lg ${alert.type === 'error' ? 'bg-gradient-danger' : 'bg-gradient-warning'
                                             }`}>
-                                            <AlertTriangle className="w-3 h-3 text-white" />
+                                            <AlertTriangle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                                         </div>
-                                        <h4 className={`font-display font-semibold ${alert.type === 'error' ? 'gradient-text-danger' : 'gradient-text-warning'
+                                        <h4 className={`font-display font-semibold text-sm sm:text-base ${alert.type === 'error' ? 'gradient-text-danger' : 'gradient-text-warning'
                                             }`}>
                                             {alert.title}
                                         </h4>
                                     </div>
-                                    <p className="font-body text-light-text-primary dark:text-dark-text-primary mb-3">
+                                    <p className="font-body text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary mb-3">
                                         {alert.message}
                                     </p>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-5 h-5 rounded-full bg-gradient-primary flex items-center justify-center mt-0.5 flex-shrink-0 shadow-lg">
-                                            <Lightbulb className="w-3 h-3 text-white" />
+                                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-primary flex items-center justify-center mt-0.5 flex-shrink-0 shadow-lg">
+                                            <Lightbulb className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                                         </div>
-                                        <p className={`font-body font-medium ${alert.type === 'error' ? 'text-danger-600 dark:text-danger-400' : 'text-warning-600 dark:text-warning-400'
+                                        <p className={`font-body font-medium text-xs sm:text-sm ${alert.type === 'error' ? 'text-danger-600 dark:text-danger-400' : 'text-warning-600 dark:text-warning-400'
                                             }`}>
                                             {alert.action}
                                         </p>
@@ -215,59 +215,59 @@ export const AutoScalingRecommendations: React.FC<AutoScalingRecommendationsProp
             )}
 
             {/* Recommendations */}
-            <div className="space-y-6">
-                <h3 className="font-display text-xl font-semibold gradient-text-primary flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                        <Settings className="w-4 h-4 text-white" />
+            <div className="space-y-4 sm:space-y-6">
+                <h3 className="font-display text-lg sm:text-xl font-semibold gradient-text-primary flex items-center gap-2 sm:gap-3">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                        <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                     </div>
                     Scaling Recommendations
                 </h3>
 
                 {recommendations.map(rec => (
                     <div key={rec.id} className="glass rounded-xl border border-primary-200/30 shadow-lg backdrop-blur-xl overflow-hidden hover:border-primary-300/50 transition-all duration-300 hover:scale-[1.01]">
-                        <div className="p-8">
-                            <div className="flex items-start justify-between mb-6">
+                        <div className="p-4 sm:p-6 md:p-8">
+                            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-6">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <h4 className="font-display text-xl font-bold gradient-text-primary">{rec.title}</h4>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-display font-medium border ${getPriorityColor(rec.priority)}`}>
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-3">
+                                        <h4 className="font-display text-lg sm:text-xl font-bold gradient-text-primary">{rec.title}</h4>
+                                        <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-display font-medium border ${getPriorityColor(rec.priority)}`}>
                                             {rec.priority.toUpperCase()}
                                         </span>
                                     </div>
-                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 text-lg">{rec.description}</p>
+                                    <p className="font-body text-sm sm:text-base md:text-lg text-light-text-secondary dark:text-dark-text-secondary mb-4">{rec.description}</p>
 
                                     {/* Metrics */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                        <div className="glass rounded-lg p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
-                                                    <TrendingUp className="w-4 h-4 text-white" />
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                                        <div className="glass rounded-lg p-3 sm:p-4 border border-primary-200/30 shadow-lg backdrop-blur-xl">
+                                            <div className="flex items-center gap-2 sm:gap-3">
+                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-lg">
+                                                    <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Impact</p>
-                                                    <p className="font-display font-bold gradient-text-primary">{rec.impact}</p>
+                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">Impact</p>
+                                                    <p className="font-display font-bold text-sm sm:text-base gradient-text-primary">{rec.impact}</p>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="glass rounded-lg p-4 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
-                                                    <Clock className="w-4 h-4 text-white" />
+                                        <div className="glass rounded-lg p-3 sm:p-4 border border-secondary-200/30 shadow-lg backdrop-blur-xl">
+                                            <div className="flex items-center gap-2 sm:gap-3">
+                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-secondary flex items-center justify-center shadow-lg">
+                                                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Effort</p>
-                                                    <p className="font-display font-bold gradient-text-secondary">{rec.effort}</p>
+                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">Effort</p>
+                                                    <p className="font-display font-bold text-sm sm:text-base gradient-text-secondary">{rec.effort}</p>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="glass rounded-lg p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
-                                                    <DollarSign className="w-4 h-4 text-white" />
+                                        <div className="glass rounded-lg p-3 sm:p-4 border border-success-200/30 shadow-lg backdrop-blur-xl">
+                                            <div className="flex items-center gap-2 sm:gap-3">
+                                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-success flex items-center justify-center shadow-lg">
+                                                    <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-sm">Savings</p>
-                                                    <p className="font-display font-bold gradient-text-success">{rec.estimatedSavings}</p>
+                                                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">Savings</p>
+                                                    <p className="font-display font-bold text-sm sm:text-base gradient-text-success">{rec.estimatedSavings}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -276,36 +276,36 @@ export const AutoScalingRecommendations: React.FC<AutoScalingRecommendationsProp
                             </div>
 
                             {/* Details */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div className="glass rounded-xl p-6 border border-success-200/30">
-                                    <h5 className="font-display font-semibold gradient-text-success mb-4 flex items-center gap-2">
-                                        <CheckCircle className="w-5 h-5 text-success-500" />
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+                                <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-success-200/30">
+                                    <h5 className="font-display font-semibold text-sm sm:text-base gradient-text-success mb-3 sm:mb-4 flex items-center gap-2">
+                                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-success-500" />
                                         Implementation Details
                                     </h5>
-                                    <ul className="space-y-3">
+                                    <ul className="space-y-2 sm:space-y-3">
                                         {rec.details.map((detail: string, index: number) => (
-                                            <li key={index} className="flex items-start gap-3">
-                                                <div className="w-5 h-5 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 flex-shrink-0 shadow-lg">
-                                                    <CheckCircle className="w-3 h-3 text-white" />
+                                            <li key={index} className="flex items-start gap-2 sm:gap-3">
+                                                <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-success flex items-center justify-center mt-0.5 flex-shrink-0 shadow-lg">
+                                                    <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                                                 </div>
-                                                <span className="font-body text-light-text-primary dark:text-dark-text-primary">{detail}</span>
+                                                <span className="font-body text-xs sm:text-sm text-light-text-primary dark:text-dark-text-primary">{detail}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
 
-                                <div className="glass rounded-xl p-6 border border-accent-200/30">
-                                    <h5 className="font-display font-semibold gradient-text-accent mb-4 flex items-center gap-2">
-                                        <Settings className="w-5 h-5 text-accent-500" />
+                                <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-accent-200/30">
+                                    <h5 className="font-display font-semibold text-sm sm:text-base gradient-text-accent mb-3 sm:mb-4 flex items-center gap-2">
+                                        <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500" />
                                         Platform Implementation
                                     </h5>
-                                    <div className="space-y-3">
+                                    <div className="space-y-2 sm:space-y-3">
                                         {Object.entries(rec.implementation).map(([platform, description]) => (
-                                            <div key={platform} className="glass rounded-lg p-4 border border-primary-200/30">
-                                                <div className="font-display font-medium gradient-text-primary uppercase tracking-wide mb-2 text-sm">
+                                            <div key={platform} className="glass rounded-lg p-3 sm:p-4 border border-primary-200/30">
+                                                <div className="font-display font-medium gradient-text-primary uppercase tracking-wide mb-2 text-xs sm:text-sm">
                                                     {platform}
                                                 </div>
-                                                <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">{description as string}</div>
+                                                <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">{description as string}</div>
                                             </div>
                                         ))}
                                     </div>
@@ -317,35 +317,35 @@ export const AutoScalingRecommendations: React.FC<AutoScalingRecommendationsProp
             </div>
 
             {/* Summary */}
-            <div className="glass rounded-xl p-8 border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-success flex items-center justify-center mx-auto mb-4 shadow-lg">
-                        <TrendingUp className="w-8 h-8 text-white" />
+            <div className="glass rounded-xl p-4 sm:p-6 md:p-8 border border-success-200/30 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="text-center mb-6 sm:mb-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-success flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+                        <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     </div>
-                    <h3 className="font-display text-2xl font-bold gradient-text-success mb-2">Expected Benefits</h3>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">Comprehensive optimization impact across your infrastructure</p>
+                    <h3 className="font-display text-xl sm:text-2xl font-bold gradient-text-success mb-2">Expected Benefits</h3>
+                    <p className="font-body text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary">Comprehensive optimization impact across your infrastructure</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="glass rounded-xl p-6 border border-success-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-3 shadow-lg">
-                            <DollarSign className="w-6 h-6 text-white" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-success-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-success flex items-center justify-center mx-auto mb-2 sm:mb-3 shadow-lg">
+                            <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <div className="font-display text-3xl font-bold gradient-text-success mb-1">$120-185</div>
-                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Monthly Savings</div>
+                        <div className="font-display text-2xl sm:text-3xl font-bold gradient-text-success mb-1">$120-185</div>
+                        <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Monthly Savings</div>
                     </div>
-                    <div className="glass rounded-xl p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-3 shadow-lg">
-                            <TrendingUp className="w-6 h-6 text-white" />
+                    <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-primary-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-2 sm:mb-3 shadow-lg">
+                            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <div className="font-display text-3xl font-bold gradient-text-primary mb-1">40-60%</div>
-                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Performance Improvement</div>
+                        <div className="font-display text-2xl sm:text-3xl font-bold gradient-text-primary mb-1">40-60%</div>
+                        <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Performance Improvement</div>
                     </div>
-                    <div className="glass rounded-xl p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center mx-auto mb-3 shadow-lg">
-                            <Clock className="w-6 h-6 text-white" />
+                    <div className="glass rounded-xl p-4 sm:p-5 md:p-6 border border-secondary-200/30 shadow-lg backdrop-blur-xl text-center hover:scale-105 transition-transform duration-300">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-secondary flex items-center justify-center mx-auto mb-2 sm:mb-3 shadow-lg">
+                            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <div className="font-display text-3xl font-bold gradient-text-secondary mb-1">24/7</div>
-                        <div className="font-body text-light-text-secondary dark:text-dark-text-secondary">Automated Optimization</div>
+                        <div className="font-display text-2xl sm:text-3xl font-bold gradient-text-secondary mb-1">24/7</div>
+                        <div className="font-body text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">Automated Optimization</div>
                     </div>
                 </div>
             </div>

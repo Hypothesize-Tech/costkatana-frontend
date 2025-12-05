@@ -386,44 +386,46 @@ export const AdminDashboard: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-            <div className="max-w-[1600px] mx-auto p-6 space-y-6">
+            <div className="max-w-[1600px] mx-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-5 md:space-y-6">
                 {/* Premium Header */}
-                <header className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-3 rounded-xl glow-primary shadow-lg">
-                                <ChartBarIcon className="w-6 h-6 text-white" />
+                <header className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 rounded-2xl p-3 sm:p-4 md:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                            <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 sm:p-2.5 md:p-3 rounded-xl glow-primary shadow-lg">
+                                <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-display font-bold gradient-text-primary mb-1">
+                                <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text-primary mb-1">
                                     Admin Dashboard
                                 </h1>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Comprehensive platform analytics and monitoring
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
                             <button
                                 onClick={fetchData}
                                 disabled={refreshing}
-                                className="flex items-center gap-2 px-4 py-2.5 glass backdrop-blur-sm rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-primary-600 dark:text-primary-400 font-display font-semibold hover:bg-primary-500/20 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 disabled:opacity-50"
+                                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 md:py-2.5 glass backdrop-blur-sm rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-primary-600 dark:text-primary-400 font-display font-semibold hover:bg-primary-500/20 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 disabled:opacity-50 text-xs sm:text-sm"
                             >
                                 <ArrowPathIcon
-                                    className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 ${refreshing ? 'animate-spin' : ''}`}
                                 />
-                                Refresh
+                                <span className="hidden xs:inline">Refresh</span>
                             </button>
-                            <ExportReports
-                                startDate={filters.startDate}
-                                endDate={filters.endDate}
-                                sections={['user_spending', 'model_comparison', 'feature_analytics', 'project_analytics']}
-                            />
+                            <div className="w-full sm:w-auto">
+                                <ExportReports
+                                    startDate={filters.startDate}
+                                    endDate={filters.endDate}
+                                    sections={['user_spending', 'model_comparison', 'feature_analytics', 'project_analytics']}
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* Premium Tabs */}
-                    <div className="flex flex-wrap gap-2 border-t border-primary-200/30 dark:border-primary-700/30 pt-4">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 border-t border-primary-200/30 dark:border-primary-700/30 pt-3 sm:pt-4 overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
                         {tabs.map((tab) => {
                             const Icon = activeTab === tab.id ? tab.activeIcon : tab.icon;
                             const isActive = activeTab === tab.id;
@@ -431,14 +433,30 @@ export const AdminDashboard: React.FC = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-display font-semibold transition-all duration-300 ${isActive
+                                    className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg text-xs sm:text-sm font-display font-semibold transition-all duration-300 whitespace-nowrap ${isActive
                                         ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg glow-primary hover:scale-105'
                                         : 'glass backdrop-blur-sm border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/20 dark:hover:bg-primary-900/20 hover:scale-105 hover:shadow-md'
                                         }`}
                                     title={tab.description}
                                 >
-                                    <Icon className="w-4 h-4" />
-                                    <span>{tab.name}</span>
+                                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                                    <span className="hidden xs:inline">{tab.name}</span>
+                                    <span className="xs:hidden">
+                                        {tab.id === 'overview' ? 'Overview' :
+                                            tab.id === 'growth' ? 'Growth' :
+                                                tab.id === 'alerts' ? 'Alerts' :
+                                                    tab.id === 'models' ? 'Models' :
+                                                        tab.id === 'features' ? 'Features' :
+                                                            tab.id === 'projects' ? 'Projects' :
+                                                                tab.id === 'users' ? 'Users' :
+                                                                    tab.id === 'activity' ? 'Activity' :
+                                                                        tab.id === 'revenue' ? 'Revenue' :
+                                                                            tab.id === 'api-keys' ? 'API Keys' :
+                                                                                tab.id === 'endpoints' ? 'Endpoints' :
+                                                                                    tab.id === 'geographic' ? 'Geo' :
+                                                                                        tab.id === 'budget' ? 'Budget' :
+                                                                                            tab.id === 'integrations' ? 'Integrations' : tab.name}
+                                    </span>
                                 </button>
                             );
                         })}
@@ -524,22 +542,22 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Revenue & Billing Tab */}
                 {activeTab === 'revenue' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-green-500 to-green-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <CurrencyDollarIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-green-500 to-green-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <CurrencyDollarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     Revenue & Billing Analytics
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Revenue metrics, subscriptions, and conversions
                                 </p>
                             </div>
                         </div>
                         {revenueMetrics && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
                                 <StatsCard
                                     title="Total MRR"
                                     value={revenueMetrics.totalMRR}
@@ -567,7 +585,7 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {subscriptionMetrics && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
                                 <StatsCard
                                     title="Active Subscriptions"
                                     value={subscriptionMetrics.activeSubscriptions}
@@ -594,31 +612,31 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {upcomingRenewals.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Upcoming Renewals (Next 30 Days)
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Plan</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Amount</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Next Billing</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Plan</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Amount</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Next Billing</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {upcomingRenewals.slice(0, 10).map((renewal, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{renewal.userEmail}</td>
-                                                    <td className="py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{renewal.userEmail}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className="px-2 py-1 rounded-lg bg-primary-100/50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-display font-semibold">
                                                             {renewal.plan}
                                                         </span>
                                                     </td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(renewal.amount)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{new Date(renewal.nextBillingDate).toLocaleDateString()}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(renewal.amount)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{new Date(renewal.nextBillingDate).toLocaleDateString()}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -627,11 +645,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {conversionMetrics && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Conversion Metrics
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
                                     <StatsCard
                                         title="Free to Plus"
                                         value={conversionMetrics.freeToPlus}
@@ -648,9 +666,9 @@ export const AdminDashboard: React.FC = () => {
                                         icon={RocketLaunchIcon}
                                     />
                                 </div>
-                                <div className="mt-4 p-4 glass backdrop-blur-sm rounded-xl border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
-                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">Conversion Rates</h4>
-                                    <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="mt-3 sm:mt-4 p-3 sm:p-4 glass backdrop-blur-sm rounded-xl border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+                                    <h4 className="font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 sm:mb-3 text-sm sm:text-base">Conversion Rates</h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
                                         <div>
                                             <span className="text-light-text-secondary dark:text-dark-text-secondary">Free → Plus:</span>
                                             <span className="ml-2 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{conversionMetrics.conversionRates.freeToPlus.toFixed(1)}%</span>
@@ -672,22 +690,22 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* API Keys Tab */}
                 {activeTab === 'api-keys' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <KeyIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <KeyIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     API Key Management
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Monitor and manage API keys across the platform
                                 </p>
                             </div>
                         </div>
                         {apiKeyStats && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
                                 <StatsCard
                                     title="Total Keys"
                                     value={apiKeyStats.totalKeys}
@@ -711,27 +729,27 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {topApiKeys.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Top API Keys by Usage
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {topApiKeys.map((key, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{key.keyName || 'Unnamed Key'}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.requests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.cost)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{key.userEmail || 'N/A'}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{key.keyName || 'Unnamed Key'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.requests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.cost)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">{key.userEmail || 'N/A'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -740,29 +758,29 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {apiKeyUsage.length > 0 && (
-                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     API Key Usage Details
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[700px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Status</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Key Name</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">User</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Cost</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {apiKeyUsage.slice(0, 10).map((key, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{key.keyName || 'Unnamed Key'}</td>
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{key.userEmail}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.totalRequests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.totalCost)}</td>
-                                                    <td className="text-right py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{key.keyName || 'Unnamed Key'}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">{key.userEmail}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(key.totalRequests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(key.totalCost)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${key.isActive
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                             : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
@@ -782,42 +800,42 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Endpoints Tab */}
                 {activeTab === 'endpoints' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <ServerIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <ServerIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     Endpoint Performance
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Analyze API endpoint performance and metrics
                                 </p>
                             </div>
                         </div>
                         {topEndpoints.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Top Endpoints
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {topEndpoints.map((endpoint, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{endpoint.endpoint}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.requests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
-                                                    <td className="text-right py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint.endpoint}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.requests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                             : endpoint.errorRate < 0.05
@@ -835,11 +853,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {endpointTrends.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Endpoint Trends
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
                                             endpointTrends.map(t => new Date(t.date).toLocaleDateString()),
@@ -855,29 +873,29 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {endpointPerformance.length > 0 && (
-                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Endpoint Performance Details
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[700px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">P95</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Endpoint</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Avg Response</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">P95</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {endpointPerformance.slice(0, 10).map((endpoint, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{endpoint.endpoint}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.totalRequests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.p95ResponseTime.toFixed(0)}ms</td>
-                                                    <td className="text-right py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{endpoint.endpoint}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(endpoint.totalRequests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.avgResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{endpoint.p95ResponseTime.toFixed(0)}ms</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${endpoint.errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                             : endpoint.errorRate < 0.05
@@ -899,44 +917,44 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Geographic Tab */}
                 {activeTab === 'geographic' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <GlobeAltIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <GlobeAltIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     Geographic & Usage Patterns
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Usage patterns by location and time
                                 </p>
                             </div>
                         </div>
                         {geographicUsage.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Geographic Usage
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Country</th>
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Region</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Country</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Region</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {geographicUsage.slice(0, 10).map((geo, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{geo.country}</td>
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{geo.region || 'N/A'}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(geo.requests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(geo.cost)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(geo.users)}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary">{geo.country}</td>
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{geo.region || 'N/A'}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(geo.requests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(geo.cost)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(geo.users)}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -945,11 +963,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {usagePatterns.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Usage Patterns by Time
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
                                             usagePatterns.map(p => `${p.timeOfDay}:00`),
@@ -965,11 +983,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {peakUsageTimes.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Peak Usage Times
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
                                             peakUsageTimes.map(t => `${t.hour}:00`),
@@ -985,11 +1003,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {geographicCostDistribution.length > 0 && (
-                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Cost Distribution by Region
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Doughnut
                                         data={generateDoughnutChartData(
                                             geographicCostDistribution.map(g => g.country),
@@ -1006,22 +1024,22 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Budget Tab */}
                 {activeTab === 'budget' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <WalletIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <WalletIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     Budget Management
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Track and manage project budgets
                                 </p>
                             </div>
                         </div>
                         {budgetOverview && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
                                 <StatsCard
                                     title="Total Budget"
                                     value={budgetOverview.totalBudget}
@@ -1049,20 +1067,20 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {budgetAlerts.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Budget Alerts
                                 </h3>
-                                <div className="space-y-3">
+                                <div className="space-y-2 sm:space-y-3">
                                     {budgetAlerts.map((alert, idx) => (
-                                        <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
-                                            <div className="flex items-center gap-3">
-                                                <ExclamationTriangleIcon className={`w-5 h-5 ${alert.alertType === 'critical' || alert.alertType === 'over_budget' ? 'text-red-500' : 'text-yellow-500'}`} />
-                                                <div className="flex-1">
-                                                    <p className="font-medium text-gray-900 dark:text-white">{alert.message}</p>
-                                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{alert.projectName || alert.workspaceName}</p>
+                                        <div key={idx} className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
+                                            <div className="flex items-center gap-2 sm:gap-3">
+                                                <ExclamationTriangleIcon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${alert.alertType === 'critical' || alert.alertType === 'over_budget' ? 'text-red-500' : 'text-yellow-500'}`} />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{alert.message}</p>
+                                                    <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">{alert.projectName || alert.workspaceName}</p>
                                                 </div>
-                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${alert.alertType === 'critical' || alert.alertType === 'over_budget'
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${alert.alertType === 'critical' || alert.alertType === 'over_budget'
                                                     ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                     : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                                                     }`}>
@@ -1075,27 +1093,27 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {projectBudgetStatus.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Project Budget Status
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Project</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Budget</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Spent</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Usage</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Project</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Budget</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Spent</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Usage</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {projectBudgetStatus.map((project, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{project.projectName}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.budgetAmount)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.spent)}</td>
-                                                    <td className="text-right py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{project.projectName}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.budgetAmount)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.spent)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${project.utilization > 90
                                                             ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                                             : project.utilization > 70
@@ -1113,11 +1131,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {budgetTrends.length > 0 && (
-                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Budget Trends
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
                                             budgetTrends.map(t => new Date(t.date).toLocaleDateString()),
@@ -1141,42 +1159,42 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Integrations Tab */}
                 {activeTab === 'integrations' && (
-                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-6">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
-                            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-2.5 rounded-xl glow-primary shadow-lg">
-                                <SquaresPlusIcon className="w-5 h-5 text-white" />
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6 pb-3 sm:pb-4 border-b border-primary-200/30 dark:border-primary-700/30">
+                            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-2 sm:p-2.5 rounded-xl glow-primary shadow-lg">
+                                <SquaresPlusIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-display font-bold gradient-text-primary">
+                                <h2 className="text-xl sm:text-2xl font-display font-bold gradient-text-primary">
                                     Integration Analytics
                                 </h2>
-                                <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
                                     Monitor AI service integrations and health
                                 </p>
                             </div>
                         </div>
                         {integrationStats.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Integration Statistics
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                                <div className="overflow-x-auto -mx-3 sm:mx-0">
+                                    <table className="w-full min-w-[600px]">
                                         <thead>
                                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                                <th className="text-left py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Service</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                                <th className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                                <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Service</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                                <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {integrationStats.map((stat, idx) => (
                                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/20 dark:hover:bg-dark-surface/10 transition-colors">
-                                                    <td className="py-3 px-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary">{stat.service}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(stat.totalRequests)}</td>
-                                                    <td className="text-right py-3 px-4 text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(stat.totalCost)}</td>
-                                                    <td className="text-right py-3 px-4">
+                                                    <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-primary dark:text-dark-text-primary truncate">{stat.service}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(stat.totalRequests)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(stat.totalCost)}</td>
+                                                    <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                         <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${stat.errorRate < 0.01
                                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                             : stat.errorRate < 0.05
@@ -1194,16 +1212,16 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {integrationHealth.length > 0 && (
-                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-6 mb-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 rounded-xl p-3 sm:p-4 md:p-6 mb-4 sm:mb-5 md:mb-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Integration Health
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                     {integrationHealth.map((health, idx) => (
-                                        <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
+                                        <div key={idx} className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
                                             <div className="flex items-center justify-between mb-2">
-                                                <span className="font-medium text-gray-900 dark:text-white">{health.service}</span>
-                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${health.status === 'healthy'
+                                                <span className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{health.service}</span>
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold flex-shrink-0 ${health.status === 'healthy'
                                                     ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                     : health.status === 'degraded'
                                                         ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
@@ -1224,11 +1242,11 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         )}
                         {integrationTrends.length > 0 && (
-                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-                                <h3 className="text-xl font-display font-bold gradient-text-primary mb-4">
+                            <div className="bg-white dark:bg-dark-card border border-gray-200 dark:border-gray-800 rounded-xl p-3 sm:p-4 md:p-6">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-3 sm:mb-4">
                                     Integration Trends
                                 </h3>
-                                <div className="h-64">
+                                <div className="h-48 sm:h-56 md:h-64">
                                     <Line
                                         data={generateLineChartData(
                                             integrationTrends.map(t => new Date(t.date).toLocaleDateString()),
@@ -1312,82 +1330,82 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     featureUsage,
 }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Key Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg glow-primary">
-                            <UsersIcon className="w-6 h-6 text-white" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                <div className="glass p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg glow-primary">
+                            <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <span className="px-2.5 py-1 rounded-lg bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-display font-semibold">
+                        <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-display font-semibold">
                             Total
                         </span>
                     </div>
-                    <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                    <h3 className="text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1.5 sm:mb-2">
                         Total Users
                     </h3>
-                    <p className="text-3xl font-display font-bold gradient-text">
+                    <p className="text-2xl sm:text-3xl font-display font-bold gradient-text">
                         {formatNumber(engagementMetrics?.totalUsers || 0)}
                     </p>
                 </div>
 
-                <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg glow-primary">
-                            <FireIcon className="w-6 h-6 text-white" />
+                <div className="glass p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg glow-primary">
+                            <FireIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <span className="px-2.5 py-1 rounded-lg bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-display font-semibold">
+                        <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-display font-semibold">
                             Active
                         </span>
                     </div>
-                    <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                    <h3 className="text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1.5 sm:mb-2">
                         Active Users
                     </h3>
-                    <p className="text-3xl font-display font-bold gradient-text">
+                    <p className="text-2xl sm:text-3xl font-display font-bold gradient-text">
                         {formatNumber(engagementMetrics?.activeUsers || 0)}
                     </p>
-                    <div className="mt-2 flex items-center gap-1 text-xs">
-                        <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />
+                    <div className="mt-1.5 sm:mt-2 flex items-center gap-1 text-xs">
+                        <ArrowTrendingUpIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500" />
                         <span className="text-green-600 dark:text-green-400 font-display font-semibold">
                             {((engagementMetrics?.activeUsers || 0) / (engagementMetrics?.totalUsers || 1) * 100).toFixed(1)}% of total
                         </span>
                     </div>
                 </div>
 
-                <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg glow-primary">
-                            <ChartPieIcon className="w-6 h-6 text-white" />
+                <div className="glass p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg glow-primary">
+                            <ChartPieIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <span className="px-2.5 py-1 rounded-lg bg-purple-100/50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-display font-semibold">
+                        <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-purple-100/50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-display font-semibold">
                             Rate
                         </span>
                     </div>
-                    <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                    <h3 className="text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1.5 sm:mb-2">
                         Retention Rate
                     </h3>
-                    <p className="text-3xl font-display font-bold gradient-text">
+                    <p className="text-2xl sm:text-3xl font-display font-bold gradient-text">
                         {(engagementMetrics?.retentionRate || 0).toFixed(1)}%
                     </p>
                 </div>
 
-                <div className="glass p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg glow-primary">
-                            <ExclamationTriangleIcon className="w-6 h-6 text-white" />
+                <div className="glass p-4 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg glow-primary">
+                            <ExclamationTriangleIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${criticalAlerts.length > 0
+                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${criticalAlerts.length > 0
                             ? 'bg-red-100/50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
                             : 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                             }`}>
                             {criticalAlerts.length > 0 ? 'Alert' : 'OK'}
                         </span>
                     </div>
-                    <h3 className="text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-2">
+                    <h3 className="text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary mb-1.5 sm:mb-2">
                         Critical Alerts
                     </h3>
-                    <p className={`text-3xl font-display font-bold ${criticalAlerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'gradient-text'
+                    <p className={`text-2xl sm:text-3xl font-display font-bold ${criticalAlerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'gradient-text'
                         }`}>
                         {criticalAlerts.length}
                     </p>
@@ -1396,21 +1414,21 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 
             {/* Growth Chart */}
             {growthTrends.length > 0 && (
-                <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
-                            <PresentationChartLineIcon className="w-6 h-6 text-white" />
+                <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                        <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
+                            <PresentationChartLineIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text">
+                            <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                                 User Growth Trends
                             </h3>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                 Track user acquisition over time
                             </p>
                         </div>
                     </div>
-                    <div className="h-80">
+                    <div className="h-64 sm:h-72 md:h-80">
                         <Line
                             data={generateLineChartData(
                                 growthTrends.map(t => t.date),
@@ -1439,40 +1457,40 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
             )}
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
                 {/* Top Models */}
                 {modelComparison.length > 0 && (
-                    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg">
-                                <CpuChipIcon className="w-6 h-6 text-white" />
+                    <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                            <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg">
+                                <CpuChipIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text">
                                     Top Models by Cost
                                 </h3>
-                                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                                <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Most expensive AI models
                                 </p>
                             </div>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
+                        <div className="overflow-x-auto -mx-4 sm:mx-0">
+                            <table className="w-full min-w-[500px]">
                                 <thead>
                                     <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                        <th className="text-left py-3 px-4 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Model</th>
-                                        <th className="text-right py-3 px-4 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                        <th className="text-right py-3 px-4 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                        <th className="text-right py-3 px-4 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
+                                        <th className="text-left py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Model</th>
+                                        <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                        <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                        <th className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {modelComparison.slice(0, 5).map((model, idx) => (
                                         <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                            <td className="py-3 px-4 font-display font-medium text-light-text-primary dark:text-dark-text-primary">{model.model}</td>
-                                            <td className="text-right py-3 px-4 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(model.totalCost)}</td>
-                                            <td className="text-right py-3 px-4 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalRequests)}</td>
-                                            <td className="text-right py-3 px-4">
+                                            <td className="py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{model.model}</td>
+                                            <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(model.totalCost)}</td>
+                                            <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalRequests)}</td>
+                                            <td className="text-right py-2.5 sm:py-3 px-3 sm:px-4">
                                                 <span className={`px-2 py-1 rounded-lg text-xs font-display font-semibold ${model.efficiencyScore > 7
                                                     ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                                     : model.efficiencyScore > 4
@@ -1492,21 +1510,21 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
 
                 {/* Feature Usage */}
                 {featureUsage.length > 0 && (
-                    <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 shadow-lg">
-                                <SparklesIcon className="w-6 h-6 text-white" />
+                    <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                            <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 shadow-lg">
+                                <SparklesIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-display font-bold gradient-text">
+                                <h3 className="text-lg sm:text-xl font-display font-bold gradient-text">
                                     Feature Usage
                                 </h3>
-                                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                                <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                     Cost breakdown by feature
                                 </p>
                             </div>
                         </div>
-                        <div className="h-64">
+                        <div className="h-48 sm:h-56 md:h-64">
                             <Doughnut
                                 data={generateDoughnutChartData(
                                     featureUsage.map(f => f.feature),
@@ -1529,9 +1547,9 @@ const UserGrowthTab: React.FC<UserGrowthTabProps> = ({
     growthTrends,
 }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Engagement Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                 <StatsCard
                     title="Total Users"
                     value={engagementMetrics?.totalUsers || 0}
@@ -1554,21 +1572,21 @@ const UserGrowthTab: React.FC<UserGrowthTabProps> = ({
 
             {/* Growth Chart */}
             {growthTrends.length > 0 && (
-                <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
-                            <PresentationChartLineIcon className="w-6 h-6 text-white" />
+                <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                        <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg">
+                            <PresentationChartLineIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text">
+                            <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                                 User Growth Trends
                             </h3>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                 Track user acquisition and engagement over time
                             </p>
                         </div>
                     </div>
-                    <div className="h-96">
+                    <div className="h-64 sm:h-80 md:h-96">
                         <Line
                             data={generateLineChartData(
                                 growthTrends.map(t => t.date),
@@ -1629,39 +1647,39 @@ const AlertsTab: React.FC<AlertsTabProps> = ({ alerts }) => {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex justify-between items-center mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
-                            <BellIcon className="w-6 h-6 text-white" />
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
+                            <BellIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-display font-bold gradient-text">
+                            <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                                 Current Alerts
                             </h3>
-                            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                 System alerts and anomalies
                             </p>
                         </div>
                     </div>
-                    <span className={`px-4 py-2 rounded-full font-display font-semibold shadow-lg ${alerts.length > 0
+                    <span className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-display font-semibold shadow-lg text-xs sm:text-sm ${alerts.length > 0
                         ? 'bg-red-100/50 dark:bg-red-900/30 text-red-600 dark:text-red-400'
                         : 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                         }`}>
                         {alerts.length} {alerts.length === 1 ? 'alert' : 'alerts'}
                     </span>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                     {alerts.length === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100/50 dark:bg-green-900/30 mb-4">
-                                <CheckCircleIcon className="w-8 h-8 text-green-600 dark:text-green-400" />
+                        <div className="text-center py-8 sm:py-10 md:py-12">
+                            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-green-100/50 dark:bg-green-900/30 mb-3 sm:mb-4">
+                                <CheckCircleIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-green-600 dark:text-green-400" />
                             </div>
-                            <p className="text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                            <p className="text-base sm:text-lg font-display font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 sm:mb-2">
                                 All Clear!
                             </p>
-                            <p className="text-light-text-secondary dark:text-dark-text-secondary font-body">
+                            <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                                 No active alerts at this time
                             </p>
                         </div>
@@ -1671,27 +1689,27 @@ const AlertsTab: React.FC<AlertsTabProps> = ({ alerts }) => {
                             return (
                                 <div
                                     key={idx}
-                                    className={`p-6 glass rounded-xl border ${severity.border} hover:scale-[1.01] transition-all duration-300 bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60`}
+                                    className={`p-4 sm:p-5 md:p-6 glass rounded-xl border ${severity.border} hover:scale-[1.01] transition-all duration-300 bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60`}
                                 >
-                                    <div className="flex items-start gap-4">
-                                        <div className={`p-3 rounded-xl ${severity.icon} shadow-lg flex-shrink-0`}>
-                                            <ExclamationTriangleIcon className="w-6 h-6 text-white" />
+                                    <div className="flex items-start gap-3 sm:gap-4">
+                                        <div className={`p-2 sm:p-2.5 md:p-3 rounded-xl ${severity.icon} shadow-lg flex-shrink-0`}>
+                                            <ExclamationTriangleIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-3">
-                                                <span className={`px-3 py-1 rounded-lg text-xs font-display font-bold uppercase tracking-wide ${severity.bg} ${severity.text}`}>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                                <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-display font-bold uppercase tracking-wide ${severity.bg} ${severity.text}`}>
                                                     {alert.severity}
                                                 </span>
-                                                <h4 className="font-display font-bold text-lg text-light-text-primary dark:text-dark-text-primary">
+                                                <h4 className="font-display font-bold text-base sm:text-lg text-light-text-primary dark:text-dark-text-primary truncate">
                                                     {alert.title}
                                                 </h4>
                                             </div>
-                                            <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4 font-body leading-relaxed">
+                                            <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mb-3 sm:mb-4 font-body leading-relaxed">
                                                 {alert.message}
                                             </p>
-                                            <div className="flex items-center gap-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-                                                <div className="flex items-center gap-1.5">
-                                                    <ClockIcon className="w-4 h-4" />
+                                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                                                <div className="flex items-center gap-1 sm:gap-1.5">
+                                                    <ClockIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     <span>{new Date(alert.timestamp).toLocaleString()}</span>
                                                 </div>
                                                 {alert.type && (
@@ -1718,48 +1736,48 @@ const ModelsTab: React.FC<ModelsTabProps> = ({
     serviceComparison,
 }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Model Comparison */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg">
-                        <CpuChipIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg">
+                        <CpuChipIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Model Comparison
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Performance metrics across AI models
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Model</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Model</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
                             </tr>
                         </thead>
                         <tbody>
                             {modelComparison.map((model, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <CubeIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{model.model}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <CubeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{model.model}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(model.totalCost)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalTokens)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalRequests)}</td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${model.errorRate < 0.01
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(model.totalCost)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalTokens)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(model.totalRequests)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${model.errorRate < 0.01
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : model.errorRate < 0.05
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1768,8 +1786,8 @@ const ModelsTab: React.FC<ModelsTabProps> = ({
                                             {(model.errorRate * 100).toFixed(2)}%
                                         </span>
                                     </td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${model.efficiencyScore > 7
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${model.efficiencyScore > 7
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : model.efficiencyScore > 4
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1786,46 +1804,46 @@ const ModelsTab: React.FC<ModelsTabProps> = ({
             </div>
 
             {/* Service Comparison */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
-                        <ServerIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
+                        <ServerIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Service Comparison
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Performance across AI services
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Service</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Service</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Efficiency</th>
                             </tr>
                         </thead>
                         <tbody>
                             {serviceComparison.map((service, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <CircleStackIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{service.service}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <CircleStackIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{service.service}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(service.totalCost)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(service.totalTokens)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(service.totalRequests)}</td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${service.errorRate < 0.01
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(service.totalCost)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(service.totalTokens)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(service.totalRequests)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${service.errorRate < 0.01
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : service.errorRate < 0.05
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1834,8 +1852,8 @@ const ModelsTab: React.FC<ModelsTabProps> = ({
                                             {(service.errorRate * 100).toFixed(2)}%
                                         </span>
                                     </td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${service.efficiencyScore > 7
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${service.efficiencyScore > 7
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : service.efficiencyScore > 4
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1860,49 +1878,49 @@ const FeaturesTab: React.FC<FeaturesTabProps> = ({
     featureAdoption,
 }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Feature Usage */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 shadow-lg">
-                        <SparklesIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 shadow-lg">
+                        <SparklesIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Feature Usage Statistics
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Cost and usage breakdown by feature
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Feature</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Feature</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Tokens</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Error Rate</th>
                             </tr>
                         </thead>
                         <tbody>
                             {featureUsage.map((feature, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <CommandLineIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{feature.feature}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <CommandLineIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{feature.feature}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(feature.totalCost)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalTokens)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalRequests)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.uniqueUsers)}</td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${feature.errorRate < 0.01
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(feature.totalCost)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalTokens)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalRequests)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.uniqueUsers)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${feature.errorRate < 0.01
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : feature.errorRate < 0.05
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1919,44 +1937,44 @@ const FeaturesTab: React.FC<FeaturesTabProps> = ({
             </div>
 
             {/* Feature Adoption */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 shadow-lg">
-                        <RocketLaunchIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 shadow-lg">
+                        <RocketLaunchIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Feature Adoption Rates
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             User adoption and growth trends
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[700px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Feature</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Active Users</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Users</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Adoption Rate</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Growth Rate</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Feature</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Active Users</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Total Users</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Adoption Rate</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Growth Rate</th>
                             </tr>
                         </thead>
                         <tbody>
                             {featureAdoption.map((feature, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <Squares2X2Icon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{feature.feature}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <Squares2X2Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{feature.feature}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(feature.activeUsers)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalUsers)}</td>
-                                    <td className="text-right py-4 px-5">
-                                        <span className={`px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${feature.adoptionRate > 50
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatNumber(feature.activeUsers)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(feature.totalUsers)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <span className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-display font-semibold ${feature.adoptionRate > 50
                                             ? 'bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-400'
                                             : feature.adoptionRate > 25
                                                 ? 'bg-yellow-100/50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
@@ -1965,14 +1983,14 @@ const FeaturesTab: React.FC<FeaturesTabProps> = ({
                                             {feature.adoptionRate.toFixed(1)}%
                                         </span>
                                     </td>
-                                    <td className="text-right py-4 px-5">
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
                                         <div className="flex items-center justify-end gap-1.5">
                                             {feature.growthRate > 0 ? (
-                                                <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />
+                                                <ArrowTrendingUpIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500" />
                                             ) : (
-                                                <ArrowTrendingDownIcon className="w-4 h-4 text-red-500" />
+                                                <ArrowTrendingDownIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" />
                                             )}
-                                            <span className={`font-display font-semibold ${feature.growthRate > 0
+                                            <span className={`text-xs sm:text-sm font-display font-semibold ${feature.growthRate > 0
                                                 ? 'text-green-600 dark:text-green-400'
                                                 : 'text-red-600 dark:text-red-400'
                                                 }`}>
@@ -1996,53 +2014,53 @@ const ProjectsTab: React.FC<ProjectsTabProps> = ({
     workspaceStats,
 }) => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
             {/* Projects */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg">
-                        <BriefcaseIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg">
+                        <BriefcaseIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Project Analytics
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Cost and usage by project
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Project</th>
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Workspace</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Budget Usage</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Project</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Workspace</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Budget Usage</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
                             </tr>
                         </thead>
                         <tbody>
                             {projectStats.map((project, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <FolderIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{project.projectName}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <FolderIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{project.projectName}</span>
                                         </div>
                                     </td>
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <BuildingOfficeIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-                                            <span className="font-body text-light-text-secondary dark:text-dark-text-secondary">{project.workspaceName || 'N/A'}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <BuildingOfficeIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary truncate">{project.workspaceName || 'N/A'}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.totalCost)}</td>
-                                    <td className="text-right py-4 px-5">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <div className="flex-1 max-w-[100px] h-2 rounded-full bg-primary-100/50 dark:bg-primary-900/30 overflow-hidden">
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(project.totalCost)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                                            <div className="flex-1 max-w-[80px] sm:max-w-[100px] h-1.5 sm:h-2 rounded-full bg-primary-100/50 dark:bg-primary-900/30 overflow-hidden">
                                                 <div
                                                     className={`h-full rounded-full ${project.budgetUsagePercentage > 90
                                                         ? 'bg-gradient-to-r from-red-500 to-red-600'
@@ -2053,7 +2071,7 @@ const ProjectsTab: React.FC<ProjectsTabProps> = ({
                                                     style={{ width: `${Math.min(project.budgetUsagePercentage, 100)}%` }}
                                                 ></div>
                                             </div>
-                                            <span className={`font-display font-semibold min-w-[50px] text-right ${project.isOverBudget
+                                            <span className={`text-xs sm:text-sm font-display font-semibold min-w-[45px] sm:min-w-[50px] text-right ${project.isOverBudget
                                                 ? 'text-red-600 dark:text-red-400'
                                                 : project.budgetUsagePercentage > 70
                                                     ? 'text-yellow-600 dark:text-yellow-400'
@@ -2063,8 +2081,8 @@ const ProjectsTab: React.FC<ProjectsTabProps> = ({
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(project.totalRequests)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(project.activeUsers)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(project.totalRequests)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(project.activeUsers)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -2073,44 +2091,44 @@ const ProjectsTab: React.FC<ProjectsTabProps> = ({
             </div>
 
             {/* Workspaces */}
-            <div className="glass p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg">
-                        <BuildingOfficeIcon className="w-6 h-6 text-white" />
+            <div className="glass p-4 sm:p-6 md:p-8 shadow-2xl backdrop-blur-xl border border-primary-200/30 rounded-2xl bg-gradient-to-br from-white/90 to-white/70 dark:from-dark-card/90 dark:to-dark-card/70">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg">
+                        <BuildingOfficeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-display font-bold gradient-text">
+                        <h3 className="text-xl sm:text-2xl font-display font-bold gradient-text">
                             Workspace Analytics
                         </h3>
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
+                        <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary font-body">
                             Aggregated metrics by workspace
                         </p>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[700px]">
                         <thead>
                             <tr className="border-b border-primary-200/30 dark:border-primary-700/30">
-                                <th className="text-left py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Workspace</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Projects</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
-                                <th className="text-right py-4 px-5 font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
+                                <th className="text-left py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Workspace</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Cost</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Projects</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Requests</th>
+                                <th className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary">Users</th>
                             </tr>
                         </thead>
                         <tbody>
                             {workspaceStats.map((workspace, idx) => (
                                 <tr key={idx} className="border-b border-primary-200/10 dark:border-primary-700/10 hover:bg-white/5 dark:hover:bg-dark-surface/10 transition-colors">
-                                    <td className="py-4 px-5">
-                                        <div className="flex items-center gap-2">
-                                            <BuildingOfficeIcon className="w-5 h-5 text-primary-500 dark:text-primary-400" />
-                                            <span className="font-display font-medium text-light-text-primary dark:text-dark-text-primary">{workspace.workspaceName}</span>
+                                    <td className="py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5">
+                                        <div className="flex items-center gap-1.5 sm:gap-2">
+                                            <BuildingOfficeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500 dark:text-primary-400 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate">{workspace.workspaceName}</span>
                                         </div>
                                     </td>
-                                    <td className="text-right py-4 px-5 font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(workspace.totalCost)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.projectCount)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.totalRequests)}</td>
-                                    <td className="text-right py-4 px-5 font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.activeUsers)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary">{formatCurrency(workspace.totalCost)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.projectCount)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.totalRequests)}</td>
+                                    <td className="text-right py-2.5 sm:py-3 md:py-4 px-3 sm:px-4 md:px-5 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">{formatNumber(workspace.activeUsers)}</td>
                                 </tr>
                             ))}
                         </tbody>

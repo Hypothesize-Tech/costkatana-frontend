@@ -205,7 +205,7 @@ export const ExecutionReportView: React.FC<ExecutionReportViewProps> = ({
                     </div>
 
                     {/* Token breakdown grid */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                         <div className="text-center p-4 rounded-xl glass border border-primary-200/30 dark:border-primary-700/30">
                             <div className="text-sm text-light-text-muted dark:text-dark-text-muted mb-1">Prompt Tokens</div>
                             <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
@@ -335,7 +335,7 @@ export const ExecutionReportView: React.FC<ExecutionReportViewProps> = ({
                 </div>
 
                 {/* Performance Metrics */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="p-4 rounded-xl glass border border-primary-200/30 dark:border-primary-700/30 
             shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                         <div className="w-10 h-10 rounded-full bg-gradient-accent flex items-center justify-center mx-auto mb-3">
@@ -380,7 +380,7 @@ export const ExecutionReportView: React.FC<ExecutionReportViewProps> = ({
                 <div className="flex gap-4 justify-end">
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 bg-gradient-primary text-white shadow-lg hover:shadow-xl 
+                        className="w-full sm:w-auto px-6 py-3 bg-gradient-primary text-white shadow-lg hover:shadow-xl 
               rounded-xl font-display font-bold hover:scale-105 active:scale-95 
               transition-all duration-300"
                     >
