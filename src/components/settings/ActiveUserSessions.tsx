@@ -130,12 +130,12 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
 
     if (sessions.length === 0) {
         return (
-            <div className="p-6 rounded-lg border glass border-info-200/30">
-                <div className="flex gap-4 items-center">
-                    <div className="flex justify-center items-center w-12 h-12 rounded-lg bg-gradient-info/20">
-                        <Smartphone className="w-6 h-6 text-info-500" />
+            <div className="p-4 rounded-lg border glass border-info-200/30 sm:p-5 md:p-6">
+                <div className="flex flex-col gap-3 items-center text-center sm:flex-row sm:text-left sm:gap-4">
+                    <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-info/20 sm:w-12 sm:h-12">
+                        <Smartphone className="w-5 h-5 text-info-500 sm:w-6 sm:h-6" />
                     </div>
-                    <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-base">
                         No active sessions found. Sessions will appear here when you log in from different devices.
                     </p>
                 </div>
@@ -147,30 +147,30 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
     const currentSession = sessions.find(s => s.isCurrentSession);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
             {currentSession && (
-                <div className="p-4 rounded-lg border glass border-success-200/30 bg-gradient-success/5">
-                    <div className="flex gap-3 items-start justify-between">
-                        <div className="flex gap-3 items-start flex-1">
-                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-success/20 mt-1">
+                <div className="p-3 rounded-lg border glass border-success-200/30 bg-gradient-success/5 sm:p-4">
+                    <div className="flex flex-col gap-3 items-start sm:flex-row sm:justify-between">
+                        <div className="flex gap-2 items-start flex-1 w-full sm:gap-3">
+                            <div className="flex justify-center items-center w-9 h-9 rounded-lg bg-gradient-success/20 mt-0.5 sm:w-10 sm:h-10 sm:mt-1">
                                 {getDeviceIcon(currentSession.deviceName, currentSession.os)}
                             </div>
-                            <div className="flex-1">
-                                <div className="flex gap-2 items-center mb-1">
-                                    <span className="font-semibold font-display gradient-text-success">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap gap-1.5 items-center mb-1 sm:gap-2">
+                                    <span className="text-sm font-semibold font-display gradient-text-success sm:text-base">
                                         {currentSession.deviceName}
                                     </span>
-                                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gradient-success text-white">
+                                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gradient-success text-white whitespace-nowrap">
                                         Current Session
                                     </span>
                                 </div>
-                                <div className="flex gap-4 items-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                <div className="flex flex-wrap gap-2 items-center text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:gap-3 sm:text-sm">
                                     <span className="flex gap-1 items-center">
                                         {getBrowserIcon(currentSession.browser)}
-                                        {currentSession.browser || 'Unknown Browser'}
+                                        <span className="truncate">{currentSession.browser || 'Unknown Browser'}</span>
                                     </span>
-                                    <span>{getLocationText(currentSession)}</span>
-                                    <span>{formatRelativeTime(currentSession.lastActiveAt)}</span>
+                                    <span className="truncate">{getLocationText(currentSession)}</span>
+                                    <span className="whitespace-nowrap">{formatRelativeTime(currentSession.lastActiveAt)}</span>
                                 </div>
                             </div>
                         </div>
@@ -180,43 +180,43 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
 
             {otherSessions.length > 0 && (
                 <>
-                    <div className="flex justify-between items-center">
-                        <h3 className="font-semibold font-display gradient-text">
+                    <div className="flex flex-col gap-2 justify-between items-start sm:flex-row sm:items-center">
+                        <h3 className="text-sm font-semibold font-display gradient-text sm:text-base">
                             Other Active Sessions ({otherSessions.length})
                         </h3>
                         <button
                             onClick={() => setShowRevokeAllConfirm(true)}
                             disabled={revokingSessionId === 'all'}
-                            className="px-4 py-2 text-sm font-semibold rounded-lg transition-colors bg-gradient-danger text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-gradient-danger text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
                         >
                             {revokingSessionId === 'all' ? 'Revoking...' : 'Revoke All Others'}
                         </button>
                     </div>
 
                     {showRevokeAllConfirm && (
-                        <div className="p-4 rounded-lg border glass border-danger-200/30 bg-gradient-danger/5">
-                            <div className="flex gap-3 items-start mb-4">
-                                <AlertCircle className="w-5 h-5 text-danger-500 mt-0.5" />
+                        <div className="p-3 rounded-lg border glass border-danger-200/30 bg-gradient-danger/5 sm:p-4">
+                            <div className="flex flex-col gap-2 items-start mb-3 sm:flex-row sm:gap-3 sm:mb-4">
+                                <AlertCircle className="w-5 h-5 text-danger-500 flex-shrink-0 mt-0.5" />
                                 <div>
-                                    <h4 className="font-semibold font-display gradient-text-danger mb-1">
+                                    <h4 className="text-sm font-semibold font-display gradient-text-danger mb-1 sm:text-base">
                                         Revoke All Other Sessions?
                                     </h4>
-                                    <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                    <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                                         This will log you out from all other devices. You will remain logged in on this device.
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex gap-2 justify-end">
+                            <div className="flex flex-col gap-2 justify-end sm:flex-row">
                                 <button
                                     onClick={() => setShowRevokeAllConfirm(false)}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg transition-colors border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-100/10 dark:hover:bg-primary-900/10"
+                                    className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border border-primary-200/30 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-100/10 dark:hover:bg-primary-900/10 w-full sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleRevokeAllOther}
                                     disabled={revokingSessionId === 'all'}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg transition-colors bg-gradient-danger text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-gradient-danger text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
                                 >
                                     {revokingSessionId === 'all' ? 'Revoking...' : 'Revoke All'}
                                 </button>
@@ -224,35 +224,35 @@ export const ActiveUserSessions: React.FC<ActiveUserSessionsProps> = ({ onSessio
                         </div>
                     )}
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5 sm:space-y-3">
                         {otherSessions.map((session) => (
                             <div
                                 key={session.userSessionId}
-                                className="p-4 rounded-lg border glass border-primary-200/30 hover:border-primary-300/50 transition-colors"
+                                className="p-3 rounded-lg border glass border-primary-200/30 hover:border-primary-300/50 transition-colors sm:p-4"
                             >
-                                <div className="flex gap-3 items-start justify-between">
-                                    <div className="flex gap-3 items-start flex-1">
-                                        <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-primary/20 mt-1">
+                                <div className="flex flex-col gap-3 items-start sm:flex-row sm:justify-between">
+                                    <div className="flex gap-2 items-start flex-1 w-full sm:gap-3">
+                                        <div className="flex justify-center items-center w-9 h-9 rounded-lg bg-gradient-primary/20 mt-0.5 sm:w-10 sm:h-10 sm:mt-1">
                                             {getDeviceIcon(session.deviceName, session.os)}
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="font-semibold font-display gradient-text mb-1">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-sm font-semibold font-display gradient-text mb-1 sm:text-base">
                                                 {session.deviceName}
                                             </div>
-                                            <div className="flex gap-4 items-center text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                                            <div className="flex flex-wrap gap-2 items-center text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:gap-3 sm:text-sm">
                                                 <span className="flex gap-1 items-center">
                                                     {getBrowserIcon(session.browser)}
-                                                    {session.browser || 'Unknown Browser'}
+                                                    <span className="truncate">{session.browser || 'Unknown Browser'}</span>
                                                 </span>
-                                                <span>{getLocationText(session)}</span>
-                                                <span>{formatRelativeTime(session.lastActiveAt)}</span>
+                                                <span className="truncate">{getLocationText(session)}</span>
+                                                <span className="whitespace-nowrap">{formatRelativeTime(session.lastActiveAt)}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button
                                         onClick={() => handleRevokeSession(session.userSessionId)}
                                         disabled={revokingSessionId === session.userSessionId}
-                                        className="flex justify-center items-center w-8 h-8 rounded-lg transition-colors text-danger-500 hover:bg-danger-100/10 dark:hover:bg-danger-900/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex justify-center items-center w-7 h-7 rounded-lg transition-colors text-danger-500 hover:bg-danger-100/10 dark:hover:bg-danger-900/10 disabled:opacity-50 disabled:cursor-not-allowed self-end sm:self-center sm:w-8 sm:h-8"
                                         title="Revoke this session"
                                     >
                                         <X className="w-4 h-4" />

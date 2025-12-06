@@ -89,28 +89,28 @@ export const SessionReplaySettings: React.FC = () => {
     }
 
     return (
-        <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
-            {/* Header */}
-            <div className="flex gap-3 items-center mb-6">
-                <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-primary glow-primary">
-                    <Video className="w-6 h-6 text-white" />
+        <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 sm:p-5 md:p-6">
+            {/* Header - Responsive */}
+            <div className="flex flex-col gap-2 items-start mb-4 sm:flex-row sm:gap-3 sm:items-center sm:mb-5 md:mb-6">
+                <div className="flex justify-center items-center w-8 h-8 rounded-xl bg-gradient-primary glow-primary sm:w-9 sm:h-9 md:w-10 md:h-10">
+                    <Video className="w-5 h-5 text-white sm:w-5.5 sm:h-5.5 md:w-6 md:h-6" />
                 </div>
-                <h2 className="text-xl font-bold font-display gradient-text">
+                <h2 className="text-lg font-bold font-display gradient-text sm:text-xl md:text-xl">
                     Session Replay Settings
                 </h2>
             </div>
 
-            {/* Description */}
-            <div className="p-4 mb-6 rounded-lg border glass border-info-200/30 bg-info-50/50 dark:bg-info-900/20">
-                <p className="text-sm text-secondary-700 dark:text-secondary-300">
+            {/* Description - Responsive */}
+            <div className="p-3 mb-4 rounded-lg border glass border-info-200/30 bg-info-50/50 dark:bg-info-900/20 sm:p-4 sm:mb-5 md:mb-6">
+                <p className="text-xs text-secondary-700 dark:text-secondary-300 sm:text-sm">
                     Configure how your AI usage sessions are recorded for replay and analysis. Track requests, responses, and performance metrics.
                 </p>
             </div>
 
-            <div className="space-y-6">
-                {/* Enable Session Replay Toggle */}
-                <div className="p-6 rounded-lg border glass border-secondary-200/30">
-                    <label className="flex gap-4 items-start cursor-pointer">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                {/* Enable Session Replay Toggle - Responsive */}
+                <div className="p-4 rounded-lg border glass border-secondary-200/30 sm:p-5 md:p-6">
+                    <label className="flex gap-3 items-start cursor-pointer sm:gap-4">
                         <input
                             type="checkbox"
                             checked={preferences.enableSessionReplay}
@@ -118,37 +118,37 @@ export const SessionReplaySettings: React.FC = () => {
                                 ...preferences,
                                 enableSessionReplay: e.target.checked
                             })}
-                            className="w-5 h-5 mt-0.5 rounded border-2 border-primary-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all cursor-pointer"
+                            className="w-4 h-4 mt-0.5 rounded border-2 border-primary-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all cursor-pointer sm:w-5 sm:h-5"
                         />
                         <div className="flex-1">
-                            <span className="font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                            <span className="text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-base">
                                 Enable Session Replay
                             </span>
-                            <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                            <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                                 Automatically record your AI interactions, code context, and system metrics for later playback and analysis
                             </p>
                         </div>
                     </label>
                 </div>
 
-                {/* Session Timeout Setting */}
+                {/* Session Timeout Setting - Responsive */}
                 {preferences.enableSessionReplay && (
-                    <div className="p-6 space-y-4 rounded-lg border glass border-primary-200/30">
-                        <div className="flex gap-3 items-center">
-                            <div className="flex justify-center items-center w-8 h-8 rounded-lg bg-gradient-secondary">
-                                <Clock className="w-5 h-5 text-white" />
+                    <div className="p-4 space-y-3 rounded-lg border glass border-primary-200/30 sm:p-5 sm:space-y-4 md:p-6">
+                        <div className="flex flex-col gap-2 items-start sm:flex-row sm:gap-3 sm:items-center">
+                            <div className="flex justify-center items-center w-7 h-7 rounded-lg bg-gradient-secondary sm:w-8 sm:h-8">
+                                <Clock className="w-4 h-4 text-white sm:w-5 sm:h-5" />
                             </div>
                             <div>
-                                <label className="block font-semibold font-display text-light-text-primary dark:text-dark-text-primary">
+                                <label className="block text-sm font-semibold font-display text-light-text-primary dark:text-dark-text-primary sm:text-base">
                                     Session Timeout
                                 </label>
-                                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                                <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                                     Automatic session end after inactivity
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex gap-4 items-center">
+                        <div className="flex flex-col gap-3 items-stretch sm:flex-row sm:gap-4 sm:items-center">
                             <input
                                 type="range"
                                 min="5"
@@ -168,7 +168,7 @@ export const SessionReplaySettings: React.FC = () => {
                                         rgba(59, 130, 246, 0.2) 100%)`
                                 }}
                             />
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-2 items-center justify-center sm:justify-start">
                                 <input
                                     type="number"
                                     min="5"
@@ -181,9 +181,9 @@ export const SessionReplaySettings: React.FC = () => {
                                             sessionReplayTimeout: value
                                         });
                                     }}
-                                    className="px-3 py-2 w-20 rounded-lg border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="px-3 py-2 w-20 text-sm rounded-lg border glass border-primary-200/30 text-light-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 />
-                                <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">min</span>
+                                <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">min</span>
                             </div>
                         </div>
                     </div>
@@ -256,19 +256,19 @@ export const SessionReplaySettings: React.FC = () => {
                 )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 justify-end pt-6 mt-6 border-t border-primary-200/30">
+            {/* Action Buttons - Responsive */}
+            <div className="flex flex-col gap-2 justify-end pt-4 mt-4 border-t border-primary-200/30 sm:flex-row sm:gap-3 sm:pt-5 sm:mt-5 md:pt-6 md:mt-6">
                 <button
                     onClick={fetchPreferences}
                     disabled={saving}
-                    className="btn btn-secondary px-6 py-2.5 glass rounded-lg border border-secondary-200/30 font-body text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-secondary-300/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-secondary px-4 py-2 glass rounded-lg border border-secondary-200/30 font-body text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-secondary-300/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:px-6 sm:py-2.5"
                 >
                     Reset
                 </button>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="btn btn-primary px-6 py-2.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary px-4 py-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:px-6 sm:py-2.5"
                 >
                     {saving ? (
                         <>

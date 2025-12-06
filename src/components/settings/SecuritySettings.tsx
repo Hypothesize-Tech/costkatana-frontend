@@ -1,4 +1,3 @@
-// src/components/settings/SecuritySettings.tsx
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Smartphone, AlertTriangle, BarChart3, Mail, Lock, FileText, Shield } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';

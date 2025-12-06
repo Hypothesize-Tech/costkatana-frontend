@@ -1,4 +1,3 @@
-// src/components/settings/EmailManagement.tsx
 import React, { useState, useEffect } from 'react';
 import { Mail, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
@@ -99,45 +98,45 @@ export const EmailManagement: React.FC = () => {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Primary Email Section */}
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30">
-                <h3 className="flex gap-2 items-center mb-4 text-lg font-semibold font-display gradient-text">
-                    <Mail className="w-6 h-6" />
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            {/* Primary Email Section - Responsive */}
+            <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 sm:p-5 md:p-6">
+                <h3 className="flex gap-1.5 items-center mb-3 text-base font-semibold font-display gradient-text sm:gap-2 sm:mb-4 sm:text-lg">
+                    <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                     Primary Email
                 </h3>
 
                 {primaryEmail && (
-                    <div className="flex justify-between items-center p-4 rounded-lg border glass border-primary-200/30">
-                        <div className="flex flex-1 gap-3 items-center">
-                            <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-primary glow-primary">
-                                <Mail className="w-5 h-5 text-white" />
+                    <div className="flex flex-col gap-3 justify-between items-start p-3 rounded-lg border glass border-primary-200/30 sm:flex-row sm:items-center sm:p-4">
+                        <div className="flex flex-1 gap-2 items-center w-full sm:gap-3">
+                            <div className="flex justify-center items-center w-9 h-9 rounded-lg bg-gradient-primary glow-primary sm:w-10 sm:h-10">
+                                <Mail className="w-4 h-4 text-white sm:w-5 sm:h-5" />
                             </div>
-                            <div className="flex-1">
-                                <div className="flex gap-2 items-center">
-                                    <p className="font-medium font-body text-light-text-primary dark:text-dark-text-primary">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap gap-1.5 items-center sm:gap-2">
+                                    <p className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary truncate sm:text-base">
                                         {primaryEmail.email}
                                     </p>
-                                    <span className="glass px-2 py-0.5 rounded-full text-xs font-display font-semibold border border-primary-200/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300">
+                                    <span className="glass px-2 py-0.5 rounded-full text-xs font-display font-semibold border border-primary-200/30 bg-gradient-primary/20 text-primary-700 dark:text-primary-300 whitespace-nowrap">
                                         Primary
                                     </span>
                                 </div>
-                                <div className="flex gap-2 items-center mt-1">
+                                <div className="flex flex-wrap gap-2 items-center mt-1">
                                     {primaryEmail.verified ? (
-                                        <span className="flex gap-1 items-center text-sm font-body text-success-600 dark:text-success-400">
-                                            <CheckCircle className="w-4 h-4" />
+                                        <span className="flex gap-1 items-center text-xs font-body text-success-600 dark:text-success-400 sm:text-sm">
+                                            <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             Verified
                                         </span>
                                     ) : (
                                         <>
-                                            <span className="flex gap-1 items-center text-sm font-body text-warning-600 dark:text-warning-400">
-                                                <AlertCircle className="w-4 h-4" />
+                                            <span className="flex gap-1 items-center text-xs font-body text-warning-600 dark:text-warning-400 sm:text-sm">
+                                                <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                 Not Verified
                                             </span>
                                             <button
                                                 onClick={() => handleResendVerification(primaryEmail.email)}
                                                 disabled={resendingEmail === primaryEmail.email}
-                                                className="text-sm btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="text-xs btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed sm:text-sm"
                                             >
                                                 {resendingEmail === primaryEmail.email ? 'Sending...' : 'Resend Verification'}
                                             </button>
@@ -150,27 +149,27 @@ export const EmailManagement: React.FC = () => {
                 )}
             </div>
 
-            {/* Secondary Emails Section */}
-            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30">
-                <div className="flex justify-between items-center mb-4">
-                    <h3 className="flex gap-2 items-center text-lg font-semibold font-display gradient-text-secondary">
-                        <Mail className="w-6 h-6" />
+            {/* Secondary Emails Section - Responsive */}
+            <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-secondary-200/30 sm:p-5 md:p-6">
+                <div className="flex flex-col gap-2 justify-between items-start mb-3 sm:flex-row sm:items-center sm:mb-4">
+                    <h3 className="flex gap-1.5 items-center text-base font-semibold font-display gradient-text-secondary sm:gap-2 sm:text-lg">
+                        <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                         Secondary Emails
                     </h3>
-                    <span className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                    <span className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                         {secondaryEmails.length}/2 used
                     </span>
                 </div>
 
-                {/* Secondary Email List */}
-                <div className="mb-4 space-y-3">
+                {/* Secondary Email List - Responsive */}
+                <div className="mb-3 space-y-2.5 sm:mb-4 sm:space-y-3">
                     {secondaryEmails.length === 0 ? (
-                        <div className="p-6 text-center rounded-lg border glass border-accent-200/30">
-                            <Mail className="mx-auto mb-3 w-12 h-12 opacity-50 text-accent-500" />
-                            <p className="font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        <div className="p-5 text-center rounded-lg border glass border-accent-200/30 sm:p-6">
+                            <Mail className="mx-auto mb-2 w-10 h-10 opacity-50 text-accent-500 sm:mb-3 sm:w-12 sm:h-12" />
+                            <p className="text-sm font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-base">
                                 No secondary emails added yet
                             </p>
-                            <p className="mt-1 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                            <p className="mt-1 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                                 Add up to 2 additional email addresses
                             </p>
                         </div>
@@ -178,32 +177,32 @@ export const EmailManagement: React.FC = () => {
                         secondaryEmails.map((email) => (
                             <div
                                 key={email.email}
-                                className="flex justify-between items-center p-4 rounded-lg border glass border-secondary-200/30"
+                                className="flex flex-col gap-3 justify-between items-start p-3 rounded-lg border glass border-secondary-200/30 sm:flex-row sm:items-center sm:p-4"
                             >
-                                <div className="flex flex-1 gap-3 items-center">
-                                    <div className="flex justify-center items-center w-10 h-10 rounded-lg bg-gradient-secondary/20">
-                                        <Mail className="w-5 h-5 text-secondary-500" />
+                                <div className="flex flex-1 gap-2 items-center w-full sm:gap-3">
+                                    <div className="flex justify-center items-center w-9 h-9 rounded-lg bg-gradient-secondary/20 sm:w-10 sm:h-10">
+                                        <Mail className="w-4 h-4 text-secondary-500 sm:w-5 sm:h-5" />
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium font-body text-light-text-primary dark:text-dark-text-primary">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium font-body text-light-text-primary dark:text-dark-text-primary truncate sm:text-base">
                                             {email.email}
                                         </p>
-                                        <div className="flex gap-3 items-center mt-1">
+                                        <div className="flex flex-wrap gap-2 items-center mt-1 sm:gap-3">
                                             {email.verified ? (
-                                                <span className="flex gap-1 items-center text-sm font-body text-success-600 dark:text-success-400">
-                                                    <CheckCircle className="w-4 h-4" />
+                                                <span className="flex gap-0.5 items-center text-xs font-body text-success-600 dark:text-success-400 sm:gap-1 sm:text-sm">
+                                                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     Verified
                                                 </span>
                                             ) : (
                                                 <>
-                                                    <span className="flex gap-1 items-center text-sm font-body text-warning-600 dark:text-warning-400">
-                                                        <AlertCircle className="w-4 h-4" />
+                                                    <span className="flex gap-0.5 items-center text-xs font-body text-warning-600 dark:text-warning-400 sm:gap-1 sm:text-sm">
+                                                        <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                         Not Verified
                                                     </span>
                                                     <button
                                                         onClick={() => handleResendVerification(email.email)}
                                                         disabled={resendingEmail === email.email}
-                                                        className="text-sm btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="text-xs btn btn-ghost disabled:opacity-50 disabled:cursor-not-allowed sm:text-sm"
                                                     >
                                                         {resendingEmail === email.email ? 'Sending...' : 'Resend'}
                                                     </button>
@@ -213,11 +212,11 @@ export const EmailManagement: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center w-full sm:w-auto">
                                     {email.verified && (
                                         <button
                                             onClick={() => setConfirmPrimaryEmail(email.email)}
-                                            className="text-sm btn btn-secondary"
+                                            className="text-xs btn btn-secondary flex-1 sm:flex-initial sm:text-sm"
                                         >
                                             Set as Primary
                                         </button>
@@ -229,9 +228,9 @@ export const EmailManagement: React.FC = () => {
                                         title="Remove email"
                                     >
                                         {removingEmail === email.email ? (
-                                            <div className="w-5 h-5 rounded-full border-2 animate-spin border-danger-600 border-t-transparent" />
+                                            <div className="w-4 h-4 rounded-full border-2 animate-spin border-danger-600 border-t-transparent sm:w-5 sm:h-5" />
                                         ) : (
-                                            <Trash2 className="w-5 h-5" />
+                                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                                         )}
                                     </button>
                                 </div>
@@ -240,13 +239,13 @@ export const EmailManagement: React.FC = () => {
                     )}
                 </div>
 
-                {/* Add Email Form */}
+                {/* Add Email Form - Responsive */}
                 {canAddMore && (
-                    <form onSubmit={handleAddEmail} className="p-4 rounded-lg border glass border-info-200/30 bg-gradient-info/5">
-                        <label className="block mb-2 font-medium font-display gradient-text">
+                    <form onSubmit={handleAddEmail} className="p-3 rounded-lg border glass border-info-200/30 bg-gradient-info/5 sm:p-4">
+                        <label className="block mb-2 text-sm font-medium font-display gradient-text sm:text-base">
                             Add Secondary Email
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                             <input
                                 type="email"
                                 value={newEmail}
@@ -258,38 +257,38 @@ export const EmailManagement: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={addingEmail || !newEmail}
-                                className="whitespace-nowrap btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="whitespace-nowrap btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                             >
                                 {addingEmail ? 'Adding...' : 'Add Email'}
                             </button>
                         </div>
-                        <p className="mt-2 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        <p className="mt-2 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:text-sm">
                             A verification email will be sent to verify ownership
                         </p>
                     </form>
                 )}
             </div>
 
-            {/* Confirm Remove Modal */}
+            {/* Confirm Remove Modal - Responsive */}
             {confirmRemoveEmail && (
-                <div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50">
-                    <div className="p-6 w-full max-w-md rounded-xl border shadow-2xl glass border-danger-200/30">
-                        <h3 className="mb-4 text-xl font-bold font-display gradient-text-danger">
+                <div className="flex fixed inset-0 z-50 justify-center items-center p-3 backdrop-blur-sm bg-black/50 sm:p-4">
+                    <div className="p-4 w-full max-w-md rounded-xl border shadow-2xl glass border-danger-200/30 sm:p-6">
+                        <h3 className="mb-3 text-lg font-bold font-display gradient-text-danger sm:mb-4 sm:text-xl">
                             Remove Email Address
                         </h3>
-                        <p className="mb-6 font-body text-light-text-primary dark:text-dark-text-primary">
-                            Are you sure you want to remove <strong>{confirmRemoveEmail}</strong> from your account?
+                        <p className="mb-4 text-sm font-body text-light-text-primary dark:text-dark-text-primary sm:mb-6 sm:text-base">
+                            Are you sure you want to remove <strong className="break-all">{confirmRemoveEmail}</strong> from your account?
                         </p>
-                        <div className="flex gap-3 justify-end">
+                        <div className="flex flex-col gap-2 justify-end sm:flex-row sm:gap-3">
                             <button
                                 onClick={() => setConfirmRemoveEmail(null)}
-                                className="btn btn-secondary"
+                                className="btn btn-secondary w-full sm:w-auto"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleRemoveEmail(confirmRemoveEmail)}
-                                className="btn btn-danger"
+                                className="btn btn-danger w-full sm:w-auto"
                             >
                                 Remove
                             </button>
@@ -298,29 +297,29 @@ export const EmailManagement: React.FC = () => {
                 </div>
             )}
 
-            {/* Confirm Set Primary Modal */}
+            {/* Confirm Set Primary Modal - Responsive */}
             {confirmPrimaryEmail && (
-                <div className="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50">
-                    <div className="p-6 w-full max-w-md rounded-xl border shadow-2xl glass border-warning-200/30">
-                        <h3 className="mb-4 text-xl font-bold font-display gradient-text-warning">
+                <div className="flex fixed inset-0 z-50 justify-center items-center p-3 backdrop-blur-sm bg-black/50 sm:p-4">
+                    <div className="p-4 w-full max-w-md rounded-xl border shadow-2xl glass border-warning-200/30 sm:p-6">
+                        <h3 className="mb-3 text-lg font-bold font-display gradient-text-warning sm:mb-4 sm:text-xl">
                             Change Primary Email
                         </h3>
-                        <p className="mb-4 font-body text-light-text-primary dark:text-dark-text-primary">
-                            Are you sure you want to change your primary email to <strong>{confirmPrimaryEmail}</strong>?
+                        <p className="mb-3 text-sm font-body text-light-text-primary dark:text-dark-text-primary sm:mb-4 sm:text-base">
+                            Are you sure you want to change your primary email to <strong className="break-all">{confirmPrimaryEmail}</strong>?
                         </p>
-                        <p className="mb-6 text-sm font-body text-light-text-secondary dark:text-dark-text-secondary">
+                        <p className="mb-4 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary sm:mb-6 sm:text-sm">
                             Your current primary email will become a secondary email.
                         </p>
-                        <div className="flex gap-3 justify-end">
+                        <div className="flex flex-col gap-2 justify-end sm:flex-row sm:gap-3">
                             <button
                                 onClick={() => setConfirmPrimaryEmail(null)}
-                                className="btn btn-secondary"
+                                className="btn btn-secondary w-full sm:w-auto"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleSetPrimary(confirmPrimaryEmail)}
-                                className="btn btn-primary"
+                                className="btn btn-primary w-full sm:w-auto"
                             >
                                 Confirm
                             </button>

@@ -23,6 +23,24 @@ import { UsageTrendChart } from '../components/guardrails/UsageTrendChart';
 import {
   ShieldCheckIcon,
   ChartBarIcon,
+  LockClosedIcon,
+  SignalIcon,
+  SparklesIcon,
+  CheckCircleIcon,
+  BellIcon,
+  EyeIcon,
+  LightBulbIcon,
+  StarIcon,
+  CogIcon,
+  UserIcon,
+  KeyIcon,
+  TrashIcon,
+  FolderIcon,
+  ChartPieIcon,
+  RocketLaunchIcon,
+  ClipboardDocumentCheckIcon,
+  CreditCardIcon,
+  DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { MFASetup } from '../components/auth/MFASetup';
 import { SubscriptionDashboard } from '../components/subscription/SubscriptionDashboard';
@@ -156,28 +174,28 @@ export const Profile: React.FC = () => {
 
   // Map activity types to friendly names and icons
   const formatActivity = (activity: any) => {
-    const typeConfig: Record<string, { icon: string; color: string; type: 'usage' | 'optimization' | 'settings' | 'api_key' | 'login' }> = {
-      login: { icon: '🔐', color: 'text-blue-600', type: 'login' },
-      api_call: { icon: '📡', color: 'text-green-600', type: 'usage' },
-      optimization_created: { icon: '✨', color: 'text-purple-600', type: 'optimization' },
-      optimization_applied: { icon: '✅', color: 'text-green-600', type: 'optimization' },
-      alert_created: { icon: '🔔', color: 'text-yellow-600', type: 'settings' },
-      alert_resolved: { icon: '✓', color: 'text-green-600', type: 'settings' },
-      tip_viewed: { icon: '👁️', color: 'text-blue-600', type: 'settings' },
-      tip_applied: { icon: '💡', color: 'text-yellow-600', type: 'settings' },
-      quality_scored: { icon: '⭐', color: 'text-yellow-600', type: 'settings' },
-      settings_updated: { icon: '⚙️', color: 'text-gray-600', type: 'settings' },
-      profile_updated: { icon: '👤', color: 'text-blue-600', type: 'settings' },
-      api_key_added: { icon: '🔑', color: 'text-green-600', type: 'api_key' },
-      api_key_removed: { icon: '🗑️', color: 'text-red-600', type: 'api_key' },
-      file_uploaded: { icon: '📁', color: 'text-blue-600', type: 'settings' },
-      export_generated: { icon: '📊', color: 'text-purple-600', type: 'settings' },
-      bulk_optimization: { icon: '🚀', color: 'text-purple-600', type: 'optimization' },
-      cost_audit_completed: { icon: '📋', color: 'text-green-600', type: 'settings' },
-      subscription_changed: { icon: '💳', color: 'text-blue-600', type: 'settings' },
+    const typeConfig: Record<string, { icon: React.ComponentType<any>; color: string; type: 'usage' | 'optimization' | 'settings' | 'api_key' | 'login' }> = {
+      login: { icon: LockClosedIcon, color: 'text-blue-600', type: 'login' },
+      api_call: { icon: SignalIcon, color: 'text-green-600', type: 'usage' },
+      optimization_created: { icon: SparklesIcon, color: 'text-purple-600', type: 'optimization' },
+      optimization_applied: { icon: CheckCircleIcon, color: 'text-green-600', type: 'optimization' },
+      alert_created: { icon: BellIcon, color: 'text-yellow-600', type: 'settings' },
+      alert_resolved: { icon: CheckCircleIcon, color: 'text-green-600', type: 'settings' },
+      tip_viewed: { icon: EyeIcon, color: 'text-blue-600', type: 'settings' },
+      tip_applied: { icon: LightBulbIcon, color: 'text-yellow-600', type: 'settings' },
+      quality_scored: { icon: StarIcon, color: 'text-yellow-600', type: 'settings' },
+      settings_updated: { icon: CogIcon, color: 'text-gray-600', type: 'settings' },
+      profile_updated: { icon: UserIcon, color: 'text-blue-600', type: 'settings' },
+      api_key_added: { icon: KeyIcon, color: 'text-green-600', type: 'api_key' },
+      api_key_removed: { icon: TrashIcon, color: 'text-red-600', type: 'api_key' },
+      file_uploaded: { icon: FolderIcon, color: 'text-blue-600', type: 'settings' },
+      export_generated: { icon: ChartPieIcon, color: 'text-purple-600', type: 'settings' },
+      bulk_optimization: { icon: RocketLaunchIcon, color: 'text-purple-600', type: 'optimization' },
+      cost_audit_completed: { icon: ClipboardDocumentCheckIcon, color: 'text-green-600', type: 'settings' },
+      subscription_changed: { icon: CreditCardIcon, color: 'text-blue-600', type: 'settings' },
     };
 
-    const config = typeConfig[activity.type] || { icon: '📌', color: 'text-gray-600', type: 'settings' as const };
+    const config = typeConfig[activity.type] || { icon: DocumentDuplicateIcon, color: 'text-gray-600', type: 'settings' as const };
 
     return {
       id: activity._id,
@@ -187,7 +205,9 @@ export const Profile: React.FC = () => {
       timestamp: activity.createdAt ?
         new Date(activity.createdAt).toISOString() :
         new Date().toISOString(),
-      metadata: activity.metadata
+      metadata: activity.metadata,
+      icon: config.icon,
+      iconColor: config.color
     };
   };
 
