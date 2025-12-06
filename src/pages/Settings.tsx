@@ -1,4 +1,3 @@
-// src/pages/Settings.tsx
 import React, { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -130,35 +129,41 @@ export const Settings: React.FC = () => {
   ];
 
   return (
-    <div className="px-4 py-8 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
-      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="p-8 mb-8 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <h1 className="mb-4 text-4xl font-bold font-display gradient-text-primary">Settings</h1>
-          <p className="text-secondary-600 dark:text-secondary-300">
+    <div className="px-3 py-4 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:px-4 sm:py-6 md:px-6 md:py-8">
+      <div className="mx-auto max-w-7xl sm:px-2 md:px-4 lg:px-8">
+        {/* Header - Responsive */}
+        <div className="p-4 mb-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6 sm:mb-6 md:p-8 md:mb-8">
+          <h1 className="mb-2 text-2xl font-bold font-display gradient-text-primary sm:text-3xl sm:mb-3 md:text-4xl md:mb-4">
+            Settings
+          </h1>
+          <p className="text-sm text-secondary-600 dark:text-secondary-300 sm:text-base">
             Manage your account settings and preferences
           </p>
         </div>
 
+        {/* Main Settings Container */}
         <div className="rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-          <div className="p-2 mb-6 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-            <div className="flex gap-2">
+          {/* Tabs Navigation - Responsive with horizontal scroll on mobile */}
+          <div className="p-1.5 mb-4 rounded-xl border shadow-xl backdrop-blur-xl glass border-primary-200/30 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-2 sm:mb-5 md:mb-6">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide sm:gap-2 md:flex-wrap">
               {tabs.map((tabItem) => (
                 <button
                   key={tabItem.id}
                   onClick={() => navigate(`/settings/${tabItem.id}`)}
-                  className={`flex-1 flex flex-col items-center justify-center gap-2 py-3 px-2 text-center font-display font-semibold text-sm transition-all duration-300 rounded-lg ${activeTab === tabItem.id
+                  className={`flex flex-col items-center justify-center gap-1.5 py-2 px-2 text-center font-display font-semibold text-xs transition-all duration-300 rounded-lg min-w-[70px] whitespace-nowrap sm:flex-1 sm:gap-2 sm:py-2.5 sm:px-2.5 sm:text-sm md:py-3 md:text-sm ${activeTab === tabItem.id
                     ? 'bg-gradient-primary text-white shadow-lg glow-primary'
                     : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10'
                     }`}
                 >
-                  <tabItem.icon className="w-5 h-5 flex-shrink-0" />
+                  <tabItem.icon className="w-4 h-4 flex-shrink-0 sm:w-5 sm:h-5" />
                   <span className="leading-tight">{tabItem.name}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="p-6">
+          {/* Tab Content - Responsive padding */}
+          <div className="p-3 sm:p-4 md:p-6">
             {activeTab === 'profile' && (
               <ProfileSettings
                 profile={profile}
@@ -192,59 +197,59 @@ export const Settings: React.FC = () => {
               <TeamManagement />
             )}
             {activeTab === 'integrations' && (
-              <div className="py-6">
-                <div className="p-8 mb-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel">
-                  <div className="flex gap-4 items-center mb-6">
-                    <div className="flex justify-center items-center w-12 h-12 rounded-xl shadow-lg bg-gradient-primary glow-primary">
-                      <LinkIcon className="w-6 h-6 text-white" />
+              <div className="py-3 sm:py-4 md:py-6">
+                <div className="p-4 mb-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6 sm:mb-5 md:p-8 md:mb-6">
+                  <div className="flex flex-col gap-3 items-start mb-4 sm:flex-row sm:gap-4 sm:items-center sm:mb-5 md:mb-6">
+                    <div className="flex justify-center items-center w-10 h-10 rounded-xl shadow-lg bg-gradient-primary glow-primary sm:w-11 sm:h-11 md:w-12 md:h-12">
+                      <LinkIcon className="w-5 h-5 text-white sm:w-5.5 sm:h-5.5 md:w-6 md:h-6" />
                     </div>
                     <div>
-                      <h3 className="mb-1 text-2xl font-bold font-display gradient-text-primary">
+                      <h3 className="mb-1 text-lg font-bold font-display gradient-text-primary sm:text-xl md:text-2xl">
                         Integrations
                       </h3>
-                      <p className="text-secondary-600 dark:text-secondary-300 font-body">
+                      <p className="text-xs text-secondary-600 dark:text-secondary-300 font-body sm:text-sm md:text-base">
                         Connect and manage your external service integrations
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
-                    <div className="p-5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                      <div className="flex justify-between items-center mb-3">
-                        <div className="flex gap-3 items-center">
-                          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-primary/20">
-                            <Github className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <div className="grid grid-cols-1 gap-3 mb-4 sm:gap-4 sm:mb-5 md:grid-cols-2 md:mb-6">
+                    <div className="p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-4.5 md:p-5">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center sm:gap-2.5 md:gap-3">
+                          <div className="flex justify-center items-center w-8 h-8 rounded-xl bg-gradient-primary/20 sm:w-9 sm:h-9 md:w-10 md:h-10">
+                            <Github className="w-4 h-4 text-primary-600 dark:text-primary-400 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" />
                           </div>
                           <div>
-                            <p className="font-semibold font-display text-secondary-900 dark:text-white">GitHub</p>
+                            <p className="text-sm font-semibold font-display text-secondary-900 dark:text-white md:text-base">GitHub</p>
                             <p className="text-xs text-secondary-600 dark:text-secondary-300">Repository integrations</p>
                           </div>
                         </div>
-                        <CheckCircle className="w-6 h-6 text-success-600 dark:text-success-400" />
+                        <CheckCircle className="w-5 h-5 text-success-600 dark:text-success-400 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6" />
                       </div>
                     </div>
 
-                    <div className="p-5 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20">
-                      <div className="flex justify-between items-center mb-3">
-                        <div className="flex gap-3 items-center">
-                          <div className="flex justify-center items-center w-10 h-10 rounded-xl bg-gradient-accent/20">
-                            <BellRing className="w-5 h-5 text-accent-600 dark:text-accent-400" />
+                    <div className="p-4 rounded-xl border glass border-primary-200/30 dark:border-primary-500/20 sm:p-4.5 md:p-5">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center sm:gap-2.5 md:gap-3">
+                          <div className="flex justify-center items-center w-8 h-8 rounded-xl bg-gradient-accent/20 sm:w-9 sm:h-9 md:w-10 md:h-10">
+                            <BellRing className="w-4 h-4 text-accent-600 dark:text-accent-400 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5" />
                           </div>
                           <div>
-                            <p className="font-semibold font-display text-secondary-900 dark:text-white">Slack & Discord</p>
+                            <p className="text-sm font-semibold font-display text-secondary-900 dark:text-white md:text-base">Slack & Discord</p>
                             <p className="text-xs text-secondary-600 dark:text-secondary-300">Alert notifications</p>
                           </div>
                         </div>
-                        <CheckCircle className="w-6 h-6 text-success-600 dark:text-success-400" />
+                        <CheckCircle className="w-5 h-5 text-success-600 dark:text-success-400 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6" />
                       </div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => navigate('/integrations')}
-                    className="btn btn-primary w-full py-3.5 px-6 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 font-display font-semibold text-base"
+                    className="btn btn-primary w-full py-3 px-4 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-xl shadow-lg hover:shadow-xl glow-primary transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 font-display font-semibold text-sm sm:py-3.5 sm:px-5 sm:text-base md:px-6 md:text-base"
                   >
-                    <SettingsIcon className="w-5 h-5" />
+                    <SettingsIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     Manage All Integrations
                   </button>
                 </div>
