@@ -107,7 +107,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <button
               onClick={() => window.location.reload()}
-              className="btn-primary font-display font-semibold"
+              className="btn btn-primary font-display font-semibold"
             >
               Refresh Page
             </button>

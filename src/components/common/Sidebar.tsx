@@ -36,6 +36,7 @@ import {
   ChartPieIcon,
   TagIcon,
   CreditCardIcon,
+  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/helpers';
 import { useAuth } from '../../hooks';
@@ -94,8 +95,11 @@ const navCategories: NavCategory[] = [
     id: 'optimize',
     label: 'Optimize',
     items: [
+      { name: 'Cost Intelligence', href: '/cost-intelligence', icon: SparklesIcon, description: '6-layer cost intelligence stack with real-time insights' },
+      { name: 'Data Network Effects', href: '/data-network-effects', icon: SignalIcon, description: 'Self-improving AI system with learning loops' },
       { name: 'Workflows', href: '/workflows', icon: QueueListIcon, description: 'Multi-step AI operations' },
       { name: 'Optimizations', href: '/optimizations', icon: LightBulbIcon, description: 'Performance insights' },
+      { name: 'Cost Brain', href: '/brain', icon: CpuChipIcon, description: 'AI cost optimization brain' },
       { name: 'Unexplained Costs', href: '/unexplained-costs', icon: ChartPieIcon, description: 'Cost attribution analysis' },
       { name: 'Experimentation', href: '/experimentation', icon: BeakerIcon, description: 'A/B testing' },
     ],
@@ -104,6 +108,7 @@ const navCategories: NavCategory[] = [
     id: 'security',
     label: 'Security & Compliance',
     items: [
+      { name: 'Agent Governance', href: '/agent-governance', icon: ShieldCheckIcon, description: 'AI agent governance & control' },
       { name: 'Key Vault', href: '/key-vault', icon: KeyIcon, description: 'API key management' },
       { name: 'Moderation', href: '/moderation', icon: ShieldCheckIcon, description: 'Content moderation' },
       { name: 'Security', href: '/security', icon: ExclamationTriangleIcon, description: 'LLM security guardrails' },
@@ -142,6 +147,7 @@ const navCategories: NavCategory[] = [
     label: 'Administration',
     items: [
       { name: 'Admin Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Platform analytics' },
+      { name: 'Admin Brain', href: '/admin/brain', icon: ServerIcon, description: 'System-wide cost brain' },
       { name: 'User Spending', href: '/admin/user-spending', icon: CurrencyDollarIcon, description: 'User spending tracking' },
       { name: 'Discount Management', href: '/admin/discounts', icon: TagIcon, description: 'Manage discount codes' },
     ],

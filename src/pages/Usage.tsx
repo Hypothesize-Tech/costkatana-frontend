@@ -38,7 +38,20 @@ export default function Usage() {
   const { limit } = usePagination();
 
   // Convert date range filter to startDate/endDate
-  const getDateRange = (dateRange: string) => {
+  const getDateRange = (dateRange: string, customStartDate?: string, customEndDate?: string) => {
+    // If custom date range is selected and dates are provided, use them
+    if (dateRange === 'custom' && customStartDate && customEndDate) {
+      return {
+        startDate: customStartDate,
+        endDate: customEndDate
+      };
+    }
+
+    // If custom is selected but dates not provided, return undefined
+    if (dateRange === 'custom') {
+      return { startDate: undefined, endDate: undefined };
+    }
+
     const now = new Date();
     const startDate = new Date();
 
@@ -73,7 +86,7 @@ export default function Usage() {
       page: currentPage,
       limit: safeLimit,
       q: debouncedSearch,
-      ...getDateRange(filters.dateRange || '7d')
+      ...getDateRange(filters.dateRange || '30d', filters.startDate, filters.endDate)
     };
 
     if (filters.service) params.service = filters.service;
@@ -108,7 +121,7 @@ export default function Usage() {
 
   // Fetch previous period data for trend calculation
   const previousPeriodParams = useMemo(() => {
-    const dateRange = filters.dateRange || '7d';
+    const dateRange = filters.dateRange || '30d';
     const now = new Date();
     const currentStart = new Date();
 
@@ -351,7 +364,7 @@ export default function Usage() {
                   totalTokens: data.usage.reduce((sum: number, item: any) => sum + (item.totalTokens || 0), 0),
                   tokensTrend: calculateTrends.tokensTrend,
                 }}
-                period={filters.dateRange || '7d'}
+                period={filters.dateRange || '30d'}
               />
             )}
 
