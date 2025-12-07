@@ -29,6 +29,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import OAuthCallback from './pages/OAuthCallback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import ContactUs from './pages/ContactUs';
@@ -128,6 +129,7 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/contact" element={<ContactUs />} />

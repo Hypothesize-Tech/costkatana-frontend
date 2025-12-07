@@ -23,6 +23,7 @@ interface AuthContextType {
     availableMethods?: Array<'email' | 'totp'>;
   } | null;
   login: (credentials: LoginCredentials) => Promise<void>;
+  loginWithOAuth: (provider: 'google' | 'github') => Promise<void>;
   completeMFALogin: (result: { user: User; accessToken: string; refreshToken: string }) => void;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
@@ -209,6 +210,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         authService.setTokens(response.data.accessToken, response.data.refreshToken);
         authService.setUser(response.data.user);
 
+        // Store last login method
+        if (response.data.user.lastLoginMethod) {
+          localStorage.setItem('lastLoginMethod', response.data.user.lastLoginMethod);
+        }
+
         setUser(response.data.user);
         setAccessToken(response.data.accessToken);
         sessionStorage.setItem("showTokenOnLoad", "true");
@@ -236,6 +242,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Store tokens using AuthService
         authService.setTokens(result.accessToken, result.refreshToken);
         authService.setUser(result.user);
+
+        // Store last login method
+        if (result.user.lastLoginMethod) {
+          localStorage.setItem('lastLoginMethod', result.user.lastLoginMethod);
+        }
 
         // Update React state
         setUser(result.user);
@@ -361,6 +372,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     [showNotification]
   );
 
+  const loginWithOAuth = useCallback(
+    async (provider: 'google' | 'github') => {
+      try {
+        setIsLoading(true);
+        const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${backendUrl}/api/auth/oauth/${provider}`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to initiate ${provider} login`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.data?.authUrl) {
+          // Redirect to OAuth provider
+          window.location.href = data.data.authUrl;
+        } else {
+          throw new Error(`Invalid response from ${provider} OAuth`);
+        }
+      } catch (error: any) {
+        showNotification(error.message || `Failed to login with ${provider}`, "error");
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [showNotification]
+  );
+
   const value = {
     user,
     isAuthenticated: !!user && !!accessToken && !isValidatingToken && !isRefreshingToken,
@@ -369,6 +409,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     mfaRequired,
     mfaData,
     login,
+    loginWithOAuth,
     completeMFALogin,
     register,
     logout,
