@@ -42,12 +42,11 @@ export interface User {
   };
   createdAt: string;
   lastLogin?: string;
+  lastLoginMethod?: 'email' | 'google' | 'github';
   avatar?: string;
   company?: string;
 }
 
-// Legacy subscription interface - kept for backward compatibility
-// New code should use types from subscription.types.ts
 export interface Subscription {
   plan: "free" | "plus" | "pro" | "enterprise";
   startDate: string;

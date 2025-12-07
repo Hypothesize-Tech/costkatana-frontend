@@ -138,6 +138,15 @@ class AuthService {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
 
+  clearTokens(): void {
+    this.clearAuth();
+  }
+
+  async getCurrentUser(): Promise<ApiResponse<User>> {
+    const response = await apiClient.get<ApiResponse<User>>("/user/profile");
+    return response.data;
+  }
+
   private clearAuth(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
