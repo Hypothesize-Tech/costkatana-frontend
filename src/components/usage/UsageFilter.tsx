@@ -30,7 +30,9 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
   const [filters, setFilters] = useState({
     service: '',
     model: '',
-    dateRange: '7d',
+    dateRange: '30d',
+    startDate: '',
+    endDate: '',
     minCost: '',
     maxCost: '',
     userEmail: '',
@@ -55,6 +57,23 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
       loadAvailableProperties();
     }
   }, [isOpen, selectedProject]);
+
+  // Helper function to convert ISO date to YYYY-MM-DD format for date input
+  const isoToDateInput = (dateString?: string): string => {
+    if (!dateString) return '';
+    try {
+      // If already in YYYY-MM-DD format, return as is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return dateString;
+      }
+      // Otherwise, treat as ISO string and convert
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  };
 
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...filters, [key]: value };
@@ -94,8 +113,37 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
       }
     });
 
+    // Convert date strings to ISO format for custom date range
+    let startDate: string | undefined = undefined;
+    let endDate: string | undefined = undefined;
+
+    if (filters.dateRange === 'custom') {
+      if (filters.startDate) {
+        // Convert YYYY-MM-DD to ISO string with start of day
+        // Handle both YYYY-MM-DD format and ISO format
+        const dateStr = filters.startDate.includes('T') ? filters.startDate : filters.startDate + 'T00:00:00';
+        const start = new Date(dateStr);
+        if (!isNaN(start.getTime())) {
+          start.setHours(0, 0, 0, 0);
+          startDate = start.toISOString();
+        }
+      }
+      if (filters.endDate) {
+        // Convert YYYY-MM-DD to ISO string with end of day
+        // Handle both YYYY-MM-DD format and ISO format
+        const dateStr = filters.endDate.includes('T') ? filters.endDate : filters.endDate + 'T23:59:59';
+        const end = new Date(dateStr);
+        if (!isNaN(end.getTime())) {
+          end.setHours(23, 59, 59, 999);
+          endDate = end.toISOString();
+        }
+      }
+    }
+
     const transformedFilters = {
       ...filters,
+      startDate,
+      endDate,
       customProperties: Object.keys(customPropsObject).length > 0 ? customPropsObject : undefined
     };
 
@@ -107,7 +155,9 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
     const defaultFilters = {
       service: '',
       model: '',
-      dateRange: '7d',
+      dateRange: '30d',
+      startDate: '',
+      endDate: '',
       minCost: '',
       maxCost: '',
       userEmail: '',
@@ -190,13 +240,43 @@ export const UsageFilter: React.FC<UsageFilterProps> = ({
                     onChange={(e) => handleFilterChange('dateRange', e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
                   >
-                    <option value="1d">Last 24 hours</option>
                     <option value="7d">Last 7 days</option>
                     <option value="30d">Last 30 days</option>
                     <option value="90d">Last 90 days</option>
                     <option value="custom">Custom Range</option>
                   </select>
                 </div>
+
+                {/* Custom Date Range Picker */}
+                {filters.dateRange === 'custom' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={filters.startDate ? isoToDateInput(filters.startDate) : filters.startDate}
+                        onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                        max={filters.endDate ? isoToDateInput(filters.endDate) : new Date().toISOString().split('T')[0]}
+                        className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-1.5 sm:mb-2 text-xs sm:text-sm font-medium font-display text-secondary-900 dark:text-white">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={filters.endDate ? isoToDateInput(filters.endDate) : filters.endDate}
+                        onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                        min={filters.startDate ? isoToDateInput(filters.startDate) : undefined}
+                        max={new Date().toISOString().split('T')[0]}
+                        className="w-full px-4 py-2.5 rounded-xl bg-white/50 dark:bg-dark-card/50 border border-primary-200/30 dark:border-primary-700/30 text-secondary-900 dark:text-white placeholder-secondary-500 dark:placeholder-secondary-400 focus:ring-2 focus:ring-[#06ec9e] focus:border-transparent transition-all duration-300 min-h-[44px] [touch-action:manipulation]"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>

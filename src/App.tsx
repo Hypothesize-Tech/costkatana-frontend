@@ -83,8 +83,23 @@ import GitHubIntegrations from './pages/GitHubIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminDiscountManagement } from './pages/AdminDiscountManagement';
+import { AdminBrainDashboard } from './pages/AdminBrainDashboard';
+import Brain from './pages/Brain';
 import Logs from './pages/Logs';
 import Automation from './pages/Automation';
+import CostIntelligence from './pages/CostIntelligence';
+import CostIntelligenceConfig from './pages/CostIntelligenceConfig';
+import { AgentGovernance } from './pages/AgentGovernance';
+import { AgentDetail } from './pages/AgentDetail';
+import { CreateAgent } from './pages/CreateAgent';
+import {
+  Dashboard as DataNetworkEffectsDashboard,
+  ModelPerformance,
+  LearningLoop,
+  AgentAnalytics,
+  SemanticPatterns,
+  GlobalBenchmarks
+} from './pages/DataNetworkEffects';
 
 // Component to handle global tracking inside the context providers
 function AppContent() {
@@ -277,6 +292,30 @@ function AppContent() {
             path="cost-lake"
             element={<CostLake />}
           />
+          <Route
+            path="cost-intelligence"
+            element={<CostIntelligence />}
+          />
+          <Route
+            path="cost-intelligence/config"
+            element={<CostIntelligenceConfig />}
+          />
+          <Route
+            path="agent-governance"
+            element={<AgentGovernance />}
+          />
+          <Route
+            path="agent-governance/create"
+            element={<CreateAgent />}
+          />
+          <Route
+            path="agent-governance/:agentId"
+            element={<AgentDetail />}
+          />
+          <Route
+            path="agent-governance/:agentId/:tab"
+            element={<AgentDetail />}
+          />
 
           <Route
             path="settings"
@@ -323,6 +362,52 @@ function AppContent() {
                 <AdminDiscountManagement />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="admin/brain"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminBrainDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/brain/:tab"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminBrainDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="brain"
+            element={<Brain />}
+          />
+
+          {/* Data Network Effects Routes */}
+          <Route
+            path="data-network-effects"
+            element={<DataNetworkEffectsDashboard />}
+          />
+          <Route
+            path="data-network-effects/models"
+            element={<ModelPerformance />}
+          />
+          <Route
+            path="data-network-effects/learning-loop"
+            element={<LearningLoop />}
+          />
+          <Route
+            path="data-network-effects/agents"
+            element={<AgentAnalytics />}
+          />
+          <Route
+            path="data-network-effects/patterns"
+            element={<SemanticPatterns />}
+          />
+          <Route
+            path="data-network-effects/benchmarks"
+            element={<GlobalBenchmarks />}
           />
         </Route>
 
