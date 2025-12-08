@@ -20,9 +20,21 @@ import {
     ClipboardDocumentListIcon,
     SparklesIcon
 } from '@heroicons/react/24/outline';
-import {
-    CheckCircleIcon as CheckCircleSolidIcon
-} from '@heroicons/react/24/solid';
+import gmailLogo from '../assets/gmail-logo.webp';
+import googleCalendarLogo from '../assets/google-calender-logo.webp';
+import googleDriveLogo from '../assets/google-drive-logo.webp';
+import googleSheetsLogo from '../assets/google-sheets-logo.webp';
+import googleDocsLogo from '../assets/google-docs-logo.webp';
+import googleSlidesLogo from '../assets/google-slides-logo.webp';
+import googleFormsLogo from '../assets/google-forms-logo.webp';
+import { GmailViewer } from '../components/google/viewers/GmailViewer';
+import { DriveViewer } from '../components/google/viewers/DriveViewer';
+import { SheetViewer } from '../components/google/viewers/SheetViewer';
+import { DocViewer } from '../components/google/viewers/DocViewer';
+import { CalendarViewer } from '../components/google/viewers/CalendarViewer';
+import { FormViewer } from '../components/google/viewers/FormViewer';
+import { SlideViewer } from '../components/google/viewers/SlideViewer';
+
 
 export const GoogleIntegrations: React.FC = () => {
     const [connections, setConnections] = useState<GoogleConnection[]>([]);
@@ -31,7 +43,7 @@ export const GoogleIntegrations: React.FC = () => {
     const [exportAudits, setExportAudits] = useState<GoogleExportAudit[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'gmail' | 'calendar' | 'forms' | 'slides' | 'sheets' | 'docs'>('overview');
 
     useEffect(() => {
         loadConnections();
@@ -188,13 +200,13 @@ export const GoogleIntegrations: React.FC = () => {
 
     const getMimeTypeIcon = (mimeType: string) => {
         if (mimeType.includes('spreadsheet')) {
-            return <ChartBarIcon className="w-8 h-8 text-green-600 dark:text-green-400" />;
+            return <img src={googleSheetsLogo} alt="Google Sheets" className="w-8 h-8" />;
         }
         if (mimeType.includes('document')) {
-            return <DocumentTextIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />;
+            return <img src={googleDocsLogo} alt="Google Docs" className="w-8 h-8" />;
         }
         if (mimeType.includes('presentation')) {
-            return <PresentationChartLineIcon className="w-8 h-8 text-orange-600 dark:text-orange-400" />;
+            return <img src={googleSlidesLogo} alt="Google Slides" className="w-8 h-8" />;
         }
         if (mimeType.includes('folder')) {
             return <FolderIcon className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />;
@@ -360,11 +372,12 @@ export const GoogleIntegrations: React.FC = () => {
                                         </button>
                                         <button
                                             onClick={() => setActiveTab('drive')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'drive'
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'drive'
                                                 ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
                                                 : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
                                                 }`}
                                         >
+                                            <img src={googleDriveLogo} alt="Drive" className="w-4 h-4" />
                                             Drive Files ({driveFiles.length})
                                         </button>
                                         <button
@@ -375,6 +388,66 @@ export const GoogleIntegrations: React.FC = () => {
                                                 }`}
                                         >
                                             Export History ({exportAudits.length})
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('gmail')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'gmail'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={gmailLogo} alt="Gmail" className="w-4 h-4" />
+                                            Gmail
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('calendar')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'calendar'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={googleCalendarLogo} alt="Calendar" className="w-4 h-4" />
+                                            Calendar
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('forms')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'forms'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={googleFormsLogo} alt="Forms" className="w-4 h-4" />
+                                            Forms
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('slides')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'slides'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={googleSlidesLogo} alt="Slides" className="w-4 h-4" />
+                                            Slides
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('sheets')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'sheets'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={googleSheetsLogo} alt="Sheets" className="w-4 h-4" />
+                                            Sheets
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('docs')}
+                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'docs'
+                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                                }`}
+                                        >
+                                            <img src={googleDocsLogo} alt="Docs" className="w-4 h-4" />
+                                            Docs
                                         </button>
                                     </div>
 
@@ -563,6 +636,48 @@ export const GoogleIntegrations: React.FC = () => {
                                                     </div>
                                                 )}
                                             </div>
+                                        </div>
+                                    )}
+
+                                    {/* Gmail Tab */}
+                                    {activeTab === 'gmail' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <GmailViewer connection={selectedConnection} />
+                                        </div>
+                                    )}
+
+                                    {/* Calendar Tab */}
+                                    {activeTab === 'calendar' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <CalendarViewer connection={selectedConnection} />
+                                        </div>
+                                    )}
+
+                                    {/* Forms Tab */}
+                                    {activeTab === 'forms' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <FormViewer connection={selectedConnection} />
+                                        </div>
+                                    )}
+
+                                    {/* Slides Tab */}
+                                    {activeTab === 'slides' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <SlideViewer connection={selectedConnection} />
+                                        </div>
+                                    )}
+
+                                    {/* Sheets Tab */}
+                                    {activeTab === 'sheets' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <SheetViewer connection={selectedConnection} />
+                                        </div>
+                                    )}
+
+                                    {/* Docs Tab */}
+                                    {activeTab === 'docs' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <DocViewer connection={selectedConnection} />
                                         </div>
                                     )}
                                 </div>

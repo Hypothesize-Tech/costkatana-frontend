@@ -35,6 +35,14 @@ export const VALID_INTEGRATIONS = [
   'slack',
   'discord',
   'github',
+  'google',
+  'gmail',
+  'calendar',
+  'drive',
+  'sheets',
+  'docs',
+  'slides',
+  'forms',
   'webhook'
 ] as const;
 

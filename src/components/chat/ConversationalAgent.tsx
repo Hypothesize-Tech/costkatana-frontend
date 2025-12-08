@@ -84,6 +84,7 @@ import ThreatDetectionService from "@/services/threatDetection.service";
 import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
 import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
+import { GoogleServicePanel } from "./GoogleServicePanel";
 
 // Configure marked for security
 marked.setOptions({
@@ -250,6 +251,8 @@ export const ConversationalAgent: React.FC = () => {
   const [previewDocument, setPreviewDocument] = useState<{ documentId: string; fileName: string } | null>(null);
   const [hasExistingIntegrations, setHasExistingIntegrations] = useState<boolean>(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
+  const [showGooglePanel, setShowGooglePanel] = useState(false);
+  const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'gmail' | 'drive' | 'sheets' | 'docs' | 'calendar' | 'forms' | 'slides'>('quick');
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -3637,6 +3640,24 @@ export const ConversationalAgent: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Floating Google Workspace Button */}
+      {!showGooglePanel && (
+        <button
+          onClick={() => setShowGooglePanel(true)}
+          className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center z-40 group"
+          title="Open Google Workspace"
+        >
+          <SparklesIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+        </button>
+      )}
+
+      {/* Google Service Panel */}
+      <GoogleServicePanel
+        isOpen={showGooglePanel}
+        onClose={() => setShowGooglePanel(false)}
+        defaultTab={googlePanelTab}
+      />
     </div>
   );
 };
