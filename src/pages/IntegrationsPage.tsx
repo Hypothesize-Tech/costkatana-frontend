@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { integrationService } from '../services/integration.service';
 import { IntegrationsShimmer } from '../components/shimmer/IntegrationsShimmer';
 import { SlackIntegrationSetup } from '../components/integrations/SlackIntegrationSetup';
@@ -20,16 +20,19 @@ import {
     CheckCircleIcon as CheckCircleSolidIcon
 } from '@heroicons/react/24/solid';
 import GitHubConnector from '../components/chat/GitHubConnector';
+import GoogleConnector from '../components/chat/GoogleConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
+import googleService, { GoogleConnection } from '../services/google.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
 import jiraIcon from '../assets/jira.png';
 
-type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | null;
+type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | null;
 type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
 
 export const IntegrationsPage: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [setupModal, setSetupModal] = useState<SetupModal>(null);
     const [viewModal, setViewModal] = useState<ViewModal>(null);
     const [showLogs, setShowLogs] = useState(false);
@@ -37,6 +40,8 @@ export const IntegrationsPage: React.FC = () => {
     const [showFeatureSelector, setShowFeatureSelector] = useState(false);
     const [githubConnections, setGithubConnections] = useState<GitHubConnection[]>([]);
     const [githubIntegrations, setGithubIntegrations] = useState<Array<{ _id: string; repositoryName: string; status: string }>>([]);
+    const [googleConnections, setGoogleConnections] = useState<GoogleConnection[]>([]);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const { data: integrationsData, isLoading, error, refetch } = useQuery(
         ['integrations'],
@@ -51,22 +56,55 @@ export const IntegrationsPage: React.FC = () => {
 
     const integrations = integrationsData?.data || [];
 
-    // Load GitHub connections and integrations
+    // Function to load integration data
+    const loadIntegrationData = async () => {
+        try {
+            const [githubConn, gitIntegrations, googleConn] = await Promise.all([
+                githubService.listConnections(),
+                githubService.listIntegrations(),
+                googleService.listConnections().catch(() => [])
+            ]);
+            setGithubConnections(githubConn);
+            setGithubIntegrations(gitIntegrations);
+            setGoogleConnections(googleConn);
+        } catch (error) {
+            console.error('Failed to load integration data:', error);
+        }
+    };
+
+    // Load GitHub and Google connections and integrations on mount
     useEffect(() => {
-        const loadGitHubData = async () => {
-            try {
-                const [connections, gitIntegrations] = await Promise.all([
-                    githubService.listConnections(),
-                    githubService.listIntegrations()
-                ]);
-                setGithubConnections(connections);
-                setGithubIntegrations(gitIntegrations);
-            } catch (error) {
-                console.error('Failed to load GitHub data:', error);
-            }
-        };
-        loadGitHubData();
+        loadIntegrationData();
     }, []);
+
+    // Handle OAuth callback redirects
+    useEffect(() => {
+        const googleConnected = searchParams.get('googleConnected');
+        const message = searchParams.get('message');
+
+        if (googleConnected === 'true') {
+            // Reload Google connections
+            loadIntegrationData();
+
+            // Show success message
+            if (message) {
+                setSuccessMessage(decodeURIComponent(message));
+            } else {
+                setSuccessMessage('Google account connected successfully!');
+            }
+
+            // Clear query parameters
+            const newSearchParams = new URLSearchParams(searchParams);
+            newSearchParams.delete('googleConnected');
+            newSearchParams.delete('message');
+            setSearchParams(newSearchParams, { replace: true });
+
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 5000);
+        }
+    }, [searchParams, setSearchParams]);
 
     const handleSetupComplete = () => {
         setSetupModal(null);
@@ -131,6 +169,9 @@ export const IntegrationsPage: React.FC = () => {
         if (type === 'github') {
             return githubConnections.some(conn => conn.isActive);
         }
+        if (type === 'google') {
+            return googleConnections.some(conn => conn.isActive);
+        }
 
         // For other integrations, check if there's an active integration
         return integrations.some(integ => {
@@ -165,6 +206,20 @@ export const IntegrationsPage: React.FC = () => {
                 </svg>
             ),
             color: '#06ec9e',
+        },
+        {
+            type: 'google' as const,
+            name: 'Google Workspace',
+            description: 'Export cost data to Google Sheets and Docs, sync budgets with Drive',
+            icon: (
+                <svg className="integration-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+            ),
+            color: '#4285F4',
         },
         {
             type: 'slack' as const,
@@ -240,6 +295,24 @@ export const IntegrationsPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Success Message Banner */}
+                {successMessage && (
+                    <div className="mb-6 p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-500/10 dark:from-green-500/20 dark:to-emerald-500/20 sm:p-6">
+                        <div className="flex items-center gap-3">
+                            <CheckCircleSolidIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                            <p className="flex-1 text-sm font-medium text-green-700 dark:text-green-300 sm:text-base">
+                                {successMessage}
+                            </p>
+                            <button
+                                onClick={() => setSuccessMessage(null)}
+                                className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
+                            >
+                                <XMarkIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {isLoading ? (
                     <IntegrationsShimmer />
                 ) : (
@@ -284,6 +357,11 @@ export const IntegrationsPage: React.FC = () => {
                                                 ? githubConnections.find(c => c.isActive)
                                                 : null;
 
+                                            // Get Google connection details if connected
+                                            const googleConnection = isConnected && integration.type === 'google'
+                                                ? googleConnections.find(c => c.isActive)
+                                                : null;
+
                                             // Get regular integrations for this type
                                             const regularIntegrations = integrations.filter(integ => {
                                                 if (integration.type === 'slack') return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
@@ -320,6 +398,11 @@ export const IntegrationsPage: React.FC = () => {
                                                                 {githubConnection && (
                                                                     <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
                                                                         @{githubConnection.githubUsername}
+                                                                    </p>
+                                                                )}
+                                                                {googleConnection && (
+                                                                    <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
+                                                                        {googleConnection.googleEmail}
                                                                     </p>
                                                                 )}
                                                                 {regularIntegrations.length > 0 && !githubConnection && (
@@ -378,6 +461,34 @@ export const IntegrationsPage: React.FC = () => {
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
                                                                             title="Disconnect GitHub"
+                                                                        >
+                                                                            <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                        </button>
+                                                                    </>
+                                                                ) : integration.type === 'google' ? (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => navigate('/google')}
+                                                                            className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
+                                                                        >
+                                                                            <Cog6ToothIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                            <span>Manage</span>
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                if (googleConnection && window.confirm('Are you sure you want to disconnect Google?')) {
+                                                                                    try {
+                                                                                        await googleService.disconnectConnection(googleConnection._id);
+                                                                                        const googleConn = await googleService.listConnections();
+                                                                                        setGoogleConnections(googleConn);
+                                                                                        refetch();
+                                                                                    } catch (error) {
+                                                                                        console.error('Failed to disconnect Google:', error);
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
+                                                                            title="Disconnect Google"
                                                                         >
                                                                             <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                         </button>
@@ -480,6 +591,15 @@ export const IntegrationsPage: React.FC = () => {
                     <WebhookIntegrationSetup
                         onClose={() => setSetupModal(null)}
                         onComplete={handleSetupComplete}
+                    />
+                )}
+                {setupModal === 'google' && (
+                    <GoogleConnector
+                        onConnect={() => {
+                            setSetupModal(null);
+                            handleSetupComplete();
+                        }}
+                        onClose={() => setSetupModal(null)}
                     />
                 )}
 
