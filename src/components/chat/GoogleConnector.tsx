@@ -6,7 +6,7 @@ interface GoogleConnectorProps {
     onConnect?: (connectionId: string) => void;
     onSelectFile?: (file: GoogleDriveFile, connectionId: string) => void;
     onClose?: () => void;
-    fileType?: 'sheets' | 'docs' | 'slides' | 'drive' | 'all';
+    fileType?: 'sheets' | 'docs' | 'drive' | 'all';
 }
 
 const GoogleConnector: React.FC<GoogleConnectorProps> = ({
@@ -33,8 +33,6 @@ const GoogleConnector: React.FC<GoogleConnectorProps> = ({
                 query = "mimeType='application/vnd.google-apps.spreadsheet'";
             } else if (fileType === 'docs') {
                 query = "mimeType='application/vnd.google-apps.document'";
-            } else if (fileType === 'slides') {
-                query = "mimeType='application/vnd.google-apps.presentation'";
             }
 
             const { files: driveFiles } = await googleService.listDriveFiles(connectionId, {

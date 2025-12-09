@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-    FolderIcon,
-    DocumentTextIcon,
     ArrowPathIcon,
-    ArrowUpTrayIcon,
     MagnifyingGlassIcon,
-    ArrowDownTrayIcon,
-    ShareIcon,
-    TrashIcon
+    EyeIcon
 } from '@heroicons/react/24/outline';
 import { googleService, GoogleConnection, GoogleDriveFile } from '../../../services/google.service';
+import { GoogleViewerStates } from '../GoogleViewerStates';
+import { DriveFileShimmer } from '../../ui/GoogleServiceShimmer';
+import googleDriveLogo from '../../../assets/google-drive-logo.webp';
+import googleDocsLogo from '../../../assets/google-docs-logo.webp';
+import googleSheetsLogo from '../../../assets/google-sheets-logo.webp';
+import googleSlidesLogo from '../../../assets/google-slides-logo.webp';
+import googleFormsLogo from '../../../assets/google-forms-logo.webp';
 
 interface DriveViewerProps {
     connection: GoogleConnection;
@@ -18,20 +20,25 @@ interface DriveViewerProps {
 export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
     const [files, setFiles] = useState<GoogleDriveFile[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
     useEffect(() => {
         loadFiles();
-    }, [connection]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [connection._id]);
 
     const loadFiles = async () => {
+        if (!connection) return;
+
         try {
             setLoading(true);
+            setError(null);
             const response = await googleService.listDriveFiles(connection._id, { pageSize: 50 });
             setFiles(response.files);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Failed to load Drive files:', error);
+            setError(error instanceof Error ? error.message : 'Failed to load Drive files');
         } finally {
             setLoading(false);
         }
@@ -42,9 +49,57 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
     );
 
     const getFileIcon = (mimeType: string) => {
-        if (mimeType.includes('folder')) return <FolderIcon className="w-8 h-8 text-yellow-500" />;
-        return <DocumentTextIcon className="w-8 h-8 text-blue-500" />;
+        if (mimeType.includes('folder') || mimeType === 'application/vnd.google-apps.folder') {
+            return <img src={googleDriveLogo} alt="Google Drive" className="w-8 h-8 object-contain" />;
+        }
+        if (mimeType.includes('spreadsheet') || mimeType === 'application/vnd.google-apps.spreadsheet') {
+            return <img src={googleSheetsLogo} alt="Google Sheets" className="w-8 h-8 object-contain" />;
+        }
+        if (mimeType.includes('presentation') || mimeType === 'application/vnd.google-apps.presentation') {
+            return <img src={googleSlidesLogo} alt="Google Slides" className="w-8 h-8 object-contain" />;
+        }
+        if (mimeType.includes('form') || mimeType === 'application/vnd.google-apps.form') {
+            return <img src={googleFormsLogo} alt="Google Forms" className="w-8 h-8 object-contain" />;
+        }
+        if (mimeType.includes('document') || mimeType === 'application/vnd.google-apps.document') {
+            return <img src={googleDocsLogo} alt="Google Docs" className="w-8 h-8 object-contain" />;
+        }
+        // Default to Drive logo for other file types
+        return <img src={googleDriveLogo} alt="Google Drive" className="w-8 h-8 object-contain" />;
     };
+
+    // Show states
+    if (!connection) {
+        return (
+            <GoogleViewerStates
+                state="disconnected"
+                serviceName="Google Drive"
+                onConnect={() => window.location.href = '/settings/integrations'}
+                suggestedCommand="@drive list files"
+            />
+        );
+    }
+
+    if (error) {
+        return (
+            <GoogleViewerStates
+                state="error"
+                serviceName="Google Drive"
+                error={error}
+                onRetry={loadFiles}
+            />
+        );
+    }
+
+    if (!loading && files.length === 0) {
+        return (
+            <GoogleViewerStates
+                state="empty"
+                serviceName="Google Drive Files"
+                suggestedCommand="@drive upload file.txt"
+            />
+        );
+    }
 
     return (
         <div className="h-full flex flex-col">
@@ -52,7 +107,7 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
             <div className="p-4 border-b border-primary-200/30 dark:border-primary-500/20">
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold text-secondary-900 dark:text-white flex items-center gap-2">
-                        <FolderIcon className="w-5 h-5" />
+                        <img src={googleDriveLogo} alt="Google Drive" className="w-5 h-5 object-contain" />
                         My Drive ({files.length} files)
                     </h3>
                     <div className="flex gap-2">
@@ -63,72 +118,30 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
                         >
                             <ArrowPathIcon className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                         </button>
-                        <button className="p-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">
-                            <ArrowUpTrayIcon className="w-5 h-5" />
-                        </button>
                     </div>
                 </div>
 
                 {/* Search */}
-                <div className="flex gap-2">
-                    <div className="relative flex-1">
-                        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary-400" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search files..."
-                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800"
-                        />
-                    </div>
-                    <div className="flex gap-1 bg-primary-100 dark:bg-primary-900/20 rounded-lg p-1">
-                        <button
-                            onClick={() => setViewMode('list')}
-                            className={`px-2 py-1 rounded text-sm ${viewMode === 'list' ? 'bg-white dark:bg-gray-700' : ''}`}
-                        >
-                            List
-                        </button>
-                        <button
-                            onClick={() => setViewMode('grid')}
-                            className={`px-2 py-1 rounded text-sm ${viewMode === 'grid' ? 'bg-white dark:bg-gray-700' : ''}`}
-                        >
-                            Grid
-                        </button>
-                    </div>
+                <div className="relative">
+                    <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary-400" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search files..."
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800"
+                    />
                 </div>
             </div>
 
             {/* File List */}
             <div className="flex-1 overflow-y-auto p-4">
                 {loading ? (
-                    <div className="flex items-center justify-center h-32">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-                    </div>
+                    <DriveFileShimmer count={6} />
                 ) : filteredFiles.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-32 text-secondary-500">
-                        <FolderIcon className="w-12 h-12 mb-2 opacity-50" />
+                        <img src={googleDriveLogo} alt="Google Drive" className="w-12 h-12 mb-2 opacity-50 object-contain" />
                         <p>No files found</p>
-                    </div>
-                ) : viewMode === 'grid' ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {filteredFiles.map((file) => (
-                            <div
-                                key={file.id}
-                                className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
-                            >
-                                <div className="flex flex-col items-center text-center">
-                                    {getFileIcon(file.mimeType)}
-                                    <div className="mt-2 w-full">
-                                        <div className="font-medium text-secondary-900 dark:text-white truncate text-sm">
-                                            {file.name}
-                                        </div>
-                                        <div className="text-xs text-secondary-500 mt-1">
-                                            {file.modifiedTime ? new Date(file.modifiedTime).toLocaleDateString() : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
                     </div>
                 ) : (
                     <div className="space-y-2">
@@ -155,16 +168,11 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="p-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded"
+                                            title="View in Google Docs"
                                         >
-                                            <ArrowDownTrayIcon className="w-4 h-4" />
+                                            <EyeIcon className="w-4 h-4" />
                                         </a>
                                     )}
-                                    <button className="p-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded">
-                                        <ShareIcon className="w-4 h-4" />
-                                    </button>
-                                    <button className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-600">
-                                        <TrashIcon className="w-4 h-4" />
-                                    </button>
                                 </div>
                             </div>
                         ))}

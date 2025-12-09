@@ -53,7 +53,7 @@ export interface GoogleExportAudit {
     _id: string;
     userId: string;
     connectionId: string;
-    exportType: 'sheets' | 'docs' | 'slides' | 'drive';
+    exportType: 'sheets' | 'docs' | 'drive';
     datasetType: 'cost_data' | 'analytics' | 'report' | 'budget' | 'usage' | 'custom';
     fileId: string;
     fileName: string;
@@ -203,6 +203,17 @@ class GoogleService {
     }
 
     /**
+     * Get full Gmail message content
+     */
+    async getGmailMessage(connectionId: string, messageId: string): Promise<any> {
+        const params = new URLSearchParams();
+        params.append('connectionId', connectionId);
+
+        const response = await api.get(`/google/gmail/${messageId}?${params.toString()}`);
+        return response.data.data;
+    }
+
+    /**
      * List Calendar events
      */
     async listCalendarEvents(connectionId: string, startDate?: Date, endDate?: Date, maxResults?: number): Promise<any[]> {
@@ -226,10 +237,10 @@ class GoogleService {
         description?: string,
         attendees?: string[]
     ): Promise<{ eventId: string; eventLink: string }> {
-        const response = await api.post(`/google/connections/${connectionId}/calendar/budget-review`, {
+        const response = await api.post(`/google/connections/${connectionId}/calendar/events`, {
             summary,
-            start,
-            end,
+            start: start.toISOString(),
+            end: end.toISOString(),
             description,
             attendees
         });
@@ -249,6 +260,22 @@ class GoogleService {
      */
     async deleteCalendarEvent(connectionId: string, eventId: string): Promise<{ success: boolean }> {
         const response = await api.delete(`/google/connections/${connectionId}/calendar/events/${eventId}`);
+        return response.data.data;
+    }
+
+    /**
+     * Create Spreadsheet
+     */
+    async createSpreadsheet(connectionId: string, title: string): Promise<{ spreadsheetId: string; spreadsheetUrl: string }> {
+        const response = await api.post(`/google/connections/${connectionId}/sheets`, { title });
+        return response.data.data;
+    }
+
+    /**
+     * Create Document
+     */
+    async createDocument(connectionId: string, title: string): Promise<{ documentId: string; documentUrl: string }> {
+        const response = await api.post(`/google/connections/${connectionId}/docs`, { title });
         return response.data.data;
     }
 
@@ -299,28 +326,26 @@ class GoogleService {
     }
 
     /**
-     * Add question to form
+     * List Google Docs Documents
      */
-    async addFormQuestion(
-        connectionId: string,
-        formId: string,
-        questionText: string,
-        questionType?: 'TEXT' | 'PARAGRAPH_TEXT' | 'MULTIPLE_CHOICE' | 'CHECKBOX' | 'DROPDOWN',
-        options?: string[]
-    ): Promise<{ success: boolean; questionId: string }> {
-        const response = await api.post(`/google/connections/${connectionId}/forms/${formId}/question`, {
-            questionText,
-            questionType,
-            options
-        });
+    async listDocuments(connectionId: string, maxResults: number = 20): Promise<Array<{ id: string; name: string; createdTime: string; modifiedTime: string; webViewLink: string }>> {
+        const response = await api.get(`/google/docs/list?connectionId=${connectionId}&maxResults=${maxResults}`);
         return response.data.data;
     }
 
     /**
-     * Export presentation to PDF
+     * List Google Sheets Spreadsheets
      */
-    async exportPresentationToPDF(connectionId: string, presentationId: string): Promise<{ pdfUrl: string; fileId: string }> {
-        const response = await api.post(`/google/connections/${connectionId}/slides/${presentationId}/export`);
+    async listSpreadsheets(connectionId: string, maxResults: number = 20): Promise<Array<{ id: string; name: string; createdTime: string; modifiedTime: string; webViewLink: string }>> {
+        const response = await api.get(`/google/sheets/list?connectionId=${connectionId}&maxResults=${maxResults}`);
+        return response.data.data;
+    }
+
+    /**
+     * Get Document Content
+     */
+    async getDocumentContent(connectionId: string, docId: string): Promise<{ docId: string; content: string }> {
+        const response = await api.get(`/google/docs/${docId}/content?connectionId=${connectionId}`);
         return response.data.data;
     }
 }

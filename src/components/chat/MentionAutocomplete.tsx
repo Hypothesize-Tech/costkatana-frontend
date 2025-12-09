@@ -16,8 +16,6 @@ import googleCalendarLogo from '@/assets/google-calender-logo.webp';
 import googleDriveLogo from '@/assets/google-drive-logo.webp';
 import googleSheetsLogo from '@/assets/google-sheets-logo.webp';
 import googleDocsLogo from '@/assets/google-docs-logo.webp';
-import googleSlidesLogo from '@/assets/google-slides-logo.webp';
-import googleFormsLogo from '@/assets/google-forms-logo.webp';
 
 interface MentionAutocompleteProps {
     value: string;
@@ -134,12 +132,8 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
                 return <img src={googleDriveLogo} alt="Google Drive" className="w-5 h-5" />;
             case 'sheets':
                 return <img src={googleSheetsLogo} alt="Google Sheets" className="w-5 h-5" />;
-            case 'docs':
+            case 'gdocs':
                 return <img src={googleDocsLogo} alt="Google Docs" className="w-5 h-5" />;
-            case 'slides':
-                return <img src={googleSlidesLogo} alt="Google Slides" className="w-5 h-5" />;
-            case 'forms':
-                return <img src={googleFormsLogo} alt="Google Forms" className="w-5 h-5" />;
             case 'google':
                 return (
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -183,8 +177,6 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             connectedNames.add('drive');
             connectedNames.add('sheets');
             connectedNames.add('docs');
-            connectedNames.add('slides');
-            connectedNames.add('forms');
         }
 
         return Array.from(connectedNames) as Array<typeof VALID_INTEGRATIONS[number]>;
@@ -474,6 +466,75 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
                     { command: 'assign-role', label: 'Assign Role', description: 'Assign role to user' },
                     { command: 'remove-role', label: 'Remove Role', description: 'Remove role from user' }
                 ];
+            // Google Workspace Services
+            case 'gmail':
+                return [
+                    { command: 'send', label: 'Send Email', description: 'Send an email to recipients' },
+                    { command: 'search', label: 'Search Emails', description: 'Search for emails by query' },
+                    { command: 'list', label: 'List Emails', description: 'List recent emails' },
+                    { command: 'unread', label: 'List Unread', description: 'Show unread emails' },
+                    { command: 'draft', label: 'Create Draft', description: 'Create email draft' },
+                    { command: 'delete', label: 'Delete Email', description: 'Delete an email' },
+                    { command: 'archive', label: 'Archive Email', description: 'Archive an email' },
+                    { command: 'alerts', label: 'Cost Alerts', description: 'Check for cost-related emails' }
+                ];
+
+            case 'calendar':
+                return [
+                    { command: 'create', label: 'Create Event', description: 'Create a new calendar event' },
+                    { command: 'list', label: 'List Events', description: 'Show upcoming events' },
+                    { command: 'update', label: 'Update Event', description: 'Update existing event' },
+                    { command: 'delete', label: 'Delete Event', description: 'Delete an event' },
+                    { command: 'search', label: 'Search Events', description: 'Search calendar events' },
+                    { command: 'today', label: 'Today\'s Events', description: 'Show today\'s calendar' },
+                    { command: 'week', label: 'This Week', description: 'Show this week\'s events' },
+                    { command: 'schedule', label: 'Schedule Meeting', description: 'Schedule a cost review meeting' }
+                ];
+
+            case 'drive':
+                return [
+                    { command: 'list', label: 'List Files', description: 'List recent files' },
+                    { command: 'search', label: 'Search Files', description: 'Search for files by name' },
+                    { command: 'upload', label: 'Upload File', description: 'Upload a file' },
+                    { command: 'share', label: 'Share File', description: 'Share a file with team' },
+                    { command: 'folder', label: 'Create Folder', description: 'Create a new folder' },
+                    { command: 'delete', label: 'Delete File', description: 'Delete a file or folder' },
+                    { command: 'move', label: 'Move File', description: 'Move file to another folder' },
+                    { command: 'copy', label: 'Copy File', description: 'Create a copy of a file' },
+                    { command: 'rename', label: 'Rename File', description: 'Rename a file or folder' }
+                ];
+
+            case 'sheets':
+                return [
+                    { command: 'read', label: 'Read Sheet', description: 'Read spreadsheet data' },
+                    { command: 'export', label: 'Export Data', description: 'Export cost data to Google Sheets' },
+                    { command: 'create', label: 'Create Sheet', description: 'Create a new spreadsheet' },
+                    { command: 'update', label: 'Update Sheet', description: 'Update spreadsheet data' },
+                    { command: 'append', label: 'Append Data', description: 'Append rows to spreadsheet' },
+                    { command: 'list', label: 'List Sheets', description: 'Show all spreadsheets' },
+                    { command: 'budget', label: 'Budget Tracker', description: 'Create budget tracking sheet' },
+                    { command: 'costs', label: 'Cost Analysis', description: 'Export detailed cost analysis' }
+                ];
+
+            case 'gdocs':
+                return [
+                    { command: 'read', label: 'Read Document', description: 'Read document content for Q&A' },
+                    { command: 'create', label: 'Create Document', description: 'Create a new document' },
+                    { command: 'update', label: 'Update Document', description: 'Update existing document' },
+                    { command: 'report', label: 'Cost Report', description: 'Generate cost analysis report' },
+                    { command: 'list', label: 'List Documents', description: 'Show all documents' },
+                    { command: 'summary', label: 'Cost Summary', description: 'Create monthly cost summary' },
+                    { command: 'analysis', label: 'Anomaly Analysis', description: 'Document cost anomalies' },
+                    { command: 'delete', label: 'Delete Document', description: 'Delete a document' }
+                ];
+
+            case 'google':
+                return [
+                    { command: 'workspace', label: 'Open Workspace', description: 'Open Google Workspace panel' },
+                    { command: 'connect', label: 'Connect Account', description: 'Connect Google account' },
+                    { command: 'status', label: 'Connection Status', description: 'Check connection status' }
+                ];
+
             default:
                 return [];
         }

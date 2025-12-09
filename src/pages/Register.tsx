@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { RegisterForm } from "../components/auth/RegisterForm";
 import { FloatingParticles } from "../components/auth/FloatingParticles";
 import { TestimonialsCarousel } from "../components/auth/TestimonialsCarousel";
@@ -50,6 +50,32 @@ export default function Register() {
           <div className="mt-10">
             <div className="glass rounded-xl border border-primary-200/30 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-8">
               <RegisterForm />
+            </div>
+
+            {/* Privacy Policy & Terms Footer */}
+            <div className="mt-6 text-center">
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                <Link
+                  to="/privacy-policy"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <span className="text-secondary-400 dark:text-secondary-600">•</span>
+                <Link
+                  to="/terms"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Terms of Service
+                </Link>
+                <span className="text-secondary-400 dark:text-secondary-600">•</span>
+                <Link
+                  to="/contact"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </div>
             </div>
           </div>
         </div>

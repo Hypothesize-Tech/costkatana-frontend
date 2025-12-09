@@ -7,33 +7,22 @@ import {
     LinkIcon,
     ChartBarIcon,
     DocumentTextIcon,
-    PresentationChartLineIcon,
     FolderIcon,
-    PhotoIcon,
-    DocumentIcon,
-    ArrowPathIcon,
     CheckCircleIcon,
     ExclamationTriangleIcon,
     XCircleIcon,
-    CalendarIcon,
-    EnvelopeIcon,
     ClipboardDocumentListIcon,
-    SparklesIcon
 } from '@heroicons/react/24/outline';
 import gmailLogo from '../assets/gmail-logo.webp';
 import googleCalendarLogo from '../assets/google-calender-logo.webp';
 import googleDriveLogo from '../assets/google-drive-logo.webp';
 import googleSheetsLogo from '../assets/google-sheets-logo.webp';
 import googleDocsLogo from '../assets/google-docs-logo.webp';
-import googleSlidesLogo from '../assets/google-slides-logo.webp';
-import googleFormsLogo from '../assets/google-forms-logo.webp';
 import { GmailViewer } from '../components/google/viewers/GmailViewer';
 import { DriveViewer } from '../components/google/viewers/DriveViewer';
 import { SheetViewer } from '../components/google/viewers/SheetViewer';
 import { DocViewer } from '../components/google/viewers/DocViewer';
 import { CalendarViewer } from '../components/google/viewers/CalendarViewer';
-import { FormViewer } from '../components/google/viewers/FormViewer';
-import { SlideViewer } from '../components/google/viewers/SlideViewer';
 
 
 export const GoogleIntegrations: React.FC = () => {
@@ -43,7 +32,7 @@ export const GoogleIntegrations: React.FC = () => {
     const [exportAudits, setExportAudits] = useState<GoogleExportAudit[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'gmail' | 'calendar' | 'forms' | 'slides' | 'sheets' | 'docs'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'gmail' | 'calendar' | 'sheets' | 'docs'>('overview');
 
     useEffect(() => {
         loadConnections();
@@ -168,23 +157,6 @@ export const GoogleIntegrations: React.FC = () => {
         }
     };
 
-    const handleRefreshDriveFiles = async () => {
-        if (!selectedConnection) return;
-
-        try {
-            setLoading(true);
-            const { files } = await googleService.listDriveFiles(selectedConnection._id, {
-                pageSize: 50
-            });
-            setDriveFiles(files);
-            await loadConnections(); // Refresh connection to update cache
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to refresh Drive files');
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const getHealthStatusIcon = (status: string) => {
         switch (status) {
             case 'healthy':
@@ -198,36 +170,12 @@ export const GoogleIntegrations: React.FC = () => {
         }
     };
 
-    const getMimeTypeIcon = (mimeType: string) => {
-        if (mimeType.includes('spreadsheet')) {
-            return <img src={googleSheetsLogo} alt="Google Sheets" className="w-8 h-8" />;
-        }
-        if (mimeType.includes('document')) {
-            return <img src={googleDocsLogo} alt="Google Docs" className="w-8 h-8" />;
-        }
-        if (mimeType.includes('presentation')) {
-            return <img src={googleSlidesLogo} alt="Google Slides" className="w-8 h-8" />;
-        }
-        if (mimeType.includes('folder')) {
-            return <FolderIcon className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />;
-        }
-        if (mimeType.includes('image')) {
-            return <PhotoIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />;
-        }
-        if (mimeType.includes('pdf')) {
-            return <DocumentIcon className="w-8 h-8 text-red-600 dark:text-red-400" />;
-        }
-        return <DocumentIcon className="w-8 h-8 text-gray-600 dark:text-gray-400" />;
-    };
-
     const getExportTypeIcon = (exportType: string) => {
         switch (exportType) {
             case 'sheets':
                 return <ChartBarIcon className="w-8 h-8 text-green-600 dark:text-green-400" />;
             case 'docs':
                 return <DocumentTextIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />;
-            case 'slides':
-                return <PresentationChartLineIcon className="w-8 h-8 text-orange-600 dark:text-orange-400" />;
             default:
                 return <FolderIcon className="w-8 h-8 text-gray-600 dark:text-gray-400" />;
         }
@@ -247,14 +195,16 @@ export const GoogleIntegrations: React.FC = () => {
                                 Connect your Google Workspace account to export cost data to Sheets and Docs
                             </p>
                         </div>
-                        <button
-                            onClick={handleConnectGoogle}
-                            disabled={loading}
-                            className="px-4 py-2.5 font-semibold text-white rounded-lg transition-all duration-300 bg-gradient-primary hover:shadow-lg glow-primary flex items-center gap-2 text-sm sm:text-base sm:px-6 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <PlusIcon className="w-5 h-5" />
-                            {loading ? 'Connecting...' : 'Connect Google Account'}
-                        </button>
+                        {connections.length === 0 && (
+                            <button
+                                onClick={handleConnectGoogle}
+                                disabled={loading}
+                                className="px-4 py-2.5 font-semibold text-white rounded-lg transition-all duration-300 bg-gradient-primary hover:shadow-lg glow-primary flex items-center gap-2 text-sm sm:text-base sm:px-6 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <PlusIcon className="w-5 h-5" />
+                                {loading ? 'Connecting...' : 'Connect Google Account'}
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -360,107 +310,99 @@ export const GoogleIntegrations: React.FC = () => {
                             <div className="lg:col-span-3">
                                 <div className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel sm:p-6">
                                     {/* Tabs */}
-                                    <div className="flex gap-2 mb-6 border-b border-primary-200/30 dark:border-primary-500/20">
-                                        <button
-                                            onClick={() => setActiveTab('overview')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'overview'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            Overview
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('drive')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'drive'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleDriveLogo} alt="Drive" className="w-4 h-4" />
-                                            Drive Files ({driveFiles.length})
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('exports')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${activeTab === 'exports'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            Export History ({exportAudits.length})
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('gmail')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'gmail'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={gmailLogo} alt="Gmail" className="w-4 h-4" />
-                                            Gmail
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('calendar')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'calendar'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleCalendarLogo} alt="Calendar" className="w-4 h-4" />
-                                            Calendar
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('forms')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'forms'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleFormsLogo} alt="Forms" className="w-4 h-4" />
-                                            Forms
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('slides')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'slides'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleSlidesLogo} alt="Slides" className="w-4 h-4" />
-                                            Slides
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('sheets')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'sheets'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleSheetsLogo} alt="Sheets" className="w-4 h-4" />
-                                            Sheets
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('docs')}
-                                            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'docs'
-                                                ? 'border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400'
-                                                : 'border-transparent text-secondary-600 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400'
-                                                }`}
-                                        >
-                                            <img src={googleDocsLogo} alt="Docs" className="w-4 h-4" />
-                                            Docs
-                                        </button>
+                                    <div className="glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 mb-6 overflow-visible">
+                                        <div className="flex gap-2 overflow-x-auto custom-scrollbar pt-2 pb-3 px-1 -mx-1">
+                                            <button
+                                                onClick={() => setActiveTab('overview')}
+                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'overview'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                Overview
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('drive')}
+                                                className={`relative px-4 py-3 pr-7 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'drive'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                <img src={googleDriveLogo} alt="Drive" className="w-4 h-4 object-contain" />
+                                                Drive
+                                                {driveFiles.length > 0 && (
+                                                    <span className="absolute top-1 right-0 flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white rounded-full bg-gradient-primary shadow-lg transform translate-x-1/3 -translate-y-1/2 z-10">
+                                                        {driveFiles.length > 99 ? '99+' : driveFiles.length}
+                                                    </span>
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('exports')}
+                                                className={`relative px-4 py-3 pr-7 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'exports'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                Export History
+                                                {exportAudits.length > 0 && (
+                                                    <span className="absolute top-1 right-0 flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white rounded-full bg-gradient-primary shadow-lg transform translate-x-1/3 -translate-y-1/2 z-10">
+                                                        {exportAudits.length > 99 ? '99+' : exportAudits.length}
+                                                    </span>
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('gmail')}
+                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'gmail'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                <img src={gmailLogo} alt="Gmail" className="w-4 h-4 object-contain" />
+                                                Gmail
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('calendar')}
+                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'calendar'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                <img src={googleCalendarLogo} alt="Calendar" className="w-4 h-4 object-contain" />
+                                                Calendar
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('sheets')}
+                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'sheets'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                <img src={googleSheetsLogo} alt="Sheets" className="w-4 h-4 object-contain" />
+                                                Sheets
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveTab('docs')}
+                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'docs'
+                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
+                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
+                                                    }`}
+                                            >
+                                                <img src={googleDocsLogo} alt="Docs" className="w-4 h-4 object-contain" />
+                                                Docs
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/* Overview Tab */}
                                     {activeTab === 'overview' && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="p-6 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 text-center">
+                                            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                                 <div className="flex justify-center mb-4">
                                                     <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30">
                                                         <ChartBarIcon className="w-8 h-8 text-green-600 dark:text-green-400" />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-base font-semibold text-secondary-900 dark:text-white mb-2">
+                                                <h3 className="text-base font-semibold font-display text-secondary-900 dark:text-white mb-2">
                                                     Export to Sheets
                                                 </h3>
                                                 <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4">
@@ -475,13 +417,13 @@ export const GoogleIntegrations: React.FC = () => {
                                                 </button>
                                             </div>
 
-                                            <div className="p-6 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 text-center">
+                                            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                                 <div className="flex justify-center mb-4">
                                                     <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30">
                                                         <DocumentTextIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-base font-semibold text-secondary-900 dark:text-white mb-2">
+                                                <h3 className="text-base font-semibold font-display text-secondary-900 dark:text-white mb-2">
                                                     Create Report
                                                 </h3>
                                                 <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4">
@@ -496,13 +438,13 @@ export const GoogleIntegrations: React.FC = () => {
                                                 </button>
                                             </div>
 
-                                            <div className="p-6 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 text-center">
+                                            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                                 <div className="flex justify-center mb-4">
                                                     <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/30">
                                                         <Cog6ToothIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-base font-semibold text-secondary-900 dark:text-white mb-2">
+                                                <h3 className="text-base font-semibold font-display text-secondary-900 dark:text-white mb-2">
                                                     Connection Health
                                                 </h3>
                                                 <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4">
@@ -517,13 +459,13 @@ export const GoogleIntegrations: React.FC = () => {
                                                 </button>
                                             </div>
 
-                                            <div className="p-6 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 text-center">
+                                            <div className="p-6 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel text-center">
                                                 <div className="flex justify-center mb-4">
                                                     <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30">
                                                         <XCircleIcon className="w-8 h-8 text-red-600 dark:text-red-400" />
                                                     </div>
                                                 </div>
-                                                <h3 className="text-base font-semibold text-secondary-900 dark:text-white mb-2">
+                                                <h3 className="text-base font-semibold font-display text-secondary-900 dark:text-white mb-2">
                                                     Disconnect
                                                 </h3>
                                                 <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-4">
@@ -541,74 +483,27 @@ export const GoogleIntegrations: React.FC = () => {
                                     )}
 
                                     {/* Drive Tab */}
-                                    {activeTab === 'drive' && (
-                                        <div>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">
-                                                    Drive Files
-                                                </h3>
-                                                <button
-                                                    onClick={handleRefreshDriveFiles}
-                                                    disabled={loading}
-                                                    className="px-4 py-2 text-sm font-semibold rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                                >
-                                                    <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                                                    Refresh
-                                                </button>
-                                            </div>
-                                            <div className="space-y-3">
-                                                {driveFiles.map((file) => (
-                                                    <div
-                                                        key={file.id}
-                                                        className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex items-center gap-4"
-                                                    >
-                                                        {getMimeTypeIcon(file.mimeType)}
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="text-sm font-semibold text-secondary-900 dark:text-white truncate">
-                                                                {file.name}
-                                                            </div>
-                                                            <div className="text-xs text-secondary-600 dark:text-secondary-300">
-                                                                {file.size && `${(file.size / 1024).toFixed(2)} KB`}
-                                                                {file.modifiedTime && ` • Modified ${new Date(file.modifiedTime).toLocaleDateString()}`}
-                                                            </div>
-                                                        </div>
-                                                        {file.webViewLink && (
-                                                            <a
-                                                                href={file.webViewLink}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="px-4 py-2 text-sm font-semibold rounded-lg bg-gradient-primary hover:shadow-lg glow-primary text-white transition-all duration-300"
-                                                            >
-                                                                View
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                                {driveFiles.length === 0 && (
-                                                    <div className="text-center py-12 text-secondary-500 dark:text-secondary-400">
-                                                        <FolderIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                                                        <p>No files found in Drive</p>
-                                                    </div>
-                                                )}
-                                            </div>
+                                    {activeTab === 'drive' && selectedConnection && (
+                                        <div className="h-[600px]">
+                                            <DriveViewer connection={selectedConnection} />
                                         </div>
                                     )}
 
                                     {/* Exports Tab */}
                                     {activeTab === 'exports' && (
                                         <div>
-                                            <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4">
+                                            <h3 className="text-lg font-semibold font-display text-secondary-900 dark:text-white mb-4">
                                                 Export History
                                             </h3>
                                             <div className="space-y-3">
                                                 {exportAudits.map((audit) => (
                                                     <div
                                                         key={audit._id}
-                                                        className="p-4 rounded-lg border border-primary-200/30 dark:border-primary-500/20 bg-white dark:bg-gray-800/50 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex items-center gap-4"
+                                                        className="p-4 rounded-xl border shadow-lg backdrop-blur-xl glass border-primary-200/30 dark:border-primary-500/20 bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50/50 dark:hover:bg-primary-900/30 transition-all duration-200 flex items-center gap-4"
                                                     >
                                                         {getExportTypeIcon(audit.exportType)}
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="text-sm font-semibold text-secondary-900 dark:text-white mb-1">
+                                                            <div className="text-sm font-semibold font-display text-secondary-900 dark:text-white mb-1">
                                                                 {audit.fileName}
                                                             </div>
                                                             <div className="text-xs text-secondary-600 dark:text-secondary-300 mb-1">
@@ -623,7 +518,7 @@ export const GoogleIntegrations: React.FC = () => {
                                                             href={audit.fileLink}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="px-4 py-2 text-sm font-semibold rounded-lg bg-green-600 hover:bg-green-700 text-white transition-all duration-300"
+                                                            className="px-4 py-2 text-sm font-semibold rounded-lg bg-gradient-primary hover:shadow-lg glow-primary text-white transition-all duration-300"
                                                         >
                                                             Open
                                                         </a>
@@ -650,20 +545,6 @@ export const GoogleIntegrations: React.FC = () => {
                                     {activeTab === 'calendar' && selectedConnection && (
                                         <div className="h-[600px]">
                                             <CalendarViewer connection={selectedConnection} />
-                                        </div>
-                                    )}
-
-                                    {/* Forms Tab */}
-                                    {activeTab === 'forms' && selectedConnection && (
-                                        <div className="h-[600px]">
-                                            <FormViewer connection={selectedConnection} />
-                                        </div>
-                                    )}
-
-                                    {/* Slides Tab */}
-                                    {activeTab === 'slides' && selectedConnection && (
-                                        <div className="h-[600px]">
-                                            <SlideViewer connection={selectedConnection} />
                                         </div>
                                     )}
 

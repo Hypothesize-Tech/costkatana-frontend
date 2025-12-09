@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { LoginForm } from "../components/auth/LoginForm";
 import { MFAVerification } from "../components/auth/MFAVerification";
 import { LoadingSpinner } from "../components/common/LoadingSpinner";
@@ -168,6 +168,32 @@ export default function Login() {
               ) : (
                 <LoginForm lastLoginMethod={lastLoginMethod} />
               )}
+            </div>
+
+            {/* Privacy Policy & Terms Footer */}
+            <div className="mt-6 text-center">
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                <Link
+                  to="/privacy-policy"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <span className="text-secondary-400 dark:text-secondary-600">•</span>
+                <Link
+                  to="/terms"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Terms of Service
+                </Link>
+                <span className="text-secondary-400 dark:text-secondary-600">•</span>
+                <Link
+                  to="/contact"
+                  className="text-secondary-600 hover:text-primary-500 dark:text-secondary-400 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </div>
             </div>
           </div>
         </div>
