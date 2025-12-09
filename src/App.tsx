@@ -81,6 +81,7 @@ import { Security } from './pages/Security';
 import UnexplainedCosts from './pages/UnexplainedCosts';
 import GitHubCallback from './pages/GitHubCallback';
 import GitHubIntegrations from './pages/GitHubIntegrations';
+import { GoogleIntegrations } from './pages/GoogleIntegrations';
 import { AdminUserSpending } from './pages/AdminUserSpending';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminDiscountManagement } from './pages/AdminDiscountManagement';
@@ -336,6 +337,10 @@ function AppContent() {
           <Route
             path="github"
             element={<GitHubIntegrations />}
+          />
+          <Route
+            path="google"
+            element={<GoogleIntegrations />}
           />
           <Route
             path="admin/user-spending"

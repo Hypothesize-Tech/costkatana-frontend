@@ -17,6 +17,7 @@ import { useToast } from '../../hooks/useToast';
 import { ZapierSetupGuide } from './ZapierSetupGuide';
 import { MakeSetupGuide } from './MakeSetupGuide';
 import { N8nSetupGuide } from './N8nSetupGuide';
+import { GoogleAutomationGuide } from './GoogleAutomationGuide';
 import { userService } from '../../services/user.service';
 import { WorkflowQuotaStatusComponent } from './WorkflowQuotaStatus';
 
@@ -25,6 +26,7 @@ const AutomationConnectionManager: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  const [showGoogleGuide, setShowGoogleGuide] = useState(false);
   const [editingConnection, setEditingConnection] = useState<AutomationConnection | null>(null);
   const [formData, setFormData] = useState<AutomationConnectionFormData>({
     platform: 'zapier',
@@ -194,7 +196,21 @@ const AutomationConnectionManager: React.FC = () => {
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <button
-            onClick={() => setShowGuide(!showGuide)}
+            onClick={() => {
+              setShowGoogleGuide(!showGoogleGuide);
+              setShowGuide(false);
+            }}
+            className="btn btn-secondary flex items-center justify-center gap-2 px-3 py-2 sm:px-4 rounded-xl text-sm bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
+          >
+            <BookOpenIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">{showGoogleGuide ? 'Hide' : 'Show'} Google Guide</span>
+            <span className="sm:hidden">{showGoogleGuide ? 'Hide' : 'Google'}</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowGuide(!showGuide);
+              setShowGoogleGuide(false);
+            }}
             className="btn btn-secondary flex items-center justify-center gap-2 px-3 py-2 sm:px-4 rounded-xl text-sm"
           >
             <BookOpenIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -218,6 +234,13 @@ const AutomationConnectionManager: React.FC = () => {
 
       {/* Quota Status */}
       <WorkflowQuotaStatusComponent showUpgradeButton={true} />
+
+      {/* Google Automation Guide */}
+      {showGoogleGuide && (
+        <div className="mt-6">
+          <GoogleAutomationGuide />
+        </div>
+      )}
 
       {/* Setup Guide */}
       {showGuide && (

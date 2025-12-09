@@ -111,6 +111,13 @@ export interface SendMessageResponse {
       reasoning?: string;
     }>;
   };
+  // Google services view links
+  viewLinks?: Array<{
+    label: string;
+    url: string;
+    type: 'document' | 'spreadsheet' | 'presentation' | 'file' | 'email' | 'calendar' | 'form';
+  }>;
+  metadata?: any;
 }
 
 export interface ConversationHistoryResponse {
