@@ -348,6 +348,51 @@ class GoogleService {
         const response = await api.get(`/google/docs/${docId}/content?connectionId=${connectionId}`);
         return response.data.data;
     }
+
+    /**
+     * Cache picker file selections
+     */
+    async cachePickerSelection(connectionId: string, files: Array<{
+        fileId: string;
+        fileName: string;
+        mimeType: string;
+        fileType: 'docs' | 'sheets' | 'drive';
+        webViewLink?: string;
+        metadata?: any;
+    }>): Promise<{ cachedCount: number }> {
+        const response = await api.post('/google/file-access/cache', {
+            connectionId,
+            files
+        });
+        return response.data.data;
+    }
+
+    /**
+     * Get accessible files from cache
+     */
+    async getAccessibleFiles(connectionId: string, fileType?: 'docs' | 'sheets' | 'drive'): Promise<GoogleDriveFile[]> {
+        const params = new URLSearchParams({ connectionId });
+        if (fileType) params.append('fileType', fileType);
+
+        const response = await api.get(`/google/file-access?${params.toString()}`);
+        return response.data.data;
+    }
+
+    /**
+     * Check if user has access to a file
+     */
+    async checkFileAccess(fileId: string): Promise<boolean> {
+        const response = await api.get(`/google/file-access/check/${fileId}`);
+        return response.data.data?.hasAccess || false;
+    }
+
+    /**
+     * Get OAuth token for Google Picker API
+     */
+    async getPickerToken(connectionId: string): Promise<{ accessToken: string; clientId: string; developerKey?: string }> {
+        const response = await api.get(`/google/connections/${connectionId}/picker-token`);
+        return response.data.data;
+    }
 }
 
 export const googleService = new GoogleService();

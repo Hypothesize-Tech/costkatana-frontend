@@ -85,6 +85,7 @@ import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
 import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
 import { GoogleServicePanel } from "./GoogleServicePanel";
+import { GooglePickerModal } from "../google/GooglePickerModal";
 import { googleService, GoogleConnection } from "../../services/google.service";
 
 // Configure marked for security
@@ -263,6 +264,8 @@ export const ConversationalAgent: React.FC = () => {
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'gmail' | 'drive' | 'sheets' | 'docs' | 'calendar'>('quick');
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
+  const [showGooglePicker, setShowGooglePicker] = useState(false);
+  const [pickerFileType, setPickerFileType] = useState<'docs' | 'sheets' | 'drive'>('drive');
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -1312,12 +1315,59 @@ export const ConversationalAgent: React.FC = () => {
     }
   };
 
+  // Handle Google Picker commands
+  const handlePickerCommand = (messageContent: string): boolean => {
+    const lowerMessage = messageContent.toLowerCase().trim();
+
+    // Check for picker commands with both colon and space formats
+    // Pattern: @drive:select, @drive select, @drive:picker, @drive picker
+    const drivePickerPattern = /@drive[: ](select|picker)/;
+    const docsPickerPattern = /@(docs|gdocs)[: ](select|picker)/;
+    const sheetsPickerPattern = /@(sheets|gsheets)[: ](select|picker)/;
+
+    if (drivePickerPattern.test(lowerMessage)) {
+      if (!googleConnection.hasConnection) {
+        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
+        return true; // Return true to prevent sending the message
+      }
+      setPickerFileType('drive');
+      setShowGooglePicker(true);
+      return true;
+    }
+    if (docsPickerPattern.test(lowerMessage)) {
+      if (!googleConnection.hasConnection) {
+        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
+        return true;
+      }
+      setPickerFileType('docs');
+      setShowGooglePicker(true);
+      return true;
+    }
+    if (sheetsPickerPattern.test(lowerMessage)) {
+      if (!googleConnection.hasConnection) {
+        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
+        return true;
+      }
+      setPickerFileType('sheets');
+      setShowGooglePicker(true);
+      return true;
+    }
+
+    return false;
+  };
+
   const sendMessage = async (content?: string) => {
     const messageContent = content || currentMessage.trim();
     if (!messageContent || isLoading) return;
 
     if (!selectedModel) {
       setError("Please select a model first");
+      return;
+    }
+
+    // Check if this is a picker command
+    if (handlePickerCommand(messageContent)) {
+      setCurrentMessage("");
       return;
     }
 
@@ -1504,6 +1554,12 @@ export const ConversationalAgent: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      // Handle Google Picker from backend response metadata
+      if (response.metadata?.requiresPicker && response.metadata?.fileType && googleConnection.hasConnection) {
+        setPickerFileType(response.metadata.fileType as 'docs' | 'sheets' | 'drive');
+        setShowGooglePicker(true);
+      }
 
       // Handle GitHub integration polling if integration data is present
       if (response.githubIntegrationData?.integrationId) {
@@ -3333,9 +3389,17 @@ export const ConversationalAgent: React.FC = () => {
                   {/* Mention Autocomplete */}
                   <MentionAutocomplete
                     value={currentMessage}
-                    onChange={setCurrentMessage}
+                    onChange={(newValue) => {
+                      setCurrentMessage(newValue);
+                      setTimeout(() => {
+                        if (handlePickerCommand(newValue.trim())) {
+                          setCurrentMessage("");
+                        }
+                      }, 0);
+                    }}
                     onSelect={() => {
                       // Mention is already inserted in the textarea
+                      // The onChange handler will check for picker commands
                     }}
                     textareaRef={textareaRef}
                   />
@@ -3762,6 +3826,25 @@ export const ConversationalAgent: React.FC = () => {
         isOpen={showGooglePanel}
         onClose={() => setShowGooglePanel(false)}
         defaultTab={googlePanelTab}
+      />
+
+      {/* Google Picker Modal */}
+      <GooglePickerModal
+        isOpen={showGooglePicker}
+        onClose={() => setShowGooglePicker(false)}
+        fileType={pickerFileType}
+        connectionId={googleConnection?.connection?._id || ''}
+        onFilesSelected={(files) => {
+          const fileNames = files.map(f => f.fileName).join(', ');
+          const message: ChatMessage = {
+            id: Date.now().toString(),
+            role: "assistant",
+            content: `✅ **File${files.length > 1 ? 's' : ''} Selected Successfully!**\n\n${fileNames}\n\nYou can now use commands to work with ${files.length > 1 ? 'these files' : 'this file'} directly! Try:\n\n• \`@${pickerFileType} list\` - See all accessible files\n• Access specific files by name in your commands`,
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, message]);
+        }}
+        multiSelect={true}
       />
     </div>
   );

@@ -493,8 +493,9 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
 
             case 'drive':
                 return [
-                    { command: 'list', label: 'List Files', description: 'List recent files' },
-                    { command: 'search', label: 'Search Files', description: 'Search for files by name' },
+                    { command: 'select', label: 'Select Files', description: 'Open file picker to select files' },
+                    { command: 'list', label: 'List Files', description: 'List accessible files' },
+                    { command: 'search', label: 'Search Files', description: 'Search accessible files by name' },
                     { command: 'upload', label: 'Upload File', description: 'Upload a file' },
                     { command: 'share', label: 'Share File', description: 'Share a file with team' },
                     { command: 'folder', label: 'Create Folder', description: 'Create a new folder' },
@@ -506,35 +507,30 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
 
             case 'sheets':
                 return [
+                    { command: 'select', label: 'Select Spreadsheet', description: 'Open file picker to select sheets' },
+                    { command: 'list', label: 'List Sheets', description: 'Show accessible spreadsheets' },
                     { command: 'read', label: 'Read Sheet', description: 'Read spreadsheet data' },
-                    { command: 'export', label: 'Export Data', description: 'Export cost data to Google Sheets' },
                     { command: 'create', label: 'Create Sheet', description: 'Create a new spreadsheet' },
+                    { command: 'export', label: 'Export Data', description: 'Export cost data to Google Sheets' },
                     { command: 'update', label: 'Update Sheet', description: 'Update spreadsheet data' },
                     { command: 'append', label: 'Append Data', description: 'Append rows to spreadsheet' },
-                    { command: 'list', label: 'List Sheets', description: 'Show all spreadsheets' },
                     { command: 'budget', label: 'Budget Tracker', description: 'Create budget tracking sheet' },
                     { command: 'costs', label: 'Cost Analysis', description: 'Export detailed cost analysis' }
                 ];
 
+            case 'docs':
             case 'gdocs':
                 return [
+                    { command: 'select', label: 'Select Document', description: 'Open file picker to select documents' },
+                    { command: 'list', label: 'List Documents', description: 'Show accessible documents' },
                     { command: 'read', label: 'Read Document', description: 'Read document content for Q&A' },
                     { command: 'create', label: 'Create Document', description: 'Create a new document' },
                     { command: 'update', label: 'Update Document', description: 'Update existing document' },
                     { command: 'report', label: 'Cost Report', description: 'Generate cost analysis report' },
-                    { command: 'list', label: 'List Documents', description: 'Show all documents' },
                     { command: 'summary', label: 'Cost Summary', description: 'Create monthly cost summary' },
                     { command: 'analysis', label: 'Anomaly Analysis', description: 'Document cost anomalies' },
                     { command: 'delete', label: 'Delete Document', description: 'Delete a document' }
                 ];
-
-            case 'google':
-                return [
-                    { command: 'workspace', label: 'Open Workspace', description: 'Open Google Workspace panel' },
-                    { command: 'connect', label: 'Connect Account', description: 'Connect Google account' },
-                    { command: 'status', label: 'Connection Status', description: 'Check connection status' }
-                ];
-
             default:
                 return [];
         }
