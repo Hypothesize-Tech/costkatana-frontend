@@ -1786,12 +1786,6 @@ export const ConversationalAgent: React.FC = () => {
     return 'poor';
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -1809,6 +1803,60 @@ export const ConversationalAgent: React.FC = () => {
     navigator.clipboard.writeText(text);
     setCopiedCode(text);
     setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  // Helper function to detect and highlight CostKatana commands and linkify URLs in text
+  const linkifyText = (text: string): React.ReactNode => {
+    // Combined regex pattern for URLs and CostKatana commands
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    // Match @word or @word:action (e.g., @google, @drive:select, @google:list-issues)
+    const commandPattern = /(@[a-z]+(?::[a-z-]+)?)/gi;
+
+    // Split by both URLs and commands
+    const combinedPattern = /(https?:\/\/[^\s]+|@[a-z]+(?::[a-z-]+)?)/gi;
+    const parts = text.split(combinedPattern);
+
+    return parts.map((part, index) => {
+      // Check if it's a URL
+      if (urlPattern.test(part)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 transition-colors font-medium inline-flex items-center gap-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {part}
+            <LinkIcon className="w-3 h-3 inline opacity-60" />
+          </a>
+        );
+      }
+
+      // Check if it's a CostKatana command
+      if (commandPattern.test(part)) {
+        return (
+          <span
+            key={index}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-emerald-400/60 dark:border-emerald-500/60 bg-gradient-to-r from-emerald-400/30 to-emerald-500/30 dark:from-emerald-500/40 dark:to-emerald-600/40 text-emerald-900 dark:text-emerald-100 font-mono text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20 cursor-default backdrop-blur-sm"
+            title={`CostKatana Command: ${part}`}
+          >
+            {part}
+          </span>
+        );
+      }
+
+      return part;
+    });
+  };
+
+  // Handle keyboard events
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   const openSourcesModal = (sources: ChatMessage['sources']) => {
@@ -2014,6 +2062,21 @@ export const ConversationalAgent: React.FC = () => {
           <div className="prose prose-sm max-w-none font-body text-light-text-primary dark:text-dark-text-primary">
             <ReactMarkdown
               components={{
+                // Make links clickable and open in new tab
+                a({ href, children, ...props }) {
+                  return (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 transition-colors font-medium inline-flex items-center gap-1"
+                      {...props}
+                    >
+                      {children}
+                      <LinkIcon className="w-3 h-3 inline opacity-60" />
+                    </a>
+                  );
+                },
                 code({ className, children, ...props }: { className?: string; children?: React.ReactNode;[key: string]: any }) {
                   const match = /language-(\w+)/.exec(className || '');
                   const isInline = !match || className?.includes('inline');
@@ -2029,6 +2092,19 @@ export const ConversationalAgent: React.FC = () => {
 
                   // Check if language has preview capability
                   const hasPreview = ['html', 'javascript', 'js', 'typescript', 'ts', 'jsx', 'tsx', 'react', 'vue', 'angular', 'svelte', 'css', 'scss', 'terminal', 'bash', 'shell'].includes(language.toLowerCase());
+
+                  // Check if inline code is a CostKatana command
+                  const commandPattern = /^@[a-z]+(?::[a-z-]+)?$/i;
+                  if (isInline && commandPattern.test(codeContent.trim())) {
+                    return (
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-emerald-400/60 dark:border-emerald-500/60 bg-gradient-to-r from-emerald-400/30 to-emerald-500/30 dark:from-emerald-500/40 dark:to-emerald-600/40 text-emerald-900 dark:text-emerald-100 font-mono text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20 cursor-default backdrop-blur-sm"
+                        title={`CostKatana Command: ${codeContent}`}
+                      >
+                        {codeContent}
+                      </span>
+                    );
+                  }
 
                   return !isInline && match ? (
                     <div className="my-4 rounded-xl overflow-hidden border border-primary-200/30">
@@ -2153,7 +2229,7 @@ export const ConversationalAgent: React.FC = () => {
                 ),
                 p: ({ children }) => (
                   <p className="mb-4 last:mb-0 leading-relaxed text-light-text-primary dark:text-dark-text-primary">
-                    {children}
+                    {typeof children === 'string' ? linkifyText(children) : children}
                   </p>
                 ),
                 ul: ({ children }) => (
@@ -2168,7 +2244,7 @@ export const ConversationalAgent: React.FC = () => {
                 ),
                 li: ({ children }) => (
                   <li className="text-light-text-primary dark:text-dark-text-primary">
-                    {children}
+                    {typeof children === 'string' ? linkifyText(children) : children}
                   </li>
                 ),
                 blockquote: ({ children }) => (
@@ -3378,7 +3454,7 @@ export const ConversationalAgent: React.FC = () => {
                         ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
                         : "Ask me anything about your AI costs, projects, or optimizations..."
                     }
-                    className="w-full px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-5 lg:pt-6 pb-1.5 sm:pb-2 pr-8 sm:pr-10 md:pr-12 lg:pr-14 resize-none min-h-[44px] sm:min-h-[48px] md:min-h-[52px] lg:min-h-[56px] max-h-28 sm:max-h-32 md:max-h-36 lg:max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none"
+                    className="w-full px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-5 lg:pt-6 pb-1.5 sm:pb-2 pr-8 sm:pr-10 md:pr-12 lg:pr-14 resize-none min-h-[44px] sm:min-h-[48px] md:min-h-[52px] lg:min-h-[56px] max-h-28 sm:max-h-32 md:max-h-36 lg:max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none relative z-10"
                     rows={1}
                     style={{
                       scrollbarWidth: 'thin',
@@ -3386,6 +3462,7 @@ export const ConversationalAgent: React.FC = () => {
                       height: '56px'
                     }}
                   />
+
                   {/* Mention Autocomplete */}
                   <MentionAutocomplete
                     value={currentMessage}

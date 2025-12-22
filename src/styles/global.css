@@ -18,6 +18,20 @@
   animation: fade-in 0.3s ease-out;
 }
 
+/* CostKatana Command Highlight Animation */
+@keyframes command-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 8px 2px currentColor;
+  }
+}
+
+.command-highlight {
+  animation: command-pulse 2s ease-in-out infinite;
+}
+
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
