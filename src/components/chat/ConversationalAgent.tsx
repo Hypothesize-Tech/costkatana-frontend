@@ -268,6 +268,12 @@ export const ConversationalAgent: React.FC = () => {
   const [pickerFileType, setPickerFileType] = useState<'docs' | 'sheets' | 'drive'>('drive');
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
 
+  // Link attachment state
+  const [attachedLinks, setAttachedLinks] = useState<Array<{ url: string; title?: string }>>([]);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkInputValue, setLinkInputValue] = useState('');
+  const linkInputRef = useRef<HTMLInputElement>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const hiddenFileInputRef = useRef<HTMLInputElement>(null);
@@ -1377,20 +1383,39 @@ export const ConversationalAgent: React.FC = () => {
     if (threatCheck.isBlocked) {
       const errorMessage = ThreatDetectionService.getErrorMessage(threatCheck);
       setError(errorMessage);
-      // Remove the user message if it was already added (shouldn't happen, but safety check)
       return;
+    }
+
+    // Link metadata extraction is now handled on the backend in /message endpoint
+    // Frontend just sends the message as-is, backend will enrich it automatically
+
+    // Append attached links to message content with explicit formatting for AI
+    let finalMessageContent = messageContent;
+    if (attachedLinks.length > 0) {
+      const linksSection = attachedLinks.map((link, idx) => {
+        // Format explicitly for AI to understand:
+        // Link 1: [Title]
+        // URL: https://...
+        // (This ensures AI can see the actual URL and title separately)
+        if (link.title && link.title !== new URL(link.url).hostname.replace('www.', '')) {
+          return `\n\n📎 **Attached Link ${idx + 1}:** ${link.title}\n**URL:** ${link.url}`;
+        }
+        return `\n\n📎 **Attached Link ${idx + 1}:** ${link.url}`;
+      }).join('');
+      finalMessageContent = `${finalMessageContent}${linksSection}`;
     }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
-      content: messageContent,
+      content: finalMessageContent, // Includes attached links, backend will enrich URLs with metadata
       timestamp: new Date(),
       attachedDocuments: selectedDocuments.length > 0 ? selectedDocuments : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setCurrentMessage("");
+    setAttachedLinks([]); // Clear attached links after sending
     setIsLoading(true);
     setLoadingMessageId(userMessage.id);
     setError(null);
@@ -1473,7 +1498,7 @@ export const ConversationalAgent: React.FC = () => {
       }
 
       const response = await ChatService.sendMessage({
-        message: messageContent,
+        message: finalMessageContent,
         modelId: selectedModel.id,
         conversationId: currentConversationId || undefined,
         chatMode: chatMode,
@@ -1807,29 +1832,31 @@ export const ConversationalAgent: React.FC = () => {
 
   // Helper function to detect and highlight CostKatana commands and linkify URLs in text
   const linkifyText = (text: string): React.ReactNode => {
-    // Combined regex pattern for URLs and CostKatana commands
-    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    // Enhanced regex pattern for URLs - supports http, https, www, and common TLDs
+    const urlPattern = /(https?:\/\/[^\s<>"{}|\\^`[\]]+|www\.[^\s<>"{}|\\^`[\]]+)/gi;
     // Match @word or @word:action (e.g., @google, @drive:select, @google:list-issues)
     const commandPattern = /(@[a-z]+(?::[a-z-]+)?)/gi;
 
     // Split by both URLs and commands
-    const combinedPattern = /(https?:\/\/[^\s]+|@[a-z]+(?::[a-z-]+)?)/gi;
+    const combinedPattern = /(https?:\/\/[^\s<>"{}|\\^`[\]]+|www\.[^\s<>"{}|\\^`[\]]+|@[a-z]+(?::[a-z-]+)?)/gi;
     const parts = text.split(combinedPattern);
 
     return parts.map((part, index) => {
       // Check if it's a URL
       if (urlPattern.test(part)) {
+        // Add protocol if missing (for www. links)
+        const href = part.startsWith('http') ? part : `https://${part}`;
         return (
           <a
             key={index}
-            href={part}
+            href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 transition-colors font-medium inline-flex items-center gap-1"
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 transition-colors font-medium inline-flex items-center gap-1 break-all"
             onClick={(e) => e.stopPropagation()}
           >
             {part}
-            <LinkIcon className="w-3 h-3 inline opacity-60" />
+            <LinkIcon className="w-3 h-3 inline opacity-60 flex-shrink-0" />
           </a>
         );
       }
@@ -1857,6 +1884,67 @@ export const ConversationalAgent: React.FC = () => {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  // Handle link attachment with metadata extraction
+  const handleAddLink = () => {
+    setShowLinkInput(true);
+    setTimeout(() => linkInputRef.current?.focus(), 100);
+  };
+
+  const handleLinkInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addLinkAttachment();
+    } else if (e.key === 'Escape') {
+      setShowLinkInput(false);
+      setLinkInputValue('');
+    }
+  };
+
+  const addLinkAttachment = async () => {
+    const trimmedLink = linkInputValue.trim();
+    if (!trimmedLink) return;
+
+    // Validate URL format
+    const urlPattern = /(https?:\/\/[^\s<>"{}|\\^`[\]]+|www\.[^\s<>"{}|\\^`[\]]+)/gi;
+    const isValidUrl = urlPattern.test(trimmedLink);
+
+    if (!isValidUrl) {
+      setError('Please enter a valid URL (e.g., https://example.com or www.example.com)');
+      return;
+    }
+
+    // Add protocol if missing
+    const fullUrl = trimmedLink.startsWith('http') ? trimmedLink : `https://${trimmedLink}`;
+
+    try {
+      // Extract basic info from URL
+      const urlObj = new URL(fullUrl);
+      let title = urlObj.hostname.replace('www.', '');
+
+      // Try to fetch metadata from backend
+      try {
+        const response = await apiClient.post('/utils/extract-link-metadata', { url: fullUrl });
+        if (response.data && response.data.title) {
+          title = response.data.title;
+        }
+      } catch (metadataError) {
+        // Fallback to hostname if metadata fetch fails
+        console.log('Could not fetch metadata, using hostname');
+      }
+
+      setAttachedLinks(prev => [...prev, { url: fullUrl, title }]);
+      setLinkInputValue('');
+      setShowLinkInput(false);
+      setError(null);
+    } catch (err) {
+      setError('Invalid URL format');
+    }
+  };
+
+  const removeLinkAttachment = (index: number) => {
+    setAttachedLinks(prev => prev.filter((_, i) => i !== index));
   };
 
   const openSourcesModal = (sources: ChatMessage['sources']) => {
@@ -1949,7 +2037,37 @@ export const ConversationalAgent: React.FC = () => {
     return sources.length > 0 ? sources : undefined;
   };
 
+  // Convert plain URLs to markdown links for proper rendering
+  const convertUrlsToMarkdown = (text: string): string => {
+    const urlPattern = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
+    return text.replace(urlPattern, (url, offset) => {
+      // Check if already in markdown format [text](url) or (url)
+      const beforeUrl = text.substring(Math.max(0, offset - 50), offset);
+      const afterUrl = text.substring(offset + url.length, offset + url.length + 10);
+
+      // Skip if already in markdown link format
+      if (beforeUrl.includes('](') && afterUrl.startsWith(')')) {
+        return url;
+      }
+      if (beforeUrl.includes('(') && afterUrl.startsWith(')')) {
+        return url;
+      }
+
+      // Handle "🔗 Link: URL" format - convert to markdown
+      if (beforeUrl.includes('🔗') || beforeUrl.includes('Link:')) {
+        return `[${url}](${url})`;
+      }
+
+      // Convert plain URL to markdown link format
+      return `[${url}](${url})`;
+    });
+  };
+
   const renderMessageContent = (content: string, message?: ChatMessage) => {
+    // Convert plain URLs to markdown for proper rendering
+    const processedContent = convertUrlsToMarkdown(content);
+    const isUserMessage = message?.role === 'user';
+
     return (
       <>
         {/* Thinking Section */}
@@ -2062,18 +2180,21 @@ export const ConversationalAgent: React.FC = () => {
           <div className="prose prose-sm max-w-none font-body text-light-text-primary dark:text-dark-text-primary">
             <ReactMarkdown
               components={{
-                // Make links clickable and open in new tab
+                // Make links clickable and open in new tab with proper styling for user/assistant messages
                 a({ href, children, ...props }) {
                   return (
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 transition-colors font-medium inline-flex items-center gap-1"
+                      className={`${isUserMessage
+                        ? 'text-white hover:text-white/90 underline decoration-white/70 hover:decoration-white font-bold'
+                        : 'text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-600 font-medium'
+                        } transition-colors inline-flex items-center gap-1`}
                       {...props}
                     >
                       {children}
-                      <LinkIcon className="w-3 h-3 inline opacity-60" />
+                      <LinkIcon className={`w-3 h-3 inline ${isUserMessage ? 'opacity-80' : 'opacity-60'}`} />
                     </a>
                   );
                 },
@@ -2286,7 +2407,7 @@ export const ConversationalAgent: React.FC = () => {
                 ),
               }}
             >
-              {content}
+              {processedContent}
             </ReactMarkdown>
           </div>
         </div>
@@ -3188,6 +3309,94 @@ export const ConversationalAgent: React.FC = () => {
               </div>
             )}
 
+            {/* Attached Links Display - Enhanced */}
+            {attachedLinks.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <div className="text-xs font-display font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wider px-1">
+                  Attached Links ({attachedLinks.length})
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {attachedLinks.map((link, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 px-3 py-2 glass rounded-xl border border-primary-200/50 dark:border-primary-700/50 shadow-md hover:shadow-lg transition-all group bg-gradient-to-br from-primary-50/80 to-primary-100/50 dark:from-primary-900/40 dark:to-primary-800/30 min-w-[200px] max-w-full"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-sm">
+                        <LinkIcon className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm font-display font-semibold text-primary-700 dark:text-primary-300 hover:text-primary-800 dark:hover:text-primary-200 hover:underline truncate"
+                          onClick={(e) => e.stopPropagation()}
+                          title={link.title || link.url}
+                        >
+                          {link.title || new URL(link.url).hostname.replace('www.', '')}
+                        </a>
+                        <div className="text-xs text-secondary-500 dark:text-secondary-400 truncate mt-0.5" title={link.url}>
+                          {new URL(link.url).hostname}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeLinkAttachment(index)}
+                        className="flex-shrink-0 p-1.5 hover:bg-danger-100 dark:hover:bg-danger-900/40 rounded-lg transition-all hover:scale-110 group"
+                        title="Remove link"
+                      >
+                        <XMarkIcon className="w-4 h-4 text-secondary-400 dark:text-secondary-500 group-hover:text-danger-500 dark:group-hover:text-danger-400 transition-colors" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Link Input Field - Cursor-style */}
+            {showLinkInput && (
+              <div className="glass rounded-lg border border-primary-300 dark:border-primary-600 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-3 animate-scale-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <LinkIcon className="w-4 h-4 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                  <span className="text-sm font-display font-semibold text-primary-700 dark:text-primary-300">
+                    Add Link
+                  </span>
+                  <button
+                    onClick={() => {
+                      setShowLinkInput(false);
+                      setLinkInputValue('');
+                    }}
+                    className="ml-auto p-1 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded transition-colors"
+                  >
+                    <XMarkIcon className="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={linkInputRef}
+                    type="text"
+                    value={linkInputValue}
+                    onChange={(e) => setLinkInputValue(e.target.value)}
+                    onKeyDown={handleLinkInputKeyPress}
+                    placeholder="Paste or type URL (e.g., https://example.com)"
+                    className="flex-1 px-3 py-2 text-sm rounded-lg border border-primary-200/50 dark:border-primary-700/50 bg-white dark:bg-dark-card text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 focus:ring-2 focus:ring-primary-500/50 focus:border-primary-400 dark:focus:border-primary-600 transition-all outline-none"
+                  />
+                  <button
+                    onClick={addLinkAttachment}
+                    disabled={!linkInputValue.trim()}
+                    className={`px-4 py-2 rounded-lg font-display font-semibold text-sm transition-all ${linkInputValue.trim()
+                      ? 'bg-gradient-primary text-white hover:scale-105 shadow-md hover:shadow-lg'
+                      : 'bg-secondary-200 dark:bg-secondary-700 text-secondary-400 dark:text-secondary-500 cursor-not-allowed'
+                      }`}
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="mt-2 text-xs text-secondary-500 dark:text-secondary-400">
+                  Press <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-700 font-mono">Enter</kbd> to add or <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-700 font-mono">Esc</kbd> to cancel
+                </div>
+              </div>
+            )}
+
             {/* Compact Integration Mention Hint - Above Input */}
             {messages.length > 0 && (
               <IntegrationMentionHint variant="compact" />
@@ -3215,6 +3424,21 @@ export const ConversationalAgent: React.FC = () => {
                       />
                       <div className="absolute bottom-full left-0 mb-2 w-64 glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-50 animate-scale-in overflow-hidden">
                         <div className="p-2">
+                          {/* Add Link Button */}
+                          <button
+                            onClick={() => {
+                              setShowAttachmentsPopover(false);
+                              handleAddLink();
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 mb-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors border border-primary-200/30 dark:border-primary-500/20 bg-primary-50/50 dark:bg-primary-900/10"
+                          >
+                            <LinkIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                            <div className="flex-1 text-left">
+                              <span className="block text-sm font-medium text-gray-900 dark:text-white">Add Link</span>
+                              <span className="block text-xs text-gray-500 dark:text-gray-400">Attach URL to message</span>
+                            </div>
+                          </button>
+
                           {/* Template Picker Button */}
                           <button
                             onClick={() => {
