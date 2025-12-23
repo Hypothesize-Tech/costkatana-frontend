@@ -25,6 +25,8 @@ export interface Conversation {
   messageCount: number;
   updatedAt: Date;
   totalCost?: number;
+  isPinned?: boolean;
+  isArchived?: boolean;
   githubContext?: {
     connectionId?: string;
     repositoryId?: number;
@@ -189,10 +191,11 @@ export class ChatService {
   static async getUserConversations(
     limit: number = 20,
     offset: number = 0,
+    includeArchived: boolean = false,
   ): Promise<UserConversationsResponse> {
     try {
       const response = await apiClient.get(`${this.baseUrl}/conversations`, {
-        params: { limit, offset },
+        params: { limit, offset, includeArchived },
       });
 
       const data = response.data.data;
@@ -246,6 +249,96 @@ export class ChatService {
       console.error("Error deleting conversation:", error);
       throw new Error("Failed to delete conversation");
     }
+  }
+
+  /**
+   * Rename a conversation
+   */
+  static async renameConversation(conversationId: string, title: string): Promise<Conversation> {
+    try {
+      const response = await apiClient.put(`${this.baseUrl}/conversations/${conversationId}/rename`, {
+        title,
+      });
+      return this.normalizeConversation(response.data.data);
+    } catch (error) {
+      console.error("Error renaming conversation:", error);
+      throw new Error("Failed to rename conversation");
+    }
+  }
+
+  /**
+   * Archive or unarchive a conversation
+   */
+  static async archiveConversation(conversationId: string, archived: boolean): Promise<Conversation> {
+    try {
+      const response = await apiClient.put(`${this.baseUrl}/conversations/${conversationId}/archive`, {
+        archived,
+      });
+      return this.normalizeConversation(response.data.data);
+    } catch (error) {
+      console.error("Error archiving conversation:", error);
+      throw new Error("Failed to archive conversation");
+    }
+  }
+
+  /**
+   * Pin or unpin a conversation
+   */
+  static async pinConversation(conversationId: string, pinned: boolean): Promise<Conversation> {
+    try {
+      const response = await apiClient.put(`${this.baseUrl}/conversations/${conversationId}/pin`, {
+        pinned,
+      });
+      return this.normalizeConversation(response.data.data);
+    } catch (error) {
+      console.error("Error pinning conversation:", error);
+      throw new Error("Failed to pin conversation");
+    }
+  }
+
+  /**
+   * Categorize conversations by time
+   */
+  static categorizeConversationsByTime(conversations: Conversation[]): {
+    today: Conversation[];
+    yesterday: Conversation[];
+    thirtyDays: Conversation[];
+    earlier: Conversation[];
+  } {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const categorized = {
+      today: [] as Conversation[],
+      yesterday: [] as Conversation[],
+      thirtyDays: [] as Conversation[],
+      earlier: [] as Conversation[],
+    };
+
+    conversations.forEach((conv) => {
+      const updatedAt = new Date(conv.updatedAt);
+      const convDate = new Date(
+        updatedAt.getFullYear(),
+        updatedAt.getMonth(),
+        updatedAt.getDate()
+      );
+
+      if (convDate.getTime() === today.getTime()) {
+        categorized.today.push(conv);
+      } else if (convDate.getTime() === yesterday.getTime()) {
+        categorized.yesterday.push(conv);
+      } else if (updatedAt >= thirtyDaysAgo) {
+        categorized.thirtyDays.push(conv);
+      } else {
+        categorized.earlier.push(conv);
+      }
+    });
+
+    return categorized;
   }
 
   /**
