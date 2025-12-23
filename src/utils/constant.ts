@@ -55,8 +55,8 @@ export const SUBSCRIPTION_PLANS = {
     trialDays: 0,
     limits: {
       tokensPerMonth: 1_000_000,
-      requestsPerMonth: 10_000,
-      logsPerMonth: 15_000,
+      requestsPerMonth: 5_000,
+      logsPerMonth: 5_000,
       projects: 1,
       workflows: 10,
       seats: 1,
@@ -68,8 +68,8 @@ export const SUBSCRIPTION_PLANS = {
       "Simple analytics",
       "Email alerts",
       "1M tokens/month",
-      "10K requests/month",
-      "15K logs/month",
+      "5K requests/month",
+      "5K logs/month",
       "1 project",
       "10 workflows",
     ],
@@ -77,27 +77,26 @@ export const SUBSCRIPTION_PLANS = {
   plus: {
     name: "Plus",
     displayName: "Plus",
-    price: 49,
-    yearlyPrice: 470, // 20% discount
+    price: 25,
+    yearlyPrice: 240, // 20% discount
     currency: "USD",
     trialDays: 7,
     limits: {
-      tokensPerMonth: 5_000_000,
-      requestsPerMonth: 50_000,
+      tokensPerMonth: 2_000_000,
+      requestsPerMonth: 10_000,
       logsPerMonth: -1, // Unlimited
       projects: -1, // Unlimited
       workflows: 100,
       seats: 1,
-      cortexDailyUsage: 3,
+      cortexDailyUsage: 0,
     },
     allowedModels: ['*'], // All models
     features: [
       "Advanced analytics",
       "Unlimited logs & projects",
-      "5M tokens/month",
-      "50K requests/month",
+      "2M tokens/month",
+      "10K requests/month",
       "100 workflows",
-      "Cortex: 3/day",
       "All AI models",
       "Priority support",
       "Overage: $5/1M tokens",
@@ -117,19 +116,18 @@ export const SUBSCRIPTION_PLANS = {
     trialDays: 7,
     limits: {
       tokensPerMonth: 5_000_000, // Base, additional paid
-      requestsPerMonth: 100_000,
+      requestsPerMonth: 50_000,
       logsPerMonth: -1, // Unlimited
       projects: -1, // Unlimited
       workflows: 100, // Per user
       seats: 20,
-      cortexDailyUsage: 30,
+      cortexDailyUsage: 0,
     },
     allowedModels: ['*'], // All models
     features: [
       "Everything in Plus",
-      "100K requests/month",
+      "50K requests/month",
       "20 seats included",
-      "Cortex: 30/day",
       "All AI models + AWS Bedrock",
       "Advanced metrics",
       "Priority support",

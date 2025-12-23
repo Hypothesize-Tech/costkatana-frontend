@@ -94,7 +94,7 @@ export const SubscriptionPlans: React.FC = () => {
                             <div
                                 key={plan.name}
                                 className={`card p-8 pt-12 relative transition-all h-full flex flex-col ${isPopular
-                                    ? ' !overflow-visible':'card-hover'
+                                    ? ' !overflow-visible' : 'card-hover'
                                     } ${isCurrentPlan ? 'bg-primary-500/10' : ''}`}
                             >
                                 {isPopular && (
@@ -597,26 +597,29 @@ export const SubscriptionPlans: React.FC = () => {
                                             </span>
                                         </div>
                                     </td>
-                                    {plans.map((plan) => (
-                                        <td
-                                            key={plan.name}
-                                            className={`text-center py-4 px-6 ${(plan as any).popular ? 'bg-primary-500/5' : ''
-                                                }`}
-                                        >
-                                            {plan.limits.cortexDailyUsage === 0 ? (
-                                                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
-                                            ) : (
-                                                <div className="flex flex-col items-center">
-                                                    <CheckIcon className="w-6 h-6 text-primary-500" />
-                                                    <span className="mt-1 text-xs text-primary-500">
-                                                        {plan.limits.cortexDailyUsage === -1
-                                                            ? 'Unlimited'
-                                                            : `${plan.limits.cortexDailyUsage}/day`}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </td>
-                                    ))}
+                                    {plans.map((plan) => {
+                                        const cortexUsage = plan.limits.cortexDailyUsage;
+                                        return (
+                                            <td
+                                                key={plan.name}
+                                                className={`text-center py-4 px-6 ${(plan as any).popular ? 'bg-primary-500/5' : ''
+                                                    }`}
+                                            >
+                                                {cortexUsage === 0 ? (
+                                                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
+                                                ) : (
+                                                    <div className="flex flex-col items-center">
+                                                        <CheckIcon className="w-6 h-6 text-primary-500" />
+                                                        <span className="mt-1 text-xs text-primary-500">
+                                                            {cortexUsage === -1
+                                                                ? 'Unlimited'
+                                                                : `${cortexUsage}/day`}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
                                 </tr>
                                 <tr>
                                     <td className="px-6 py-4 text-light-text-secondary dark:text-dark-text-secondary">
