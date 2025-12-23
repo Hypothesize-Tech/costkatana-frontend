@@ -58,6 +58,8 @@ import { useSessionRecording } from "@/hooks/useSessionRecording";
 import GitHubConnector from "./GitHubConnector";
 import FeatureSelector from "./FeatureSelector";
 import PRStatusPanel from "./PRStatusPanel";
+import { CategorizedConversations } from "./CategorizedConversations";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import {
   Send,
@@ -200,6 +202,9 @@ export const ConversationalAgent: React.FC = () => {
   );
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(true);
+  const [conversationsOffset, setConversationsOffset] = useState(0);
+  const [conversationsHasMore, setConversationsHasMore] = useState(false);
+  const [conversationsLoadingMore, setConversationsLoadingMore] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<
     string | null
   >(null);
@@ -267,6 +272,10 @@ export const ConversationalAgent: React.FC = () => {
   const [showGooglePicker, setShowGooglePicker] = useState(false);
   const [pickerFileType, setPickerFileType] = useState<'docs' | 'sheets' | 'drive'>('drive');
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
+
+  // Conversation deletion state
+  const [deleteConfirmConversationId, setDeleteConfirmConversationId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Link attachment state
   const [attachedLinks, setAttachedLinks] = useState<Array<{ url: string; title?: string }>>([]);
@@ -1008,17 +1017,71 @@ export const ConversationalAgent: React.FC = () => {
     return model.provider;
   };
 
-  const loadConversations = async () => {
+  const loadConversations = async (append: boolean = false) => {
     try {
-      setConversationsLoading(true);
-      const result = await ChatService.getUserConversations();
-      setConversations(result.conversations);
+      if (!append) {
+        setConversationsLoading(true);
+        setConversationsOffset(0);
+      } else {
+        setConversationsLoadingMore(true);
+      }
+
+      const limit = 20;
+      const offset = append ? conversationsOffset : 0;
+      const result = await ChatService.getUserConversations(limit, offset);
+
+      if (append) {
+        setConversations(prev => [...prev, ...result.conversations]);
+        setConversationsOffset(offset + result.conversations.length);
+      } else {
+        setConversations(result.conversations);
+        setConversationsOffset(result.conversations.length);
+      }
+
+      // Check if there are more conversations to load
+      setConversationsHasMore(result.conversations.length === limit && result.total > offset + result.conversations.length);
     } catch (error) {
       console.error("Error loading conversations:", error);
     } finally {
       setConversationsLoading(false);
+      setConversationsLoadingMore(false);
     }
   };
+
+  const loadMoreConversations = () => {
+    loadConversations(true);
+  };
+
+  // Local conversation update function for immediate UI feedback
+  const updateConversationLocally = useCallback((conversationId: string, updates: Partial<Conversation>) => {
+    setConversations(prevConversations =>
+      prevConversations.map(conv =>
+        conv.id === conversationId
+          ? { ...conv, ...updates }
+          : conv
+      )
+    );
+  }, []);
+
+  // Handle conversation deletion
+  const handleDeleteRequest = useCallback((conversationId: string) => {
+    setDeleteConfirmConversationId(conversationId);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!deleteConfirmConversationId || isDeleting) return;
+    const conversationId = deleteConfirmConversationId;
+    try {
+      setIsDeleting(true);
+      await ChatService.deleteConversation(conversationId);
+      setDeleteConfirmConversationId(null);
+      loadConversations(); // Reload conversations after deletion
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [deleteConfirmConversationId]);
 
   const loadConversationHistory = async (conversationId: string) => {
     try {
@@ -1076,12 +1139,6 @@ export const ConversationalAgent: React.FC = () => {
     setCurrentConversationId(null);
     setError(null);
     localStorage.removeItem('currentConversationId');
-  };
-
-  const handleDeleteClick = (conversationId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setConversationToDelete(conversationId);
-    setShowDeleteConfirmation(true);
   };
 
   const confirmDeleteConversation = async () => {
@@ -2562,54 +2619,22 @@ export const ConversationalAgent: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-1.5">
               {conversationsLoading ? (
                 <ConversationsShimmer count={5} collapsed={false} />
-              ) : conversations.length === 0 ? (
-                <div className="p-3 text-center">
-                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                    No conversations yet
-                  </p>
-                </div>
               ) : (
-                conversations.map((conversation) => (
-                  <div
-                    key={conversation.id}
-                    className={`group p-2 mb-1 rounded-lg cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
-                      ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
-                      : "hover:shadow-md"
-                      }`}
-                    onClick={() => {
-                      loadConversationHistory(conversation.id);
-                      setShowConversations(false);
-                    }}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-0.5">
-                          {conversation.title}
-                        </h4>
-                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-light-text-muted dark:text-dark-text-muted">
-                          <span>{conversation.messageCount} msgs</span>
-                          <span>•</span>
-                          <span>{formatTimestamp(conversation.updatedAt)}</span>
-                        </div>
-                        {conversation.totalCost && (
-                          <p className="text-[10px] font-bold gradient-text mt-0.5 inline-block bg-gradient-success/10 px-1.5 py-0.5 rounded">
-                            ${conversation.totalCost.toFixed(4)}
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(conversation.id, e);
-                        }}
-                        className="opacity-0 group-hover:opacity-100 ml-1.5 p-1 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10"
-                        title="Delete conversation"
-                      >
-                        <TrashIcon className="h-3 w-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))
+                <CategorizedConversations
+                  conversations={conversations}
+                  currentConversationId={currentConversationId}
+                  onSelectConversation={(id) => {
+                    loadConversationHistory(id);
+                    setShowConversations(false);
+                  }}
+                  onConversationsUpdate={loadConversations}
+                  onConversationUpdate={updateConversationLocally}
+                  onDeleteRequest={handleDeleteRequest}
+                  collapsed={false}
+                  hasMore={conversationsHasMore}
+                  isLoadingMore={conversationsLoadingMore}
+                  onLoadMore={loadMoreConversations}
+                />
               )}
             </div>
           </div>
@@ -2666,51 +2691,18 @@ export const ConversationalAgent: React.FC = () => {
           conversationsLoading ? (
             <ConversationsShimmer count={5} collapsed={false} />
           ) : (
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
-              {conversations.length === 0 ? (
-                <div className="p-4 text-center">
-                  <p className="text-xs font-body text-light-text-muted dark:text-dark-text-muted">
-                    No conversations yet
-                  </p>
-                </div>
-              ) : (
-                conversations.map((conversation) => (
-                  <div
-                    key={conversation.id}
-                    className={`group p-2 md:p-2.5 lg:p-3 mx-1 md:mx-2 mb-1.5 md:mb-2 rounded-lg md:rounded-xl cursor-pointer hover:bg-primary-500/10 transition-all duration-300 ${currentConversationId === conversation.id
-                      ? "bg-gradient-primary/10 border border-primary-200/50 shadow-lg"
-                      : "hover:shadow-md"
-                      }`}
-                    onClick={() => loadConversationHistory(conversation.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-display font-semibold text-light-text-primary dark:text-dark-text-primary truncate mb-1">
-                          {conversation.title}
-                        </h4>
-                        <div className="flex items-center gap-2 text-xs font-medium text-light-text-muted dark:text-dark-text-muted">
-                          <span>{conversation.messageCount} msgs</span>
-                          <span>•</span>
-                          <span>{formatTimestamp(conversation.updatedAt)}</span>
-                        </div>
-                        {conversation.totalCost && (
-                          <p className="text-xs font-bold gradient-text mt-1 inline-block bg-gradient-success/10 px-2 py-0.5 rounded-lg">
-                            ${conversation.totalCost.toFixed(4)}
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        onClick={(e) => handleDeleteClick(conversation.id, e)}
-                        className="opacity-0 group-hover:opacity-100 ml-2 p-1.5 text-light-text-muted dark:text-dark-text-muted hover:text-danger-500 transition-all duration-300 rounded-lg hover:bg-danger-500/10 hover:scale-110"
-                        title="Delete conversation"
-                      >
-                        <TrashIcon className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+            <CategorizedConversations
+              conversations={conversations}
+              currentConversationId={currentConversationId}
+              onSelectConversation={loadConversationHistory}
+              onConversationsUpdate={loadConversations}
+              onConversationUpdate={updateConversationLocally}
+              onDeleteRequest={handleDeleteRequest}
+              collapsed={false}
+              hasMore={conversationsHasMore}
+              isLoadingMore={conversationsLoadingMore}
+              onLoadMore={loadMoreConversations}
+            />
           )
         ) : (
           // Collapsed state - show conversation count indicator or shimmer
@@ -4146,6 +4138,31 @@ export const ConversationalAgent: React.FC = () => {
           setMessages(prev => [...prev, message]);
         }}
         multiSelect={true}
+      />
+
+      {/* Delete Conversation Confirmation Modal */}
+      <ConfirmationDialog
+        isOpen={!!deleteConfirmConversationId}
+        title="Delete Conversation"
+        message={
+          deleteConfirmConversationId ? (
+            <>
+              Are you sure you want to delete{' '}
+              <span className="font-bold text-danger-600 dark:text-danger-400">
+                {conversations.find(c => c.id === deleteConfirmConversationId)?.title || 'this conversation'}
+              </span>
+              ? This action cannot be undone.
+            </>
+          ) : (
+            'Are you sure you want to delete this conversation? This action cannot be undone.'
+          )
+        }
+        confirmLabel="Delete Conversation"
+        cancelLabel="Cancel"
+        danger={true}
+        isLoading={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteConfirmConversationId(null)}
       />
     </div>
   );
