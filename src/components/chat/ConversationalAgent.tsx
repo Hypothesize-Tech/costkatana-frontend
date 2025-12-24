@@ -134,6 +134,8 @@ interface ChatMessage {
     type?: string;
     count?: number;
     service?: 'gmail' | 'calendar' | 'drive' | 'docs' | 'sheets';
+    webSearchUsed?: boolean; // Web search was used for this response
+    quotaUsed?: number; // Quota used after this search
   };
   viewLinks?: Array<{
     label: string;
@@ -241,6 +243,9 @@ export const ConversationalAgent: React.FC = () => {
   const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
   const [useMultiAgent, setUseMultiAgent] = useState<boolean>(true);
   const [showOptimizations, setShowOptimizations] = useState<boolean>(false);
+
+  // Web search state
+  const [webSearchEnabled, setWebSearchEnabled] = useState<boolean>(false);
 
   // Document upload for RAG
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentMetadata[]>([]);
@@ -1560,6 +1565,7 @@ export const ConversationalAgent: React.FC = () => {
         conversationId: currentConversationId || undefined,
         chatMode: chatMode,
         useMultiAgent: useMultiAgent,
+        useWebSearch: webSearchEnabled,
         documentIds: selectedDocuments.length > 0
           ? selectedDocuments.map(doc => doc.documentId)
           : undefined,
@@ -1587,6 +1593,8 @@ export const ConversationalAgent: React.FC = () => {
           cost: response.cost,
           latency: response.latency,
           tokenCount: response.tokenCount,
+          webSearchUsed: response.webSearchUsed || false,
+          quotaUsed: response.quotaUsed,
           ...(response.metadata || {}), // Include Google service metadata
         },
         // Multi-agent enhancements
@@ -2184,6 +2192,57 @@ export const ConversationalAgent: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Web Search Sources */}
+        {message?.sources && message.sources.length > 0 && (
+          <div className="mb-4 glass rounded-xl border border-success-200/30 dark:border-success-700/30 backdrop-blur-xl overflow-hidden shadow-lg">
+            <div className="p-4 bg-gradient-to-r from-success-500/5 to-transparent">
+              <div className="flex items-center gap-2 mb-3">
+                <MagnifyingGlassIcon className="w-5 h-5 text-success-600 dark:text-success-400" />
+                <span className="font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                  Web Sources
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-300 font-medium">
+                  {message.sources.length}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {message.sources.map((source, index) => (
+                  <a
+                    key={index}
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-3 p-3 glass rounded-lg border border-success-200/30 dark:border-success-700/30 hover:border-success-400/50 hover:bg-success-500/10 transition-all duration-200 group"
+                  >
+                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-success-100 dark:bg-success-900/30 flex items-center justify-center text-success-600 dark:text-success-400 group-hover:scale-110 transition-transform">
+                      <LinkIcon className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-display font-semibold text-sm text-light-text-primary dark:text-dark-text-primary group-hover:text-success-600 dark:group-hover:text-success-400 transition-colors line-clamp-1">
+                        {source.title}
+                      </div>
+                      {source.description && (
+                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-1 line-clamp-2">
+                          {source.description}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-success-600 dark:text-success-400 font-medium">
+                          {new URL(source.url).hostname.replace('www.', '')}
+                        </span>
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-success-100 dark:bg-success-900/20 text-success-700 dark:text-success-300">
+                          {source.type || 'web'}
+                        </span>
+                      </div>
+                    </div>
+                    <LinkIcon className="w-4 h-4 text-success-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -2846,6 +2905,37 @@ export const ConversationalAgent: React.FC = () => {
                   </label>
                 </div>
 
+                {/* Web Search Toggle */}
+                <div className="glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10" title={webSearchEnabled ? "Web Search: ON" : "Web Search: OFF"}>
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={webSearchEnabled}
+                        onChange={(e) => setWebSearchEnabled(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div className={`w-9 h-5 rounded-full transition-all duration-300 ${webSearchEnabled
+                        ? 'bg-gradient-to-r from-success-500 to-success-600'
+                        : 'bg-gray-300 dark:bg-gray-600'
+                        }`}>
+                        <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 mt-0.5 ${webSearchEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                          }`} />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <MagnifyingGlassIcon className={`w-4 h-4 transition-colors shrink-0 ${webSearchEnabled ? 'text-success-500' : 'text-light-text-secondary dark:text-dark-text-secondary'
+                        }`} />
+                      <span className={`hidden lg:inline text-xs font-display font-semibold whitespace-nowrap transition-colors ${webSearchEnabled
+                        ? 'text-success-600 dark:text-success-400'
+                        : 'text-light-text-secondary dark:text-dark-text-secondary'
+                        }`}>
+                        Web Search
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
                 {/* Preview Mode Selector - Hidden on Mobile */}
                 <div className="hidden lg:block glass rounded-lg border border-primary-200/30 p-1.5 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
                   <div className="relative">
@@ -3040,6 +3130,12 @@ export const ConversationalAgent: React.FC = () => {
                             : 'border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400'
                             } font-display font-bold text-xs`}>
                             ${message.metadata.cost.toFixed(4)}
+                          </span>
+                        )}
+                        {message.metadata?.webSearchUsed && (
+                          <span className="glass px-2.5 py-1 rounded-lg border border-success-200/30 bg-gradient-to-br from-success-500/20 to-success-600/20 text-success-600 dark:text-success-400 font-display font-semibold text-xs inline-flex items-center gap-1">
+                            <MagnifyingGlassIcon className="w-3.5 h-3.5" />
+                            Web Search
                           </span>
                         )}
                         {message.cacheHit && (

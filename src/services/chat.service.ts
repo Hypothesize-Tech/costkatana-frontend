@@ -58,6 +58,7 @@ export interface SendMessageRequest {
   maxTokens?: number;
   chatMode?: 'fastest' | 'cheapest' | 'balanced';
   useMultiAgent?: boolean;
+  useWebSearch?: boolean; // Enable web search
   documentIds?: string[]; // Document IDs for RAG context
   githubContext?: {
     connectionId: string;
@@ -93,6 +94,9 @@ export interface SendMessageResponse {
   cacheHit?: boolean;
   agentPath?: string[];
   riskLevel?: string;
+  // Web search metadata
+  webSearchUsed?: boolean;
+  quotaUsed?: number;
   // GitHub integration data
   githubIntegrationData?: {
     integrationId?: string;
