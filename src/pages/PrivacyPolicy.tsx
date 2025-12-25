@@ -79,16 +79,16 @@ const PrivacyPolicy: React.FC = () => {
                 2. How We Use Your Information
               </h2>
               <p className="text-secondary-600 dark:text-secondary-300 mb-4 leading-relaxed">
-                We use the information we collect <strong>exclusively to provide and improve our AI cost optimization services</strong>. All data usage is strictly limited to the following purposes:
+                We use the information we collect <strong>exclusively to provide and improve the functionality of our AI cost optimization services</strong>. We do NOT use your data for advertising, marketing to third parties, or any purposes unrelated to providing you with our core service. All data usage is strictly limited to the following purposes:
               </p>
               <ul className="list-disc pl-6 text-secondary-600 dark:text-secondary-300 space-y-2 mb-4">
-                <li><strong>Service Delivery:</strong> To provide, maintain, and improve our AI cost optimization services</li>
-                <li><strong>Account Management:</strong> To create and manage your account, process transactions, and send account-related communications</li>
-                <li><strong>Analytics and Optimization:</strong> To analyze usage patterns, generate insights, and provide cost optimization recommendations</li>
-                <li><strong>Communication:</strong> To send you service updates, security alerts, and respond to your inquiries</li>
-                <li><strong>Security:</strong> To detect, prevent, and address technical issues, fraud, and security threats</li>
+                <li><strong>Service Delivery:</strong> To provide and maintain the core functionality of our AI cost optimization platform</li>
+                <li><strong>Account Management:</strong> To create and manage your account, authenticate your identity, and process transactions</li>
+                <li><strong>Cost Analytics:</strong> To analyze your AI usage patterns and provide you with personalized cost optimization recommendations</li>
+                <li><strong>User-Requested Features:</strong> To enable features you explicitly activate, such as generating reports, sending notifications, and managing calendar alerts</li>
+                <li><strong>Communication:</strong> To send you service-related updates, security alerts, and respond to your support inquiries</li>
+                <li><strong>Security and Reliability:</strong> To detect, prevent, and address technical issues, fraud, security threats, and ensure platform stability</li>
                 <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, and legal processes</li>
-                <li><strong>Business Operations:</strong> To conduct research, develop new features, and improve user experience</li>
               </ul>
 
               <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-primary-50/50 to-success-500/10 dark:from-primary-500/10 dark:via-primary-900/30 dark:to-success-500/10 border border-primary-400/30 dark:border-primary-500/30 rounded-lg p-6 mt-6">
