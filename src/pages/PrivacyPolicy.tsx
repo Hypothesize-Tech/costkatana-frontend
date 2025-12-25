@@ -129,7 +129,7 @@ const PrivacyPolicy: React.FC = () => {
                       <strong className="text-primary-700 dark:text-primary-400">• Google Sheets:</strong> To allow you to import/export cost data in spreadsheet format for analysis
                     </li>
                     <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Gmail (Send):</strong> To send you email notifications and reports that you configure within the app
+                      <strong className="text-primary-700 dark:text-primary-400">• Gmail (Send & Read):</strong> To send you email notifications and reports that you configure within the app, and to search your inbox for billing emails and invoices from cloud providers to track costs
                     </li>
                     <li>
                       <strong className="text-primary-700 dark:text-primary-400">• Google Calendar:</strong> To schedule cost review reminders and optimization alerts when you enable this feature
