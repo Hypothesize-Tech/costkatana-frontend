@@ -7,3 +7,6 @@ export { usePagination } from "./usePagination";
 export { useLocalStorage } from "./useLocalStorage";
 export { useMixpanel } from "./useMixpanel";
 export { useGlobalTracking } from "./useGlobalTracking";
+export { useExperiment } from "./useExperiment";
+export { useFunnel } from "./useFunnel";
+export { useRevenue } from "./useRevenue";

@@ -1,4 +1,4 @@
-import mixpanel, { Config as MixpanelConfig } from 'mixpanel-browser';
+import mixpanel from 'mixpanel-browser';
 
 interface MixpanelEvent {
     event: string;
@@ -1073,6 +1073,342 @@ export class MixpanelService {
      */
     public isSessionRecordingActive(): boolean {
         return this.isEnabled && this.isInitialized && this.isSessionRecordingEnabled;
+    }
+
+    /**
+     * ===== FOUNDATION ENHANCEMENTS =====
+     */
+
+    /**
+     * Set comprehensive user profile with all critical properties
+     */
+    public setComprehensiveUserProfile(userId: string, profile: {
+        name?: string;
+        email?: string;
+        company_size?: '1-10' | '11-50' | '51-200' | '201-500' | '501+';
+        industry?: string;
+        role?: string;
+        signup_date?: Date | string;
+        plan_type?: string;
+        total_spend?: number;
+        lifetime_cost_savings?: number;
+        avatar_url?: string;
+        phone?: string;
+        company_name?: string;
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.identify(userId);
+            const profileData: Record<string, any> = {
+                $last_seen: new Date().toISOString(),
+                $updated: new Date().toISOString()
+            };
+
+            if (profile.name) profileData.$name = profile.name;
+            if (profile.email) profileData.$email = profile.email;
+            if (profile.phone) profileData.$phone = profile.phone;
+            if (profile.avatar_url) profileData.$avatar = profile.avatar_url;
+            if (profile.company_size) profileData.company_size = profile.company_size;
+            if (profile.industry) profileData.industry = profile.industry;
+            if (profile.role) profileData.role = profile.role;
+            if (profile.signup_date) profileData.signup_date = new Date(profile.signup_date).toISOString();
+            if (profile.plan_type) profileData.plan_type = profile.plan_type;
+            if (profile.total_spend !== undefined) profileData.total_spend = profile.total_spend;
+            if (profile.lifetime_cost_savings !== undefined) profileData.lifetime_cost_savings = profile.lifetime_cost_savings;
+            if (profile.company_name) profileData.company_name = profile.company_name;
+
+            mixpanel.people.set(profileData);
+            console.debug('Comprehensive user profile set:', userId);
+        } catch (error) {
+            console.error('Error setting comprehensive user profile:', error);
+        }
+    }
+
+    /**
+     * Track user lifecycle stage
+     */
+    public trackUserLifecycleStage(userId: string, stage: {
+        onboarding_progress?: number; // 0-100
+        feature_adoption_score?: number; // 0-100
+        activation_status?: 'activated' | 'pending' | 'inactive';
+        onboarding_complete?: boolean;
+        first_project_created?: boolean;
+        first_api_call_made?: boolean;
+        first_optimization_applied?: boolean;
+        days_since_signup?: number;
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.identify(userId);
+            mixpanel.people.set(stage);
+            console.debug('User lifecycle stage tracked:', userId, stage);
+        } catch (error) {
+            console.error('Error tracking user lifecycle stage:', error);
+        }
+    }
+
+    /**
+     * Calculate and track feature adoption score
+     */
+    public calculateFeatureAdoptionScore(userId: string, usedFeatures: string[], totalFeatures: number = 44): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            const adoptionScore = (usedFeatures.length / totalFeatures) * 100;
+            mixpanel.identify(userId);
+            mixpanel.people.set({
+                feature_adoption_score: Math.round(adoptionScore),
+                features_used_count: usedFeatures.length,
+                features_used: usedFeatures,
+                last_feature_used: usedFeatures[usedFeatures.length - 1] || null,
+                feature_adoption_tier: this.getFeatureAdoptionTier(adoptionScore)
+            });
+            console.debug('Feature adoption score calculated:', userId, adoptionScore);
+        } catch (error) {
+            console.error('Error calculating feature adoption score:', error);
+        }
+    }
+
+    /**
+     * Update user spending metrics
+     */
+    public updateUserSpendingMetrics(userId: string, metrics: {
+        total_spend?: number;
+        average_transaction_value?: number;
+        last_purchase_date?: Date | string;
+        last_purchase_amount?: number;
+        total_transactions?: number;
+        lifetime_value?: number;
+        spending_tier?: 'high_value' | 'medium_value' | 'low_value' | 'free';
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.identify(userId);
+            const spendingData: Record<string, any> = {};
+            
+            if (metrics.total_spend !== undefined) spendingData.total_spend = metrics.total_spend;
+            if (metrics.average_transaction_value !== undefined) spendingData.average_transaction_value = metrics.average_transaction_value;
+            if (metrics.last_purchase_date) spendingData.last_purchase_date = new Date(metrics.last_purchase_date).toISOString();
+            if (metrics.last_purchase_amount !== undefined) spendingData.last_purchase_amount = metrics.last_purchase_amount;
+            if (metrics.total_transactions !== undefined) spendingData.total_transactions = metrics.total_transactions;
+            if (metrics.lifetime_value !== undefined) spendingData.lifetime_value = metrics.lifetime_value;
+            if (metrics.spending_tier) spendingData.spending_tier = metrics.spending_tier;
+
+            mixpanel.people.set(spendingData);
+            console.debug('User spending metrics updated:', userId);
+        } catch (error) {
+            console.error('Error updating user spending metrics:', error);
+        }
+    }
+
+    /**
+     * Register super properties that attach to every event
+     */
+    public registerSuperProperties(properties: {
+        app_version?: string;
+        user_tier?: string;
+        active_project?: string;
+        deployment_env?: string;
+        [key: string]: any;
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.register(properties);
+            console.debug('Super properties registered:', properties);
+        } catch (error) {
+            console.error('Error registering super properties:', error);
+        }
+    }
+
+    /**
+     * Register super properties once (won't overwrite if already set)
+     */
+    public registerOnceSuperProperties(properties: {
+        initial_referrer?: string;
+        signup_source?: string;
+        first_touch_campaign?: string;
+        initial_landing_page?: string;
+        [key: string]: any;
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.register_once(properties);
+            console.debug('Super properties registered once:', properties);
+        } catch (error) {
+            console.error('Error registering once super properties:', error);
+        }
+    }
+
+    /**
+     * Unregister a super property
+     */
+    public unregisterSuperProperty(propertyName: string): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.unregister(propertyName);
+            console.debug('Super property unregistered:', propertyName);
+        } catch (error) {
+            console.error('Error unregistering super property:', error);
+        }
+    }
+
+    /**
+     * Conditional session replay - start recording for important sessions
+     */
+    public startConditionalRecording(reason: 'error' | 'conversion' | 'high_value_user' | 'support_request', metadata?: Record<string, any>): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            if (this.shouldRecordSession(reason)) {
+                this.startSessionRecording();
+                this.track('Session Recording Started', {
+                    reason,
+                    recording_strategy: 'conditional',
+                    ...metadata
+                });
+                console.debug('Conditional session recording started:', reason);
+            }
+        } catch (error) {
+            console.error('Error starting conditional recording:', error);
+        }
+    }
+
+    /**
+     * Determine if session should be recorded based on reason
+     */
+    private shouldRecordSession(reason: string): boolean {
+        const recordingRules: Record<string, boolean> = {
+            error: true, // Always record errors
+            conversion: true, // Always record conversions
+            high_value_user: true, // Always record high-value users
+            support_request: true // Always record support requests
+        };
+        return recordingRules[reason] || false;
+    }
+
+    /**
+     * Helper: Get feature adoption tier
+     */
+    private getFeatureAdoptionTier(score: number): string {
+        if (score >= 75) return 'power_user';
+        if (score >= 50) return 'engaged';
+        if (score >= 25) return 'casual';
+        return 'inactive';
+    }
+
+    /**
+     * ===== COHORT ANALYSIS =====
+     */
+
+    /**
+     * Set cohort properties for user segmentation
+     */
+    public setCohortProperties(userId: string, properties: {
+        signup_date?: Date | string;
+        acquisition_channel?: string;
+        initial_plan?: string;
+        initial_use_case?: string;
+        user_segment?: string;
+        signup_source?: string;
+        first_touch_campaign?: string;
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.identify(userId);
+            const cohortData: Record<string, any> = {};
+
+            if (properties.signup_date) {
+                const signupDate = new Date(properties.signup_date);
+                cohortData.signup_date = signupDate.toISOString();
+                cohortData.signup_week = this.getWeekOfYear(signupDate);
+                cohortData.signup_month = this.getMonthYear(signupDate);
+                cohortData.signup_year = signupDate.getFullYear();
+                cohortData.days_since_signup = Math.floor((Date.now() - signupDate.getTime()) / (1000 * 60 * 60 * 24));
+            }
+
+            if (properties.acquisition_channel) cohortData.acquisition_channel = properties.acquisition_channel;
+            if (properties.initial_plan) cohortData.initial_plan = properties.initial_plan;
+            if (properties.initial_use_case) cohortData.initial_use_case = properties.initial_use_case;
+            if (properties.user_segment) cohortData.user_segment = properties.user_segment;
+            if (properties.signup_source) cohortData.signup_source = properties.signup_source;
+            if (properties.first_touch_campaign) cohortData.first_touch_campaign = properties.first_touch_campaign;
+
+            mixpanel.people.set(cohortData);
+            console.debug('Cohort properties set:', userId, cohortData);
+        } catch (error) {
+            console.error('Error setting cohort properties:', error);
+        }
+    }
+
+    /**
+     * Set behavioral cohort properties
+     */
+    public setBehavioralCohort(userId: string, properties: {
+        activation_status?: 'activated' | 'pending' | 'inactive';
+        engagement_score?: number; // 0-100
+        usage_tier?: 'power_user' | 'regular' | 'casual' | 'inactive';
+        feature_adoption_tier?: string;
+        spending_tier?: 'high_value' | 'medium_value' | 'low_value' | 'free';
+        churn_risk?: 'low' | 'medium' | 'high';
+        health_score?: number; // 0-100
+    }): void {
+        if (!this.isEnabled || !this.isInitialized) {
+            return;
+        }
+
+        try {
+            mixpanel.identify(userId);
+            mixpanel.people.set({
+                ...properties,
+                behavioral_cohort_updated: new Date().toISOString()
+            });
+            console.debug('Behavioral cohort set:', userId, properties);
+        } catch (error) {
+            console.error('Error setting behavioral cohort:', error);
+        }
+    }
+
+    /**
+     * Helper: Get week of year
+     */
+    private getWeekOfYear(date: Date): string {
+        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+        const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+        const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        return `${date.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
+    }
+
+    /**
+     * Helper: Get month-year
+     */
+    private getMonthYear(date: Date): string {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        return `${date.getFullYear()}-${month}`;
     }
 }
 

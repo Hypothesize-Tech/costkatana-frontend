@@ -51,8 +51,87 @@ export const useGlobalTracking = () => {
     return '';
   };
 
-  // Generate session ID for this session
-  const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  // Get or create persistent session ID from sessionStorage
+  const getOrCreateSessionId = (): string => {
+    const storageKey = 'mixpanel_session_id';
+    const sessionStartKey = 'mixpanel_session_start';
+    const sessionPagesKey = 'mixpanel_pages_visited';
+    const sessionInteractionsKey = 'mixpanel_interactions_count';
+    
+    let sessionId = sessionStorage.getItem(storageKey);
+    
+    if (!sessionId) {
+      // Create new session
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem(storageKey, sessionId);
+      sessionStorage.setItem(sessionStartKey, Date.now().toString());
+      sessionStorage.setItem(sessionPagesKey, '1');
+      sessionStorage.setItem(sessionInteractionsKey, '0');
+      
+      // Track session start
+      if (shouldTrack && user?.id) {
+        trackUserAction(
+          'session_start',
+          location.pathname,
+          'session_tracking',
+          'session_management',
+          {
+            sessionId,
+            user_id: user.id,
+            initial_page: location.pathname,
+            timestamp: new Date().toISOString()
+          }
+        );
+      }
+    }
+    
+    return sessionId;
+  };
+
+  const sessionId = getOrCreateSessionId();
+
+  // Track session end on unmount or before navigation
+  useEffect(() => {
+    const handleSessionEnd = () => {
+      const sessionStartStr = sessionStorage.getItem('mixpanel_session_start');
+      const pagesVisited = parseInt(sessionStorage.getItem('mixpanel_pages_visited') || '0');
+      const interactions = parseInt(sessionStorage.getItem('mixpanel_interactions_count') || '0');
+      
+      if (sessionStartStr && shouldTrack && user?.id) {
+        const sessionDuration = Date.now() - parseInt(sessionStartStr);
+        
+        trackUserAction(
+          'session_end',
+          location.pathname,
+          'session_tracking',
+          'session_management',
+          {
+            sessionId,
+            user_id: user.id,
+            session_duration_ms: sessionDuration,
+            session_duration_seconds: Math.floor(sessionDuration / 1000),
+            pages_per_session: pagesVisited,
+            interactions_per_session: interactions,
+            final_page: location.pathname,
+            timestamp: new Date().toISOString()
+          }
+        );
+      }
+    };
+
+    // Track session end before unload
+    window.addEventListener('beforeunload', handleSessionEnd);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleSessionEnd);
+    };
+  }, [shouldTrack, user?.id, sessionId, location.pathname, trackUserAction]);
+
+  // Increment page count when location changes
+  useEffect(() => {
+    const currentPages = parseInt(sessionStorage.getItem('mixpanel_pages_visited') || '1');
+    sessionStorage.setItem('mixpanel_pages_visited', (currentPages + 1).toString());
+  }, [location.pathname]);
 
   // Extract element information for tracking
   const extractElementInfo = useCallback((element: HTMLElement): TrackingElement => {
@@ -165,6 +244,10 @@ export const useGlobalTracking = () => {
 
     const target = event.target as HTMLElement;
     if (!target) return;
+
+    // Increment interaction count
+    const currentInteractions = parseInt(sessionStorage.getItem('mixpanel_interactions_count') || '0');
+    sessionStorage.setItem('mixpanel_interactions_count', (currentInteractions + 1).toString());
 
     // Skip tracking for certain elements
     const skipSelectors = [

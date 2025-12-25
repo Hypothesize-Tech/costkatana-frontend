@@ -297,6 +297,47 @@ export const useMixpanel = () => {
         }
     }, [user?.id]);
 
+    // Foundation Enhancement Methods
+    const setComprehensiveUserProfile = useCallback((profile: Parameters<typeof mixpanelService.setComprehensiveUserProfile>[1]) => {
+        if (user?.id) {
+            mixpanelService.setComprehensiveUserProfile(user.id, profile);
+        }
+    }, [user?.id]);
+
+    const trackUserLifecycleStage = useCallback((stage: Parameters<typeof mixpanelService.trackUserLifecycleStage>[1]) => {
+        if (user?.id) {
+            mixpanelService.trackUserLifecycleStage(user.id, stage);
+        }
+    }, [user?.id]);
+
+    const calculateFeatureAdoptionScore = useCallback((usedFeatures: string[], totalFeatures?: number) => {
+        if (user?.id) {
+            mixpanelService.calculateFeatureAdoptionScore(user.id, usedFeatures, totalFeatures);
+        }
+    }, [user?.id]);
+
+    const updateUserSpendingMetrics = useCallback((metrics: Parameters<typeof mixpanelService.updateUserSpendingMetrics>[1]) => {
+        if (user?.id) {
+            mixpanelService.updateUserSpendingMetrics(user.id, metrics);
+        }
+    }, [user?.id]);
+
+    const registerSuperProperties = useCallback((properties: Parameters<typeof mixpanelService.registerSuperProperties>[0]) => {
+        mixpanelService.registerSuperProperties(properties);
+    }, []);
+
+    const registerOnceSuperProperties = useCallback((properties: Parameters<typeof mixpanelService.registerOnceSuperProperties>[0]) => {
+        mixpanelService.registerOnceSuperProperties(properties);
+    }, []);
+
+    const unregisterSuperProperty = useCallback((propertyName: string) => {
+        mixpanelService.unregisterSuperProperty(propertyName);
+    }, []);
+
+    const startConditionalRecording = useCallback((reason: 'error' | 'conversion' | 'high_value_user' | 'support_request', metadata?: Record<string, any>) => {
+        mixpanelService.startConditionalRecording(reason, metadata);
+    }, []);
+
     // Session Replay methods
     const startSessionRecording = useCallback(() => {
         mixpanelService.startSessionRecording();
@@ -336,6 +377,15 @@ export const useMixpanel = () => {
         trackButtonAnalytics,
         setUserProfile,
         incrementUserProperty,
+        // Foundation Enhancement Methods
+        setComprehensiveUserProfile,
+        trackUserLifecycleStage,
+        calculateFeatureAdoptionScore,
+        updateUserSpendingMetrics,
+        registerSuperProperties,
+        registerOnceSuperProperties,
+        unregisterSuperProperty,
+        startConditionalRecording,
         // Session Replay methods
         startSessionRecording,
         stopSessionRecording,
