@@ -79,7 +79,7 @@ const PrivacyPolicy: React.FC = () => {
                 2. How We Use Your Information
               </h2>
               <p className="text-secondary-600 dark:text-secondary-300 mb-4 leading-relaxed">
-                We use the information we collect for the following purposes:
+                We use the information we collect <strong>exclusively to provide and improve our AI cost optimization services</strong>. All data usage is strictly limited to the following purposes:
               </p>
               <ul className="list-disc pl-6 text-secondary-600 dark:text-secondary-300 space-y-2 mb-4">
                 <li><strong>Service Delivery:</strong> To provide, maintain, and improve our AI cost optimization services</li>
@@ -90,6 +90,53 @@ const PrivacyPolicy: React.FC = () => {
                 <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, and legal processes</li>
                 <li><strong>Business Operations:</strong> To conduct research, develop new features, and improve user experience</li>
               </ul>
+
+              <div className="bg-blue-900/30 dark:bg-blue-900/20 border border-blue-700/50 dark:border-blue-800/50 rounded-lg p-6 mt-6">
+                <h3 className="text-lg font-display font-medium text-secondary-900 dark:text-white mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  Google OAuth Data Usage
+                </h3>
+                <p className="text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed">
+                  When you connect your Google account to {APP_NAME}, we access your Google data <strong>solely to provide you with the core functionality of our application</strong>. We do not use your Google user data for any other purposes including:
+                </p>
+                <ul className="list-disc list-inside text-secondary-600 dark:text-secondary-300 space-y-2 mb-4">
+                  <li><strong>NO advertising or marketing:</strong> We do not use your Google data to serve advertisements or create marketing profiles</li>
+                  <li><strong>NO third-party sharing:</strong> We do not sell, rent, or share your Google user data with third parties for their purposes</li>
+                  <li><strong>NO unrelated services:</strong> We do not use your Google data for services unrelated to the core functionality you've authorized</li>
+                  <li><strong>NO AI model training:</strong> We do not use your Google user data to train AI models or for machine learning purposes beyond providing your requested service</li>
+                </ul>
+                <p className="text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed">
+                  <strong>Specific Google Scopes and Their Purpose:</strong>
+                </p>
+                <ul className="list-none text-secondary-600 dark:text-secondary-300 space-y-3">
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Email & Profile:</strong> To authenticate your identity and create your account
+                  </li>
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Google Drive (File Access):</strong> To allow you to import cost data and export reports to your Google Drive when you explicitly request it
+                  </li>
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Google Docs:</strong> To enable you to create and edit cost analysis documents in Google Docs format
+                  </li>
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Google Sheets:</strong> To allow you to import/export cost data in spreadsheet format for analysis
+                  </li>
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Gmail (Send):</strong> To send you email notifications and reports that you configure within the app
+                  </li>
+                  <li>
+                    <strong className="text-blue-600 dark:text-blue-400">• Google Calendar:</strong> To schedule cost review reminders and optimization alerts when you enable this feature
+                  </li>
+                </ul>
+                <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-4">
+                  You can revoke our access to your Google data at any time through your{" "}
+                  <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:underline">
+                    Google Account Permissions
+                  </a>.
+                </p>
+              </div>
             </section>
 
             <section className="mb-8">
