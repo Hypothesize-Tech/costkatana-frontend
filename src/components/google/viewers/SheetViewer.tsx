@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     ArrowPathIcon,
-    PlusIcon
+    PlusIcon,
 } from '@heroicons/react/24/outline';
 import { GoogleConnection, googleService } from '../../../services/google.service';
 import { GoogleServiceShimmer } from '../../ui/GoogleServiceShimmer';

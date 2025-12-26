@@ -41,8 +41,10 @@ import {
   CircleStackIcon,
   Cog6ToothIcon,
   ChatBubbleLeftRightIcon,
+  DocumentIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
 import { feedbackService } from "../../services/feedback.service";
@@ -87,8 +89,10 @@ import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
 import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
 import { GoogleServicePanel } from "./GoogleServicePanel";
-import { GooglePickerModal } from "../google/GooglePickerModal";
 import { googleService, GoogleConnection } from "../../services/google.service";
+import AttachFilesModal from "./AttachFilesModal";
+import { MessageAttachment } from "../../types/attachment.types";
+import { FileIngestionLoader } from "./FileIngestionLoader";
 
 // Configure marked for security
 marked.setOptions({
@@ -109,6 +113,7 @@ interface ChatMessage {
     chunksCount: number;
     fileType?: string;
   }>;
+  attachments?: MessageAttachment[];
   metadata?: {
     cost?: number;
     latency?: number;
@@ -194,8 +199,12 @@ interface SuggestedQuestion {
 
 export const ConversationalAgent: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [attachments, setAttachments] = useState<MessageAttachment[]>([]);
+  const [showAttachModal, setShowAttachModal] = useState(false);
+  const [showConversationFilesModal, setShowConversationFilesModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessageId, setLoadingMessageId] = useState<string | null>(null);
   const [availableModels, setAvailableModels] = useState<AvailableModel[]>([]);
@@ -272,10 +281,8 @@ export const ConversationalAgent: React.FC = () => {
   const [hasExistingIntegrations, setHasExistingIntegrations] = useState<boolean>(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const [showGooglePanel, setShowGooglePanel] = useState(false);
-  const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'gmail' | 'drive' | 'sheets' | 'docs' | 'calendar'>('quick');
+  const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'drive' | 'sheets' | 'docs'>('quick');
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
-  const [showGooglePicker, setShowGooglePicker] = useState(false);
-  const [pickerFileType, setPickerFileType] = useState<'docs' | 'sheets' | 'drive'>('drive');
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
 
   // Conversation deletion state
@@ -288,9 +295,13 @@ export const ConversationalAgent: React.FC = () => {
   const [linkInputValue, setLinkInputValue] = useState('');
   const linkInputRef = useRef<HTMLInputElement>(null);
 
+  // File ingestion state
+  const [ingestingFiles, setIngestingFiles] = useState<Array<{ uploadId: string; fileName: string }>>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const hiddenFileInputRef = useRef<HTMLInputElement>(null);
+  const pendingDocumentsRef = useRef<Record<string, { documentId: string; fileName: string; fileType: string; s3Key: string }>>({});
 
   // Data-driven suggestions state
   const [suggestedQuestions, setSuggestedQuestions] = useState<
@@ -637,6 +648,16 @@ export const ConversationalAgent: React.FC = () => {
     }
   }, []);
 
+  // Handle pre-attached files from navigation state
+  useEffect(() => {
+    if (location.state?.attachedFiles) {
+      const files = location.state.attachedFiles as MessageAttachment[];
+      setAttachments(files);
+      // Clear the state to prevent re-attaching on re-render
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
+
   const loadGitHubConnection = async () => {
     try {
       const connections = await githubService.listConnections();
@@ -878,6 +899,17 @@ export const ConversationalAgent: React.FC = () => {
   const getOtherModels = (): AvailableModel[] => {
     const topModelIds = new Set(getTopModels().map(m => m.id));
     return availableModels.filter(m => !topModelIds.has(m.id));
+  };
+
+  // Get all attachments from the conversation
+  const getAllConversationAttachments = (): MessageAttachment[] => {
+    const allAttachments: MessageAttachment[] = [];
+    messages.forEach((message) => {
+      if (message.attachments && message.attachments.length > 0) {
+        allAttachments.push(...message.attachments);
+      }
+    });
+    return allAttachments;
   };
 
   // Helper function to format model display with name, number, and version
@@ -1383,61 +1415,17 @@ export const ConversationalAgent: React.FC = () => {
     }
   };
 
-  // Handle Google Picker commands
-  const handlePickerCommand = (messageContent: string): boolean => {
-    const lowerMessage = messageContent.toLowerCase().trim();
-
-    // Check for picker commands with both colon and space formats
-    // Pattern: @drive:select, @drive select, @drive:picker, @drive picker
-    const drivePickerPattern = /@drive[: ](select|picker)/;
-    const docsPickerPattern = /@(docs|gdocs)[: ](select|picker)/;
-    const sheetsPickerPattern = /@(sheets|gsheets)[: ](select|picker)/;
-
-    if (drivePickerPattern.test(lowerMessage)) {
-      if (!googleConnection.hasConnection) {
-        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
-        return true; // Return true to prevent sending the message
-      }
-      setPickerFileType('drive');
-      setShowGooglePicker(true);
-      return true;
-    }
-    if (docsPickerPattern.test(lowerMessage)) {
-      if (!googleConnection.hasConnection) {
-        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
-        return true;
-      }
-      setPickerFileType('docs');
-      setShowGooglePicker(true);
-      return true;
-    }
-    if (sheetsPickerPattern.test(lowerMessage)) {
-      if (!googleConnection.hasConnection) {
-        setError("Please connect your Google account first. Go to Settings > Integrations to connect.");
-        return true;
-      }
-      setPickerFileType('sheets');
-      setShowGooglePicker(true);
-      return true;
-    }
-
-    return false;
-  };
 
   const sendMessage = async (content?: string) => {
     const messageContent = content || currentMessage.trim();
-    if (!messageContent || isLoading) return;
+    if ((!messageContent && attachments.length === 0) || isLoading) return;
 
     if (!selectedModel) {
       setError("Please select a model first");
       return;
     }
 
-    // Check if this is a picker command
-    if (handlePickerCommand(messageContent)) {
-      setCurrentMessage("");
-      return;
-    }
+    setCurrentMessage("");
 
     // SECURITY CHECK: Threat detection before sending message
     const threatCheck = ThreatDetectionService.checkContent(messageContent);
@@ -1467,20 +1455,39 @@ export const ConversationalAgent: React.FC = () => {
       finalMessageContent = `${finalMessageContent}${linksSection}`;
     }
 
+    // If files are attached, enhance the message to instruct AI to analyze them
+    if (attachments.length > 0) {
+      const fileNames = attachments.map(att => att.fileName).join(', ');
+      if (!finalMessageContent || finalMessageContent.trim().length === 0) {
+        // If no message, create a default instruction
+        finalMessageContent = `Please analyze the following file(s) and provide a comprehensive summary: ${fileNames}`;
+      } else {
+        // If there's a message, append instruction to analyze files
+        finalMessageContent = `${finalMessageContent}\n\n[Note: I've attached ${attachments.length} file(s): ${fileNames}. Please analyze ${attachments.length === 1 ? 'this file' : 'these files'} in the context of my question above.]`;
+      }
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
       content: finalMessageContent, // Includes attached links, backend will enrich URLs with metadata
       timestamp: new Date(),
       attachedDocuments: selectedDocuments.length > 0 ? selectedDocuments : undefined,
+      attachments: attachments.length > 0 ? attachments : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setCurrentMessage("");
     setAttachedLinks([]); // Clear attached links after sending
+    setAttachments([]); // Clear file attachments after sending
     setIsLoading(true);
     setLoadingMessageId(userMessage.id);
     setError(null);
+
+    // Show helpful message for file attachments
+    if (attachments.length > 0) {
+      console.log(`Processing ${attachments.length} file(s)... This may take a moment.`);
+    }
 
     try {
       // Handle demo message locally
@@ -1569,6 +1576,7 @@ export const ConversationalAgent: React.FC = () => {
         documentIds: selectedDocuments.length > 0
           ? selectedDocuments.map(doc => doc.documentId)
           : undefined,
+        attachments: attachments.length > 0 ? attachments : undefined,
         // Include GitHub repository context if a repo is selected
         ...(selectedRepo ? {
           githubContext: {
@@ -1644,12 +1652,6 @@ export const ConversationalAgent: React.FC = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-
-      // Handle Google Picker from backend response metadata
-      if (response.metadata?.requiresPicker && response.metadata?.fileType && googleConnection.hasConnection) {
-        setPickerFileType(response.metadata.fileType as 'docs' | 'sheets' | 'drive');
-        setShowGooglePicker(true);
-      }
 
       // Handle GitHub integration polling if integration data is present
       if (response.githubIntegrationData?.integrationId) {
@@ -1810,10 +1812,25 @@ export const ConversationalAgent: React.FC = () => {
           confidence: error.response.data.confidence || 0.8
         });
         setError(errorMessage);
-      } else {
+      } else if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        // Handle timeout errors
         setError(
-          error instanceof Error ? error.message : "Failed to send message",
+          attachments.length > 0 || attachedLinks.length > 0
+            ? "Request timed out. Large files or complex requests may take longer. Please try again with smaller files or a simpler question."
+            : "Request timed out. Please try again with a simpler question or check your internet connection."
         );
+      } else if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
+        // Handle network errors
+        setError("Network error. Please check your internet connection and try again.");
+      } else if (error.response?.status === 413) {
+        // Handle payload too large
+        setError("File is too large. Please try uploading a smaller file (max 10MB).");
+      } else {
+        // Generic error handling
+        const errorMessage = error.response?.data?.message
+          || error.message
+          || "Failed to send message. Please try again.";
+        setError(errorMessage);
       }
 
       setIsLoading(false);
@@ -3110,6 +3127,56 @@ export const ConversationalAgent: React.FC = () => {
                       </div>
                     )}
 
+                    {/* File Attachments Display */}
+                    {message.attachments && message.attachments.length > 0 && (
+                      <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
+                        {message.attachments.map((attachment, idx) => (
+                          <div
+                            key={`${attachment.fileId}-${idx}`}
+                            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
+                              ? 'border-white/30 bg-white/20 hover:bg-white/30'
+                              : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
+                              }`}
+                          >
+                            <div className={`p-1.5 rounded-lg ${message.role === 'user'
+                              ? 'bg-white/20'
+                              : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                              }`}>
+                              {attachment.type === 'google' ? (
+                                <DocumentIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
+                              ) : (
+                                <PaperClipIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                              )}
+                            </div>
+                            <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                              {attachment.fileName}
+                            </span>
+                            <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
+                              ? 'bg-white/20 text-white/90'
+                              : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                              }`}>
+                              {attachment.type === 'google' ? 'Google' : 'Uploaded'}
+                            </span>
+                            {attachment.url && (
+                              <a
+                                href={attachment.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                                  ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                                  : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                                  }`}
+                                title="Open file"
+                                aria-label="Open file"
+                              >
+                                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-primary-200/30">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/80' : 'text-light-text-secondary dark:text-dark-text-secondary'}`}>
@@ -3492,6 +3559,7 @@ export const ConversationalAgent: React.FC = () => {
 
             {/* Message Input Container */}
             <div className="glass rounded-lg sm:rounded-xl md:rounded-2xl border border-primary-200/30 dark:border-primary-500/20 shadow-xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel p-1 sm:p-1.5 md:p-2 lg:p-2.5 xl:p-3.5 focus-within:border-primary-400 dark:focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
+              {/* Main Input Row */}
               <div className="flex items-end gap-1 sm:gap-1.5 md:gap-2 lg:gap-3">
                 {/* Attachments Popover Button */}
                 <div className="relative">
@@ -3559,20 +3627,35 @@ export const ConversationalAgent: React.FC = () => {
                                       return;
                                     }
 
-                                    const result = await documentService.uploadDocument(file, {
-                                      onProgress: () => { } // Silent upload in popover
+                                    // Convert to base64 first
+                                    const base64Data = await documentService['fileToBase64'](file);
+
+                                    // Upload to get uploadId
+                                    const apiClient = (await import('@/config/api')).apiClient;
+                                    const uploadResponse = await apiClient.post('/ingestion/upload', {
+                                      fileName: file.name,
+                                      fileData: base64Data,
+                                      mimeType: file.type
                                     });
 
-                                    const docMetadata: DocumentMetadata = {
-                                      documentId: result.documentId,
-                                      fileName: result.fileName,
+                                    const uploadId = uploadResponse.data.data.uploadId;
+                                    const documentId = uploadResponse.data.data.documentId;
+                                    const s3Key = uploadResponse.data.data.s3Key;
+
+                                    // Add to ingesting files to show loader
+                                    setIngestingFiles(prev => [...prev, { uploadId, fileName: file.name }]);
+
+                                    // Store document info for when ingestion completes
+                                    pendingDocumentsRef.current[uploadId] = {
+                                      documentId,
+                                      fileName: file.name,
                                       fileType: file.name.split('.').pop() || 'unknown',
-                                      uploadDate: new Date().toISOString(),
-                                      chunksCount: result.documentsCreated || 0,
-                                      s3Key: result.s3Key
+                                      s3Key
                                     };
 
-                                    setSelectedDocuments(prev => [...prev, docMetadata]);
+                                    // The backend processes asynchronously, so we'll wait for completion via SSE
+                                    // The FileIngestionLoader component will handle the SSE connection
+                                    // We'll add the document when ingestion completes
 
                                     // Reset input
                                     if (hiddenFileInputRef.current) {
@@ -3580,6 +3663,8 @@ export const ConversationalAgent: React.FC = () => {
                                     }
                                   } catch (err) {
                                     setError(err instanceof Error ? err.message : 'Upload failed');
+                                    // Remove from ingesting files on error
+                                    setIngestingFiles(prev => prev.filter(f => f.fileName !== file.name));
                                   }
                                 }
                               }}
@@ -3780,11 +3865,6 @@ export const ConversationalAgent: React.FC = () => {
                     value={currentMessage}
                     onChange={(newValue) => {
                       setCurrentMessage(newValue);
-                      setTimeout(() => {
-                        if (handlePickerCommand(newValue.trim())) {
-                          setCurrentMessage("");
-                        }
-                      }, 0);
                     }}
                     onSelect={() => {
                       // Mention is already inserted in the textarea
@@ -4038,8 +4118,8 @@ export const ConversationalAgent: React.FC = () => {
 
                 <button
                   onClick={() => sendMessage()}
-                  disabled={!currentMessage.trim() || isLoading}
-                  className={`relative flex items-center justify-center transition-all duration-300 shrink-0 ${!currentMessage.trim() || isLoading
+                  disabled={(!currentMessage.trim() && attachments.length === 0) || isLoading}
+                  className={`relative flex items-center justify-center transition-all duration-300 shrink-0 ${(!currentMessage.trim() && attachments.length === 0) || isLoading
                     ? 'w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 bg-secondary-200/50 dark:bg-secondary-700/50 text-secondary-400 dark:text-secondary-500 cursor-not-allowed rounded-full'
                     : 'w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-11 lg:h-11 bg-gradient-primary hover:bg-gradient-primary/90 text-white rounded-full hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl glow-primary'
                     }`}
@@ -4058,6 +4138,90 @@ export const ConversationalAgent: React.FC = () => {
                   )}
                 </button>
               </div>
+
+              {/* File Ingestion Loaders */}
+              {ingestingFiles.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {ingestingFiles.map((file) => (
+                    <FileIngestionLoader
+                      key={file.uploadId}
+                      uploadId={file.uploadId}
+                      fileName={file.fileName}
+                      onComplete={() => {
+                        // Get document info from pending documents
+                        const docInfo = pendingDocumentsRef.current[file.uploadId];
+
+                        if (docInfo) {
+                          // Add to selected documents
+                          const docMetadata: DocumentMetadata = {
+                            documentId: docInfo.documentId,
+                            fileName: docInfo.fileName,
+                            fileType: docInfo.fileType,
+                            uploadDate: new Date().toISOString(),
+                            chunksCount: 0, // Will be updated when we get the actual count
+                            s3Key: docInfo.s3Key
+                          };
+
+                          setSelectedDocuments(prev => [...prev, docMetadata]);
+
+                          // Clean up
+                          delete pendingDocumentsRef.current[file.uploadId];
+                        }
+
+                        // Remove from ingesting files when complete
+                        setIngestingFiles(prev => prev.filter(f => f.uploadId !== file.uploadId));
+                      }}
+                      onError={(error) => {
+                        setError(`Failed to ingest ${file.fileName}: ${error}`);
+                        setIngestingFiles(prev => prev.filter(f => f.uploadId !== file.uploadId));
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Secondary Actions Row - Only show if there are attachments or conversation files */}
+              {(attachments.length > 0 || getAllConversationAttachments().length > 0) && (
+                <div className="flex items-center gap-2 mt-2 px-1">
+                  {/* View Conversation Files Button */}
+                  {getAllConversationAttachments().length > 0 && (
+                    <button
+                      onClick={() => setShowConversationFilesModal(true)}
+                      className="p-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors shrink-0 relative flex items-center gap-1.5"
+                      title={`View all files (${getAllConversationAttachments().length})`}
+                    >
+                      <FolderOpenIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                      <span className="text-xs font-display font-medium text-primary-600 dark:text-primary-400">
+                        View Files ({getAllConversationAttachments().length})
+                      </span>
+                    </button>
+                  )}
+
+                  {/* Attachment Chips - Inline in secondary row */}
+                  {attachments.length > 0 && (
+                    <div className="flex flex-wrap gap-2 ml-auto">
+                      {attachments.map((att, idx) => (
+                        <div
+                          key={idx}
+                          className="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 dark:bg-primary-900/20 border border-primary-200/30 dark:border-primary-500/20 rounded-lg"
+                        >
+                          <DocumentIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                          <span className="text-xs font-display text-secondary-900 dark:text-white truncate max-w-[120px]">
+                            {att.fileName}
+                          </span>
+                          <button
+                            onClick={() => setAttachments(prev => prev.filter((_, i) => i !== idx))}
+                            className="hover:bg-red-100 dark:hover:bg-red-900/20 rounded-full p-0.5"
+                          >
+                            <XMarkIcon className="w-3 h-3 text-red-600 dark:text-red-400" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Helper text */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mt-2 px-1">
                 <div className="text-xs text-secondary-400 dark:text-secondary-500 font-medium">
@@ -4066,22 +4230,6 @@ export const ConversationalAgent: React.FC = () => {
                       {currentMessage.length} character{currentMessage.length !== 1 ? 's' : ''}
                     </span>
                   )}
-                </div>
-                <div className="text-xs text-secondary-400 dark:text-secondary-500 font-medium flex flex-wrap items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
-                    Enter
-                  </kbd>
-                  <span className="hidden sm:inline">to send</span>
-                  <span className="sm:hidden">send</span>
-                  <span className="hidden lg:inline">
-                    <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs ml-2">
-                      Shift
-                    </kbd>
-                    <kbd className="px-1.5 py-0.5 rounded bg-secondary-100 dark:bg-secondary-800/50 border border-secondary-200 dark:border-secondary-700 text-secondary-600 dark:text-secondary-400 font-mono text-xs">
-                      Enter
-                    </kbd>
-                    <span>for new line</span>
-                  </span>
                 </div>
               </div>
             </div>
@@ -4217,25 +4365,6 @@ export const ConversationalAgent: React.FC = () => {
         defaultTab={googlePanelTab}
       />
 
-      {/* Google Picker Modal */}
-      <GooglePickerModal
-        isOpen={showGooglePicker}
-        onClose={() => setShowGooglePicker(false)}
-        fileType={pickerFileType}
-        connectionId={googleConnection?.connection?._id || ''}
-        onFilesSelected={(files) => {
-          const fileNames = files.map(f => f.fileName).join(', ');
-          const message: ChatMessage = {
-            id: Date.now().toString(),
-            role: "assistant",
-            content: `✅ **File${files.length > 1 ? 's' : ''} Selected Successfully!**\n\n${fileNames}\n\nYou can now use commands to work with ${files.length > 1 ? 'these files' : 'this file'} directly! Try:\n\n• \`@${pickerFileType} list\` - See all accessible files\n• Access specific files by name in your commands`,
-            timestamp: new Date(),
-          };
-          setMessages(prev => [...prev, message]);
-        }}
-        multiSelect={true}
-      />
-
       {/* Delete Conversation Confirmation Modal */}
       <ConfirmationDialog
         isOpen={!!deleteConfirmConversationId}
@@ -4260,6 +4389,110 @@ export const ConversationalAgent: React.FC = () => {
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteConfirmConversationId(null)}
       />
+
+      {/* Attach Files Modal */}
+      <AttachFilesModal
+        isOpen={showAttachModal}
+        onClose={() => setShowAttachModal(false)}
+        onAttachmentsSelected={(selected) => {
+          setAttachments(prev => [...prev, ...selected]);
+          setShowAttachModal(false);
+        }}
+      />
+
+      {/* Conversation Files Modal */}
+      {showConversationFilesModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="glass max-w-3xl w-full max-h-[80vh] rounded-2xl shadow-2xl animate-scale-in border border-primary-200/30 bg-white/95 dark:bg-dark-card/95 backdrop-blur-xl overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-primary-200/30">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                  <FolderOpenIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-display font-bold text-light-text-primary dark:text-dark-text-primary">
+                    Conversation Files
+                  </h3>
+                  <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                    All files attached in this conversation ({getAllConversationAttachments().length})
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowConversationFilesModal(false)}
+                className="p-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {getAllConversationAttachments().length === 0 ? (
+                <div className="text-center py-12">
+                  <DocumentIcon className="w-16 h-16 text-secondary-300 dark:text-secondary-600 mx-auto mb-4" />
+                  <p className="text-secondary-600 dark:text-secondary-400 font-display">
+                    No files attached in this conversation yet
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  {getAllConversationAttachments().map((attachment, index) => (
+                    <a
+                      key={`${attachment.fileId}-${index}`}
+                      href={attachment.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 rounded-xl glass backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border border-primary-200/30 dark:border-primary-500/20 hover:border-primary-400/50 dark:hover:border-primary-400/50 hover:shadow-lg transition-all duration-300 group"
+                    >
+                      <div className="flex-shrink-0 p-3 rounded-lg bg-gradient-to-br from-primary-500/20 to-primary-600/20">
+                        {attachment.type === 'google' ? (
+                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                          </svg>
+                        ) : (
+                          <DocumentIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-display font-semibold text-secondary-900 dark:text-white truncate mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                          {attachment.fileName}
+                        </h4>
+                        <div className="flex items-center gap-3 text-xs text-secondary-500 dark:text-secondary-400">
+                          <span className="px-2 py-0.5 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium">
+                            {attachment.type === 'google' ? 'Google' : 'Uploaded'} {attachment.fileType}
+                          </span>
+                          {attachment.fileSize > 0 && (
+                            <>
+                              <span>•</span>
+                              <span>{(attachment.fileSize / 1024).toFixed(2)} KB</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <ArrowTopRightOnSquareIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30">
+              <button
+                onClick={() => setShowConversationFilesModal(false)}
+                className="px-5 py-2.5 rounded-xl bg-gradient-primary text-white hover:opacity-90 transition-all duration-300 font-display font-semibold text-sm hover:scale-105 hover:shadow-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

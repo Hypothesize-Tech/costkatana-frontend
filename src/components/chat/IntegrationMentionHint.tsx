@@ -153,18 +153,6 @@ export const IntegrationMentionHint: React.FC<IntegrationMentionHintProps> = ({
                             </code>
                             <span className="text-xs text-secondary-600 dark:text-secondary-400">Export to Google Sheets</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
-                                @gmail send email to team@company.com
-                            </code>
-                            <span className="text-xs text-secondary-600 dark:text-secondary-400">Send emails via Gmail</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <code className="px-2 py-1 rounded bg-primary-100/50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-mono">
-                                @calendar schedule meeting tomorrow
-                            </code>
-                            <span className="text-xs text-secondary-600 dark:text-secondary-400">Create calendar events</span>
-                        </div>
                     </div>
                 </div>
 

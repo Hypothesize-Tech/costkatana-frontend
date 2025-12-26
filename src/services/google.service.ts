@@ -178,6 +178,22 @@ class GoogleService {
     }
 
     /**
+     * Get file from Google Drive link or ID
+     * Supports public links and files shared with the user
+     */
+    async getFileFromLink(connectionId: string, linkOrId: string): Promise<{
+        file: GoogleDriveFile;
+        type: 'drive' | 'sheets' | 'docs';
+        message: string;
+    }> {
+        const response = await api.post('/google/file-from-link', {
+            connectionId,
+            linkOrId
+        });
+        return response.data.data;
+    }
+
+    /**
      * Send email via Gmail
      */
     async sendEmail(connectionId: string, to: string | string[], subject: string, body: string, isHtml?: boolean): Promise<{ messageId: string; success: boolean }> {
@@ -364,17 +380,6 @@ class GoogleService {
             connectionId,
             files
         });
-        return response.data.data;
-    }
-
-    /**
-     * Get accessible files from cache
-     */
-    async getAccessibleFiles(connectionId: string, fileType?: 'docs' | 'sheets' | 'drive'): Promise<GoogleDriveFile[]> {
-        const params = new URLSearchParams({ connectionId });
-        if (fileType) params.append('fileType', fileType);
-
-        const response = await api.get(`/google/file-access?${params.toString()}`);
         return response.data.data;
     }
 

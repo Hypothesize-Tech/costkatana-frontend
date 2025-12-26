@@ -327,7 +327,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               'relative flex items-center rounded-xl group transition-all duration-300',
               'before:absolute before:inset-0 before:rounded-xl before:transition-all before:duration-300',
               'min-h-[44px] [touch-action:manipulation]',
-              collapsed ? 'mx-2.5 justify-center p-3' : 'gap-x-3 px-4 py-3',
+              collapsed ? 'justify-center px-3 py-3' : 'gap-x-3 px-4 py-3',
               isActive
                 ? 'bg-gradient-to-r from-[#06ec9e] via-emerald-500 to-[#009454] text-white shadow-xl shadow-[#06ec9e]/30'
                 : 'text-secondary-900 dark:text-white hover:text-[#06ec9e] dark:hover:text-emerald-400 active:bg-primary-500/15 dark:active:bg-primary-500/25 hover:bg-primary-500/10 dark:hover:bg-primary-500/20',
@@ -455,7 +455,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               role="list"
               className={cn(
                 'space-y-1.5',
-                collapsed ? 'mx-1' : 'px-1',
+                collapsed ? '' : 'px-1',
                 collapsed
                   ? ''
                   : expanded[cat.id]

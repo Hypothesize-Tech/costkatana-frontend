@@ -36,8 +36,6 @@ export const VALID_INTEGRATIONS = [
   'discord',
   'github',
   'google',
-  'gmail',
-  'calendar',
   'drive',
   'sheets',
   'docs',

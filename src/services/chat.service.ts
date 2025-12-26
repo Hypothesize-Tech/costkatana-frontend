@@ -1,4 +1,5 @@
 import apiClient, { chatApiClient } from "@/config/api";
+import { MessageAttachment } from "../types/attachment.types";
 
 export interface ChatMessage {
   id: string;
@@ -11,6 +12,7 @@ export interface ChatMessage {
     chunksCount: number;
     fileType?: string;
   }>;
+  attachments?: MessageAttachment[];
   metadata?: {
     cost?: number;
     latency?: number;
@@ -66,9 +68,9 @@ export interface SendMessageRequest {
     repositoryName: string;
     repositoryFullName: string;
   };
-  // Template support
   templateId?: string;
   templateVariables?: Record<string, any>;
+  attachments?: MessageAttachment[];
 }
 
 export interface SendMessageResponse {
@@ -164,11 +166,31 @@ export class ChatService {
       return response.data.data;
     } catch (error: any) {
       console.error("Error sending message:", error);
-      const message = error.response?.data?.message || "Failed to send message";
+      
+      // Preserve error code and details for better handling
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        const timeoutError = new Error("Request timed out. This may happen with large files or complex requests.");
+        (timeoutError as any).code = 'ECONNABORTED';
+        throw timeoutError;
+      }
+      
+      if (error.code === 'ERR_NETWORK') {
+        const networkError = new Error("Network error. Please check your internet connection.");
+        (networkError as any).code = 'ERR_NETWORK';
+        throw networkError;
+      }
+      
+      // Preserve response error details
+      if (error.response) {
+        const responseError = new Error(error.response.data?.message || "Failed to send message");
+        (responseError as any).response = error.response;
+        throw responseError;
+      }
+      
+      const message = error.response?.data?.message || error.message || "Failed to send message";
       throw new Error(message);
     }
   }
-
 
   /**
    * Create a new conversation

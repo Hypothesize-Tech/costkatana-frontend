@@ -14,10 +14,10 @@ const api: AxiosInstance = axios.create({
     },
 });
 
-// Create chat-specific instance with longer timeout for complex queries
+// Create chat-specific instance with longer timeout for complex queries (file attachments, RAG, etc.)
 const chatApi: AxiosInstance = axios.create({
     baseURL: `${API_URL}/api`,
-    timeout: 120000, // 2 minutes timeout for chat operations
+    timeout: 180000, // 3 minutes timeout for chat operations (file processing can take time)
     withCredentials: true, // Include cookies in requests
     headers: {
         'Content-Type': 'application/json',
