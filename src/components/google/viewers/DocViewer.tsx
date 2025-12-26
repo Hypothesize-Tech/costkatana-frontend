@@ -4,11 +4,13 @@ import {
     PlusIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 import { GoogleConnection, googleService } from '../../../services/google.service';
 import { GoogleServiceShimmer } from '../../ui/GoogleServiceShimmer';
 import { GoogleViewerStates } from '../GoogleViewerStates';
 import { CreateDocModal } from '../modals/CreateDocModal';
+import GoogleFileAttachmentService from '../../../services/googleFileAttachment.service';
 import googleDocsLogo from '../../../assets/google-docs-logo.webp';
 
 interface DocViewerProps {
@@ -93,6 +95,26 @@ export const DocViewer: React.FC<DocViewerProps> = ({ connection, docId }) => {
             }
             return newSet;
         });
+    };
+
+    const handleChatWithAI = (document: GoogleDocument) => {
+        try {
+            // Convert GoogleDocument to GoogleFileAttachment format
+            const googleFile = {
+                id: document.id,
+                name: document.name,
+                mimeType: 'application/vnd.google-apps.document',
+                webViewLink: document.webViewLink,
+                modifiedTime: document.modifiedTime,
+                createdTime: document.createdTime,
+                connectionId: connection._id,
+            };
+            GoogleFileAttachmentService.navigateToChatWithFile(googleFile, connection);
+        } catch (error) {
+            console.error('Failed to open chat with document:', error);
+            // Fallback navigation to chat
+            window.location.href = '/chat';
+        }
     };
 
     // Render selected document's content if selectedDocument is set
@@ -278,6 +300,18 @@ export const DocViewer: React.FC<DocViewerProps> = ({ connection, docId }) => {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleChatWithAI(document);
+                                                }}
+                                                className="p-1 rounded-lg glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:scale-110 hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 group"
+                                                title="Chat with AI about this document"
+                                            >
+                                                <div className="bg-gradient-primary p-0.5 rounded glow-primary group-hover:scale-110 transition-transform duration-300">
+                                                    <ChatBubbleLeftRightIcon className="w-3 h-3 text-white" />
+                                                </div>
+                                            </button>
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();

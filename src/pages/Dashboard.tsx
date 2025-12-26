@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ChartBarIcon,
   CurrencyDollarIcon,
@@ -46,6 +46,7 @@ interface ExtendedDashboardData extends DashboardData {
 }
 
 export const Dashboard: React.FC = () => {
+  const location = useLocation();
   const [data, setData] = useState<ExtendedDashboardData | null>(null);
   const [timeRange, setTimeRange] = useState<string>("7d");
   const [loading, setLoading] = useState(true);
@@ -151,6 +152,15 @@ export const Dashboard: React.FC = () => {
     fetchDashboardData(selectedProject === "all" ? undefined : selectedProject);
   }, [selectedProject, timeRange]);
 
+  // Switch to chat mode if Google file parameter is present in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const googleFileParam = urlParams.get('googleFile');
+    if (googleFileParam) {
+      setViewMode('chat');
+    }
+  }, [location.search]);
+
   useEffect(() => {
     const loadInitialData = async () => {
       setLoading(true);
@@ -214,15 +224,15 @@ export const Dashboard: React.FC = () => {
   // No data state
   if (!data) {
     return (
-      <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient flex justify-center items-center p-4 sm:p-6">
-        <div className="text-center glass backdrop-blur-xl rounded-xl sm:rounded-2xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 p-6 sm:p-8 max-w-md w-full mx-4">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 glow-primary shadow-lg">
-            <ChartBarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+      <div className="flex justify-center items-center p-4 min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient sm:p-6">
+        <div className="p-6 mx-4 w-full max-w-md text-center bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass sm:rounded-2xl border-primary-200/30 from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 sm:p-8">
+          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 bg-gradient-to-br rounded-xl shadow-lg sm:w-16 sm:h-16 from-primary-500 to-primary-600 sm:rounded-2xl sm:mb-4 glow-primary">
+            <ChartBarIcon className="w-6 h-6 text-white sm:w-8 sm:h-8" />
           </div>
-          <h3 className="text-lg sm:text-xl font-display font-bold gradient-text-primary mb-2">
+          <h3 className="mb-2 text-lg font-bold sm:text-xl font-display gradient-text-primary">
             No Data Available
           </h3>
-          <p className="text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary mb-4 sm:mb-6">
+          <p className="mb-4 text-xs sm:text-sm font-body text-light-text-secondary dark:text-dark-text-secondary sm:mb-6">
             Unable to load dashboard data at this time.
           </p>
           <button
@@ -242,45 +252,45 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen relative bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
+    <div className="relative min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
       {/* Account Closure Banner */}
       {userProfile?.accountClosure && userProfile.accountClosure.status === 'pending_deletion' && (
         <AccountClosureBanner closureStatus={userProfile.accountClosure} />
       )}
 
       {/* Professional Header */}
-      <header className="glass backdrop-blur-xl sticky top-0 z-20 border-b border-primary-200/30 shadow-xl bg-gradient-to-r from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 shrink-0">
+      <header className="sticky top-0 z-20 bg-gradient-to-r border-b shadow-xl backdrop-blur-xl glass border-primary-200/30 from-white/90 via-white/70 to-white/90 dark:from-dark-card/90 dark:via-dark-card/70 dark:to-dark-card/90 shrink-0">
         <div className="mx-auto px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 md:py-3.5">
           {/* Mobile: Stacked Layout */}
           <div className="flex flex-col gap-3 md:hidden">
             {/* Top Row: Brand & Menu */}
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-xl glow-primary shadow-lg shrink-0">
-                  <img src={logo} alt="Cost Katana" className="w-4 h-4 sm:w-5 sm:h-5 rounded-lg" />
+            <div className="flex gap-2 justify-between items-center">
+              <div className="flex flex-1 gap-2 items-center min-w-0">
+                <div className="p-2 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary shrink-0">
+                  <img src={logo} alt="Cost Katana" className="w-4 h-4 rounded-lg sm:w-5 sm:h-5" />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h1 className="font-display font-bold text-base sm:text-lg gradient-text-primary truncate">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-base font-bold truncate font-display sm:text-lg gradient-text-primary">
                     Cost Katana
                   </h1>
                 </div>
               </div>
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass rounded-lg hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md border border-primary-200/30 shrink-0"
+                className="p-2 rounded-lg border shadow-sm transition-all duration-300 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass hover:bg-primary-50/50 dark:hover:bg-primary-900/20 hover:shadow-md border-primary-200/30 shrink-0"
                 title="Menu"
               >
                 <Bars3Icon className="w-5 h-5" />
               </button>
             </div>
             {/* Bottom Row: Controls */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+            <div className="flex overflow-x-auto gap-2 items-center px-1 pb-1 -mx-1">
               {/* Project Filter - Mobile */}
               <Menu as="div" className="relative shrink-0">
                 <Menu.Button className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/20 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm min-w-[90px] justify-between">
-                  <div className="flex items-center gap-1 min-w-0">
+                  <div className="flex gap-1 items-center min-w-0">
                     <FolderIcon className="w-3 h-3 text-primary-500 shrink-0" />
-                    <span className="truncate text-xs">
+                    <span className="text-xs truncate">
                       {selectedProject === "all"
                         ? "All"
                         : getSelectedProjectName().length > 8
@@ -288,7 +298,7 @@ export const Dashboard: React.FC = () => {
                           : getSelectedProjectName()}
                     </span>
                   </div>
-                  <ChevronDownIcon className="w-3 h-3 flex-shrink-0 text-primary-500" />
+                  <ChevronDownIcon className="flex-shrink-0 w-3 h-3 text-primary-500" />
                 </Menu.Button>
                 <Transition
                   as={Fragment}
@@ -299,14 +309,14 @@ export const Dashboard: React.FC = () => {
                   leaveFrom="transform opacity-100 scale-100 translate-y-0"
                   leaveTo="transform opacity-0 scale-95 translate-y-1"
                 >
-                  <Menu.Items className="absolute left-0 z-30 mt-2 w-56 sm:w-64 backdrop-blur-xl rounded-lg shadow-xl border border-primary-200/30 bg-white dark:bg-gray-800 overflow-hidden">
+                  <Menu.Items className="overflow-hidden absolute left-0 z-30 mt-2 w-56 bg-white rounded-lg border shadow-xl backdrop-blur-xl sm:w-64 border-primary-200/30 dark:bg-gray-800">
                     <div className="py-1.5">
                       <div className="px-3 py-2 border-b border-primary-200/30 dark:border-primary-700/30">
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 items-center">
                           <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 rounded-lg glow-primary shadow-sm">
                             <FolderIcon className="w-3 h-3 text-white" />
                           </div>
-                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
+                          <p className="text-xs font-semibold tracking-wider uppercase font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Select Project
                           </p>
                         </div>
@@ -347,7 +357,7 @@ export const Dashboard: React.FC = () => {
                                 ? "bg-gradient-to-br from-accent-500 to-accent-600 shadow-sm"
                                 : "bg-accent-300 dark:bg-accent-700"
                                 }`}></div>
-                              <span className="truncate flex-1">{project.name}</span>
+                              <span className="flex-1 truncate">{project.name}</span>
                               {selectedProject === project._id && (
                                 <CheckIcon className="w-3.5 h-3.5 ml-auto text-primary-500 shrink-0" />
                               )}
@@ -361,9 +371,9 @@ export const Dashboard: React.FC = () => {
               </Menu>
 
               {/* Time Range Filter - Mobile */}
-              <div className="glass rounded-lg border border-primary-200/30 p-1 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 shrink-0">
+              <div className="p-1 bg-gradient-to-br to-transparent rounded-lg border glass border-primary-200/30 from-primary-50/30 dark:from-primary-900/10 shrink-0">
                 <div className="relative">
-                  <div className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                  <div className="absolute left-2 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                     <ClockIcon className="w-3 h-3 text-primary-500" />
                   </div>
                   <select
@@ -392,7 +402,7 @@ export const Dashboard: React.FC = () => {
                 title="Refresh Data"
               >
                 {refreshing ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 rounded-full border-2 animate-spin border-white/30 border-t-white" />
                 ) : (
                   <ArrowPathIcon className="w-4 h-4" />
                 )}
@@ -401,19 +411,19 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Tablet & Desktop: Horizontal Layout */}
-          <div className="hidden md:flex items-center justify-between gap-4">
+          <div className="hidden gap-4 justify-between items-center md:flex">
             {/* Left: Brand & Project Info */}
-            <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="flex flex-1 gap-3 items-center min-w-0">
               <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2.5 rounded-xl glow-primary shadow-lg shrink-0">
                 <img src={logo} alt="Cost Katana" className="w-5 h-5 rounded-lg" />
               </div>
-              <div className="min-w-0 flex-1">
-                <h1 className="font-display font-bold text-xl gradient-text-primary truncate">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl font-bold truncate font-display gradient-text-primary">
                   Cost Katana
                 </h1>
               </div>
               <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 glass rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 shrink-0">
-                <div className="w-2 h-2 bg-gradient-success rounded-full shadow-sm shrink-0"></div>
+                <div className="w-2 h-2 rounded-full shadow-sm bg-gradient-success shrink-0"></div>
                 <span className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary truncate max-w-[120px]">
                   {getSelectedProjectName()}
                 </span>
@@ -421,9 +431,9 @@ export const Dashboard: React.FC = () => {
             </div>
 
             {/* Right: Controls */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex gap-2 items-center shrink-0">
               {/* View Mode Toggle - Tablet & Desktop */}
-              <div className="hidden lg:flex items-center glass rounded-lg p-1 border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+              <div className="hidden items-center p-1 bg-gradient-to-br to-transparent rounded-lg border lg:flex glass border-primary-200/30 from-primary-50/30 dark:from-primary-900/10">
                 <button
                   onClick={() => setViewMode("chat")}
                   className={`flex items-center px-3 py-1.5 text-xs font-display font-semibold rounded-lg transition-all duration-300 shrink-0 ${viewMode === "chat"
@@ -466,13 +476,13 @@ export const Dashboard: React.FC = () => {
                 title="Full Analytics"
               >
                 <ChartBarIcon className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline whitespace-nowrap">Analytics</span>
+                <span className="hidden whitespace-nowrap lg:inline">Analytics</span>
               </Link>
 
               {/* Mobile Menu Button - Tablet */}
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass rounded-lg hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-md border border-primary-200/30 shrink-0"
+                className="p-2 rounded-lg border shadow-sm transition-all duration-300 lg:hidden text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass hover:bg-primary-50/50 dark:hover:bg-primary-900/20 hover:shadow-md border-primary-200/30 shrink-0"
                 title="Menu"
               >
                 <Bars3Icon className="w-5 h-5" />
@@ -483,7 +493,7 @@ export const Dashboard: React.FC = () => {
                 <Menu.Button className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-display font-semibold text-light-text-primary dark:text-dark-text-primary glass bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 backdrop-blur-sm border border-primary-200/30 rounded-lg hover:bg-primary-500/20 dark:hover:bg-primary-900/20 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-105 min-w-[100px] justify-between">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <FolderIcon className="w-3.5 h-3.5 text-primary-500 shrink-0" />
-                    <span className="truncate text-xs">
+                    <span className="text-xs truncate">
                       {selectedProject === "all"
                         ? "All Projects"
                         : getSelectedProjectName()}
@@ -500,14 +510,14 @@ export const Dashboard: React.FC = () => {
                   leaveFrom="transform opacity-100 scale-100 translate-y-0"
                   leaveTo="transform opacity-0 scale-95 translate-y-1"
                 >
-                  <Menu.Items className="absolute right-0 z-30 mt-2 w-64 backdrop-blur-xl rounded-lg shadow-xl border border-primary-200/30 bg-white dark:bg-gray-800 overflow-hidden">
+                  <Menu.Items className="overflow-hidden absolute right-0 z-30 mt-2 w-64 bg-white rounded-lg border shadow-xl backdrop-blur-xl border-primary-200/30 dark:bg-gray-800">
                     <div className="py-1.5">
                       <div className="px-3 py-2 border-b border-primary-200/30 dark:border-primary-700/30">
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 items-center">
                           <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-1.5 rounded-lg glow-primary shadow-sm">
                             <FolderIcon className="w-3 h-3 text-white" />
                           </div>
-                          <p className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider">
+                          <p className="text-xs font-semibold tracking-wider uppercase font-display text-light-text-secondary dark:text-dark-text-secondary">
                             Select Project
                           </p>
                         </div>
@@ -548,7 +558,7 @@ export const Dashboard: React.FC = () => {
                                 ? "bg-gradient-to-br from-accent-500 to-accent-600 shadow-sm"
                                 : "bg-accent-300 dark:bg-accent-700"
                                 }`}></div>
-                              <span className="truncate flex-1">{project.name}</span>
+                              <span className="flex-1 truncate">{project.name}</span>
                               {selectedProject === project._id && (
                                 <CheckIcon className="w-3.5 h-3.5 ml-auto text-primary-500 shrink-0" />
                               )}
@@ -562,7 +572,7 @@ export const Dashboard: React.FC = () => {
               </Menu>
 
               {/* Time Range Filter - Tablet & Desktop */}
-              <div className="glass rounded-lg border border-primary-200/30 p-1 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10">
+              <div className="p-1 bg-gradient-to-br to-transparent rounded-lg border glass border-primary-200/30 from-primary-50/30 dark:from-primary-900/10">
                 <div className="relative">
                   <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
                     <ClockIcon className="w-3.5 h-3.5 text-primary-500" />
@@ -593,7 +603,7 @@ export const Dashboard: React.FC = () => {
                 title="Refresh Data"
               >
                 {refreshing ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 rounded-full border-2 animate-spin border-white/30 border-t-white" />
                 ) : (
                   <ArrowPathIcon className="w-4 h-4" />
                 )}
@@ -616,7 +626,7 @@ export const Dashboard: React.FC = () => {
             leaveTo="opacity-0"
           >
             <div
-              className="fixed inset-0 bg-secondary-900/50 backdrop-blur-sm"
+              className="fixed inset-0 backdrop-blur-sm bg-secondary-900/50"
               onClick={() => setSidebarOpen(false)}
             />
           </Transition.Child>
@@ -630,27 +640,27 @@ export const Dashboard: React.FC = () => {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex w-full max-w-sm flex-col glass backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel border-r border-primary-200/30 dark:border-primary-500/20 shadow-xl h-full overflow-y-auto">
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-primary-200/30 dark:border-primary-500/20 sticky top-0 glass backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-10">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 rounded-xl glow-primary shadow-lg">
+            <div className="flex overflow-y-auto relative flex-col w-full max-w-sm h-full border-r shadow-xl backdrop-blur-xl glass bg-gradient-light-panel dark:bg-gradient-dark-panel border-primary-200/30 dark:border-primary-500/20">
+              <div className="flex sticky top-0 z-10 justify-between items-center p-4 border-b backdrop-blur-xl sm:p-6 border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                <div className="flex gap-3 items-center">
+                  <div className="p-2 bg-gradient-to-br rounded-xl shadow-lg from-primary-500 to-primary-600 glow-primary">
                     <img src={logo} alt="Cost Katana" className="w-5 h-5 rounded-lg" />
                   </div>
-                  <h2 className="text-lg font-display font-bold gradient-text-primary">
+                  <h2 className="text-lg font-bold font-display gradient-text-primary">
                     Menu
                   </h2>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="p-2 text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg transition-colors"
+                  className="p-2 rounded-lg transition-colors text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
               </div>
-              <div className="p-4 sm:p-6 space-y-6">
+              <div className="p-4 space-y-6 sm:p-6">
                 {/* View Mode Selection */}
                 <div className="space-y-3">
-                  <h3 className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider px-1">
+                  <h3 className="px-1 text-xs font-semibold tracking-wider uppercase font-display text-light-text-secondary dark:text-dark-text-secondary">
                     View Mode
                   </h3>
                   <div className="space-y-2">
@@ -664,7 +674,7 @@ export const Dashboard: React.FC = () => {
                         : "text-secondary-600 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/10 glass border border-primary-200/30"
                         }`}
                     >
-                      <ChatBubbleLeftRightIcon className="w-5 h-5 mr-3 shrink-0" />
+                      <ChatBubbleLeftRightIcon className="mr-3 w-5 h-5 shrink-0" />
                       Chat Interface
                     </button>
                     <button
@@ -677,7 +687,7 @@ export const Dashboard: React.FC = () => {
                         : "text-secondary-600 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/10 glass border border-primary-200/30"
                         }`}
                     >
-                      <Squares2X2Icon className="w-5 h-5 mr-3 shrink-0" />
+                      <Squares2X2Icon className="mr-3 w-5 h-5 shrink-0" />
                       Split View
                     </button>
                     <button
@@ -690,7 +700,7 @@ export const Dashboard: React.FC = () => {
                         : "text-secondary-600 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/10 glass border border-primary-200/30"
                         }`}
                     >
-                      <ChartBarIcon className="w-5 h-5 mr-3 shrink-0" />
+                      <ChartBarIcon className="mr-3 w-5 h-5 shrink-0" />
                       Analytics Dashboard
                     </button>
                   </div>
@@ -698,15 +708,15 @@ export const Dashboard: React.FC = () => {
 
                 {/* Quick Links */}
                 <div className="space-y-3">
-                  <h3 className="text-xs font-display font-semibold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wider px-1">
+                  <h3 className="px-1 text-xs font-semibold tracking-wider uppercase font-display text-light-text-secondary dark:text-dark-text-secondary">
                     Quick Links
                   </h3>
                   <Link
                     to="/analytics"
                     onClick={() => setSidebarOpen(false)}
-                    className="w-full flex items-center px-4 py-3 text-sm font-display font-medium text-primary-600 dark:text-primary-400 glass border border-primary-200/30 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-all"
+                    className="flex items-center px-4 py-3 w-full text-sm font-medium rounded-xl border transition-all font-display text-primary-600 dark:text-primary-400 glass border-primary-200/30 hover:bg-primary-50 dark:hover:bg-primary-900/10"
                   >
-                    <ChartBarIcon className="w-5 h-5 mr-3 shrink-0" />
+                    <ChartBarIcon className="mr-3 w-5 h-5 shrink-0" />
                     Full Analytics
                   </Link>
                 </div>
@@ -717,7 +727,7 @@ export const Dashboard: React.FC = () => {
       </Transition>
 
       {/* Main Content */}
-      <main className="flex-1 min-h-0 flex flex-col lg:flex-row">
+      <main className="flex flex-col flex-1 min-h-0 lg:flex-row">
         {/* Chat Interface Area */}
         <div
           className={`transition-all duration-500 ease-in-out ${viewMode === "dashboard"
@@ -728,7 +738,7 @@ export const Dashboard: React.FC = () => {
             } flex flex-col`}
         >
           <div className="h-[calc(100vh-4.5rem)] sm:h-[calc(100vh-5rem)] p-2 sm:p-3 md:p-4 lg:p-6">
-            <div className="h-full glass backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-xl border border-primary-200/30 bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 overflow-hidden">
+            <div className="overflow-hidden h-full bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass sm:rounded-2xl border-primary-200/30 from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
               <ConversationalAgent />
             </div>
           </div>
@@ -744,16 +754,16 @@ export const Dashboard: React.FC = () => {
           >
             {/* Dashboard Content */}
             <div className="h-[calc(100vh-4.5rem)] sm:h-[calc(100vh-5rem)] p-2 sm:p-3 md:p-4 lg:p-6 lg:pl-0">
-              <div className="h-full glass backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-xl border border-primary-200/30 bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 overflow-hidden flex flex-col">
+              <div className="flex overflow-hidden flex-col h-full bg-gradient-to-br rounded-xl border shadow-xl backdrop-blur-xl glass sm:rounded-2xl border-primary-200/30 from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80">
                 {/* Dashboard Header */}
                 <div className="flex-shrink-0 glass backdrop-blur-xl border-b border-primary-200/30 shadow-lg bg-gradient-to-r from-white/80 via-white/50 to-white/80 dark:from-dark-card/80 dark:via-dark-card/50 dark:to-dark-card/80 px-2.5 sm:px-3 md:px-4 lg:px-5 py-2 sm:py-2.5 md:py-3 lg:py-3.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <div className="flex gap-2 justify-between items-center">
+                    <div className="flex flex-1 gap-2 items-center min-w-0 sm:gap-3">
                       <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-2 sm:p-2.5 rounded-lg sm:rounded-xl glow-primary shadow-lg shrink-0">
-                        <ChartBarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                        <ChartBarIcon className="w-4 h-4 text-white sm:w-5 sm:h-5" />
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <h2 className="font-display font-bold text-base sm:text-lg gradient-text-primary truncate">
+                      <div className="flex-1 min-w-0">
+                        <h2 className="text-base font-bold truncate font-display sm:text-lg gradient-text-primary">
                           Analytics Dashboard
                         </h2>
                         <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-0.5 hidden sm:block">
@@ -766,7 +776,7 @@ export const Dashboard: React.FC = () => {
                         onClick={() =>
                           setDashboardPanelCollapsed(!dashboardPanelCollapsed)
                         }
-                        className="hidden lg:flex p-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass rounded-lg hover:bg-primary-500/10 transition-all duration-300 border border-primary-200/30 shrink-0"
+                        className="hidden p-2 rounded-lg border transition-all duration-300 lg:flex text-light-text-secondary dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-primary-400 glass hover:bg-primary-500/10 border-primary-200/30 shrink-0"
                         title={dashboardPanelCollapsed ? "Expand Panel" : "Collapse Panel"}
                       >
                         {dashboardPanelCollapsed ? (
@@ -868,11 +878,11 @@ export const Dashboard: React.FC = () => {
                       // Compact split view
                       <div className="space-y-3 sm:space-y-4 md:space-y-5">
                         <div className="glass backdrop-blur-xl rounded-xl p-2.5 sm:p-3 md:p-4 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60 hover:shadow-xl transition-all duration-300">
-                          <div className="flex items-center gap-2 mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-primary-200/30">
+                          <div className="flex gap-2 items-center pb-2 mb-3 border-b sm:mb-4 sm:pb-3 border-primary-200/30">
                             <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg shrink-0">
                               <CpuChipIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                             </div>
-                            <h3 className="text-xs sm:text-sm font-display font-semibold gradient-text-primary truncate">
+                            <h3 className="text-xs font-semibold truncate sm:text-sm font-display gradient-text-primary">
                               Service Breakdown
                             </h3>
                           </div>
@@ -888,7 +898,7 @@ export const Dashboard: React.FC = () => {
                             <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg shrink-0">
                               <ChartBarIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                             </div>
-                            <h3 className="text-xs sm:text-sm font-display font-semibold gradient-text-primary truncate">
+                            <h3 className="text-xs font-semibold truncate sm:text-sm font-display gradient-text-primary">
                               Cost Trend
                             </h3>
                           </div>
@@ -902,7 +912,7 @@ export const Dashboard: React.FC = () => {
                               <div className="p-1.5 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg shrink-0">
                                 <ClockIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                               </div>
-                              <h3 className="text-xs sm:text-sm font-display font-semibold gradient-text-primary truncate">
+                              <h3 className="text-xs font-semibold truncate sm:text-sm font-display gradient-text-primary">
                                 Recent Activity
                               </h3>
                             </div>
@@ -923,17 +933,17 @@ export const Dashboard: React.FC = () => {
                                       className="flex justify-between items-start sm:items-center gap-2 sm:gap-3 py-2 sm:py-2.5 px-2.5 sm:px-3.5 glass rounded-lg border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 hover:from-primary-50/50 hover:to-primary-100/30 dark:hover:from-primary-900/20 dark:hover:to-primary-800/20 transition-all duration-300 cursor-pointer group"
                                     >
                                       <div className="flex-1 min-w-0">
-                                        <p className="text-xs sm:text-sm font-display font-medium text-light-text-primary dark:text-dark-text-primary truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <p className="text-xs font-medium truncate transition-colors sm:text-sm font-display text-light-text-primary dark:text-dark-text-primary group-hover:text-primary-600 dark:group-hover:text-primary-400">
                                           {activity.description ||
                                             activity.prompt ||
                                             "Recent activity"}
                                         </p>
-                                        <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary mt-1">
+                                        <p className="mt-1 text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">
                                           {formatTimestamp(timestamp)}
                                         </p>
                                       </div>
                                       <div className="text-right shrink-0">
-                                        <div className="text-xs sm:text-sm font-display font-semibold gradient-text-primary whitespace-nowrap">
+                                        <div className="text-xs font-semibold whitespace-nowrap sm:text-sm font-display gradient-text-primary">
                                           ${(activity.cost || 0).toFixed(4)}
                                         </div>
                                       </div>
@@ -943,12 +953,12 @@ export const Dashboard: React.FC = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="glass backdrop-blur-xl rounded-xl p-6 sm:p-8 border border-primary-200/30 shadow-lg bg-gradient-to-br from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
+                          <div className="p-6 bg-gradient-to-br rounded-xl border shadow-lg backdrop-blur-xl glass sm:p-8 border-primary-200/30 from-white/80 to-white/60 dark:from-dark-card/80 dark:to-dark-card/60">
                             <div className="text-center">
-                              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                              <div className="flex justify-center items-center mx-auto mb-3 w-10 h-10 bg-gradient-to-br rounded-full sm:w-12 sm:h-12 from-primary-500/20 to-primary-600/20 sm:mb-4">
                                 <ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-500" />
                               </div>
-                              <h3 className="text-xs sm:text-sm font-display font-semibold gradient-text-primary mb-2">
+                              <h3 className="mb-2 text-xs font-semibold sm:text-sm font-display gradient-text-primary">
                                 No Recent Activity
                               </h3>
                               <p className="text-xs font-body text-light-text-secondary dark:text-dark-text-secondary">

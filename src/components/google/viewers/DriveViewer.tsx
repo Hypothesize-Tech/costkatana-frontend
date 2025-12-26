@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
     ArrowPathIcon,
     MagnifyingGlassIcon,
-    EyeIcon
+    EyeIcon,
+    ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline';
 import { googleService, GoogleConnection, GoogleDriveFile } from '../../../services/google.service';
 import { GoogleViewerStates } from '../GoogleViewerStates';
 import { DriveFileShimmer } from '../../ui/GoogleServiceShimmer';
+import GoogleFileAttachmentService from '../../../services/googleFileAttachment.service';
 import googleDriveLogo from '../../../assets/google-drive-logo.webp';
 import googleDocsLogo from '../../../assets/google-docs-logo.webp';
 import googleSheetsLogo from '../../../assets/google-sheets-logo.webp';
@@ -66,6 +68,16 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
         }
         // Default to Drive logo for other file types
         return <img src={googleDriveLogo} alt="Google Drive" className="w-8 h-8 object-contain" />;
+    };
+
+    const handleChatWithAI = (file: GoogleDriveFile) => {
+        try {
+            GoogleFileAttachmentService.navigateToChatWithFile(file, connection);
+        } catch (error) {
+            console.error('Failed to open chat with file:', error);
+            // Fallback navigation to chat
+            window.location.href = '/chat';
+        }
     };
 
     // Show states
@@ -167,12 +179,21 @@ export const DriveViewer: React.FC<DriveViewerProps> = ({ connection }) => {
                                             href={file.webViewLink}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded"
-                                            title="View in Google Docs"
+                                            className="p-2 rounded-lg glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:scale-110 hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+                                            title="View in Google Drive"
                                         >
-                                            <EyeIcon className="w-4 h-4" />
+                                            <EyeIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
                                         </a>
                                     )}
+                                    <button
+                                        onClick={() => handleChatWithAI(file)}
+                                        className="p-2 rounded-lg glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:scale-110 hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 group"
+                                        title="Chat with AI about this file"
+                                    >
+                                        <div className="bg-gradient-primary p-0.5 rounded glow-primary group-hover:scale-110 transition-transform duration-300">
+                                            <ChatBubbleLeftRightIcon className="w-3 h-3 text-white" />
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                         ))}

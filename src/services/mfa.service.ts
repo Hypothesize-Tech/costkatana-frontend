@@ -160,6 +160,45 @@ export class MFAService {
   }
 
   /**
+   * Get device trust status with additional context
+   */
+  static async getDeviceTrustStatus(): Promise<{ 
+    isTrusted: boolean; 
+    deviceId: string; 
+    deviceName?: string; 
+    expiresAt?: string;
+    lastUsed?: string;
+  }> {
+    try {
+      const result = await this.checkTrustedDevice();
+      const status = await this.getStatus();
+      
+      if (result.isTrusted && status.trustedDevices) {
+        const trustedDevice = status.trustedDevices.find(d => d.deviceId === result.deviceId);
+        return {
+          isTrusted: true,
+          deviceId: result.deviceId,
+          deviceName: trustedDevice?.deviceName,
+          expiresAt: trustedDevice?.expiresAt,
+          lastUsed: trustedDevice?.lastUsed
+        };
+      }
+      
+      return {
+        isTrusted: false,
+        deviceId: result.deviceId
+      };
+    } catch (error) {
+      console.warn('Failed to get device trust status:', error);
+      // If check fails, assume not trusted
+      return {
+        isTrusted: false,
+        deviceId: 'unknown'
+      };
+    }
+  }
+
+  /**
    * Request email MFA code during login
    */
   static async requestEmailCode(mfaToken: string): Promise<void> {

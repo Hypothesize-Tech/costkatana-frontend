@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheckIcon, DevicePhoneMobileIcon, EnvelopeIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { MFAService } from '../../services/mfa.service';
+import { getDeviceName as getDeviceNameUtil } from '../../utils/deviceFingerprint';
 
 interface MFAVerificationProps {
   mfaToken: string;
@@ -29,6 +30,23 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
   const [rememberDevice, setRememberDevice] = useState(false);
   const [deviceName, setDeviceName] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [deviceTrustStatus, setDeviceTrustStatus] = useState<{ isTrusted: boolean; deviceName?: string } | null>(null);
+
+  // Check device trust status on mount
+  useEffect(() => {
+    const checkDeviceTrust = async () => {
+      try {
+        const status = await MFAService.getDeviceTrustStatus();
+        setDeviceTrustStatus(status);
+        if (status.isTrusted && status.deviceName) {
+          setDeviceName(status.deviceName);
+        }
+      } catch (error) {
+        console.warn('Failed to check device trust status:', error);
+      }
+    };
+    checkDeviceTrust();
+  }, []);
 
   // Auto-send email code if email is selected and user switches to it
   useEffect(() => {
@@ -82,12 +100,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
   };
 
   const getDeviceName = () => {
-    const userAgent = navigator.userAgent;
-    if (userAgent.includes('Chrome')) return 'Chrome Browser';
-    if (userAgent.includes('Firefox')) return 'Firefox Browser';
-    if (userAgent.includes('Safari')) return 'Safari Browser';
-    if (userAgent.includes('Edge')) return 'Edge Browser';
-    return 'Unknown Device';
+    return getDeviceNameUtil();
   };
 
   const containerClass = embedded
@@ -113,6 +126,23 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
       </div>
 
       <form className="mt-8 space-y-8" onSubmit={handleVerify}>
+        {/* Device Trust Status */}
+        {deviceTrustStatus?.isTrusted && (
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+            <div className="flex items-center">
+              <ShieldCheckIcon className="mr-2 w-5 h-5 text-green-600 dark:text-green-400" />
+              <div>
+                <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                  Device Previously Trusted
+                </p>
+                <p className="mt-1 text-xs text-green-600 dark:text-green-400">
+                  This device "{deviceTrustStatus.deviceName}" was trusted but may need re-verification due to browser or network changes.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Method Selection */}
         {availableMethods.length > 1 && (
           <div>
