@@ -398,6 +398,18 @@ class GoogleService {
         const response = await api.get(`/google/connections/${connectionId}/picker-token`);
         return response.data.data;
     }
+
+    /**
+     * Get accessible files for a connection
+     * Returns files that have been accessed via Picker or links
+     */
+    async getAccessibleFiles(connectionId: string, fileType?: 'docs' | 'sheets' | 'drive'): Promise<GoogleDriveFile[]> {
+        const params = new URLSearchParams();
+        if (fileType) params.append('fileType', fileType);
+
+        const response = await api.get(`/google/connections/${connectionId}/accessible-files?${params.toString()}`);
+        return response.data.data;
+    }
 }
 
 export const googleService = new GoogleService();
