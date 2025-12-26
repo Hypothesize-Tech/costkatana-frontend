@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-    XMarkIcon,
+    ChevronRightIcon,
     SparklesIcon,
-    Bars3Icon
+    Bars3Icon,
+    XMarkIcon
 } from '@heroicons/react/24/outline';
-import { GmailViewer } from '../google/viewers/GmailViewer';
 import { DriveViewer } from '../google/viewers/DriveViewer';
 import { SheetViewer } from '../google/viewers/SheetViewer';
 import { DocViewer } from '../google/viewers/DocViewer';
-import { CalendarViewer } from '../google/viewers/CalendarViewer';
 import { googleService, GoogleConnection } from '../../services/google.service';
 import { GooglePanelShimmer } from '../ui/GoogleServiceShimmer';
 import { CreateDocModal } from '../google/modals/CreateDocModal';
 import { CreateSheetModal } from '../google/modals/CreateSheetModal';
-import { CreateCalendarEventModal } from '../google/modals/CreateCalendarEventModal';
-import gmailLogo from '../../assets/gmail-logo.webp';
 import driveLogo from '../../assets/google-drive-logo.webp';
 import sheetsLogo from '../../assets/google-sheets-logo.webp';
 import docsLogo from '../../assets/google-docs-logo.webp';
-import calendarLogo from '../../assets/google-calender-logo.webp';
 
 interface GoogleServicePanelProps {
     isOpen: boolean;
     onClose: () => void;
-    defaultTab?: 'quick' | 'gmail' | 'drive' | 'sheets' | 'docs' | 'calendar';
+    defaultTab?: 'quick' | 'drive' | 'sheets' | 'docs';
 }
 
 export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
@@ -38,7 +34,6 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
     const [showMobileTabs, setShowMobileTabs] = useState(false);
     const [showCreateDocModal, setShowCreateDocModal] = useState(false);
     const [showCreateSheetModal, setShowCreateSheetModal] = useState(false);
-    const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false);
 
     useEffect(() => {
         if (defaultTab) {
@@ -90,31 +85,23 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                 </svg>
             )
         },
-        { id: 'gmail', label: 'Gmail', icon: null, logo: gmailLogo },
         { id: 'drive', label: 'Drive', icon: null, logo: driveLogo },
-        { id: 'sheets', label: 'Sheets', icon: null, logo: sheetsLogo },
         { id: 'docs', label: 'Docs', icon: null, logo: docsLogo },
-        { id: 'calendar', label: 'Calendar', icon: null, logo: calendarLogo }
+        { id: 'sheets', label: 'Sheets', icon: null, logo: sheetsLogo }
     ];
 
     // Helper to display mobile tab selector
     const handleMobileTabsToggle = () => setShowMobileTabs((prev) => !prev);
 
-    const handleQuickAction = (action: 'gmail' | 'sheet' | 'doc' | 'calendar') => {
+    const handleQuickAction = (action: 'sheet' | 'doc') => {
         if (!connection) return;
 
         switch (action) {
-            case 'gmail':
-                setActiveTab('gmail');
-                break;
             case 'sheet':
                 setShowCreateSheetModal(true);
                 break;
             case 'doc':
                 setShowCreateDocModal(true);
-                break;
-            case 'calendar':
-                setShowCreateCalendarModal(true);
                 break;
         }
     };
@@ -138,12 +125,12 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                 <div className="p-3 sm:p-4 lg:p-5 border-b border-primary-200/30 dark:border-primary-500/20 glass backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel shrink-0">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg glow-primary flex-shrink-0">
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none">
-                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="white" />
-                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="white" />
-                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="white" />
-                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="white" />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                                <svg className="w-5 h-5 sm:w-6 sm:h-6 integration-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                 </svg>
                             </div>
                             <h2 className="text-lg sm:text-xl lg:text-2xl font-display font-bold gradient-text-primary">
@@ -163,9 +150,10 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                             )}
                             <button
                                 onClick={onClose}
-                                className="btn w-9 h-9 rounded-lg glass border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl flex items-center justify-center text-secondary-600 dark:text-secondary-300 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 hover:text-danger-500 hover:border-danger-200/50 transition-all duration-300 hover:scale-110"
+                                className="w-9 h-9 rounded-lg flex items-center justify-center text-secondary-700 dark:text-secondary-200 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-300 hover:scale-110"
+                                title="Close panel"
                             >
-                                <XMarkIcon className="w-5 h-5" />
+                                <XMarkIcon className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
@@ -178,7 +166,7 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                                     <button
                                         key={tab.id}
                                         onClick={() => {
-                                            setActiveTab(tab.id as 'quick' | 'gmail' | 'drive' | 'sheets' | 'docs' | 'calendar');
+                                            setActiveTab(tab.id as 'quick' | 'drive' | 'sheets' | 'docs');
                                             if (isMobile) setShowMobileTabs(false);
                                         }}
                                         className={`relative px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-display font-semibold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === tab.id
@@ -224,7 +212,7 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                                             Connect Google Account
                                         </h3>
                                         <p className="text-sm sm:text-base text-secondary-600 dark:text-secondary-400 mb-4 sm:mb-6 font-body">
-                                            Connect your Google account to access Gmail, Drive, Sheets, and more.
+                                            Connect your Google account to access Drive, Sheets, Docs, and more.
                                         </p>
                                         <a
                                             href="/integrations"
@@ -243,14 +231,6 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                                             </h3>
                                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4">
                                                 <button
-                                                    onClick={() => handleQuickAction('gmail')}
-                                                    className="p-4 sm:p-5 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 text-left hover:scale-105 hover:shadow-xl group cursor-pointer"
-                                                >
-                                                    <img src={gmailLogo} alt="Gmail" className="w-8 h-8 sm:w-10 sm:h-10 mb-2 sm:mb-3 object-contain group-hover:scale-110 transition-transform" />
-                                                    <div className="font-display font-semibold text-sm sm:text-base text-secondary-900 dark:text-white mb-1">Send Email</div>
-                                                    <div className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400 font-body">Compose new email</div>
-                                                </button>
-                                                <button
                                                     onClick={() => handleQuickAction('sheet')}
                                                     className="p-4 sm:p-5 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 text-left hover:scale-105 hover:shadow-xl group cursor-pointer"
                                                 >
@@ -266,22 +246,12 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                                                     <div className="font-display font-semibold text-sm sm:text-base text-secondary-900 dark:text-white mb-1">Create Doc</div>
                                                     <div className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400 font-body">New document</div>
                                                 </button>
-                                                <button
-                                                    onClick={() => handleQuickAction('calendar')}
-                                                    className="p-4 sm:p-5 rounded-xl glass border border-primary-200/30 dark:border-primary-500/20 shadow-lg backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 text-left hover:scale-105 hover:shadow-xl group cursor-pointer"
-                                                >
-                                                    <img src={calendarLogo} alt="Calendar" className="w-8 h-8 sm:w-10 sm:h-10 mb-2 sm:mb-3 object-contain group-hover:scale-110 transition-transform" />
-                                                    <div className="font-display font-semibold text-sm sm:text-base text-secondary-900 dark:text-white mb-1">Schedule Meeting</div>
-                                                    <div className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-400 font-body">Add calendar event</div>
-                                                </button>
                                             </div>
                                         </div>
                                     )}
-                                    {activeTab === 'gmail' && <GmailViewer connection={connection} />}
                                     {activeTab === 'drive' && <DriveViewer connection={connection} />}
                                     {activeTab === 'sheets' && <SheetViewer connection={connection} />}
                                     {activeTab === 'docs' && <DocViewer connection={connection} />}
-                                    {activeTab === 'calendar' && <CalendarViewer connection={connection} />}
                                 </>
                             )}
                         </div>
@@ -303,12 +273,6 @@ export const GoogleServicePanel: React.FC<GoogleServicePanelProps> = ({
                         onClose={() => setShowCreateSheetModal(false)}
                         connectionId={connection._id}
                         onSheetCreated={handleRefresh}
-                    />
-                    <CreateCalendarEventModal
-                        isOpen={showCreateCalendarModal}
-                        onClose={() => setShowCreateCalendarModal(false)}
-                        connectionId={connection._id}
-                        onEventCreated={handleRefresh}
                     />
                 </>
             )}

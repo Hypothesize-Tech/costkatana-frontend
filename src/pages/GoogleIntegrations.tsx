@@ -13,16 +13,12 @@ import {
     XCircleIcon,
     ClipboardDocumentListIcon,
 } from '@heroicons/react/24/outline';
-import gmailLogo from '../assets/gmail-logo.webp';
-import googleCalendarLogo from '../assets/google-calender-logo.webp';
 import googleDriveLogo from '../assets/google-drive-logo.webp';
 import googleSheetsLogo from '../assets/google-sheets-logo.webp';
 import googleDocsLogo from '../assets/google-docs-logo.webp';
-import { GmailViewer } from '../components/google/viewers/GmailViewer';
 import { DriveViewer } from '../components/google/viewers/DriveViewer';
 import { SheetViewer } from '../components/google/viewers/SheetViewer';
 import { DocViewer } from '../components/google/viewers/DocViewer';
-import { CalendarViewer } from '../components/google/viewers/CalendarViewer';
 
 
 export const GoogleIntegrations: React.FC = () => {
@@ -32,7 +28,7 @@ export const GoogleIntegrations: React.FC = () => {
     const [exportAudits, setExportAudits] = useState<GoogleExportAudit[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'gmail' | 'calendar' | 'sheets' | 'docs'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'sheets' | 'docs'>('overview');
 
     useEffect(() => {
         loadConnections();
@@ -351,26 +347,6 @@ export const GoogleIntegrations: React.FC = () => {
                                                 )}
                                             </button>
                                             <button
-                                                onClick={() => setActiveTab('gmail')}
-                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'gmail'
-                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
-                                                    }`}
-                                            >
-                                                <img src={gmailLogo} alt="Gmail" className="w-4 h-4 object-contain" />
-                                                Gmail
-                                            </button>
-                                            <button
-                                                onClick={() => setActiveTab('calendar')}
-                                                className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'calendar'
-                                                    ? 'bg-gradient-primary text-white shadow-lg glow-primary'
-                                                    : 'text-secondary-600 dark:text-secondary-300 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20'
-                                                    }`}
-                                            >
-                                                <img src={googleCalendarLogo} alt="Calendar" className="w-4 h-4 object-contain" />
-                                                Calendar
-                                            </button>
-                                            <button
                                                 onClick={() => setActiveTab('sheets')}
                                                 className={`relative px-4 py-3 rounded-lg font-display font-semibold text-sm transition-all duration-300 whitespace-nowrap flex items-center gap-2 flex-shrink-0 ${activeTab === 'sheets'
                                                     ? 'bg-gradient-primary text-white shadow-lg glow-primary'
@@ -531,20 +507,6 @@ export const GoogleIntegrations: React.FC = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {/* Gmail Tab */}
-                                    {activeTab === 'gmail' && selectedConnection && (
-                                        <div className="h-[600px]">
-                                            <GmailViewer connection={selectedConnection} />
-                                        </div>
-                                    )}
-
-                                    {/* Calendar Tab */}
-                                    {activeTab === 'calendar' && selectedConnection && (
-                                        <div className="h-[600px]">
-                                            <CalendarViewer connection={selectedConnection} />
                                         </div>
                                     )}
 

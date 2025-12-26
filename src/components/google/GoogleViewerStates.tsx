@@ -60,16 +60,6 @@ export const GoogleViewerStates: React.FC<GoogleViewerStatesProps> = ({
                 <p className="text-secondary-600 dark:text-secondary-400 mb-6 max-w-md">
                     You don't have any {serviceName.toLowerCase()} yet.
                 </p>
-                {suggestedCommand && (
-                    <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border border-primary-200/30 dark:border-primary-500/20">
-                        <p className="text-sm text-secondary-700 dark:text-secondary-300 mb-2">
-                            Try using chat commands:
-                        </p>
-                        <code className="text-sm font-mono bg-white dark:bg-gray-800 px-3 py-1 rounded border border-primary-200/30 dark:border-primary-500/20">
-                            {suggestedCommand}
-                        </code>
-                    </div>
-                )}
             </div>
         );
     }

@@ -120,19 +120,13 @@ const PrivacyPolicy: React.FC = () => {
                       <strong className="text-primary-700 dark:text-primary-400">• Email & Profile:</strong> To authenticate your identity and create your account
                     </li>
                     <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Google Drive (File Access):</strong> To allow you to import cost data and export reports to your Google Drive when you explicitly request it
+                      <strong className="text-primary-700 dark:text-primary-400">• Google Drive (File Picker - drive.file scope):</strong> To allow you to select specific files from your Google Drive and to create new documents when you explicitly request it. This limited scope only provides access to files you create through our app or select via the file picker - we cannot access your other Drive files
                     </li>
                     <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Google Docs:</strong> To enable you to create and edit cost analysis documents in Google Docs format
+                      <strong className="text-primary-700 dark:text-primary-400">• Google Docs (File Creation Only):</strong> To enable you to create new cost analysis documents in Google Docs format when you request an export
                     </li>
                     <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Google Sheets:</strong> To allow you to import/export cost data in spreadsheet format for analysis
-                    </li>
-                    <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Gmail (Send & Read):</strong> To send you email notifications and reports that you configure within the app, and to search your inbox for billing emails and invoices from cloud providers to track costs
-                    </li>
-                    <li>
-                      <strong className="text-primary-700 dark:text-primary-400">• Google Calendar:</strong> To schedule cost review reminders and optimization alerts when you enable this feature
+                      <strong className="text-primary-700 dark:text-primary-400">• Google Sheets (File Creation Only):</strong> To allow you to create new spreadsheets for cost data analysis when you request an export
                     </li>
                   </ul>
                   <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-4">
