@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
     ArrowPathIcon,
     PlusIcon,
+    ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 import { GoogleConnection, googleService } from '../../../services/google.service';
 import { GoogleServiceShimmer } from '../../ui/GoogleServiceShimmer';
 import { CreateSheetModal } from '../modals/CreateSheetModal';
+import GoogleFileAttachmentService from '../../../services/googleFileAttachment.service';
 import googleSheetsLogo from '../../../assets/google-sheets-logo.webp';
 
 interface SheetViewerProps {
@@ -154,6 +156,26 @@ export const SheetViewer: React.FC<SheetViewerProps> = ({ connection, sheetId })
         }
     };
 
+    const handleChatWithAI = (sheet: GoogleSheet) => {
+        try {
+            // Convert GoogleSheet to GoogleFileAttachment format
+            const googleFile = {
+                id: sheet.id,
+                name: sheet.name,
+                mimeType: 'application/vnd.google-apps.spreadsheet',
+                webViewLink: sheet.webViewLink,
+                modifiedTime: sheet.modifiedTime,
+                createdTime: sheet.createdTime,
+                connectionId: connection._id,
+            };
+            GoogleFileAttachmentService.navigateToChatWithFile(googleFile, connection);
+        } catch (error) {
+            console.error('Failed to open chat with sheet:', error);
+            // Fallback navigation to chat
+            window.location.href = '/chat';
+        }
+    };
+
     return (
         <div className="h-full flex flex-col">
             {/* Header */}
@@ -229,12 +251,28 @@ export const SheetViewer: React.FC<SheetViewerProps> = ({ connection, sheetId })
                                 onClick={() => handleSelectSheet(sheet)}
                             >
                                 <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-semibold text-secondary-900 dark:text-white">
-                                        {sheet.name}
-                                    </h4>
-                                    <span className="text-xs text-secondary-500">
-                                        {new Date(sheet.modifiedTime).toLocaleDateString()}
-                                    </span>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-secondary-900 dark:text-white">
+                                            {sheet.name}
+                                        </h4>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleChatWithAI(sheet);
+                                            }}
+                                            className="p-1 rounded-lg glass border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:scale-110 hover:border-primary-400/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 group"
+                                            title="Chat with AI about this spreadsheet"
+                                        >
+                                            <div className="bg-gradient-primary p-0.5 rounded glow-primary group-hover:scale-110 transition-transform duration-300">
+                                                <ChatBubbleLeftRightIcon className="w-3 h-3 text-white" />
+                                            </div>
+                                        </button>
+                                        <span className="text-xs text-secondary-500">
+                                            {new Date(sheet.modifiedTime).toLocaleDateString()}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-secondary-600 dark:text-secondary-400">
                                     <span>Created: {new Date(sheet.createdTime).toLocaleDateString()}</span>

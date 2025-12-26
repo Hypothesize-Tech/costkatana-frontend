@@ -93,6 +93,7 @@ import { googleService, GoogleConnection } from "../../services/google.service";
 import AttachFilesModal from "./AttachFilesModal";
 import { MessageAttachment } from "../../types/attachment.types";
 import { FileIngestionLoader } from "./FileIngestionLoader";
+import GoogleFileAttachmentService from "../../services/googleFileAttachment.service";
 
 // Configure marked for security
 marked.setOptions({
@@ -657,6 +658,29 @@ export const ConversationalAgent: React.FC = () => {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, location.pathname, navigate]);
+
+  // Handle pre-attached Google files from URL parameters
+  useEffect(() => {
+    const googleFileAttachment = GoogleFileAttachmentService.parseFromURLParams();
+    if (googleFileAttachment) {
+      setAttachments(prev => {
+        // Check if file is already attached to prevent duplicates
+        const exists = prev.some(att =>
+          att.type === 'google' && att.googleFileId === googleFileAttachment.googleFileId
+        );
+        if (!exists) {
+          return [...prev, googleFileAttachment];
+        }
+        return prev;
+      });
+
+      // Clean URL parameters after processing
+      GoogleFileAttachmentService.cleanURLParams();
+
+      // Set a default message to encourage interaction
+      setCurrentMessage(`Please analyze and help me with the attached ${googleFileAttachment.fileType}: "${googleFileAttachment.fileName}"`);
+    }
+  }, [location.search]);
 
   const loadGitHubConnection = async () => {
     try {
@@ -3130,50 +3154,76 @@ export const ConversationalAgent: React.FC = () => {
                     {/* File Attachments Display */}
                     {message.attachments && message.attachments.length > 0 && (
                       <div className={`mt-4 flex flex-wrap gap-2 ${message.role === 'user' ? 'opacity-90' : ''}`}>
-                        {message.attachments.map((attachment, idx) => (
-                          <div
-                            key={`${attachment.fileId}-${idx}`}
-                            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-sm border transition-all hover:scale-105 ${message.role === 'user'
-                              ? 'border-white/30 bg-white/20 hover:bg-white/30'
-                              : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50'
-                              }`}
-                          >
-                            <div className={`p-1.5 rounded-lg ${message.role === 'user'
-                              ? 'bg-white/20'
-                              : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
-                              }`}>
-                              {attachment.type === 'google' ? (
-                                <DocumentIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
-                              ) : (
-                                <PaperClipIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                        {message.attachments.map((attachment, idx) => {
+                          // Get Google file metadata for enhanced display
+                          const googleMetadata = attachment.type === 'google'
+                            ? GoogleFileAttachmentService.getFileMetadata(attachment)
+                            : null;
+
+                          return (
+                            <div
+                              key={`${attachment.fileId}-${idx}`}
+                              className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm glass backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${message.role === 'user'
+                                ? 'border-white/30 bg-white/20 hover:bg-white/30 hover:shadow-white/20'
+                                : 'border-primary-200/30 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-800/20 hover:border-primary-300/50 hover:shadow-primary/20'
+                                }`}
+                            >
+                              <div className={`p-1.5 rounded-lg ${message.role === 'user'
+                                ? 'bg-white/20'
+                                : attachment.type === 'google'
+                                  ? 'bg-gradient-primary glow-primary'
+                                  : 'bg-gradient-to-br from-primary-500/20 to-primary-600/20'
+                                }`}>
+                                {attachment.type === 'google' ? (
+                                  googleMetadata?.icon ? (
+                                    <img
+                                      src={googleMetadata.icon}
+                                      alt={googleMetadata.displayType}
+                                      className="w-4 h-4 object-contain"
+                                    />
+                                  ) : (
+                                    <DocumentTextIcon className="w-4 h-4 text-white" />
+                                  )
+                                ) : (
+                                  <PaperClipIcon className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-primary-600 dark:text-primary-400'}`} />
+                                )}
+                              </div>
+                              <div className="flex flex-col min-w-0">
+                                <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+                                  {attachment.fileName}
+                                </span>
+                                {googleMetadata && (
+                                  <span className={`text-xs font-body ${message.role === 'user' ? 'text-white/70' : 'text-secondary-500 dark:text-secondary-400'}`}>
+                                    {googleMetadata.formattedSize} • {googleMetadata.lastModified}
+                                  </span>
+                                )}
+                              </div>
+                              <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
+                                ? 'bg-white/20 text-white/90'
+                                : attachment.type === 'google'
+                                  ? 'bg-gradient-primary text-white glow-primary'
+                                  : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
+                                }`}>
+                                {attachment.type === 'google' ? googleMetadata?.displayType || 'Google' : 'Uploaded'}
+                              </span>
+                              {attachment.url && (
+                                <a
+                                  href={attachment.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
+                                    ? 'hover:bg-white/30 text-white/90 hover:text-white'
+                                    : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                                    }`}
+                                  title="Open file"
+                                  aria-label="Open file"
+                                >
+                                  <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                                </a>
                               )}
                             </div>
-                            <span className={`font-display font-semibold max-w-[200px] truncate ${message.role === 'user' ? 'text-white' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
-                              {attachment.fileName}
-                            </span>
-                            <span className={`text-xs font-body px-1.5 py-0.5 rounded-lg ${message.role === 'user'
-                              ? 'bg-white/20 text-white/90'
-                              : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'
-                              }`}>
-                              {attachment.type === 'google' ? 'Google' : 'Uploaded'}
-                            </span>
-                            {attachment.url && (
-                              <a
-                                href={attachment.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`ml-1 p-1.5 rounded-lg transition-all hover:scale-110 ${message.role === 'user'
-                                  ? 'hover:bg-white/30 text-white/90 hover:text-white'
-                                  : 'hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
-                                  }`}
-                                title="Open file"
-                                aria-label="Open file"
-                              >
-                                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                              </a>
-                            )}
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
 
