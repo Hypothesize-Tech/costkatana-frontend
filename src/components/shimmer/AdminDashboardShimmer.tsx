@@ -1181,10 +1181,72 @@ export const AdminUserSpendingShimmer: React.FC = () => {
     );
 };
 
+export const AdminVectorizationShimmer: React.FC = () => {
+    return (
+        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+            <div className="p-4 sm:p-6 md:p-8 rounded-2xl border shadow-2xl backdrop-blur-xl glass border-primary-200/30">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5 md:mb-6">
+                    <div className="flex gap-2 sm:gap-3 items-center">
+                        <div className="p-1.5 sm:p-2 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl skeleton" />
+                        <div>
+                            <div className="mb-1 w-40 sm:w-48 md:w-56 h-6 sm:h-6.5 md:h-7 rounded skeleton" />
+                            <div className="w-56 sm:w-64 md:w-72 h-3 sm:h-3.5 md:h-4 rounded skeleton" />
+                        </div>
+                    </div>
+                    <div className="w-24 sm:w-28 h-7 sm:h-8 rounded-full skeleton" />
+                </div>
+
+                {/* Health Status Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="p-4 sm:p-5 md:p-6 rounded-xl border glass border-primary-200/30">
+                            <div className="flex justify-between items-center mb-3">
+                                <div className="w-32 sm:w-36 h-4 sm:h-5 rounded skeleton" />
+                                <div className="w-20 sm:w-24 h-5 sm:h-6 rounded-full skeleton" />
+                            </div>
+                            <div className="w-40 sm:w-48 h-3 sm:h-4 rounded skeleton" />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Storage Usage */}
+                <div className="p-4 sm:p-5 md:p-6 rounded-xl border glass border-primary-200/30 mb-6">
+                    <div className="w-32 sm:w-40 h-5 sm:h-6 rounded skeleton mb-4" />
+                    <div className="space-y-3">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i}>
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="w-24 sm:w-28 h-4 rounded skeleton" />
+                                    <div className="w-16 sm:w-20 h-4 rounded skeleton" />
+                                </div>
+                                <div className="w-full h-2 rounded-full skeleton" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Processing Statistics */}
+                <div className="p-4 sm:p-5 md:p-6 rounded-xl border glass border-primary-200/30">
+                    <div className="w-40 sm:w-48 h-5 sm:h-6 rounded skeleton mb-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="p-4 rounded-lg border glass border-primary-200/30">
+                                <div className="w-24 sm:w-28 h-3 sm:h-4 rounded skeleton mb-2" />
+                                <div className="w-16 sm:w-20 h-6 sm:h-7 rounded skeleton mb-1" />
+                                <div className="w-32 sm:w-36 h-3 rounded skeleton" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // Main Admin Dashboard Shimmer Component
 export const AdminDashboardShimmer: React.FC<{
     activeTab?: 'overview' | 'growth' | 'alerts' | 'models' | 'features' | 'projects' | 'activity' | 'users' |
-    'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations';
+    'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations' | 'vectorization';
 }> = ({ activeTab = 'overview' }) => {
     return (
         <div className="min-h-screen bg-gradient-light-ambient dark:bg-gradient-dark-ambient">
@@ -1206,6 +1268,7 @@ export const AdminDashboardShimmer: React.FC<{
                 {activeTab === 'geographic' && <AdminGeographicShimmer />}
                 {activeTab === 'budget' && <AdminBudgetShimmer />}
                 {activeTab === 'integrations' && <AdminIntegrationsShimmer />}
+                {activeTab === 'vectorization' && <AdminVectorizationShimmer />}
             </div>
         </div>
     );

@@ -899,6 +899,18 @@ export class AdminDashboardService {
             throw error;
         }
     }
+    /**
+     * Get vectorization dashboard data
+     */
+    static async getVectorizationDashboard(): Promise<VectorizationDashboard> {
+        try {
+            const response = await apiClient.get('/admin/dashboard/vectorization');
+            return response.data.data;
+        } catch (error: any) {
+            console.error('Error fetching vectorization dashboard:', error);
+            throw error;
+        }
+    }
 }
 
 export interface AdminUserSummary {
@@ -1217,3 +1229,55 @@ export interface IntegrationHealth {
     incidents24h: number;
 }
 
+// ============ Vectorization Dashboard Interfaces ============
+
+export interface VectorizationHealth {
+    embeddingService: 'healthy' | 'degraded' | 'error';
+    vectorIndexes: 'optimal' | 'suboptimal' | 'error';
+    storageUsage: {
+        current: string;
+        projected: string;
+        userMemories: { total: number; vectorized: number; percentage: number };
+        conversations: { total: number; vectorized: number; percentage: number };
+        messages: { total: number; vectorized: number; percentage: number };
+    };
+    lastProcessing: {
+        userMemories?: string;
+        conversations?: string;
+        messages?: string;
+    };
+    currentlyProcessing: boolean;
+}
+
+export interface VectorizationStats {
+    userMemories: {
+        total: number;
+        estimated: number;
+    };
+    conversations: {
+        total: number;
+        estimated: number;
+    };
+    messages: {
+        total: number;
+        estimated: number;
+    };
+    totalEstimated: number;
+}
+
+export interface CrossModalStats {
+    totalVectors: number;
+    avgEmbeddingDimensions: number;
+    memoryEfficiency: 'high' | 'medium' | 'building';
+}
+
+export interface VectorizationDashboard {
+    health: VectorizationHealth;
+    processingStats: VectorizationStats;
+    crossModalStats: CrossModalStats;
+    alerts: Array<{
+        level: string;
+        message: string;
+        action: string;
+    }>;
+}

@@ -25,6 +25,7 @@ import SessionReplaySettings from '../components/settings/SessionReplaySettings'
 import { AccountClosure } from '../components/settings/AccountClosure';
 import { TeamManagement } from '../components/team/TeamManagement';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useAuth } from '../hooks';
 
 type SettingsTab = 'profile' | 'api-keys' | 'notifications' | 'security' | 'session-replay' | 'team' | 'integrations' | 'account';
 
@@ -34,6 +35,7 @@ export const Settings: React.FC = () => {
   const { tab } = useParams<{ tab: SettingsTab }>();
   const navigate = useNavigate();
   const { showNotification } = useNotifications();
+  const { updateUser } = useAuth();
   const queryClient = useQueryClient();
 
   // Validate and set active tab from URL params
@@ -54,6 +56,12 @@ export const Settings: React.FC = () => {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+      onSuccess: (data) => {
+        // Sync fresh profile data to AuthContext to update sidebar and other components
+        if (data && updateUser) {
+          updateUser(data);
+        }
+      },
     }
   );
 

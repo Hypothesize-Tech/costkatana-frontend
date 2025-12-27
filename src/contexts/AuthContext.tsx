@@ -126,6 +126,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (isValid) {
             setUser(currentUser);
             setAccessToken(authService.getToken());
+
+            // Refresh user data from backend to ensure role and other fields are up-to-date
+            try {
+              const { userService } = await import('../services/user.service');
+              const freshUserData = await userService.getProfile();
+              if (freshUserData) {
+                setUser(freshUserData);
+                authService.setUser(freshUserData);
+              }
+            } catch (profileError) {
+              // Silently fail - we'll use cached user data if profile fetch fails
+              console.debug('Failed to refresh user profile on init:', profileError);
+            }
           } else {
             setUser(null);
             setAccessToken(null);
