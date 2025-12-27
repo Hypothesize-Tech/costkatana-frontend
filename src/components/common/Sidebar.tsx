@@ -267,7 +267,8 @@ const Tooltip = ({ children, title, description, show, delay = 200 }: TooltipPro
 export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) => {
   const location = useLocation();
   const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  // Normalize role to lowercase for case-insensitive comparison
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   // expanded state per category; persisted so it feels sticky
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -313,6 +314,30 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
   }, [isCollapsed, location.pathname, expanded, routeToCategory]);
 
   const toggleCat = (id: string) => setExpanded((p) => ({ ...p, [id]: !p[id] }));
+
+  // Filter categories based on admin status - compute once and reuse
+  const visibleCategories = useMemo(() => {
+    const filtered = navCategories.filter(cat => {
+      // Always show non-admin categories
+      if (cat.id !== 'admin') return true;
+      // Only show admin category if user is admin
+      return isAdmin;
+    });
+
+    // Debug: Log admin visibility (remove in production if needed)
+    if (import.meta.env.DEV || import.meta.env.MODE === 'development') {
+      const adminCat = navCategories.find(cat => cat.id === 'admin');
+      if (adminCat) {
+        console.debug('[Sidebar] Admin category visibility:', {
+          isAdmin,
+          userRole: user?.role,
+          adminCategoryIncluded: filtered.some(cat => cat.id === 'admin')
+        });
+      }
+    }
+
+    return filtered;
+  }, [isAdmin, user?.role]);
 
   const renderItem = (item: NavItem, collapsed: boolean) => {
     const isActive = location.pathname === item.href;
@@ -441,7 +466,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       )}
 
       <ul role="list" className={cn('flex flex-col flex-1 gap-y-5', collapsed ? 'pt-16' : 'pt-6')}>
-        {navCategories.filter(cat => cat.id !== 'admin' || isAdmin).map((cat, index) => (
+        {visibleCategories.map((cat, index) => (
           <li key={cat.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
             {/* Category header hidden when collapsed */}
             {!collapsed && (
@@ -475,10 +500,10 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             </ul>
 
             {/* Divider between categories */}
-            {collapsed && index < navCategories.filter(cat => cat.id !== 'admin' || isAdmin).length - 1 && (
+            {collapsed && index < visibleCategories.length - 1 && (
               <div className="mx-3 my-3 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent" />
             )}
-            {!collapsed && index < navCategories.filter(cat => cat.id !== 'admin' || isAdmin).length - 1 && (
+            {!collapsed && index < visibleCategories.length - 1 && (
               <div className="mx-1 my-2 h-px bg-gradient-to-r from-transparent via-primary-200/20 dark:via-primary-500/20 to-transparent" />
             )}
           </li>

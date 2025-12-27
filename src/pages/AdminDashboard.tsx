@@ -43,10 +43,12 @@ import {
     GlobeAltIcon as GlobeAltIconSolid,
     WalletIcon as WalletIconSolid,
     SquaresPlusIcon as SquaresPlusIconSolid,
+    SparklesIcon as SparklesIconSolid,
 } from '@heroicons/react/24/solid';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { AdminDashboardShimmer } from '../components/shimmer/AdminDashboardShimmer';
 import { useNotification } from '../contexts/NotificationContext';
+import { VectorizationDashboardComponent } from '../components/admin/VectorizationDashboard';
 import {
     AdminDashboardService,
     EngagementMetrics,
@@ -123,7 +125,7 @@ ChartJS.register(
 export const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<
         'overview' | 'growth' | 'alerts' | 'models' | 'features' | 'projects' | 'activity' | 'users' |
-        'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations'
+        'revenue' | 'api-keys' | 'endpoints' | 'geographic' | 'budget' | 'integrations' | 'vectorization'
     >('overview');
 
     const [engagementMetrics, setEngagementMetrics] = useState<EngagementMetrics | null>(null);
@@ -361,6 +363,7 @@ export const AdminDashboard: React.FC = () => {
         { id: 'geographic', name: 'Geographic', icon: GlobeAltIcon, activeIcon: GlobeAltIconSolid, description: 'Geographic usage patterns' },
         { id: 'budget', name: 'Budget', icon: WalletIcon, activeIcon: WalletIconSolid, description: 'Budget management and tracking' },
         { id: 'integrations', name: 'Integrations', icon: SquaresPlusIcon, activeIcon: SquaresPlusIconSolid, description: 'Integration analytics and health' },
+        { id: 'vectorization', name: 'Vectorization', icon: SparklesIcon, activeIcon: SparklesIconSolid, description: 'Memory vectorization health and statistics' },
     ];
 
     const handleDateRangeChange = (startDate?: string, endDate?: string) => {
@@ -432,7 +435,7 @@ export const AdminDashboard: React.FC = () => {
                             return (
                                 <button
                                     key={tab.id}
-                                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                                    onClick={() => setActiveTab(tab.id as any)}
                                     className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg text-xs sm:text-sm font-display font-semibold transition-all duration-300 whitespace-nowrap ${isActive
                                         ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg glow-primary hover:scale-105'
                                         : 'glass backdrop-blur-sm border border-primary-200/30 bg-gradient-to-br from-primary-50/30 to-transparent dark:from-primary-900/10 text-light-text-primary dark:text-dark-text-primary hover:bg-primary-500/20 dark:hover:bg-primary-900/20 hover:scale-105 hover:shadow-md'
@@ -1265,6 +1268,12 @@ export const AdminDashboard: React.FC = () => {
                                 </div>
                             </div>
                         )}
+                    </div>
+                )}
+
+                {activeTab === 'vectorization' && (
+                    <div className="glass backdrop-blur-xl border border-primary-200/30 shadow-xl bg-gradient-to-br from-white/90 to-white/80 dark:from-dark-card/90 dark:to-dark-card/80 rounded-2xl p-3 sm:p-4 md:p-6">
+                        <VectorizationDashboardComponent />
                     </div>
                 )}
             </div>

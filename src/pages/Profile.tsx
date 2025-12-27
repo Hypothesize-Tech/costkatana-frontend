@@ -66,6 +66,12 @@ export const Profile: React.FC = () => {
     () => userService.getProfile(),
     {
       enabled: !!user?.id,
+      onSuccess: (data) => {
+        // Sync fresh profile data to AuthContext to update sidebar and other components
+        if (data && updateUser) {
+          updateUser(data);
+        }
+      },
     }
   );
 
