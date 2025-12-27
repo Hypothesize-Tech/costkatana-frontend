@@ -12,6 +12,7 @@ import {
     ExclamationTriangleIcon,
     XCircleIcon,
     ClipboardDocumentListIcon,
+    CalendarIcon,
 } from '@heroicons/react/24/outline';
 import googleDriveLogo from '../assets/google-drive-logo.webp';
 import googleSheetsLogo from '../assets/google-sheets-logo.webp';
@@ -29,6 +30,18 @@ export const GoogleIntegrations: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'drive' | 'exports' | 'sheets' | 'docs'>('overview');
+    const [showExportModal, setShowExportModal] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [exportDateRange, setExportDateRange] = useState({
+        startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        endDate: new Date().toISOString().split('T')[0]
+    });
+    const [reportDateRange, setReportDateRange] = useState({
+        startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        endDate: new Date().toISOString().split('T')[0]
+    });
+    const [activeExportRange, setActiveExportRange] = useState<number>(30); // Track active range in days
+    const [activeReportRange, setActiveReportRange] = useState<number>(30);
 
     useEffect(() => {
         loadConnections();
@@ -116,12 +129,13 @@ export const GoogleIntegrations: React.FC = () => {
             setLoading(true);
             const result = await googleService.exportCostData({
                 connectionId: selectedConnection._id,
-                startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
-                endDate: new Date()
+                startDate: new Date(exportDateRange.startDate),
+                endDate: new Date(exportDateRange.endDate)
             });
 
             window.open(result.spreadsheetUrl, '_blank');
             await loadExportAudits();
+            setShowExportModal(false);
             alert('Cost data exported successfully to Google Sheets!');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to export cost data');
@@ -137,19 +151,37 @@ export const GoogleIntegrations: React.FC = () => {
             setLoading(true);
             const result = await googleService.createCostReport({
                 connectionId: selectedConnection._id,
-                startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
-                endDate: new Date(),
+                startDate: new Date(reportDateRange.startDate),
+                endDate: new Date(reportDateRange.endDate),
                 includeTopModels: true,
                 includeRecommendations: true
             });
 
             window.open(result.documentUrl, '_blank');
             await loadExportAudits();
+            setShowReportModal(false);
             alert('Cost report created successfully in Google Docs!');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create cost report');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleQuickDateRange = (days: number, isExport: boolean) => {
+        const endDate = new Date();
+        const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        const dateRange = {
+            startDate: startDate.toISOString().split('T')[0],
+            endDate: endDate.toISOString().split('T')[0]
+        };
+        
+        if (isExport) {
+            setExportDateRange(dateRange);
+            setActiveExportRange(days);
+        } else {
+            setReportDateRange(dateRange);
+            setActiveReportRange(days);
         }
     };
 
@@ -385,7 +417,7 @@ export const GoogleIntegrations: React.FC = () => {
                                                     Export cost data to Google Sheets for analysis
                                                 </p>
                                                 <button
-                                                    onClick={handleExportCostData}
+                                                    onClick={() => setShowExportModal(true)}
                                                     disabled={loading}
                                                     className="w-full px-4 py-2 bg-gradient-primary hover:shadow-lg glow-primary text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
@@ -406,7 +438,7 @@ export const GoogleIntegrations: React.FC = () => {
                                                     Generate cost report in Google Docs
                                                 </p>
                                                 <button
-                                                    onClick={handleCreateCostReport}
+                                                    onClick={() => setShowReportModal(true)}
                                                     disabled={loading}
                                                     className="w-full px-4 py-2 bg-gradient-primary hover:shadow-lg glow-primary text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
@@ -529,6 +561,336 @@ export const GoogleIntegrations: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Export to Sheets Modal */}
+            {showExportModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+                    <div className="w-full max-w-lg mx-auto glass rounded-2xl shadow-2xl border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <ChartBarIcon className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-white font-display">
+                                        Export to Google Sheets
+                                    </h2>
+                                    <p className="text-sm text-white/80 font-body">
+                                        Select date range for cost data export
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowExportModal(false)}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-white"
+                            >
+                                <XMarkIcon className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            {/* Quick Date Range Buttons */}
+                            <div>
+                                <label className="block text-sm font-semibold text-secondary-700 dark:text-secondary-300 mb-3 font-display">
+                                    Quick Select
+                                </label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => handleQuickDateRange(7, true)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeExportRange === 7
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 7 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(30, true)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeExportRange === 30
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 30 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(90, true)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeExportRange === 90
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 90 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(365, true)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeExportRange === 365
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last Year
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Custom Date Range */}
+                            <div>
+                                <label className="block text-sm font-semibold text-secondary-700 dark:text-secondary-300 mb-3 font-display">
+                                    Custom Date Range
+                                </label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs text-secondary-600 dark:text-secondary-400 mb-2 font-medium font-body">
+                                            From
+                                        </label>
+                                        <div className="relative">
+                                            <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400 pointer-events-none" />
+                                            <input
+                                                type="date"
+                                                value={exportDateRange.startDate}
+                                                onChange={(e) => {
+                                                    setExportDateRange({ ...exportDateRange, startDate: e.target.value });
+                                                    setActiveExportRange(0); // Reset active state
+                                                }}
+                                                max={exportDateRange.endDate}
+                                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-body"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-secondary-600 dark:text-secondary-400 mb-2 font-medium font-body">
+                                            To
+                                        </label>
+                                        <div className="relative">
+                                            <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400 pointer-events-none" />
+                                            <input
+                                                type="date"
+                                                value={exportDateRange.endDate}
+                                                onChange={(e) => {
+                                                    setExportDateRange({ ...exportDateRange, endDate: e.target.value });
+                                                    setActiveExportRange(0); // Reset active state
+                                                }}
+                                                min={exportDateRange.startDate}
+                                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-body"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Date Range Summary */}
+                            <div className="p-4 rounded-lg glass bg-gradient-primary/10 border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-sm">
+                                <p className="text-sm text-secondary-700 dark:text-secondary-300 font-body">
+                                    <strong className="font-display">Selected Range:</strong> {new Date(exportDateRange.startDate).toLocaleDateString()} - {new Date(exportDateRange.endDate).toLocaleDateString()}
+                                    <span className="ml-2 text-xs text-secondary-600 dark:text-secondary-400">
+                                        ({Math.ceil((new Date(exportDateRange.endDate).getTime() - new Date(exportDateRange.startDate).getTime()) / (1000 * 60 * 60 * 24))} days)
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel/50 dark:bg-gradient-dark-panel/50 backdrop-blur-xl">
+                            <button
+                                onClick={() => setShowExportModal(false)}
+                                disabled={loading}
+                                className="px-6 py-2.5 font-semibold rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white hover:bg-gradient-secondary/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-display"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleExportCostData}
+                                disabled={loading}
+                                className="px-6 py-2.5 font-semibold rounded-lg bg-gradient-primary hover:shadow-lg glow-primary text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-display"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        Exporting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <ChartBarIcon className="w-5 h-5" />
+                                        Export to Sheets
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Create Report Modal */}
+            {showReportModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+                    <div className="w-full max-w-lg mx-auto glass rounded-2xl shadow-2xl border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel overflow-hidden">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-primary-200/30 dark:border-primary-500/20 bg-gradient-primary">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <DocumentTextIcon className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-white font-display">
+                                        Create Cost Report
+                                    </h2>
+                                    <p className="text-sm text-white/80 font-body">
+                                        Select date range for Google Docs report
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowReportModal(false)}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-white"
+                            >
+                                <XMarkIcon className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-6 bg-gradient-light-panel dark:bg-gradient-dark-panel">
+                            {/* Quick Date Range Buttons */}
+                            <div>
+                                <label className="block text-sm font-semibold text-secondary-700 dark:text-secondary-300 mb-3 font-display">
+                                    Quick Select
+                                </label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => handleQuickDateRange(7, false)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeReportRange === 7
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 7 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(30, false)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeReportRange === 30
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 30 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(90, false)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeReportRange === 90
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last 90 Days
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickDateRange(365, false)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-200 font-body ${
+                                            activeReportRange === 365
+                                                ? 'border-primary-500 bg-gradient-primary text-white shadow-md'
+                                                : 'border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel hover:bg-primary-50 dark:hover:bg-primary-900/20 text-secondary-900 dark:text-white'
+                                        }`}
+                                    >
+                                        Last Year
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Custom Date Range */}
+                            <div>
+                                <label className="block text-sm font-semibold text-secondary-700 dark:text-secondary-300 mb-3 font-display">
+                                    Custom Date Range
+                                </label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs text-secondary-600 dark:text-secondary-400 mb-2 font-medium font-body">
+                                            From
+                                        </label>
+                                        <div className="relative">
+                                            <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400 pointer-events-none" />
+                                            <input
+                                                type="date"
+                                                value={reportDateRange.startDate}
+                                                onChange={(e) => {
+                                                    setReportDateRange({ ...reportDateRange, startDate: e.target.value });
+                                                    setActiveReportRange(0); // Reset active state
+                                                }}
+                                                max={reportDateRange.endDate}
+                                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-body"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-secondary-600 dark:text-secondary-400 mb-2 font-medium font-body">
+                                            To
+                                        </label>
+                                        <div className="relative">
+                                            <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400 pointer-events-none" />
+                                            <input
+                                                type="date"
+                                                value={reportDateRange.endDate}
+                                                onChange={(e) => {
+                                                    setReportDateRange({ ...reportDateRange, endDate: e.target.value });
+                                                    setActiveReportRange(0); // Reset active state
+                                                }}
+                                                min={reportDateRange.startDate}
+                                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-body"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Date Range Summary */}
+                            <div className="p-4 rounded-lg glass bg-gradient-primary/10 border border-primary-200/30 dark:border-primary-500/20 backdrop-blur-sm">
+                                <p className="text-sm text-secondary-700 dark:text-secondary-300 font-body">
+                                    <strong className="font-display">Selected Range:</strong> {new Date(reportDateRange.startDate).toLocaleDateString()} - {new Date(reportDateRange.endDate).toLocaleDateString()}
+                                    <span className="ml-2 text-xs text-secondary-600 dark:text-secondary-400">
+                                        ({Math.ceil((new Date(reportDateRange.endDate).getTime() - new Date(reportDateRange.startDate).getTime()) / (1000 * 60 * 60 * 24))} days)
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex items-center justify-end gap-3 p-6 border-t border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel/50 dark:bg-gradient-dark-panel/50 backdrop-blur-xl">
+                            <button
+                                onClick={() => setShowReportModal(false)}
+                                disabled={loading}
+                                className="px-6 py-2.5 font-semibold rounded-lg border border-primary-200/30 dark:border-primary-500/20 glass bg-gradient-light-panel dark:bg-gradient-dark-panel text-secondary-900 dark:text-white hover:bg-gradient-secondary/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-display"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleCreateCostReport}
+                                disabled={loading}
+                                className="px-6 py-2.5 font-semibold rounded-lg bg-gradient-primary hover:shadow-lg glow-primary text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-display"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        Creating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <DocumentTextIcon className="w-5 h-5" />
+                                        Create Report
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
