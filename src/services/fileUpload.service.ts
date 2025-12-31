@@ -85,6 +85,29 @@ class FileUploadService {
   }
 
   /**
+   * Get ALL user's files from all sources (uploaded, Google Drive, and documents)
+   */
+  async getAllUserFiles(conversationId?: string): Promise<any[]> {
+    const token = localStorage.getItem('access_token');
+
+    const response = await axios.get<{ success: boolean; data: any[] }>(
+      `${API_BASE_URL}/files/all`,
+      {
+        params: { conversationId },
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
+
+    if (!response.data.success) {
+      throw new Error('Failed to get all user files');
+    }
+
+    return response.data.data;
+  }
+
+  /**
    * Format file size for display
    */
   formatFileSize(bytes: number): string {
