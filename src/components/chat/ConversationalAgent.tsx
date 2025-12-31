@@ -96,6 +96,7 @@ import AttachFilesModal from "./AttachFilesModal";
 import { MessageAttachment } from "../../types/attachment.types";
 import { FileIngestionLoader } from "./FileIngestionLoader";
 import GoogleFileAttachmentService from "../../services/googleFileAttachment.service";
+import { FileLibraryPanel } from "./FileLibraryPanel";
 
 // Configure marked for security
 marked.setOptions({
@@ -230,6 +231,10 @@ export const ConversationalAgent: React.FC = () => {
   const [showSourcesModal, setShowSourcesModal] = useState(false);
   const [currentSources, setCurrentSources] = useState<ChatMessage['sources']>([]);
 
+  // File Library state
+  const [fileLibraryExpanded, setFileLibraryExpanded] = useState(false);
+  const [fileLibraryFilterMode, setFileLibraryFilterMode] = useState<'all' | 'current'>('all');
+
   // Session recording hook
   const { recordComplete, isRecording } = useSessionRecording({
     feature: 'chat',
@@ -253,6 +258,7 @@ export const ConversationalAgent: React.FC = () => {
 
   // Multi-agent features
   const [chatMode, setChatMode] = useState<'fastest' | 'cheapest' | 'balanced'>('balanced');
+
   const [useMultiAgent, setUseMultiAgent] = useState<boolean>(true);
   const [showOptimizations, setShowOptimizations] = useState<boolean>(false);
 
@@ -1215,6 +1221,10 @@ export const ConversationalAgent: React.FC = () => {
     setMessages([]);
     setCurrentConversationId(null);
     setError(null);
+    setSelectedDocuments([]);
+    setAttachments([]);
+    setAttachedLinks([]);
+    setSelectedRepo(null);
     localStorage.removeItem('currentConversationId');
   };
 
@@ -1832,11 +1842,39 @@ export const ConversationalAgent: React.FC = () => {
       }
 
       if (response.conversationId) {
+        // Set current conversation if not already set
         if (!currentConversationId) {
           setCurrentConversationId(response.conversationId);
           localStorage.setItem('currentConversationId', response.conversationId);
         }
-        await loadConversations();
+
+        // Update conversations list
+        setConversations(prevConversations => {
+          const existingConv = prevConversations.find(c => c.id === response.conversationId);
+
+          if (existingConv) {
+            // Update existing conversation and move to top
+            const updatedConv = {
+              ...existingConv,
+              messageCount: existingConv.messageCount + 2, // user message + assistant message
+              updatedAt: new Date(),
+              totalCost: (existingConv.totalCost || 0) + (response.cost || 0),
+            };
+            const otherConvs = prevConversations.filter(c => c.id !== response.conversationId);
+            return [updatedConv, ...otherConvs];
+          } else {
+            // Add new conversation to the top
+            const newConversation: Conversation = {
+              id: response.conversationId,
+              title: messageContent.slice(0, 50) + (messageContent.length > 50 ? '...' : ''),
+              modelId: selectedModel.id,
+              messageCount: 2, // user message + assistant message
+              updatedAt: new Date(),
+              totalCost: response.cost || 0,
+            };
+            return [newConversation, ...prevConversations];
+          }
+        });
       }
     } catch (error: any) {
       console.error("Error sending message:", error);
@@ -2732,26 +2770,37 @@ export const ConversationalAgent: React.FC = () => {
             </div>
 
             {/* Conversations List - Mobile */}
-            <div className="flex-1 overflow-y-auto p-1.5">
-              {conversationsLoading ? (
-                <ConversationsShimmer count={5} collapsed={false} />
-              ) : (
-                <CategorizedConversations
-                  conversations={conversations}
-                  currentConversationId={currentConversationId}
-                  onSelectConversation={(id) => {
-                    loadConversationHistory(id);
-                    setShowConversations(false);
-                  }}
-                  onConversationsUpdate={loadConversations}
-                  onConversationUpdate={updateConversationLocally}
-                  onDeleteRequest={handleDeleteRequest}
-                  collapsed={false}
-                  hasMore={conversationsHasMore}
-                  isLoadingMore={conversationsLoadingMore}
-                  onLoadMore={loadMoreConversations}
-                />
-              )}
+            <div className="flex-1 overflow-y-auto p-1.5 flex flex-col min-h-0">
+              <div className="flex-1">
+                {conversationsLoading ? (
+                  <ConversationsShimmer count={5} collapsed={false} />
+                ) : (
+                  <CategorizedConversations
+                    conversations={conversations}
+                    currentConversationId={currentConversationId}
+                    onSelectConversation={(id) => {
+                      loadConversationHistory(id);
+                      setShowConversations(false);
+                    }}
+                    onConversationsUpdate={loadConversations}
+                    onConversationUpdate={updateConversationLocally}
+                    onDeleteRequest={handleDeleteRequest}
+                    collapsed={false}
+                    hasMore={conversationsHasMore}
+                    isLoadingMore={conversationsLoadingMore}
+                    onLoadMore={loadMoreConversations}
+                  />
+                )}
+              </div>
+
+              {/* File Library Panel - Mobile */}
+              <FileLibraryPanel
+                isExpanded={fileLibraryExpanded}
+                onToggleExpanded={() => setFileLibraryExpanded(!fileLibraryExpanded)}
+                currentConversationId={currentConversationId || undefined}
+                filterMode={fileLibraryFilterMode}
+                onFilterModeChange={setFileLibraryFilterMode}
+              />
             </div>
           </div>
         </>
@@ -2807,18 +2856,29 @@ export const ConversationalAgent: React.FC = () => {
           conversationsLoading ? (
             <ConversationsShimmer count={5} collapsed={false} />
           ) : (
-            <CategorizedConversations
-              conversations={conversations}
-              currentConversationId={currentConversationId}
-              onSelectConversation={loadConversationHistory}
-              onConversationsUpdate={loadConversations}
-              onConversationUpdate={updateConversationLocally}
-              onDeleteRequest={handleDeleteRequest}
-              collapsed={false}
-              hasMore={conversationsHasMore}
-              isLoadingMore={conversationsLoadingMore}
-              onLoadMore={loadMoreConversations}
-            />
+            <div className="flex-1 flex flex-col min-h-0">
+              <CategorizedConversations
+                conversations={conversations}
+                currentConversationId={currentConversationId}
+                onSelectConversation={loadConversationHistory}
+                onConversationsUpdate={loadConversations}
+                onConversationUpdate={updateConversationLocally}
+                onDeleteRequest={handleDeleteRequest}
+                collapsed={false}
+                hasMore={conversationsHasMore}
+                isLoadingMore={conversationsLoadingMore}
+                onLoadMore={loadMoreConversations}
+              />
+
+              {/* File Library Panel */}
+              <FileLibraryPanel
+                isExpanded={fileLibraryExpanded}
+                onToggleExpanded={() => setFileLibraryExpanded(!fileLibraryExpanded)}
+                currentConversationId={currentConversationId || undefined}
+                filterMode={fileLibraryFilterMode}
+                onFilterModeChange={setFileLibraryFilterMode}
+              />
+            </div>
           )
         ) : (
           // Collapsed state - show conversation count indicator or shimmer
