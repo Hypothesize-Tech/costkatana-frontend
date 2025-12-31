@@ -25,6 +25,7 @@ import {
   CubeIcon,
   PuzzlePieceIcon,
   MagnifyingGlassIcon,
+  GlobeAltIcon,
   FolderIcon,
   FolderOpenIcon,
   ServerIcon,
@@ -48,6 +49,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChatService } from "@/services/chat.service";
 import { FeedbackButton } from "../feedback/FeedbackButton";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 import { feedbackService } from "../../services/feedback.service";
 import { marked } from "marked";
 import { apiClient } from "@/config/api";
@@ -62,7 +64,6 @@ import GitHubConnector from "./GitHubConnector";
 import FeatureSelector from "./FeatureSelector";
 import PRStatusPanel from "./PRStatusPanel";
 import { CategorizedConversations } from "./CategorizedConversations";
-import { ConfirmationDialog } from "./ConfirmationDialog";
 import githubService, { GitHubRepository } from "../../services/github.service";
 import {
   Send,
@@ -286,6 +287,19 @@ export const ConversationalAgent: React.FC = () => {
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'drive' | 'sheets' | 'docs'>('quick');
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
+
+  // Confirmation dialog state for app disconnections
+  const [appDisconnectDialog, setAppDisconnectDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { }
+  });
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
 
   // Conversation deletion state
@@ -3573,7 +3587,7 @@ export const ConversationalAgent: React.FC = () => {
               </div>
             )}
 
-            {/* Compact Integration Mention Hint - Above Input */}
+            {/* Compact Integration Mention Hint */}
             {messages.length > 0 && (
               <IntegrationMentionHint variant="compact" />
             )}
@@ -3709,7 +3723,7 @@ export const ConversationalAgent: React.FC = () => {
                               }}
                               className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors ${webSearchEnabled ? 'bg-primary-500/10 dark:bg-primary-500/20' : ''}`}
                             >
-                              <MagnifyingGlassIcon className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
+                              <GlobeAltIcon className={`w-4 h-4 ${webSearchEnabled ? 'text-primary-600 dark:text-primary-400' : 'text-secondary-600 dark:text-secondary-400'}`} />
                               <span className="text-sm font-medium text-secondary-900 dark:text-white">Web Search</span>
                               {webSearchEnabled && (
                                 <Check className="w-4 h-4 ml-auto text-primary-600 dark:text-primary-400" />
@@ -3736,57 +3750,169 @@ export const ConversationalAgent: React.FC = () => {
                               <div className="absolute left-full top-0 ml-2 w-56 glass rounded-lg border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-[100] animate-fade-in">
                                 <div className="p-2">
                                   {/* GitHub */}
-                                  <button
-                                    onClick={async () => {
-                                      setShowAttachmentsPopover(false);
-                                      setShowAppsSubmenu(false);
-                                      setGitHubConnectorMode('chat');
-                                      setShowGitHubConnector(true);
-                                      setTimeout(() => loadGitHubConnection(), 500);
-                                    }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 mb-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
-                                  >
-                                    {githubConnection?.hasConnection && githubConnection?.avatarUrl ? (
-                                      <>
-                                        <img
-                                          src={githubConnection.avatarUrl}
-                                          alt={githubConnection.username || 'GitHub'}
-                                          className="w-4 h-4 rounded-full"
-                                        />
-                                        <span className="text-sm font-medium text-secondary-900 dark:text-white">GitHub</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                                        </svg>
-                                        <span className="text-sm font-medium text-secondary-900 dark:text-white">GitHub</span>
-                                      </>
-                                    )}
-                                  </button>
+                                  <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      {githubConnection?.hasConnection && githubConnection?.avatarUrl ? (
+                                        <>
+                                          <img
+                                            src={githubConnection.avatarUrl}
+                                            alt={githubConnection.username || 'GitHub'}
+                                            className="w-4 h-4 rounded-full"
+                                          />
+                                          <span className="text-sm font-medium text-secondary-900 dark:text-white">GitHub</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <svg className="w-4 h-4 text-secondary-600 dark:text-secondary-400" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                          </svg>
+                                          <span className="text-sm font-medium text-secondary-900 dark:text-white">GitHub</span>
+                                        </>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {githubConnection?.hasConnection ? (
+                                        <>
+                                          <button
+                                            onClick={async () => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              setGitHubConnectorMode('chat');
+                                              setShowGitHubConnector(true);
+                                              setTimeout(() => loadGitHubConnection(), 500);
+                                            }}
+                                            className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                            title="Connected - Click to view"
+                                          >
+                                            <EyeIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              setAppDisconnectDialog({
+                                                isOpen: true,
+                                                title: 'Disconnect GitHub',
+                                                message: 'Are you sure you want to disconnect GitHub? This will remove all your GitHub connections and integrations. This action cannot be undone.',
+                                                onConfirm: async () => {
+                                                  try {
+                                                    const connections = await githubService.listConnections();
+                                                    for (const conn of connections) {
+                                                      if (conn.isActive) {
+                                                        await githubService.disconnectConnection(conn._id);
+                                                      }
+                                                    }
+                                                    await loadGitHubConnection();
+                                                    setMessages(prev => [...prev, {
+                                                      id: Date.now().toString(),
+                                                      role: 'assistant',
+                                                      content: '✅ GitHub has been disconnected successfully.',
+                                                      timestamp: new Date()
+                                                    }]);
+                                                  } catch (error) {
+                                                    console.error('Failed to disconnect GitHub:', error);
+                                                    setError('Failed to disconnect GitHub. Please try again.');
+                                                  }
+                                                }
+                                              });
+                                            }}
+                                            className="p-1 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded transition-colors"
+                                            title="Disconnect GitHub"
+                                          >
+                                            <XMarkIcon className="w-3.5 h-3.5 text-danger-600 dark:text-danger-400" />
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <button
+                                          onClick={async () => {
+                                            setShowAttachmentsPopover(false);
+                                            setShowAppsSubmenu(false);
+                                            setGitHubConnectorMode('chat');
+                                            setShowGitHubConnector(true);
+                                            setTimeout(() => loadGitHubConnection(), 500);
+                                          }}
+                                          className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                          title="Connect GitHub"
+                                        >
+                                          <PlusIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
 
                                   {/* Google */}
-                                  <button
-                                    onClick={() => {
-                                      setShowAttachmentsPopover(false);
-                                      setShowAppsSubmenu(false);
-                                      if (googleConnection.hasConnection) {
-                                        setShowGooglePanel(true);
-                                        setGooglePanelTab('quick');
-                                      } else {
-                                        navigate('/integrations');
-                                      }
-                                    }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded-lg transition-colors"
-                                  >
-                                    <svg className="w-4 h-4 integration-icon" viewBox="0 0 24 24" fill="currentColor">
-                                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                                    </svg>
-                                    <span className="text-sm font-medium text-secondary-900 dark:text-white">Google</span>
-                                  </button>
+                                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <svg className="w-4 h-4 integration-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                                      </svg>
+                                      <span className="text-sm font-medium text-secondary-900 dark:text-white">Google</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {googleConnection?.hasConnection ? (
+                                        <>
+                                          <button
+                                            onClick={() => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              setShowGooglePanel(true);
+                                              setGooglePanelTab('quick');
+                                            }}
+                                            className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                            title="Connected - Click to view"
+                                          >
+                                            <EyeIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              setAppDisconnectDialog({
+                                                isOpen: true,
+                                                title: 'Disconnect Google',
+                                                message: 'Are you sure you want to disconnect Google? This will remove your Google connection and access to Google services. This action cannot be undone.',
+                                                onConfirm: async () => {
+                                                  try {
+                                                    await googleService.disconnectConnection(googleConnection.connection?._id || '');
+                                                    // Reload Google connection state
+                                                    // You'll need to implement loadGoogleConnection similar to loadGitHubConnection
+                                                    setMessages(prev => [...prev, {
+                                                      id: Date.now().toString(),
+                                                      role: 'assistant',
+                                                      content: '✅ Google has been disconnected successfully.',
+                                                      timestamp: new Date()
+                                                    }]);
+                                                  } catch (error) {
+                                                    console.error('Failed to disconnect Google:', error);
+                                                    setError('Failed to disconnect Google. Please try again.');
+                                                  }
+                                                }
+                                              });
+                                            }}
+                                            className="p-1 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded transition-colors"
+                                            title="Disconnect Google"
+                                          >
+                                            <XMarkIcon className="w-3.5 h-3.5 text-danger-600 dark:text-danger-400" />
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setShowAttachmentsPopover(false);
+                                            setShowAppsSubmenu(false);
+                                            navigate('/integrations');
+                                          }}
+                                          className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                          title="Connect Google"
+                                        >
+                                          <PlusIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -3844,40 +3970,6 @@ export const ConversationalAgent: React.FC = () => {
                             </button>
                           </div>
 
-                          {/* Disconnect GitHub */}
-                          {githubConnection.hasConnection && (
-                            <div className="pt-2 border-t border-primary-200/30 dark:border-primary-500/20">
-                              <button
-                                onClick={async () => {
-                                  setShowAttachmentsPopover(false);
-                                  if (window.confirm('Are you sure you want to disconnect GitHub? This will remove all your GitHub connections.')) {
-                                    try {
-                                      const connections = await githubService.listConnections();
-                                      for (const conn of connections) {
-                                        if (conn.isActive) {
-                                          await githubService.disconnectConnection(conn._id);
-                                        }
-                                      }
-                                      await loadGitHubConnection();
-                                      setMessages(prev => [...prev, {
-                                        id: Date.now().toString(),
-                                        role: 'assistant',
-                                        content: '✅ GitHub has been disconnected successfully.',
-                                        timestamp: new Date()
-                                      }]);
-                                    } catch (error) {
-                                      console.error('Failed to disconnect GitHub:', error);
-                                      setError('Failed to disconnect GitHub. Please try again.');
-                                    }
-                                  }
-                                }}
-                                className="w-full flex items-center gap-2 px-3 py-2 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded-lg transition-colors text-danger-600 dark:text-danger-400"
-                              >
-                                <XMarkIcon className="w-4 h-4" />
-                                <span className="text-sm font-medium">Disconnect GitHub</span>
-                              </button>
-                            </div>
-                          )}
                         </div>
                       </div>
                     </>
@@ -3895,12 +3987,12 @@ export const ConversationalAgent: React.FC = () => {
                         ? `Ask me about ${selectedDocuments.map(d => d.fileName).join(', ')}...`
                         : "Ask me anything about your AI costs, projects, or optimizations..."
                     }
-                    className="w-full px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-5 lg:pt-6 pb-1.5 sm:pb-2 pr-8 sm:pr-10 md:pr-12 lg:pr-14 resize-none min-h-[44px] sm:min-h-[48px] md:min-h-[52px] lg:min-h-[56px] max-h-28 sm:max-h-32 md:max-h-36 lg:max-h-40 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none relative z-10"
-                    rows={1}
+                    className="w-full px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 md:pt-5 lg:pt-6 pb-1.5 sm:pb-2 pr-8 sm:pr-10 md:pr-12 lg:pr-14 resize-none min-h-[88px] sm:min-h-[96px] md:min-h-[104px] lg:min-h-[112px] max-h-56 sm:max-h-64 md:max-h-72 lg:max-h-80 overflow-y-auto bg-transparent border-none outline-none text-secondary-900 dark:text-white placeholder:text-secondary-400 dark:placeholder:text-secondary-500 font-body text-sm leading-relaxed focus:ring-0 focus:outline-none relative z-10"
+                    rows={2}
                     style={{
                       scrollbarWidth: 'thin',
                       scrollbarColor: 'rgba(156, 163, 175, 0.5) transparent',
-                      height: '56px'
+                      height: '112px'
                     }}
                   />
 
@@ -3918,7 +4010,29 @@ export const ConversationalAgent: React.FC = () => {
                   />
                 </div>
 
-                {/* Model Selector - Next to Send Button */}
+                {/* Web Search Enabled Indicator - Left of Model Selector */}
+                {webSearchEnabled && (
+                  <button
+                    onClick={() => setWebSearchEnabled(false)}
+                    className="h-8 sm:h-9 md:h-9 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 md:px-4 rounded-full glass backdrop-blur-xl border border-primary-200/30 dark:border-primary-500/20 bg-gradient-to-r from-primary-50/80 to-primary-100/60 dark:from-primary-900/30 dark:to-primary-800/20 hover:from-primary-100/90 hover:to-primary-200/70 dark:hover:from-primary-800/40 dark:hover:to-primary-700/30 transition-all duration-200 shrink-0 animate-fade-in group relative shadow-sm hover:shadow-md"
+                    title="Web Search Enabled - Click to disable"
+                  >
+                    {/* Icon container - maintains position */}
+                    <div className="relative w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0">
+                      {/* Default: Globe */}
+                      <GlobeAltIcon className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 group-hover:opacity-0 transition-opacity duration-200" />
+
+                      {/* Hover: X icon in same position */}
+                      <XMarkIcon className="absolute inset-0 w-full h-full text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    </div>
+
+                    <span className="text-xs sm:text-sm font-display font-semibold text-primary-700 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors whitespace-nowrap">
+                      Search
+                    </span>
+                  </button>
+                )}
+
+                {/* Model Selector */}
                 <div className="relative">
                   <button
                     onClick={() => setShowModelDropdown(!showModelDropdown)}
@@ -4537,6 +4651,18 @@ export const ConversationalAgent: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* App Disconnect Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={appDisconnectDialog.isOpen}
+        title={appDisconnectDialog.title}
+        message={appDisconnectDialog.message}
+        confirmLabel="Disconnect"
+        cancelLabel="Cancel"
+        danger={true}
+        onConfirm={appDisconnectDialog.onConfirm}
+        onCancel={() => setAppDisconnectDialog(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };
