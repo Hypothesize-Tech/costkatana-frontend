@@ -91,6 +91,7 @@ import { SuggestionsShimmer } from "../shimmer/SuggestionsShimmer";
 import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
 import { GoogleServicePanel } from "./GoogleServicePanel";
+import { VercelServicePanel } from "./VercelServicePanel";
 import { googleService, GoogleConnection } from "../../services/google.service";
 import vercelService from "../../services/vercel.service";
 import VercelConnector from "../integrations/VercelConnector";
@@ -294,6 +295,7 @@ export const ConversationalAgent: React.FC = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<boolean>(false);
   const [showGooglePanel, setShowGooglePanel] = useState(false);
   const [googlePanelTab, setGooglePanelTab] = useState<'quick' | 'drive' | 'sheets' | 'docs'>('quick');
+  const [showVercelPanel, setShowVercelPanel] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
 
   // Confirmation dialog state for app disconnections
@@ -4023,10 +4025,11 @@ export const ConversationalAgent: React.FC = () => {
                                       {vercelConnection?.hasConnection ? (
                                         <>
                                           <button
-                                            onClick={() => {
+                                            onClick={async () => {
                                               setShowAttachmentsPopover(false);
                                               setShowAppsSubmenu(false);
-                                              navigate('/integrations');
+                                              setShowVercelPanel(true);
+                                              setTimeout(() => loadVercelConnection(), 500);
                                             }}
                                             className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
                                             title="Connected - Click to view"
@@ -4712,6 +4715,12 @@ export const ConversationalAgent: React.FC = () => {
         isOpen={showGooglePanel}
         onClose={() => setShowGooglePanel(false)}
         defaultTab={googlePanelTab}
+      />
+
+      {/* Vercel Service Panel */}
+      <VercelServicePanel
+        isOpen={showVercelPanel}
+        onClose={() => setShowVercelPanel(false)}
       />
 
       {/* Delete Conversation Confirmation Modal */}
