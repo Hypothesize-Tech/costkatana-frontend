@@ -175,6 +175,32 @@ class ThreatDetectionService {
       };
     }
 
+    // WHITELIST: Allow integration mentions (@vercel, @github, @google, etc.)
+    // These are legitimate commands and should never be blocked
+    const integrationMentionPatterns = [
+      /@vercel/i,
+      /@github/i,
+      /@google/i,
+      /@jira/i,
+      /@linear/i,
+      /@slack/i,
+      /@discord/i,
+      /@drive/i,
+      /@sheets/i,
+      /@docs/i,
+      /@webhook/i
+    ];
+
+    // If content contains integration mentions, skip threat detection
+    for (const pattern of integrationMentionPatterns) {
+      if (pattern.test(content)) {
+        return {
+          isBlocked: false,
+          reason: 'Integration mention detected - whitelisted',
+          confidence: 0.0
+        };
+      }
+    }
 
     // Check each threat category
     const checks = [

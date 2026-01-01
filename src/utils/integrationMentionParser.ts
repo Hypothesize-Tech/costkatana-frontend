@@ -35,6 +35,7 @@ export const VALID_INTEGRATIONS = [
   'slack',
   'discord',
   'github',
+  'vercel',
   'google',
   'drive',
   'sheets',
