@@ -137,6 +137,60 @@ const PrivacyPolicy: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Vercel OAuth Data Usage Section */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-secondary-500/10 via-secondary-50/50 to-primary-500/10 dark:from-secondary-500/10 dark:via-secondary-900/30 dark:to-primary-500/10 border border-secondary-400/30 dark:border-secondary-500/30 rounded-lg p-6 mt-6">
+                {/* Subtle glow effect */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-500/5 dark:bg-secondary-500/5 rounded-full blur-2xl" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary-500/5 dark:bg-primary-500/5 rounded-full blur-2xl" />
+
+                <div className="relative z-10">
+                  <h3 className="text-lg font-display font-semibold gradient-text-primary mb-3 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-secondary-600 dark:text-secondary-400" viewBox="0 0 76 65" fill="currentColor">
+                      <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+                    </svg>
+                    <span>Vercel Integration Data Usage</span>
+                  </h3>
+                  <p className="text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed">
+                    When you connect your Vercel account to {APP_NAME}, we access your Vercel data <strong className="text-secondary-900 dark:text-white">solely to provide you with deployment management and DevOps optimization features</strong>. We do not use your Vercel data for any other purposes including:
+                  </p>
+                  <ul className="list-disc list-inside text-secondary-600 dark:text-secondary-300 space-y-2 mb-4">
+                    <li><strong className="text-secondary-700 dark:text-secondary-400">NO advertising or marketing:</strong> We do not use your Vercel data to serve advertisements or create marketing profiles</li>
+                    <li><strong className="text-secondary-700 dark:text-secondary-400">NO third-party sharing:</strong> We do not sell, rent, or share your Vercel data with third parties for their purposes</li>
+                    <li><strong className="text-secondary-700 dark:text-secondary-400">NO unrelated services:</strong> We do not use your Vercel data for services unrelated to the core functionality you've authorized</li>
+                    <li><strong className="text-secondary-700 dark:text-secondary-400">NO code access:</strong> We do not access, read, or store your source code - only deployment metadata and project information</li>
+                  </ul>
+                  <p className="text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed">
+                    <strong className="text-secondary-900 dark:text-white">Specific Vercel Permissions and Their Purpose:</strong>
+                  </p>
+                  <ul className="list-none text-secondary-600 dark:text-secondary-300 space-y-3">
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• User & Team (Read):</strong> To authenticate your identity and identify your Vercel team/organization
+                    </li>
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• Projects (Read):</strong> To list and display your Vercel projects for deployment management and cost analysis
+                    </li>
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• Deployments (Read/Write):</strong> To view deployment status, trigger new deployments, rollback, and promote deployments when you explicitly request it
+                    </li>
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• Domains (Read/Write):</strong> To view and manage custom domains associated with your projects when you request domain operations
+                    </li>
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• Environment Variables (Read/Write):</strong> To view and manage environment variables for your projects - values are encrypted and never logged
+                    </li>
+                    <li>
+                      <strong className="text-secondary-700 dark:text-secondary-400">• Webhooks:</strong> To receive real-time notifications about deployment events for status updates in your dashboard
+                    </li>
+                  </ul>
+                  <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-4">
+                    You can revoke our access to your Vercel data at any time through your{" "}
+                    <a href="https://vercel.com/account/integrations" target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300 underline transition-colors">
+                      Vercel Account Integrations
+                    </a>.
+                  </p>
+                </div>
+              </div>
             </section>
 
             <section className="mb-8">
