@@ -92,6 +92,8 @@ import { ConversationsShimmer } from "../shimmer/ConversationsShimmer";
 import { MessageShimmer } from "../shimmer/MessageShimmer";
 import { GoogleServicePanel } from "./GoogleServicePanel";
 import { googleService, GoogleConnection } from "../../services/google.service";
+import vercelService from "../../services/vercel.service";
+import VercelConnector from "../integrations/VercelConnector";
 import AttachFilesModal from "./AttachFilesModal";
 import { MessageAttachment } from "../../types/attachment.types";
 import { FileIngestionLoader } from "./FileIngestionLoader";
@@ -307,6 +309,8 @@ export const ConversationalAgent: React.FC = () => {
     onConfirm: () => { }
   });
   const [googleConnection, setGoogleConnection] = useState<{ hasConnection: boolean; connection?: GoogleConnection }>({ hasConnection: false });
+  const [vercelConnection, setVercelConnection] = useState<{ hasConnection: boolean; username?: string; avatarUrl?: string }>({ hasConnection: false });
+  const [showVercelConnector, setShowVercelConnector] = useState(false);
 
   // Conversation deletion state
   const [deleteConfirmConversationId, setDeleteConfirmConversationId] = useState<string | null>(null);
@@ -662,6 +666,7 @@ export const ConversationalAgent: React.FC = () => {
     loadConversations();
     loadDataDrivenSuggestions();
     loadGitHubConnection();
+    loadVercelConnection();
     loadGoogleConnection();
 
     // Restore last conversation from localStorage
@@ -730,6 +735,24 @@ export const ConversationalAgent: React.FC = () => {
       console.error('Failed to load GitHub connections:', error);
       setGithubConnection({ hasConnection: false });
       setHasExistingIntegrations(false);
+    }
+  };
+
+  const loadVercelConnection = async () => {
+    try {
+      const connections = await vercelService.listConnections();
+      if (connections.length > 0 && connections[0].isActive) {
+        setVercelConnection({
+          hasConnection: true,
+          username: connections[0].vercelUsername,
+          avatarUrl: connections[0].avatarUrl
+        });
+      } else {
+        setVercelConnection({ hasConnection: false });
+      }
+    } catch (error) {
+      console.error('Failed to load Vercel connections:', error);
+      setVercelConnection({ hasConnection: false });
     }
   };
 
@@ -1611,6 +1634,7 @@ export const ConversationalAgent: React.FC = () => {
 
           setMessages((prev) => [...prev, demoMessage]);
           setIsLoading(false);
+          setLoadingMessageId(null);
           setLoadingMessageId(null);
         }, 1500);
         return;
@@ -3973,6 +3997,93 @@ export const ConversationalAgent: React.FC = () => {
                                       )}
                                     </div>
                                   </div>
+
+                                  {/* Vercel */}
+                                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      {vercelConnection?.hasConnection && vercelConnection?.avatarUrl ? (
+                                        <>
+                                          <img
+                                            src={vercelConnection.avatarUrl}
+                                            alt={vercelConnection.username || 'Vercel'}
+                                            className="w-4 h-4 rounded-full"
+                                          />
+                                          <span className="text-sm font-medium text-secondary-900 dark:text-white">Vercel</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <svg className="w-4 h-4 text-secondary-600 dark:text-secondary-400" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2L2 19.5h20L12 2z" />
+                                          </svg>
+                                          <span className="text-sm font-medium text-secondary-900 dark:text-white">Vercel</span>
+                                        </>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {vercelConnection?.hasConnection ? (
+                                        <>
+                                          <button
+                                            onClick={() => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              navigate('/integrations');
+                                            }}
+                                            className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                            title="Connected - Click to view"
+                                          >
+                                            <EyeIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setShowAttachmentsPopover(false);
+                                              setShowAppsSubmenu(false);
+                                              setAppDisconnectDialog({
+                                                isOpen: true,
+                                                title: 'Disconnect Vercel',
+                                                message: 'Are you sure you want to disconnect Vercel? This will remove your Vercel connection. This action cannot be undone.',
+                                                onConfirm: async () => {
+                                                  try {
+                                                    const connections = await vercelService.listConnections();
+                                                    for (const conn of connections) {
+                                                      if (conn.isActive) {
+                                                        await vercelService.disconnectConnection(conn._id);
+                                                      }
+                                                    }
+                                                    await loadVercelConnection();
+                                                    setMessages(prev => [...prev, {
+                                                      id: Date.now().toString(),
+                                                      role: 'assistant',
+                                                      content: '✅ Vercel has been disconnected successfully.',
+                                                      timestamp: new Date()
+                                                    }]);
+                                                  } catch (error) {
+                                                    console.error('Failed to disconnect Vercel:', error);
+                                                    setError('Failed to disconnect Vercel. Please try again.');
+                                                  }
+                                                }
+                                              });
+                                            }}
+                                            className="p-1 hover:bg-danger-500/10 dark:hover:bg-danger-500/20 rounded transition-colors"
+                                            title="Disconnect Vercel"
+                                          >
+                                            <XMarkIcon className="w-3.5 h-3.5 text-danger-600 dark:text-danger-400" />
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setShowAttachmentsPopover(false);
+                                            setShowAppsSubmenu(false);
+                                            setShowVercelConnector(true);
+                                          }}
+                                          className="p-1 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rounded transition-colors"
+                                          title="Connect Vercel"
+                                        >
+                                          <PlusIcon className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -4510,6 +4621,26 @@ export const ConversationalAgent: React.FC = () => {
           }}
           repositoryName={selectedRepo.repo.name}
           detectedLanguage={selectedRepo.repo.language}
+        />
+      )}
+
+      {/* Vercel Connector Modal */}
+      {showVercelConnector && (
+        <VercelConnector
+          onConnect={async (_connectionId) => {
+            setShowVercelConnector(false);
+            await loadVercelConnection();
+            setMessages(prev => [...prev, {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: '✅ Vercel has been connected successfully! You can now deploy and manage your projects.',
+              timestamp: new Date()
+            }]);
+          }}
+          onClose={async () => {
+            setShowVercelConnector(false);
+            await loadVercelConnection();
+          }}
         />
       )}
 

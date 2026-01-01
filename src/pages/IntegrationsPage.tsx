@@ -21,13 +21,15 @@ import {
 } from '@heroicons/react/24/solid';
 import GitHubConnector from '../components/chat/GitHubConnector';
 import GoogleConnector from '../components/chat/GoogleConnector';
+import VercelConnector from '../components/integrations/VercelConnector';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
 import googleService, { GoogleConnection } from '../services/google.service';
+import vercelService, { VercelConnection } from '../services/vercel.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
 import jiraIcon from '../assets/jira.png';
 
-type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | null;
+type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | 'vercel' | null;
 type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
 
 export const IntegrationsPage: React.FC = () => {
@@ -41,6 +43,7 @@ export const IntegrationsPage: React.FC = () => {
     const [githubConnections, setGithubConnections] = useState<GitHubConnection[]>([]);
     const [githubIntegrations, setGithubIntegrations] = useState<Array<{ _id: string; repositoryName: string; status: string }>>([]);
     const [googleConnections, setGoogleConnections] = useState<GoogleConnection[]>([]);
+    const [vercelConnections, setVercelConnections] = useState<VercelConnection[]>([]);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const { data: integrationsData, isLoading, error, refetch } = useQuery(
@@ -59,14 +62,16 @@ export const IntegrationsPage: React.FC = () => {
     // Function to load integration data
     const loadIntegrationData = async () => {
         try {
-            const [githubConn, gitIntegrations, googleConn] = await Promise.all([
+            const [githubConn, gitIntegrations, googleConn, vercelConn] = await Promise.all([
                 githubService.listConnections(),
                 githubService.listIntegrations(),
-                googleService.listConnections().catch(() => [])
+                googleService.listConnections().catch(() => []),
+                vercelService.listConnections().catch(() => [])
             ]);
             setGithubConnections(githubConn);
             setGithubIntegrations(gitIntegrations);
             setGoogleConnections(googleConn);
+            setVercelConnections(vercelConn);
         } catch (error) {
             console.error('Failed to load integration data:', error);
         }
@@ -80,6 +85,7 @@ export const IntegrationsPage: React.FC = () => {
     // Handle OAuth callback redirects
     useEffect(() => {
         const googleConnected = searchParams.get('googleConnected');
+        const vercelConnected = searchParams.get('vercelConnected');
         const message = searchParams.get('message');
 
         if (googleConnected === 'true') {
@@ -96,6 +102,29 @@ export const IntegrationsPage: React.FC = () => {
             // Clear query parameters
             const newSearchParams = new URLSearchParams(searchParams);
             newSearchParams.delete('googleConnected');
+            newSearchParams.delete('message');
+            setSearchParams(newSearchParams, { replace: true });
+
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 5000);
+        }
+
+        if (vercelConnected === 'true') {
+            // Reload Vercel connections
+            loadIntegrationData();
+
+            // Show success message
+            if (message) {
+                setSuccessMessage(decodeURIComponent(message));
+            } else {
+                setSuccessMessage('Vercel account connected successfully!');
+            }
+
+            // Clear query parameters
+            const newSearchParams = new URLSearchParams(searchParams);
+            newSearchParams.delete('vercelConnected');
             newSearchParams.delete('message');
             setSearchParams(newSearchParams, { replace: true });
 
@@ -172,6 +201,9 @@ export const IntegrationsPage: React.FC = () => {
         if (type === 'google') {
             return googleConnections.some(conn => conn.isActive);
         }
+        if (type === 'vercel') {
+            return vercelConnections.some(conn => conn.isActive);
+        }
 
         // For other integrations, check if there's an active integration
         return integrations.some(integ => {
@@ -192,6 +224,18 @@ export const IntegrationsPage: React.FC = () => {
             }
             return false;
         });
+    };
+
+    // Handle Vercel disconnect
+    const handleDisconnectVercel = async (connectionId: string) => {
+        if (window.confirm('Are you sure you want to disconnect Vercel? This will remove your Vercel connection.')) {
+            try {
+                await vercelService.disconnectConnection(connectionId);
+                loadIntegrationData();
+            } catch (error) {
+                console.error('Failed to disconnect Vercel:', error);
+            }
+        }
     };
 
 
@@ -220,6 +264,17 @@ export const IntegrationsPage: React.FC = () => {
                 </svg>
             ),
             color: '#4285F4',
+        },
+        {
+            type: 'vercel' as const,
+            name: 'Vercel',
+            description: 'Deploy and manage your Vercel projects, domains, and environment variables',
+            icon: (
+                <svg className="integration-icon" viewBox="0 0 24 24">
+                    <path d="M12 2L2 19.5h20L12 2z" fill="#fff" />
+                </svg>
+            ),
+            color: '#000000',
         },
         {
             type: 'slack' as const,
@@ -591,6 +646,15 @@ export const IntegrationsPage: React.FC = () => {
                     <WebhookIntegrationSetup
                         onClose={() => setSetupModal(null)}
                         onComplete={handleSetupComplete}
+                    />
+                )}
+                {setupModal === 'vercel' && (
+                    <VercelConnector
+                        onConnect={(connectionId) => {
+                            setSetupModal(null);
+                            loadIntegrationData();
+                        }}
+                        onClose={() => setSetupModal(null)}
                     />
                 )}
                 {setupModal === 'google' && (
