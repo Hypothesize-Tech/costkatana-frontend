@@ -251,19 +251,6 @@ class VercelService {
     }
 
     /**
-     * Get analytics for a project
-     */
-    async getAnalytics(connectionId: string, projectId: string, from?: Date, to?: Date): Promise<any> {
-        const response = await api.get(`/vercel/connections/${connectionId}/projects/${projectId}/analytics`, {
-            params: {
-                from: from?.toISOString(),
-                to: to?.toISOString()
-            }
-        });
-        return response.data.data;
-    }
-
-    /**
      * Open Vercel OAuth window
      */
     openOAuthWindow(): Promise<{ connectionId: string } | null> {
