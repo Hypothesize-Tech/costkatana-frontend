@@ -53,7 +53,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const [vercelConnected, setVercelConnected] = useState(false);
     const [loading, setLoading] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
+    const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; bottom?: number } | null>(null);
 
 
     // Load integrations on mount
@@ -855,7 +855,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
         };
     }, [handleKeyDown]);
 
-    // Calculate position relative to textarea - display below the textarea
+    // Calculate position relative to textarea - display ABOVE the textarea
     useEffect(() => {
         if (!showAutocomplete || !textareaRef.current || autocompleteItems.length === 0) {
             setDropdownPosition(null);
@@ -866,10 +866,15 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             if (!textareaRef.current) return;
             const textarea = textareaRef.current;
             const rect = textarea.getBoundingClientRect();
-            // Position below the textarea with 8px gap
+
+            // Use bottom positioning (distance from bottom of viewport to top of textarea)
+            // This makes the dropdown grow upward naturally
+            const bottomFromViewport = window.innerHeight - rect.top + 8; // 8px gap above textarea
+
             setDropdownPosition({
-                top: rect.bottom + 8, // 8px below textarea
-                left: rect.left
+                top: 0, // Not used when bottom is set
+                left: rect.left,
+                bottom: bottomFromViewport
             });
         };
 
@@ -899,7 +904,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             ref={dropdownRef}
             className="fixed w-72 max-h-80 overflow-y-auto glass rounded-xl border border-primary-200/30 dark:border-primary-500/20 shadow-2xl backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel z-[9999] animate-scale-in"
             style={{
-                top: `${dropdownPosition.top}px`,
+                bottom: `${dropdownPosition.bottom}px`,
                 left: `${dropdownPosition.left}px`,
                 position: 'fixed',
                 visibility: 'visible',

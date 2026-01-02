@@ -98,6 +98,7 @@ import VercelConnector from "../integrations/VercelConnector";
 import AttachFilesModal from "./AttachFilesModal";
 import { MessageAttachment } from "../../types/attachment.types";
 import { FileIngestionLoader } from "./FileIngestionLoader";
+import { IntegrationSelector, IntegrationSelectionData } from "./IntegrationSelector";
 import GoogleFileAttachmentService from "../../services/googleFileAttachment.service";
 import { FileLibraryPanel } from "./FileLibraryPanel";
 
@@ -174,6 +175,25 @@ interface ChatMessage {
     type: 'web' | 'document' | 'api' | 'database';
     description?: string;
   }>;
+  // Integration agent selection (for interactive parameter collection)
+  requiresSelection?: boolean;
+  selection?: {
+    parameterName: string;
+    question: string;
+    options: Array<{
+      id: string;
+      label: string;
+      value: string;
+      description?: string;
+      icon?: string;
+    }>;
+    allowCustom: boolean;
+    customPlaceholder?: string;
+    integration: string;
+    pendingAction: string;
+    collectedParams: Record<string, unknown>;
+    originalMessage?: string;
+  };
 }
 
 interface Conversation {
@@ -277,6 +297,41 @@ export const ConversationalAgent: React.FC = () => {
   const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
   const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
   const [githubConnection, setGithubConnection] = useState<{ avatarUrl?: string; username?: string; hasConnection: boolean }>({ hasConnection: false });
+
+  // Integration selection ref for multi-turn parameter collection
+  const pendingSelectionRef = useRef<{
+    parameterName: string;
+    value: string | number | boolean;
+    pendingAction: string;
+    collectedParams: Record<string, unknown>;
+    integration?: string;
+  } | null>(null);
+
+  // Handler for integration selection
+  const handleIntegrationSelection = useCallback((selection: ChatMessage['selection'], value: string) => {
+    if (!selection || !selectedModel) return;
+
+    // Store the selection response for the next message, including the integration
+    pendingSelectionRef.current = {
+      parameterName: selection.parameterName,
+      value,
+      pendingAction: selection.pendingAction,
+      collectedParams: selection.collectedParams,
+      integration: selection.integration,
+    };
+
+    // Send a message with the selection to continue the flow
+    const userMessage = `Selected: ${value}`;
+    setCurrentMessage(userMessage);
+
+    // Trigger send message
+    setTimeout(() => {
+      const sendButton = document.querySelector('[data-send-button]') as HTMLButtonElement;
+      if (sendButton) {
+        sendButton.click();
+      }
+    }, 100);
+  }, [selectedModel]);
 
   // Template functionality
   const {
@@ -1661,8 +1716,15 @@ export const ConversationalAgent: React.FC = () => {
             repositoryName: selectedRepo.repo.name,
             repositoryFullName: selectedRepo.repo.fullName
           }
+        } : {}),
+        // Include selection response if continuing from a selection
+        ...(pendingSelectionRef.current ? {
+          selectionResponse: pendingSelectionRef.current
         } : {})
       });
+
+      // Clear pending selection after sending
+      pendingSelectionRef.current = null;
 
       // Parse sources from the response text
       const sources = parseSourcesFromResponse(response.response);
@@ -1688,6 +1750,9 @@ export const ConversationalAgent: React.FC = () => {
         riskLevel: response.riskLevel || 'low',
         sources: sources,
         viewLinks: response.viewLinks, // Add Google service view links
+        // Integration selection data
+        requiresSelection: response.requiresSelection,
+        selection: response.selection,
         thinking:
           response.thinking ||
           (messageContent.toLowerCase().includes("money") ||
@@ -3179,6 +3244,17 @@ export const ConversationalAgent: React.FC = () => {
                     : 'glass shadow-2xl backdrop-blur-xl border border-primary-200/30 bg-gradient-to-br from-white/80 to-white/50 dark:from-dark-card/80 dark:to-dark-card/50'
                     } p-5 rounded-2xl ${message.role === 'user' ? 'rounded-br-sm' : 'rounded-bl-sm'} transition-all hover:shadow-2xl`}>
                     {renderMessageContent(message.content, message)}
+
+                    {/* Integration Selection UI */}
+                    {message.role === 'assistant' && message.requiresSelection && message.selection && (
+                      <div className="mt-4 pt-4 border-t border-gray-700/30">
+                        <IntegrationSelector
+                          selection={message.selection as IntegrationSelectionData}
+                          onSelect={(value) => handleIntegrationSelection(message.selection, value)}
+                          disabled={isLoading}
+                        />
+                      </div>
+                    )}
 
                     {/* Attached Documents Display */}
                     {message.attachedDocuments && message.attachedDocuments.length > 0 && (
