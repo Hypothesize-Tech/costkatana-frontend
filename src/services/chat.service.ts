@@ -71,6 +71,14 @@ export interface SendMessageRequest {
   templateId?: string;
   templateVariables?: Record<string, any>;
   attachments?: MessageAttachment[];
+  // Integration agent selection response (for multi-turn parameter collection)
+  selectionResponse?: {
+    parameterName: string;
+    value: string | number | boolean;
+    pendingAction: string;
+    collectedParams: Record<string, unknown>;
+    integration?: string;
+  };
 }
 
 export interface SendMessageResponse {
@@ -126,6 +134,24 @@ export interface SendMessageResponse {
     type: 'document' | 'spreadsheet' | 'presentation' | 'file' | 'email' | 'calendar' | 'form';
   }>;
   metadata?: any;
+  requiresSelection?: boolean;
+  selection?: {
+    parameterName: string;
+    question: string;
+    options: Array<{
+      id: string;
+      label: string;
+      value: string;
+      description?: string;
+      icon?: string;
+    }>;
+    allowCustom: boolean;
+    customPlaceholder?: string;
+    integration: string;
+    pendingAction: string;
+    collectedParams: Record<string, unknown>;
+    originalMessage?: string;
+  };
 }
 
 export interface ConversationHistoryResponse {
