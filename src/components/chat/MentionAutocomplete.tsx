@@ -9,6 +9,8 @@ import { parseMention, ParsedMention, VALID_INTEGRATIONS } from '@/utils/integra
 import { integrationService } from '@/services/integration.service';
 import googleService, { GoogleConnection } from '@/services/google.service';
 import vercelService from '@/services/vercel.service';
+import { awsService } from '@/services/aws.service';
+import { useTheme } from '@/contexts/ThemeContext';
 import type { Integration } from '@/types/integration.types';
 import linearIcon from '@/assets/linear-app-icon-seeklogo.svg';
 import jiraIcon from '@/assets/jira.png';
@@ -51,9 +53,11 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
     const [integrations, setIntegrations] = useState<Integration[]>([]);
     const [googleConnections, setGoogleConnections] = useState<GoogleConnection[]>([]);
     const [vercelConnected, setVercelConnected] = useState(false);
+    const [awsConnected, setAwsConnected] = useState(false);
     const [loading, setLoading] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; bottom?: number } | null>(null);
+    const { theme } = useTheme();
 
 
     // Load integrations on mount
@@ -61,6 +65,7 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
         loadIntegrations();
         loadGoogleConnections();
         loadVercelConnection();
+        loadAWSConnection();
     }, []);
 
     const loadIntegrations = async () => {
@@ -91,6 +96,15 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             setVercelConnected(connections.length > 0 && connections[0].isActive);
         } catch (error) {
             // Silently fail - Vercel connection will just be false
+        }
+    };
+
+    const loadAWSConnection = async () => {
+        try {
+            const result = await awsService.listConnections();
+            setAwsConnected(result.connections && result.connections.some(c => c.status === 'active'));
+        } catch (error) {
+            // Silently fail - AWS connection will just be false
         }
     };
 
@@ -161,10 +175,21 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                 );
+            case 'aws':
+                return (
+                    <img
+                        src={theme === 'dark'
+                            ? '/assets/aws-logo.svg'
+                            : '/assets/aws-logo.svg'
+                        }
+                        alt="AWS"
+                        className="w-5 h-5 object-contain"
+                    />
+                );
             default:
                 return <Cog6ToothIcon className="w-5 h-5 text-primary-500" />;
         }
-    }, []);
+    }, [theme]);
 
     // Get list of connected integration names (only active integrations)
     const getConnectedIntegrations = useCallback((): Array<typeof VALID_INTEGRATIONS[number]> => {
@@ -194,8 +219,13 @@ export const MentionAutocomplete: React.FC<MentionAutocompleteProps> = ({
             connectedNames.add('vercel');
         }
 
+        // Check AWS connection
+        if (awsConnected) {
+            connectedNames.add('aws');
+        }
+
         return Array.from(connectedNames) as Array<typeof VALID_INTEGRATIONS[number]>;
-    }, [integrations, googleConnections, vercelConnected, getIntegrationNameFromType]);
+    }, [integrations, googleConnections, vercelConnected, awsConnected, getIntegrationNameFromType]);
 
     const showIntegrationList = useCallback((filter?: string) => {
         // Only show integrations that the user has connected

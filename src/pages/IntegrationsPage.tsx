@@ -22,28 +22,35 @@ import {
 import GitHubConnector from '../components/chat/GitHubConnector';
 import GoogleConnector from '../components/chat/GoogleConnector';
 import VercelConnector from '../components/integrations/VercelConnector';
+import { AWSConnector } from '../components/integrations/AWSConnector';
+import { VercelServicePanel } from '../components/chat/VercelServicePanel';
 import FeatureSelector from '../components/chat/FeatureSelector';
 import githubService, { GitHubRepository, GitHubConnection } from '../services/github.service';
+import { useTheme } from '../contexts/ThemeContext';
 import googleService, { GoogleConnection } from '../services/google.service';
 import vercelService, { VercelConnection } from '../services/vercel.service';
+import { awsService, AWSConnection } from '../services/aws.service';
 import linearIcon from '../assets/linear-app-icon-seeklogo.svg';
 import jiraIcon from '../assets/jira.png';
 
-type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | 'vercel' | null;
+type SetupModal = 'slack' | 'discord' | 'linear' | 'jira' | 'webhook' | 'github' | 'google' | 'vercel' | 'aws' | null;
 type ViewModal = { type: 'linear' | 'jira'; integrationId: string } | null;
 
 export const IntegrationsPage: React.FC = () => {
     const navigate = useNavigate();
+    const { theme } = useTheme();
     const [searchParams, setSearchParams] = useSearchParams();
     const [setupModal, setSetupModal] = useState<SetupModal>(null);
     const [viewModal, setViewModal] = useState<ViewModal>(null);
     const [showLogs, setShowLogs] = useState(false);
+    const [showVercelPanel, setShowVercelPanel] = useState(false);
     const [selectedRepo, setSelectedRepo] = useState<{ repo: GitHubRepository; connectionId: string } | null>(null);
     const [showFeatureSelector, setShowFeatureSelector] = useState(false);
     const [githubConnections, setGithubConnections] = useState<GitHubConnection[]>([]);
     const [githubIntegrations, setGithubIntegrations] = useState<Array<{ _id: string; repositoryName: string; status: string }>>([]);
     const [googleConnections, setGoogleConnections] = useState<GoogleConnection[]>([]);
     const [vercelConnections, setVercelConnections] = useState<VercelConnection[]>([]);
+    const [awsConnections, setAwsConnections] = useState<AWSConnection[]>([]);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const { data: integrationsData, isLoading, error, refetch } = useQuery(
@@ -62,16 +69,18 @@ export const IntegrationsPage: React.FC = () => {
     // Function to load integration data
     const loadIntegrationData = async () => {
         try {
-            const [githubConn, gitIntegrations, googleConn, vercelConn] = await Promise.all([
+            const [githubConn, gitIntegrations, googleConn, vercelConn, awsResult] = await Promise.all([
                 githubService.listConnections(),
                 githubService.listIntegrations(),
                 googleService.listConnections().catch(() => []),
-                vercelService.listConnections().catch(() => [])
+                vercelService.listConnections().catch(() => []),
+                awsService.listConnections().catch(() => ({ connections: [] }))
             ]);
             setGithubConnections(githubConn);
             setGithubIntegrations(gitIntegrations);
             setGoogleConnections(googleConn);
             setVercelConnections(vercelConn);
+            setAwsConnections(awsResult.connections || []);
         } catch (error) {
             console.error('Failed to load integration data:', error);
         }
@@ -204,6 +213,9 @@ export const IntegrationsPage: React.FC = () => {
         if (type === 'vercel') {
             return vercelConnections.some(conn => conn.isActive);
         }
+        if (type === 'aws') {
+            return awsConnections.some(conn => conn.status === 'active');
+        }
 
         // For other integrations, check if there's an active integration
         return integrations.some(integ => {
@@ -240,6 +252,22 @@ export const IntegrationsPage: React.FC = () => {
 
 
     const availableIntegrations = [
+        {
+            type: 'aws' as const,
+            name: 'AWS',
+            description: 'Connect your AWS account for cost optimization with natural language commands',
+            icon: (
+                <img
+                    src={theme === 'dark'
+                        ? '/assets/aws-logo.svg'
+                        : '/assets/aws-logo.svg'
+                    }
+                    alt="Powered by AWS"
+                    className="w-6 h-6 object-contain"
+                />
+            ),
+            color: '#FF9900',
+        },
         {
             type: 'github' as const,
             name: 'GitHub',
@@ -417,6 +445,16 @@ export const IntegrationsPage: React.FC = () => {
                                                 ? googleConnections.find(c => c.isActive)
                                                 : null;
 
+                                            // Get Vercel connection details if connected
+                                            const vercelConnection = isConnected && integration.type === 'vercel'
+                                                ? vercelConnections.find(c => c.isActive)
+                                                : null;
+
+                                            // Get AWS connection details if connected
+                                            const awsConnection = isConnected && integration.type === 'aws'
+                                                ? awsConnections.find(c => c.status === 'active')
+                                                : null;
+
                                             // Get regular integrations for this type
                                             const regularIntegrations = integrations.filter(integ => {
                                                 if (integration.type === 'slack') return integ.type === 'slack_webhook' || integ.type === 'slack_oauth';
@@ -460,7 +498,17 @@ export const IntegrationsPage: React.FC = () => {
                                                                         {googleConnection.googleEmail}
                                                                     </p>
                                                                 )}
-                                                                {regularIntegrations.length > 0 && !githubConnection && (
+                                                                {vercelConnection && (
+                                                                    <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
+                                                                        {vercelConnection.teamSlug || vercelConnection.vercelUsername || 'Vercel Account'}
+                                                                    </p>
+                                                                )}
+                                                                {awsConnection && (
+                                                                    <p className="text-xs truncate text-secondary-600 dark:text-secondary-300 sm:text-sm">
+                                                                        {awsConnection.connectionName}
+                                                                    </p>
+                                                                )}
+                                                                {regularIntegrations.length > 0 && !githubConnection && !awsConnection && (
                                                                     <p className="text-xs text-secondary-500 dark:text-secondary-400">
                                                                         {regularIntegrations.length} {regularIntegrations.length === 1 ? 'integration' : 'integrations'}
                                                                     </p>
@@ -492,8 +540,17 @@ export const IntegrationsPage: React.FC = () => {
                                                         </div>
                                                     )}
 
+                                                    {/* AWS Specific Info */}
+                                                    {isConnected && awsConnection && (
+                                                        <div className="p-2.5 mb-3 rounded-lg border glass border-primary-200/20 dark:border-primary-500/10 sm:p-3 sm:mb-4">
+                                                            <p className="text-xs font-medium text-secondary-500 dark:text-secondary-400">
+                                                                {awsConnection.permissionMode === 'read-only' ? '🔒 Read-Only' : '✏️ Read-Write'} • {awsConnection.allowedRegions?.length || 0} Regions
+                                                            </p>
+                                                        </div>
+                                                    )}
+
                                                     {/* Spacer to push buttons to bottom */}
-                                                    {!isConnected || !githubConnection ? <div className="flex-grow"></div> : null}
+                                                    {!isConnected || (!githubConnection && !awsConnection) ? <div className="flex-grow"></div> : null}
 
                                                     {/* Actions - Always at bottom */}
                                                     <div className="mt-auto">
@@ -544,6 +601,56 @@ export const IntegrationsPage: React.FC = () => {
                                                                             }}
                                                                             className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
                                                                             title="Disconnect Google"
+                                                                        >
+                                                                            <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                        </button>
+                                                                    </>
+                                                                ) : integration.type === 'vercel' ? (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => setShowVercelPanel(true)}
+                                                                            className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
+                                                                        >
+                                                                            <Cog6ToothIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                            <span>Manage</span>
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                if (vercelConnection) {
+                                                                                    handleDisconnectVercel(vercelConnection._id);
+                                                                                }
+                                                                            }}
+                                                                            className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
+                                                                            title="Disconnect Vercel"
+                                                                        >
+                                                                            <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                        </button>
+                                                                    </>
+                                                                ) : integration.type === 'aws' ? (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                // For now, just show a message - can add AWS management page later
+                                                                                alert('AWS Management coming soon! Use natural language commands in the dashboard chat to manage your AWS resources.');
+                                                                            }}
+                                                                            className="flex-1 px-2.5 py-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white font-display font-semibold rounded-xl hover:shadow-lg transition-all duration-300 glow-primary flex items-center justify-center gap-1.5 text-xs sm:px-3 sm:py-2.5 sm:gap-2 sm:text-sm"
+                                                                        >
+                                                                            <Cog6ToothIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                            <span>Manage</span>
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                if (awsConnection && window.confirm('Are you sure you want to disconnect AWS? This will revoke CostKatana access to your AWS account.')) {
+                                                                                    try {
+                                                                                        await awsService.deleteConnection(awsConnection.id);
+                                                                                        loadIntegrationData();
+                                                                                    } catch (error) {
+                                                                                        console.error('Failed to disconnect AWS:', error);
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            className="px-2.5 py-2 glass border border-danger-200/30 dark:border-danger-500/20 backdrop-blur-xl bg-gradient-light-panel dark:bg-gradient-dark-panel text-danger-600 dark:text-danger-400 rounded-xl hover:bg-danger-500/10 dark:hover:bg-danger-500/20 transition-all duration-300 transform hover:scale-105 active:scale-95 text-xs font-display font-semibold flex items-center justify-center shadow-sm hover:shadow-md sm:px-3 sm:py-2.5 sm:text-sm"
+                                                                            title="Disconnect AWS"
                                                                         >
                                                                             <XMarkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                         </button>
@@ -666,6 +773,15 @@ export const IntegrationsPage: React.FC = () => {
                         onClose={() => setSetupModal(null)}
                     />
                 )}
+                {setupModal === 'aws' && (
+                    <AWSConnector
+                        onConnect={() => {
+                            setSetupModal(null);
+                            loadIntegrationData();
+                        }}
+                        onClose={() => setSetupModal(null)}
+                    />
+                )}
 
                 {/* Linear Integration View Modal */}
                 {viewModal && viewModal.type === 'linear' && (
@@ -689,6 +805,12 @@ export const IntegrationsPage: React.FC = () => {
                         }}
                     />
                 )}
+
+                {/* Vercel Service Panel */}
+                <VercelServicePanel
+                    isOpen={showVercelPanel}
+                    onClose={() => setShowVercelPanel(false)}
+                />
 
                 {/* GitHub Feature Selector */}
                 {showFeatureSelector && selectedRepo && (
